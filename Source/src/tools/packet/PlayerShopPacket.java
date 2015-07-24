@@ -61,7 +61,7 @@ public class PlayerShopPacket {
     public static final MaplePacket sendTitleBox() {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
-        mplew.writeShort(SendPacketOpcode.SEND_TITLE_BOX.getValue());
+        mplew.writeShort(SendPacketOpcode.CLAIM_STATUS_CHANGED.getValue());
         mplew.write(7);
 
         return mplew.getPacket();
