@@ -29,6 +29,8 @@ import handling.MapleServerHandler;
 import handling.mina.MapleCodecFactory;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.buffer.SimpleBufferAllocator;
+import org.apache.mina.core.filterchain.IoFilter;
+import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.session.IdleStatus;
 
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
@@ -41,7 +43,7 @@ public class LoginServer {
 
     public static final short PORT = 8484;
     private static InetSocketAddress InetSocketadd;
-    private static NioSocketAcceptor acceptor;
+    private static IoAcceptor acceptor;
     private static Map<Integer, Integer> load = new HashMap<>();
     private static String serverName, eventMessage;
     private static byte flag;
@@ -68,16 +70,16 @@ public class LoginServer {
             autoRegister = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.autoRegister", "false"));
             IoBuffer.setUseDirectBuffer(false);
             IoBuffer.setAllocator(new SimpleBufferAllocator());
-            
+
             acceptor = new NioSocketAcceptor();
+            acceptor.getFilterChain().addLast("codec", (IoFilter) new ProtocolCodecFilter(new MapleCodecFactory()));
+
             acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 30);
-            acceptor.getSessionConfig().setTcpNoDelay(true);
-            acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new MapleCodecFactory()));
             acceptor.setHandler(new MapleServerHandler(-1, false));
-            InetSocketadd = new InetSocketAddress(PORT);
+            InetSocketadd = new InetSocketAddress("10.211.55.2",PORT);
             acceptor.bind(InetSocketadd);
             System.out.println("登入伺服器端口: " + Short.toString(PORT) + " \n\n");
-            
+
         } catch (IOException ex) {
             FilePrinter.printError(FilePrinter.LoginServer, ex, "IOException");
         }

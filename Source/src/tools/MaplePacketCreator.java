@@ -2057,7 +2057,7 @@ public class MaplePacketCreator {
     public static MaplePacket updateMount(MapleCharacter chr, boolean levelup) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
-        mplew.writeShort(SendPacketOpcode.UPDATE_MOUNT.getValue());
+        mplew.writeShort(SendPacketOpcode.SET_TAMING_MOB_INFO.getValue());
         mplew.writeInt(chr.getId());
         mplew.writeInt(chr.getMount().getLevel());
         mplew.writeInt(chr.getMount().getExp());
@@ -2070,7 +2070,7 @@ public class MaplePacketCreator {
     public static MaplePacket mountInfo(MapleCharacter chr) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
-        mplew.writeShort(SendPacketOpcode.UPDATE_MOUNT.getValue());
+        mplew.writeShort(SendPacketOpcode.SET_TAMING_MOB_INFO.getValue());
         mplew.writeInt(chr.getId());
         mplew.write(1);
         mplew.writeInt(chr.getMount().getLevel());

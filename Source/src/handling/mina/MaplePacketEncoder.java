@@ -21,6 +21,7 @@
 package handling.mina;
 
 import client.MapleClient;
+import handling.MaplePacket;
 import tools.MapleAESOFB;
 
 import java.util.concurrent.locks.Lock;
@@ -37,7 +38,7 @@ public class MaplePacketEncoder implements ProtocolEncoder {
 
         if (client != null) {
             final MapleAESOFB send_crypto = client.getSendCrypto();
-            final byte[] input = (byte[]) message;
+            final byte[] input = ((MaplePacket) message).getBytes();
             final byte[] unencrypted = new byte[input.length];
             System.arraycopy(input, 0, unencrypted, 0, input.length);
             final byte[] ret = new byte[unencrypted.length + 4];
@@ -57,11 +58,12 @@ public class MaplePacketEncoder implements ProtocolEncoder {
 //            System.arraycopy(unencrypted, 0, ret, 4, unencrypted.length);
 //            out.write(ByteBuffer.wrap(ret));
         } else {
-            out.write(IoBuffer.wrap(((byte[]) message)));
+            out.write(IoBuffer.wrap(((MaplePacket) message).getBytes()));
         }
     }
 
     @Override
     public void dispose(org.apache.mina.core.session.IoSession session) throws Exception {
+        int a = 0;
     }
 }

@@ -33,6 +33,6 @@ server.settings.wflags        = 0
 server.settings.admin         = false
 server.settings.userlimit     = 600
 server.settings.maxCharacters = 3
-server.settings.ip            = 10.211.55.2
+server.settings.ip            = 127.0.0.1
 server.settings.packetLog     = true
 server.settings.debug = true

@@ -87,7 +87,7 @@ public class CharLoginHandler {
             }
         }
 
-        loginok = c.fblogin(login, pwd, ipBan || macBan);
+        loginok = c.login(login, pwd, ipBan || macBan);
         final Calendar tempbannedTill = c.getTempBanCalendar();
 
         if (loginok == 0 && (ipBan || macBan) && !c.isGm()) {

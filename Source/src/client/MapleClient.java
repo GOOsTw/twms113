@@ -76,8 +76,8 @@ public class MapleClient implements Serializable {
             CHANGE_CHANNEL = 6;
     public static final int DEFAULT_CHARSLOT = 6;
     public static final String CLIENT_KEY = "CLIENT";
-    private transient MapleAESOFB send, receive;
-    private transient IoSession session;
+    private final MapleAESOFB send, receive;
+    private final IoSession session;
     private MapleCharacter player;
     private int channel = 1, accId = 1, world, birthday;
     private int charslots = DEFAULT_CHARSLOT;

@@ -27,6 +27,10 @@ public class ShutdownServer implements Runnable {
             running = true;
         }
         World.isShutDown = true;
+        for (handling.channel.ChannelServer cserv : handling.channel.ChannelServer.getAllInstances()) {
+            cserv.closeAllMerchant();
+        }
+        System.out.print("精靈商人儲存完畢.");
         try {
             for (ChannelServer cs : ChannelServer.getAllInstances()) {
                 cs.setShutdown();

@@ -35,7 +35,7 @@ public class MapleInventoryManipulator {
         }
         chr.getCashInventory().addToInventory(ring);
         //chr.getClient().getSession().write(MTSCSPacket.confirmToCSInventory(ring, chr.getClient().getAccID(), csi.getSN()));
-        chr.getClient().getSession().write(MTSCSPacket.showBoughtCSItem(ring, sn, chr.getClient().getAccID()));
+        chr.getClient().getSession().write(MTSCSPacket.showBoughtCashItem(ring, sn, chr.getClient().getAccID()));
     }
 
     public static boolean addbyItem(final MapleClient c, final IItem item) {

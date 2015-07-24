@@ -119,12 +119,12 @@ public class ChannelServer implements Serializable {
     public final void run_startup_configurations() {
         setChannel(channel); //instances.put
         try {
-            expRate = Integer.parseInt(ServerProperties.getProperty("server.settings.expRate"));
-            mesoRate = Integer.parseInt(ServerProperties.getProperty("server.settings.mesoRate"));
-            dropRate = Integer.parseInt(ServerProperties.getProperty("server.settings.dropRate"));
-            cashRate = Integer.parseInt(ServerProperties.getProperty("server.settings.wld.cashRate"));
-            serverMessage = ServerProperties.getProperty("server.settings.serverMessage");
-            serverName = ServerProperties.getProperty("server.settings.serverName");
+            expRate = Integer.parseInt(ServerProperties.getProperty("server.settings.expRate", "1"));
+            mesoRate = Integer.parseInt(ServerProperties.getProperty("server.settings.mesoRate", "1"));
+            dropRate = Integer.parseInt(ServerProperties.getProperty("server.settings.dropRate", "1"));
+            cashRate = Integer.parseInt(ServerProperties.getProperty("server.settings.cashRate", "1"));
+            serverMessage = ServerProperties.getProperty("server.settings.serverMessage", "");
+            serverName = ServerProperties.getProperty("server.settings.serverName","");
             flags = Integer.parseInt(ServerProperties.getProperty("server.settings.wflags", "0"));
             adminOnly = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.admin", "false"));
             eventSM = new EventScriptManager(this, ServerProperties.getProperty("server.settings.events").split(","));
@@ -322,7 +322,8 @@ public class ChannelServer implements Serializable {
     public static final void startChannel_Main() {
         serverStartTime = System.currentTimeMillis();
 
-        for (int i = 0; i < Integer.parseInt(ServerProperties.getProperty("server.settings.channel.count", "0")); i++) {
+        int count = Integer.parseInt(ServerProperties.getProperty("server.settings.channel.count", "0"));
+        for (int i = 0; i < count; i++) {
             newInstance(ServerConstants.Channel_Key[i], i + 1).run_startup_configurations();
         }
     }

@@ -82,7 +82,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     private static final EnumSet<RecvPacketOpcode> blocked = EnumSet.noneOf(RecvPacketOpcode.class);
 
     static {
-        reloadLoggedIPs();
+        //reloadLoggedIPs();
         RecvPacketOpcode[] block = new RecvPacketOpcode[]{RecvPacketOpcode.NPC_ACTION, RecvPacketOpcode.MOVE_PLAYER, RecvPacketOpcode.MOVE_PET, RecvPacketOpcode.MOVE_SUMMON, RecvPacketOpcode.MOVE_DRAGON, RecvPacketOpcode.MOVE_LIFE, RecvPacketOpcode.HEAL_OVER_TIME, RecvPacketOpcode.STRANGE_DATA};
         blocked.addAll(Arrays.asList(block));
     }
@@ -242,6 +242,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
     @Override
     public void exceptionCaught(final IoSession session, final Throwable cause) throws Exception {
+       int x = 0;
         /*	MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
          log.error(MapleClient.getLogMessage(client, cause.getMessage()), cause);*/
 //	cause.printStackTrace();
@@ -296,22 +297,18 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 return;
             }
         }
-        final byte serverRecv[] = new byte[]{70, 114, 122, (byte) Randomizer.nextInt(255)};
-        final byte serverSend[] = new byte[]{82, 48, 120, (byte) Randomizer.nextInt(255)};
-        final byte ivRecv[] = ServerConstants.Use_Fixed_IV ? new byte[]{9, 0, 0x5, 0x5F} : serverRecv;
-        final byte ivSend[] = ServerConstants.Use_Fixed_IV ? new byte[]{1, 0x5F, 4, 0x3F} : serverSend;
-
+        byte key[] = {0x13, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, (byte) 0xB4, 0x00, 0x00, 0x00, 0x1B, 0x00, 0x00, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x33, 0x00, 0x00, 0x00, 0x52, 0x00, 0x00, 0x00};
+        byte ivRecv[] = {70, 114, 122, 82};
+        byte ivSend[] = {82, 48, 120, 115};
         final MapleClient client = new MapleClient(
                 new MapleAESOFB(ivSend, (short) (0xFFFF - ServerConstants.MAPLE_VERSION)), // Sent Cypher
                 new MapleAESOFB(ivRecv, ServerConstants.MAPLE_VERSION), // Recv Cypher
                 session);
-        client.setChannel(channel);
 
-        session.write(LoginPacket.getHello(ServerConstants.MAPLE_VERSION,
-                ServerConstants.Use_Fixed_IV ? serverSend : ivSend, ServerConstants.Use_Fixed_IV ? serverRecv : ivRecv));
+        client.setChannel(channel);
+        
+        session.write(LoginPacket.getHello(ServerConstants.MAPLE_VERSION, ivSend, ivRecv));
         session.setAttribute(MapleClient.CLIENT_KEY, client);
-        session.getConfig().setIdleTime(IdleStatus.READER_IDLE, 60);
-        session.getConfig().setIdleTime(IdleStatus.WRITER_IDLE, 60);
 
         StringBuilder sb = new StringBuilder();
         if (channel > -1) {
@@ -407,7 +404,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                                     + "] | [IGN: "
                                     + (c.getPlayer() == null || c.getPlayer().getName() == null ? "null" : c.getPlayer().getName())
                                     + "] | [Time: "
-                                    +  new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date())
+                                    + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date())
                                     + "]");
                             fw.write(nl);
                         }

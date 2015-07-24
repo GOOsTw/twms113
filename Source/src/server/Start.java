@@ -27,10 +27,9 @@ import server.quest.MapleQuest;
 public class Start {
 
     public final static void main(final String args[]) {
-        
+
         System.setProperty("file.encoding", "utf-8");
-        
-        
+
         if (Boolean.parseBoolean(ServerProperties.getProperty("server.settings.Admin"))) {
             System.out.println("[!!! Admin Only Mode Active !!!]");
         }
@@ -85,7 +84,7 @@ public class Start {
         LoginServer.setOn();
         System.out.println("Loaded Complete :::");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        while(!World.isShutDown) {
+        while (!World.isShutDown) {
             try {
                 System.out.print(">>");
                 ConsoleCommandProcessor.processCommand(br.readLine());
@@ -94,6 +93,8 @@ public class Start {
             }
         }
     }
+
+    
 
     public static class Shutdown implements Runnable {
 
