@@ -3,14 +3,18 @@ package client.messages.commands;
 import constants.GameConstants;
 import constants.ServerConstants.PlayerGMRank;
 import client.MapleClient;
+import client.inventory.MapleInventoryType;
 import scripting.NPCScriptManager;
 import tools.MaplePacketCreator;
 import server.life.MapleMonster;
 import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
+import server.maps.MapleMap;
 import java.util.Arrays;
 import tools.StringUtil;
 import handling.world.World;
+import server.MapleInventoryManipulator;
+import server.maps.SavedLocationType;
 import tools.FilePrinter;
 
 
@@ -99,6 +103,28 @@ public class PlayerCommand {
             return 1;
         }
     }
+        public static class fm extends 自由 {
+        }
+        public static class 自由 extends CommandExecute {
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            if (c.getPlayer().getLevel() < 10 && c.getPlayer().getJob() != 200) {
+                c.getPlayer().dropMessage( "你必須超過 10 等來使用此指令.");
+                return 0;
+            }
+            if (c.getPlayer().haveItem(2030000)) { //是否有回家卷軸
+            MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, 2030000, 1, true, false);
+            c.getPlayer().saveLocation(SavedLocationType.FREE_MARKET);
+            MapleMap map = c.getChannelServer().getMapFactory().getMap(910000000);
+            c.getPlayer().changeMap(map, map.getPortal(0));
+            c.getPlayer().dropMessage(5, "回到自由了");
+            return 1;
+            } else {
+            c.getPlayer().dropMessage(5, "沒有回家卷軸,所以不能使用回自由指令!");
+            return 0;
+            }
+        }
+    }
 
     public static class CGM extends CommandExecute {
 
@@ -128,11 +154,12 @@ public class PlayerCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-            c.getPlayer().dropMessage(5, "指令列表 :");
+            c.getPlayer().dropMessage(5, "SyncMs 玩家指令");
             c.getPlayer().dropMessage(5, "@查看/@ea <解除異常+查看當前狀態>");
             c.getPlayer().dropMessage(5, "@丟裝/@DropCash <丟棄點裝>");
-            c.getPlayer().dropMessage(5, "@怪物/@mob <查看身邊怪物訊息>");      
+            c.getPlayer().dropMessage(5, "@怪物/@mob <查看身邊怪物訊息>");
             c.getPlayer().dropMessage(5, "@CGM 訊息 <傳送訊息給GM>");
+            c.getPlayer().dropMessage(5, "@自由/@fm <回自由-需要1張回家卷軸>");
 
             
             return 1;

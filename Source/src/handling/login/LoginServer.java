@@ -76,7 +76,7 @@ public class LoginServer {
 
             acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 30);
             acceptor.setHandler(new MapleServerHandler(-1, false));
-            InetSocketadd = new InetSocketAddress("10.211.55.2",PORT);
+            InetSocketadd = new InetSocketAddress(PORT);
             acceptor.bind(InetSocketadd);
             System.out.println("登入伺服器端口: " + Short.toString(PORT) + " \n\n");
 
