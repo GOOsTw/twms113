@@ -1,26 +1,36 @@
-/*
- This file is part of the OdinMS Maple Story Server
- Copyright (C) 2008 ~ 2010 Patrick Huy <patrick.huy@frz.cc> 
- Matthias Butz <matze@odinms.de>
- Jan Christian Meyer <vimes@odinms.de>
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU Affero General Public License version 3
- as published by the Free Software Foundation. You may not use, modify
- or distribute this program under any other version of the
- GNU Affero General Public License.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Affero General Public License for more details.
-
- You should have received a copy of the GNU Affero General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package server.life;
 
+import constants.ServerConstants;
+import constants.GameConstants;
 import client.inventory.Equip;
+import client.inventory.IItem;
+import client.ISkill;
+import client.inventory.Item;
+import client.MapleDisease;
+import client.MapleBuffStat;
+import client.MapleCharacter;
+import client.inventory.MapleInventoryType;
+import client.MapleClient;
+import client.SkillFactory;
+import client.status.MonsterStatus;
+import client.status.MonsterStatusEffect;
+import handling.channel.ChannelServer;
+import handling.MaplePacket;
+import handling.world.MapleParty;
+import handling.world.MaplePartyCharacter;
+import server.MapleItemInformationProvider;
+import server.Randomizer;
+import server.Timer;
+import server.Timer.MobTimer;
+import server.maps.MapScriptMethods;
+import server.maps.MapleMap;
+import server.maps.MapleMapObject;
+import server.maps.MapleMapObjectType;
+import scripting.EventInstanceManager;
+import tools.ConcurrentEnumMap;
+import tools.Pair;
+import tools.MaplePacketCreator;
+import tools.packet.MobPacket;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,40 +41,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ScheduledFuture;
-
-import constants.GameConstants;
-import client.inventory.IItem;
-import client.ISkill;
-import client.inventory.Item;
-import client.MapleDisease;
-import client.MapleBuffStat;
-import client.MapleCharacter;
-import client.inventory.MapleInventoryType;
-import client.MapleClient;
-import handling.channel.ChannelServer;
-import client.SkillFactory;
-import client.status.MonsterStatus;
-import client.status.MonsterStatusEffect;
-import constants.ServerConstants;
-import handling.MaplePacket;
-import handling.world.MapleParty;
-import handling.world.MaplePartyCharacter;
 import java.awt.Point;
 import java.util.EnumMap;
 import java.util.Iterator;
-import scripting.EventInstanceManager;
-import server.MapleItemInformationProvider;
-import server.Randomizer;
-import server.Timer;
-import server.Timer.MobTimer;
-import server.maps.MapScriptMethods;
-import server.maps.MapleMap;
-import server.maps.MapleMapObject;
-import server.maps.MapleMapObjectType;
-import tools.ConcurrentEnumMap;
-import tools.Pair;
-import tools.MaplePacketCreator;
-import tools.packet.MobPacket;
 
 public class MapleMonster extends AbstractLoadedMapleLife {
 
@@ -97,14 +76,17 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         super(monster);
         initWithStats(monster.stats);
     }
-
+	
+	public final MapleMonsterStats getStats() {
+        return stats;
+    }
+	
     private final void initWithStats(final MapleMonsterStats stats) {
         setStance(5);
         this.stats = stats;
         hp = stats.getHp();
         mp = stats.getMp();
         venom_counter = 0;
-//	showdown = 100;
         carnivalTeam = -1;
         fake = false;
         dropsDisabled = false;
@@ -113,11 +95,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             usedSkills = new HashMap<Integer, Long>();
         }
     }
-
-    public final MapleMonsterStats getStats() {
-        return stats;
-    }
-
+	
     public final void disableDrops() {
         this.dropsDisabled = true;
     }
@@ -125,22 +103,30 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     public final boolean dropsDisabled() {
         return dropsDisabled;
     }
-
-    public final void setSponge(final MapleMonster mob) {
-        sponge = new WeakReference<MapleMonster>(mob);
-    }
-
+	
     public final void setMap(final MapleMap map) {
         this.map = map;
         startDropItemSchedule();
     }
-
-    public final long getHp() {
-        return hp;
+	
+	public final MapleMap getMap() {
+        return map;
+    }
+	
+    public final void setSponge(final MapleMonster mob) {
+        sponge = new WeakReference<MapleMonster>(mob);
+    }
+	
+	public final MapleMonster getSponge() {
+    return sponge.get();
     }
 
-    public final void setHp(long hp) {
-        this.hp = hp;
+	public final void setHp(long hp) {
+    this.hp = hp;
+    }
+	
+    public final long getHp() {
+        return hp;
     }
 
     public final long getMobMaxHp() {
@@ -150,15 +136,15 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         return stats.getHp();
     }
 
-    public final int getMp() {
-        return mp;
-    }
-
-    public final void setMp(int mp) {
+	public final void setMp(int mp) {
         if (mp < 0) {
             mp = 0;
         }
         this.mp = mp;
+    }
+	
+    public final int getMp() {
+        return mp;
     }
 
     public final int getMobMaxMp() {
@@ -179,10 +165,6 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         this.ostats = ostats;
         this.hp = ostats.getHp();
         this.mp = ostats.getMp();
-    }
-
-    public final MapleMonster getSponge() {
-        return sponge.get();
     }
 
     public final byte getVenomMulti() {
@@ -569,9 +551,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
     }
 
-    public final boolean isAlive() {
-        return hp > 0;
-    }
+
 
     public final void setCarnivalTeam(final byte team) {
         carnivalTeam = team;
@@ -706,13 +686,13 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     public final MapleMapObjectType getType() {
         return MapleMapObjectType.MONSTER;
     }
-
-    public final EventInstanceManager getEventInstance() {
-        return eventInstance;
-    }
-
+	
     public final void setEventInstance(final EventInstanceManager eventInstance) {
         this.eventInstance = eventInstance;
+    }
+	
+    public final EventInstanceManager getEventInstance() {
+        return eventInstance;
     }
 
     public final int getStatusSourceID(final MonsterStatus status) {
@@ -962,9 +942,12 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     public final boolean isFake() {
         return fake;
     }
-
-    public final MapleMap getMap() {
-        return map;
+	
+    public final boolean isAlive() {
+        return hp > 0;
+    }
+    public final boolean isFirstAttack() {
+        return stats.isFirstAttack();
     }
 
     public final List<Pair<Integer, Integer>> getSkills() {
@@ -1001,10 +984,8 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     public final byte getNoSkills() {
         return stats.getNoSkills();
     }
+	
 
-    public final boolean isFirstAttack() {
-        return stats.isFirstAttack();
-    }
 
     public final int getBuffToGive() {
         return stats.getBuffToGive();
