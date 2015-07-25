@@ -52,7 +52,7 @@ public abstract class AbstractScriptManager {
         InputStreamReader fr = null;
         try {
             
-            path = "Libs/scripts/" + path;
+            path = "scripts/" + path;
             ScriptEngine engine = null;
 
             if (c != null) {

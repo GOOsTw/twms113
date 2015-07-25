@@ -29,8 +29,8 @@ public class AbsoluteLifeMovement extends AbstractLifeMovement {
     private Point pixelsPerSecond, offset;
     private int unk;
 
-    public AbsoluteLifeMovement(int type, Point position, int duration, int newstate) {
-        super(type, position, duration, newstate);
+    public AbsoluteLifeMovement(int type, Point position, int duration, byte newstate) {
+        super(type, position, duration, newstate, 0);
     }
 
     public Point getPixelsPerSecond() {
@@ -59,12 +59,6 @@ public class AbsoluteLifeMovement extends AbstractLifeMovement {
 
     @Override
     public void serialize(LittleEndianWriter lew) {
-        lew.write(getType());
-        lew.writePos(getPosition());
-        lew.writePos(pixelsPerSecond);
-        lew.writeShort(unk);
-//        lew.writePos(offset);
-        lew.write(getNewstate());
-        lew.writeShort(getDuration());
+  
     }
 }

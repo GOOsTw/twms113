@@ -78,7 +78,7 @@ public class MonsterStatusEffect {
 
     public final void cancelTask() {
         if (this.cancelTask != null) {
-            this.cancelTask.cancel(false);
+            this.cancelTask.cancel(true);
         }
         this.cancelTask = null;
     }
@@ -86,7 +86,7 @@ public class MonsterStatusEffect {
     public final void cancelPoisonSchedule() {
         if (this.poisonSchedule != null) {
             try {
-                this.poisonSchedule.cancel(false);
+                this.poisonSchedule.cancel(true);
             } catch (NullPointerException e) {
             } //set to null anyway.
         }

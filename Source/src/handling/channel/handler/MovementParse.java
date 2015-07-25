@@ -37,114 +37,87 @@ public class MovementParse {
         final byte numCommands = lea.readByte();
 
         for (byte i = 0; i < numCommands; i++) {
-            final byte command = lea.readByte();
+            byte command = lea.readByte();
             switch (command) {
-                case -1: {
-                    final short xpos = lea.readShort();
-                    final short ypos = lea.readShort();
-                    final short unk = lea.readShort();
-                    final short fh = lea.readShort();
-                    final byte newstate = lea.readByte();
-                    final short duration = lea.readShort();
-                    final BounceMovement bm = new BounceMovement(command, new Point(xpos, ypos), duration, newstate);
-                    bm.setFH(fh);
-                    bm.setUnk(unk);
-                    res.add(bm);
-                    break;
-                }
+
                 case 0: // normal move
                 case 5:
-                case 17: // Float
-                {
+                case 15:
+                case 17: { // Float
                     final short xpos = lea.readShort();
                     final short ypos = lea.readShort();
                     final short xwobble = lea.readShort();
                     final short ywobble = lea.readShort();
                     final short unk = lea.readShort();
-                    final byte newstate = lea.readByte();
-                    final short duration = lea.readShort();
-                    final AbsoluteLifeMovement alm = new AbsoluteLifeMovement(command, new Point(xpos, ypos), duration, newstate);
-                    alm.setUnk(unk);
-                    alm.setPixelsPerSecond(new Point(xwobble, ywobble));
-		    // log.trace("Move to {},{} command {} wobble {},{} ? {} state {} duration {}", new Object[] { xpos,
-                    // xpos, command, xwobble, ywobble, newstate, duration });
-                    res.add(alm);
+                    short fh = 0;
+                    if (command == 15 || command == 16) {
+                        fh = lea.readShort();
+                    }
+                    byte newstate = lea.readByte();
+                    short duration = lea.readShort();
+                    StaticLifeMovement mov = new StaticLifeMovement(command, new Point(xpos, ypos), duration, newstate, unk);
+                    mov.setUnk(unk);
+                    mov.setFh(fh);
+                    mov.setPixelsPerSecond(new Point(xwobble, ywobble));
+                    res.add(mov);
                     break;
                 }
                 case 1:
                 case 2:
-                case 6: // fj
+                case 6:
                 case 12:
-                case 13: // Shot-jump-back thing
-                case 16: { // Float
-                    final short xmod = lea.readShort();
-                    final short ymod = lea.readShort();
-                    final byte newstate = lea.readByte();
-                    final short duration = lea.readShort();
-                    final RelativeLifeMovement rlm = new RelativeLifeMovement(command, new Point(xmod, ymod), duration, newstate);
-                    res.add(rlm);
-		    // log.trace("Relative move {},{} state {}, duration {}", new Object[] { xmod, ymod, newstate,
-                    // duration });
-                    break;
-                }
-                case 3:
-                case 4: // tele... -.-
-                case 7: // assaulter
-                case 8: // assassinate
-                case 9: // rush
-                case 14: {
-                    final short xpos = lea.readShort();
-                    final short ypos = lea.readShort();
-                    final short xwobble = lea.readShort();
-                    final short ywobble = lea.readShort();
-                    final byte newstate = lea.readByte();
-                    final TeleportMovement tm = new TeleportMovement(command, new Point(xpos, ypos), newstate);
-                    tm.setPixelsPerSecond(new Point(xwobble, ywobble));
-                    res.add(tm);
-                    break;
-                }
-                case 10: // change equip ???
-                    res.add(new ChangeEquipSpecialAwesome(command, lea.readByte()));
-                    break;
-                case 11: // chair
-                {
-                    final short xpos = lea.readShort();
-                    final short ypos = lea.readShort();
-                    final short unk = lea.readShort();
-                    final byte newstate = lea.readByte();
-                    final short duration = lea.readShort();
-                    final ChairMovement cm = new ChairMovement(command, new Point(xpos, ypos), duration, newstate);
-                    cm.setUnk(unk);
-                    res.add(cm);
-                    break;
-                }
-                case 15: { // Jump Down
-                    final short xpos = lea.readShort();
-                    final short ypos = lea.readShort();
-                    final short xwobble = lea.readShort();
-                    final short ywobble = lea.readShort();
-                    final short unk = lea.readShort();
-                    final short fh = lea.readShort();
-                    final byte newstate = lea.readByte();
-                    final short duration = lea.readShort();
-                    final JumpDownMovement jdm = new JumpDownMovement(command, new Point(xpos, ypos), duration, newstate);
-                    jdm.setUnk(unk);
-                    jdm.setPixelsPerSecond(new Point(xwobble, ywobble));
-                    jdm.setFH(fh);
-
-                    res.add(jdm);
-                    break;
-                }
+                case 13:
+                case 16:
+                case 18:
                 case 19:
-                case 20: // Aran Combat Step
-                case 21: {
-                    final short xmod = lea.readShort();
-                    final short ymod = lea.readShort();
+                case 20:
+                case 22: {
+                    final short xwobble = lea.readShort();
+                    final short ywobble = lea.readShort();
+                    byte newstate = lea.readByte();
+                    short duration = lea.readShort();
+                    StaticLifeMovement mov = new StaticLifeMovement(command, null, duration, newstate, 0);
+                    mov.setPixelsPerSecond(new Point(xwobble, ywobble));
+                    res.add(mov);
+                    break;
+                }
+
+                case 3:
+                case 4:
+                case 7:
+                case 8:
+                case 9:
+                case 11: {
+                    final short xpos = lea.readShort();
+                    final short ypos = lea.readShort();
+                    final short unk = lea.readShort();
                     final byte newstate = lea.readByte();
                     final short duration = lea.readShort();
-                    final AranMovement am = new AranMovement(command, new Point(xmod, ymod), duration, newstate);
+                    StaticLifeMovement mov = new StaticLifeMovement(command, new Point(xpos, ypos), 0, newstate, 0);
+                    mov.setUnk(unk);
+                    res.add(mov);
+                    break;
+                }
+                case 10: // Change Equip
+                {
+                    final byte newstate = 0;
+                    final short duration = 0;
+                    final int wui = lea.readByte();
+                    final StaticLifeMovement mov = new StaticLifeMovement(command, null, duration, newstate, 0);
+                    mov.setWui(wui);
+                    res.add(mov);
+                    break;
+                }
+                case 14: {
 
-                    res.add(am);
+                    final short xwobble = lea.readShort();
+                    final short ywobble = lea.readShort();
+                    int fh = lea.readShort();
+                    byte newstate = lea.readByte();
+                    short duration = lea.readShort();
+                    StaticLifeMovement mov = new StaticLifeMovement(command, null, duration, newstate, 0);
+                    mov.setPixelsPerSecond(new Point(xwobble, ywobble));
+                    res.add(mov);
                     break;
                 }
                 default:
@@ -162,10 +135,13 @@ public class MovementParse {
     public static final void updatePosition(final List<LifeMovementFragment> movement, final AnimatedMapleMapObject target, final int yoffset) {
         for (final LifeMovementFragment move : movement) {
             if (move instanceof LifeMovement) {
-                if (move instanceof AbsoluteLifeMovement) {
+                if (move instanceof StaticLifeMovement) {
                     Point position = ((LifeMovement) move).getPosition();
-                    position.y += yoffset;
-                    target.setPosition(position);
+                    if (position != null) {
+                        position.y += yoffset;
+                        target.setPosition(position);
+
+                    }
                 }
                 target.setStance(((LifeMovement) move).getNewstate());
             }

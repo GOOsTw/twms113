@@ -33,6 +33,7 @@ import java.util.Collections;
 import server.life.MapleMonster;
 import server.life.MobSkill;
 import server.movement.LifeMovementFragment;
+import tools.FilePrinter;
 import tools.data.output.LittleEndianWriter;
 import tools.data.output.MaplePacketLittleEndianWriter;
 
@@ -214,6 +215,12 @@ public class MobPacket {
     }
 
     public static void addMonsterStatus(MaplePacketLittleEndianWriter mplew, MapleMonster life) {
+        
+        String debug = "";
+         for (MonsterStatusEffect buff : life.getStati().values()) {
+             debug += buff.getStati().toString() + ",";
+         }
+        FilePrinter.printError("MonsterStatusDebug.txt", debug);
         if (life.getStati().size() <= 0) {
             life.addEmpty(); //not done yet lulz ok so we add it now for the lulz
         }
@@ -245,6 +252,7 @@ public class MobPacket {
                 }
             }
         }
+        
         //wh spawn - 15 zeroes instead of 16, then 98 F4 56 A6 C7 C9 01 28, then 7 zeroes
     }
 
@@ -424,7 +432,9 @@ public class MobPacket {
             mplew.writeShort(skil.getSkillLevel());
             mplew.writeShort(mse.getKey().isEmpty() ? 1 : 0); // might actually be the buffTime but it's not displayed anywhere
         }
-        for (Integer ref : reflection) {
+        mplew.writeShort(0);
+        mplew.writeInt(0);
+        /*for (Integer ref : reflection) {
             mplew.writeInt(ref);
         }
         mplew.writeInt(0);
@@ -435,7 +445,7 @@ public class MobPacket {
             size /= 2; // This gives 2 buffs per reflection but it's really one buff
         }
         mplew.write(size); // size
-//        mplew.write(1); // ? v97
+//        mplew.write(1); // ? v97*/
 
         return mplew.getPacket();
     }
@@ -448,6 +458,7 @@ public class MobPacket {
         mplew.writeLong(getSpecialLongMask(Collections.singletonList(stat)));
         mplew.writeLong(getLongMask(Collections.singletonList(stat)));
         mplew.write(1); // reflector is 3~!??
+//     
 //        mplew.write(2); // ? v97
 
         return mplew.getPacket();
@@ -478,3 +489,4 @@ public class MobPacket {
         return mplew.getPacket();
     }
 }
+

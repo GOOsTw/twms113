@@ -324,13 +324,18 @@ public class MobSkill {
                 break;
         }
 
-        if (stats.size() > 0 && monster != null) {
+        if (stats.size() > 0) {
             if (lt != null && rb != null && skill) {
                 for (MapleMapObject mons : getObjectsInRange(monster, MapleMapObjectType.MONSTER)) {
-                    ((MapleMonster) mons).applyMonsterBuff(stats, getSkillId(), getDuration(), this, reflection);
+                    for (MonsterStatus s : stats.keySet()) {
+                        ((MapleMonster) mons).applyMonsterBuff(s, getX(), getSkillId(), getDuration(), this, reflection);
+
+                    }
                 }
             } else {
-                monster.applyMonsterBuff(stats, getSkillId(), getDuration(), this, reflection);
+                for (MonsterStatus s : stats.keySet()) {
+                    monster.applyMonsterBuff(s, getX(), getSkillId(), getDuration(), this, reflection);
+                }
             }
         }
         if (disease != null && player != null) {

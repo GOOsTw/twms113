@@ -53,7 +53,7 @@ public class PortalScriptManager {
             return scripts.get(scriptName);
         }
 
-        final File scriptFile = new File("Libs/scripts/portal/" + scriptName + ".js");
+        final File scriptFile = new File("scripts/portal/" + scriptName + ".js");
         if (!scriptFile.exists()) {
             scripts.put(scriptName, null);
             return null;

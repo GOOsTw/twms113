@@ -5194,7 +5194,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ch.removePlayer(this);
         client.updateLoginState(MapleClient.CHANGE_CHANNEL, client.getSessionIPAddress());
 
-        client.getSession().write(MaplePacketCreator.getChannelChange(Integer.parseInt(toch.getSocket().split(":")[1])));
+        client.getSession().write(MaplePacketCreator.getChannelChange(toch.getIP(),toch.getPort()));
         saveToDB(false, false);
         getMap().removePlayer(this);
         client.setPlayer(null);

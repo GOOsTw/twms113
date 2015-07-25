@@ -27,7 +27,7 @@ import tools.data.output.LittleEndianWriter;
 public class RelativeLifeMovement extends AbstractLifeMovement {
 
     public RelativeLifeMovement(int type, Point position, int duration, int newstate) {
-        super(type, position, duration, newstate);
+        super(type, position, duration, newstate , 0);
     }
 
     @Override

@@ -72,6 +72,7 @@ public class ChannelServer implements Serializable {
     public static long serverStartTime;
     private int expRate, mesoRate, dropRate, cashRate;
     private short port = 8585;
+    private String ip = "127.0.0.0";
     private static final short DEFAULT_PORT = 8585;
     private final int channel;
     private final String key;
@@ -124,7 +125,7 @@ public class ChannelServer implements Serializable {
             dropRate = Integer.parseInt(ServerProperties.getProperty("server.settings.dropRate", "1"));
             cashRate = Integer.parseInt(ServerProperties.getProperty("server.settings.cashRate", "1"));
             serverMessage = ServerProperties.getProperty("server.settings.serverMessage", "");
-            serverName = ServerProperties.getProperty("server.settings.serverName","");
+            serverName = ServerProperties.getProperty("server.settings.serverName", "");
             flags = Integer.parseInt(ServerProperties.getProperty("server.settings.wflags", "0"));
             adminOnly = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.admin", "false"));
             eventSM = new EventScriptManager(this, ServerProperties.getProperty("server.settings.events").split(","));
@@ -133,8 +134,8 @@ public class ChannelServer implements Serializable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-        socket = ServerProperties.getProperty("server.settings.ip") + ":" + port;
+        ip = ServerProperties.getProperty("server.settings.ip");
+        socket = ip + ":" + port;
 
         IoBuffer.setUseDirectBuffer(false);
         IoBuffer.setAllocator(new SimpleBufferAllocator());
@@ -268,6 +269,9 @@ public class ChannelServer implements Serializable {
         this.cashRate = cashRate;
     }
 
+    public final String getIP() {
+        return this.ip;
+    }
     public final int getChannel() {
         return channel;
     }

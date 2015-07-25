@@ -50,9 +50,12 @@ import handling.MaplePacket;
 import handling.world.MapleParty;
 import handling.world.MaplePartyCharacter;
 import java.awt.Point;
+import java.util.EnumMap;
+import java.util.Iterator;
 import scripting.EventInstanceManager;
 import server.MapleItemInformationProvider;
 import server.Randomizer;
+import server.Timer;
 import server.Timer.MobTimer;
 import server.maps.MapScriptMethods;
 import server.maps.MapleMap;
@@ -79,7 +82,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     private EventInstanceManager eventInstance;
     private MonsterListener listener = null;
     private MaplePacket reflectpack = null, nodepack = null;
-    private final Map<MonsterStatus, MonsterStatusEffect> stati = new ConcurrentEnumMap<MonsterStatus, MonsterStatusEffect>(MonsterStatus.class);
+    private final EnumMap<MonsterStatus, MonsterStatusEffect> stati = new EnumMap<>(MonsterStatus.class);
     private Map<Integer, Long> usedSkills;
     private int stolen = -1; //monster can only be stolen ONCE
     private ScheduledFuture<?> dropItemSchedule;
@@ -390,14 +393,14 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
         switch (getId()) {
             case 9400121:
-                //achievement = 12;
+            //achievement = 12;
             //break;
             case 8500002:
-                //achievement = 13;
+            //achievement = 13;
             //break;
             case 8510000:
             case 8520000:
-                //achievement = 14;
+            //achievement = 14;
             //break;
             default:
                 break;
@@ -726,6 +729,34 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
         return stats.getEffectiveness(e);
     }
+    
+    public void applyMonsterBuff(final MonsterStatus stats, final int x, int skillId, long duration, MobSkill skill, final List<Integer> reflection) {
+        MobTimer timerManager = Timer.MobTimer.getInstance();
+        final Runnable cancelTask = new Runnable() {
+
+            @Override
+            public void run() {
+                if (isAlive()) {
+                    MaplePacket packet = MobPacket.cancelMonsterStatus(getObjectId(), stats);
+                    map.broadcastMessage(packet, getPosition());
+                    if (getController() != null && !getController().isMapObjectVisible(MapleMonster.this)) {
+                        getController().getClient().getSession().write(packet);
+                    }
+                   stati.remove(stats);
+                }
+            }
+        };
+        
+        final MonsterStatusEffect effect = new MonsterStatusEffect(stats, 0 ,0 , skill, true);
+        stati.put(stats, effect);
+        MaplePacket packet = MobPacket.applyMonsterStatus(getObjectId(), effect);
+        map.broadcastMessage(packet, getPosition());
+        if (getController() != null && !getController().isMapObjectVisible(this)) {
+            getController().getClient().getSession().write(packet);
+        }
+        ScheduledFuture<?> schedule = timerManager.schedule(cancelTask, duration);
+        effect.setCancelTask(schedule);
+    }
 
     public final void applyStatus(final MapleCharacter from, final MonsterStatusEffect status, final boolean poison, final long duration, final boolean venom) {
         applyStatus(from, status, poison, duration, venom, true);
@@ -735,7 +766,12 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         if (!isAlive()) {
             return;
         }
+
+        /*if(stati.containsKey(status.getStati())) {
+         stati.get(status.getStati()).cancelTask();
+         }*/
         ISkill skilz = SkillFactory.getSkill(status.getSkill());
+        
         if (skilz != null) {
             switch (stats.getEffectiveness(skilz.getElement())) {
                 case IMMUNE:
@@ -777,6 +813,8 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 break;
             }
         }
+        
+        
         final MonsterStatus stat = status.getStati();
         if (stats.isNoDoom() && stat == MonsterStatus.DOOM) {
             return;
@@ -790,13 +828,12 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 return;
             }
         }
+        
         final MonsterStatusEffect oldEffect = stati.get(stat);
         if (oldEffect != null) {
-            stati.remove(stat);
-            if (oldEffect.getStati() == null) {
-                oldEffect.cancelTask();
-                oldEffect.cancelPoisonSchedule();
-            }
+            stati.remove(oldEffect.getStati());
+            oldEffect.cancelTask();
+            oldEffect.cancelPoisonSchedule();
         }
         final MobTimer timerManager = MobTimer.getInstance();
         final Runnable cancelTask = new Runnable() {
@@ -870,6 +907,10 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             status.setPoisonSchedule(timerManager.register(new PoisonTask(damage, from, status, cancelTask, false), 1000, 1000));
         }
 
+        if (stati.containsKey(stat)) {
+            stati.get(stat).cancelTask();
+        }
+
         stati.put(stat, status);
         map.broadcastMessage(MobPacket.applyMonsterStatus(getObjectId(), status), getPosition());
         if (getController() != null && !getController().isMapObjectVisible(this)) {
@@ -881,6 +922,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
         ScheduledFuture<?> schedule = timerManager.schedule(cancelTask, duration + aniTime);
         status.setCancelTask(schedule);
+
     }
 
     public final void dispelSkill(final MobSkill skillId) {
@@ -893,43 +935,6 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         for (MonsterStatus stat : toCancel) {
             cancelStatus(stat);
         }
-    }
-
-    public final void applyMonsterBuff(final Map<MonsterStatus, Integer> effect, final int skillId, final long duration, final MobSkill skill, final List<Integer> reflection) {
-        MobTimer timerManager = MobTimer.getInstance();
-        final Runnable cancelTask = new Runnable() {
-
-            @Override
-            public final void run() {
-                if (reflection.size() > 0) {
-                    MapleMonster.this.reflectpack = null;
-                }
-                if (isAlive()) {
-                    for (MonsterStatus z : effect.keySet()) {
-                        cancelStatus(z);
-                    }
-                }
-            }
-        };
-        for (Entry<MonsterStatus, Integer> z : effect.entrySet()) {
-            final MonsterStatusEffect effectz = new MonsterStatusEffect(z.getKey(), z.getValue(), 0, skill, true);
-            stati.put(z.getKey(), effectz);
-        }
-        if (reflection.size() > 0) {
-            this.reflectpack = MobPacket.applyMonsterStatus(getObjectId(), effect, reflection, skill);
-            map.broadcastMessage(reflectpack, getPosition());
-            if (getController() != null && !getController().isMapObjectVisible(this)) {
-                getController().getClient().getSession().write(this.reflectpack);
-            }
-        } else {
-            for (Entry<MonsterStatus, Integer> z : effect.entrySet()) {
-                map.broadcastMessage(MobPacket.applyMonsterStatus(getObjectId(), z.getKey(), z.getValue(), skill), getPosition());
-                if (getController() != null && !getController().isMapObjectVisible(this)) {
-                    getController().getClient().getSession().write(MobPacket.applyMonsterStatus(getObjectId(), z.getKey(), z.getValue(), skill));
-                }
-            }
-        }
-        timerManager.schedule(cancelTask, duration);
     }
 
     public final void setTempEffectiveness(final Element e, final long milli) {
@@ -1417,7 +1422,6 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         if (mse == null || !isAlive()) {
             return;
         }
-        mse.cancelPoisonSchedule();
         map.broadcastMessage(MobPacket.cancelMonsterStatus(getObjectId(), stat), getPosition());
         if (getController() != null && !getController().isMapObjectVisible(MapleMonster.this)) {
             getController().getClient().getSession().write(MobPacket.cancelMonsterStatus(getObjectId(), stat));

@@ -39,7 +39,7 @@ public class CashShopOperation {
         try {
 
             World.ChannelChange_Data(new CharacterTransfer(chr), chr.getId(), c.getChannel());
-            c.getSession().write(MaplePacketCreator.getChannelChange(Integer.parseInt(ChannelServer.getInstance(c.getChannel()).getSocket().split(":")[1])));
+            c.getSession().write(MaplePacketCreator.getChannelChange(ChannelServer.getInstance(c.getChannel()).getIP(),ChannelServer.getInstance(c.getChannel()).getPort()));
         } finally {
             c.getSession().close(true);
             chr.saveToDB(false, true);
