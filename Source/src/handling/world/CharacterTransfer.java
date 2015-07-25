@@ -32,8 +32,8 @@ import client.MapleCharacter;
 import client.MapleQuestStatus;
 import client.ISkill;
 import client.SkillEntry;
-import client.BuddylistEntry;
-import client.CharacterNameAndId;
+import client.BuddyEntry;
+import client.CharNameIdPair;
 import client.inventory.MaplePet;
 import server.quest.MapleQuest;
 import tools.Pair;
@@ -57,7 +57,7 @@ public class CharacterTransfer implements Externalizable {
     public Map<Integer, Integer> mbook = new LinkedHashMap<Integer, Integer>();
     public Map<Integer, Pair<Byte, Integer>> keymap = new LinkedHashMap<Integer, Pair<Byte, Integer>>();
     public final List<Integer> finishedAchievements = new ArrayList<Integer>(), famedcharacters = new ArrayList<Integer>();
-    public final Map<CharacterNameAndId, Boolean> buddies = new LinkedHashMap<CharacterNameAndId, Boolean>();
+    public final Map<CharNameIdPair, Boolean> buddies = new LinkedHashMap<CharNameIdPair, Boolean>();
     public final Map<Integer, Object> Quest = new LinkedHashMap<Integer, Object>(); // Questid instead of MapleQuest, as it's huge. Cant be transporting MapleQuest.java
     public Map<Integer, String> InfoQuest = new LinkedHashMap<Integer, String>();
     public final Map<Integer, SkillEntry> Skills = new LinkedHashMap<Integer, SkillEntry>(); // Skillid instead of Skill.java, as it's huge. Cant be transporting Skill.java and MapleStatEffect.java
@@ -137,8 +137,8 @@ public class CharacterTransfer implements Externalizable {
         if (uneq) {
             chr.unequipAllPets();
         }
-        for (final BuddylistEntry qs : chr.getBuddylist().getBuddies()) {
-            this.buddies.put(new CharacterNameAndId(qs.getCharacterId(), qs.getName(), qs.getLevel(), qs.getJob(), qs.getGroup()), qs.isVisible());
+        for (final BuddyEntry qs : chr.getBuddylist().getBuddies()) {
+            this.buddies.put(new CharNameIdPair(qs.getCharacterId(), qs.getName(), qs.getLevel(), qs.getJob(), qs.getGroup()), qs.isVisible());
         }
         this.buddysize = chr.getBuddyCapacity();
 
@@ -291,7 +291,7 @@ public class CharacterTransfer implements Externalizable {
         this.buddysize = in.readByte();
         final short addedbuddysize = in.readShort();
         for (int i = 0; i < addedbuddysize; i++) {
-            buddies.put(new CharacterNameAndId(in.readInt(), in.readUTF(), in.readInt(), in.readInt(), in.readUTF()), in.readBoolean());
+            buddies.put(new CharNameIdPair(in.readInt(), in.readUTF(), in.readInt(), in.readInt(), in.readUTF()), in.readBoolean());
         }
 
         final int questsize = in.readShort();
@@ -450,7 +450,7 @@ public class CharacterTransfer implements Externalizable {
 
         out.writeByte(this.buddysize);
         out.writeShort(this.buddies.size());
-        for (final Map.Entry<CharacterNameAndId, Boolean> qs : this.buddies.entrySet()) {
+        for (final Map.Entry<CharNameIdPair, Boolean> qs : this.buddies.entrySet()) {
             out.writeInt(qs.getKey().getId());
             out.writeUTF(qs.getKey().getName());
             out.writeInt(qs.getKey().getLevel());

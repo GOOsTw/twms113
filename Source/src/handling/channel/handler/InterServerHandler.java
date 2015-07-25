@@ -22,8 +22,8 @@ package handling.channel.handler;
 
 import java.util.List;
 
-import client.BuddylistEntry;
-import client.CharacterNameAndId;
+import client.BuddyEntry;
+import client.CharNameIdPair;
 import client.MapleCharacter;
 import client.MapleClient;
 import client.MapleQuestStatus;
@@ -40,6 +40,7 @@ import handling.world.PartyOperation;
 import handling.world.PlayerBuffStorage;
 import handling.world.World;
 import handling.world.guild.MapleGuild;
+import java.util.Collection;
 import server.maps.FieldLimitType;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
@@ -140,13 +141,13 @@ public class InterServerHandler {
              }
              final CharacterIdChannelPair[] onlineBuddies = World.Find.multiBuddyFind(player.getId(), buddyIds);
              for (CharacterIdChannelPair onlineBuddy : onlineBuddies) {
-             final BuddylistEntry ble = player.getBuddylist().get(onlineBuddy.getCharacterId());
+             final BuddyEntry ble = player.getBuddylist().get(onlineBuddy.getCharacterId());
              ble.setChannel(onlineBuddy.getChannel());
              player.getBuddylist().put(ble);
              }
              c.getSession().write(MaplePacketCreator.updateBuddylist(player.getBuddylist().getBuddies()));*/
             // Start of buddylist
-            final int buddyIds[] = player.getBuddylist().getBuddyIds();
+            final Collection<Integer> buddyIds = player.getBuddylist().getBuddiesIds();
             //World.Buddy.loggedOn(player.getName(), player.getId(), c.getChannel(), buddyIds);
             World.Buddy.loggedOn(player.getName(), player.getId(), c.getChannel(), buddyIds, player.getGMLevel(), player.isHidden());
             if (player.getParty() != null) {
@@ -156,7 +157,7 @@ public class InterServerHandler {
             //final CharacterIdChannelPair[] onlineBuddies = cserv.getWorldInterface().multiBuddyFind(player.getId(), buddyIds);
             final CharacterIdChannelPair[] onlineBuddies = World.Find.multiBuddyFind(player.getId(), buddyIds);
             for (CharacterIdChannelPair onlineBuddy : onlineBuddies) {
-                final BuddylistEntry ble = player.getBuddylist().get(onlineBuddy.getCharacterId());
+                final BuddyEntry ble = player.getBuddylist().get(onlineBuddy.getCharacterId());
                 ble.setChannel(onlineBuddy.getChannel());
                 player.getBuddylist().put(ble);
             }
@@ -215,9 +216,9 @@ public class InterServerHandler {
                 c.getSession().write(MaplePacketCreator.updateQuestMobKills(status));
             }
         }
-        final CharacterNameAndId pendingBuddyRequest = player.getBuddylist().pollPendingRequest();
+        final CharNameIdPair pendingBuddyRequest = player.getBuddylist().pollPendingRequest();
         if (pendingBuddyRequest != null) {
-            player.getBuddylist().put(new BuddylistEntry(pendingBuddyRequest.getName(), pendingBuddyRequest.getId(), "ETC", -1, false, pendingBuddyRequest.getLevel(), pendingBuddyRequest.getJob()));
+            player.getBuddylist().put(new BuddyEntry(pendingBuddyRequest.getName(), pendingBuddyRequest.getId(), "ETC", -1, false, pendingBuddyRequest.getLevel(), pendingBuddyRequest.getJob()));
             c.getSession().write(MaplePacketCreator.requestBuddylistAdd(pendingBuddyRequest.getId(), pendingBuddyRequest.getName(), pendingBuddyRequest.getLevel(), pendingBuddyRequest.getJob()));
         }
         player.expirationTask();

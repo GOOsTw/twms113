@@ -20,12 +20,12 @@
  */
 package client;
 
-public class CharacterNameAndId {
+public class CharNameIdPair {
 
-    private int id, level, job;
-    private String name, group;
+    private final int id, level, job;
+    private final String name, group;
 
-    public CharacterNameAndId(int id, String name, int level, int job, String group) {
+    public CharNameIdPair(int id, String name, int level, int job, String group) {
         super();
         this.id = id;
         this.name = name;

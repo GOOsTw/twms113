@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import client.inventory.MapleMount;
-import client.BuddylistEntry;
+import client.BuddyEntry;
 import client.inventory.IItem;
 import constants.GameConstants;
 import client.MapleBuffStat;
@@ -2877,14 +2877,14 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static MaplePacket updateBuddylist(Collection<BuddylistEntry> buddylist) {
+    public static MaplePacket updateBuddylist(Collection<BuddyEntry> buddylist) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.BUDDYLIST.getValue());
         mplew.write(7);
         mplew.write(buddylist.size());
 
-        for (BuddylistEntry buddy : buddylist) {
+        for (BuddyEntry buddy : buddylist) {
             if (buddy.isVisible()) {
                 mplew.writeInt(buddy.getCharacterId());
                 mplew.writeAsciiString(buddy.getName(), 15);

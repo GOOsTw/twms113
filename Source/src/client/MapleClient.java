@@ -41,6 +41,7 @@ import javax.script.ScriptEngine;
 
 import database.DatabaseConnection;
 import database.DatabaseException;
+import handling.MaplePacket;
 import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
 import handling.world.MapleMessengerCharacter;
@@ -285,24 +286,7 @@ public class MapleClient implements Serializable {
             ps.close();
         }
     }
-
-    public void banMacs() {
-        try {
-            loadMacsIfNescessary();
-            if (this.macs.size() > 0) {
-                String[] macBans = new String[this.macs.size()];
-                int z = 0;
-                for (String mac : this.macs) {
-                    macBans[z] = mac;
-                    z++;
-                }
-                banMacs(macBans);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
+    
     public static final void banMacs(String[] macs) {
         Connection con = DatabaseConnection.getConnection();
         try {
@@ -821,9 +805,9 @@ public class MapleClient implements Serializable {
                     }
                     if (bl != null) {
                         if (!serverTransition && isLoggedIn()) {
-                            World.Buddy.loggedOff(namez, idz, channel, bl.getBuddyIds(), gmLevel, hidden);
+                            World.Buddy.loggedOff(namez, idz, channel, bl.getBuddiesIds(), gmLevel, hidden);
                         } else { // Change channel
-                            World.Buddy.loggedOn(namez, idz, channel, bl.getBuddyIds(), gmLevel, hidden);
+                            World.Buddy.loggedOn(namez, idz, channel, bl.getBuddiesIds(), gmLevel, hidden);
                         }
                     }
                     if (gid > 0) {
@@ -853,9 +837,9 @@ public class MapleClient implements Serializable {
                         World.Party.updateParty(party.getId(), PartyOperation.LOG_ONOFF, chrp);
                     }
                     if (!serverTransition && isLoggedIn()) {
-                        World.Buddy.loggedOff(namez, idz, channel, bl.getBuddyIds(), gmLevel, hidden);
+                        World.Buddy.loggedOff(namez, idz, channel, bl.getBuddiesIds(), gmLevel, hidden);
                     } else { // Change channel
-                        World.Buddy.loggedOn(namez, idz, channel, bl.getBuddyIds(), gmLevel, hidden);
+                        World.Buddy.loggedOn(namez, idz, channel, bl.getBuddiesIds(), gmLevel, hidden);
                     }
                     if (gid > 0) {
                         World.Guild.setGuildMemberOnline(chrg, false, -1);
@@ -1320,5 +1304,9 @@ public class MapleClient implements Serializable {
 
     public void setReceiving(boolean m) {
         this.receiving = m;
+    }
+    
+    public void sendPacket(MaplePacket packet) {
+        this.getSession().write(packet);
     }
 }

@@ -1218,7 +1218,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             deleteWhereCharacterId(con, "DELETE FROM buddies WHERE characterid = ?");
             ps = con.prepareStatement("INSERT INTO buddies (characterid, `buddyid`, `pending`) VALUES (?, ?, ?)");
             ps.setInt(1, id);
-            for (BuddylistEntry entry : buddylist.getBuddies()) {
+            for (BuddyEntry entry : buddylist.getBuddies()) {
                 ps.setInt(2, entry.getCharacterId());
                 ps.setInt(3, entry.isVisible() ? 0 : 1);
                 ps.execute();
@@ -3345,20 +3345,16 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return skillMacros;
     }
 
-    public void tempban(String reason, Calendar duration, int greason, boolean IPMac) {
-        if (IPMac) {
-            client.banMacs();
-        }
+    public void tempban(String reason, Calendar duration, int greason, boolean bandIp) {
 
         try {
             Connection con = DatabaseConnection.getConnection();
+            
             PreparedStatement ps = con.prepareStatement("INSERT INTO ipbans VALUES (DEFAULT, ?)");
             ps.setString(1, client.getSession().getRemoteAddress().toString().split(":")[0]);
             ps.execute();
             ps.close();
-
-            client.getSession().close();
-
+            
             ps = con.prepareStatement("UPDATE accounts SET tempban = ?, banreason = ?, greason = ? WHERE id = ?");
             Timestamp TS = new Timestamp(duration.getTimeInMillis());
             ps.setTimestamp(1, TS);
@@ -3367,13 +3363,16 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.setInt(4, accountid);
             ps.execute();
             ps.close();
+            
+            client.disconnect(true, false);
+            
         } catch (SQLException ex) {
             System.err.println("Error while tempbanning" + ex);
         }
 
     }
 
-    public final boolean ban(String reason, boolean IPMac, boolean autoban, boolean hellban) {
+    public final boolean ban(String reason, boolean banIP, boolean autoban, boolean hellban) {
         if (lastmonthfameids == null) {
             throw new RuntimeException("Trying to ban a non-loaded character (testhack)");
         }
@@ -3386,8 +3385,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.execute();
             ps.close();
 
-            if (IPMac) {
-                client.banMacs();
+            if (banIP) {
                 ps = con.prepareStatement("INSERT INTO ipbans VALUES (DEFAULT, ?)");
                 ps.setString(1, client.getSessionIPAddress());
                 ps.execute();
@@ -3414,7 +3412,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             System.err.println("Error while banning" + ex);
             return false;
         }
-        client.getSession().close();
+        client.disconnect(true, false);
         return true;
     }
 

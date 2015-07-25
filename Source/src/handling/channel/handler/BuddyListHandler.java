@@ -29,8 +29,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import client.BuddyList;
-import client.BuddylistEntry;
-import client.CharacterNameAndId;
+import client.BuddyEntry;
+import client.CharNameIdPair;
 import client.MapleCharacter;
 import client.MapleClient;
 import client.BuddyList.BuddyAddResult;
@@ -43,7 +43,7 @@ import tools.data.input.SeekableLittleEndianAccessor;
 
 public class BuddyListHandler {
 
-    private static final class CharacterIdNameBuddyCapacity extends CharacterNameAndId {
+    private static final class CharacterIdNameBuddyCapacity extends CharNameIdPair {
 
         private int buddyCapacity;
 
@@ -58,7 +58,7 @@ public class BuddyListHandler {
     }
 
     private static final void nextPendingRequest(final MapleClient c) {
-        CharacterNameAndId pendingBuddyRequest = c.getPlayer().getBuddylist().pollPendingRequest();
+        CharNameIdPair pendingBuddyRequest = c.getPlayer().getBuddylist().pollPendingRequest();
         if (pendingBuddyRequest != null) {
             c.getSession().write(MaplePacketCreator.requestBuddylistAdd(pendingBuddyRequest.getId(), pendingBuddyRequest.getName(), pendingBuddyRequest.getLevel(), pendingBuddyRequest.getJob()));
         }
@@ -89,7 +89,7 @@ public class BuddyListHandler {
         if (mode == 1) { // add
             final String addName = slea.readMapleAsciiString();
             final String groupName = slea.readMapleAsciiString();
-            final BuddylistEntry ble = buddylist.get(addName);
+            final BuddyEntry ble = buddylist.get(addName);
 
             if (addName.length() > 13 || groupName.length() > 16) {
                 return;
@@ -165,7 +165,7 @@ public class BuddyListHandler {
                                 ps.executeUpdate();
                                 ps.close();
                             }
-                            buddylist.put(new BuddylistEntry(charWithId.getName(), otherCid, groupName, displayChannel, true, charWithId.getLevel(), charWithId.getJob()));
+                            buddylist.put(new BuddyEntry(charWithId.getName(), otherCid, groupName, displayChannel, true, charWithId.getLevel(), charWithId.getJob()));
                             c.getSession().write(MaplePacketCreator.updateBuddylist(buddylist.getBuddies()));
                         }
                     } else {
@@ -202,7 +202,7 @@ public class BuddyListHandler {
                         otherJob = otherChar.getJob();
                     }
                     if (otherName != null) {
-                        buddylist.put(new BuddylistEntry(otherName, otherCid, "其他", channel, true, otherLevel, otherJob));
+                        buddylist.put(new BuddyEntry(otherName, otherCid, "其他", channel, true, otherLevel, otherJob));
                         c.getSession().write(MaplePacketCreator.updateBuddylist(buddylist.getBuddies()));
                         notifyRemoteChannel(c, channel, otherCid, "其他", ADDED);
                     }
@@ -215,7 +215,7 @@ public class BuddyListHandler {
             nextPendingRequest(c);
         } else if (mode == 3) { // delete
             final int otherCid = slea.readInt();
-            final BuddylistEntry blz = buddylist.get(otherCid);
+            final BuddyEntry blz = buddylist.get(otherCid);
             if (blz != null && blz.isVisible()) {
                 notifyRemoteChannel(c, World.Find.findChannel(otherCid), otherCid, blz.getGroup(), DELETED);
             }

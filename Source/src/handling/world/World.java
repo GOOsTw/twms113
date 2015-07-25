@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import client.BuddylistEntry;
+import client.BuddyEntry;
 
 import client.MapleCharacter;
 
@@ -264,13 +264,13 @@ public class World {
             }
         }
 
-        private static void updateBuddies(int characterId, int channel, int[] buddies, boolean offline, int gmLevel, boolean isHidden) {
-            for (int buddy : buddies) {
+        private static void updateBuddies(int characterId, int channel, Collection<Integer> buddies, boolean offline, int gmLevel, boolean isHidden) {
+            for (Integer buddy : buddies) {
                 int ch = Find.findChannel(buddy);
                 if (ch > 0) {
                     MapleCharacter chr = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterById(buddy);
                     if (chr != null) {
-                        BuddylistEntry ble = chr.getBuddylist().get(characterId);
+                        BuddyEntry ble = chr.getBuddylist().get(characterId);
                         if (ble != null && ble.isVisible()) {
                             int mcChannel;
                             if (offline || (isHidden && chr.getGMLevel() < gmLevel)) {
@@ -297,13 +297,13 @@ public class World {
                     switch (operation) {
                         case ADDED:
                             if (buddylist.contains(cidFrom)) {
-                                buddylist.put(new BuddylistEntry(name, cidFrom, group, channel, true, level, job));
+                                buddylist.put(new BuddyEntry(name, cidFrom, group, channel, true, level, job));
                                 addChar.getClient().getSession().write(MaplePacketCreator.updateBuddyChannel(cidFrom, channel - 1));
                             }
                             break;
                         case DELETED:
                             if (buddylist.contains(cidFrom)) {
-                                buddylist.put(new BuddylistEntry(name, cidFrom, group, -1, buddylist.get(cidFrom).isVisible(), level, job));
+                                buddylist.put(new BuddyEntry(name, cidFrom, group, -1, buddylist.get(cidFrom).isVisible(), level, job));
                                 addChar.getClient().getSession().write(MaplePacketCreator.updateBuddyChannel(cidFrom, -1));
                             }
                             break;
@@ -333,11 +333,11 @@ public class World {
             return BuddyAddResult.OK;
         }
 
-        public static void loggedOn(String name, int characterId, int channel, int[] buddies, int gmLevel, boolean isHidden) {
+        public static void loggedOn(String name, int characterId, int channel, Collection<Integer> buddies, int gmLevel, boolean isHidden) {
             updateBuddies(characterId, channel, buddies, false, gmLevel, isHidden);
         }
 
-        public static void loggedOff(String name, int characterId, int channel, int[] buddies, int gmLevel, boolean isHidden) {
+        public static void loggedOff(String name, int characterId, int channel, Collection<Integer> buddies, int gmLevel, boolean isHidden) {
             updateBuddies(characterId, channel, buddies, true, gmLevel, isHidden);
         }
     }
@@ -958,10 +958,10 @@ public class World {
             return -1;
         }
 
-        public static CharacterIdChannelPair[] multiBuddyFind(int charIdFrom, int[] characterIds) {
-            List<CharacterIdChannelPair> foundsChars = new ArrayList<CharacterIdChannelPair>(characterIds.length);
-            for (int i : characterIds) {
-                int channel = findChannel(i);
+        public static CharacterIdChannelPair[] multiBuddyFind(int charIdFrom, Collection<Integer> characterIds) {
+            List<CharacterIdChannelPair> foundsChars = new ArrayList<CharacterIdChannelPair>(characterIds.size());
+            for (Integer i : characterIds) {
+                Integer channel = findChannel(i);
                 if (channel > 0) {
                     foundsChars.add(new CharacterIdChannelPair(i, channel));
                 }
