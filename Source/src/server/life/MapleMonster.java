@@ -46,6 +46,27 @@ import java.util.EnumMap;
 import java.util.Iterator;
 
 public class MapleMonster extends AbstractLoadedMapleLife {
+    
+   /**
+     *
+     * @param MapleMonsterStats 怪物狀態
+     * @param OverrideMonsterStats 改寫怪物能力值
+     * @param hp 怪物HP
+     * @param MP 怪物MP
+     * @param carnivalTeam 怪物擂台東西
+     * @param venom_counter 當前毒液
+     * @param map 判斷地圖
+     * @param Sponge 海綿(?
+     * @param linkoid = 0, lastNode = -1, lastNodeController = -1, highestDamageChar = 0 怪物關聯
+     * @param WeakReference 弱化
+     * @param fake, dropsDisabled, controllerHasAggro, controllerKnowsAboutAggro 判斷控制
+     * @param attackers 判斷攻擊者
+     * @param eventInstance 事件管理
+     * @param usedSkills 使用過的技能
+     * @param stolen 怪物只能被動一次(?
+     * @param dropItemSchedule 怪物掉落物品
+     * @param shouldDropItem 應該掉落該有的物品
+     */
 
     private MapleMonsterStats stats;
     private OverrideMonsterStats ostats = null;
@@ -66,21 +87,22 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     private int stolen = -1; //monster can only be stolen ONCE
     private ScheduledFuture<?> dropItemSchedule;
     private boolean shouldDropItem = false;
-
+    
+   //獲得怪物ID 怪物能力值
     public MapleMonster(final int id, final MapleMonsterStats stats) {
         super(id);
         initWithStats(stats);
     }
-
+    //獲得怪物ID 怪物能力值
     public MapleMonster(final MapleMonster monster) {
         super(monster);
         initWithStats(monster.stats);
     }
-	
+    //得到目前怪物該有的狀態 傳回給狀態
 	public final MapleMonsterStats getStats() {
         return stats;
     }
-	
+    //初始化怪物能力
     private final void initWithStats(final MapleMonsterStats stats) {
         setStance(5);
         this.stats = stats;
@@ -95,90 +117,90 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             usedSkills = new HashMap<Integer, Long>();
         }
     }
-	
+    //禁止該怪物掉的物品
     public final void disableDrops() {
         this.dropsDisabled = true;
     }
-
+    //控制怪物禁止掉的物品 傳回禁止該怪物掉的物品
     public final boolean dropsDisabled() {
         return dropsDisabled;
     }
-	
+    //設定當前地圖
     public final void setMap(final MapleMap map) {
         this.map = map;
         startDropItemSchedule();
     }
-	
+    //得到當前地圖 傳回地圖
 	public final MapleMap getMap() {
         return map;
     }
-	
+    //設定怪物海綿
     public final void setSponge(final MapleMonster mob) {
         sponge = new WeakReference<MapleMonster>(mob);
     }
-	
+    //得到當前怪物海綿 傳回海綿值
 	public final MapleMonster getSponge() {
     return sponge.get();
     }
-
+    //設定怪物HP
 	public final void setHp(long hp) {
     this.hp = hp;
     }
-	
+    //得到怪物當前HP 傳回HP
     public final long getHp() {
         return hp;
     }
-
+    //得到怪物當前最大的HP 傳回目前的HP
     public final long getMobMaxHp() {
         if (ostats != null) {
             return ostats.getHp();
         }
         return stats.getHp();
     }
-
-	public final void setMp(int mp) {
+    //設定怪物MP
+    public final void setMp(int mp) {
         if (mp < 0) {
             mp = 0;
         }
         this.mp = mp;
     }
-	
+    //得到怪物當前MP 傳回MP
     public final int getMp() {
         return mp;
     }
-
+    //得到怪物當前最大的MP 傳回目前的MP
     public final int getMobMaxMp() {
         if (ostats != null) {
             return ostats.getMp();
         }
         return stats.getMp();
     }
-
+    //得到怪物EXP 傳回EXP
     public final int getMobExp() {
         if (ostats != null) {
             return ostats.getExp();
         }
         return stats.getExp();
     }
-
+    //設定怪物的能力值
     public final void setOverrideStats(final OverrideMonsterStats ostats) {
         this.ostats = ostats;
         this.hp = ostats.getHp();
         this.mp = ostats.getMp();
     }
-
+    //得到毒液 傳回毒液
     public final byte getVenomMulti() {
         return venom_counter;
     }
-
+    //設定當前毒液
     public final void setVenomMulti(final byte venom_counter) {
         this.venom_counter = venom_counter;
     }
-
+    //傷害判斷
     public final void damage(final MapleCharacter from, final long damage, final boolean updateAttackTime) {
         damage(from, damage, updateAttackTime, 0);
     }
-
+    //傷害判斷
     public final void damage(final MapleCharacter from, final long damage, final boolean updateAttackTime, final int lastSkill) {
         if (from == null || damage <= 0 || !isAlive()) {
             return;
@@ -280,7 +302,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
         startDropItemSchedule();
     }
-
+    //補血判斷
     public final void heal(int hp, int mp, final boolean broadcast) {
         final long TotalHP = getHp() + hp;
         final int TotalMP = getMp() + mp;
@@ -301,7 +323,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             sponge.get().hp += hp;
         }
     }
-
+    //打死怪物給角色的經驗值
     private final void giveExpToCharacter(final MapleCharacter attacker, int exp, final boolean highestDamage, final int numExpSharers, final byte pty, final byte Class_Bonus_EXP_PERCENT, final byte Premium_Bonus_EXP_PERCENT, final int lastskillID) {
         if (highestDamage) {
             if (eventInstance != null) {
@@ -350,7 +372,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
         attacker.mobKilled(getId(), lastskillID);
     }
-
+    //是誰殺死的
     public final int killBy(final MapleCharacter killer, final int lastSkill) {
         int totalBaseExp = getMobExp();
         AttackerEntry highest = null;
@@ -439,7 +461,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         this.highestDamageChar = 0; //reset so we dont kill twice
         return v1;
     }
-
+    //召喚重生
     public final void spawnRevives(final MapleMap map) {
         final List<Integer> toSpawn = stats.getRevives();
 
@@ -552,23 +574,23 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     }
 
 
-
+    //設定怪物擂台團隊
     public final void setCarnivalTeam(final byte team) {
         carnivalTeam = team;
     }
-
+    //得到目前怪物擂台團隊 傳回怪物擂台
     public final byte getCarnivalTeam() {
         return carnivalTeam;
     }
-
+    //得到控制 傳回控制
     public final MapleCharacter getController() {
         return controller.get();
     }
-
+    //設定當前控制
     public final void setController(final MapleCharacter controller) {
         this.controller = new WeakReference<MapleCharacter>(controller);
     }
-
+    //控制開關判斷
     public final void switchController(final MapleCharacter newController, final boolean immediateAggro) {
         final MapleCharacter controllers = getController();
         if (controllers == newController) {
@@ -591,7 +613,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             }
         }
     }
-
+    //重置雷克斯副本的npc
     public final void resetShammos(MapleClient c) {
         map.killAllMonsters(true);
         map.broadcastMessage(MaplePacketCreator.serverNotice(5, "A player has moved too far from Shammos. Shammos is going back to the start."));
@@ -600,27 +622,27 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
         MapScriptMethods.startScript_FirstUser(c, "shammos_Fenter");
     }
-
+    //增加監聽
     public final void addListener(final MonsterListener listener) {
         this.listener = listener;
     }
-
+    //是否控制是仇恨 傳回 目前控制是仇恨
     public final boolean isControllerHasAggro() {
         return controllerHasAggro;
     }
-
+    //設定控制是仇恨
     public final void setControllerHasAggro(final boolean controllerHasAggro) {
         this.controllerHasAggro = controllerHasAggro;
     }
-
+    //是否控制大概誰是仇恨 傳回 目前控制大概誰是仇恨
     public final boolean isControllerKnowsAboutAggro() {
         return controllerKnowsAboutAggro;
     }
-
+    //控制大概誰是仇恨
     public final void setControllerKnowsAboutAggro(final boolean controllerKnowsAboutAggro) {
         this.controllerKnowsAboutAggro = controllerKnowsAboutAggro;
     }
-
+    //參考 發送召喚數據 判斷
     @Override
     public final void sendSpawnData(final MapleClient client) {
         if (!isAlive()) {
@@ -641,7 +663,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             }
         }
     }
-
+    //參考 發送銷毀數據 判斷
     @Override
     public final void sendDestroyData(final MapleClient client) {
         if (lastNode == -1) {
@@ -651,7 +673,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             resetShammos(client);
         }
     }
-
+    //參考 PlayerCommand 玩家指令 @mob 查看怪物訊息
     @Override
     public final String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -681,20 +703,20 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
         return sb.toString();
     }
-
+    //參考 得到怪物型態 傳回怪物的型態
     @Override
     public final MapleMapObjectType getType() {
         return MapleMapObjectType.MONSTER;
     }
-	
+    //設定事件例子
     public final void setEventInstance(final EventInstanceManager eventInstance) {
         this.eventInstance = eventInstance;
     }
-	
+    //得到目前事件例子 傳回 事件例子
     public final EventInstanceManager getEventInstance() {
         return eventInstance;
     }
-
+    //得到狀態原始技能ID 傳回 效果技能ID
     public final int getStatusSourceID(final MonsterStatus status) {
         final MonsterStatusEffect effect = stati.get(status);
         if (effect != null) {
@@ -702,14 +724,14 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
         return -1;
     }
-
+    //得到效果 傳回效果
     public final ElementalEffectiveness getEffectiveness(final Element e) {
         if (stati.size() > 0 && stati.get(MonsterStatus.DOOM) != null) {
             return ElementalEffectiveness.NORMAL; // like blue snails
         }
         return stats.getEffectiveness(e);
     }
-    
+    //套用怪物BUFF 判斷
     public void applyMonsterBuff(final MonsterStatus stats, final int x, int skillId, long duration, MobSkill skill, final List<Integer> reflection) {
         MobTimer timerManager = Timer.MobTimer.getInstance();
         final Runnable cancelTask = new Runnable() {
@@ -737,11 +759,11 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         ScheduledFuture<?> schedule = timerManager.schedule(cancelTask, duration);
         effect.setCancelTask(schedule);
     }
-
+    //套用狀態
     public final void applyStatus(final MapleCharacter from, final MonsterStatusEffect status, final boolean poison, final long duration, final boolean venom) {
         applyStatus(from, status, poison, duration, venom, true);
     }
-
+    //套用狀態判斷
     public final void applyStatus(final MapleCharacter from, final MonsterStatusEffect status, final boolean poison, final long duration, final boolean venom, final boolean checkboss) {
         if (!isAlive()) {
             return;
@@ -904,7 +926,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         status.setCancelTask(schedule);
 
     }
-
+    //消除技能
     public final void dispelSkill(final MobSkill skillId) {
         List<MonsterStatus> toCancel = new ArrayList<MonsterStatus>();
         for (Entry<MonsterStatus, MonsterStatusEffect> effects : stati.entrySet()) {
@@ -916,7 +938,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             cancelStatus(stat);
         }
     }
-
+    //設定暫時效果
     public final void setTempEffectiveness(final Element e, final long milli) {
         stats.setEffectiveness(e, ElementalEffectiveness.WEAK);
         MobTimer.getInstance().schedule(new Runnable() {
@@ -926,45 +948,46 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             }
         }, milli);
     }
-
+    //是否已經BUFF 傳回目前狀態
     public final boolean isBuffed(final MonsterStatus status) {
         return stati.containsKey(status);
     }
-
+    //得到當前BUF 傳回目前狀態
     public final MonsterStatusEffect getBuff(final MonsterStatus status) {
         return stati.get(status);
     }
-
+    //設定 假
     public final void setFake(final boolean fake) {
         this.fake = fake;
     }
-
+    //是否假 傳回假
     public final boolean isFake() {
         return fake;
     }
-	
+    //是否活著 傳回給HP
     public final boolean isAlive() {
         return hp > 0;
     }
+    //是否第一下攻擊 傳回狀態是第一下攻擊
     public final boolean isFirstAttack() {
         return stats.isFirstAttack();
     }
-
+    //得到技能 傳回狀態得到技能
     public final List<Pair<Integer, Integer>> getSkills() {
         return stats.getSkills();
     }
-
+    //是否是技能 傳回狀態的技能
     public final boolean hasSkill(final int skillId, final int level) {
         return stats.hasSkill(skillId, level);
     }
-
+    // 得到最後使用的技能
     public final long getLastSkillUsed(final int skillId) {
         if (usedSkills.containsKey(skillId)) {
             return usedSkills.get(skillId);
         }
         return 0;
     }
-
+    //設定最後使用的技能
     public final void setLastSkillUsed(final int skillId, final long now, final long cooltime) {
         switch (skillId) {
             case 140:
@@ -980,26 +1003,35 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 break;
         }
     }
-
+    //得到技能是空 傳回得到技能是空
     public final byte getNoSkills() {
         return stats.getNoSkills();
     }
-	
-
-
+    //得到是給狀態
     public final int getBuffToGive() {
         return stats.getBuffToGive();
     }
-
+    //毒任務
     private final class PoisonTask implements Runnable {
-
+        
+   /**
+     *
+     * @param poisonDamage 毒傷害
+     * @param chr 角色
+     * @param status 狀態
+     * @param MP 怪物MP
+     * @param cancelTask 取消任務
+     * @param shadowWeb 盜賊-3轉 暗殺者 影網術
+     * @param map 判斷地圖
+     */
+        
         private final int poisonDamage;
         private final MapleCharacter chr;
         private final MonsterStatusEffect status;
         private final Runnable cancelTask;
         private final boolean shadowWeb;
         private final MapleMap map;
-
+        
         private PoisonTask(final int poisonDamage, final MapleCharacter chr, final MonsterStatusEffect status, final Runnable cancelTask, final boolean shadowWeb) {
             this.poisonDamage = poisonDamage;
             this.chr = chr;
@@ -1027,9 +1059,15 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             }
         }
     }
-
+    //正在攻擊的角色
     private static class AttackingMapleCharacter {
-
+        
+   /**
+     *
+     * @param attacker 攻擊者
+     * @param lastAttackTime 最後攻擊時間
+     */
+        
         private MapleCharacter attacker;
         private long lastAttackTime;
 
@@ -1039,14 +1077,15 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             this.lastAttackTime = lastAttackTime;
         }
 
+        //得到最後攻擊時間 傳回 最後攻擊時間
         public final long getLastAttackTime() {
             return lastAttackTime;
         }
-
+        //設定最後攻擊時間
         public final void setLastAttackTime(final long lastAttackTime) {
             this.lastAttackTime = lastAttackTime;
         }
-
+        //得到現在攻擊者 傳回攻擊者
         public final MapleCharacter getAttacker() {
             return attacker;
         }
@@ -1188,7 +1227,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             }
             return ret;
         }
-
+        
         private final Map<MapleCharacter, OnePartyAttacker> resolveAttackers() {
             final Map<MapleCharacter, OnePartyAttacker> ret = new HashMap<MapleCharacter, OnePartyAttacker>(attackers.size());
             for (final Entry<Integer, OnePartyAttacker> aentry : attackers.entrySet()) {
@@ -1199,17 +1238,17 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             }
             return ret;
         }
-
+        //包含 傳回目前是誰在攻擊
         @Override
         public final boolean contains(final MapleCharacter chr) {
             return attackers.containsKey(chr.getId());
         }
-
+        //得到傷害 傳回總傷害
         @Override
         public final long getDamage() {
             return totDamage;
         }
-
+        //增加傷害的公式
         public void addDamage(final MapleCharacter from, final long damage, final boolean updateAttackTime) {
             final OnePartyAttacker oldPartyAttacker = attackers.get(from.getId());
             if (oldPartyAttacker != null) {
@@ -1231,7 +1270,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             }
             totDamage += damage;
         }
-
+        //參考殺死怪物的公式
         @Override
         public final void killedMob(final MapleMap map, final int baseExp, final boolean mostDamage, final int lastSkill) {
             MapleCharacter pchr, highest = null;
@@ -1303,7 +1342,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 giveExpToCharacter(expReceiver.getKey(), expmap.exp, mostDamage ? expReceiver.getKey() == highest : false, expMap.size(), expmap.ptysize, expmap.Class_Bonus_EXP, expmap.Premium_Bonus_EXP, lastSkill);
             }
         }
-
+        //參考公式
         @Override
         public final int hashCode() {
             final int prime = 31;
@@ -1311,7 +1350,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             result = prime * result + partyid;
             return result;
         }
-
+        //參考公式
         @Override
         public final boolean equals(Object obj) {
             if (this == obj) {
@@ -1330,32 +1369,32 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             return true;
         }
     }
-
+    //得到怪物關聯 傳回怪物關聯
     public int getLinkOid() {
         return linkoid;
     }
-
+    //設定怪物關聯
     public void setLinkOid(int lo) {
         this.linkoid = lo;
     }
-
+    //得到狀況 傳回狀況
     public final Map<MonsterStatus, MonsterStatusEffect> getStati() {
         return stati;
     }
-
+    //自己加能力
     public void addEmpty() {
         stati.put(MonsterStatus.EMPTY, new MonsterStatusEffect(MonsterStatus.EMPTY, 0, 0, null, false));
         stati.put(MonsterStatus.SUMMON, new MonsterStatusEffect(MonsterStatus.SUMMON, 0, 0, null, false));
     }
-
+    //得到怪物被動 傳回怪物被動
     public final int getStolen() {
         return stolen;
     }
-
+    //設定怪物被動
     public final void setStolen(final int s) {
         this.stolen = s;
     }
-
+    //處理盜賊2轉俠盜-妙手術
     public final void handleSteal(MapleCharacter chr) {
         ISkill steal = SkillFactory.getSkill(4201004);
         final int level = chr.getSkillLevel(steal);
@@ -1381,23 +1420,23 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             stolen = 0; //failed once, may not go again
         }
     }
-
+    //設定最後節點
     public final void setLastNode(final int lastNode) {
         this.lastNode = lastNode;
     }
-
+    //得到最後節點 傳回最後節點
     public final int getLastNode() {
         return lastNode;
     }
-
+    //設定最後節點控制
     public final void setLastNodeController(final int lastNode) {
         this.lastNodeController = lastNode;
     }
-
+    //得到最後節點控制 傳回最後節點
     public final int getLastNodeController() {
         return lastNodeController;
     }
-
+    //取消狀態
     public final void cancelStatus(final MonsterStatus stat) {
         final MonsterStatusEffect mse = stati.get(stat);
         if (mse == null || !isAlive()) {
@@ -1410,14 +1449,14 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         stati.remove(stat);
         setVenomMulti((byte) 0);
     }
-
+    //取消掉落物品
     public final void cancelDropItem() {
         if (dropItemSchedule != null) {
             dropItemSchedule.cancel(false);
             dropItemSchedule = null;
         }
     }
-
+    //啟動物品掉落時間
     public final void startDropItemSchedule() {
         cancelDropItem();
         if (stats.getDropItemPeriod() <= 0 || !isAlive()) {
@@ -1448,15 +1487,15 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             }
         }, stats.getDropItemPeriod() * 1000);
     }
-
+    //得到當前節點封包 傳回節點封包
     public MaplePacket getNodePacket() {
         return nodepack;
     }
-
+    //設定節點封包
     public void setNodePacket(final MaplePacket np) {
         this.nodepack = np;
     }
-
+    //殺死所有怪物 函數
     public final void killed() {
         if (listener != null) {
             listener.monsterKilled();
