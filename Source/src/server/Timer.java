@@ -178,7 +178,7 @@ public abstract class Timer {
         if (ses == null) {
             return null;
         }
-        return ses.schedule(new LoggingSaveRunnable(r, file), delay, TimeUnit.MILLISECONDS);
+        return ses.schedule(new LoggingSaveRunnable(r,file), delay, TimeUnit.MILLISECONDS);
     }
 
     public ScheduledFuture<?> scheduleAtTimestamp(Runnable r, long timestamp) {

@@ -33,9 +33,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import database.DatabaseConnection;
 import server.MapleItemInformationProvider;
-import server.movement.AbsoluteLifeMovement;
 import server.movement.LifeMovement;
 import server.movement.LifeMovementFragment;
+import server.movement.StaticLifeMovement;
 
 public class MaplePet implements Serializable {
 
@@ -303,11 +303,12 @@ public class MaplePet implements Serializable {
 
     public final void updatePosition(final List<LifeMovementFragment> movement) {
         for (final LifeMovementFragment move : movement) {
-            if (move instanceof LifeMovement) {
-                if (move instanceof AbsoluteLifeMovement) {
-                    setPos(((LifeMovement) move).getPosition());
+            if (move instanceof StaticLifeMovement) {
+                Point pos = move.getPosition();
+                if (pos != null) {
+                    setPos(pos);
+                    setStance(((StaticLifeMovement)move).getNewstate());
                 }
-                setStance(((LifeMovement) move).getNewstate());
             }
         }
     }

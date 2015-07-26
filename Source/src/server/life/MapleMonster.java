@@ -971,25 +971,29 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
 
         final MonsterStatusEffect oldEffect = stati.get(stat);
-        if (oldEffect != null) {
-            stati.remove(oldEffect.getStati());
-            oldEffect.cancelTask();
-            oldEffect.cancelPoisonSchedule();
+         if (oldEffect != null) {
+            
+            if (oldEffect.getStati() == null) {
+                oldEffect.cancelTask();
+                oldEffect.cancelPoisonSchedule();
+            }
         }
-
         final MobTimer timerManager = MobTimer.getInstance();
         final Runnable cancelTask = new Runnable() {
 
             @Override
             public final void run() {
-                if (MapleMonster.this.isAlive()) {
-                    MapleMonster.this.getMap().broadcastMessage(MobPacket.cancelMonsterStatus(MapleMonster.this.getObjectId(), stat));
+                
+                if (MapleMonster.this.isAlive() && stati.containsKey(status.getStati())) {
+                    
+                    MapleMonster.this.getMap().broadcastMessage(MobPacket.cancelMonsterStatus(MapleMonster.this.getObjectId(), stat), getPosition());
                     if (getController() != null && !getController().isMapObjectVisible(MapleMonster.this)) {
                         getController().getClient().sendPacket(MobPacket.cancelMonsterStatus(MapleMonster.this.getObjectId(), stat));
                     }
                 }
                 MapleMonster.this.setVenomMulti((byte) 0);
-                stati.remove(stat);
+                
+                stati.remove(status.getStati());
                 status.cancelPoisonSchedule();
             }
         };
@@ -1058,10 +1062,6 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             status.setPoisonSchedule(timerManager.register(new PoisonTask(damage, from, status, cancelTask, false), 1000, 1000));
         }
 
-        if (stati.containsKey(stat)) {
-            stati.get(stat).cancelTask();
-        }
-
         stati.put(stat, status);
         map.broadcastMessage(MobPacket.applyMonsterStatus(getObjectId(), status), getPosition());
         if (getController() != null && !getController().isMapObjectVisible(this)) {
@@ -1071,7 +1071,8 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         if (skilz != null) {
             aniTime = skilz.getAnimationTime();
         }
-        ScheduledFuture<?> schedule = timerManager.schedule(cancelTask, duration + aniTime);
+                
+        ScheduledFuture<?> schedule = timerManager.schedule(cancelTask, duration + aniTime + (int)(Math.random() * 1500));
         status.setCancelTask(schedule);
 
     }
@@ -1130,6 +1131,15 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     //是否活著 傳回給HP
     public final boolean isAlive() {
         return hp > 0;
+    }
+    
+    public boolean isAttackedBy(MapleCharacter chr) {
+        for (AttackerEntry aentry : attackers) {
+            if (aentry.contains(chr)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     //是否第一下攻擊 傳回狀態是第一下攻擊

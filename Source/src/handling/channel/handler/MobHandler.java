@@ -135,6 +135,14 @@ public class MobHandler {
 
         c.getSession().write(MobPacket.moveMonsterResponse(monster.getObjectId(), moveid, monster.getMp(), monster.isControllerHasAggro(), realskill, level));
 
+        
+        if (monster.getController() != c.getPlayer()) {
+            if (monster.isAttackedBy(c.getPlayer())) {// aggro and controller change
+                monster.switchController(c.getPlayer(), true);
+            } else {
+                return;
+            }
+        }
         if (res != null && chr != null) {
             if (slea.available() < 9 || slea.available() > 17) { //9.. 0 -> endPos? -> endPos again? -> 0 -> 0
                 System.out.println("slea.available != 17 (movement parsing error)");

@@ -70,9 +70,9 @@ public class Start {
         LoginServer.run_startup_configurations();
         ChannelServer.startChannel_Main();
 
-        //System.out.println("[購物商城伺服器啟動中]");
-        //CashShopServer.run_startup_configurations();
-        //System.out.println("[購物商城伺服器啟動完成]");
+        System.out.println("[購物商城伺服器啟動中]");
+        CashShopServer.run_startup_configurations();
+        System.out.println("[購物商城伺服器啟動完成]");
         CheatTimer.getInstance().register(AutobanManager.getInstance(), 60000);
         Runtime.getRuntime().addShutdownHook(new Thread(new Shutdown()));
         try {

@@ -337,6 +337,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         }
     }
 
+    
     @Override
     public void sessionClosed(final IoSession session) throws Exception {
         final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);

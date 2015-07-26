@@ -442,14 +442,15 @@ public class DamageParse {
                                 }
                             }
                         }
-                    }
-                    if (effect != null && effect.getMonsterStati().size() > 0) {
-                        if (effect.makeChanceResult()) {
-                            for (Map.Entry<MonsterStatus, Integer> z : effect.getMonsterStati().entrySet()) {
-                                monster.applyStatus(player, new MonsterStatusEffect(z.getKey(), z.getValue(), theSkill.getId(), null, false), effect.isPoison(), effect.getDuration(), false);
+                        if (effect != null && effect.getMonsterStati().size() > 0) {
+                            if (effect.makeChanceResult()) {
+                                for (Map.Entry<MonsterStatus, Integer> z : effect.getMonsterStati().entrySet()) {
+                                    monster.applyStatus(player, new MonsterStatusEffect(z.getKey(), z.getValue(), theSkill.getId(), null, false), effect.isPoison(), effect.getDuration(), false);
+                                }
                             }
                         }
                     }
+
                 }
             }
         }

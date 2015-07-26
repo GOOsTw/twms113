@@ -136,14 +136,13 @@ public class MovementParse {
         for (final LifeMovementFragment move : movement) {
             if (move instanceof LifeMovement) {
                 if (move instanceof StaticLifeMovement) {
-                    Point position = ((LifeMovement) move).getPosition();
+                    Point position = ((StaticLifeMovement) move).getPosition();
                     if (position != null) {
                         position.y += yoffset;
                         target.setPosition(position);
-
                     }
                 }
-                target.setStance(((LifeMovement) move).getNewstate());
+                target.setStance(((StaticLifeMovement) move).getNewstate());
             }
         }
     }

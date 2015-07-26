@@ -168,10 +168,7 @@ public class MobPacket {
         mplew.write(skill2);
         mplew.write(skill3);
         mplew.write(skill4);
-//        mplew.writeZeroBytes(8); //o.o?
         mplew.writePos(startPos);
-//        mplew.writeShort(8); //? sometimes 0? sometimes 22? sometimes random numbers?
-//        mplew.writeShort(1);
         serializeMovementList(mplew, moves);
 
         return mplew.getPacket();
@@ -457,7 +454,7 @@ public class MobPacket {
         mplew.writeInt(oid);
         mplew.writeLong(getSpecialLongMask(Collections.singletonList(stat)));
         mplew.writeLong(getLongMask(Collections.singletonList(stat)));
-        mplew.write(1); // reflector is 3~!??
+        mplew.writeInt(0); // reflector is 3~!??
 //     
 //        mplew.write(2); // ? v97
 
