@@ -23,14 +23,35 @@ package client;
 import server.MapleStatEffect;
 import server.life.Element;
 
+/**
+ * 
+ * 廣泛型技能的介面
+ */
 public interface ISkill {
 
+    /**
+     * 取得技能ID
+     * @return 
+     */
     int getId();
 
-    MapleStatEffect getEffect(int level);
+    /**
+     * 取得技能特效
+     * @param skillLevel 技能等級
+     * @return 技能特效資料
+     */
+    MapleStatEffect getEffect(int skillLevel);
 
+    /**
+     * 取得技能最大等級
+     * @return 技能最大等級
+     */
     byte getMaxLevel();
 
+    /**
+     * 
+     * @return 
+     */
     int getAnimationTime();
 
     public boolean canBeLearnedBy(int job);

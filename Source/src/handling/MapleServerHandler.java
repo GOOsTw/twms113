@@ -764,7 +764,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 PartyHandler.DenyPartyRequest(slea, c);
                 break;
             case BUDDYLIST_MODIFY:
-                BuddyListHandler.BuddyOperation(slea, c);
+                BuddyListHandler.BuddyOperationHandler(slea, c);
                 break;
             case CYGNUS_SUMMON:
                 UserInterfaceHandler.CygnusSummon_NPCRequest(c);

@@ -33,7 +33,6 @@ import client.MapleQuestStatus;
 import client.ISkill;
 import client.SkillEntry;
 import client.BuddyEntry;
-import client.CharNameIdPair;
 import client.inventory.MaplePet;
 import server.quest.MapleQuest;
 import tools.Pair;
@@ -46,7 +45,7 @@ public class CharacterTransfer implements Externalizable {
             beans, meso, hair, face, mapid, guildid,
             partyid, messengerid, mBookCover, dojo, ACash, MaplePoints,
             mount_itemid, mount_exp, points, vpoints, marriageId,
-            familyid, seniorid, junior1, junior2, currentrep, totalrep, expression, constellation, blood, month, day, battleshipHP,prefix;
+            familyid, seniorid, junior1, junior2, currentrep, totalrep, expression, constellation, blood, month, day, battleshipHP, prefix;
     public byte channel, dojoRecord, gender, gmLevel, guildrank, alliancerank, clonez, fairyExp, buddysize, world, initialSpawnPoint, skinColor, mount_level, mount_Fatigue, subcategory;
     public long lastfametime, TranferTime;
     public String name, accountname, BlessOfFairy, chalkboard, charmessage;
@@ -57,7 +56,7 @@ public class CharacterTransfer implements Externalizable {
     public Map<Integer, Integer> mbook = new LinkedHashMap<Integer, Integer>();
     public Map<Integer, Pair<Byte, Integer>> keymap = new LinkedHashMap<Integer, Pair<Byte, Integer>>();
     public final List<Integer> finishedAchievements = new ArrayList<Integer>(), famedcharacters = new ArrayList<Integer>();
-    public final Map<CharNameIdPair, Boolean> buddies = new LinkedHashMap<CharNameIdPair, Boolean>();
+    public final Map<BuddyEntry, Boolean> buddies = new LinkedHashMap<>();
     public final Map<Integer, Object> Quest = new LinkedHashMap<Integer, Object>(); // Questid instead of MapleQuest, as it's huge. Cant be transporting MapleQuest.java
     public Map<Integer, String> InfoQuest = new LinkedHashMap<Integer, String>();
     public final Map<Integer, SkillEntry> Skills = new LinkedHashMap<Integer, SkillEntry>(); // Skillid instead of Skill.java, as it's huge. Cant be transporting Skill.java and MapleStatEffect.java
@@ -138,7 +137,7 @@ public class CharacterTransfer implements Externalizable {
             chr.unequipAllPets();
         }
         for (final BuddyEntry qs : chr.getBuddylist().getBuddies()) {
-            this.buddies.put(new CharNameIdPair(qs.getCharacterId(), qs.getName(), qs.getLevel(), qs.getJob(), qs.getGroup()), qs.isVisible());
+            this.buddies.put(qs, qs.isVisible());
         }
         this.buddysize = chr.getBuddyCapacity();
 
@@ -291,7 +290,7 @@ public class CharacterTransfer implements Externalizable {
         this.buddysize = in.readByte();
         final short addedbuddysize = in.readShort();
         for (int i = 0; i < addedbuddysize; i++) {
-            buddies.put(new CharNameIdPair(in.readInt(), in.readUTF(), in.readInt(), in.readInt(), in.readUTF()), in.readBoolean());
+            buddies.put(new BuddyEntry(in.readUTF(), in.readInt(), in.readUTF(), in.readInt(), in.readBoolean(), in.readInt(), in.readInt()), in.readBoolean());
         }
 
         final int questsize = in.readShort();
@@ -450,12 +449,14 @@ public class CharacterTransfer implements Externalizable {
 
         out.writeByte(this.buddysize);
         out.writeShort(this.buddies.size());
-        for (final Map.Entry<CharNameIdPair, Boolean> qs : this.buddies.entrySet()) {
-            out.writeInt(qs.getKey().getId());
+        for (final Map.Entry<BuddyEntry, Boolean> qs : this.buddies.entrySet()) {
             out.writeUTF(qs.getKey().getName());
+            out.writeInt(qs.getKey().getCharacterId());
+            out.writeUTF(qs.getKey().getGroup());
+            out.writeInt(qs.getKey().getChannel());
+            out.writeBoolean(qs.getValue());
             out.writeInt(qs.getKey().getLevel());
             out.writeInt(qs.getKey().getJob());
-            out.writeUTF(qs.getKey().getGroup());
             out.writeBoolean(qs.getValue());
         }
 

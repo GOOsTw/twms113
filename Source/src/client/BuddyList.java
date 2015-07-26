@@ -12,12 +12,10 @@ import java.util.Map;
 import java.io.Serializable;
 
 import database.DatabaseConnection;
-import java.util.ArrayList;
-import java.util.List;
 import tools.MaplePacketCreator;
 
 public class BuddyList implements Serializable {
-    
+
     /**
      * 預設的好友群組
      */
@@ -25,7 +23,7 @@ public class BuddyList implements Serializable {
 
     /**
      * 好友名單操作
-    *
+     *
      */
     public static enum BuddyOperation {
 
@@ -53,10 +51,11 @@ public class BuddyList implements Serializable {
     /**
      * 待處理的好友請求
      */
-    private Deque<CharNameIdPair> pendingReqs = new LinkedList<CharNameIdPair>();
+    private Deque<BuddyEntry> pendingReqs = new LinkedList<BuddyEntry>();
 
     /**
      * 好友清單建構子
+     *
      * @param capacity 好友容量
      */
     public BuddyList(byte capacity) {
@@ -67,6 +66,7 @@ public class BuddyList implements Serializable {
 
     /**
      * 好友清單建構子
+     *
      * @param capacity 好友容量
      */
     public BuddyList(int capacity) {
@@ -81,6 +81,7 @@ public class BuddyList implements Serializable {
 
     /**
      * 確認有這個好友且是不是在線上
+     *
      * @param charId 好友ID
      * @return 是否再現上
      */
@@ -94,22 +95,25 @@ public class BuddyList implements Serializable {
 
     /**
      * 取得好友清單的容量
+     *
      * @return 目前好友清單容量
      */
     public byte getCapacity() {
         return capacity;
     }
 
-    /** 
+    /**
      * 設定好友清單容量
+     *
      * @param newCapacity 新的容量
      */
     public void setCapacity(byte newCapacity) {
         this.capacity = newCapacity;
     }
-    
+
     /**
      * 由好友ID取得好友
+     *
      * @param characterId
      * @return 傳回要找的好友，沒有則null
      */
@@ -119,6 +123,7 @@ public class BuddyList implements Serializable {
 
     /**
      * 由好友名稱取得好友
+     *
      * @param characterName 角色名稱
      * @return 傳回要找的好友，沒有則null
      */
@@ -134,6 +139,7 @@ public class BuddyList implements Serializable {
 
     /**
      * 新增好友
+     *
      * @param newEntry 新增的好友
      */
     public void put(BuddyEntry newEntry) {
@@ -142,6 +148,7 @@ public class BuddyList implements Serializable {
 
     /**
      * 由角色ID從清單中刪除好友
+     *
      * @param characterId 角色ID
      */
     public void remove(int characterId) {
@@ -150,6 +157,7 @@ public class BuddyList implements Serializable {
 
     /**
      * 回傳好友清單
+     *
      * @return 好友清單集合
      */
     public Collection<BuddyEntry> getBuddies() {
@@ -158,6 +166,7 @@ public class BuddyList implements Serializable {
 
     /**
      * 取得好友名單是否滿
+     *
      * @return 好友名單是否已經滿了
      */
     public boolean isFull() {
@@ -166,37 +175,39 @@ public class BuddyList implements Serializable {
 
     /**
      * 取得所有好友的ID
+     *
      * @return 好友清單的ID集合
      */
     public Collection<Integer> getBuddiesIds() {
-      return buddies.keySet();
+        return buddies.keySet();
     }
 
     /**
-     * 
-     * @param data 
+     *
+     * @param data
      */
-    public void loadFromTransfer(final Map<CharNameIdPair, Boolean> data) {
-        CharNameIdPair buddyid;
+    public void loadFromTransfer(final Map<BuddyEntry, Boolean> data) {
+        BuddyEntry buddyid;
         boolean pair;
-        for (final Map.Entry<CharNameIdPair, Boolean> qs : data.entrySet()) {
+        for (final Map.Entry<BuddyEntry, Boolean> qs : data.entrySet()) {
             buddyid = qs.getKey();
             pair = qs.getValue();
             if (!pair) {
                 pendingReqs.push(buddyid);
             } else {
-                put(new BuddyEntry(buddyid.getName(), buddyid.getId(), buddyid.getGroup(), -1, true, buddyid.getLevel(), buddyid.getJob()));
+                put(new BuddyEntry(buddyid.getName(), buddyid.getCharacterId(), buddyid.getGroup(), -1, true, buddyid.getLevel(), buddyid.getJob()));
             }
         }
     }
 
     /**
      * 從資料庫讀取好友清單
+     *
      * @param characterId 要讀取的角色ID
-     * @throws SQLException 
+     * @throws SQLException
      */
     public void loadFromDb(int characterId) throws SQLException {
-        
+
         Connection con = DatabaseConnection.getConnection();
         PreparedStatement ps = con.prepareStatement("SELECT b.buddyid, b.pending, c.name as buddyname, c.job as buddyjob, c.level as buddylevel, b.groupname FROM buddies as b, characters as c WHERE c.id = b.buddyid AND b.characterid = ?");
         ps.setInt(1, characterId);
@@ -205,7 +216,7 @@ public class BuddyList implements Serializable {
             int buddyid = rs.getInt("buddyid");
             String buddyname = rs.getString("buddyname");
             if (rs.getInt("pending") == 1) {
-                pendingReqs.push(new CharNameIdPair(buddyid, buddyname, rs.getInt("buddylevel"), rs.getInt("buddyjob"), rs.getString("groupname")));
+                pendingReqs.push(new BuddyEntry(buddyname, buddyid, rs.getString("groupname"), -1, false, rs.getInt("buddylevel"), rs.getInt("buddyjob")));
             } else {
                 put(new BuddyEntry(buddyname, buddyid, rs.getString("groupname"), -1, true, rs.getInt("buddylevel"), rs.getInt("buddyjob")));
             }
@@ -220,14 +231,16 @@ public class BuddyList implements Serializable {
 
     /**
      * 取得並移除最後的好友請求
+     *
      * @return 最後一個好友請求
      */
-    public CharNameIdPair pollPendingRequest() {
+    public BuddyEntry pollPendingRequest() {
         return pendingReqs.pollLast();
     }
 
     /**
      * 新增好友請求
+     *
      * @param client 欲增加好友的角色客戶端
      * @param buddyId 新增的好友ID
      * @param buddyName 新增的好友名稱
@@ -236,18 +249,18 @@ public class BuddyList implements Serializable {
      * @param buddyJob 新增的好友的職業
      */
     public void addBuddyRequest(MapleClient client, int buddyId, String buddyName, int buddyChannel, int buddyLevel, int buddyJob) {
-        
+
         this.put(new BuddyEntry(buddyName, buddyId, BuddyList.DEFAULT_GROUP, buddyChannel, false, buddyLevel, buddyJob));
-        
+
         if (pendingReqs.isEmpty()) {
-         
+
             client.sendPacket(MaplePacketCreator.requestBuddylistAdd(buddyId, buddyName, buddyLevel, buddyJob));
-        
+
         } else {
-            
-            CharNameIdPair newPair = new CharNameIdPair(buddyId, buddyName, buddyLevel, buddyJob, BuddyList.DEFAULT_GROUP);
+
+            BuddyEntry newPair = new BuddyEntry(buddyName, buddyId, BuddyList.DEFAULT_GROUP, -1, false, buddyJob, buddyLevel);
             pendingReqs.push(newPair);
-        
+
         }
     }
 }
