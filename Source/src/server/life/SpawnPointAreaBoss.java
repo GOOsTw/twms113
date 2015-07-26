@@ -86,7 +86,7 @@ public class SpawnPointAreaBoss extends Spawns {
 
         mob.setPosition(getPosition());
         spawned.set(true);
-        mob.addListener(new MonsterListener() {
+        mob.setListener(new MonsterListener() {
 
             @Override
             public void monsterKilled() {

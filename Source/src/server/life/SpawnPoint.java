@@ -93,7 +93,7 @@ public class SpawnPoint extends Spawns {
         mob.setPosition(pos);
         mob.setCarnivalTeam(carnivalTeam);
         spawnedMonsters.incrementAndGet();
-        mob.addListener(new MonsterListener() {
+        mob.setListener(new MonsterListener() {
 
             @Override
             public void monsterKilled() {
