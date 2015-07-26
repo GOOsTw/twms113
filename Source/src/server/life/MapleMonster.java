@@ -406,7 +406,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             highestDamageChar = attacker.getId();
         }
         
-        if (this.getExp()  > 0) {
+        if ( exp  > 0) {
             
             // 檢查怪物有無 SHOWDOWN Buff
             final MonsterStatusEffect mse = stati.get(MonsterStatus.SHOWDOWN);
