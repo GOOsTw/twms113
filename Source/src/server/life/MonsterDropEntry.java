@@ -21,7 +21,16 @@
 package server.life;
 
 public class MonsterDropEntry {
-
+    
+    /**
+     *
+     * @param itemId 物品代碼
+     * @param chance 機率
+     * @param questid 任務代碼
+     * @param Minimum Maximum 最小/最大 爆擊率
+     * 
+     */
+    
     public MonsterDropEntry(int itemId, int chance, int Minimum, int Maximum, short questid) {
         this.itemId = itemId;
         this.chance = chance;

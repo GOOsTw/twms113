@@ -21,7 +21,14 @@
 package server.life;
 
 public class OverrideMonsterStats {
-
+    
+   /**
+     *
+     * @param hp 血量
+     * @param exp/mp 經驗值/魔力
+     * 
+     */
+    
     private long hp;
     private int exp, mp;
 
@@ -30,7 +37,7 @@ public class OverrideMonsterStats {
         exp = 0;
         mp = 0;
     }
-
+    
     public OverrideMonsterStats(long hp, int mp, int exp, boolean change) {
         this.hp = /*change ? (hp * 3L / 2L) : */ hp;
         this.mp = mp;
