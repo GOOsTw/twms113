@@ -380,18 +380,21 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
     /**
      * 依照怪物總傷害給角色經驗值
+     *
      * @param attacker 攻擊此怪物的角色
      * @param exp 獲得經驗值
      * @param highestDamage 是否為最高攻擊
      * @param numExpSharers 多少人分享
-     * @param pty 
+     * @param pty
      * @param classBounsExpPercent
      * @param Premium_Bonus_EXP_PERCENT
-     * @param lastskillID 
+     * @param lastskillID
      */
     private void giveExpToCharacter(final MapleCharacter attacker, int exp, final boolean highestDamage, final int numExpSharers, final byte pty, final byte classBounsExpPercent, final byte Premium_Bonus_EXP_PERCENT, final int lastskillID) {
-        
-        /** 判斷最高攻擊 **/
+
+        /**
+         * 判斷最高攻擊 *
+         */
         if (highestDamage) {
             if (eventInstance != null) {
                 eventInstance.monsterKilled(attacker, this);
@@ -403,9 +406,9 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             }
             highestDamageChar = attacker.getId();
         }
-        
-        if ( exp  > 0) {
-            
+
+        if (exp > 0) {
+
             // 檢查怪物有無 SHOWDOWN Buff
             final MonsterStatusEffect mse = stati.get(MonsterStatus.SHOWDOWN);
             if (mse != null) {
@@ -424,7 +427,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             if (attacker.hasDisease(MapleDisease.CURSE)) {
                 exp /= 2;
             }
-            
+
             exp *= attacker.getEXPMod() * (int) (attacker.getStat().expBuff / 100.0);
             exp = (int) Math.min(Integer.MAX_VALUE, exp * (attacker.getLevel() < 10 ? GameConstants.getExpRate_Below10(attacker.getJob()) : ChannelServer.getInstance(map.getChannel()).getExpRate()));
             //do this last just incase someone has a 2x exp card and its set to max value
@@ -446,9 +449,19 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         attacker.mobKilled(getId(), lastskillID);
     }
 
-    //是誰殺死的
+    /**
+     * 怪物被誰殺的
+     *
+     * @param killer 殺掉此怪物的角色
+     * @param lastSkill 最後一個技能
+     * @return
+     */
     public final int killBy(final MapleCharacter killer, final int lastSkill) {
+
         int totalBaseExp = getMobExp();
+        int baseExp;
+
+        /* 找出最高攻擊的人 */
         AttackerEntry highest = null;
         long highdamage = 0;
         for (final AttackerEntry attackEntry : attackers) {
@@ -457,18 +470,22 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 highdamage = attackEntry.getDamage();
             }
         }
-        int baseExp;
+
+        /* 計算獲得的經驗值*/
         for (final AttackerEntry attackEntry : attackers) {
             baseExp = (int) Math.ceil(totalBaseExp * ((double) attackEntry.getDamage() / getMobMaxHp()));
             attackEntry.killedMob(getMap(), baseExp, attackEntry == highest, lastSkill);
         }
-        final MapleCharacter controll = controller.get();
+
+        /* 取消控制者 */
+        final MapleCharacter controll = this.getController();
         if (controll != null) { // this can/should only happen when a hidden gm attacks the monster
-            controll.getClient().getSession().write(MobPacket.stopControllingMonster(getObjectId()));
+            controll.getClient().sendPacket(MobPacket.stopControllingMonster(getObjectId()));
             controll.stopControllingMonster(this);
         }
-        //int achievement = 0;
 
+        //成就系統 ?
+        //int achievement = 0;
         switch (getId()) {
             case 9400121:
             //achievement = 12;
@@ -499,14 +516,22 @@ public class MapleMonster extends AbstractLoadedMapleLife {
          if (killer != null && stats.isBoss()) {
          killer.finishAchievement(18);
          }*/
-        spawnRevives(getMap());
+        /* 召喚小弟囉 */
+        this.spawnRevives(getMap());
+
+        /**
+         * 檢查活動事件 *
+         */
         if (eventInstance != null) {
             eventInstance.unregisterMonster(this);
             eventInstance = null;
         }
+
+        // ?
         if (killer != null && killer.getPyramidSubway() != null) {
             killer.getPyramidSubway().onKill(killer);
         }
+
         MapleMonster oldSponge = getSponge();
         sponge = new WeakReference<>(null);
         if (oldSponge != null && oldSponge.isAlive()) {
@@ -650,6 +675,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
     /**
      * 設定怪物擂台團隊
+     *
      * @param team 哪個圖隊
      */
     public final void setCarnivalTeam(final byte team) {
@@ -658,6 +684,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
     /**
      * 傳回怪物擂台團隊
+     *
      * @return 怪物擂台團隊
      */
     public final byte getCarnivalTeam() {
@@ -666,6 +693,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
     /**
      * 傳回目前控制此怪物的角色
+     *
      * @return 目前控制此怪物的角色
      */
     public final MapleCharacter getController() {
@@ -674,6 +702,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
     /**
      * 設定當前控制的角色
+     *
      * @param controller 當前控制的角色
      */
     public final void setController(final MapleCharacter controller) {
@@ -716,6 +745,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
     /**
      * 設定怪物死亡的監聽函數
+     *
      * @param listener 怪物死亡事件監聽
      */
     public final void setListener(final MonsterListener listener) {
@@ -946,14 +976,24 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             oldEffect.cancelTask();
             oldEffect.cancelPoisonSchedule();
         }
+
         final MobTimer timerManager = MobTimer.getInstance();
         final Runnable cancelTask = new Runnable() {
 
             @Override
             public final void run() {
-                cancelStatus(stat);
+                if (MapleMonster.this.isAlive()) {
+                    MapleMonster.this.getMap().broadcastMessage(MobPacket.cancelMonsterStatus(MapleMonster.this.getObjectId(), stat));
+                    if (getController() != null && !getController().isMapObjectVisible(MapleMonster.this)) {
+                        getController().getClient().sendPacket(MobPacket.cancelMonsterStatus(MapleMonster.this.getObjectId(), stat));
+                    }
+                }
+                MapleMonster.this.setVenomMulti((byte) 0);
+                stati.remove(stat);
+                status.cancelPoisonSchedule();
             }
         };
+
         if (poison && getHp() > 1) {
             final int poisonDamage = (int) Math.min(Short.MAX_VALUE, (long) (getMobMaxHp() / (70.0 - from.getSkillLevel(status.getSkill())) + 0.999));
             status.setValue(MonsterStatus.POISON, poisonDamage);
@@ -1045,7 +1085,14 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             }
         }
         for (MonsterStatus stat : toCancel) {
-            cancelStatus(stat);
+            if (isAlive()) {
+                MaplePacket packet = MobPacket.cancelMonsterStatus(getObjectId(), stat);
+                map.broadcastMessage(packet, getPosition());
+                if (getController() != null && !getController().isMapObjectVisible(MapleMonster.this)) {
+                    getController().getClient().getSession().write(packet);
+                }
+            }
+            stati.remove(stat);
         }
     }
 
@@ -1578,20 +1625,6 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     //得到最後節點控制 傳回最後節點
     public final int getLastNodeController() {
         return lastNodeController;
-    }
-
-    //取消狀態
-    public final void cancelStatus(final MonsterStatus stat) {
-        final MonsterStatusEffect mse = stati.get(stat);
-        if (mse == null || !isAlive()) {
-            return;
-        }
-        map.broadcastMessage(MobPacket.cancelMonsterStatus(getObjectId(), stat), getPosition());
-        if (getController() != null && !getController().isMapObjectVisible(MapleMonster.this)) {
-            getController().getClient().getSession().write(MobPacket.cancelMonsterStatus(getObjectId(), stat));
-        }
-        stati.remove(stat);
-        setVenomMulti((byte) 0);
     }
 
     //取消掉落物品

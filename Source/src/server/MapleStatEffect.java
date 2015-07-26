@@ -190,7 +190,7 @@ public class MapleStatEffect implements Serializable {
         ret.itemConNo = MapleDataTool.getInt("itemConNo", source, 0);
         ret.moveTo = MapleDataTool.getInt("moveTo", source, -1);
 
-        Map<MonsterStatus, Integer> monsterStatus = new EnumMap<MonsterStatus, Integer>(MonsterStatus.class);
+        Map<MonsterStatus, Integer> monsterStatus = new EnumMap<>(MonsterStatus.class);
         if (ret.overTime && ret.getSummonMovementType() == null) {
             addBuffStatPairToListIfNotZero(statups, MapleBuffStat.WATK, Integer.valueOf(ret.watk));
             addBuffStatPairToListIfNotZero(statups, MapleBuffStat.WDEF, Integer.valueOf(ret.wdef));
@@ -521,7 +521,7 @@ public class MapleStatEffect implements Serializable {
                 case 2121006: // Paralyze
                 case 21120006: // Tempest
                 case 22121000:
-                    monsterStatus.put(MonsterStatus.FREEZE, Integer.valueOf(1));
+                    monsterStatus.put(MonsterStatus.FREEZE, 1);
                     ret.duration *= 2; // freezing skills are a little strange
                     break;
                 case 2101003: // fp slow
@@ -870,7 +870,7 @@ public class MapleStatEffect implements Serializable {
             applyBuffEffect(applyfrom, applyto, primary, newDuration);
         }
         if (skill) {
-            removeMonsterBuff(applyfrom);
+//            removeMonsterBuff(applyfrom);
         }
         if (primary) {
             if ((overTime || isHeal()) && !isEnergyCharge()) {
@@ -1016,45 +1016,45 @@ public class MapleStatEffect implements Serializable {
         }
     }
 
-    private final void removeMonsterBuff(final MapleCharacter applyfrom) {
-        List<MonsterStatus> cancel = new ArrayList<MonsterStatus>();
-        ;
-        switch (sourceid) {
-            case 1111007:
-                cancel.add(MonsterStatus.WDEF);
-                cancel.add(MonsterStatus.WEAPON_DEFENSE_UP);
-                //cancel.add(MonsterStatus.WEAPON_IMMUNITY);
-                break;
-            case 1211009:
-                cancel.add(MonsterStatus.MDEF);
-                cancel.add(MonsterStatus.MAGIC_DEFENSE_UP);
-                //cancel.add(MonsterStatus.MAGIC_IMMUNITY);
-                break;
-            case 1311007:
-                cancel.add(MonsterStatus.WATK);
-                cancel.add(MonsterStatus.WEAPON_ATTACK_UP);
-                cancel.add(MonsterStatus.MATK);
-                cancel.add(MonsterStatus.MAGIC_ATTACK_UP);
-                break;
-            default:
-                return;
-        }
-        final Rectangle bounds = calculateBoundingBox(applyfrom.getPosition(), applyfrom.isFacingLeft());
-        final List<MapleMapObject> affected = applyfrom.getMap().getMapObjectsInRect(bounds, Arrays.asList(MapleMapObjectType.MONSTER));
-        int i = 0;
-
-        for (final MapleMapObject mo : affected) {
-            if (makeChanceResult()) {
-                for (MonsterStatus stat : cancel) {
-                    ((MapleMonster) mo).cancelStatus(stat);
-                }
-            }
-            i++;
-            if (i >= mobCount) {
-                break;
-            }
-        }
-    }
+//    private final void removeMonsterBuff(final MapleCharacter applyfrom) {
+//        List<MonsterStatus> cancel = new ArrayList<MonsterStatus>();
+//        ;
+//        switch (sourceid) {
+//            case 1111007:
+//                cancel.add(MonsterStatus.WDEF);
+//                cancel.add(MonsterStatus.WEAPON_DEFENSE_UP);
+//                //cancel.add(MonsterStatus.WEAPON_IMMUNITY);
+//                break;
+//            case 1211009:
+//                cancel.add(MonsterStatus.MDEF);
+//                cancel.add(MonsterStatus.MAGIC_DEFENSE_UP);
+//                //cancel.add(MonsterStatus.MAGIC_IMMUNITY);
+//                break;
+//            case 1311007:
+//                cancel.add(MonsterStatus.WATK);
+//                cancel.add(MonsterStatus.WEAPON_ATTACK_UP);
+//                cancel.add(MonsterStatus.MATK);
+//                cancel.add(MonsterStatus.MAGIC_ATTACK_UP);
+//                break;
+//            default:
+//                return;
+//        }
+//        final Rectangle bounds = calculateBoundingBox(applyfrom.getPosition(), applyfrom.isFacingLeft());
+//        final List<MapleMapObject> affected = applyfrom.getMap().getMapObjectsInRect(bounds, Arrays.asList(MapleMapObjectType.MONSTER));
+//        int i = 0;
+//
+//        for (final MapleMapObject mo : affected) {
+//            if (makeChanceResult()) {
+//                for (MonsterStatus stat : cancel) {
+//                    ((MapleMonster) mo).cancelStatus(stat);
+//                }
+//            }
+//            i++;
+//            if (i >= mobCount) {
+//                break;
+//            }
+//        }
+//    }
 
     private final void applyMonsterBuff(final MapleCharacter applyfrom) {
         final Rectangle bounds = calculateBoundingBox(applyfrom.getPosition(), applyfrom.isFacingLeft());
