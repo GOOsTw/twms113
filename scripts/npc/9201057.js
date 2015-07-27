@@ -3,7 +3,7 @@
 */
 
 var section;
-var msg = new Array("New Leaf City of Masteria","Kerning City of Victoria Island","Kerning City","New Leaf City");
+var msg = new Array("墮落城市到新葉城","新葉城到墮落城市");
 var ticket = new Array(4031711,4031713);
 var cost = 5000;
 var returnMap = new Array(103000100,600010001);
@@ -21,9 +21,9 @@ function action(mode, type, selection) {
 	status++;
 	if(mode == 0) {
 	    if(section == 2) {
-		cm.sendNext("Okay, Please wait~!");
+		cm.sendNext("好吧，請等待!");
 	    } else {
-		cm.sendOk("You must have some business to take care of here, right?");
+		cm.sendOk("你有一些經濟的負擔而無法搭船對吧?");
 	    }
 	    cm.dispose();
 	    return;
@@ -43,19 +43,19 @@ function action(mode, type, selection) {
 		    section = 3;
 		    break;
 		default:
-		    cm.sendNext("Error~");
+		    cm.sendNext("錯誤~");
 		    cm.dispose();
 		    break;
 	    }
 	    if(section < 2) {
-		cm.sendSimple("Hello. Would you like to buy a ticket for the subway?\r\n#L0##b"+msg[section]+"#l");
+		cm.sendSimple("您好。你想買地鐵票??\r\n#L0##b"+msg[section]+"#l");
 	    } else {
-		cm.sendYesNo("Do you want to go back to "+msg[section]+" subway station now?");
+		cm.sendYesNo("你想要回去原本地鐵站??");
 	    }
 	}
 	else if(status == 1) {
 	    if(section < 2) {
-		cm.sendYesNo("The ride to "+msg[section]+" takes off every 10 minutes, beginning on the hour, and it'll cost you #b"+cost+" mesos#k. Are you sure you want to purchase #b#t"+ticket[section]+"##k?");
+		cm.sendYesNo("這張 "+msg[section]+" 的票 他將花費你 #b"+cost+" 楓幣#k. 請問你確定要購買 #b#t"+ticket[section]+"##k?");
 	    } else {
 		section -= 2;
 		cm.warp(returnMap[section]);
@@ -64,7 +64,7 @@ function action(mode, type, selection) {
 	}
 	else if(status == 2) {
 	    if(cm.getMeso() < cost || !cm.canHold(ticket[section])) {
-		cm.sendNext("Are you sure you have #b"+cost+" mesos#k? If so, then I urge you to check your etc. inventory, and see if it's full or not.");
+		cm.sendNext("你確定你有 #b"+cost+" 楓幣#k? 如果是這樣的話，我勸您檢查其他欄，看看是否滿了!.");
 	    }
 	    else {
 		cm.gainItem(ticket[section],1);
