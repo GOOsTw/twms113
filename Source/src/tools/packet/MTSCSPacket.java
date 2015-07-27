@@ -87,7 +87,6 @@ public class MTSCSPacket {
     
     public static MaplePacket showCashShopAcc(MapleClient c) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
         mplew.writeShort(0x015F);
         mplew.write(1);
         mplew.writeMapleAsciiString(c.getAccountName());

@@ -811,7 +811,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 }
             }
         } catch (SQLException ess) {
-            FilePrinter.printError("MapleCharacher.txt", ess, "Failed to load character..");
+            FilePrinter.printError("MapleCharacter.txt", ess, "Failed to load character..");
         } finally {
             try {
                 if (ps != null) {
