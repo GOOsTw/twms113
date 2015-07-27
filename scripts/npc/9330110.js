@@ -1,4 +1,4 @@
-/* Kedrick
+﻿/* Kedrick
 	Fishking King NPC
 */
 
@@ -17,23 +17,23 @@ function action(mode, type, selection) {
     }
 
     if (status == 0) {
-	cm.sendSimple("What do you want to do?\n\r #L4#Guide on fishing#l \n\r #L5##i1142146:#Trade 500 Golden Fish Egg (Medal of Fishing King [Period : 30 days])#l");
+	cm.sendSimple("我能為您做什麼嗎？？\n\r #L4#教我怎麼釣魚。#l \n\r #L5#使用500個鮭魚換取 #i1142071#標準國字勳章 [期限 : 30 天]#l");
     } else if (status == 1) {
 	sel = selection;
 	if (sel == 4) {
-	    cm.sendOk("You need to be above level 10, with a fishing rod and fishing baits in order to enter the Fishing Lagoon. You will reel in a catch every 1 minute.");
+	    cm.sendOk("買著釣竿然後做釣魚椅子每1分鐘就會有東西。");
 	    cm.safeDispose();
 	} else if (sel == 5) {
-	    if (cm.haveItem(4000518, 500)) {
-		if (cm.canHold(1142146)) {
-		    cm.gainItem(4000518, -500);
-		    cm.gainItemPeriod(1142146, 1, 30);
-		    cm.sendOk("Woah, I guess you must have spend quite a lot of effort in the Fishing Lagoon fishing for these eggs. Here, take it. The #bFishing King Medal#k!")
+	    if (cm.haveItem(4031648, 500)) {
+		if (cm.canHold(1142071)) {
+		    cm.gainItem(4031648, -500);
+		    cm.gainItemPeriod(1142071, 1, 30);
+		    cm.sendOk("恭喜拿到了 #b#i1142071##k!")
 		} else {
-		    cm.sendOk("Please check if you have sufficient inventory slot for it.");
+		    cm.sendOk("請確認裝備欄是否有足夠。");
 		}
 	    } else {
-		cm.sendOk("Please get me 500 #i4000518:# Golden Fish Egg in exchange for a Fishing King medal!")
+		cm.sendOk("請給我 500個 #i4031648:# 我才能給你 #i1142071#")
 	    }
 	    cm.safeDispose();
 	}

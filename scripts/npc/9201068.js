@@ -9,28 +9,38 @@ function start() {
 function action(mode, type, selection) {
     status++;
     if(mode == 0) {
-	cm.sendNext("You must have some business to take care of here, right?");
+	cm.sendNext("你有一些經濟的負擔而無法搭地鐵對吧?");
 	cm.dispose();
 	return;
     }
     if (status == 0) {
 	if(sw == null) {
+	    cm.sendNext("找不到此腳本請回報GM");
 	    cm.dispose();
 	} else if(sw.getProperty("entry").equals("true")) {
-	    cm.sendYesNo("It looks like there's plenty of room for this ride. Please have your ticket ready so I can let you in, The ride will be long, but you'll get to your destination just fine. What do you think? Do you want to get on this ride?");
+	    cm.sendYesNo("你要搭地鐵??");
 	} else if(sw.getProperty("entry").equals("false") && sw.getProperty("docked").equals("true")) {
-	    cm.sendNext("The subway is getting ready for takeoff. I'm sorry, but you'll have to get on the next ride. The ride schedule is available through the usher at the ticketing booth.");
+	    cm.sendNext("很抱歉本班地鐵準備開走,乘坐時間表可以通過售票展台查看.");
 	    cm.dispose();
 	} else {
-	    cm.sendNext("We will begin boarding 1 minutes before the takeoff. Please be patient and wait for a few minutes. Be aware that the subway will take off on time, and we stop receiving tickets 1 minute before that, so please make sure to be here on time.");
+	    cm.sendNext("我們將開始1分鐘開走。請耐心等待幾分鐘。請注意，地鐵將準時開走，我們停止接收票前1分鐘了，所以請務必要在這裡的時間。");
 	    cm.dispose();
 	}
-    } else if(status == 1) {
+    } else if(status == 1 && cm.getMapId() == 103000100) {
+	if(!cm.haveItem(4031711)) {
+		cm.sendNext("不! 你沒有#b#t4031711##k 所以我不能放你走!.");
+	} else {
+	    cm.gainItem(4031711,-1);
+	    cm.warp(600010004);
+		cm.dispose();
+	}
+	} else if(status == 1 && cm.getMapId() == 600010001) {
 	if(!cm.haveItem(4031713)) {
-	    cm.sendNext("Oh no ... I don't think you have the ticket with you. I can't let you in without it. Please buy the ticket at the ticketing booth.");
+		cm.sendNext("不! 你沒有#b#t4031713##k 所以我不能放你走!.");
 	} else {
 	    cm.gainItem(4031713,-1);
 	    cm.warp(600010002);
+		cm.dispose();
 	}
 	cm.dispose();
     }

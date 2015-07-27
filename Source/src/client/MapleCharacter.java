@@ -139,7 +139,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             guildid = 0, fallcounter = 0, maplepoints, acash, chair, itemEffect, points, vpoints,
             rank = 1, rankMove = 0, jobRank = 1, jobRankMove = 0, marriageId, marriageItemId = 0,
             currentrep, totalrep, linkMid = 0, coconutteam = 0, followid = 0, battleshipHP = 0,
-            expression, constellation, blood, month, day, beans, beansNum, beansRange, prefix;
+            expression, constellation, blood, month, day, beans, beansNum, beansRange, prefix, gmlevel;
     private boolean canSetBeansNum;
     private Point old = new Point(0, 0);
     private boolean smega, hidden, hasSummon = false;
@@ -4387,7 +4387,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public MapleMount getMount() {
         return mount;
     }
-
+    
+    public int gmLevel() {
+        return gmLevel;
+    }
+    
     public int[] getWishlist() {
         return wishlist;
     }
