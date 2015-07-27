@@ -3349,12 +3349,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
         try {
             Connection con = DatabaseConnection.getConnection();
-            
+
             PreparedStatement ps = con.prepareStatement("INSERT INTO ipbans VALUES (DEFAULT, ?)");
             ps.setString(1, client.getSession().getRemoteAddress().toString().split(":")[0]);
             ps.execute();
             ps.close();
-            
+
             ps = con.prepareStatement("UPDATE accounts SET tempban = ?, banreason = ?, greason = ? WHERE id = ?");
             Timestamp TS = new Timestamp(duration.getTimeInMillis());
             ps.setTimestamp(1, TS);
@@ -3363,9 +3363,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.setInt(4, accountid);
             ps.execute();
             ps.close();
-            
+
             client.disconnect(true, false);
-            
+
         } catch (SQLException ex) {
             System.err.println("Error while tempbanning" + ex);
         }
@@ -4387,11 +4387,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public MapleMount getMount() {
         return mount;
     }
-    
+
     public int gmLevel() {
         return gmLevel;
     }
-    
+
     public int[] getWishlist() {
         return wishlist;
     }
@@ -4719,6 +4719,35 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
          getClient().getSession().write(MaplePacketCreator.getShowItemGain(id, (short)-possessed, true));
          }
          }*/
+    }
+    
+    public MapleRing getMarriageRing(boolean incluedEquip) {
+        MapleInventory iv = getInventory(MapleInventoryType.EQUIPPED);
+        Collection<IItem> equippedC = iv.list();
+        List<Item> equipped = new ArrayList<>(equippedC.size());
+        MapleRing ring;
+        for (IItem item : equippedC) {
+            equipped.add((Item) item);
+        }
+        for (Item item : equipped) {
+            if (item.getRing() != null) {
+                ring = item.getRing();
+                ring.setEquipped(true);
+                if (GameConstants.isMarriageRing(item.getItemId()))
+                    return ring;
+            }
+         }
+         if (incluedEquip) {
+            iv = getInventory(MapleInventoryType.EQUIP);
+            for (IItem item : iv.list()) {
+                if (item.getRing() != null && GameConstants.isMarriageRing(item.getItemId())) {
+                    ring = item.getRing();
+                    ring.setEquipped(false);
+                    return ring;
+                }
+            }
+         }
+         return null;
     }
 
     //TODO: more than one crush/friendship ring at a time
@@ -5196,7 +5225,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ch.removePlayer(this);
         client.updateLoginState(MapleClient.CHANGE_CHANNEL, client.getSessionIPAddress());
 
-        client.getSession().write(MaplePacketCreator.getChannelChange(toch.getIP(),toch.getPort()));
+        client.getSession().write(MaplePacketCreator.getChannelChange(toch.getIP(), toch.getPort()));
         saveToDB(false, false);
         getMap().removePlayer(this);
         client.setPlayer(null);

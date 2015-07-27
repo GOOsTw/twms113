@@ -985,15 +985,12 @@ public class MaplePacketCreator {
     }
     
     private static void addMarriageRingLook(final MaplePacketLittleEndianWriter mplew, MapleCharacter chr) {
-        if (chr.getMarriageRing() != null && !chr.getMarriageRing().isEquipped()) {
-            mplew.write(0);
-            return;
-        }
-        mplew.write(chr.getMarriageRing() != null ? (byte)1 : (byte)0);
-        if (chr.getMarriageRing() != null) {
+
+        mplew.write(chr.getMarriageRing(false) != null ? (byte)1 : (byte)0);
+        if (chr.getMarriageRing(false) != null) {
             mplew.writeInt(chr.getId());
-            mplew.writeInt(chr.getMarriageRing().getPartnerChrId());
-            mplew.writeInt(chr.getMarriageRing().getRingId());
+            mplew.writeInt(chr.getMarriageRing(false).getPartnerChrId());
+            mplew.writeInt(chr.getMarriageRing(false).getRingId());
         }
     }
     public static MaplePacket removePlayerFromMap(int cid) {

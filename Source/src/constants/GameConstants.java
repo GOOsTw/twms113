@@ -1170,7 +1170,18 @@ public class GameConstants {
 
     //if only there was a way to find in wz files -.-
     public static boolean isEffectRing(int itemid) {
-        return isFriendshipRing(itemid) || isCrushRing(itemid);
+        return isFriendshipRing(itemid) || isCrushRing(itemid) || isMarriageRing(itemid);
+    }
+    
+    public static boolean isMarriageRing(int itemId) {
+        switch (itemId) {
+            case 1112803:
+            case 1112806:
+            case 1112807:
+            case 1112809:
+                return true;
+        }
+        return false;
     }
 
     public static boolean isFriendshipRing(int itemId) {
