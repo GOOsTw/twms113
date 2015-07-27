@@ -88,7 +88,7 @@ public class CashItemInfo {
             if (this.unk_1 > 0) {
                 this.flags |= 0x8;
             }
-            if (this.priority >= 0) {
+            if (this.priority > 0) {
                 this.flags |= 0x10;
             }
             if (this.period > 0) {
@@ -107,7 +107,7 @@ public class CashItemInfo {
             if (this.showUp) {
                 this.flags |= 0x400;
             }
-            if (this.mark >= -1 || this.mark <= 3) {
+            if (this.mark > 0) {
                 this.flags |= 0x800;
             }
             if (this.unk_3 > 0) {
@@ -120,6 +120,7 @@ public class CashItemInfo {
         }
 
         public CashItemInfo toCItem(CashItemInfo backup) {
+            
             if (cii != null) {
                 return cii;
             }

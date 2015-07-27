@@ -81,23 +81,25 @@ public class CashShopOperation {
             c.getSession().close(true);
             return;
         }
+        
         c.updateLoginState(MapleClient.LOGIN_LOGGEDIN, c.getSessionIPAddress());
+        
         if (mts) {
             CashShopServer.getPlayerStorageMTS().registerPlayer(chr);
             c.getSession().write(MTSCSPacket.startMTS(chr, c));
             MTSOperation.MTSUpdate(MTSStorage.getInstance().getCart(c.getPlayer().getId()), c);
         } else {
             CashShopServer.getPlayerStorage().registerPlayer(chr);
-            c.getSession().write(MTSCSPacket.warpCS(c));
+            c.sendPacket(MTSCSPacket.warpCS(c));
             CSUpdate(c);
         }
     }
 
     public static void CSUpdate(final MapleClient c) {
-        c.getSession().write(MTSCSPacket.showCashShopAcc(c));
-        c.getSession().write(MTSCSPacket.showGifts(c));
+        c.sendPacket(MTSCSPacket.showCashShopAcc(c));
+        c.sendPacket(MTSCSPacket.showGifts(c));
         refreshCS(c);
-        c.getSession().write(MTSCSPacket.sendShowWishList(c.getPlayer()));
+        c.sendPacket(MTSCSPacket.sendShowWishList(c.getPlayer()));
     }
 
     public static void CouponCode(final String code, final MapleClient c) {

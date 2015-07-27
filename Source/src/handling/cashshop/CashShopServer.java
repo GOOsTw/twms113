@@ -38,14 +38,14 @@ public class CashShopServer {
 
     private static String ip;
     private static InetSocketAddress InetSocketadd;
-    private static int port = 5555;
+    private static int port = 8600;
     private static NioSocketAcceptor acceptor;
     private static PlayerStorage players, playersMTS;
     private static boolean finishedShutdown = false;
     private static MapleServerHandler handler;
 
     public static final void run_startup_configurations() {
-        port = Short.valueOf(ServerProperties.getProperty("server.settings.cashshop.port"));
+        port = Short.valueOf(ServerProperties.getProperty("server.settings.cashshop.port", "8600"));
         ip = ServerProperties.getProperty("server.settings.ip") + ":" + port;
 
         IoBuffer.setUseDirectBuffer(false);
@@ -64,7 +64,7 @@ public class CashShopServer {
         try {
             InetSocketadd = new InetSocketAddress(port);
             acceptor.bind(InetSocketadd);
-            System.out.println("Shop    1: Listening on port " + port);
+            System.out.println("購物商城    : 綁定端口 " + port);
         } catch (final Exception e) {
             System.err.println("[購物商城] 綁定端口 " + port + " 失敗");
             e.printStackTrace();
