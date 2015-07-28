@@ -33,22 +33,20 @@ import java.util.List;
 import server.MapleInventoryManipulator;
 import server.Timer.EtcTimer;
 import server.maps.MapleMapObjectType;
-import tools.MaplePacketCreator;
 import tools.packet.PlayerShopPacket;
 
 public class HiredMerchant extends AbstractPlayerStore {
 
     public ScheduledFuture<?> schedule;
-    private List<String> blacklist;
+    private final List<String> blacklist;
     private int storeid;
-    private long start;
+    private final long start;
 
     public HiredMerchant(MapleCharacter owner, int itemId, String desc) {
         super(owner, itemId, desc, "", 3);
         start = System.currentTimeMillis();
-        blacklist = new LinkedList<String>();
+        blacklist = new LinkedList<>();
         this.schedule = EtcTimer.getInstance().schedule(new Runnable() {
-
             @Override
             public void run() {
                 closeShop(true, true);
@@ -56,16 +54,21 @@ public class HiredMerchant extends AbstractPlayerStore {
         }, 1000 * 60 * 60 * 24);
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
     public byte getShopType() {
         return IMaplePlayerShop.HIRED_MERCHANT;
     }
 
-    public final void setStoreid(final int storeid) {
+    public final void setStoreId(final int storeid) {
         this.storeid = storeid;
     }
 
     public List<MaplePlayerShopItem> searchItem(final int itemSearch) {
-        final List<MaplePlayerShopItem> itemz = new LinkedList<MaplePlayerShopItem>();
+        final List<MaplePlayerShopItem> itemz = new LinkedList<>();
         for (MaplePlayerShopItem item : items) {
             if (item.item.getItemId() == itemSearch && item.bundles > 0) {
                 itemz.add(item);

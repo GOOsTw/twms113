@@ -26,8 +26,10 @@ import java.io.Serializable;
 import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.LinkedList;
 import database.DatabaseConnection;
+import java.io.IOException;
+import java.sql.SQLException;
+import tools.FilePrinter;
 
 public class MapleCustomQuest extends MapleQuest implements Serializable {
 
@@ -75,9 +77,8 @@ public class MapleCustomQuest extends MapleQuest implements Serializable {
             }
             rs.close();
             ps.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            System.err.println("Error loading custom quest from SQL." + ex);
+        } catch (SQLException | IOException | ClassNotFoundException ex) {
+           FilePrinter.printError("MapleCustomQuest.txt", ex);
         }
     }
 }

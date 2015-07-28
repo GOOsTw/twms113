@@ -23,7 +23,7 @@ package tools.data.output;
 import java.io.ByteArrayOutputStream;
 
 /**
- * Uses a byte array to output a stream of bytes.
+ * 利用一個 byte array 輸出串流的bytes資料.
  *
  * @author Frz
  * @version 1.0
@@ -34,7 +34,7 @@ public class BAOSByteOutputStream implements ByteOutputStream {
     private ByteArrayOutputStream baos;
 
     /**
-     * Class constructor - Wraps the stream around a Java BAOS.
+     * 類別建構子 - Wraps the stream around a Java BAOS.
      *
      * @param baos <code>The ByteArrayOutputStream</code> to wrap this around.
      */
@@ -44,10 +44,10 @@ public class BAOSByteOutputStream implements ByteOutputStream {
     }
 
     /**
-     * Writes a byte to the stream.
+     * 寫入一個Byte到串流中
      *
-     * @param b The byte to write to the stream.
-     * @see net.sf.odinms.tools.data.output.ByteOutputStream#writeByte(byte)
+     * @param b 要寫入的byte.
+     * @see tools.data.output.ByteOutputStream#writeByte(byte)
      */
     @Override
     public void writeByte(final byte b) {

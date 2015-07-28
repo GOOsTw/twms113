@@ -83,7 +83,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
     static {
         //reloadLoggedIPs();
-        RecvPacketOpcode[] block = new RecvPacketOpcode[]{RecvPacketOpcode.NPC_ACTION, RecvPacketOpcode.MOVE_PLAYER, RecvPacketOpcode.MOVE_PET, RecvPacketOpcode.MOVE_SUMMON, RecvPacketOpcode.MOVE_DRAGON, RecvPacketOpcode.MOVE_LIFE, RecvPacketOpcode.HEAL_OVER_TIME, RecvPacketOpcode.STRANGE_DATA};
+        RecvPacketOpcode[] block = new RecvPacketOpcode[]{RecvPacketOpcode.NPC_ACTION, RecvPacketOpcode.MOVE_PLAYER, RecvPacketOpcode.MOVE_PET, RecvPacketOpcode.MOVE_SUMMON, RecvPacketOpcode.MOVE_LIFE, RecvPacketOpcode.HEAL_OVER_TIME, RecvPacketOpcode.STRANGE_DATA};
         blocked.addAll(Arrays.asList(block));
     }
 
@@ -799,9 +799,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 break;
             case SUMMON_ATTACK:
                 SummonHandler.SummonAttack(slea, c, c.getPlayer());
-                break;
-            case MOVE_DRAGON:
-                SummonHandler.MoveDragon(slea, c.getPlayer());
                 break;
             case SPAWN_PET:
                 PetHandler.SpawnPet(slea, c, c.getPlayer());

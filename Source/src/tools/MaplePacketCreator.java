@@ -80,7 +80,6 @@ import server.maps.MapleMist;
 import server.maps.MapleMapItem;
 import server.events.MapleSnowball.MapleSnowballs;
 import server.life.MapleMonster;
-import server.maps.MapleDragon;
 import server.maps.MapleNodes.MapleNodeInfo;
 import server.maps.MapleNodes.MaplePlatform;
 import server.movement.LifeMovementFragment;
@@ -188,11 +187,7 @@ public class MaplePacketCreator {
                 } else if (value < 0x20) {
                     mplew.write(statupdate.getRight().byteValue());
                 } else if (value == 0x8000) { //availablesp
-                    if (GameConstants.isEvan(evan) || GameConstants.isResist(evan)) {
-                        throw new UnsupportedOperationException("Evan/Resistance wrong updating");
-                    } else {
-                        mplew.writeShort(statupdate.getRight().shortValue());
-                    }
+                    mplew.writeShort(statupdate.getRight().shortValue());
                 } else if (value < 0xFFFF) {
                     mplew.writeShort(statupdate.getRight().shortValue());
                 } else {
@@ -204,27 +199,12 @@ public class MaplePacketCreator {
     }
 
     public static final MaplePacket updateSp(MapleCharacter chr, final boolean itemReaction) { //this will do..
-        return updateSp(chr, itemReaction, false);
-    }
-
-    public static final MaplePacket updateSp(MapleCharacter chr, final boolean itemReaction, final boolean overrideJob) { //this will do..
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.UPDATE_STATS.getValue());
         mplew.write(itemReaction ? 1 : 0);
         mplew.writeInt(0x8000);
-        if (overrideJob || GameConstants.isEvan(chr.getJob()) || GameConstants.isResist(chr.getJob())) {
-            mplew.write(chr.getRemainingSpSize());
-            for (int i = 0; i < chr.getRemainingSps().length; i++) {
-                if (chr.getRemainingSp(i) > 0) {
-                    mplew.write(i + 1);
-                    mplew.write(chr.getRemainingSp(i));
-                }
-            }
-        } else {
-            mplew.writeShort(chr.getRemainingSp());
-        }
+        mplew.writeShort(chr.getRemainingSp());
         return mplew.getPacket();
-
     }
 
     public static final MaplePacket getWarpToMap(final MapleMap to, final int spawnPoint, final MapleCharacter chr) {
@@ -4212,38 +4192,6 @@ public class MaplePacketCreator {
     public static MaplePacket stopClock() {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.STOP_CLOCK.getValue());
-        return mplew.getPacket();
-    }
-
-    public static MaplePacket spawnDragon(MapleDragon d) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendPacketOpcode.DRAGON_SPAWN.getValue());
-        mplew.writeInt(d.getOwner());
-        mplew.writeInt(d.getPosition().x);
-        mplew.writeInt(d.getPosition().y);
-        mplew.write(d.getStance()); //stance?
-        mplew.writeShort(0);
-        mplew.writeShort(d.getJobId());
-        return mplew.getPacket();
-    }
-
-    public static MaplePacket removeDragon(int chrid) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendPacketOpcode.DRAGON_REMOVE.getValue());
-        mplew.writeInt(chrid);
-        return mplew.getPacket();
-    }
-
-    public static MaplePacket moveDragon(MapleDragon d, Point startPos, List<LifeMovementFragment> moves) {
-        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        mplew.writeShort(SendPacketOpcode.DRAGON_MOVE.getValue()); //not sure
-        mplew.writeInt(d.getOwner());
-        mplew.writePos(startPos);
-        mplew.writeInt(0);
-
-        PacketHelper.serializeMovementList(mplew, moves);
-
         return mplew.getPacket();
     }
 

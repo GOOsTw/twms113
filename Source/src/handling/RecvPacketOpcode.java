@@ -159,7 +159,6 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     BUY_CS_ITEM,
     COUPON_CODE,
     MAPLETV,
-    MOVE_DRAGON,
     REPAIR,
     REPAIR_ALL,
     TOUCHING_MTS,

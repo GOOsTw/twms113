@@ -121,16 +121,8 @@ public class GameConstants {
         return job >= 1000 && job < 2000;
     }
 
-    public static boolean isEvan(final int job) {
-        return job == 2001 || (job >= 2200 && job <= 2218);
-    }
-
     public static boolean isAran(final int job) {
         return job >= 2000 && job <= 2112 && job != 2001;
-    }
-
-    public static boolean isResist(final int job) {
-        return job >= 3000 && job <= 3512;
     }
 
     public static boolean isAdventurer(final int job) {
@@ -184,11 +176,7 @@ public class GameConstants {
             return 12;
         } else if (isKOC(job)) {
             return 10000012;
-        } else if (isResist(job)) {
-            return 30000012;
-        } else if (isEvan(job)) {
-            return 20010012;
-        }
+        } 
         return 20000012;
     }
 
@@ -1882,11 +1870,7 @@ public class GameConstants {
                 if (mountid < 1902015 || mountid > 1902018) {
                     return false;
                 }
-            } else if (isEvan(jobid)) {
-                if (mountid < 1902040 || mountid > 1902042) {
-                    return false;
-                }
-            }
+            } 
         }
         return true;
     }
@@ -1934,9 +1918,7 @@ public class GameConstants {
     }
 
     public static int getExpRate_Below10(final int job) {
-        if (GameConstants.isEvan(job)) {
-            return 1;
-        } else if (GameConstants.isAran(job) || GameConstants.isKOC(job)) {
+        if (GameConstants.isAran(job) || GameConstants.isKOC(job)) {
             return 5;
         }
         return 1;

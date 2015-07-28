@@ -121,7 +121,6 @@ import server.Timer.MapTimer;
 import server.life.MobSkill;
 import server.life.PlayerNPC;
 import server.maps.Event_PyramidSubway;
-import server.maps.MapleDragon;
 import server.maps.MapleFoothold;
 import server.movement.LifeMovementFragment;
 import tools.ConcurrentEnumMap;
@@ -171,7 +170,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private transient PlayerRandomStream CRand;
     private transient MapleMap map;
     private transient MapleShop shop;
-    private transient MapleDragon dragon;
     private transient RockPaperScissors rps;
     private MapleStorage storage;
     private transient MapleTrade trade;
@@ -438,7 +436,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.acash = ct.ACash;
         ret.maplepoints = ct.MaplePoints;
         ret.numClones = ct.clonez;
-        ret.mount = new MapleMount(ret, ct.mount_itemid, GameConstants.isKOC(ret.job) ? 10001004 : (GameConstants.isAran(ret.job) ? 20001004 : (GameConstants.isEvan(ret.job) ? 20011004 : 1004)), ct.mount_Fatigue, ct.mount_level, ct.mount_exp);
+        ret.mount = new MapleMount(ret, ct.mount_itemid, GameConstants.isKOC(ret.job) ? 10001004 : (GameConstants.isAran(ret.job) ? 20001004 : 1004), ct.mount_Fatigue, ct.mount_level, ct.mount_exp);
 
         ret.stats.recalcLocalStats(true);
 
@@ -2325,26 +2323,17 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public void changeJob(int newJob) {
         try {
-            final boolean isEv = GameConstants.isEvan(job) || GameConstants.isResist(job);
+            
             this.job = (short) newJob;
             if (newJob != 0 && newJob != 1000 && newJob != 2000 && newJob != 2001 && newJob != 3000) {
-                if (isEv) {
-                    remainingSp[GameConstants.getSkillBook(newJob)] += 5;
-                    client.getSession().write(UIPacket.getSPMsg((byte) 5, (short) newJob));
-                } else {
-                    remainingSp[GameConstants.getSkillBook(newJob)]++;
+                 remainingSp[GameConstants.getSkillBook(newJob)]++;
                     if (newJob % 10 >= 2) {
                         remainingSp[GameConstants.getSkillBook(newJob)] += 2;
                     }
-                }
             }
             if (newJob > 0 && !isGM()) {
                 resetStatsByJob(true);
-                if (!GameConstants.isEvan(newJob)) {
-                    if (getLevel() > (newJob == 200 ? 8 : 10) && newJob % 100 == 0 && (newJob % 1000) / 100 > 0) { //first job
-                        remainingSp[GameConstants.getSkillBook(newJob)] += 3 * (getLevel() - (newJob == 200 ? 8 : 10));
-                    }
-                } else if (newJob == 2200) {
+                if (newJob == 2200) {
                     MapleQuest.getInstance(22100).forceStart(this, 0, null);
                     MapleQuest.getInstance(22100).forceComplete(this, 0);
                     expandInventory((byte) 1, 4);
@@ -2355,7 +2344,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     dropMessage(5, "The baby Dragon hatched and appears to have something to tell you. Click the baby Dragon to start a conversation.");
                 }
             }
-            client.getSession().write(MaplePacketCreator.updateSp(this, false, isEv));
+            client.getSession().write(MaplePacketCreator.updateSp(this, false));
             updateSingleStat(MapleStat.JOB, newJob);
 
             int maxhp = stats.getMaxHp(), maxmp = stats.getMaxMp();
@@ -2442,19 +2431,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             silentPartyUpdate();
             guildUpdate();
             familyUpdate();
-            if (dragon != null) {
-                map.broadcastMessage(MaplePacketCreator.removeDragon(this.id));
-                map.removeMapObject(dragon);
-                dragon = null;
-            }
             baseSkills();
             if (newJob >= 2200 && newJob <= 2218) { //make new
                 if (getBuffedValue(MapleBuffStat.MONSTER_RIDING) != null) {
                     cancelBuffStats(MapleBuffStat.MONSTER_RIDING);
                 }
-                makeDragon();
-                map.spawnDragon(dragon);
-                map.updateMapObjectVisibility(this, dragon);
             }
         } catch (Exception e) {
             FilePrinter.printError("MapleCharacter.txt", e);
@@ -2473,14 +2454,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 }
             }
         }
-    }
-
-    public void makeDragon() {
-        dragon = new MapleDragon(this);
-    }
-
-    public MapleDragon getDragon() {
-        return dragon;
     }
 
     public void gainAp(short ap) {
@@ -2708,7 +2681,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
      */
     public void updateSingleStat(MapleStat stat, int newval, boolean itemReaction) {
         if (stat == MapleStat.AVAILABLESP) {
-            client.getSession().write(MaplePacketCreator.updateSp(this, itemReaction, false));
+            client.getSession().write(MaplePacketCreator.updateSp(this, itemReaction));
             return;
         }
         Pair<MapleStat, Integer> statpair = new Pair<>(stat, Integer.valueOf(newval));
@@ -3265,27 +3238,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (GameConstants.isKOC(job) && level == 70) {
             client.getSession().write(MaplePacketCreator.startMapEffect("You have reached level 70! To job advance, talk to your job instructor in Erev.", 5120000, true));
         }
-        if (GameConstants.isEvan(job)) {
-            switch (level) {
-                case 9:
-                    client.getSession().write(MaplePacketCreator.startMapEffect("請確保您完成所有的任務需要達到10級之前，否則你將無法繼續.", 5120000, true));
-                    break;
-                case 10:
-                case 20:
-                case 30:
-                case 40:
-                case 50:
-                case 60:
-                case 80:
-                case 100:
-                case 120:
-                case 160:
-                    if (job < 2218) {
-                        changeJob(job == 2001 ? 2200 : (job == 2200 ? 2210 : (job + 1))); //automatic
-                    }
-                    break;
-            }
-        }
+       
         /*        if (getSubcategory() == 1) { //db level 2
          switch (level) {
          case 2:
@@ -3583,9 +3536,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     chr.get().sendSpawnData(client);
                 }
             }
-            if (dragon != null) {
-                client.getSession().write(MaplePacketCreator.spawnDragon(dragon));
-            }
+  
             if (summons != null) {
                 for (final MapleSummon summon : summons.values()) {
                     client.getSession().write(MaplePacketCreator.spawnSummon(summon, false));
@@ -4862,11 +4813,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                             leadid = 10000018;
                         } else if (GameConstants.isAran(getJob())) {
                             leadid = 20000024;
-                        } else if (GameConstants.isEvan(getJob())) {
-                            leadid = 20010024;
-                        } else if (GameConstants.isResist(getJob())) {
-                            leadid = 30000024;
-                        }
+                        } 
                         if (getSkillLevel(SkillFactory.getSkill(leadid)) == 0 && getPet(0) != null) {
                             unequipPet(getPet(0), false, false);
                         } else if (lead && getSkillLevel(SkillFactory.getSkill(leadid)) > 0) { // Follow the Lead
@@ -5075,10 +5022,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public byte getNumClones() {
         return numClones;
-    }
-
-    public void setDragon(MapleDragon d) {
-        this.dragon = d;
     }
 
     public final void spawnSavedPets() {

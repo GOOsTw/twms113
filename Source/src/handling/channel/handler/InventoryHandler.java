@@ -801,7 +801,7 @@ public class InventoryHandler {
             }
         }
         if (mountid > 0) {
-            mountid += (GameConstants.isAran(c.getPlayer().getJob()) ? 20000000 : (GameConstants.isEvan(c.getPlayer().getJob()) ? 20010000 : (GameConstants.isKOC(c.getPlayer().getJob()) ? 10000000 : (GameConstants.isResist(c.getPlayer().getJob()) ? 30000000 : 0))));
+            mountid += (GameConstants.isAran(c.getPlayer().getJob()) ? 20000000 : 0);
             if (c.getPlayer().getSkillLevel(mountid) > 0) {
                 c.getPlayer().dropMessage(5, "You already have this skill.");
             } else if (expiration_days > 0) {
@@ -1080,7 +1080,7 @@ public class InventoryHandler {
                                 if (improvingMaxHPLevel >= 1) {
                                     maxhp += improvingMaxHP.getEffect(improvingMaxHPLevel).getY();
                                 }
-                            } else if ((job >= 200 && job <= 232) || (GameConstants.isEvan(job))) { // Magician
+                            } else if ((job >= 200 && job <= 232) ) { // Magician
                                 maxhp += Randomizer.rand(10, 20);
                             } else if ((job >= 300 && job <= 322) || (job >= 400 && job <= 434) || (job >= 1300 && job <= 1312) || (job >= 1400 && job <= 1412) || (job >= 3300 && job <= 3312)) { // Bowman
                                 maxhp += Randomizer.rand(16, 20);
@@ -1125,7 +1125,7 @@ public class InventoryHandler {
                                 maxmp += Randomizer.rand(6, 8);
                             } else if (job >= 100 && job <= 132) { // Warrior
                                 maxmp += Randomizer.rand(5, 7);
-                            } else if ((job >= 200 && job <= 232) || (GameConstants.isEvan(job)) || (job >= 3200 && job <= 3212)) { // Magician
+                            } else if ((job >= 200 && job <= 232) || (job >= 3200 && job <= 3212)) { // Magician
                                 ISkill improvingMaxMP = SkillFactory.getSkill(2000001);
                                 int improvingMaxMPLevel = c.getPlayer().getSkillLevel(improvingMaxMP);
                                 maxmp += Randomizer.rand(18, 20);

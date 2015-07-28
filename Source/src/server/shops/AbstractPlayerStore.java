@@ -42,25 +42,30 @@ import java.util.ArrayList;
 import server.maps.AbstractMapleMapObject;
 import server.maps.MapleMap;
 import server.maps.MapleMapObjectType;
+import tools.FilePrinter;
 import tools.Pair;
 import tools.packet.PlayerShopPacket;
 
 public abstract class AbstractPlayerStore extends AbstractMapleMapObject implements IMaplePlayerShop {
 
-    protected boolean open = false, available = false;
+    /**
+     * 商店開啟狀態
+     */
+    protected boolean isOpened = false;
+    protected boolean available = false;
     protected String ownerName, des, pass;
-    protected int ownerId, owneraccount, itemId, channel, map;
+    protected int ownerId, ownerAccount, itemId, channel, map;
     protected AtomicInteger meso = new AtomicInteger(0);
     protected WeakReference<MapleCharacter> chrs[];
-    protected List<String> visitors = new LinkedList<String>();
-    protected List<BoughtItem> bought = new LinkedList<BoughtItem>();
-    protected List<MaplePlayerShopItem> items = new LinkedList<MaplePlayerShopItem>();
+    protected List<String> visitors = new LinkedList<>();
+    protected List<BoughtItem> bought = new LinkedList<>();
+    protected List<MaplePlayerShopItem> items = new LinkedList<>();
 
     public AbstractPlayerStore(MapleCharacter owner, int itemId, String desc, String pass, int slots) {
         this.setPosition(owner.getPosition());
         this.ownerName = owner.getName();
         this.ownerId = owner.getId();
-        this.owneraccount = owner.getAccountID();
+        this.ownerAccount = owner.getAccountID();
         this.itemId = itemId;
         this.des = desc;
         this.pass = pass;
@@ -68,7 +73,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
         this.channel = owner.getClient().getChannel();
         chrs = new WeakReference[slots];
         for (int i = 0; i < chrs.length; i++) {
-            chrs[i] = new WeakReference<MapleCharacter>(null);
+            chrs[i] = new WeakReference<>(null);
         }
     }
 
@@ -119,30 +124,44 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
         this.meso.set(meso);
     }
 
+    /**
+     * 設定商店是否開啟
+     * @param open 商店開是不是開啟的
+     */
     @Override
     public void setOpen(boolean open) {
-        this.open = open;
+        this.isOpened = open;
     }
 
+    /**
+     * 取得商店是不是開啟的
+     * @return 商店是否開著
+     */
     @Override
     public boolean isOpen() {
-        return open;
+        return isOpened;
     }
 
+    /**
+     * 儲存商店的物品到資料庫中
+     * @return 儲存失敗與否
+     */
     public boolean saveItems() {
+        
         if (getShopType() != IMaplePlayerShop.HIRED_MERCHANT) { //hired merch only
             return false;
         }
+        
         Connection con = DatabaseConnection.getConnection();
         try {
             PreparedStatement ps = con.prepareStatement("DELETE FROM hiredmerch WHERE accountid = ? OR characterid = ?");
-            ps.setInt(1, owneraccount);
+            ps.setInt(1, ownerAccount);
             ps.setInt(2, ownerId);
             ps.execute();
             ps.close();
             ps = con.prepareStatement("INSERT INTO hiredmerch (characterid, accountid, Mesos, time) VALUES (?, ?, ?, ?)", DatabaseConnection.RETURN_GENERATED_KEYS);
             ps.setInt(1, ownerId);
-            ps.setInt(2, owneraccount);
+            ps.setInt(2, ownerAccount);
             ps.setInt(3, meso.get());
             ps.setLong(4, System.currentTimeMillis());
 
@@ -157,7 +176,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
             final int packageid = rs.getInt(1);
             rs.close();
             ps.close();
-            List<Pair<IItem, MapleInventoryType>> iters = new ArrayList<Pair<IItem, MapleInventoryType>>();
+            List<Pair<IItem, MapleInventoryType>> iters = new ArrayList<>();
             IItem item;
             for (MaplePlayerShopItem pItems : items) {
                 if (pItems.item == null || pItems.bundles <= 0) {
@@ -168,20 +187,28 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
                 }
                 item = pItems.item.copy();
                 item.setQuantity((short) (item.getQuantity() * pItems.bundles));
-                iters.add(new Pair<IItem, MapleInventoryType>(item, GameConstants.getInventoryType(item.getItemId())));
+                iters.add(new Pair<>(item, GameConstants.getInventoryType(item.getItemId())));
             }
-            ItemLoader.HIRED_MERCHANT.saveItems(iters, packageid, owneraccount, ownerId);
+            ItemLoader.HIRED_MERCHANT.saveItems(iters, packageid, ownerAccount, ownerId);
             return true;
         } catch (SQLException se) {
-            se.printStackTrace();
+            FilePrinter.printError("AbstractPlayerStore.txt", se, "saveItems");
         }
         return false;
     }
 
+    /**
+     * 取得商店目前第 num 的顧客
+     * @param num 第幾個顧客
+     * @return 
+     */
     public MapleCharacter getVisitor(int num) {
         return chrs[num].get();
     }
 
+    /**
+     * 傳送更新商店的封包
+     */
     @Override
     public void update() {
         if (isAvailable()) {
@@ -193,6 +220,10 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
         }
     }
 
+    /**
+     * 新增一個顧客
+     * @param visitor 來購物的角色
+     */
     @Override
     public void addVisitor(MapleCharacter visitor) {
         int i = getFreeSlot();
@@ -202,7 +233,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
             } else {
                 broadcastToVisitors(PlayerShopPacket.shopVisitorAdd(visitor, i));
             }
-            chrs[i - 1] = new WeakReference<MapleCharacter>(visitor);
+            chrs[i - 1] = new WeakReference<>(visitor);
             if (!isOwner(visitor)) {
                 visitors.add(visitor.getName());
             }
@@ -212,13 +243,17 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
         }
     }
 
+    /**
+     * 移除顧客
+     * @param visitor 
+     */
     @Override
     public void removeVisitor(MapleCharacter visitor) {
         final byte slot = getVisitorSlot(visitor);
         boolean shouldUpdate = getFreeSlot() == -1;
         if (slot > 0) {
             broadcastToVisitors(PlayerShopPacket.shopVisitorLeave(slot), slot);
-            chrs[slot - 1] = new WeakReference<MapleCharacter>(null);
+            chrs[slot - 1] = new WeakReference<>(null);
             if (shouldUpdate) {
                 update();
             }
@@ -248,7 +283,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
                 }
                 broadcastToVisitors(PlayerShopPacket.shopVisitorLeave(getVisitorSlot(visitor)), getVisitorSlot(visitor));
                 visitor.setPlayerShop(null);
-                chrs[i] = new WeakReference<MapleCharacter>(null);
+                chrs[i] = new WeakReference<>(null);
             }
         }
         update();
@@ -266,7 +301,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
 
     @Override
     public int getOwnerAccId() {
-        return owneraccount;
+        return ownerAccount;
     }
 
     @Override
@@ -282,7 +317,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
         List<Pair<Byte, MapleCharacter>> chrz = new LinkedList<Pair<Byte, MapleCharacter>>();
         for (byte i = 0; i < chrs.length; i++) { //include owner or no
             if (chrs[i] != null && chrs[i].get() != null) {
-                chrz.add(new Pair<Byte, MapleCharacter>((byte) (i + 1), chrs[i].get()));
+                chrz.add(new Pair<>((byte) (i + 1), chrs[i].get()));
             }
         }
         return chrz;

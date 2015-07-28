@@ -259,18 +259,7 @@ public class PacketHelper {
         mplew.writeShort(chr.getJob()); // job
         chr.getStat().connectData(mplew);
         mplew.writeShort(chr.getRemainingAp()); // remaining ap
-        if (GameConstants.isEvan(chr.getJob()) || GameConstants.isResist(chr.getJob())) {
-            final int size = chr.getRemainingSpSize();
-            mplew.write(size);
-            for (int i = 0; i < chr.getRemainingSps().length; i++) {
-                if (chr.getRemainingSp(i) > 0) {
-                    mplew.write(i + 1);
-                    mplew.write(chr.getRemainingSp(i));
-                }
-            }
-        } else {
-            mplew.writeShort(chr.getRemainingSp()); // remaining sp
-        }
+       mplew.writeShort(chr.getRemainingSp());
         mplew.writeInt(chr.getExp()); // exp
         mplew.writeShort(chr.getFame()); // fame
         mplew.writeInt(0); // Gachapon exp

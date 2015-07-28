@@ -24,7 +24,6 @@ import java.awt.Point;
 
 import client.MapleCharacter;
 import handling.world.World;
-import server.MapleItemInformationProvider;
 import server.Randomizer;
 import server.Timer.EventTimer;
 import server.life.MapleLifeFactory;
@@ -59,7 +58,7 @@ public class AramiaFireWorks {
         }
     }
 
-    private final void broadcastServer(final MapleCharacter c, final int itemid) {
+    private void broadcastServer(final MapleCharacter c, final int itemid) {
         World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, itemid, "<頻道 " + c.getClient().getChannel() + "> " + "弓箭手村邱比特公園即將開始發射煙火!"/*c.getMap().getMapName() + " : The amount of {" + MapleItemInformationProvider.getInstance().getName(itemid) + "} has reached the limit!"*/).getBytes());
     }
 
@@ -67,7 +66,7 @@ public class AramiaFireWorks {
         return (short) ((kegs / MAX_KEGS) * 10000);
     }
 
-    private final void broadcastEvent(final MapleCharacter c) {
+    private void broadcastEvent(final MapleCharacter c) {
 //        broadcastServer(c, KEG_ID);
         // Henesys Park
         EventTimer.getInstance().schedule(new Runnable() {
@@ -79,7 +78,7 @@ public class AramiaFireWorks {
         }, 10000);
     }
 
-    private final void startEvent(final MapleMap map) {
+    private void startEvent(final MapleMap map) {
         map.startMapEffect("雪人大大出現啦", 5120000);
 
         EventTimer.getInstance().schedule(new Runnable() {
@@ -91,7 +90,7 @@ public class AramiaFireWorks {
         }, 5000);
     }
 
-    private final void spawnMonster(final MapleMap map) {
+    private void spawnMonster(final MapleMap map) {
         Point pos;
 
         for (int i = 0; i < arrayMob.length; i++) {
@@ -135,7 +134,7 @@ public class AramiaFireWorks {
         return (short) ((sunshines / MAX_SUN) * 10000);
     }
 
-    private final void broadcastSun(final MapleCharacter c) {
+    private void broadcastSun(final MapleCharacter c) {
         broadcastServer(c, SUN_ID);
         // Henesys Park
         EventTimer.getInstance().schedule(new Runnable() {
@@ -147,7 +146,7 @@ public class AramiaFireWorks {
         }, 10000);
     }
 
-    private final void startSun(final MapleMap map) {
+    private void startSun(final MapleMap map) {
         map.startMapEffect("The tree is bursting with sunshine!", 5121010);
         for (int i = 0; i < 3; i++) {
             EventTimer.getInstance().schedule(new Runnable() {
@@ -160,7 +159,7 @@ public class AramiaFireWorks {
         }
     }
 
-    private final void spawnItem(final MapleMap map) {
+    private void spawnItem(final MapleMap map) {
         Point pos;
 
         for (int i = 0; i < Randomizer.nextInt(5) + 10; i++) {

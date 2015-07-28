@@ -24,14 +24,17 @@ public abstract class AbstractAnimatedMapleMapObject extends AbstractMapleMapObj
 
     private int stance;
 
+    @Override
     public int getStance() {
         return stance;
     }
 
+    @Override
     public void setStance(int stance) {
         this.stance = stance;
     }
 
+    @Override
     public boolean isFacingLeft() {
         return getStance() % 2 != 0;
     }

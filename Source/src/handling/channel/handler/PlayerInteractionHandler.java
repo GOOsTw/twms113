@@ -273,7 +273,7 @@ public class PlayerInteractionHandler {
                         }
                         if (shop.getShopType() == 1) {
                             final HiredMerchant merchant = (HiredMerchant) shop;
-                            merchant.setStoreid(c.getChannelServer().addMerchant(merchant));
+                            merchant.setStoreId(c.getChannelServer().addMerchant(merchant));
                             merchant.setOpen(true);
                             merchant.setAvailable(true);
                             chr.getMap().broadcastMessage(PlayerShopPacket.spawnHiredMerchant(merchant));

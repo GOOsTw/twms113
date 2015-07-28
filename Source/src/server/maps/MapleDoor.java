@@ -27,23 +27,22 @@ import java.util.Comparator;
 import java.util.List;
 import client.MapleCharacter;
 import client.MapleClient;
-import handling.world.MaplePartyCharacter;
 import java.lang.ref.WeakReference;
 import server.MaplePortal;
 import tools.MaplePacketCreator;
 
 public class MapleDoor extends AbstractMapleMapObject {
 
-    private WeakReference<MapleCharacter> owner;
-    private MapleMap town;
-    private MaplePortal townPortal;
-    private MapleMap target;
-    private int skillId, ownerId;
-    private Point targetPosition;
+    private final WeakReference<MapleCharacter> owner;
+    private final MapleMap town;
+    private final MaplePortal townPortal;
+    private final MapleMap target;
+    private final int skillId, ownerId;
+    private final Point targetPosition;
 
     public MapleDoor(final MapleCharacter owner, final Point targetPosition, final int skillId) {
         super();
-        this.owner = new WeakReference<MapleCharacter>(owner);
+        this.owner = new WeakReference<>(owner);
         this.ownerId = owner.getId();
         this.target = owner.getMap();
         this.targetPosition = targetPosition;
@@ -55,12 +54,11 @@ public class MapleDoor extends AbstractMapleMapObject {
 
     public MapleDoor(final MapleDoor origDoor) {
         super();
-        this.owner = new WeakReference<MapleCharacter>(origDoor.owner.get());
+        this.owner = new WeakReference<>(origDoor.owner.get());
         this.town = origDoor.town;
         this.townPortal = origDoor.townPortal;
         this.target = origDoor.target;
         this.targetPosition = origDoor.targetPosition;
-        this.townPortal = origDoor.townPortal;
         this.skillId = origDoor.skillId;
         this.ownerId = origDoor.ownerId;
         setPosition(townPortal.getPosition());
@@ -74,8 +72,8 @@ public class MapleDoor extends AbstractMapleMapObject {
         return ownerId;
     }
 
-    private final MaplePortal getFreePortal() {
-        final List<MaplePortal> freePortals = new ArrayList<MaplePortal>();
+    private MaplePortal getFreePortal() {
+        final List<MaplePortal> freePortals = new ArrayList<>();
 
         for (final MaplePortal port : town.getPortals()) {
             if (port.getType() == 6) {
