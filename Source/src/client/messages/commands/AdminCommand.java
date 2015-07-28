@@ -2544,7 +2544,8 @@ public class AdminCommand {
                     c.getPlayer().dropMessage(6, splitted[1] + " is not online");
                     return 0;
                 }
-                PlayerNPC npc = new PlayerNPC(chhr, Integer.parseInt(splitted[2]), c.getPlayer().getMap(), c.getPlayer());
+                int npcId = Integer.parseInt(splitted[2]);
+                PlayerNPC npc = new PlayerNPC(chhr, npcId, c.getPlayer().getMap(), c.getPlayer());
                 npc.addToServer();
                 c.getPlayer().dropMessage(6, "Done");
             } catch (Exception e) {
