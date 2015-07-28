@@ -138,7 +138,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             guildid = 0, fallcounter = 0, maplepoints, acash, chair, itemEffect, points, vpoints,
             rank = 1, rankMove = 0, jobRank = 1, jobRankMove = 0, marriageId, marriageItemId = 0,
             currentrep, totalrep, linkMid = 0, coconutteam = 0, followid = 0, battleshipHP = 0,
-            expression, constellation, blood, month, day, beans, beansNum, beansRange, prefix;
+            expression, constellation, blood, month, day, beans, beansNum, beansRange, prefix, gmlevel;
     private boolean canSetBeansNum;
     private Point old = new Point(0, 0);
     private boolean smega, hidden, hasSummon = false;
@@ -809,7 +809,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 }
             }
         } catch (SQLException ess) {
-            FilePrinter.printError("MapleCharacher.txt", ess, "Failed to load character..");
+            FilePrinter.printError("MapleCharacter.txt", ess, "Failed to load character..");
         } finally {
             try {
                 if (ps != null) {
@@ -3302,12 +3302,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
         try {
             Connection con = DatabaseConnection.getConnection();
-            
+
             PreparedStatement ps = con.prepareStatement("INSERT INTO ipbans VALUES (DEFAULT, ?)");
             ps.setString(1, client.getSession().getRemoteAddress().toString().split(":")[0]);
             ps.execute();
             ps.close();
-            
+
             ps = con.prepareStatement("UPDATE accounts SET tempban = ?, banreason = ?, greason = ? WHERE id = ?");
             Timestamp TS = new Timestamp(duration.getTimeInMillis());
             ps.setTimestamp(1, TS);
@@ -3316,9 +3316,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.setInt(4, accountid);
             ps.execute();
             ps.close();
-            
+
             client.disconnect(true, false);
-            
+
         } catch (SQLException ex) {
             System.err.println("Error while tempbanning" + ex);
         }
@@ -4339,6 +4339,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return mount;
     }
 
+    public int gmLevel() {
+        return gmLevel;
+    }
+
     public int[] getWishlist() {
         return wishlist;
     }
@@ -4666,6 +4670,35 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
          getClient().getSession().write(MaplePacketCreator.getShowItemGain(id, (short)-possessed, true));
          }
          }*/
+    }
+    
+    public MapleRing getMarriageRing(boolean incluedEquip) {
+        MapleInventory iv = getInventory(MapleInventoryType.EQUIPPED);
+        Collection<IItem> equippedC = iv.list();
+        List<Item> equipped = new ArrayList<>(equippedC.size());
+        MapleRing ring;
+        for (IItem item : equippedC) {
+            equipped.add((Item) item);
+        }
+        for (Item item : equipped) {
+            if (item.getRing() != null) {
+                ring = item.getRing();
+                ring.setEquipped(true);
+                if (GameConstants.isMarriageRing(item.getItemId()))
+                    return ring;
+            }
+         }
+         if (incluedEquip) {
+            iv = getInventory(MapleInventoryType.EQUIP);
+            for (IItem item : iv.list()) {
+                if (item.getRing() != null && GameConstants.isMarriageRing(item.getItemId())) {
+                    ring = item.getRing();
+                    ring.setEquipped(false);
+                    return ring;
+                }
+            }
+         }
+         return null;
     }
 
     //TODO: more than one crush/friendship ring at a time
@@ -5135,7 +5168,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ch.removePlayer(this);
         client.updateLoginState(MapleClient.CHANGE_CHANNEL, client.getSessionIPAddress());
 
-        client.getSession().write(MaplePacketCreator.getChannelChange(toch.getIP(),toch.getPort()));
+        client.getSession().write(MaplePacketCreator.getChannelChange(toch.getIP(), toch.getPort()));
         saveToDB(false, false);
         getMap().removePlayer(this);
         client.setPlayer(null);

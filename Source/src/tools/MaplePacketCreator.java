@@ -945,10 +945,13 @@ public class MaplePacketCreator {
         mplew.writeInt(chr.getMount().getFatigue()); // tiredness
         PacketHelper.addAnnounceBox(mplew, chr);
         mplew.write(chr.getChalkboard() != null && chr.getChalkboard().length() > 0 ? 1 : 0);
+        
         if (chr.getChalkboard() != null && chr.getChalkboard().length() > 0) {
             mplew.writeMapleAsciiString(chr.getChalkboard());
         }
+        
         Pair<List<MapleRing>, List<MapleRing>> rings = chr.getRings(false);
+        
         addRingInfo(mplew, rings.getLeft());
         addRingInfo(mplew, rings.getRight());
         mplew.writeShort(0);
@@ -960,7 +963,16 @@ public class MaplePacketCreator {
         }
         return mplew.getPacket();
     }
+    
+    private static void addMarriageRingLook(final MaplePacketLittleEndianWriter mplew, MapleCharacter chr) {
 
+        mplew.write(chr.getMarriageRing(false) != null ? (byte)1 : (byte)0);
+        if (chr.getMarriageRing(false) != null) {
+            mplew.writeInt(chr.getId());
+            mplew.writeInt(chr.getMarriageRing(false).getPartnerChrId());
+            mplew.writeInt(chr.getMarriageRing(false).getRingId());
+        }
+    }
     public static MaplePacket removePlayerFromMap(int cid) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
@@ -1477,7 +1489,8 @@ public class MaplePacketCreator {
         Pair<List<MapleRing>, List<MapleRing>> rings = chr.getRings(false);
         addRingInfo(mplew, rings.getLeft());
         addRingInfo(mplew, rings.getRight());
-        mplew.writeZeroBytes(5); //probably marriage ring (1) -> charid to follow (4)
+        addMarriageRingLook(mplew, chr);
+        mplew.writeInt(0);
         return mplew.getPacket();
     }
 

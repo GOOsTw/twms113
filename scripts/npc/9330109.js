@@ -1,4 +1,4 @@
-/* Kedrick
+﻿/* Kedrick
 	Fishking King NPC
 */
 
@@ -17,22 +17,22 @@ function action(mode, type, selection) {
     }
 
     if (status == 0) {
-	cm.sendSimple("What do you want to do?#b\n\r #L1#Buy fishing baits#l \n\r #L3#Use the delicious Bait Can#l#k");
+	cm.sendSimple("我能為您做什麼嗎？？#b\n\r #L1#買普通魚餌。#l \n\r #L3#使用高級的魚餌。#l#k");
     } else if (status == 1) {
 	sel = selection;
 	if (sel == 1) {
-	    cm.sendYesNo("It requires 300000 meso for 120 baits. Do you want to purchase?");
+	    cm.sendYesNo("請問確定要花 300000 楓幣 買 120 個普通魚餌？？");
 	} else if (sel == 3) {
 	    if (cm.canHold(2300001,120) && cm.haveItem(5350000,1)) {
 		if (!cm.haveItem(2300001)) {
 		    cm.gainItem(2300001, 120);
 		    cm.gainItem(5350000,-1);
-		    cm.sendNext("Happy Fishing~");
+		    cm.sendNext("開心釣魚吧！");
 		} else {
-		    cm.sendNext("You already have fishing bait.");
+		    cm.sendNext("真貪心！等用完再來找我！");
 		}
 	    } else {
-		cm.sendOk("Please check if you have sufficient inventory slot and the Delicious Bait Can from cash shop with you.");
+		cm.sendOk("請確認是否有高級的魚餌罐頭，或者檢查您的道具欄有沒有滿了。");
 	    }
 	    cm.safeDispose();
 	}
@@ -42,12 +42,12 @@ function action(mode, type, selection) {
 		if (!cm.haveItem(2300000)) {
 		    cm.gainMeso(-300000);
 		    cm.gainItem(2300000, 120);
-		    cm.sendNext("Happy Fishing~");
+		    cm.sendNext("開心釣魚吧！");
 		} else {
-		    cm.sendNext("You already have fishing bait.");
+		    cm.sendNext("真貪心！等用完再來找我！");
 		}
 	    } else {
-		cm.sendOk("Please check if you have the required meso or sufficient inventory slot.");
+		cm.sendOk("請確認是否有足夠的封幣，或者檢查您的道具欄有沒有滿了。");
 	    }
 	    cm.safeDispose();
 	}

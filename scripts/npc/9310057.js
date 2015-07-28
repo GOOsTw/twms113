@@ -31,6 +31,7 @@ function action(mode, type, selection) {
 	case 740000000:
 	case 741000000:
 	case 742000000:
+	case 800000000:
     	    if (status == 0) {
 	        cm.sendSimple("安安 我是菇菇勃士 #b英文村的巨屌菇菇!\r\n\r\n#L0#我要前往英文村#l\r\n#L1#我要兌換東西#l\r\n#L2#什麼是英文村?#l");
     	    } else if (status == 1) {
@@ -44,7 +45,7 @@ function action(mode, type, selection) {
 		    }
 		    cm.sendSimple(selStr);
 		} else if (selection == 2) {
-		    cm.sendNext("English School is a Party Quest for 1-5 party members. There are 3 different quiz levels, Beginner, Intermediate and Advanced. Within the 10 minutes time limit, collect all the required alphabets to form the correct answers to the questions given! Give the letters to your party leader to pass to #r#eDavid#n.#k You can continue on with the quiz or redeem rewards within the time limit. The questions and rewards will be random. Each time one is answered correctly, you will receive a random reward and a Obedient Child Medal. Collect and exchange Obedient Child Medal!");
+		    cm.sendNext("#b[英文村]#k 自己#e#rGoogle#k!");
 		    cm.dispose();
 		}
 	    } else if (status == 2) {

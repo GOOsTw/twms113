@@ -34,6 +34,7 @@ import server.CashItemInfo.CashModInfo;
 import handling.MaplePacket;
 import handling.SendPacketOpcode;
 import constants.ServerConstants;
+import java.util.ArrayList;
 import java.util.Collection;
 import tools.Pair;
 import java.util.Map;
@@ -51,23 +52,41 @@ public class MTSCSPacket {
         mplew.writeShort(SendPacketOpcode.SET_CASH_SHOP.getValue());
 
         PacketHelper.addCharacterInfo(mplew, c.getPlayer());
-        mplew.writeAsciiString(c.getAccountName());
-        Collection<CashModInfo> items = CashItemFactory.getInstance().getAllModInfo();
+
+        mplew.writeMapleAsciiString(c.getAccountName());
+
+        List<CashModInfo> cmi = new ArrayList<>(CashItemFactory.getInstance().getAllModInfo());
         mplew.writeInt(0); // some info , it'size , decodeBuffer(4*size)
-        for (CashModInfo item : items) {
-            addModCashItemInfo(mplew, item);
+
+        mplew.writeShort(cmi.size());
+        for (int i = 0; i < cmi.size() ; i++) {
+            addModCashItemInfo(mplew, cmi.get(i));
+
         }
         mplew.write(HexTool.getByteArrayFromHexString("00 00 0A 00 50 10 27 00 00 00 5A 00 00 00 00 00 00 00 00 00 00 00 00 FF 00 00 00 00 00 00 00 00 00 "));
         mplew.write(HexTool.getByteArrayFromHexString("06 00 00 00 31 00 30 00 31 00 00 00 00 00 00 00 05 00 0E 00 05 00 08 06 A0 01 14 00 C8 FE 8D 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 03 00 13 00 0A 01 0C 06 06 00 00 00 31 00 30 00 31 00 00 00 00 00 00 00 03 00 16 00 0D 00 0C 06 90 01 14 00 F8 36 8C 06 31 00 00 00 00 00 00 00 03 00 19 00 10 01 0C 06 06 00 00 00 31 00 30 00"));
 
-        int[] itemz = CashItemFactory.getInstance().getBestItems();
         for (int i = 1; i <= 8; i++) {
-            for (int j = 0; j <= 1; j++) {
-                for (int item : itemz) {
-                    mplew.writeInt(i);
-                    mplew.writeInt(j);
-                    mplew.writeInt(item);
-                }
+            for (int j = 0; j < 2; j++) {
+                mplew.writeInt(i);
+                mplew.writeInt(j);
+                mplew.writeInt(10000007);
+
+                mplew.writeInt(i);
+                mplew.writeInt(j);
+                mplew.writeInt(10000008);
+
+                mplew.writeInt(i);
+                mplew.writeInt(j);
+                mplew.writeInt(10000009);
+
+                mplew.writeInt(i);
+                mplew.writeInt(j);
+                mplew.writeInt(10000010);
+
+                mplew.writeInt(i);
+                mplew.writeInt(j);
+                mplew.writeInt(10000011);
             }
         }
         mplew.writeShort(0);
@@ -84,10 +103,9 @@ public class MTSCSPacket {
         mplew.writeInt(0);
         return mplew.getPacket();
     }
-    
+
     public static MaplePacket showCashShopAcc(MapleClient c) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
         mplew.writeShort(0x015F);
         mplew.write(1);
         mplew.writeMapleAsciiString(c.getAccountName());
@@ -580,7 +598,7 @@ public class MTSCSPacket {
 
         mplew.writeShort(SendPacketOpcode.CS_OPERATION.getValue());
 
-        mplew.write(0x50); //use to be 40
+        mplew.write(0x48); //use to be 40
         List<Pair<IItem, String>> mci = c.getPlayer().getCashInventory().loadGifts();
         mplew.writeShort(mci.size());
         for (Pair<IItem, String> mcz : mci) {

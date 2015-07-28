@@ -937,7 +937,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void openMerchantItemStore() {
         c.getPlayer().setConversation(3);
-        c.getSession().write(PlayerShopPacket.merchItemStore((byte) 0x22));
+        //c.getSession().write(PlayerShopPacket.merchItemStore((byte) 0x22));
     }
 
     public void sendRepairWindow() {

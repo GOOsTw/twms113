@@ -66,7 +66,7 @@ public class Start {
         MapleServerHandler.registerMBean();
         RankingWorker.getInstance().run();
         // MTSStorage.load();
-        // CashItemFactory.getInstance().initialize();
+        CashItemFactory.getInstance().initialize();
         LoginServer.run_startup_configurations();
         ChannelServer.startChannel_Main();
 

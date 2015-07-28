@@ -79,6 +79,7 @@ import tools.MaplePacketCreator;
 import tools.packet.PetPacket;
 import tools.packet.MobPacket;
 import scripting.EventManager;
+import scripting.NPCScriptManager;
 import server.MapleCarnivalFactory;
 import server.MapleCarnivalFactory.MCSkill;
 import server.MapleSquad;
@@ -1919,7 +1920,7 @@ public final class MapleMap {
         }
         
         if ((mapid == 10000 && chr.getJob() == 0) || (mapid == 130030000 && chr.getJob() == 1000) || (mapid == 914000000 && chr.getJob() == 2000) || (mapid == 900010000 && chr.getJob() == 2001)) {
-            chr.dropMessage(1, "新手技能記得在一轉之前點完 十等之後可以去自由市場找禮物盒領東西");
+            chr.dropMessage(1, "歡迎來SyncMS。\r\n新手技能記得在一轉之前點完！");
         }
         
         if (permanentWeather > 0) {

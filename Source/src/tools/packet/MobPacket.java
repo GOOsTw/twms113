@@ -213,11 +213,6 @@ public class MobPacket {
 
     public static void addMonsterStatus(MaplePacketLittleEndianWriter mplew, MapleMonster life) {
         
-        String debug = "";
-         for (MonsterStatusEffect buff : life.getStati().values()) {
-             debug += buff.getStati().toString() + ",";
-         }
-        FilePrinter.printError("MonsterStatusDebug.txt", debug);
         if (life.getStati().size() <= 0) {
             life.addEmpty(); //not done yet lulz ok so we add it now for the lulz
         }

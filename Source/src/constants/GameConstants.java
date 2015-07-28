@@ -998,8 +998,8 @@ public class GameConstants {
         2049401, 1, // Potential Scroll
         1302000, 3, // Sword
         1442011, 1, // Surfboard
-        4000517, 8, // Golden Fish
-        4000518, 25, // Golden Fish Egg
+        //4000517, 8, // Golden Fish
+        //4000518, 25, // Golden Fish Egg
         4031627, 2, // White Bait (3cm)
         4031628, 1, // Sailfish (120cm)
         4031630, 1, // Carp (30cm)
@@ -1158,7 +1158,18 @@ public class GameConstants {
 
     //if only there was a way to find in wz files -.-
     public static boolean isEffectRing(int itemid) {
-        return isFriendshipRing(itemid) || isCrushRing(itemid);
+        return isFriendshipRing(itemid) || isCrushRing(itemid) || isMarriageRing(itemid);
+    }
+    
+    public static boolean isMarriageRing(int itemId) {
+        switch (itemId) {
+            case 1112803:
+            case 1112806:
+            case 1112807:
+            case 1112809:
+                return true;
+        }
+        return false;
     }
 
     public static boolean isFriendshipRing(int itemId) {
