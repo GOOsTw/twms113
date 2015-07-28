@@ -28,47 +28,49 @@ import java.util.Properties;
 public enum RecvPacketOpcode implements WritableIntValueHolder {
     // GENERIC
 
-    PONG(false),
+    
     // LOGIN
-    LOGIN_PASSWORD(false),
-    HELLO_LOGIN,
-    HELLO_CHANNEL,
-    SERVERLIST_REQUEST,
-    CHARLIST_REQUEST,
-    SERVERSTATUS_REQUEST,
-    CHECK_CHAR_NAME,
-    CREATE_CHAR,
-    DELETE_CHAR,
-    STRANGE_DATA,
-    CHAR_SELECT,
-    AUTH_SECOND_PASSWORD,
-    SET_GENDER,
-    RSA_KEY(false),
+    LOGIN_PASSWORD(0x01),
+    SERVERLIST_REQUEST(0x03),
+    CHARLIST_REQUEST(0x04),
+    CHAR_SELECT(0x06),
+    PLAYER_LOGGEDIN(0x07),
+    CHECK_CHAR_NAME(0x08),
+    CREATE_CHAR(0x0B),
+    PLAYER_DC(0x0C),
+    DELETE_CHAR(0x0D),
+    PONG(0x0E),
+    STRANGE_DATA(0x0F),
+    HELLO_LOGIN(0x17),
+    SERVERSTATUS_REQUEST(0x18),
+    HELLO_CHANNEL(0xDA),
+    SET_GENDER(0x19),
+    
     // CHANNEL
-    PLAYER_LOGGEDIN(false),
-    CHANGE_MAP,
-    CHANGE_CHANNEL,
-    ENTER_CASH_SHOP,
-    MOVE_PLAYER,
-    CANCEL_CHAIR,
-    USE_CHAIR,
-    CLOSE_RANGE_ATTACK,
-    RANGED_ATTACK,
-    MAGIC_ATTACK,
-    PASSIVE_ENERGY,
-    TAKE_DAMAGE,
-    GENERAL_CHAT,
-    CLOSE_CHALKBOARD,
-    FACE_EXPRESSION,
-    USE_ITEMEFFECT,
-    WHEEL_OF_FORTUNE,
-    MONSTER_BOOK_COVER,
-    NPC_TALK,
-    NPC_TALK_MORE,
-    NPC_SHOP,
-    STORAGE,
-    USE_HIRED_MERCHANT,
-    MERCH_ITEM_STORE,
+    
+    CHANGE_MAP(0x1E),
+    CHANGE_CHANNEL(0x1F),
+    ENTER_CASH_SHOP(0x20),
+    MOVE_PLAYER(0x21),
+    CANCEL_CHAIR(0x22),
+    USE_CHAIR(0x23),
+    CLOSE_RANGE_ATTACK(0x25),
+    RANGED_ATTACK(0x26),
+    MAGIC_ATTACK(0x27),
+    PASSIVE_ENERGY(0x28),
+    TAKE_DAMAGE(0x29),
+    GENERAL_CHAT(0x2A),
+    CLOSE_CHALKBOARD(0x2B),
+    FACE_EXPRESSION(0x2C),
+    USE_ITEMEFFECT(0x2D),
+    WHEEL_OF_FORTUNE(0x2E),
+    MONSTER_BOOK_COVER(0x32),
+    NPC_TALK(0x33),
+    NPC_TALK_MORE(0x35),
+    NPC_SHOP(0x36),
+    STORAGE(0x37),
+    USE_HIRED_MERCHANT(0x38),
+    MERCH_ITEM_STORE(0x3A),
     DUEY_ACTION,
     ITEM_SORT,
     ITEM_GATHER,
@@ -155,9 +157,9 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     COCONUT,
     MONSTER_CARNIVAL,
     SHIP_OBJECT,
-    CS_UPDATE,
-    BUY_CS_ITEM,
-    COUPON_CODE,
+    CS_UPDATE(0xE5),
+    CASHSHOP_OPERATION(0xE6),
+    COUPON_CODE(0xE7),
     MAPLETV,
     REPAIR,
     REPAIR_ALL,
@@ -198,6 +200,16 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
 
     private RecvPacketOpcode() {
         this.CheckState = true;
+    }
+
+    private RecvPacketOpcode(int code) {
+        this.code = (short) code;
+        this.CheckState = false;
+    }
+
+    private RecvPacketOpcode(short code, final boolean CheckState) {
+        this.code = code;
+        this.CheckState = CheckState;
     }
 
     private RecvPacketOpcode(final boolean CheckState) {

@@ -482,14 +482,8 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case CHAR_SELECT:
                 CharLoginHandler.Character_WithoutSecondPassword(slea, c);
                 break;
-            case AUTH_SECOND_PASSWORD:
-                CharLoginHandler.Character_WithSecondPassword(slea, c);
-                break;
             case SET_GENDER:
                 CharLoginHandler.SetGenderRequest(slea, c);
-                break;
-            case RSA_KEY: // Fix this somehow
-                c.getSession().write(LoginPacket.StrangeDATA());
                 break;
             // END OF LOGIN SERVER
             case CHANGE_CHANNEL:
@@ -777,7 +771,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case SHIP_OBJECT:
                 UserInterfaceHandler.ShipObjectRequest(slea.readInt(), c);
                 break;
-            case BUY_CS_ITEM:
+            case CASHSHOP_OPERATION:
                 CashShopOperation.BuyCashItem(slea, c, c.getPlayer());
                 break;
             case COUPON_CODE:
