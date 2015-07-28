@@ -1,4 +1,4 @@
-/*
+﻿/*
 Navicat MySQL Data Transfer
 
 Source Server         : localhost
@@ -24,26 +24,26 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 DROP TABLE IF EXISTS `accounts`;
 CREATE TABLE `accounts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) CHARACTER SET big5 NOT NULL DEFAULT '',
-  `password` varchar(128) CHARACTER SET big5 NOT NULL DEFAULT '',
-  `salt` varchar(32) CHARACTER SET big5 DEFAULT NULL,
-  `2ndpassword` varchar(134) CHARACTER SET big5 DEFAULT NULL,
-  `salt2` varchar(32) CHARACTER SET big5 DEFAULT NULL,
+  `name` varchar(30) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `password` varchar(128) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `salt` varchar(32) CHARACTER SET utf8 DEFAULT NULL,
+  `2ndpassword` varchar(134) CHARACTER SET utf8 DEFAULT NULL,
+  `salt2` varchar(32) CHARACTER SET utf8 DEFAULT NULL,
   `loggedin` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `lastlogin` timestamp NULL DEFAULT NULL,
   `createdat` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `birthday` date NOT NULL DEFAULT '0000-00-00',
   `banned` tinyint(1) NOT NULL DEFAULT '0',
-  `banreason` text CHARACTER SET big5,
+  `banreason` text CHARACTER SET utf8,
   `gm` tinyint(1) NOT NULL DEFAULT '0',
   `email` tinytext,
-  `macs` tinytext CHARACTER SET big5,
+  `macs` tinytext CHARACTER SET utf8,
   `tempban` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `greason` tinyint(4) unsigned DEFAULT NULL,
   `ACash` int(11) DEFAULT NULL,
   `mPoints` int(11) DEFAULT NULL,
   `gender` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `SessionIP` varchar(64) CHARACTER SET big5 DEFAULT NULL,
+  `SessionIP` varchar(64) CHARACTER SET utf8 DEFAULT NULL,
   `points` int(11) NOT NULL DEFAULT '0',
   `vpoints` int(11) NOT NULL DEFAULT '0',
   `lastlogon` timestamp NULL DEFAULT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE `accounts` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `ranking1` (`id`,`banned`,`gm`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 DROP TABLE IF EXISTS `achievements`;
@@ -63,28 +63,28 @@ CREATE TABLE `achievements` (
   `charid` int(9) NOT NULL DEFAULT '0',
   `accountid` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`achievementid`,`charid`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `alliances`;
 CREATE TABLE `alliances` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(13) CHARACTER SET big5 NOT NULL,
+  `name` varchar(13) CHARACTER SET utf8 NOT NULL,
   `leaderid` int(11) NOT NULL,
   `guild1` int(11) NOT NULL,
   `guild2` int(11) NOT NULL,
   `guild3` int(11) NOT NULL DEFAULT '0',
   `guild4` int(11) NOT NULL DEFAULT '0',
   `guild5` int(11) NOT NULL DEFAULT '0',
-  `rank1` varchar(13) CHARACTER SET big5 NOT NULL DEFAULT '公會長',
-  `rank2` varchar(13) CHARACTER SET big5 NOT NULL DEFAULT '公會副會長',
-  `rank3` varchar(13) CHARACTER SET big5 NOT NULL DEFAULT '公會成員',
-  `rank4` varchar(13) CHARACTER SET big5 NOT NULL DEFAULT '公會成員',
-  `rank5` varchar(13) CHARACTER SET big5 NOT NULL DEFAULT '公會成員',
+  `rank1` varchar(13) CHARACTER SET utf8 NOT NULL DEFAULT '公會長',
+  `rank2` varchar(13) CHARACTER SET utf8 NOT NULL DEFAULT '公會副會長',
+  `rank3` varchar(13) CHARACTER SET utf8 NOT NULL DEFAULT '公會成員',
+  `rank4` varchar(13) CHARACTER SET utf8 NOT NULL DEFAULT '公會成員',
+  `rank5` varchar(13) CHARACTER SET utf8 NOT NULL DEFAULT '公會成員',
   `capacity` int(11) NOT NULL DEFAULT '2',
-  `notice` varchar(100) CHARACTER SET big5 NOT NULL DEFAULT '',
+  `notice` varchar(100) CHARACTER SET utf8 NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `auth_server_channel`;
@@ -94,7 +94,7 @@ CREATE TABLE `auth_server_channel` (
   `number` int(11) DEFAULT NULL,
   `key` varchar(40) NOT NULL DEFAULT '',
   PRIMARY KEY (`channelid`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=big5 ROW_FORMAT=DYNAMIC;
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 INSERT INTO `auth_server_channel` (`channelid`, `world`, `number`, `key`) VALUES
 (1, 0,  1,  '64cc5ec141f3d07fb076ba87c5c46825c44a997c'),
@@ -126,7 +126,7 @@ CREATE TABLE `auth_server_channel_ip` (
   `value` tinytext NOT NULL,
   PRIMARY KEY (`channelconfigid`),
   KEY `channelid` (`channelid`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 INSERT INTO `auth_server_channel_ip` (`channelconfigid`, `channelid`, `name`, `value`) VALUES
 (1, 2,  'net.sf.odinms.channel.net.port', '8587'),
@@ -155,7 +155,7 @@ CREATE TABLE `auth_server_cs` (
   `key` varchar(40) NOT NULL,
   `world` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`CashShopServerId`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 INSERT INTO `auth_server_cs` (`CashShopServerId`, `key`, `world`) VALUES
 (1, '9eafbf39c3d7a53f7dab1f1dc4d380ce9314f7a4', 0);
@@ -166,7 +166,7 @@ CREATE TABLE `auth_server_login` (
   `key` varchar(40) NOT NULL DEFAULT '',
   `world` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`loginserverid`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 INSERT INTO `auth_server_login` (`loginserverid`, `key`, `world`) VALUES
 (1, 'e709b6bfc9eda84c166514ec9784739c6cc201bd', 0);
@@ -177,7 +177,7 @@ CREATE TABLE `auth_server_mts` (
   `key` varchar(40) NOT NULL,
   `world` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`MTSServerId`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 INSERT INTO `auth_server_mts` (`MTSServerId`, `key`, `world`) VALUES
 (1, '9eafbf39c3d7a53f7dab1f1dc4d380ce9314f7a4', 0);
@@ -188,24 +188,24 @@ CREATE TABLE `bbs_replies` (
   `threadid` int(10) unsigned NOT NULL,
   `postercid` int(10) unsigned NOT NULL,
   `timestamp` bigint(20) unsigned NOT NULL,
-  `content` varchar(26) CHARACTER SET big5 NOT NULL DEFAULT '',
+  `content` varchar(26) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `guildid` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`replyid`)
-) ENGINE=MyISAM DEFAULT CHARSET=big5 ROW_FORMAT=DYNAMIC;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 DROP TABLE IF EXISTS `bbs_threads`;
 CREATE TABLE `bbs_threads` (
   `threadid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `postercid` int(10) unsigned NOT NULL,
-  `name` varchar(26) CHARACTER SET big5 NOT NULL DEFAULT '',
+  `name` varchar(26) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `timestamp` bigint(20) unsigned NOT NULL,
   `icon` smallint(5) unsigned NOT NULL,
-  `startpost` text CHARACTER SET big5 NOT NULL,
+  `startpost` text CHARACTER SET utf8 NOT NULL,
   `guildid` int(10) unsigned NOT NULL,
   `localthreadid` int(10) unsigned NOT NULL,
   PRIMARY KEY (`threadid`)
-) ENGINE=MyISAM DEFAULT CHARSET=big5 ROW_FORMAT=DYNAMIC;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 DROP TABLE IF EXISTS `blocklogin`;
@@ -215,7 +215,7 @@ CREATE TABLE `blocklogin` (
   `unblocktime` varchar(255) DEFAULT NULL,
   `ip` varchar(255) DEFAULT NULL,
   `active` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `blockuse`;
@@ -226,17 +226,17 @@ CREATE TABLE `blockuse` (
   `ip` varchar(255) DEFAULT NULL,
   `usetype` varchar(255) DEFAULT NULL,
   `active` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `bosslog`;
 CREATE TABLE `bosslog` (
   `bosslogid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `characterid` int(10) unsigned NOT NULL,
-  `bossid` varchar(20) CHARACTER SET big5 NOT NULL,
+  `bossid` varchar(20) CHARACTER SET utf8 NOT NULL,
   `lastattempt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`bosslogid`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `buddies`;
@@ -245,11 +245,11 @@ CREATE TABLE `buddies` (
   `characterid` int(11) NOT NULL,
   `buddyid` int(11) NOT NULL,
   `pending` tinyint(4) NOT NULL DEFAULT '0',
-  `groupname` varchar(16) CHARACTER SET big5 NOT NULL DEFAULT '其他',
+  `groupname` varchar(16) CHARACTER SET utf8 NOT NULL DEFAULT '其他',
   PRIMARY KEY (`id`),
   KEY `buddies_ibfk_1` (`characterid`),
   CONSTRAINT `buddies_ibfk_1` FOREIGN KEY (`characterid`) REFERENCES `characters` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 DROP TABLE IF EXISTS `cashshop_limit_sell`;
@@ -257,7 +257,7 @@ CREATE TABLE `cashshop_limit_sell` (
   `serial` int(11) NOT NULL,
   `amount` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`serial`)
-) ENGINE=MyISAM DEFAULT CHARSET=big5;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `cashshop_modified_items`;
@@ -278,7 +278,7 @@ CREATE TABLE `cashshop_modified_items` (
   `unk_3` tinyint(1) NOT NULL DEFAULT '0',
   `extra_flags` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`serial`)
-) ENGINE=MyISAM DEFAULT CHARSET=big5;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `characters`;
@@ -286,7 +286,7 @@ CREATE TABLE `characters` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `accountid` int(11) NOT NULL DEFAULT '0',
   `world` tinyint(1) NOT NULL DEFAULT '0',
-  `name` varchar(20) CHARACTER SET big5 NOT NULL DEFAULT '',
+  `name` varchar(20) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `level` int(3) unsigned NOT NULL DEFAULT '0',
   `exp` int(11) NOT NULL DEFAULT '0',
   `str` int(5) NOT NULL DEFAULT '0',
@@ -318,8 +318,8 @@ CREATE TABLE `characters` (
   `monsterbookcover` int(11) unsigned NOT NULL DEFAULT '0',
   `dojo_pts` int(11) unsigned NOT NULL DEFAULT '0',
   `dojoRecord` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  `pets` varchar(13) CHARACTER SET big5 NOT NULL DEFAULT '-1,-1,-1',
-  `sp` varchar(255) CHARACTER SET big5 NOT NULL DEFAULT '0,0,0,0,0,0,0,0,0,0',
+  `pets` varchar(13) CHARACTER SET utf8 NOT NULL DEFAULT '-1,-1,-1',
+  `sp` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT '0,0,0,0,0,0,0,0,0,0',
   `subcategory` int(11) NOT NULL DEFAULT '0',
   `Jaguar` int(3) NOT NULL DEFAULT '0',
   `rank` int(11) NOT NULL DEFAULT '1',
@@ -333,7 +333,7 @@ CREATE TABLE `characters` (
   `junior2` int(11) NOT NULL DEFAULT '0',
   `currentrep` int(11) NOT NULL DEFAULT '0',
   `totalrep` int(11) NOT NULL DEFAULT '0',
-  `charmessage` varchar(128) CHARACTER SET big5 NOT NULL DEFAULT '安安',
+  `charmessage` varchar(128) CHARACTER SET utf8 NOT NULL DEFAULT '安安',
   `expression` int(11) NOT NULL DEFAULT '0',
   `constellation` int(11) NOT NULL DEFAULT '0',
   `blood` int(11) NOT NULL DEFAULT '0',
@@ -346,7 +346,7 @@ CREATE TABLE `characters` (
   KEY `party` (`party`),
   KEY `ranking1` (`level`,`exp`),
   KEY `ranking2` (`gm`,`job`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 DROP TABLE IF EXISTS `character_slots`;
@@ -356,7 +356,7 @@ CREATE TABLE `character_slots` (
   `worldid` int(11) NOT NULL DEFAULT '0',
   `charslots` int(11) NOT NULL DEFAULT '6',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `cheatlog`;
@@ -369,7 +369,7 @@ CREATE TABLE `cheatlog` (
   `param` tinytext NOT NULL,
   PRIMARY KEY (`id`),
   KEY `cid` (`characterid`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=829883 DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM AUTO_INCREMENT=829883 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `csequipment`;
@@ -405,7 +405,7 @@ CREATE TABLE `csequipment` (
   PRIMARY KEY (`inventoryequipmentid`),
   KEY `inventoryitemid` (`inventoryitemid`),
   CONSTRAINT `csequiptment_ibfk_1` FOREIGN KEY (`inventoryitemid`) REFERENCES `csitems` (`inventoryitemid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `csitems`;
@@ -432,7 +432,7 @@ CREATE TABLE `csitems` (
   KEY `accountid` (`accountid`),
   KEY `packageid` (`packageid`),
   KEY `characterid_2` (`characterid`,`inventorytype`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `drop_data`;
@@ -446,7 +446,7 @@ CREATE TABLE `drop_data` (
   `chance` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `mobid` (`dropperid`)
-) ENGINE=MyISAM AUTO_INCREMENT=38910 DEFAULT CHARSET=big5;
+) ENGINE=MyISAM AUTO_INCREMENT=38910 DEFAULT CHARSET=utf8;
 
 INSERT INTO `drop_data` (`id`, `dropperid`, `itemid`, `minimum_quantity`, `maximum_quantity`, `questid`, `chance`) VALUES
 (11482, 8170000,  0,  664,  996,  0,  400000),
@@ -21086,10 +21086,10 @@ CREATE TABLE `drop_data_global` (
   `maximum_quantity` int(11) NOT NULL DEFAULT '1',
   `questid` int(11) NOT NULL DEFAULT '0',
   `chance` int(11) NOT NULL DEFAULT '0',
-  `comments` varchar(45) CHARACTER SET big5 DEFAULT NULL,
+  `comments` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `mobid` (`continent`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=big5 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 INSERT INTO `drop_data_global` (`id`, `continent`, `dropType`, `itemid`, `minimum_quantity`, `maximum_quantity`, `questid`, `chance`, `comments`) VALUES
 (1, -1, 0,  2210040,  1,  1,  0,  10000,  '萬聖節'),
@@ -21109,7 +21109,7 @@ CREATE TABLE `drop_data_vana` (
   `chance` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `mobid` (`dropperid`)
-) ENGINE=MyISAM AUTO_INCREMENT=10087 DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM AUTO_INCREMENT=10087 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 INSERT INTO `drop_data_vana` (`id`, `dropperid`, `flags`, `itemid`, `minimum_quantity`, `maximum_quantity`, `questid`, `chance`) VALUES
 (1, 100100, '', 4000019,  1,  1,  0,  427863),
@@ -31045,7 +31045,7 @@ CREATE TABLE `dueyequipment` (
   PRIMARY KEY (`inventoryequipmentid`),
   KEY `inventoryitemid` (`inventoryitemid`),
   CONSTRAINT `dueyequipment_ibfk_1` FOREIGN KEY (`inventoryitemid`) REFERENCES `dueyitems` (`inventoryitemid`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 INSERT INTO `dueyequipment` (`inventoryequipmentid`, `inventoryitemid`, `upgradeslots`, `level`, `str`, `dex`, `int`, `luk`, `hp`, `mp`, `watk`, `matk`, `wdef`, `mdef`, `acc`, `avoid`, `hands`, `speed`, `jump`, `ViciousHammer`, `itemEXP`, `durability`, `enhance`, `potential1`, `potential2`, `potential3`, `hpR`, `mpR`) VALUES
 (1, 2,  7,  0,  0,  0,  0,  0,  0,  5,  0,  0,  17, 0,  0,  0,  0,  0,  0,  0,  0,  -1, 0,  -5, 0,  0,  0,  0),
@@ -31064,13 +31064,13 @@ CREATE TABLE `dueyitems` (
   `inventorytype` int(11) NOT NULL DEFAULT '0',
   `position` int(11) NOT NULL DEFAULT '0',
   `quantity` int(11) NOT NULL DEFAULT '0',
-  `owner` tinytext CHARACTER SET big5,
-  `GM_Log` tinytext CHARACTER SET big5,
+  `owner` tinytext CHARACTER SET utf8,
+  `GM_Log` tinytext CHARACTER SET utf8,
   `uniqueid` int(11) NOT NULL DEFAULT '-1',
   `flag` int(2) NOT NULL DEFAULT '0',
   `expiredate` bigint(20) NOT NULL DEFAULT '-1',
   `type` tinyint(1) NOT NULL DEFAULT '0',
-  `sender` varchar(15) CHARACTER SET big5 NOT NULL DEFAULT '',
+  `sender` varchar(15) CHARACTER SET utf8 NOT NULL DEFAULT '',
   PRIMARY KEY (`inventoryitemid`),
   KEY `inventoryitems_ibfk_1` (`characterid`),
   KEY `characterid` (`characterid`),
@@ -31078,7 +31078,7 @@ CREATE TABLE `dueyitems` (
   KEY `accountid` (`accountid`),
   KEY `packageid` (`packageid`),
   KEY `characterid_2` (`characterid`,`inventorytype`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 INSERT INTO `dueyitems` (`inventoryitemid`, `characterid`, `accountid`, `packageid`, `itemid`, `inventorytype`, `position`, `quantity`, `owner`, `GM_Log`, `uniqueid`, `flag`, `expiredate`, `type`, `sender`) VALUES
 (1, NULL, NULL, 1,  2060000,  2,  13, 110,  '', NULL, -1, 0,  -1, 6,  ''),
@@ -31093,13 +31093,13 @@ DROP TABLE IF EXISTS `dueypackages`;
 CREATE TABLE `dueypackages` (
   `PackageId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `RecieverId` int(10) NOT NULL,
-  `SenderName` varchar(15) CHARACTER SET big5 NOT NULL,
+  `SenderName` varchar(15) CHARACTER SET utf8 NOT NULL,
   `Mesos` int(10) unsigned DEFAULT '0',
   `TimeStamp` bigint(20) unsigned DEFAULT NULL,
   `Checked` tinyint(1) unsigned DEFAULT '1',
   `Type` tinyint(1) unsigned NOT NULL,
   PRIMARY KEY (`PackageId`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 INSERT INTO `dueypackages` (`PackageId`, `RecieverId`, `SenderName`, `Mesos`, `TimeStamp`, `Checked`, `Type`) VALUES
 (1, 21, '2005', 0,  1408974911431,  1,  2),
@@ -31108,13 +31108,13 @@ INSERT INTO `dueypackages` (`PackageId`, `RecieverId`, `SenderName`, `Mesos`, `T
 DROP TABLE IF EXISTS `eventstats`;
 CREATE TABLE `eventstats` (
   `eventstatid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `event` varchar(30) CHARACTER SET big5 NOT NULL,
-  `instance` varchar(30) CHARACTER SET big5 NOT NULL,
+  `event` varchar(30) CHARACTER SET utf8 NOT NULL,
+  `instance` varchar(30) CHARACTER SET utf8 NOT NULL,
   `characterid` int(11) NOT NULL,
   `channel` int(11) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`eventstatid`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `famelog`;
@@ -31126,16 +31126,16 @@ CREATE TABLE `famelog` (
   PRIMARY KEY (`famelogid`),
   KEY `characterid` (`characterid`),
   CONSTRAINT `famelog_ibfk_1` FOREIGN KEY (`characterid`) REFERENCES `characters` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 DROP TABLE IF EXISTS `families`;
 CREATE TABLE `families` (
   `familyid` int(11) NOT NULL AUTO_INCREMENT,
   `leaderid` int(11) NOT NULL DEFAULT '0',
-  `notice` varchar(255) CHARACTER SET big5 NOT NULL DEFAULT '',
+  `notice` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT '',
   PRIMARY KEY (`familyid`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 DROP TABLE IF EXISTS `game_poll_reply`;
@@ -31144,29 +31144,29 @@ CREATE TABLE `game_poll_reply` (
   `AccountId` int(10) unsigned NOT NULL,
   `SelectAns` tinyint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `gifts`;
 CREATE TABLE `gifts` (
   `giftid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `recipient` int(11) NOT NULL DEFAULT '0',
-  `from` varchar(13) CHARACTER SET big5 NOT NULL DEFAULT '',
-  `message` varchar(255) CHARACTER SET big5 NOT NULL DEFAULT '',
+  `from` varchar(13) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `message` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `sn` int(11) NOT NULL DEFAULT '0',
   `uniqueid` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`giftid`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `gmlog`;
 CREATE TABLE `gmlog` (
   `gmlogid` int(11) NOT NULL AUTO_INCREMENT,
   `cid` int(11) NOT NULL DEFAULT '0',
-  `command` tinytext CHARACTER SET big5 NOT NULL,
+  `command` tinytext CHARACTER SET utf8 NOT NULL,
   `mapid` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`gmlogid`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `guilds`;
@@ -31176,20 +31176,20 @@ CREATE TABLE `guilds` (
   `GP` int(11) NOT NULL DEFAULT '0',
   `logo` int(10) unsigned DEFAULT NULL,
   `logoColor` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `name` varchar(45) CHARACTER SET big5 NOT NULL,
-  `rank1title` varchar(45) CHARACTER SET big5 NOT NULL DEFAULT '公會長',
-  `rank2title` varchar(45) CHARACTER SET big5 NOT NULL DEFAULT '公會副會長',
-  `rank3title` varchar(45) CHARACTER SET big5 NOT NULL DEFAULT '公會成員',
-  `rank4title` varchar(45) CHARACTER SET big5 NOT NULL DEFAULT '公會成員',
-  `rank5title` varchar(45) CHARACTER SET big5 NOT NULL DEFAULT '公會成員',
+  `name` varchar(45) CHARACTER SET utf8 NOT NULL,
+  `rank1title` varchar(45) CHARACTER SET utf8 NOT NULL DEFAULT '公會長',
+  `rank2title` varchar(45) CHARACTER SET utf8 NOT NULL DEFAULT '公會副會長',
+  `rank3title` varchar(45) CHARACTER SET utf8 NOT NULL DEFAULT '公會成員',
+  `rank4title` varchar(45) CHARACTER SET utf8 NOT NULL DEFAULT '公會成員',
+  `rank5title` varchar(45) CHARACTER SET utf8 NOT NULL DEFAULT '公會成員',
   `capacity` int(10) unsigned NOT NULL DEFAULT '10',
   `logoBG` int(10) unsigned DEFAULT NULL,
   `logoBGColor` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `notice` varchar(101) CHARACTER SET big5 DEFAULT NULL,
+  `notice` varchar(101) CHARACTER SET utf8 DEFAULT NULL,
   `signature` int(11) NOT NULL DEFAULT '0',
   `alliance` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guildid`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `hiredmerch`;
@@ -31200,7 +31200,7 @@ CREATE TABLE `hiredmerch` (
   `Mesos` int(10) unsigned DEFAULT '0',
   `time` bigint(20) unsigned DEFAULT NULL,
   PRIMARY KEY (`PackageId`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `hiredmerchequipment`;
@@ -31236,7 +31236,7 @@ CREATE TABLE `hiredmerchequipment` (
   PRIMARY KEY (`inventoryequipmentid`),
   KEY `inventoryitemid` (`inventoryitemid`),
   CONSTRAINT `hiredmerchantequipment_ibfk_1` FOREIGN KEY (`inventoryitemid`) REFERENCES `hiredmerchitems` (`inventoryitemid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `hiredmerchitems`;
@@ -31249,13 +31249,13 @@ CREATE TABLE `hiredmerchitems` (
   `inventorytype` int(11) NOT NULL DEFAULT '0',
   `position` int(11) NOT NULL DEFAULT '0',
   `quantity` int(11) NOT NULL DEFAULT '0',
-  `owner` tinytext CHARACTER SET big5,
-  `GM_Log` tinytext CHARACTER SET big5,
+  `owner` tinytext CHARACTER SET utf8,
+  `GM_Log` tinytext CHARACTER SET utf8,
   `uniqueid` int(11) NOT NULL DEFAULT '-1',
   `flag` int(2) NOT NULL DEFAULT '0',
   `expiredate` bigint(20) NOT NULL DEFAULT '-1',
   `type` tinyint(1) NOT NULL DEFAULT '0',
-  `sender` varchar(15) CHARACTER SET big5 NOT NULL DEFAULT '',
+  `sender` varchar(15) CHARACTER SET utf8 NOT NULL DEFAULT '',
   PRIMARY KEY (`inventoryitemid`),
   KEY `inventoryitems_ibfk_1` (`characterid`),
   KEY `characterid` (`characterid`),
@@ -31263,7 +31263,7 @@ CREATE TABLE `hiredmerchitems` (
   KEY `accountid` (`accountid`),
   KEY `packageid` (`packageid`),
   KEY `characterid_2` (`characterid`,`inventorytype`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `htsquads`;
@@ -31274,7 +31274,7 @@ CREATE TABLE `htsquads` (
   `status` int(10) unsigned NOT NULL DEFAULT '0',
   `members` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `inventoryequipment`;
@@ -31310,7 +31310,7 @@ CREATE TABLE `inventoryequipment` (
   PRIMARY KEY (`inventoryequipmentid`),
   KEY `inventoryitemid` (`inventoryitemid`),
   CONSTRAINT `inventoryequipment_ibfk_1` FOREIGN KEY (`inventoryitemid`) REFERENCES `inventoryitems` (`inventoryitemid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `inventoryitems`;
@@ -31323,30 +31323,30 @@ CREATE TABLE `inventoryitems` (
   `inventorytype` int(11) NOT NULL DEFAULT '0',
   `position` int(11) NOT NULL DEFAULT '0',
   `quantity` int(11) NOT NULL DEFAULT '0',
-  `owner` tinytext CHARACTER SET big5,
-  `GM_Log` tinytext CHARACTER SET big5,
+  `owner` tinytext CHARACTER SET utf8,
+  `GM_Log` tinytext CHARACTER SET utf8,
   `uniqueid` int(11) NOT NULL DEFAULT '-1',
   `flag` int(2) NOT NULL DEFAULT '0',
   `expiredate` bigint(20) NOT NULL DEFAULT '-1',
   `type` tinyint(1) NOT NULL DEFAULT '0',
-  `sender` varchar(15) CHARACTER SET big5 NOT NULL DEFAULT '',
+  `sender` varchar(15) CHARACTER SET utf8 NOT NULL DEFAULT '',
   PRIMARY KEY (`inventoryitemid`),
   KEY `inventorytype` (`inventorytype`),
   KEY `accountid` (`accountid`),
   KEY `packageid` (`packageid`),
   KEY `characterid_2` (`characterid`,`inventorytype`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `inventorylog`;
 CREATE TABLE `inventorylog` (
   `inventorylogid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `inventoryitemid` int(10) unsigned NOT NULL DEFAULT '0',
-  `msg` tinytext CHARACTER SET big5 NOT NULL,
+  `msg` tinytext CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`inventorylogid`),
   KEY `inventoryitemid` (`inventoryitemid`),
   CONSTRAINT `inventorylog_ibfk_1` FOREIGN KEY (`inventoryitemid`) REFERENCES `inventoryitems` (`inventoryitemid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `inventoryslot`;
@@ -31359,7 +31359,7 @@ CREATE TABLE `inventoryslot` (
   `etc` tinyint(3) unsigned DEFAULT NULL,
   `cash` tinyint(3) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 DROP TABLE IF EXISTS `invitecodedata`;
@@ -31371,26 +31371,26 @@ CREATE TABLE `invitecodedata` (
   `ip` varchar(255) DEFAULT NULL,
   `active` int(255) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `ipbans`;
 CREATE TABLE `ipbans` (
   `ipbanid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `ip` varchar(40) CHARACTER SET big5 NOT NULL DEFAULT '',
+  `ip` varchar(40) CHARACTER SET utf8 NOT NULL DEFAULT '',
   PRIMARY KEY (`ipbanid`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `ipvotelog`;
 CREATE TABLE `ipvotelog` (
   `vid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `accid` varchar(45) CHARACTER SET big5 NOT NULL DEFAULT '0',
-  `ipaddress` varchar(30) CHARACTER SET big5 NOT NULL DEFAULT '127.0.0.1',
-  `votetime` varchar(100) CHARACTER SET big5 NOT NULL DEFAULT '0',
+  `accid` varchar(45) CHARACTER SET utf8 NOT NULL DEFAULT '0',
+  `ipaddress` varchar(30) CHARACTER SET utf8 NOT NULL DEFAULT '127.0.0.1',
+  `votetime` varchar(100) CHARACTER SET utf8 NOT NULL DEFAULT '0',
   `votetype` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`vid`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `keymap`;
@@ -31403,7 +31403,7 @@ CREATE TABLE `keymap` (
   PRIMARY KEY (`id`),
   KEY `keymap_ibfk_1` (`characterid`),
   CONSTRAINT `keymap_ibfk_1` FOREIGN KEY (`characterid`) REFERENCES `characters` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `loginlog`;
@@ -31414,24 +31414,24 @@ CREATE TABLE `loginlog` (
   `ip` varchar(255) DEFAULT NULL,
   `time` varchar(255) DEFAULT NULL,
   `active` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `macbans`;
 CREATE TABLE `macbans` (
   `macbanid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `mac` varchar(30) CHARACTER SET big5 NOT NULL,
+  `mac` varchar(30) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`macbanid`),
   UNIQUE KEY `mac_2` (`mac`)
-) ENGINE=MEMORY DEFAULT CHARSET=big5 ROW_FORMAT=DYNAMIC;
+) ENGINE=MEMORY DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 DROP TABLE IF EXISTS `macfilters`;
 CREATE TABLE `macfilters` (
   `macfilterid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `filter` varchar(30) CHARACTER SET big5 NOT NULL,
+  `filter` varchar(30) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`macfilterid`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `monsterbook`;
@@ -31441,7 +31441,7 @@ CREATE TABLE `monsterbook` (
   `cardid` int(10) unsigned NOT NULL DEFAULT '0',
   `level` tinyint(2) unsigned DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `mountdata`;
@@ -31452,7 +31452,7 @@ CREATE TABLE `mountdata` (
   `Exp` int(10) unsigned NOT NULL DEFAULT '0',
   `Fatigue` int(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=big5;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `mtsequipment`;
@@ -31488,7 +31488,7 @@ CREATE TABLE `mtsequipment` (
   PRIMARY KEY (`inventoryequipmentid`),
   KEY `inventoryitemid` (`inventoryitemid`),
   CONSTRAINT `mtsequipment_ibfk_1` FOREIGN KEY (`inventoryitemid`) REFERENCES `mtsitems` (`inventoryitemid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `mtsitems`;
@@ -31501,13 +31501,13 @@ CREATE TABLE `mtsitems` (
   `inventorytype` int(11) NOT NULL DEFAULT '0',
   `position` int(11) NOT NULL DEFAULT '0',
   `quantity` int(11) NOT NULL DEFAULT '0',
-  `owner` tinytext CHARACTER SET big5,
-  `GM_Log` tinytext CHARACTER SET big5,
+  `owner` tinytext CHARACTER SET utf8,
+  `GM_Log` tinytext CHARACTER SET utf8,
   `uniqueid` int(11) NOT NULL DEFAULT '-1',
   `flag` int(2) NOT NULL DEFAULT '0',
   `expiredate` bigint(20) NOT NULL DEFAULT '-1',
   `type` tinyint(1) NOT NULL DEFAULT '0',
-  `sender` varchar(15) CHARACTER SET big5 NOT NULL DEFAULT '',
+  `sender` varchar(15) CHARACTER SET utf8 NOT NULL DEFAULT '',
   PRIMARY KEY (`inventoryitemid`),
   KEY `inventoryitems_ibfk_1` (`characterid`),
   KEY `characterid` (`characterid`),
@@ -31515,7 +31515,7 @@ CREATE TABLE `mtsitems` (
   KEY `accountid` (`accountid`),
   KEY `characterid_2` (`characterid`,`inventorytype`),
   KEY `packageid` (`packageId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `mtstransfer`;
@@ -31528,13 +31528,13 @@ CREATE TABLE `mtstransfer` (
   `inventorytype` int(11) NOT NULL DEFAULT '0',
   `position` int(11) NOT NULL DEFAULT '0',
   `quantity` int(11) NOT NULL DEFAULT '0',
-  `owner` tinytext CHARACTER SET big5,
-  `GM_Log` tinytext CHARACTER SET big5,
+  `owner` tinytext CHARACTER SET utf8,
+  `GM_Log` tinytext CHARACTER SET utf8,
   `uniqueid` int(11) NOT NULL DEFAULT '-1',
   `flag` int(2) NOT NULL DEFAULT '0',
   `expiredate` bigint(20) NOT NULL DEFAULT '-1',
   `type` tinyint(1) NOT NULL DEFAULT '0',
-  `sender` varchar(15) CHARACTER SET big5 NOT NULL DEFAULT '',
+  `sender` varchar(15) CHARACTER SET utf8 NOT NULL DEFAULT '',
   PRIMARY KEY (`inventoryitemid`),
   KEY `inventoryitems_ibfk_1` (`characterid`),
   KEY `characterid` (`characterid`),
@@ -31542,7 +31542,7 @@ CREATE TABLE `mtstransfer` (
   KEY `accountid` (`accountid`),
   KEY `packageid` (`packageid`),
   KEY `characterid_2` (`characterid`,`inventorytype`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `mtstransferequipment`;
@@ -31578,7 +31578,7 @@ CREATE TABLE `mtstransferequipment` (
   PRIMARY KEY (`inventoryequipmentid`),
   KEY `inventoryitemid` (`inventoryitemid`),
   CONSTRAINT `mtstransferequipment_ibfk_1` FOREIGN KEY (`inventoryitemid`) REFERENCES `mtstransfer` (`inventoryitemid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `mts_cart`;
@@ -31587,7 +31587,7 @@ CREATE TABLE `mts_cart` (
   `characterid` int(11) NOT NULL DEFAULT '0',
   `itemid` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `mts_items`;
@@ -31596,10 +31596,10 @@ CREATE TABLE `mts_items` (
   `tab` tinyint(1) NOT NULL DEFAULT '1',
   `price` int(11) NOT NULL DEFAULT '0',
   `characterid` int(11) NOT NULL DEFAULT '0',
-  `seller` varchar(15) CHARACTER SET big5 NOT NULL DEFAULT '',
+  `seller` varchar(15) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `expiration` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `mulungdojo`;
@@ -31608,49 +31608,49 @@ CREATE TABLE `mulungdojo` (
   `charid` int(11) NOT NULL DEFAULT '0',
   `stage` tinyint(3) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=big5;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `notes`;
 CREATE TABLE `notes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `to` varchar(15) CHARACTER SET big5 NOT NULL DEFAULT '',
-  `from` varchar(15) CHARACTER SET big5 NOT NULL DEFAULT '',
-  `message` text CHARACTER SET big5 NOT NULL,
+  `to` varchar(15) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `from` varchar(15) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `message` text CHARACTER SET utf8 NOT NULL,
   `timestamp` bigint(20) unsigned NOT NULL,
   `gift` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 DROP TABLE IF EXISTS `nxcode`;
 CREATE TABLE `nxcode` (
-  `code` varchar(15) CHARACTER SET big5 NOT NULL,
+  `code` varchar(15) CHARACTER SET utf8 NOT NULL,
   `valid` int(11) NOT NULL DEFAULT '1',
-  `user` varchar(15) CHARACTER SET big5 DEFAULT NULL,
+  `user` varchar(15) CHARACTER SET utf8 DEFAULT NULL,
   `type` int(11) NOT NULL DEFAULT '0',
   `item` int(11) NOT NULL DEFAULT '10000',
   PRIMARY KEY (`code`)
-) ENGINE=MyISAM DEFAULT CHARSET=big5;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `pets`;
 CREATE TABLE `pets` (
   `petid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(13) CHARACTER SET big5 DEFAULT NULL,
+  `name` varchar(13) CHARACTER SET utf8 DEFAULT NULL,
   `level` int(3) unsigned NOT NULL,
   `closeness` int(6) unsigned NOT NULL,
   `fullness` int(3) unsigned NOT NULL,
   `seconds` int(11) NOT NULL DEFAULT '0',
   `flags` smallint(5) NOT NULL DEFAULT '0',
   PRIMARY KEY (`petid`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 DROP TABLE IF EXISTS `playernpcs`;
 CREATE TABLE `playernpcs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(15) CHARACTER SET big5 NOT NULL,
+  `name` varchar(15) CHARACTER SET utf8 NOT NULL,
   `hair` int(11) NOT NULL,
   `face` int(11) NOT NULL,
   `skin` int(11) NOT NULL,
@@ -31662,12 +31662,12 @@ CREATE TABLE `playernpcs` (
   `foothold` int(11) NOT NULL,
   `dir` tinyint(1) NOT NULL DEFAULT '0',
   `gender` tinyint(1) NOT NULL DEFAULT '0',
-  `pets` varchar(25) CHARACTER SET big5 DEFAULT '0,0,0',
+  `pets` varchar(25) CHARACTER SET utf8 DEFAULT '0,0,0',
   PRIMARY KEY (`id`),
   KEY `scriptid` (`scriptid`),
   KEY `playernpcs_ibfk_1` (`charid`),
   CONSTRAINT `playernpcs_ibfk_1` FOREIGN KEY (`charid`) REFERENCES `characters` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=big5;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `playernpcs_equip`;
@@ -31682,7 +31682,7 @@ CREATE TABLE `playernpcs_equip` (
   KEY `playernpcs_equip_ibfk_2` (`npcid`),
   CONSTRAINT `playernpcs_equip_ibfk_1` FOREIGN KEY (`charid`) REFERENCES `characters` (`id`) ON DELETE CASCADE,
   CONSTRAINT `playernpcs_equip_ibfk_2` FOREIGN KEY (`npcid`) REFERENCES `playernpcs` (`scriptid`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=big5;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `questactions`;
@@ -31692,7 +31692,7 @@ CREATE TABLE `questactions` (
   `status` int(11) NOT NULL DEFAULT '0',
   `data` blob NOT NULL,
   PRIMARY KEY (`questactionid`)
-) ENGINE=MyISAM DEFAULT CHARSET=big5;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `questinfo`;
@@ -31700,11 +31700,11 @@ CREATE TABLE `questinfo` (
   `questinfoid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `characterid` int(11) NOT NULL DEFAULT '0',
   `quest` int(6) NOT NULL DEFAULT '0',
-  `customData` varchar(555) CHARACTER SET big5 DEFAULT NULL,
+  `customData` varchar(555) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`questinfoid`),
   KEY `characterid` (`characterid`),
   CONSTRAINT `questsinfo_ibfk_1` FOREIGN KEY (`characterid`) REFERENCES `characters` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `questrequirements`;
@@ -31714,7 +31714,7 @@ CREATE TABLE `questrequirements` (
   `status` int(11) NOT NULL DEFAULT '0',
   `data` blob NOT NULL,
   PRIMARY KEY (`questrequirementid`)
-) ENGINE=MyISAM DEFAULT CHARSET=big5;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `queststatus`;
@@ -31725,11 +31725,11 @@ CREATE TABLE `queststatus` (
   `status` tinyint(4) NOT NULL DEFAULT '0',
   `time` int(11) NOT NULL DEFAULT '0',
   `forfeited` int(11) NOT NULL DEFAULT '0',
-  `customData` varchar(255) CHARACTER SET big5 DEFAULT NULL,
+  `customData` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`queststatusid`),
   KEY `characterid` (`characterid`),
   CONSTRAINT `queststatus_ibfk_1` FOREIGN KEY (`characterid`) REFERENCES `characters` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `queststatusmobs`;
@@ -31741,7 +31741,7 @@ CREATE TABLE `queststatusmobs` (
   PRIMARY KEY (`queststatusmobid`),
   KEY `queststatusid` (`queststatusid`),
   CONSTRAINT `queststatusmobs_ibfk_1` FOREIGN KEY (`queststatusid`) REFERENCES `queststatus` (`queststatusid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 DROP TABLE IF EXISTS `reactordrops`;
@@ -31753,7 +31753,7 @@ CREATE TABLE `reactordrops` (
   `questid` int(5) NOT NULL DEFAULT '-1',
   PRIMARY KEY (`reactordropid`),
   KEY `reactorid` (`reactorid`)
-) ENGINE=MyISAM AUTO_INCREMENT=883 DEFAULT CHARSET=big5 PACK_KEYS=1;
+) ENGINE=MyISAM AUTO_INCREMENT=883 DEFAULT CHARSET=utf8 PACK_KEYS=1;
 
 INSERT INTO `reactordrops` (`reactordropid`, `reactorid`, `itemid`, `chance`, `questid`) VALUES
 (126, 1022002,  4001340,  1,  28167),
@@ -32635,7 +32635,7 @@ CREATE TABLE `regrocklocations` (
   `characterid` int(11) DEFAULT NULL,
   `mapid` int(11) DEFAULT NULL,
   PRIMARY KEY (`trockid`)
-) ENGINE=MyISAM AUTO_INCREMENT=61524 DEFAULT CHARSET=big5;
+) ENGINE=MyISAM AUTO_INCREMENT=61524 DEFAULT CHARSET=utf8;
 
 INSERT INTO `regrocklocations` (`trockid`, `characterid`, `mapid`) VALUES
 (61523, 4751, 0),
@@ -32663,9 +32663,9 @@ CREATE TABLE `rings` (
   `partnerRingId` int(11) NOT NULL DEFAULT '0',
   `partnerChrId` int(11) NOT NULL DEFAULT '0',
   `itemid` int(11) NOT NULL DEFAULT '0',
-  `partnername` varchar(255) CHARACTER SET big5 NOT NULL,
+  `partnername` varchar(255) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`ringid`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `savedlocations`;
@@ -32677,7 +32677,7 @@ CREATE TABLE `savedlocations` (
   PRIMARY KEY (`id`),
   KEY `savedlocations_ibfk_1` (`characterid`),
   CONSTRAINT `savedlocations_ibfk_1` FOREIGN KEY (`characterid`) REFERENCES `characters` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 DROP TABLE IF EXISTS `shopitems`;
@@ -32691,7 +32691,7 @@ CREATE TABLE `shopitems` (
   `reqitem` int(11) NOT NULL,
   `reqitemq` int(11) NOT NULL,
   PRIMARY KEY (`shopitemid`)
-) ENGINE=MyISAM AUTO_INCREMENT=20025 DEFAULT CHARSET=big5;
+) ENGINE=MyISAM AUTO_INCREMENT=20025 DEFAULT CHARSET=utf8;
 
 INSERT INTO `shopitems` (`shopitemid`, `shopid`, `itemid`, `price`, `pitch`, `position`, `reqitem`, `reqitemq`) VALUES
 (20024, 1,  1302000,  50, 1,  0,  0,  0),
@@ -35709,7 +35709,7 @@ CREATE TABLE `shops` (
   `shopid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `npcid` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`shopid`)
-) ENGINE=MyISAM AUTO_INCREMENT=10000001 DEFAULT CHARSET=big5;
+) ENGINE=MyISAM AUTO_INCREMENT=10000001 DEFAULT CHARSET=utf8;
 
 INSERT INTO `shops` (`shopid`, `npcid`) VALUES
 (1, 11000),
@@ -35816,10 +35816,10 @@ CREATE TABLE `skillmacros` (
   `skill1` int(11) NOT NULL DEFAULT '0',
   `skill2` int(11) NOT NULL DEFAULT '0',
   `skill3` int(11) NOT NULL DEFAULT '0',
-  `name` varchar(60) CHARACTER SET big5 DEFAULT NULL,
+  `name` varchar(60) CHARACTER SET utf8 DEFAULT NULL,
   `shout` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=big5;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `skills`;
@@ -35833,7 +35833,7 @@ CREATE TABLE `skills` (
   PRIMARY KEY (`id`),
   KEY `skills_ibfk_1` (`characterid`),
   CONSTRAINT `skills_ibfk_1` FOREIGN KEY (`characterid`) REFERENCES `characters` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 
 DROP TABLE IF EXISTS `skills_cooldowns`;
@@ -35844,19 +35844,19 @@ CREATE TABLE `skills_cooldowns` (
   `length` bigint(20) NOT NULL,
   `StartTime` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=big5;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `speedruns`;
 CREATE TABLE `speedruns` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `type` varchar(13) CHARACTER SET big5 NOT NULL,
-  `leader` varchar(13) CHARACTER SET big5 NOT NULL,
-  `timestring` varchar(1024) CHARACTER SET big5 NOT NULL,
+  `type` varchar(13) CHARACTER SET utf8 NOT NULL,
+  `leader` varchar(13) CHARACTER SET utf8 NOT NULL,
+  `timestring` varchar(1024) CHARACTER SET utf8 NOT NULL,
   `time` bigint(20) NOT NULL DEFAULT '0',
-  `members` varchar(1024) CHARACTER SET big5 NOT NULL DEFAULT '',
+  `members` varchar(1024) CHARACTER SET utf8 NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `storages`;
@@ -35868,7 +35868,7 @@ CREATE TABLE `storages` (
   PRIMARY KEY (`storageid`),
   KEY `accountid` (`accountid`),
   CONSTRAINT `storages_ibfk_1` FOREIGN KEY (`accountid`) REFERENCES `accounts` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `trocklocations`;
@@ -35877,7 +35877,7 @@ CREATE TABLE `trocklocations` (
   `characterid` int(11) DEFAULT NULL,
   `mapid` int(11) DEFAULT NULL,
   PRIMARY KEY (`trockid`)
-) ENGINE=MyISAM DEFAULT CHARSET=big5;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `uselog`;
@@ -35889,14 +35889,14 @@ CREATE TABLE `uselog` (
   `active` varchar(255) DEFAULT NULL,
   `newpassword` varchar(255) DEFAULT NULL,
   `oldpassword` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `wishlist`;
 CREATE TABLE `wishlist` (
   `characterid` int(11) NOT NULL,
   `sn` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=big5 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 
 DROP TABLE IF EXISTS `wz_mobskilldata`;
@@ -35920,7 +35920,7 @@ CREATE TABLE `wz_mobskilldata` (
   `rby` int(11) NOT NULL DEFAULT '0',
   `once` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4762 DEFAULT CHARSET=big5;
+) ENGINE=MyISAM AUTO_INCREMENT=4762 DEFAULT CHARSET=utf8;
 
 INSERT INTO `wz_mobskilldata` (`id`, `skillid`, `level`, `hp`, `mpcon`, `x`, `y`, `time`, `prop`, `limit`, `spawneffect`, `interval`, `summons`, `ltx`, `lty`, `rbx`, `rby`, `once`) VALUES
 (4339,  100,  1,  100,  5,  115,  1,  30, 100,  0,  0,  40, '', 0,  0,  0,  0,  0),
@@ -36351,11 +36351,11 @@ DROP TABLE IF EXISTS `wz_oxdata`;
 CREATE TABLE `wz_oxdata` (
   `questionset` smallint(6) NOT NULL DEFAULT '0',
   `questionid` smallint(6) NOT NULL DEFAULT '0',
-  `question` varchar(200) CHARACTER SET big5 NOT NULL DEFAULT '',
-  `display` varchar(200) CHARACTER SET big5 NOT NULL DEFAULT '',
+  `question` varchar(200) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `display` varchar(200) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `answer` enum('o','x') NOT NULL,
   PRIMARY KEY (`questionset`,`questionid`)
-) ENGINE=MyISAM DEFAULT CHARSET=big5;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 INSERT INTO `wz_oxdata` (`questionset`, `questionid`, `question`, `display`, `answer`) VALUES
 (1, 1,  'The weakest monster in MapleStory is the BLUE SNAIL.', 'The weakest monster is the GREEN SNAIL. (LV. 1)',  'x'),
@@ -36920,7 +36920,7 @@ CREATE TABLE `zaksquads` (
   `status` int(10) unsigned NOT NULL DEFAULT '0',
   `members` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=big5;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `readable_cheatlog`;
