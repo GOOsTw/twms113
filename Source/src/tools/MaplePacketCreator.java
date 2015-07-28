@@ -498,6 +498,7 @@ public class MaplePacketCreator {
         mplew.write(1);
         mplew.writeInt(life.getObjectId());
         mplew.writeInt(life.getId());
+        
         mplew.writeShort(life.getPosition().x);
         mplew.writeShort(life.getCy());
         mplew.write(life.getF() == 1 ? 0 : 1);
@@ -505,24 +506,24 @@ public class MaplePacketCreator {
         mplew.writeShort(life.getRx0());
         mplew.writeShort(life.getRx1());
         mplew.write(MiniMap ? 1 : 0);
-
+        
         return mplew.getPacket();
     }
 
     public static MaplePacket spawnPlayerNPC(PlayerNPC npc) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendPacketOpcode.IMITATED_NPC_RESULT.getValue());
-        mplew.write(npc.getF() == 1 ? 0 : 1);
+        mplew.writeShort(SendPacketOpcode.IMITATED_NPC_DATA.getValue());
+        mplew.write(1);
         mplew.writeInt(npc.getId());
         mplew.writeMapleAsciiString(npc.getName());
-        mplew.write(npc.getGender());
+        mplew.write(npc.getF() == 1 ? 0 : 1);
         mplew.write(npc.getSkin());
         mplew.writeInt(npc.getFace());
         mplew.write(0);
         mplew.writeInt(npc.getHair());
         Map<Byte, Integer> equip = npc.getEquips();
-        Map<Byte, Integer> myEquip = new LinkedHashMap<Byte, Integer>();
-        Map<Byte, Integer> maskedEquip = new LinkedHashMap<Byte, Integer>();
+        Map<Byte, Integer> myEquip = new LinkedHashMap<>();
+        Map<Byte, Integer> maskedEquip = new LinkedHashMap<>();
         for (Entry<Byte, Integer> position : equip.entrySet()) {
             byte pos = (byte) (position.getKey() * -1);
             if (pos < 100 && myEquip.get(pos) == null) {
