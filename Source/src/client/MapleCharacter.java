@@ -79,8 +79,6 @@ import java.lang.ref.WeakReference;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import tools.MockIOSession;
 import scripting.EventInstanceManager;
 import scripting.NPCScriptManager;
@@ -1955,18 +1953,18 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public final void handleOrbgain() {
         int orbcount = getBuffedValue(MapleBuffStat.COMBO);
-        ISkill combo;
+        ISkill theCombol;
         ISkill advcombo;
 
         switch (getJob()) {
             case 1110:
             case 1111:
             case 1112:
-                combo = SkillFactory.getSkill(11111001);
+                theCombol = SkillFactory.getSkill(11111001);
                 advcombo = SkillFactory.getSkill(11110005);
                 break;
             default:
-                combo = SkillFactory.getSkill(1111002);
+                theCombol = SkillFactory.getSkill(1111002);
                 advcombo = SkillFactory.getSkill(1120003);
                 break;
         }
@@ -1975,8 +1973,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         int advComboSkillLevel = getSkillLevel(advcombo);
         if (advComboSkillLevel > 0) {
             ceffect = advcombo.getEffect(advComboSkillLevel);
-        } else if (getSkillLevel(combo) > 0) {
-            ceffect = combo.getEffect(getSkillLevel(combo));
+        } else if (getSkillLevel(theCombol) > 0) {
+            ceffect = theCombol.getEffect(getSkillLevel(theCombol));
         } else {
             return;
         }
@@ -1993,24 +1991,24 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             int duration = ceffect.getDuration();
             duration += (int) ((getBuffedStarttime(MapleBuffStat.COMBO) - System.currentTimeMillis()));
 
-            client.getSession().write(MaplePacketCreator.giveBuff(combo.getId(), duration, stat, ceffect));
+            client.getSession().write(MaplePacketCreator.giveBuff(theCombol.getId(), duration, stat, ceffect));
             map.broadcastMessage(this, MaplePacketCreator.giveForeignBuff(getId(), stat, ceffect), false);
         }
     }
 
     public void handleOrbconsume() {
-        ISkill combo;
+        ISkill theCombol;
 
         switch (getJob()) {
             case 1110:
             case 1111:
-                combo = SkillFactory.getSkill(11111001);
+                theCombol = SkillFactory.getSkill(11111001);
                 break;
             default:
-                combo = SkillFactory.getSkill(1111002);
+                theCombol = SkillFactory.getSkill(1111002);
                 break;
         }
-        if (getSkillLevel(combo) <= 0) {
+        if (getSkillLevel(theCombol) <= 0) {
             return;
         }
         MapleStatEffect ceffect = getStatForBuff(MapleBuffStat.COMBO);
@@ -2022,7 +2020,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         int duration = ceffect.getDuration();
         duration += (int) ((getBuffedStarttime(MapleBuffStat.COMBO) - System.currentTimeMillis()));
 
-        client.getSession().write(MaplePacketCreator.giveBuff(combo.getId(), duration, stat, ceffect));
+        client.getSession().write(MaplePacketCreator.giveBuff(theCombol.getId(), duration, stat, ceffect));
         map.broadcastMessage(this, MaplePacketCreator.giveForeignBuff(getId(), stat, ceffect), false);
     }
 

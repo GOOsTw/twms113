@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
-import client.inventory.IEquip;
 import client.inventory.Item;
 import client.ISkill;
 import constants.GameConstants;
@@ -211,7 +210,7 @@ public class PacketHelper {
 
         MapleInventory iv = chr.getInventory(MapleInventoryType.EQUIPPED);
         Collection<IItem> equippedC = iv.list();
-        List<Item> equipped = new ArrayList<Item>(equippedC.size());
+        List<Item> equipped = new ArrayList<>(equippedC.size());
 
         for (IItem item : equippedC) {
             equipped.add((Item) item);
@@ -292,8 +291,8 @@ public class PacketHelper {
         mplew.write(mega ? 0 : 1);
         mplew.writeInt(chr.getHair());
 
-        final Map<Byte, Integer> myEquip = new LinkedHashMap<Byte, Integer>();
-        final Map<Byte, Integer> maskedEquip = new LinkedHashMap<Byte, Integer>();
+        final Map<Byte, Integer> myEquip = new LinkedHashMap<>();
+        final Map<Byte, Integer> maskedEquip = new LinkedHashMap<>();
         MapleInventory equip = chr.getInventory(MapleInventoryType.EQUIPPED);
 
         for (final IItem item : equip.list()) {

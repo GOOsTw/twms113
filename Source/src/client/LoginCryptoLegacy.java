@@ -98,7 +98,7 @@ public class LoginCryptoLegacy {
      * @return The salted SHA1 hash of password.
      * @throws RuntimeException
      */
-    private static final String myCrypt(String password, String seed) throws RuntimeException {
+    private static String myCrypt(String password, String seed) throws RuntimeException {
         String out = null;
         int count = 8;
         MessageDigest digester;
@@ -129,9 +129,7 @@ public class LoginCryptoLegacy {
             } while (--count > 0);
             out = seed.substring(0, 12);
             out += encode64(sha1Hash);
-        } catch (NoSuchAlgorithmException Ex) {
-            System.err.println("Error hashing password." + Ex);
-        } catch (UnsupportedEncodingException Ex) {
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException Ex) {
             System.err.println("Error hashing password." + Ex);
         }
         if (out == null) {
@@ -147,7 +145,7 @@ public class LoginCryptoLegacy {
      * @param Random Random bytes to get salt from.
      * @return Salt string.
      */
-    private static final String genSalt(final byte[] Random) {
+    private static String genSalt(final byte[] Random) {
         final StringBuilder Salt = new StringBuilder("$H$");
         Salt.append(iota64[30]);
         Salt.append(encode64(Random));
@@ -155,8 +153,8 @@ public class LoginCryptoLegacy {
         return Salt.toString();
     }
 
-    private static final String convertToHex(byte[] data) {
-        StringBuffer buf = new StringBuffer();
+    private static String convertToHex(byte[] data) {
+        StringBuilder buf = new StringBuilder();
         for (int i = 0; i < data.length; i++) {
             int halfbyte = (data[i] >>> 4) & 0x0F;
             int two_halfs = 0;
@@ -184,7 +182,7 @@ public class LoginCryptoLegacy {
      * @param Input Array of bytes to put into base64.
      * @return String of base64.
      */
-    private static final String encode64(byte[] Input) {
+    private static String encode64(byte[] Input) {
         int iLen = Input.length;
 
         int oDataLen = (iLen * 4 + 2) / 3; // output length without padding
