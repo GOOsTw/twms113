@@ -48,7 +48,7 @@ public class MonsterCarnivalHandler {
         if (tab == 0) {
             final List<Pair<Integer, Integer>> mobs = c.getPlayer().getMap().getMobsToSpawn();
             if (num >= mobs.size() || c.getPlayer().getAvailableCP() < mobs.get(num).right) {
-                c.getPlayer().dropMessage(5, "You do not have the CP.");
+                c.getPlayer().dropMessage(5, "你沒有足夠的 CP.");
                 c.getSession().write(MaplePacketCreator.enableActions());
                 return;
             }
@@ -62,20 +62,20 @@ public class MonsterCarnivalHandler {
                 c.getPlayer().getMap().broadcastMessage(MonsterCarnivalPacket.playerSummoned(c.getPlayer().getName(), tab, num));
                 c.getSession().write(MaplePacketCreator.enableActions());
             } else {
-                c.getPlayer().dropMessage(5, "You may no longer summon the monster.");
+                c.getPlayer().dropMessage(5, "你不可以在召喚怪物。");
                 c.getSession().write(MaplePacketCreator.enableActions());
             }
 
         } else if (tab == 1) { //debuff
             final List<Integer> skillid = c.getPlayer().getMap().getSkillIds();
             if (num >= skillid.size()) {
-                c.getPlayer().dropMessage(5, "An error occurred.");
+                c.getPlayer().dropMessage(5, "未知的錯誤");
                 c.getSession().write(MaplePacketCreator.enableActions());
                 return;
             }
             final MCSkill skil = MapleCarnivalFactory.getInstance().getSkill(skillid.get(num)); //ugh wtf
             if (skil == null || c.getPlayer().getAvailableCP() < skil.cpLoss) {
-                c.getPlayer().dropMessage(5, "You do not have the CP.");
+                c.getPlayer().dropMessage(5, "你沒有足夠的 CP.");
                 c.getSession().write(MaplePacketCreator.enableActions());
                 return;
             }
@@ -108,13 +108,13 @@ public class MonsterCarnivalHandler {
                 c.getPlayer().getMap().broadcastMessage(MonsterCarnivalPacket.playerSummoned(c.getPlayer().getName(), tab, num));
                 c.getSession().write(MaplePacketCreator.enableActions());
             } else {
-                c.getPlayer().dropMessage(5, "An error occurred.");
+                c.getPlayer().dropMessage(5, "未知的錯誤.");
                 c.getSession().write(MaplePacketCreator.enableActions());
             }
         } else if (tab == 2) { //skill
             final MCSkill skil = MapleCarnivalFactory.getInstance().getGuardian(num);
             if (skil == null || c.getPlayer().getAvailableCP() < skil.cpLoss) {
-                c.getPlayer().dropMessage(5, "You do not have the CP.");
+                c.getPlayer().dropMessage(5, "你沒有足夠的 CP.");
                 c.getSession().write(MaplePacketCreator.enableActions());
                 return;
             }
@@ -127,7 +127,7 @@ public class MonsterCarnivalHandler {
                 c.getPlayer().getMap().broadcastMessage(MonsterCarnivalPacket.playerSummoned(c.getPlayer().getName(), tab, num));
                 c.getSession().write(MaplePacketCreator.enableActions());
             } else {
-                c.getPlayer().dropMessage(5, "You may no longer summon the being.");
+                c.getPlayer().dropMessage(5, "你不可以在召喚。");
                 c.getSession().write(MaplePacketCreator.enableActions());
             }
         }

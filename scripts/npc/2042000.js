@@ -27,7 +27,7 @@ function action(mode, type, selection) {
 		if (found) {
                     cm.sendSimple(selStr);
 		} else {
-		    cm.sendSimple("There are no rooms at the moment.\r\n#L100#楓葉黃金標誌兌換#l");
+		    cm.sendSimple("目前沒有房間.\r\n#L100#楓葉黃金標誌兌換#l");
 		}
             } else {
                 cm.sendSimple("請叫你的隊長來找我\r\n#L100#楓葉黃金標誌兌換#l");
@@ -41,24 +41,24 @@ function action(mode, type, selection) {
             if (cm.getEventManager("cpq").getInstance("cpq"+mapid) == null) {
                 if ((cm.getParty() != null && 1 < cm.getParty().getMembers().size() && cm.getParty().getMembers().size() < (selection == 4 || selection == 5 || selection == 8 ? 4 : 3)) || cm.getPlayer().isGM()) {
                     if (checkLevelsAndMap(30, 50) == 1) {
-                        cm.sendOk("A player in your party is not the appropriate level.");
+                        cm.sendOk("隊伍裡有人等級不符合。");
                         cm.dispose();
                     } else if (checkLevelsAndMap(30, 50) == 2) {
-                        cm.sendOk("Everyone in your party isnt in this map.");
+                        cm.sendOk("在地圖上找不到您的隊友。");
                         cm.dispose();
                     } else {
                         cm.getEventManager("cpq").startInstance(""+mapid, cm.getPlayer());
                         cm.dispose();
                     }
                 } else {
-                    cm.sendOk("Your party is not the appropriate size.");
+                    cm.sendOk("您的隊伍人數不足。");
                 }
             } else if (cm.getParty() != null && cm.getEventManager("cpq").getInstance("cpq"+mapid).getPlayerCount() == cm.getParty().getMembers().size()) {
                 if (checkLevelsAndMap(30, 200) == 1) {
-                    cm.sendOk("A player in your party is not the appropriate level.");
+                    cm.sendOk("隊伍裡有人等級不符合。");
                     cm.dispose();
                 } else if (checkLevelsAndMap(30, 200) == 2) {
-                    cm.sendOk("Everyone in your party isnt in this map.");
+                    cm.sendOk("在地圖上找不到您的隊友。");
                     cm.dispose();
                 } else {
                     //Send challenge packet here
@@ -67,11 +67,11 @@ function action(mode, type, selection) {
                     //if (owner.getConversation() != 1) {
                         cm.openNpc(owner.getClient(), 2042001);
                     //}
-                    cm.sendOk("Your challenge has been sent.");
+                    cm.sendOk("您的挑戰已經發送。");
                     cm.dispose();
                 }
             } else {
-                cm.sendOk("The two parties participating in Monster Carnival must have an equal number of party member");
+                cm.sendOk("怪物擂台必須是雙方隊伍等級相符合。");
                 cm.dispose();
             }
 	} else {
@@ -80,9 +80,9 @@ function action(mode, type, selection) {
 	} else if (status == 2) {
 	    if (selection == 0) {
 		if (!cm.haveItem(4001129,50)) {
-		    cm.sendOk("You have no items.");
+		    cm.sendOk("很抱歉您並沒有#t4001129# #b50#k個");
 		} else if (!cm.canHold(1122007,1)) {
-		    cm.sendOk("Please make room");
+		    cm.sendOk("請清出空間.");
 		} else {
 		    cm.gainItem(1122007,1,true);
 		    cm.gainItem(4001129,-50);
@@ -90,9 +90,9 @@ function action(mode, type, selection) {
 		cm.dispose();
 	    } else if (selection == 1) {
 		if (!cm.haveItem(4001129,30)) {
-		    cm.sendOk("You have no items.");
+		    cm.sendOk("很抱歉您並沒有#t4001129# #b30#k個");
 		} else if (!cm.canHold(2041211,1)) {
-		    cm.sendOk("Please make room");
+		    cm.sendOk("請清出空間.");
 		} else {
 		    cm.gainItem(2041211,1);
 		    cm.gainItem(4001129,-30);
@@ -100,9 +100,9 @@ function action(mode, type, selection) {
 		cm.dispose();
 	    } else if (selection == 2) {
 		if (!cm.haveItem(4001254,50)) {
-		    cm.sendOk("You have no items.");
+		    cm.sendOk("很抱歉您並沒有#t4001254# #b50#k個");
 		} else if (!cm.canHold(1122058,1)) {
-		    cm.sendOk("Please make room");
+		    cm.sendOk("請清出空間.");
 		} else {
 		    cm.gainItem(1122058,1,true);
 		    cm.gainItem(4001254,-50);
