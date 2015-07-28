@@ -329,7 +329,7 @@ public class CashShopOperation {
             } else {
                 c.getSession().write(MTSCSPacket.sendCSFail(0xB1));
             }
-        } else if (action == 15) { //put item in cash inventory
+        } else if (action == 0x0D) { //put item in cash inventory
             int uniqueid = (int) slea.readLong();
             MapleInventoryType type = MapleInventoryType.getByType(slea.readByte());
             IItem item = c.getPlayer().getInventory(type).findByUniqueId(uniqueid);
@@ -346,7 +346,7 @@ public class CashShopOperation {
             } else {
                 c.getSession().write(MTSCSPacket.sendCSFail(0xB1));
             }
-        } else if (action == 36) { //36 = friendship, 30 = crush
+        } else if (action == 0x1D||action ==0x23) { //36 = friendship, 30 = crush
             //c.getSession().write(MTSCSPacket.sendCSFail(0));
             slea.readMapleAsciiString(); // as13
             final CashItemInfo item = CashItemFactory.getInstance().getItem(slea.readInt());
@@ -382,7 +382,7 @@ public class CashShopOperation {
                 refreshCS(c);
                 return;
             } else {
-                if (info.getRight().getRight().intValue() == c.getPlayer().getGender() && action == 30) {
+                if (info.getRight().getRight().intValue() == c.getPlayer().getGender() && action == 0x1D) {
                     c.getSession().write(MTSCSPacket.sendCSFail(0xA1)); //9B v75
                     refreshCS(c);
                     return;

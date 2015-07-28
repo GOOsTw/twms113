@@ -1032,12 +1032,12 @@ public class InventoryHandler {
                         }
                         break;
                     case 2048: // hp
-                        if (/*playerst.getMaxMp() < ((c.getPlayer().getLevel() * 14) + 134) || */c.getPlayer().getHpApUsed() <= 0 || c.getPlayer().getHpApUsed() >= 10000) {
+                        if (c.getPlayer().getHpMpApUsed() <= 0 || c.getPlayer().getHpMpApUsed() >= 10000) {
                             used = false;
                         }
                         break;
                     case 8192: // mp
-                        if (/*playerst.getMaxMp() < ((c.getPlayer().getLevel() * 14) + 134) || */c.getPlayer().getHpApUsed() <= 0 || c.getPlayer().getHpApUsed() >= 10000) {
+                        if (c.getPlayer().getHpMpApUsed() <= 0 || c.getPlayer().getHpMpApUsed() >= 10000) {
                             used = false;
                         }
                         break;
@@ -1113,7 +1113,7 @@ public class InventoryHandler {
                                 maxhp += Randomizer.rand(50, 100);
                             }
                             maxhp = (short) Math.min(30000, Math.abs(maxhp));
-                            c.getPlayer().setHpApUsed((short) (c.getPlayer().getHpApUsed() + 1));
+                            c.getPlayer().setHpMpApUsed((short) (c.getPlayer().getHpMpApUsed() + 1));
                             playerst.setMaxHp(maxhp);
                             statupdate.add(new Pair<MapleStat, Integer>(MapleStat.MAXHP, (int) maxhp));
                             break;
@@ -1149,7 +1149,7 @@ public class InventoryHandler {
                                 maxmp += Randomizer.rand(50, 100);
                             }
                             maxmp = (short) Math.min(30000, Math.abs(maxmp));
-                            c.getPlayer().setHpApUsed((short) (c.getPlayer().getHpApUsed() + 1));
+                            c.getPlayer().setHpMpApUsed((short) (c.getPlayer().getHpMpApUsed() + 1));
                             playerst.setMaxMp(maxmp);
                             statupdate.add(new Pair<MapleStat, Integer>(MapleStat.MAXMP, (int) maxmp));
                             break;
@@ -1222,7 +1222,7 @@ public class InventoryHandler {
                             } else { // GameMaster
                                 maxhp -= 20;
                             }
-                            c.getPlayer().setHpApUsed((short) (c.getPlayer().getHpApUsed() - 1));
+                            c.getPlayer().setHpMpApUsed((short) (c.getPlayer().getHpMpApUsed() - 1));
                             playerst.setHp(maxhp);
                             playerst.setMaxHp(maxhp);
                             statupdate.add(new Pair<MapleStat, Integer>(MapleStat.MAXHP, (int) maxhp));
@@ -1256,10 +1256,10 @@ public class InventoryHandler {
                             } else { // GameMaster
                                 maxmp -= 20;
                             }
-                            c.getPlayer().setHpApUsed((short) (c.getPlayer().getHpApUsed() - 1));
+                            c.getPlayer().setHpMpApUsed((short) (c.getPlayer().getHpMpApUsed() - 1));
                             playerst.setMp(maxmp);
                             playerst.setMaxMp(maxmp);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.MAXMP, (int) maxmp));
+                            statupdate.add(new Pair<>(MapleStat.MAXMP, (int) maxmp));
                             break;
                     }
                     c.getSession().write(MaplePacketCreator.updatePlayerStats(statupdate, true, c.getPlayer().getJob()));
