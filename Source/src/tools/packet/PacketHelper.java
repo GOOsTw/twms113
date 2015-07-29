@@ -357,7 +357,7 @@ public class PacketHelper {
         short pos = item.getPosition();
         if (item.getType() == 1) {
             equip = (Equip) item;
-            isRing = equip.getRing().getRingId() > -1;
+            isRing = equip.getRing() != null && equip.getRing().getRingId() > -1;
         }
         if (!zeroPosition) {
             if (equip != null) {
