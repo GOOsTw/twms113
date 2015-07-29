@@ -350,6 +350,8 @@ public class PacketHelper {
 
     public static final void addItemInfo(final MaplePacketLittleEndianWriter mplew, final IItem item, final boolean zeroPosition, final boolean leaveOut, final boolean trade) {
         short pos = item.getPosition();
+        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+
         boolean isCash = ii.isCash(item.getItemId());
         if (zeroPosition) {
             if (!leaveOut) {
@@ -415,7 +417,7 @@ public class PacketHelper {
                     mplew.writeInt(equip.getDurability());//(equip.getDurability());
                     mplew.writeInt(equip.getViciousHammer()); //WTF NEXON ARE YOU SERIOUS?
                     mplew.writeShort(equip.getHpR());
-                    mplew.writeShor(equip.getMpR());
+                    mplew.writeShort(equip.getMpR());
                 }
 
             } else {
