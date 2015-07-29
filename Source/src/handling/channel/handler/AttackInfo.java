@@ -48,7 +48,7 @@ public class AttackInfo {
         if (GameConstants.isLinkedAranSkill(skill)) {
             final ISkill skillLink = SkillFactory.getSkill(skill);
             if (display > 80) {
-                if (!skillLink.getAction()) {
+                if (!skillLink.hasAction()) {
                     AutobanManager.getInstance().autoban(chr.getClient(), "No delay hack, SkillID : " + skill); // 2 of the same autobans? wtf...
                     return null;
                 }
@@ -56,7 +56,7 @@ public class AttackInfo {
             return skillLink.getEffect(skillLevel);
         }
         if (display > 80) {
-            if (!skill_.getAction()) {
+            if (!skill_.hasAction()) {
                 AutobanManager.getInstance().autoban(chr.getClient(), "No delay hack, SkillID : " + skill);
                 return null;
             }

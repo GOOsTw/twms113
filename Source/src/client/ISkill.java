@@ -49,17 +49,34 @@ public interface ISkill {
     byte getMaxLevel();
 
     /**
-     * 
-     * @return 
+     * 回傳技能動畫時間
+     * @return 技能動畫時間
      */
     int getAnimationTime();
 
+    /**
+     * 技能書使用的，用於學習技能書時，確認職業是否能學
+     * @param job 角色職業
+     * @return 是否能學習
+     */
     public boolean canBeLearnedBy(int job);
 
+    /**
+     * 用於確認四轉職業的技能
+     * @return 是否為四轉技能 
+     */
     public boolean isFourthJob();
 
-    public boolean getAction();
+    /**
+     * 回傳技能是否含有action值
+     * @return 是否含有action值
+     */
+    public boolean hasAction();
 
+    /**
+     * 
+     * @return 
+     */
     public boolean isTimeLimited();
 
     public int getMasterLevel();

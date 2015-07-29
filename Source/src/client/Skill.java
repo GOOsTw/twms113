@@ -31,13 +31,45 @@ import server.life.Element;
 
 public class Skill implements ISkill {
 
-    //public static final int[] skills = new int[]{4311003, 4321000, 4331002, 4331005, 4341004, 4341007};
+    /**
+     * 技能名稱
+     */
     private String name = "";
-    private final List<MapleStatEffect> effects = new ArrayList<MapleStatEffect>();
+    /**
+     * 技能效果
+     */
+    private final List<MapleStatEffect> effects = new ArrayList<>();
+    /**
+     * 技能元素
+     */
     private Element element;
+    /**
+     * 技能等級
+     */
     private byte level;
-    private int id, animationTime, requiredSkill, masterLevel;
-    private boolean action, invisible, chargeskill, timeLimited;
+    /**
+     * 技能id
+     */
+    private final int id;
+    /**
+     * 技能動畫時間
+     */
+    private int animationTime;
+    /**
+     * 前置技能
+     */
+    private int requiredSkill;
+    /**
+     * 最高等級
+     */
+    private int masterLevel;
+    /** 
+     * 有沒有action
+     */
+    private boolean action;
+    private boolean invisible;
+    private boolean chargeskill;
+    private boolean timeLimited;
 
     public Skill(final int id) {
         super();
@@ -229,7 +261,7 @@ public class Skill implements ISkill {
     }
 
     @Override
-    public boolean getAction() {
+    public boolean hasAction() {
         return action;
     }
 
