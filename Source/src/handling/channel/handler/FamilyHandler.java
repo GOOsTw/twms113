@@ -63,31 +63,31 @@ public class FamilyHandler {
             case 0: //teleport: need add check for if not a safe place
                 victim = c.getChannelServer().getPlayerStorage().getCharacterByName(slea.readMapleAsciiString());
                 if (FieldLimitType.VipRock.check(c.getPlayer().getMap().getFieldLimit()) || !c.getPlayer().isAlive()) {
-                    c.getPlayer().dropMessage(5, "Summons failed. Your current location or state does not allow a summons.");
+                    c.getPlayer().dropMessage(5, "召喚失敗，因為您當前的位置或者狀態是不准許召喚。");
                     success = false;
                 } else if (victim == null || (victim.isGM() && !c.getPlayer().isGM())) {
-                    c.getPlayer().dropMessage(1, "Invalid name or you are not on the same channel.");
+                    c.getPlayer().dropMessage(1, "無效的角色名稱或者跟您不同頻道。");
                     success = false;
                 } else if (victim.getFamilyId() == c.getPlayer().getFamilyId() && !FieldLimitType.VipRock.check(victim.getMap().getFieldLimit()) && victim.getId() != c.getPlayer().getId()) {
                     c.getPlayer().changeMap(victim.getMap(), victim.getMap().getPortal(0));
                 } else {
-                    c.getPlayer().dropMessage(5, "Summons failed. Your current location or state does not allow a summons.");
+                    c.getPlayer().dropMessage(5, "召喚失敗，因為您當前的位置或者狀態是不准許召喚。");
                     success = false;
                 }
                 break;
             case 1: // TODO give a check to the player being forced somewhere else..
                 victim = c.getChannelServer().getPlayerStorage().getCharacterByName(slea.readMapleAsciiString());
                 if (FieldLimitType.VipRock.check(c.getPlayer().getMap().getFieldLimit()) || !c.getPlayer().isAlive()) {
-                    c.getPlayer().dropMessage(5, "Summons failed. Your current location or state does not allow a summons.");
+                    c.getPlayer().dropMessage(5, "召喚失敗，因為您當前的位置或者狀態是不准許召喚。");
                 } else if (victim == null || (victim.isGM() && !c.getPlayer().isGM())) {
-                    c.getPlayer().dropMessage(1, "Invalid name or you are not on the same channel.");
+                    c.getPlayer().dropMessage(1, "無效的角色名稱或者跟您不同頻道。");
                 } else if (victim.getTeleportName().length() > 0) {
-                    c.getPlayer().dropMessage(1, "Another character has requested to summon this character. Please try again later.");
+                    c.getPlayer().dropMessage(1, "另一個玩家已經請求您召喚的玩家請稍後再嘗試。");
                 } else if (victim.getFamilyId() == c.getPlayer().getFamilyId() && !FieldLimitType.VipRock.check(victim.getMap().getFieldLimit()) && victim.getId() != c.getPlayer().getId()) {
                     victim.getClient().getSession().write(FamilyPacket.familySummonRequest(c.getPlayer().getName(), c.getPlayer().getMap().getMapName()));
                     victim.setTeleportName(c.getPlayer().getName());
                 } else {
-                    c.getPlayer().dropMessage(5, "Summons failed. Your current location or state does not allow a summons.");
+                    c.getPlayer().dropMessage(5, "召喚失敗，因為您當前的位置或者狀態是不准許召喚。");
                 }
                 return; //RETURN not break
             case 4: // 6 family members in pedigree online Drop Rate & Exp Rate + 100% 30 minutes
@@ -139,7 +139,7 @@ public class FamilyHandler {
             c.getSession().write(FamilyPacket.changeRep(-entry.rep));
             c.getPlayer().useFamilyBuff(entry);
         } else {
-            c.getPlayer().dropMessage(5, "An error occured.");
+            c.getPlayer().dropMessage(5, "發生了未知的錯誤。");
         }
     }
 
@@ -149,23 +149,23 @@ public class FamilyHandler {
         }
         MapleCharacter addChr = c.getChannelServer().getPlayerStorage().getCharacterByName(slea.readMapleAsciiString());
         if (addChr == null) {
-            c.getPlayer().dropMessage(1, "The name you requested is incorrect or he/she is currently not logged in.");
+            c.getPlayer().dropMessage(1, "您邀請的玩家角色名字不正確或者尚未登入。");
         } else if (addChr.getFamilyId() == c.getPlayer().getFamilyId() && addChr.getFamilyId() > 0) {
-            c.getPlayer().dropMessage(1, "You belong to the same family.");
+            c.getPlayer().dropMessage(1, "已經在相同的家族裡。");
         } else if (addChr.getMapId() != c.getPlayer().getMapId()) {
-            c.getPlayer().dropMessage(1, "The one you wish to add as a junior must be in the same map.");
+            c.getPlayer().dropMessage(1, "不再相同的地圖裡。");
         } else if (addChr.getSeniorId() != 0) {
-            c.getPlayer().dropMessage(1, "The character is already a junior of another character.");
+            c.getPlayer().dropMessage(1, "您邀請的玩家角色已經在別的家族裡。");
         } else if (addChr.getLevel() >= c.getPlayer().getLevel()) {
-            c.getPlayer().dropMessage(1, "The junior you wish to add must be at a lower rank.");
+            c.getPlayer().dropMessage(1, "您需要邀請比您低等的玩家。");
         } else if (addChr.getLevel() < c.getPlayer().getLevel() - 20) {
-            c.getPlayer().dropMessage(1, "The gap between you and your junior must be within 20 levels.");
+            c.getPlayer().dropMessage(1, "您邀請的玩家等級必須相差20等以內。");
 	//} else if (c.getPlayer().getFamilyId() != 0 && c.getPlayer().getFamily().getGens() >= 1000) {
             //	c.getPlayer().dropMessage(5, "Your family cannot extend more than 1000 generations from above and below.");
         } else if (addChr.getLevel() < 10) {
-            c.getPlayer().dropMessage(1, "The junior you wish to add must be over Level 10.");
+            c.getPlayer().dropMessage(1, "您必須邀請10級以上的玩家。");
         } else if (c.getPlayer().getJunior1() > 0 && c.getPlayer().getJunior2() > 0) {
-            c.getPlayer().dropMessage(1, "You have 2 juniors already.");
+            c.getPlayer().dropMessage(1, "您家族已經有兩個人了，請找您的後代繼續邀請別人吧！");
         } else if (c.getPlayer().isGM() || !addChr.isGM()) {
             addChr.getClient().getSession().write(FamilyPacket.sendFamilyInvite(c.getPlayer().getId(), c.getPlayer().getLevel(), c.getPlayer().getJob(), c.getPlayer().getName()));
         }
@@ -179,7 +179,7 @@ public class FamilyHandler {
         }
         //fam.setNotice(slea.readMapleAsciiString());
         fam.setNotice(slea.readMapleAsciiString());
-        c.getPlayer().dropMessage(1, "重開家族視窗即可套用.");
+        c.getPlayer().dropMessage(1, "重開家族視窗即可套用。");
     }
 
     public static final void FamilySummon(final SeekableLittleEndianAccessor slea, MapleClient c) {
@@ -197,10 +197,10 @@ public class FamilyHandler {
                 tt.getClient().getSession().write(FamilyPacket.changeRep(-cost.rep));
                 tt.useFamilyBuff(cost);
             } else {
-                tt.dropMessage(5, "Summons failed. Your current location or state does not allow a summons.");
+                tt.dropMessage(5, "召喚失敗，因為您當前的位置或者狀態是不准許召喚。");
             }
         } else {
-            c.getPlayer().dropMessage(5, "Summons failed. Your current location or state does not allow a summons.");
+            c.getPlayer().dropMessage(5, "召喚失敗，因為您當前的位置或者狀態是不准許召喚。");
         }
         c.getPlayer().setTeleportName("");
     }
@@ -228,7 +228,7 @@ public class FamilyHandler {
         //if (!other.isOnline()) {
         MapleFamily.setOfflineFamilyStatus(other.getFamilyId(), other.getSeniorId(), other.getJunior1(), other.getJunior2(), other.getCurrentRep(), other.getTotalRep(), other.getId());
         //}
-        MapleCharacterUtil.sendNote(other.getName(), c.getPlayer().getName(), c.getPlayer().getName() + " 窩做人失敗 解散了家族", 0);
+        MapleCharacterUtil.sendNote(other.getName(), c.getPlayer().getName(), c.getPlayer().getName() + " 組長 解散了家族", 0);
         if (!fam.splitFamily(juniorid, other)) { //juniorid splits to make their own family. function should handle the rest
             if (!junior2) {
                 fam.resetDescendants();
@@ -258,7 +258,7 @@ public class FamilyHandler {
         MapleFamily.setOfflineFamilyStatus(mgc.getFamilyId(), mgc.getSeniorId(), mgc.getJunior1(), mgc.getJunior2(), mgc.getCurrentRep(), mgc.getTotalRep(), mgc.getId());
         //}
         c.getPlayer().saveFamilyStatus();
-        MapleCharacterUtil.sendNote(mgc.getName(), c.getPlayer().getName(), c.getPlayer().getName() + " 窩展翅高飛了 離開你的家族", 0);
+        MapleCharacterUtil.sendNote(mgc.getName(), c.getPlayer().getName(), c.getPlayer().getName() + " 成員 離開你的家族", 0);
         if (!fam.splitFamily(c.getPlayer().getId(), mgc_)) { //now, we're the family leader
             if (!junior2) {
                 fam.resetDescendants();
