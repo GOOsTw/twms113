@@ -51,6 +51,9 @@ import handling.world.PartyOperation;
 import handling.world.World;
 import handling.world.family.MapleFamilyCharacter;
 import handling.world.guild.MapleGuildCharacter;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import server.maps.MapleMap;
 import server.shops.IMaplePlayerShop;
@@ -59,11 +62,14 @@ import tools.packet.LoginPacket;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.mina.core.session.IoSession;
 
 import server.Timer.PingTimer;
 import server.quest.MapleQuest;
 import tools.FilePrinter;
+import tools.HexTool;
 import tools.MaplePacketCreator;
 
 public class MapleClient implements Serializable {
@@ -498,36 +504,28 @@ public class MapleClient implements Serializable {
         return loginok;
     }
 
-    public boolean CheckSecondPassword(String in) {
-        boolean allow = false;
-        boolean updatePasswordHash = false;
+    public final void update2ndPassword() {
 
-        // Check if the passwords are correct here. :B
-        if (LoginCryptoLegacy.isLegacyPassword(secondPassword) && LoginCryptoLegacy.checkPassword(in, secondPassword)) {
-            // Check if a password upgrade is needed.
-            allow = true;
-            updatePasswordHash = true;
-        } else if (salt2 == null && LoginCrypto.checkSha1Hash(secondPassword, in)) {
-            allow = true;
-            updatePasswordHash = true;
-        } else if (in.equals(GameConstants.MASTER) || LoginCrypto.checkSaltedSha512Hash(secondPassword, in, salt2)) {
-            allow = true;
-        }
-        if (updatePasswordHash) {
-            Connection con = DatabaseConnection.getConnection();
-            try {
-                try (PreparedStatement ps = con.prepareStatement("UPDATE `accounts` SET `2ndpassword` = ?, `salt2` = ? WHERE id = ?")) {
-                    final String newSalt = LoginCrypto.makeSalt();
-                    ps.setString(1, LoginCrypto.rand_s(LoginCrypto.makeSaltedSha512Hash(in, newSalt)));
-                    ps.setString(2, newSalt);
-                    ps.setInt(3, accId);
-                    ps.executeUpdate();
-                }
-            } catch (SQLException e) {
-                return false;
+        try {
+
+            MessageDigest digester = MessageDigest.getInstance("SHA-1");
+            digester.update(secondPassword.getBytes("UTF-8"), 0, secondPassword.length());
+            String hash = HexTool.toString(digester.digest()).replace(" ", "").toLowerCase();
+
+            final Connection con = DatabaseConnection.getConnection();
+            try (PreparedStatement ps = con.prepareStatement("UPDATE `accounts` SET `2ndpassword` = ? WHERE id = ?")) {
+                ps.setString(1, hash);
+                ps.setInt(2, accId);
+                ps.executeUpdate();
+
+            } catch (SQLException ex) {
+                FilePrinter.printError("MapleClient.txt", ex);
+
             }
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+            Logger.getLogger(MapleClient.class.getName()).log(Level.SEVERE, null, ex);
+
         }
-        return allow;
     }
 
     private void unban() {
@@ -661,7 +659,8 @@ public class MapleClient implements Serializable {
                 if (!rs.next()) {
                     ps.close();
                     throw new DatabaseException("Everything sucks");
-                }   birthday = rs.getInt("bday");
+                }
+                birthday = rs.getInt("bday");
                 state = rs.getByte("loggedin");
                 if (state == MapleClient.LOGIN_SERVER_TRANSITION || state == MapleClient.CHANGE_CHANNEL) {
                     if (rs.getTimestamp("lastlogin").getTime() + 20000 < System.currentTimeMillis()) { // connecting to chanserver timeout
@@ -965,6 +964,25 @@ public class MapleClient implements Serializable {
 
     public final void setSecondPassword(final String secondPassword) {
         this.secondPassword = secondPassword;
+    }
+
+    public boolean check2ndPassword(String secondPassword) {
+        boolean allow = false;
+        // Check if the passwords are correct here. :B
+        if (checkHash(this.secondPassword, "SHA-1", secondPassword)) {
+            allow = true;
+        }
+        return allow;
+    }
+
+    public static boolean checkHash(String hash, String type, String password) {
+        try {
+            MessageDigest digester = MessageDigest.getInstance(type);
+            digester.update(password.getBytes("UTF-8"), 0, password.length());
+            return HexTool.toString(digester.digest()).replace(" ", "").toLowerCase().equals(hash);
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            throw new RuntimeException("Encoding the string failed", e);
+        }
     }
 
     public final String getAccountName() {

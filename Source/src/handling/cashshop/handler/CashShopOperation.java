@@ -269,7 +269,7 @@ public class CashShopOperation {
                 } else if (chr.getCSPoints(1) < cItem.getPrice()) {
                     errorCode = 168;
                     canBuy = false;
-                } else if (!c.CheckSecondPassword(secondPassword)) {
+                } else if (!c.check2ndPassword(secondPassword)) {
                     canBuy = false;
                     errorCode = 197;
                 } else if (message.getBytes().length < 1 || message.getBytes().length > 74) {
@@ -484,7 +484,7 @@ public class CashShopOperation {
                 } else if (chr.getCSPoints(1) < cItem.getPrice()) {
                     errorCode = 168;
                     canBuy = false;
-                } else if (!c.CheckSecondPassword(secondPassword)) {
+                } else if (!c.check2ndPassword(secondPassword)) {
                     canBuy = false;
                     errorCode = 197;
                 } else if (message.getBytes().length < 1 || message.getBytes().length > 74) {

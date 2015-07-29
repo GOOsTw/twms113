@@ -338,7 +338,7 @@ public class CharLoginHandler {
                 c.getSession().close();
                 return;
             } else {
-                if (!c.CheckSecondPassword(Secondpw_Client)) { // Wrong Password
+                if (!c.check2ndPassword(Secondpw_Client)) { // Wrong Password
                     //state = 12;
                     state = 16;
                 }
@@ -378,7 +378,7 @@ public class CharLoginHandler {
             c.getSession().close();
             return;
         }
-        if (c.CheckSecondPassword(password)) {
+        if (c.check2ndPassword(password)) {
             c.updateMacs(slea.readMapleAsciiString());
             if (c.getIdleTask() != null) {
                 c.getIdleTask().cancel(true);
