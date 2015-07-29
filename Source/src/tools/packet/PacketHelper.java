@@ -420,6 +420,8 @@ public class PacketHelper {
                     mplew.writeShort(equip.getMpR());
                 }
 
+                mplew.writeLong(getTime(-2));
+
             } else {
                 mplew.writeShort(item.getQuantity());
                 mplew.writeMapleAsciiString(item.getOwner());
