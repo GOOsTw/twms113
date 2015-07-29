@@ -295,6 +295,11 @@ public class CashShopOperation {
                     c.getPlayer().getCashInventory().gift(info.getLeft(), c.getPlayer().getName(), message, cItem.getSN(), MapleInventoryIdentifier.getInstance());
                     c.getPlayer().modifyCSPoints(1, -cItem.getPrice(), false);
                     c.sendPacket(MTSCSPacket.sendGift(characterName, cItem, cItem.getPrice() / 2, false));
+                    chr.sendNote(characterName, chr.getName() + " 送了你禮物! 趕快去商城確認看看.", (byte) 0); //fame or not
+                    MapleCharacter receiver = c.getChannelServer().getPlayerStorage().getCharacterByName(characterName);
+                    if (receiver != null) {
+                        receiver.showNote();
+                    }
                     //c.sendPacket(MTSCSPacket.sendGift(cItem.getPrice(), cItem.getId(), cItem.getCount(), characterName), f);
                 } else {
                     c.sendPacket(MTSCSPacket.sendCSFail(errorCode));
@@ -523,6 +528,11 @@ public class CashShopOperation {
                     }
                     c.getPlayer().modifyCSPoints(1, -cItem.getPrice(), false);
                     c.sendPacket(MTSCSPacket.sendGift(partnerName, cItem, cItem.getPrice() / 2, false));
+                    chr.sendNote(partnerName, chr.getName() + " 送了你禮物! 趕快去商城確認看看.", (byte) 0); //fame or not
+                    MapleCharacter receiver = c.getChannelServer().getPlayerStorage().getCharacterByName(partnerName);
+                    if (receiver != null) {
+                        receiver.showNote();
+                    }
 
                 } else {
                     c.sendPacket(MTSCSPacket.sendCSFail(errorCode));
