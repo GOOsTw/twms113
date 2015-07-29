@@ -294,7 +294,8 @@ public class CashShopOperation {
                     }
                     c.getPlayer().getCashInventory().gift(info.getLeft(), c.getPlayer().getName(), message, cItem.getSN(), MapleInventoryIdentifier.getInstance());
                     c.getPlayer().modifyCSPoints(1, -cItem.getPrice(), false);
-                    c.sendPacket(MTSCSPacket.sendGift(cItem.getPrice(), cItem.getId(), cItem.getCount(), characterName));
+                    c.sendPacket(MTSCSPacket.sendGift(characterName, cItem, cItem.getPrice() / 2, false));
+                    //c.sendPacket(MTSCSPacket.sendGift(cItem.getPrice(), cItem.getId(), cItem.getCount(), characterName), f);
                 } else {
                     c.sendPacket(MTSCSPacket.sendCSFail(errorCode));
                 }
@@ -521,7 +522,7 @@ public class CashShopOperation {
                         return;
                     }
                     c.getPlayer().modifyCSPoints(1, -cItem.getPrice(), false);
-                    c.getSession().write(MTSCSPacket.sendGift(cItem.getPrice(), cItem.getId(), cItem.getCount(), partnerName));
+                    c.sendPacket(MTSCSPacket.sendGift(partnerName, cItem, cItem.getPrice() / 2, false));
 
                 } else {
                     c.sendPacket(MTSCSPacket.sendCSFail(errorCode));
@@ -530,12 +531,12 @@ public class CashShopOperation {
                 RefreshCashShop(c);
                 break;
             }
-            
+
             default:
                 c.sendPacket(MTSCSPacket.sendCSFail(0));
                 RefreshCashShop(c);
         }
-        
+
     }
 
     private static final MapleInventoryType getInventoryType(final int id) {

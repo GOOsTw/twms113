@@ -619,20 +619,6 @@ public class MTSCSPacket {
         return mplew.getPacket();
     }
 
-    public static MaplePacket sendGift(int price, int itemid, int quantity, String receiver) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        mplew.writeShort(SendPacketOpcode.CS_OPERATION.getValue());
-        mplew.write(0x90); //use to be 7C
-        mplew.writeMapleAsciiString(receiver);
-        mplew.writeInt(itemid);
-        mplew.writeShort(quantity);
-        mplew.writeShort(0); //maplePoints
-        mplew.writeInt(price);
-
-        return mplew.getPacket();
-    }
-
     public static MaplePacket increasedInvSlots(int inv, int slots) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
