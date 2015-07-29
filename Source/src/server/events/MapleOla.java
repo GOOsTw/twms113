@@ -77,7 +77,7 @@ public class MapleOla extends MapleEvent {
             }
         }, this.time);
 
-        broadcast(MaplePacketCreator.serverNotice(0, "The portal has now opened. Press the up arrow key at the portal to enter."));
+        broadcast(MaplePacketCreator.serverNotice(0, "活動已經開始，請通過中間的入口開始遊戲。"));
     }
 
     public boolean isTimerStarted() {

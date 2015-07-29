@@ -24,7 +24,7 @@ function action(mode, type, selection) {
 	return;
     }
     if (status == 0) {
-        cm.sendSimple("聽說修菲凱蔓喜歡吃鮑魚\r\n#b#L0#我要前往怪物擂台#l");
+        cm.sendSimple("請來參加怪物擂台﹗\r\n#b#L0#我要前往怪物擂台#l");
     } else if (status == 1) {
         switch (selection) {
             case 0: {

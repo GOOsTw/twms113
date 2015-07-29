@@ -73,7 +73,7 @@ public class MapleFitness extends MapleEvent {
             }
         }, this.time);
 
-        broadcast(MaplePacketCreator.serverNotice(0, "The portal has now opened. Press the up arrow key at the portal to enter."));
+        broadcast(MaplePacketCreator.serverNotice(0, "活動已經開始，請通過中間的入口開始遊戲。"));
     }
 
     public boolean isTimerStarted() {
@@ -121,29 +121,29 @@ public class MapleFitness extends MapleEvent {
             public void run() {
                 final long timeLeft = getTimeLeft();
                 if (timeLeft > 9000 && timeLeft < 11000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "You have 10 sec left. Those of you unable to beat the game, we hope you beat it next time! Great job everyone!! See you later~"));
+                    broadcast(MaplePacketCreator.serverNotice(0, "你還有10秒左右的時間，那些你不能擊敗的玩家，我希望你下次贏得勝利，回頭見。"));
                 } else if (timeLeft > 11000 && timeLeft < 101000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "Alright, you don't have much time remaining. Please hurry up a little!"));
+                    broadcast(MaplePacketCreator.serverNotice(0, "好吧，你剩下沒有多少時間了，請抓緊時間衝向終點。"));
                 } else if (timeLeft > 101000 && timeLeft < 241000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "The 4th stage is the last one for [The Maple Physical Fitness Test]. Please don't give up at the last minute and try your best. The reward is waiting for you at the very top!"));
+                    broadcast(MaplePacketCreator.serverNotice(0, "這已經是最後了不要放棄，豐富的大獎等著你！"));
                 } else if (timeLeft > 241000 && timeLeft < 301000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "The 3rd stage offers traps where you may see them, but you won't be able to step on them. Please be careful of them as you make your way up."));
+                    broadcast(MaplePacketCreator.serverNotice(0, "這跳完就剩下一階了加油！"));
                 } else if (timeLeft > 301000 && timeLeft < 361000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "For those who have heavy lags, please make sure to move slowly to avoid falling all the way down because of lags."));
+                    broadcast(MaplePacketCreator.serverNotice(0, "請小心掉落。"));
                 } else if (timeLeft > 361000 && timeLeft < 501000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "Please remember that if you die during the event, you'll be eliminated from the game. If you're running out of HP, either take a potion or recover HP first before moving on."));
+                    broadcast(MaplePacketCreator.serverNotice(0, "請小心HP歸零。"));
                 } else if (timeLeft > 501000 && timeLeft < 601000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "The most important thing you'll need to know to avoid the bananas thrown by the monkeys is *Timing* Timing is everything in this!"));
+                    broadcast(MaplePacketCreator.serverNotice(0, "請小心猴子。"));
                 } else if (timeLeft > 601000 && timeLeft < 661000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "The 2nd stage offers monkeys throwing bananas. Please make sure to avoid them by moving along at just the right timing."));
+                    broadcast(MaplePacketCreator.serverNotice(0, "第二階的技巧請利用猴子。"));
                 } else if (timeLeft > 661000 && timeLeft < 701000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "Please remember that if you die during the event, you'll be eliminated from the game. You still have plenty of time left, so either take a potion or recover HP first before moving on."));
+                    broadcast(MaplePacketCreator.serverNotice(0, "請小心HP歸零。"));
                 } else if (timeLeft > 701000 && timeLeft < 781000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "Everyone that clears [The Maple Physical Fitness Test] on time will be given an item, regardless of the order of finish, so just relax, take your time, and clear the 4 stages."));
+                    broadcast(MaplePacketCreator.serverNotice(0, "大家知道 [終極忍耐] 很好玩的！"));
                 } else if (timeLeft > 781000 && timeLeft < 841000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "There may be a heavy lag due to many users at stage 1 all at once. It won't be difficult, so please make sure not to fall down because of heavy lag."));
+                    broadcast(MaplePacketCreator.serverNotice(0, "有可能會小LAG一下不過不需要擔心。"));
                 } else if (timeLeft > 841000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "[MapleStory Physical Fitness Test] consists of 4 stages, and if you happen to die during the game, you'll be eliminated from the game, so please be careful of that."));
+                    broadcast(MaplePacketCreator.serverNotice(0, "[終極忍耐] 總共有四階，如果你碰巧在遊戲過程中死亡，你會從遊戲中消失，所以請注意這一點。"));
                 }
             }
         }, 90000);

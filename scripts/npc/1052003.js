@@ -1,4 +1,4 @@
-/* Chris
+﻿/* Chris
 	Victoria Road : Kerning City Repair Shop (103000006)
 	
 	Refining NPC: 
@@ -30,8 +30,8 @@ function action(mode, type, selection) {
     else
 	cm.dispose();
     if (status == 0) {
-	var selStr = "Yes, I do own this forge. If you're willing to pay, I can offer you some of my services.#b"
-	var options = new Array("Refine a mineral ore","Refine a jewel ore","I have Iron Hog's Metal Hoof...","Upgrade a claw");
+    var selStr = "是的，我退休的盜賊。如果你願意付出，我可以給你我的一些服務.#b"
+	var options = new Array("製作礦石","提煉寶石礦","鋼鐵肥肥的腿兌換中心...","升級拳套");
 	for (var i = 0; i < options.length; i++){
 	    selStr += "\r\n#L" + i + "# " + options[i] + "#l";
 	}
@@ -41,8 +41,8 @@ function action(mode, type, selection) {
     else if (status == 1) {
 	selectedType = selection;
 	if (selectedType == 0){ //mineral refine
-	    var selStr = "So, what kind of mineral ore would you like to refine?#b";
-	    var minerals = new Array ("Bronze","Steel","Mithril","Adamantium","Silver","Orihalcon","Gold");
+	    var selStr = "所以你想要製作什麼礦石??#b";
+	    var minerals = new Array ("青銅","鋼鐵","鋰礦石","朱礦石","銀","紫礦石","黃金");
 	    for (var i = 0; i < minerals.length; i++){
 		selStr += "\r\n#L" + i + "# " + minerals[i] + "#l";
 	    }
@@ -50,8 +50,8 @@ function action(mode, type, selection) {
 	    cm.sendSimple(selStr);
 	}
 	else if (selectedType == 1){ //jewel refine
-	    var selStr = "So, what kind of jewel ore would you like to refine?#b";
-	    var jewels = new Array ("Garnet","Amethyst","Aquamarine","Emerald","Opal","Sapphire","Topaz","Diamond","Black Crystal");
+	    var selStr = "所以你要我提煉哪種寶石??#b";
+	    var jewels = new Array ("石榴石","紫水晶","海藍寶石","祖母綠","蛋白石","藍寶石","黃晶","鑽石","黑暗水晶");
 	    for (var i = 0; i < jewels.length; i++){
 		selStr += "\r\n#L" + i + "# " + jewels[i] + "#l";
 	    }
@@ -59,13 +59,13 @@ function action(mode, type, selection) {
 	    cm.sendSimple(selStr);
 	}
 	else if (selectedType == 2){ //foot refine
-	    var selStr = "You know about that? Not many people realize the potential in the Iron Hog's Metal Hoof... I can make this into something special, if you want me to.";
+	    var selStr = "你知道嗎？很多人不知道，在鐵豬的蹄金屬的潛力......我可以使它成為一些特別的東西，如果你要我做的話...";
 	    equip = false;
 	    cm.sendYesNo(selStr);
 	}
 	else if (selectedType == 3){ //claw refine
-	    var selStr = "Ah, you wish to upgrade a claw? Then tell me, which one?#b";
-	    var claws = new Array ("Blood Gigantic#k - Thief Lv. 60#b","Sapphire Gigantic#k - Thief Lv. 60#b","Dark Gigantic#k - Thief Lv. 60#b");
+	    var selStr = "啊你想要升級拳套，告訴我要升級哪一個?\r\n#e#r(這邊有小BUG例如你選錯你要升級的拳套)\r\n(請勿停止對話OR取消因為會斷線這點請特別注意!)\r\n(所以請先選好您要升級的拳套)#k#n#b";
+	    var claws = new Array ("赤紅戰神拳套#k - 盜賊 等級. 60#b","藍寶戰神拳套#k - 盜賊 等級. 60#b","黑戰神拳套#k - 盜賊 等級. 60#b");
 	    for (var i = 0; i < claws.length; i++){
 		selStr += "\r\n#L" + i + "# " + claws[i] + "#l";
 	    }
@@ -108,7 +108,7 @@ function action(mode, type, selection) {
 	    cost = costSet[0];
 	}
 		
-	var prompt = "So, you want me to make some #t" + item + "#s? In that case, how many do you want me to make?";
+	var prompt = "所以，你要我做一些 #t" + item + "#? 在這種情況下，有多少你要我做多少個??";
 		
 	cm.sendGetNumber(prompt,1,1,100)
     }
@@ -137,13 +137,12 @@ function action(mode, type, selection) {
 		last_use = true;
 	}
 		
-	var prompt = "You want me to make ";
-	if (qty == 1)
-	    prompt += "a #t" + item + "#?";
-	else
-	    prompt += qty + " #t" + item + "#?";
-			
-	prompt += " In that case, I'm going to need specific items from you in order to make it. Make sure you have room in your inventory, though!#b";
+	var prompt = "你要我做 ";
+        if (qty == 1)
+	    prompt += "1個 #t" + item + "#?";
+        else
+        prompt += qty + " #t" + item + "#?";
+		prompt += " 在這種情況下，我要為了讓你需要的東西下。請確保您是否有這麼多空間可以放!#b";
 		
 	if (mats instanceof Array){
 	    for (var i = 0; i < mats.length; i++) {
@@ -154,7 +153,7 @@ function action(mode, type, selection) {
 	}
 		
 	if (cost > 0) {
-	    prompt += "\r\n#i4031138# " + cost * qty + " meso";
+	    prompt += "\r\n#i4031138# " + cost * qty + " 楓幣";
 	}
 	cm.sendYesNo(prompt);
     } else if (status == 4) {
@@ -177,7 +176,7 @@ function action(mode, type, selection) {
 	}
 		
 	if (!complete)
-	    cm.sendOk("I cannot accept substitues. If you don't have what I need, then I won't be able to help you.");
+	    cm.sendOk("我不能接受的替代品。如果你沒有什麼我需要的話，我將無法幫你!!");
 	else {
 	    if (mats instanceof Array) {
 		for (var i = 0; i < mats.length; i++){
@@ -188,7 +187,7 @@ function action(mode, type, selection) {
 	    }
 	    cm.gainMeso(-cost * qty);
 	    cm.gainItem(item, qty);
-	    cm.sendNext("Phew... I almost didn't think that would work for a second... Well, I hope you enjoy it, anyway.");
+        cm.sendNext("呼......我差點沒想到，將工作的第二個......好吧，反正我希望你喜歡它，");
 	}
 	cm.dispose();
     }

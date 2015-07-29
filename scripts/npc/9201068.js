@@ -28,7 +28,7 @@ function action(mode, type, selection) {
 	}
     } else if(status == 1 && cm.getMapId() == 103000100) {
 	if(!cm.haveItem(4031711)) {
-		cm.sendNext("不! 你沒有#b#t4031711##k 所以我不能放你走!.");
+		cm.sendNext("不! 你沒有#b#t4031711##k 所以我不能放你走!");
 		cm.dispose();
 	} else {
 	    cm.gainItem(4031711,-1);
@@ -37,7 +37,7 @@ function action(mode, type, selection) {
 	}
 	} else if(status == 1 && cm.getMapId() == 600010001) {
 	if(!cm.haveItem(4031713)) {
-		cm.sendNext("不! 你沒有#b#t4031713##k 所以我不能放你走!.");
+		cm.sendNext("不! 你沒有#b#t4031713##k 所以我不能放你走!");
 		cm.dispose();
 	} else {
 	    cm.gainItem(4031713,-1);

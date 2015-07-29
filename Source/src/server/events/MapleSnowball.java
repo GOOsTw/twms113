@@ -182,7 +182,7 @@ public class MapleSnowball extends MapleEvent {
              */
 
             int team = chr.getPosition().y > -80 ? 0 : 1;
-            final MapleSnowball sb = ((MapleSnowball) chr.getClient().getChannelServer().getEvent(MapleEventType.Snowball));
+            final MapleSnowball sb = ((MapleSnowball) chr.getClient().getChannelServer().getEvent(MapleEventType.滾雪球));
             final MapleSnowballs ball = sb.getSnowBall(team);
             if (ball != null && !ball.isInvis()) {
                 boolean snowman = chr.getPosition().x < -360 && chr.getPosition().x > -560;

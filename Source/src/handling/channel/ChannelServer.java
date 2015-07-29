@@ -109,12 +109,12 @@ public class ChannelServer implements Serializable {
         if (!events.isEmpty()) {
             return;
         }
-        events.put(MapleEventType.CokePlay, new MapleCoconut(channel, MapleEventType.CokePlay.mapids));
-        events.put(MapleEventType.Coconut, new MapleCoconut(channel, MapleEventType.Coconut.mapids));
-        events.put(MapleEventType.Fitness, new MapleFitness(channel, MapleEventType.Fitness.mapids));
-        events.put(MapleEventType.OlaOla, new MapleOla(channel, MapleEventType.OlaOla.mapids));
-        events.put(MapleEventType.OxQuiz, new MapleOxQuiz(channel, MapleEventType.OxQuiz.mapids));
-        events.put(MapleEventType.Snowball, new MapleSnowball(channel, MapleEventType.Snowball.mapids));
+        events.put(MapleEventType.打瓶蓋, new MapleCoconut(channel, MapleEventType.打瓶蓋.mapids));
+        events.put(MapleEventType.打果子, new MapleCoconut(channel, MapleEventType.打果子.mapids));
+        events.put(MapleEventType.終極忍耐, new MapleFitness(channel, MapleEventType.終極忍耐.mapids));
+        events.put(MapleEventType.爬繩子, new MapleOla(channel, MapleEventType.爬繩子.mapids));
+        events.put(MapleEventType.是非題大考驗, new MapleOxQuiz(channel, MapleEventType.是非題大考驗.mapids));
+        events.put(MapleEventType.滾雪球, new MapleSnowball(channel, MapleEventType.滾雪球.mapids));
     }
 
     public final void run_startup_configurations() {

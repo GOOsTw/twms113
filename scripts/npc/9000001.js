@@ -51,7 +51,7 @@ function action(mode, type, selection) {
                 cm.sendNext("所有本月初，冒險島環球慶祝其三週年！全球機制將舉行驚喜GM活動在整個活動期間，所以留在你的腳趾，並確保參與活動的至少一個為偉大的獎品！");
                 cm.dispose();
             } else if (selection == 1) {
-                cm.sendSimple("有許多活動官則。這將幫助在你開始活動之前。好了...選擇你想了解的活動.. #b\r\n#L0# 爬繩子#l\r\n#L1# 終極忍耐#l\r\n#L2# 滾雪球#l\r\n#L3# 打果子#l\r\n#L4# 是非題大考驗#l\r\n#L5# 尋寶#l#k");
+                cm.sendSimple("有許多活動官則。這將幫助在你開始活動之前。好了...選擇你想了解的活動.. #b\r\n#L0# 爬繩子#l\r\n#L1# 終極忍耐#l\r\n#L2# 滾雪球#l\r\n#L3# 打果子#l\r\n#L6# 打瓶蓋#l\r\n#L4# 是非題大考驗#l\r\n#L5# 尋寶#l#k");
             } else if (selection == 2) {
 				if (!cm.canHold()) {
 					cm.sendNext("請確認是否身上有空位。");
@@ -76,6 +76,9 @@ function action(mode, type, selection) {
                 cm.dispose();
             } else if (selection == 3) {
                 cm.sendNext("#b[打果子]#k 自己#e#rGoogle#k!");
+                cm.dispose();
+			} else if (selection == 6) {
+                cm.sendNext("#b[打瓶蓋]#k 自己#e#rGoogle#k!");
                 cm.dispose();
             } else if (selection == 4) {
                 cm.sendNext("#b[是非題大考驗]#k 自己#e#rGoogle#k!");

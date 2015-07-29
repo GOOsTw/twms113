@@ -182,9 +182,9 @@ public class PlayersHandler {
          */
         int id = slea.readShort();
         String co = "農夫的樂趣";
-        MapleCoconut map = (MapleCoconut) c.getChannelServer().getEvent(MapleEventType.Coconut);
+        MapleCoconut map = (MapleCoconut) c.getChannelServer().getEvent(MapleEventType.打果子);
         if (map == null || !map.isRunning()) {
-            map = (MapleCoconut) c.getChannelServer().getEvent(MapleEventType.CokePlay);
+            map = (MapleCoconut) c.getChannelServer().getEvent(MapleEventType.打瓶蓋);
             co = "可樂熊";
             if (map == null || !map.isRunning()) {
                 return;

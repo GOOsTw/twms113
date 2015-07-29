@@ -21,7 +21,7 @@ function action(mode, type, selection) {
 		else
 			status--;
 		if (status == 0) {
-			cm.sendSimple("你的寵物屎掉了嗎 #b\r\n#L2#我要復活我的寵物#l#k");
+			cm.sendSimple("你的寵物死掉了嗎？？ #b\r\n#L2#我要復活我的寵物#l#k");
 		} else if (status == 1) {
 			if (selection == 0) {
 				var currentpet = null;

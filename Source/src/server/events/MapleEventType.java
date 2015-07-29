@@ -23,12 +23,12 @@ package server.events;
 
 public enum MapleEventType {
 
-    Coconut("採果子", new int[]{109080000}), //just using one
-    CokePlay("打瓶蓋", new int[]{109080010}), //just using one
-    Fitness("奇幻忍耐", new int[]{109040000, 109040001, 109040002, 109040003, 109040004}),
-    OlaOla("魔法森林猜繩子", new int[]{109030001, 109030002, 109030003}),
-    OxQuiz("小小考驗", new int[]{109020001}),
-    Snowball("滾雪球", new int[]{109060000}); //just using one
+    打果子("打果子", new int[]{109080000}), //just using one
+    打瓶蓋("打瓶蓋", new int[]{109080010}), //just using one
+    終極忍耐("終極忍耐", new int[]{109040000, 109040001, 109040002, 109040003, 109040004}),
+    爬繩子("爬繩子", new int[]{109030001, 109030002, 109030003}),
+    是非題大考驗("是非題大考驗", new int[]{109020001}),
+    滾雪球("滾雪球", new int[]{109060000}); //just using one
     public String command;
     public int[] mapids;
 

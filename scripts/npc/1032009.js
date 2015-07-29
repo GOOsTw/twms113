@@ -1,23 +1,24 @@
-/*
-	Purin - Before Takeoff To Orbis(101000301)
-*/
+var status = 0;
 
 function start() {
-    status = -1;
     action(1, 0, 0);
 }
 
 function action(mode, type, selection) {
-    status++;
-    if(mode == 0) {
-	cm.sendOk("You'll get to your destination in moment. Go ahead and talk to other people, and before you know it, you'll be there already.");
-	cm.dispose();
-	return;
-    }
-    if(status == 0) {
-	cm.sendYesNo("Do you want to leave the waiting room? You can, but the ticket is NOT refundable. Are you sure you still want to leave this room?");
-    } else if(status == 1) {
-	cm.warp(101000300, 0);
-	cm.dispose();
+    if (status == 0) {
+        cm.sendYesNo("請問你想要離開船上?");
+        status++;
+    } else {
+        if (mode < 1) {
+            cm.dispose();
+        } else {
+            if (status == 1) {
+                cm.sendNext ("好吧.下次再見.");
+                status++;
+            } else if (status == 2) {
+                cm.warp(101000300, 0);// back to orbis
+                cm.dispose();
+            }
+        }
     }
 }

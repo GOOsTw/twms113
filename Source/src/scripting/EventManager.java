@@ -398,7 +398,7 @@ public class EventManager {
         MapleEventType t = null;
         while (t == null) {
             for (MapleEventType x : MapleEventType.values()) {
-                if (Randomizer.nextInt(MapleEventType.values().length) == 0 && x != MapleEventType.OxQuiz/*選邊站*/) {
+                if (Randomizer.nextInt(MapleEventType.values().length) == 0 && x != MapleEventType.是非題大考驗/*選邊站*/) {
                     t = x;
                     break;
                 }

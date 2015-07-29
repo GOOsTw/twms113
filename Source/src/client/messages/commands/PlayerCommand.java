@@ -32,7 +32,8 @@ public class PlayerCommand {
 
         protected int npc = -1;
         private static final int[] npcs = { //Ish yur job to make sure these are in order and correct ;(
-            9010017,};
+            9010017,
+            9000001,};
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
@@ -68,6 +69,13 @@ public class PlayerCommand {
             npc = 0;
         }
     }
+    
+    public static class event extends OpenNPCCommand {
+        public event() {
+            npc = 1;
+        }
+    }
+    
     public static class ea extends 查看 {
     }
         public static class 查看 extends CommandExecute {
@@ -160,6 +168,7 @@ public class PlayerCommand {
             c.getPlayer().dropMessage(5, "@怪物/@mob <查看身邊怪物訊息>");
             c.getPlayer().dropMessage(5, "@CGM 訊息 <傳送訊息給GM>");
             c.getPlayer().dropMessage(5, "@自由/@fm <回自由-需要1張回家卷軸>");
+            c.getPlayer().dropMessage(5, "@event <參加活動>");
 
             
             return 1;
