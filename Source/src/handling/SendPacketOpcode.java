@@ -227,7 +227,6 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     REACTOR_SPAWN,
     REACTOR_HIT,
     REACTOR_DESTROY,
-    FAMILY,
     EARN_TITLE_MSG,
     SHOW_MAGNET,
     MERCH_ITEM_MSG,
