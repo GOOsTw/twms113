@@ -775,7 +775,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 CashShopOperation.BuyCashItem(slea, c, c.getPlayer());
                 break;
             case COUPON_CODE:
-                FilePrinter.print("CouponCode.txt", slea.toString(true));
                 slea.skip(2);
                 CashShopOperation.CouponCode(slea.readMapleAsciiString(), c);
                 break;

@@ -331,8 +331,8 @@ public class CashShopOperation {
                 if (coupon) {
                     final MapleInventoryType type = getInventoryType(slea.readInt());
 
-                    if (chr.getCSPoints(1) >= 12000 && chr.getInventory(type).getSlotLimit() < 89) {
-                        chr.modifyCSPoints(1, -12000, false);
+                    if (chr.getCSPoints(1) >= 400 && chr.getInventory(type).getSlotLimit() < 89) {
+                        chr.modifyCSPoints(1, -400, false);
                         chr.getInventory(type).addSlot((byte) 8);
                         chr.dropMessage(1, "Slots has been increased to " + chr.getInventory(type).getSlotLimit());
                     } else {
@@ -341,8 +341,8 @@ public class CashShopOperation {
                 } else {
                     final MapleInventoryType type = MapleInventoryType.getByType(slea.readByte());
 
-                    if (chr.getCSPoints(1) >= 8000 && chr.getInventory(type).getSlotLimit() < 93) {
-                        chr.modifyCSPoints(1, -8000, false);
+                    if (chr.getCSPoints(1) >= 300 && chr.getInventory(type).getSlotLimit() < 93) {
+                        chr.modifyCSPoints(1, -300, false);
                         chr.getInventory(type).addSlot((byte) 4);
                         chr.dropMessage(1, "Slots has been increased to " + chr.getInventory(type).getSlotLimit());
                     } else {
@@ -353,8 +353,8 @@ public class CashShopOperation {
                 break;
             }
             case 7: {
-                if (chr.getCSPoints(1) >= 8000 && chr.getStorage().getSlots() < 45) {
-                    chr.modifyCSPoints(1, -8000, false);
+                if (chr.getCSPoints(1) >= 300 && chr.getStorage().getSlots() < 45) {
+                    chr.modifyCSPoints(1, -300, false);
                     chr.getStorage().increaseSlots((byte) 4);
                     chr.getStorage().saveToDB();
                     c.getSession().write(MTSCSPacket.increasedStorageSlots(chr.getStorage().getSlots()));
@@ -527,7 +527,7 @@ public class CashShopOperation {
                         return;
                     }
                     c.getPlayer().modifyCSPoints(1, -cItem.getPrice(), false);
-                    c.sendPacket(MTSCSPacket.sendGift(partnerName, cItem, cItem.getPrice() / 2, false));
+                    c.sendPacket(MTSCSPacket.sendGift(partnerName, cItem, 0, false));
                     chr.sendNote(partnerName, chr.getName() + " 送了你禮物! 趕快去商城確認看看.", (byte) 0); //fame or not
                     MapleCharacter receiver = c.getChannelServer().getPlayerStorage().getCharacterByName(partnerName);
                     if (receiver != null) {
