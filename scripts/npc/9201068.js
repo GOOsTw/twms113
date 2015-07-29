@@ -23,12 +23,13 @@ function action(mode, type, selection) {
 	    cm.sendNext("很抱歉本班地鐵準備開走,乘坐時間表可以通過售票展台查看.");
 	    cm.dispose();
 	} else {
-	    cm.sendNext("我們將開始1分鐘開走。請耐心等待幾分鐘。請注意，地鐵將準時開走，我們停止接收票前1分鐘了，所以請務必要在這裡的時間。");
+	    cm.sendNext("請耐心等待幾分鐘，正在整理裡面中！");
 	    cm.dispose();
 	}
     } else if(status == 1 && cm.getMapId() == 103000100) {
 	if(!cm.haveItem(4031711)) {
 		cm.sendNext("不! 你沒有#b#t4031711##k 所以我不能放你走!.");
+		cm.dispose();
 	} else {
 	    cm.gainItem(4031711,-1);
 	    cm.warp(600010004);
@@ -37,6 +38,7 @@ function action(mode, type, selection) {
 	} else if(status == 1 && cm.getMapId() == 600010001) {
 	if(!cm.haveItem(4031713)) {
 		cm.sendNext("不! 你沒有#b#t4031713##k 所以我不能放你走!.");
+		cm.dispose();
 	} else {
 	    cm.gainItem(4031713,-1);
 	    cm.warp(600010002);

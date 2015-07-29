@@ -27,14 +27,14 @@ function action(mode, type, selection) {
 	if (cm.haveItem(4031801)) {
     cm.sendNextPrev("既然你有推薦信，我不會收你任何的費用。收起來，我們將前往維多利亞島，坐好，旅途中可能會有點動盪！");
 	} else {
-	    cm.sendNext("真的只要 #e1500 楓幣#n 就能搭船!!");
+	    cm.sendNext("真的只要 #e150 楓幣#n 就能搭船!!");
 	}
     } else if (status == 2) {
 	if (cm.haveItem(4031801)) {
 	    cm.sendNextPrev("既然你有推薦信，我不會收你任何的費用。收起來，我們將前往維多利亞島，坐好，旅途中可能會有點動盪！");
 	} else {
 	    if (cm.getPlayerStat("LVL") >= 8) {
-		if (cm.getMeso() < 1500) {
+		if (cm.getMeso() < 150) {
 		    cm.sendOk("什麼？你說你想搭免費的船？ 你真是個怪人！");
 		    cm.dispose();
 		} else {

@@ -72,6 +72,7 @@ import server.MapleStatEffect;
 import server.SpeedRunner;
 import server.maps.SpeedRunType;
 import server.StructPotentialItem;
+import server.Timer;
 import server.Timer.CloneTimer;
 import server.life.MapleMonster;
 import server.maps.Event_PyramidSubway;
@@ -1364,5 +1365,21 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void gainBeans(int s) {
         getPlayer().gainBeans(s);
         c.getSession().write(MaplePacketCreator.updateBeans(c.getPlayer().getId(), s));
+    }
+    
+    public void warpBack(int mid, final int retmap, final int time) { //時間秒數
+        
+        MapleMap warpMap = c.getChannelServer().getMapFactory().getMap(mid);
+        c.getPlayer().changeMap(warpMap, warpMap.getPortal(0));
+        c.sendPacket(MaplePacketCreator.getClock(time));
+        Timer.EventTimer.getInstance().schedule(new Runnable() {
+            @Override
+            public void run() {
+                MapleMap warpMap = c.getChannelServer().getMapFactory().getMap(retmap);
+                c.sendPacket(MaplePacketCreator.stopClock());
+                c.getPlayer().changeMap(warpMap, warpMap.getPortal(0));
+                c.getPlayer().dropMessage(6, "已經到達目的地了!");
+            }
+        }, 1000 * time); //設定時間, (1 秒 = 1000)
     }
 }

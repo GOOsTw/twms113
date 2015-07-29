@@ -396,12 +396,14 @@ public class CashShopOperation {
                 }
                 RefreshCashShop(c);
                 break;
+
             }
 
             case 32: { //1 meso
                 RefreshCashShop(c);
                 break;
             }
+
             case 29: // crush ring
             case 35: { // friendRing
                  /*

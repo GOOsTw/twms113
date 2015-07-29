@@ -131,12 +131,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private String name, chalktext, BlessOfFairy_Origin, charmessage;
     private long lastCombo, lastfametime, keydown_skill;
     private byte dojoRecord, gmLevel, gender, initialSpawnPoint, skinColor, guildrank = 5, allianceRank = 5, world, fairyExp = 10, numClones, subcategory; // Make this a quest record, TODO : Transfer it somehow with the current data
-    private short level, mulung_energy, combo, availableCP, totalCP, fame, hpApUsed, job, remainingAp;
+    private short level, mulung_energy, combo, availableCP, totalCP, fame, hpmpApUsed, job, remainingAp;
     private int accountid, id, meso, exp, hair, face, mapid, bookCover, dojo,
             guildid = 0, fallcounter = 0, maplepoints, acash, chair, itemEffect, points, vpoints,
             rank = 1, rankMove = 0, jobRank = 1, jobRankMove = 0, marriageId, marriageItemId = 0,
             currentrep, totalrep, linkMid = 0, coconutteam = 0, followid = 0, battleshipHP = 0,
-            expression, constellation, blood, month, day, beans, beansNum, beansRange, prefix, gmlevel;
+            expression, constellation, blood, month, day, beans, beansNum, beansRange, prefix;
     private boolean canSetBeansNum;
     private Point old = new Point(0, 0);
     private boolean smega, hidden, hasSummon = false;
@@ -312,7 +312,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
         ret.chalktext = ct.chalkboard;
         ret.exp = ct.exp;
-        ret.hpApUsed = ct.hpApUsed;
+        ret.hpmpApUsed = ct.hpApUsed;
         ret.remainingSp = ct.remainingSp;
         ret.remainingAp = ct.remainingAp;
         ret.beans = ct.beans;
@@ -472,7 +472,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ret.stats.mp = rs.getShort("mp");
 
             ret.exp = rs.getInt("exp");
-            ret.hpApUsed = rs.getShort("hpApUsed");
+            ret.hpmpApUsed = rs.getShort("hpApUsed");
             final String[] sp = rs.getString("sp").split(",");
             for (int i = 0; i < ret.remainingSp.length; i++) {
                 ret.remainingSp[i] = Integer.parseInt(sp[i]);
@@ -1030,7 +1030,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 ps.setInt(20, mapid);
             }
             ps.setInt(21, meso);
-            ps.setShort(22, hpApUsed);
+            ps.setShort(22, hpmpApUsed);
             if (map == null) {
                 ps.setByte(23, (byte) 0);
             } else {
@@ -2141,16 +2141,16 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return ret;
     }
 
-    public short getHpApUsed() {
-        return hpApUsed;
+    public short getHpMpApUsed() {
+        return hpmpApUsed;
     }
 
     public boolean isHidden() {
         return hidden;
     }
 
-    public void setHpApUsed(short hpApUsed) {
-        this.hpApUsed = hpApUsed;
+    public void setHpMpApUsed(short hpApUsed) {
+        this.hpmpApUsed = hpApUsed;
     }
 
     public byte getSkinColor() {
@@ -4015,6 +4015,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public final boolean haveItem(int itemid) {
         return haveItem(itemid, 1, true, true);
+    }
+
+    public int getInt() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public static enum FameStatus {

@@ -39,6 +39,20 @@ public enum MapleStat {
         }
         return null;
     }
+    
+    public static MapleStat getBy5ByteEncoding(int encoded) {
+        switch (encoded) {
+            case 64:
+                return STR;
+            case 128:
+                return DEX;
+            case 256:
+                return INT;
+            case 512:
+                return LUK;
+        }
+        return null;
+    }
 
     public static enum Temp {
 

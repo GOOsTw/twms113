@@ -1,16 +1,21 @@
-/**
-	Konpei - Near the Hideout(801040000)
+/* Dawnveil
+    To Rien
+	Puro
+    Made by Daenerys
 */
-
 function start() {
-    cm.sendYesNo("Wanna ride to Rien, you stanky ho?");
+    cm.sendYesNo("你想要去瑞恩島必須支付#b 80 楓幣#k 到那邊約一分鐘.");
 }
 
 function action(mode, type, selection) {
     if (mode == 0) {
-	cm.sendOk("FUUUUUU!, COME WITH ME!");
-    } else {
-	cm.warp(140000000,0);
+	cm.sendOk("等你考慮好再來找我吧!");
+	cm.dispose();
+	} else {
+    if(cm.getPlayer().getMeso() >= 80) {
+	cm.gainMeso(-80);
+	cm.warpBack(200090060,140020300,80);
     }
     cm.dispose();
+}
 }

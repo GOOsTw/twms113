@@ -85,7 +85,7 @@ public class CharacterTransfer implements Externalizable {
         this.maxhp = chr.getStat().getMaxHp();
         this.maxmp = chr.getStat().getMaxMp();
         this.exp = chr.getExp();
-        this.hpApUsed = chr.getHpApUsed();
+        this.hpApUsed = chr.getHpMpApUsed();
         this.remainingAp = chr.getRemainingAp();
         this.remainingSp = chr.getRemainingSps();
         this.beans = chr.getBeans();

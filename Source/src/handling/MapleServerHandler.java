@@ -482,14 +482,8 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case CHAR_SELECT:
                 CharLoginHandler.Character_WithoutSecondPassword(slea, c);
                 break;
-            case AUTH_SECOND_PASSWORD:
-                CharLoginHandler.Character_WithSecondPassword(slea, c);
-                break;
             case SET_GENDER:
                 CharLoginHandler.SetGenderRequest(slea, c);
-                break;
-            case RSA_KEY: // Fix this somehow
-                c.getSession().write(LoginPacket.StrangeDATA());
                 break;
             // END OF LOGIN SERVER
             case CHANGE_CHANNEL:
@@ -498,7 +492,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case PLAYER_LOGGEDIN:
                 final int playerid = slea.readInt();
                 if (cs) {
-                    CashShopOperation.EnterCS(playerid, c);
+                    CashShopOperation.EnterCashShop(playerid, c);
                 } else {
                     InterServerHandler.Loggedin(playerid, c);
                 }
@@ -572,7 +566,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 break;
             case CHANGE_MAP:
                 if (cs) {
-                    CashShopOperation.LeaveCS(slea, c, c.getPlayer());
+                    CashShopOperation.LeaveCashShop(slea, c, c.getPlayer());
                 } else {
                     PlayerHandler.ChangeMap(slea, c, c.getPlayer());
                 }
@@ -777,7 +771,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case SHIP_OBJECT:
                 UserInterfaceHandler.ShipObjectRequest(slea.readInt(), c);
                 break;
-            case BUY_CS_ITEM:
+            case CASHSHOP_OPERATION:
                 CashShopOperation.BuyCashItem(slea, c, c.getPlayer());
                 break;
             case COUPON_CODE:
@@ -786,7 +780,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 CashShopOperation.CouponCode(slea.readMapleAsciiString(), c);
                 break;
             case CS_UPDATE:
-                CashShopOperation.CSUpdate(c);
+                CashShopOperation.sendCashShopUpdate(c);
                 break;
             case TOUCHING_MTS:
                 MTSOperation.MTSUpdate(MTSStorage.getInstance().getCart(c.getPlayer().getId()), c);
