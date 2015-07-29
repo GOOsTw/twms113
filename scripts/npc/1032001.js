@@ -64,8 +64,7 @@ function action(mode, type, selection) {
     } else if (status == 3) {
         if (cm.getJob() == 0) {
             cm.changeJob(200); // 法師
-            cm.resetStats();
-            cm.getPlayer().setRemainingAp(16);
+			cm.resetStats(4, 4, 20, 4);
         }
         cm.gainItem(1372005, 1);
         cm.sendOk("轉職成功 ! 請去開創天下吧.");

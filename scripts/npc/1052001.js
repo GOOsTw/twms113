@@ -72,7 +72,7 @@ function action(mode, type, selection) {
     } else if (status == 3) {
 	if (cm.getJob() == 0) {
 		cm.changeJob(400); // 盜賊
-		cm.resetStats(4, 25, 4, 4);
+		cm.resetStats(4, 4, 4, 25);
 	}
 	cm.gainItem(1332063,1);
 	cm.gainItem(1472000,1);

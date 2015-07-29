@@ -3223,18 +3223,18 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (GameConstants.isAran(job)) {
             switch (level) {
                 case 30:
-                    client.getSession().write(MaplePacketCreator.startMapEffect("You have reached level 30! To job advance, go back to Lirin of Rien.", 5120000, true));
+                    client.getSession().write(MaplePacketCreator.startMapEffect("恭喜達到30等請回瑞恩島二轉吧。", 5120000, true));
                     break;
                 case 70:
-                    client.getSession().write(MaplePacketCreator.startMapEffect("You have reached level 70! To job advance, talk to your job instructor in El Nath.", 5120000, true));
+                    client.getSession().write(MaplePacketCreator.startMapEffect("恭喜達到70等請到冰原雪域長老公館三轉吧。", 5120000, true));
                     break;
                 case 120:
-                    client.getSession().write(MaplePacketCreator.startMapEffect("You have reached level 120! To job advance, talk to your job instructor in Leafre.", 5120000, true));
+                    client.getSession().write(MaplePacketCreator.startMapEffect("恭喜達到120等請回神木村祭司森林四轉吧。", 5120000, true));
                     break;
             }
         }
         if (GameConstants.isKOC(job) && level == 70) {
-            client.getSession().write(MaplePacketCreator.startMapEffect("You have reached level 70! To job advance, talk to your job instructor in Erev.", 5120000, true));
+            client.getSession().write(MaplePacketCreator.startMapEffect("恭喜達到30等請回耶雷弗三轉吧。", 5120000, true));
         }
        
         /*        if (getSubcategory() == 1) { //db level 2
