@@ -1,4 +1,4 @@
-var status = -1;
+﻿var status = -1;
 
 function action(mode, type, selection) {
     if (mode == 1) {
@@ -10,12 +10,12 @@ function action(mode, type, selection) {
 	status--;
     }
     if (cm.getMapId() != 680000210) {
-	cm.sendOk("If you want to have a wedding, please speak with my helpers.");
+	cm.sendOk("如果你想有一個婚禮，請與我說話的幫手。");
 	cm.dispose();
 	return;
     }
     if (status == 0) {
-	cm.sendYesNo("Do you want to get this show on the road?");
+	cm.sendYesNo("你想要結婚了？");
     } else if (status == 1) {
 
 	    var marr = cm.getQuestRecord(160001);
@@ -26,13 +26,13 @@ function action(mode, type, selection) {
 	    }
 	    if (data.equals("1")) {
 		if (cm.getPlayer().getMarriageId() <= 0) {
-		    cm.sendOk("Something wrong has happened: you aren't engaged with anybody.");
+		    cm.sendOk("一些錯誤已經發生了：你不是從事與任何人。");
 		    cm.dispose();
 		    return;
 		}
 	    	var chr = cm.getMap().getCharacterById(cm.getPlayer().getMarriageId());
 	    	if (chr == null) {
-		    cm.sendOk("Make sure your partner is in the map.");
+		    cm.sendOk("確保你的情侶在地圖上。");
 		    cm.dispose();
 		    return;
 	    	}
@@ -41,13 +41,13 @@ function action(mode, type, selection) {
 		cm.doWeddingEffect(chr);
 	    } else if (data.equals("2_") || data.equals("2")) {
 		if (cm.getPlayer().getMarriageId() <= 0) {
-		    cm.sendOk("Something wrong has happened: you aren't engaged with anybody.");
+		    cm.sendOk("一些錯誤已經發生了：你不是從事與任何人。");
 		    cm.dispose();
 		    return;
 		}
 	    	var chr = cm.getMap().getCharacterById(cm.getPlayer().getMarriageId());
 	    	if (chr == null) {
-		    cm.sendOk("Make sure your partner is in the map.");
+		    cm.sendOk("確保你的情侶在地圖上。");
 		    cm.dispose();
 		    return;
 	    	}
@@ -62,7 +62,7 @@ function action(mode, type, selection) {
 		    cm.warpMap(680000300, 0);
 		}
 	    } else {
-		cm.sendOk("看到這對新人我GG都ININDER");
+		cm.sendOk("看到這對新人祝福他們。");
 	    }
 	cm.dispose();
     }

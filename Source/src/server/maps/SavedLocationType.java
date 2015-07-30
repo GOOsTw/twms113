@@ -35,7 +35,8 @@ public enum SavedLocationType {
     MONSTER_CARNIVAL(10),
     PVP(11),
     HOTEL(12),
-    PACH(13);
+    PACH(13),
+    ENGLISH(14);
     private int index;
 
     private SavedLocationType(int index) {
