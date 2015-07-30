@@ -20,6 +20,7 @@ import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import client.inventory.ModifyInventory;
 import java.util.ArrayList;
+import java.util.Collections;
 import server.maps.AramiaFireWorks;
 import tools.packet.MTSCSPacket;
 import tools.MaplePacketCreator;
@@ -553,182 +554,120 @@ public class MapleInventoryManipulator {
     }
 
     public static void equip(final MapleClient c, final short src, short dst) {
-        final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-        final MapleCharacter chr = c.getPlayer();
-        if (chr == null) {
-            return;
-        }
-        final PlayerStats statst = c.getPlayer().getStat();
-        Equip source = (Equip) chr.getInventory(MapleInventoryType.EQUIP).getItem(src);
-        Equip target = (Equip) chr.getInventory(MapleInventoryType.EQUIPPED).getItem(dst);
-
-        if (source == null || source.getDurability() == 0) {
+        Equip source = (Equip) c.getPlayer().getInventory(MapleInventoryType.EQUIP).getItem(src);
+        if (source == null ) {
             c.sendPacket(MaplePacketCreator.enableActions());
             return;
+        } 
+        boolean itemChanged = false;
+        if (MapleItemInformationProvider.getInstance().isUntradeableOnEquip(source.getItemId())) {
+            source.setFlag((byte) ItemFlag.UNTRADEABLE.getValue());
+            itemChanged = true;
         }
-
-        final Map<String, Integer> stats = ii.getEquipStats(source.getItemId());
-        if (dst < -999 && !GameConstants.isEvanDragonItem(source.getItemId())) {
-            c.sendPacket(MaplePacketCreator.enableActions());
-            return;
-        } else if (dst >= -999 && dst < -99 && stats.get("cash") == 0) {
-            c.sendPacket(MaplePacketCreator.enableActions());
-            return;
-        }
-        if (!ii.canEquip(stats, source.getItemId(), chr.getLevel(), chr.getJob(), chr.getFame(), statst.getTotalStr(), statst.getTotalDex(), statst.getTotalLuk(), statst.getTotalInt(), c.getPlayer().getStat().levelBonus)) {
-            c.sendPacket(MaplePacketCreator.enableActions());
-            return;
-        }
-        if (GameConstants.isWeapon(source.getItemId()) && dst != -10 && dst != -11) {
-            AutobanManager.getInstance().autoban(c, "Equipment hack, itemid " + source.getItemId() + " to slot " + dst);
-            return;
-        }
-        if (!ii.isCash(source.getItemId()) && !GameConstants.isMountItemAvailable(source.getItemId(), c.getPlayer().getJob())) {
-            c.sendPacket(MaplePacketCreator.enableActions());
-            return;
-        }
-        if (GameConstants.isKatara(source.getItemId())) {
-            dst = (byte) -10; //shield slot
-        }
-        if (GameConstants.isEvanDragonItem(source.getItemId()) && (chr.getJob() < 2200 || chr.getJob() > 2218)) {
-            c.sendPacket(MaplePacketCreator.enableActions());
-            return;
-        }
-
-        switch (dst) {
-            case -6: { // Top
-                final IItem top = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -5);
-                if (top != null && GameConstants.isOverall(top.getItemId())) {
-                    if (chr.getInventory(MapleInventoryType.EQUIP).isFull()) {
-                        c.sendPacket(MaplePacketCreator.getInventoryFull());
-                        c.sendPacket(MaplePacketCreator.getShowInventoryFull());
-                        return;
-                    }
-                    unequip(c, (byte) -5, chr.getInventory(MapleInventoryType.EQUIP).getNextFreeSlot());
+      
+        if (dst == -6) { // unequip the overall
+            IItem top = c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -5);
+            if (top != null && isOverall(top.getItemId())) {
+                if (c.getPlayer().getInventory(MapleInventoryType.EQUIP).isFull()) {
+                    c.sendPacket(MaplePacketCreator.getInventoryFull());
+                    c.sendPacket(MaplePacketCreator.getShowInventoryFull());
+                    return;
                 }
-                break;
+                unequip(c, (byte) -5, c.getPlayer().getInventory(MapleInventoryType.EQUIP).getNextFreeSlot());
             }
-            case -5: {
-                final IItem top = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -5);
-                final IItem bottom = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -6);
-                if (top != null && GameConstants.isOverall(source.getItemId())) {
-                    if (chr.getInventory(MapleInventoryType.EQUIP).isFull(bottom != null && GameConstants.isOverall(source.getItemId()) ? 1 : 0)) {
-                        c.sendPacket(MaplePacketCreator.getInventoryFull());
-                        c.sendPacket(MaplePacketCreator.getShowInventoryFull());
-                        return;
-                    }
-                    unequip(c, (byte) -5, chr.getInventory(MapleInventoryType.EQUIP).getNextFreeSlot());
+        } else if (dst == -5) {
+            final IItem bottom = c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -6);
+            if (bottom != null && isOverall(source.getItemId())) {
+                if (c.getPlayer().getInventory(MapleInventoryType.EQUIP).isFull()) {
+                    c.sendPacket(MaplePacketCreator.getInventoryFull());
+                    c.sendPacket(MaplePacketCreator.getShowInventoryFull());
+                    return;
                 }
-                if (bottom != null && GameConstants.isOverall(source.getItemId())) {
-                    if (chr.getInventory(MapleInventoryType.EQUIP).isFull()) {
-                        c.sendPacket(MaplePacketCreator.getInventoryFull());
-                        c.sendPacket(MaplePacketCreator.getShowInventoryFull());
-                        return;
-                    }
-                    unequip(c, (byte) -6, chr.getInventory(MapleInventoryType.EQUIP).getNextFreeSlot());
-                }
-                break;
+                unequip(c, (byte) -6, c.getPlayer().getInventory(MapleInventoryType.EQUIP).getNextFreeSlot());
             }
-            case -10: { // Shield
-                IItem weapon = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -11);
-                if (GameConstants.isKatara(source.getItemId())) {
-                    if ((chr.getJob() != 900 && (chr.getJob() < 430 || chr.getJob() > 434)) || weapon == null || !GameConstants.isDagger(weapon.getItemId())) {
-                        c.sendPacket(MaplePacketCreator.getInventoryFull());
-                        c.sendPacket(MaplePacketCreator.getShowInventoryFull());
-                        return;
-                    }
-                } else if (weapon != null && GameConstants.isTwoHanded(weapon.getItemId())) {
-                    if (chr.getInventory(MapleInventoryType.EQUIP).isFull()) {
-                        c.sendPacket(MaplePacketCreator.getInventoryFull());
-                        c.sendPacket(MaplePacketCreator.getShowInventoryFull());
-                        return;
-                    }
-                    unequip(c, (byte) -11, chr.getInventory(MapleInventoryType.EQUIP).getNextFreeSlot());
+        } else if (dst == -10) {// check if weapon is two-handed
+            Equip weapon = (Equip) c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -11);
+            if (weapon != null && MapleItemInformationProvider.getInstance().isTwoHanded(weapon.getItemId())) {
+                if (c.getPlayer().getInventory(MapleInventoryType.EQUIP).isFull()) {
+                    c.sendPacket(MaplePacketCreator.getInventoryFull());
+                    c.sendPacket(MaplePacketCreator.getShowInventoryFull());
+                    return;
                 }
-                break;
+                unequip(c, (byte) -11, c.getPlayer().getInventory(MapleInventoryType.EQUIP).getNextFreeSlot());
             }
-            case -11: { // Weapon
-                IItem shield = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -10);
-                if (shield != null && GameConstants.isTwoHanded(source.getItemId())) {
-                    if (chr.getInventory(MapleInventoryType.EQUIP).isFull()) {
-                        c.sendPacket(MaplePacketCreator.getInventoryFull());
-                        c.sendPacket(MaplePacketCreator.getShowInventoryFull());
-                        return;
-                    }
-                    unequip(c, (byte) -10, chr.getInventory(MapleInventoryType.EQUIP).getNextFreeSlot());
+        } else if (dst == -11) {
+            IItem shield = c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -10);
+            if (shield != null && MapleItemInformationProvider.getInstance().isTwoHanded(source.getItemId())) {
+                if (c.getPlayer().getInventory(MapleInventoryType.EQUIP).isFull()) {
+                    c.sendPacket(MaplePacketCreator.getInventoryFull());
+                    c.sendPacket(MaplePacketCreator.getShowInventoryFull());
+                    return;
                 }
-                break;
+                unequip(c, (byte) -10, c.getPlayer().getInventory(MapleInventoryType.EQUIP).getNextFreeSlot());
             }
         }
-        source = (Equip) chr.getInventory(MapleInventoryType.EQUIP).getItem(src); // Equip
-        target = (Equip) chr.getInventory(MapleInventoryType.EQUIPPED).getItem(dst); // Currently equipping
-        if (source == null) {
-            c.sendPacket(MaplePacketCreator.enableActions());
-            return;
-        }
-        if (stats.get("equipTradeBlock") == 1) { // Block trade when equipped.
-            byte flag = source.getFlag();
-            if (!ItemFlag.UNTRADEABLE.check(flag)) {
-                flag |= ItemFlag.UNTRADEABLE.getValue();
-                source.setFlag(flag);
-                c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.UPDATE, source)));
-                //c.sendPacket(MaplePacketCreator.updateSpecialItemUse_(source, GameConstants.getInventoryType(source.getItemId()).getType()));
+        if (dst == -18) {
+            if (c.getPlayer().getMount() != null) {
+                c.getPlayer().getMount().setItemId(source.getItemId());
             }
         }
-
-        chr.getInventory(MapleInventoryType.EQUIP).removeSlot(src);
+        if (source.getItemId() == 1122017) {
+            c.getPlayer().startFairySchedule(true, true);
+        }
+        //1112413, 1112414, 1112405 (Lilin's Ring)
+        source = (Equip) c.getPlayer().getInventory(MapleInventoryType.EQUIP).getItem(src);
+        Equip target = (Equip) c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).getItem(dst);
+        c.getPlayer().getInventory(MapleInventoryType.EQUIP).removeSlot(src);
         if (target != null) {
-            chr.getInventory(MapleInventoryType.EQUIPPED).removeSlot(dst);
+            c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).removeSlot(dst);
         }
+
+        final List<ModifyInventory> mods = new ArrayList<>();
+        if (itemChanged) {
+            mods.add(new ModifyInventory(3, source));
+            mods.add(new ModifyInventory(0, source.copy()));//to prevent crashes
+        }
+
         source.setPosition(dst);
-        chr.getInventory(MapleInventoryType.EQUIPPED).addFromDB(source);
+        c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).addFromDB(source);
         if (target != null) {
             target.setPosition(src);
-            chr.getInventory(MapleInventoryType.EQUIP).addFromDB(target);
+            c.getPlayer().getInventory(MapleInventoryType.EQUIP).addFromDB(target);
         }
-        if (GameConstants.isWeapon(source.getItemId())) {
-            if (chr.getBuffedValue(MapleBuffStat.BOOSTER) != null) {
-                chr.cancelBuffStats(MapleBuffStat.BOOSTER);
-            }
-            if (chr.getBuffedValue(MapleBuffStat.SPIRIT_CLAW) != null) {
-                chr.cancelBuffStats(MapleBuffStat.SPIRIT_CLAW);
-            }
-            if (chr.getBuffedValue(MapleBuffStat.SOULARROW) != null) {
-                chr.cancelBuffStats(MapleBuffStat.SOULARROW);
-            }
-            if (chr.getBuffedValue(MapleBuffStat.WK_CHARGE) != null) {
-                chr.cancelBuffStats(MapleBuffStat.WK_CHARGE);
-            }
-            if (chr.getBuffedValue(MapleBuffStat.LIGHTNING_CHARGE) != null) {
-                chr.cancelBuffStats(MapleBuffStat.LIGHTNING_CHARGE);
-            }
+        if (c.getPlayer().getBuffedValue(MapleBuffStat.BOOSTER) != null && isWeapon(source.getItemId())) {
+            c.getPlayer().cancelBuffStats(MapleBuffStat.BOOSTER);
         }
-        /*if (GameConstants.isDragonItem(source.getItemId())) {
-         chr.finishAchievement(8);
-         } else if (GameConstants.isReverseItem(source.getItemId())) {
-         chr.finishAchievement(9);
-         } else if (GameConstants.isTimelessItem(source.getItemId())) {
-         chr.finishAchievement(10);
-         } else */
-        if (source.getItemId() == 1122017) {
-            chr.startFairySchedule(true, true);
-        }
-        c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.MOVE, source, src)));
-        //c.sendPacket(MaplePacketCreator.moveInventoryItem(MapleInventoryType.EQUIP, src, dst, (byte) 2));
-        chr.equipChanged();
+
+        mods.add(new ModifyInventory(2, source, src));
+        c.sendPacket(MaplePacketCreator.modifyInventory(true, mods));
+        c.getPlayer().equipChanged();
+    }
+    
+    private static boolean isOverall(int itemId) {
+        return itemId / 10000 == 105;
     }
 
+    private static boolean isWeapon(int itemId) {
+        return itemId >= 1302000 && itemId < 1492024;
+    }
+     
     public static void unequip(final MapleClient c, final short src, final short dst) {
         Equip source = (Equip) c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).getItem(src);
         Equip target = (Equip) c.getPlayer().getInventory(MapleInventoryType.EQUIP).getItem(dst);
-
-        if (dst < 0 || source == null) {
+        if (dst < 0) {
             return;
         }
-        if (target != null && src <= 0) { // do not allow switching with equip
+        if (source == null) {
+            return;
+        }
+        if (target != null && src <= 0) {
             c.sendPacket(MaplePacketCreator.getInventoryFull());
             return;
         }
+         if (source.getItemId() == 1122017) {
+            c.getPlayer().cancelFairySchedule(true);
+        }
+       
         c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).removeSlot(src);
         if (target != null) {
             c.getPlayer().getInventory(MapleInventoryType.EQUIP).removeSlot(dst);
@@ -739,26 +678,7 @@ public class MapleInventoryManipulator {
             target.setPosition(src);
             c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).addFromDB(target);
         }
-
-        if (GameConstants.isWeapon(source.getItemId())) {
-            if (c.getPlayer().getBuffedValue(MapleBuffStat.BOOSTER) != null) {
-                c.getPlayer().cancelBuffStats(MapleBuffStat.BOOSTER);
-            }
-            if (c.getPlayer().getBuffedValue(MapleBuffStat.SPIRIT_CLAW) != null) {
-                c.getPlayer().cancelBuffStats(MapleBuffStat.SPIRIT_CLAW);
-            }
-            if (c.getPlayer().getBuffedValue(MapleBuffStat.SOULARROW) != null) {
-                c.getPlayer().cancelBuffStats(MapleBuffStat.SOULARROW);
-            }
-            if (c.getPlayer().getBuffedValue(MapleBuffStat.WK_CHARGE) != null) {
-                c.getPlayer().cancelBuffStats(MapleBuffStat.WK_CHARGE);
-            }
-        }
-        if (source.getItemId() == 1122017) {
-            c.getPlayer().cancelFairySchedule(true);
-        }
-        c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.MOVE, source, src)));
-        //c.sendPacket(MaplePacketCreator.moveInventoryItem(MapleInventoryType.EQUIP, src, dst, (byte) 1));
+        c.sendPacket(MaplePacketCreator.modifyInventory(true, Collections.singletonList(new ModifyInventory(2, source, src))));
         c.getPlayer().equipChanged();
     }
 

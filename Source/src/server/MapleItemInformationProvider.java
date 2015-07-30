@@ -14,7 +14,11 @@ import client.inventory.ItemFlag;
 import constants.GameConstants;
 import client.MapleCharacter;
 import client.MapleClient;
+import client.inventory.Item;
+import client.inventory.MapleInventory;
 import client.inventory.MapleInventoryType;
+import client.inventory.MapleWeaponType;
+import java.util.Collection;
 import java.util.LinkedList;
 import provider.MapleData;
 import provider.MapleDataDirectoryEntry;
@@ -38,6 +42,7 @@ public class MapleItemInformationProvider {
     protected final MapleData etcStringData = stringData.getData("Etc.img");
     protected final MapleData insStringData = stringData.getData("Ins.img");
     protected final MapleData petStringData = stringData.getData("Pet.img");
+    protected Map<Integer, Boolean> onEquipUntradableCache = new HashMap<>();
     protected final Map<Integer, List<Integer>> scrollReqCache = new HashMap<Integer, List<Integer>>();
     protected final Map<Integer, Short> slotMaxCache = new HashMap<Integer, Short>();
     protected final Map<Integer, List<StructPotentialItem>> potentialCache = new HashMap<Integer, List<StructPotentialItem>>();
@@ -239,6 +244,43 @@ public class MapleItemInformationProvider {
         }
         return itemPairs;
     }
+
+    public final boolean isTwoHanded(int itemId) {
+        switch (getWeaponType(itemId)) {
+            case AXE2H:
+            case BLUNT2H:
+            case BOW:
+            case CLAW:
+            case CROSSBOW:
+            case POLE_ARM:
+            case SPEAR:
+            case SWORD2H:
+            case GUN:
+            case KNUCKLE:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isUntradeableOnEquip(int itemId) {
+        if (onEquipUntradableCache.containsKey(itemId)) {
+            return onEquipUntradableCache.get(itemId);
+        }
+        boolean untradableOnEquip = MapleDataTool.getIntConvert("info/equipTradeBlock", getItemData(itemId), 0) > 0;
+        onEquipUntradableCache.put(itemId, untradableOnEquip);
+        return untradableOnEquip;
+    }
+
+    public MapleWeaponType getWeaponType(int itemId) {
+        int cat = (itemId / 10000) % 100;
+        MapleWeaponType[] type = {MapleWeaponType.SWORD1H, MapleWeaponType.AXE1H, MapleWeaponType.BLUNT1H, MapleWeaponType.DAGGER, MapleWeaponType.NOT_A_WEAPON, MapleWeaponType.NOT_A_WEAPON, MapleWeaponType.NOT_A_WEAPON, MapleWeaponType.WAND, MapleWeaponType.STAFF, MapleWeaponType.NOT_A_WEAPON, MapleWeaponType.SWORD2H, MapleWeaponType.AXE2H, MapleWeaponType.BLUNT2H, MapleWeaponType.SPEAR, MapleWeaponType.POLE_ARM, MapleWeaponType.BOW, MapleWeaponType.CROSSBOW, MapleWeaponType.CLAW, MapleWeaponType.KNUCKLE, MapleWeaponType.GUN};
+        if (cat < 30 || cat > 49) {
+            return MapleWeaponType.NOT_A_WEAPON;
+        }
+        return type[cat - 30];
+    }
+    
 
     protected final MapleData getStringData(final int itemId) {
         String cat = null;
