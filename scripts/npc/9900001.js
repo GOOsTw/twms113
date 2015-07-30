@@ -1,4 +1,4 @@
-/** Author: nejevoli
+﻿/** Author: nejevoli
 	NPC Name: 		NimaKin
 	Map(s): 		Victoria Road : Ellinia (180000000)
 	Description: 		Maxes out your stats and able to modify your equipment stats
@@ -28,9 +28,9 @@ function action(mode, type, selection) {
 
     if (status == 0) {
 	if (cm.getPlayerStat("ADMIN") == 1) {
-		cm.sendSimple("What do you want from me?#b\r\n#L0#Max my stats!#l\r\n#L1#Max my skills!#l\r\n#L2#Modify my equip's stats!#l\r\n#L3#Look at potential values#l\r\n#L4#Set AP/SP to 0#l#k");
+		cm.sendSimple("親愛的#h \r\n管理員我能為您做什麼呢？？#b\r\n#L0#幫我能力值加到全滿！！#l\r\n#L1#幫我技能加到全滿！！#l\r\n#L2#幫我修改裝備數值！！#l\r\n#L4#幫我初始化AP/SP！#l#k");
 	} else if (cm.getPlayerStat("GM") == 1) {
-		cm.sendSimple("What do you want from me?#b\r\n#L0#Max my stats!#l\r\n#L1#Max my skills!#l\r\n#L4#Set AP/SP to 0#l#k");
+		cm.sendSimple("親愛的#h \r\n管理員我能為您做什麼呢？？#b\r\n#L0#幫我能力值加到全滿！！#l\r\n#L1#幫我技能加到全滿！！#l\r\n#L2#幫我修改裝備數值！！#l\r\n#L4#幫我初始化AP/SP！#l#k");
 	} else {
 	    cm.dispose();
 	}
@@ -38,7 +38,7 @@ function action(mode, type, selection) {
 	if (selection == 0) {
 	    if (cm.getPlayerStat("GM") == 1) {
 		cm.maxStats();
-		cm.sendOk("I have maxed your stats. Happy Mapling!");
+		cm.sendOk("已經幫您加滿了！！");
 	    }
 	    cm.dispose();
 	} else if (selection == 1) {
@@ -66,7 +66,7 @@ function action(mode, type, selection) {
 		status = 9;
 	} else if (selection == 4) {
 		cm.getPlayer().resetAPSP();
-		cm.sendNext("Done.");
+		cm.sendNext("完成，請換頻道or重新登入。");
 		cm.dispose();
 	} else {
 		cm.dispose();

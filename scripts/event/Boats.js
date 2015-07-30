@@ -58,22 +58,23 @@ function arrived() {
 }
 
 function invasion() {
-    if (Math.floor(Math.random() * 10) < 10) {
-	var map1 = em.getMapFactory().getMap(200090000);
-	var pos1 = new java.awt.Point(-538, 143);
-	map1.spawnMonsterOnGroundBelow(em.getMonster(8150000), pos1);
-	map1.spawnMonsterOnGroundBelow(em.getMonster(8150000), pos1);
-
-	var map2 = em.getMapFactory().getMap(200090010);
-	var pos2 = new java.awt.Point(339, 148);
-	map2.spawnMonsterOnGroundBelow(em.getMonster(8150000), pos2);
-	map2.spawnMonsterOnGroundBelow(em.getMonster(8150000), pos2);
-
-        em.setProperty("haveBalrog","true");
-        Boat_to_Orbis.broadcastMessage(MaplePacketCreator.boatEffect(1034));
-        Boat_to_Ellinia.broadcastMessage(MaplePacketCreator.boatEffect(1034));
-    }
+	var numspawn;
+    var change = Math.floor(Math.random() * 10);
+	if(change <= 5)
+		numspawn = 0;
+	else
+		numspawn = 2;
+	if(numspawn > 0) {
+		for(var i=0; i < numspawn; i++){
+            Boat_to_Orbis.spawnMonsterOnGroundBelow(em.getMonster(8150000), new java.awt.Point(485, -221));
+            Boat_to_Ellinia.spawnMonsterOnGroundBelow(em.getMonster(8150000), new java.awt.Point(-590, -221));
+	}
+    em.setProperty("haveBalrog","true");
+    Boat_to_Orbis.broadcastMessage(MaplePacketCreator.boatEffect(1034));
+    Boat_to_Ellinia.broadcastMessage(MaplePacketCreator.boatEffect(1034));
+	Boat_to_Orbis.broadcastMessage(MaplePacketCreator.musicChange("Bgm04/ArabPirate"));
+    Boat_to_Ellinia.broadcastMessage(MaplePacketCreator.musicChange("Bgm04/ArabPirate")); 
 }
-
+}
 function cancelSchedule() {
 }

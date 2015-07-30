@@ -1,7 +1,7 @@
-var status = -1;
+﻿var status = -1;
 
 function start(mode, type, selection) {
-	qm.sendNext("Thank you so much.");
+	qm.sendNext("謝謝你。");
 	qm.forceCompleteQuest();
 	qm.dispose();
 }
