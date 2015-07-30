@@ -1,4 +1,4 @@
-var status = -1;
+﻿var status = -1;
 
 function action(mode, type, selection) {
     if (mode == 1) {
@@ -9,16 +9,16 @@ function action(mode, type, selection) {
     }
     if (status == 0) {
 	if (cm.getPlayer().getMarriageId() > 0) {
-	    cm.sendSimple("Congratulations on your engagement!\r\n#b#L0#I wish to get an annulment.#l\r\n#L1#I wish to remove my ring from my inventory.#l#k");
+	    cm.sendSimple("怎麼了，看起來很傷心....\r\n#b#L0#我想要離婚。#l\r\n#L1#我想要從我裝備欄刪除我的戒指。#l#k");
 	} else  {
-	    cm.sendNext("Hello. What can I do for you?");
+	    cm.sendNext("嗨，我可以為您做什麼？？");
 	    cm.dispose();
 	}
     } else if (status == 1) {
 	if (selection == 0) {
-	    cm.sendYesNo("A divorce? ARE YOU SURE? You want to get divorced? This is irreversible!");
+	    cm.sendYesNo("離婚？你確定嗎？你想離婚？這不是玩笑吧...？");
 	} else {
-	    var selStr = "Remove a ring? What do you have...";
+	    var selStr = "你想要刪除什麼戒指，讓我看看。";
 	    var found = false;
 	    for (var i = 1112300; i < 1112312; i++) {
 		if (cm.haveItem(i)) {
@@ -33,7 +33,7 @@ function action(mode, type, selection) {
 		}
 	    }
 	    if (!found) {
-		cm.sendOk("You do not have any rings.");
+		cm.sendOk("你沒有任何戒指。");
 		cm.dispose();
 	    } else {
 		cm.sendSimple(selStr);
@@ -44,9 +44,9 @@ function action(mode, type, selection) {
 	if (selection == -1) {
 	    var cPlayer = cm.getClient().getChannelServer().getPlayerStorage().getCharacterById(cm.getPlayer().getMarriageId());
 	    if (cPlayer == null) {
-	        cm.sendNext("Please make sure your partner is online.");
+	        cm.sendNext("請確定你的伴侶在線上。");
 	    } else {
-	    	cPlayer.dropMessage(1, "Your partner has divorced you.");
+	    	cPlayer.dropMessage(1, "你的伴侶想要跟你離婚。");
 	    	cPlayer.setMarriageId(0);
 	    	cm.setQuestRecord(cPlayer, 160001, "0");
 	    	cm.setQuestRecord(cm.getPlayer(), 160001, "0");
@@ -56,15 +56,15 @@ function action(mode, type, selection) {
                 for (var i = 1112300; i < 1112312; i++) {
                 cm.gainItem(i, -1);
 	        }
-	    	cm.sendNext("You have been successfully divorced...");
+	    	cm.sendNext("成功離婚了。");
 	    }
 	} else {
 	    if (selection >= 1112300 && selection < 1112312) {
 		cm.gainItem(selection, -1);
-		cm.sendOk("Your equip ring has been removed.");
+		cm.sendOk("你成功移除了戒指。");
 	    } else if (selection >= 2240004 && selection < 2240016) {
 		cm.gainItem(selection, -1);
-		cm.sendOk("Your engagement ring has been removed.");
+		cm.sendOk("你的訂婚戒指已被刪除。");
 	    }
 	}		
 	cm.dispose();

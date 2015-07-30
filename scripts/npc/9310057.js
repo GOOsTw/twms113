@@ -4,6 +4,7 @@ var quantity = Array(5, 1, 1, 1, 1, 1, 1, 1, 1);
 var needed = Array(30, 60, 60, 25, 30, 35, 40, 45, 50, 55);
 var gender = Array(2, 0, 1, 2, 2, 2, 2, 2, 2);
 var status = -1;
+var map;
 
 function action(mode, type, selection) {
     if (mode == 1) {
@@ -28,15 +29,18 @@ function action(mode, type, selection) {
 	case 120000000:
 	case 220000000:
 	case 200000000:
+	case 680000000:
 	case 740000000:
 	case 741000000:
 	case 742000000:
 	case 800000000:
     	    if (status == 0) {
-	        cm.sendSimple("安安 我是菇菇勃士 #b英文村的巨屌菇菇!\r\n\r\n#L0#我要前往英文村#l\r\n#L1#我要兌換東西#l\r\n#L2#什麼是英文村?#l");
+			map = cm.getSavedLocation("ENGLISH");
+	        cm.sendSimple("安安 我是菇菇博士 #b英文村的菇菇博士!\r\n\r\n#L0#我要前往英文村#l\r\n#L1#我要兌換東西#l\r\n#L2#什麼是英文村?#l");
     	    } else if (status == 1) {
 	        if (selection == 0) {
-		    cm.warp(702090400,0); //exit map lobby
+			cm.saveLocation("ENGLISH");
+		    cm.warp(702090400,0);
 		    cm.dispose();
 		} else if (selection == 1) {
 		    var selStr = "第一個勳章是男的,第二個勳章是女的 \r\n\r\n#b";
@@ -66,7 +70,7 @@ function action(mode, type, selection) {
 	    break;
 	case 702090400:
     	    if (status == 0) {
-	        cm.sendSimple("Hello~I am Dr.P of #bEnglish School!\r\n\r\n#L0#前往英文村 - 簡單#l\r\n#L1#前往英文村 - 中級#l\r\n#L2#前往英文村 - 困難#l\r\n#L3#返回弓箭手村#l");
+	        cm.sendSimple("Hello~I am Dr.P of #bEnglish School!\r\n\r\n#L0#前往英文村 - 簡單#l\r\n#L1#前往英文村 - 中級#l\r\n#L2#前往英文村 - 困難#l\r\n#L3#我要回去了。#l");
     	    } else if (status == 1) {
 	        if (selection == 0 || selection == 1 || selection == 2) {
    		    var em = cm.getEventManager("English");
@@ -103,7 +107,12 @@ function action(mode, type, selection) {
 			}
 		    }
 		} else if (selection == 3) {
-		    cm.warp(100000000,0);
+            var map = cm.getSavedLocation("ENGLISH");
+            if (map == undefined)
+             map = 100000000;
+            cm.warp(map, parseInt(Math.random() * 5));
+			cm.clearSavedLocation("ENGLISH");
+            cm.dispose();
 		}
 	        cm.dispose();
             }

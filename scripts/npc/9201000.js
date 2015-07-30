@@ -16,17 +16,17 @@ function action(mode, type, selection) {
     }
     if (status == 0) {
 	if (cm.getPlayer().getMarriageId() > 0) {
-	    cm.sendNext("Congratulations on your engagement!");
+	    cm.sendNext("恭喜你結婚！！");
 	    cm.dispose();
 	} else {
-	    cm.sendSimple("Hello. What can I do for you?\r\n#b#L0#Make Moon Stone Ring#l\r\n#L1#Make Shining Star Ring#l\r\n#L2#Make Gold Heart Ring#l\r\n#L3#Make Silver Wing Ring#l#k");
+	    cm.sendSimple("嗨，我可以為您做什麼？？\r\n#b#L0#做一個月光戒指#l\r\n#L1#做一個星光戒指#l\r\n#L2#做一個金心戒指#l\r\n#L3#做一個鑽石戒指#l#k");
 	}
     } else if (status == 1) {
 	firstSelection = selection;
-	cm.sendSimple("I see. What quality?\r\n#b#L0#1 Karat#l\r\n#L1#2 Karat#l\r\n#L2#3 Karat#l#k");
+	cm.sendSimple("我明白，你需要幾克拉？？\r\n#b#L0#1 克拉#l\r\n#L1#2 克拉#l\r\n#L2#3 克拉#l#k");
     } else if (status == 2) {
 	secondSelection = selection;
-	var prompt = "In that case, I'm going to need specific items from you in order to make it. Make sure you have room in your inventory, though!#b";
+	var prompt = "在這種情況下，為了要做出好品質的裝備。請確保您有空間在您的裝備欄！#b";
 	switch(firstSelection) {
 	    case 0:
 		mats = ingredients_0;
@@ -47,11 +47,11 @@ function action(mode, type, selection) {
 	for(var i = 0; i < mats.length; i++) {
 	    prompt += "\r\n#i"+mats[i]+"##t" + mats[i] + "# x 1";
 	}
-	prompt += "\r\n#i4031138# " + mesos[secondSelection]; + " meso";
+	prompt += "\r\n#i4031138# " + mesos[secondSelection]; + " 楓幣";
 	cm.sendYesNo(prompt);
     } else if (status == 3) {
 	if (cm.getMeso() < mesos[secondSelection]) {
-	    cm.sendOk("No meso, no item.");
+	    cm.sendOk("你沒有錢，滾好嘛！？");
 	} else {
 	    var complete = true;
 	    for (var i = 0; i < mats.length; i++) {
@@ -61,9 +61,9 @@ function action(mode, type, selection) {
 		}
 	    }
 	    if (!complete) {
-		cm.sendOk("No ingredients, no item.");
+		cm.sendOk("沒有材料，滾好嘛！？");
 	    } else {
-		cm.sendOk("There we go! Fresh ring made with your materials and mesos! Go propose to someone!");
+		cm.sendOk("做完了，趕快去找你心愛的人求婚吧！！");
 		cm.gainMeso(-mesos[secondSelection]);
 		for (var i = 0; i < mats.length; i++) {
 		    cm.gainItem(mats[i], -1);
