@@ -55,6 +55,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.io.Serializable;
 
 import client.anticheat.CheatTracker;
+import client.inventory.ModifyInventory;
 import constants.ServerConstants;
 import database.DatabaseConnection;
 import database.DatabaseException;
@@ -2321,13 +2322,13 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public void changeJob(int newJob) {
         try {
-            
+
             this.job = (short) newJob;
             if (newJob != 0 && newJob != 1000 && newJob != 2000 && newJob != 2001 && newJob != 3000) {
-                 remainingSp[GameConstants.getSkillBook(newJob)]++;
-                    if (newJob % 10 >= 2) {
-                        remainingSp[GameConstants.getSkillBook(newJob)] += 2;
-                    }
+                remainingSp[GameConstants.getSkillBook(newJob)]++;
+                if (newJob % 10 >= 2) {
+                    remainingSp[GameConstants.getSkillBook(newJob)] += 2;
+                }
             }
             if (newJob > 0 && !isGM()) {
                 resetStatsByJob(true);
@@ -2810,14 +2811,17 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public void forceReAddItem(IItem item, MapleInventoryType type) { //used for stuff like durability, item exp/level, probably owner?
         forceReAddItem_NoUpdate(item, type);
         if (type != MapleInventoryType.UNDEFINED) {
-            client.getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type == MapleInventoryType.EQUIPPED ? (byte) 1 : type.getType()));
+            client.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.UPDATE, item)));
+            //client.getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type == MapleInventoryType.EQUIPPED ? (byte) 1 : type.getType()));
         }
     }
 
     public void forceReAddItem_Flag(IItem item, MapleInventoryType type) { //used for flags
         forceReAddItem_NoUpdate(item, type);
         if (type != MapleInventoryType.UNDEFINED) {
-            client.getSession().write(MaplePacketCreator.updateSpecialItemUse_(item, type == MapleInventoryType.EQUIPPED ? (byte) 1 : type.getType()));
+            client.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.ADD, item)));
+
+            //client.getSession().write(MaplePacketCreator.updateSpecialItemUse_(item, type == MapleInventoryType.EQUIPPED ? (byte) 1 : type.getType()));
         }
     }
 
@@ -3236,7 +3240,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (GameConstants.isKOC(job) && level == 70) {
             client.getSession().write(MaplePacketCreator.startMapEffect("恭喜達到30等請回耶雷弗三轉吧。", 5120000, true));
         }
-       
+
         /*        if (getSubcategory() == 1) { //db level 2
          switch (level) {
          case 2:
@@ -3534,7 +3538,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     chr.get().sendSpawnData(client);
                 }
             }
-  
+
             if (summons != null) {
                 for (final MapleSummon summon : summons.values()) {
                     client.getSession().write(MaplePacketCreator.spawnSummon(summon, false));
@@ -4673,7 +4677,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
          }
          }*/
     }
-    
+
     public MapleRing getMarriageRing(boolean incluedEquip) {
         MapleInventory iv = getInventory(MapleInventoryType.EQUIPPED);
         Collection<IItem> equippedC = iv.list();
@@ -4686,11 +4690,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             if (item.getRing() != null) {
                 ring = item.getRing();
                 ring.setEquipped(true);
-                if (GameConstants.isMarriageRing(item.getItemId()))
+                if (GameConstants.isMarriageRing(item.getItemId())) {
                     return ring;
+                }
             }
-         }
-         if (incluedEquip) {
+        }
+        if (incluedEquip) {
             iv = getInventory(MapleInventoryType.EQUIP);
             for (IItem item : iv.list()) {
                 if (item.getRing() != null && GameConstants.isMarriageRing(item.getItemId())) {
@@ -4699,8 +4704,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     return ring;
                 }
             }
-         }
-         return null;
+        }
+        return null;
     }
 
     //TODO: more than one crush/friendship ring at a time
@@ -4848,7 +4853,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                             leadid = 10000018;
                         } else if (GameConstants.isAran(getJob())) {
                             leadid = 20000024;
-                        } 
+                        }
                         if (getSkillLevel(SkillFactory.getSkill(leadid)) == 0 && getPet(0) != null) {
                             unequipPet(getPet(0), false, false);
                         } else if (lead && getSkillLevel(SkillFactory.getSkill(leadid)) > 0) { // Follow the Lead

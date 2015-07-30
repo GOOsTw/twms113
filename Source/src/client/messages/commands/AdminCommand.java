@@ -16,6 +16,7 @@ import client.inventory.MapleInventory;
 import client.inventory.MapleInventoryIdentifier;
 import client.inventory.MapleInventoryType;
 import client.inventory.MapleRing;
+import client.inventory.ModifyInventory;
 import client.messages.CommandProcessorUtil;
 import constants.GameConstants;
 import database.DatabaseConnection;
@@ -1284,7 +1285,8 @@ public class AdminCommand {
             MapleInventoryType type = GameConstants.getInventoryType(itemid);
             for (IItem item : chr.getInventory(type).listById(itemid)) {
                 item.setFlag((byte) (item.getFlag() | ItemFlag.LOCK.getValue()));
-                chr.getClient().getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type.getType()));
+                chr.getClient().sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory( ModifyInventory.Types.UPDATE, item)));
+                //chr.getClient().getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type.getType()));
             }
             if (type == MapleInventoryType.EQUIP) {
                 type = MapleInventoryType.EQUIPPED;

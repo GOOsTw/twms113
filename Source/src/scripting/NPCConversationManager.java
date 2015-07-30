@@ -1180,13 +1180,6 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         return MapleItemInformationProvider.getInstance().isCash(itemId);
     }
     
-    public void removeNpc(int mapId, int npcId) {
-        MapleMap map = c.getChannelServer().getMapFactory().getMap(mapId);
-        MapleNPC targetNpc = map.getNPCById(npcId);
-        if( targetNpc != null )
-            this.getPlayer().getClient().sendPacket(MaplePacketCreator.removeNPC(targetNpc.getObjectId()));
-    }
-
     public void buffGuild(final int buff, final int duration, final String msg) {
         MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
         if (ii.getItemEffect(buff) != null && getPlayer().getGuildId() > 0) {

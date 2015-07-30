@@ -332,16 +332,8 @@ public class PacketHelper {
         mplew.writeLong(0);
     }
 
-    public static final void addExpirationTime(final MaplePacketLittleEndianWriter mplew, final long time) {
-        mplew.write(0);
-        mplew.writeShort(1408); // 80 05
-        if (time != -1) {
-            mplew.writeInt(KoreanDateUtil.getItemTimestamp(time));
-            mplew.write(1);
-        } else {
-            mplew.writeInt(400967355);
-            mplew.write(2);
-        }
+    public static void addExpirationTime(final MaplePacketLittleEndianWriter mplew, long time) {
+        mplew.writeLong(getTime(time));
     }
 
     public static final void addItemInfo(final MaplePacketLittleEndianWriter mplew, final IItem item, final boolean zeroPosition) {
@@ -349,14 +341,20 @@ public class PacketHelper {
     }
 
     public static final void addItemInfo(final MaplePacketLittleEndianWriter mplew, final IItem item, final boolean zeroPosition, final boolean leaveOut) {
-        short pos = item.getPosition();
+
         MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-        IEquip equip = null;
-        if (item.getType() == 1) {
-            equip = (IEquip) item;
-        }
         boolean isCash = ii.isCash(item.getItemId());
-        if (zeroPosition) {
+        boolean isPet = item.getPet() != null && item.getPet().getUniqueId() > -1;
+        boolean isRing = false;
+        boolean hasUniqueId = item.getUniqueId() > 0 && !GameConstants.isRing(item.getItemId()) && item.getItemId() / 10000 != 166;
+        Equip equip = null;
+        short pos = item.getPosition();
+        if (item.getType() == 1) {
+            equip = (Equip) item;
+            isRing = equip.getRing() != null && equip.getRing().getRingId() > -1;
+        }
+
+        if (!zeroPosition) {
             if (equip != null) {
                 if (pos < 0) {
                     pos *= -1;
@@ -365,18 +363,9 @@ public class PacketHelper {
             } else {
                 mplew.write(pos);
             }
-        } else {
-            if (pos <= -1) {
-                pos *= -1;
-                if (pos > 100 && pos < 1000) {
-                    pos -= 100;
-                }
-            }
-            mplew.write(pos);
         }
         mplew.write(item.getPet() != null ? 3 : item.getType());
         mplew.writeInt(item.getItemId());
-        boolean hasUniqueId = item.getUniqueId() > 0;
         //marriage rings arent cash items so dont have uniqueids, but we assign them anyway for the sake of rings
         mplew.write(hasUniqueId ? 1 : 0);
         if (hasUniqueId) {
@@ -408,23 +397,14 @@ public class PacketHelper {
                 mplew.writeShort(equip.getJump());
                 mplew.writeMapleAsciiString(equip.getOwner());
                 mplew.writeShort(equip.getFlag());
-
-                if (isCash) {
-                    for (int i = 0; i < 10; i++) {
-                        mplew.write(0x40);
-                    }
-                } else {
-                    mplew.write(0);
-                    mplew.write(equip.getEquipLevel()); //Item Level
-                    mplew.writeShort(0);
-                    mplew.writeShort(equip.getExpPercentage());
-                    mplew.writeInt(equip.getDurability());//(equip.getDurability());
-                    mplew.writeInt(equip.getViciousHammer()); //WTF NEXON ARE YOU SERIOUS?
-                    mplew.writeShort(equip.getHpR());
-                    mplew.writeShort(equip.getMpR());
+                mplew.write(equip.getLevel());
+                mplew.write(equip.getExpPercentage());
+                mplew.writeInt(0);
+                if (!hasUniqueId) {
+                    mplew.writeLong(item.getUniqueId()); //some tracking ID
                 }
-
                 mplew.writeLong(getTime(-2));
+                mplew.writeInt(-1);
 
             } else {
                 mplew.writeShort(item.getQuantity());
@@ -446,6 +426,7 @@ public class PacketHelper {
         boolean isCash = ii.isCash(item.getItemId());
         boolean isPet = item.getPet() != null && item.getPet().getUniqueId() > -1;
         boolean isRing = false;
+       
         Equip equip = null;
         short pos = item.getPosition();
         if (item.getType() == 1) {
@@ -505,22 +486,14 @@ public class PacketHelper {
             mplew.writeShort(equip.getJump()); // jump
             mplew.writeMapleAsciiString(equip.getOwner()); // owner name
             mplew.writeShort(equip.getFlag()); //Item Flags
-
-            if (isCash) {
-                for (int i = 0; i < 10; i++) {
-                    mplew.write(0x40);
-                }
-            } else {
-                mplew.write(0);
-                mplew.write(Math.max(equip.getBaseLevel(), equip.getEquipLevel())); //Item Level
-                mplew.writeShort(0);
-                mplew.writeShort(equip.getExpPercentage() * 4);
-                mplew.writeInt(equip.getDurability());//(equip.getDurability());
-                mplew.writeInt(equip.getViciousHammer()); //WTF NEXON ARE YOU SERIOUS?
-                mplew.writeShort(0);//(equip.getHpR());
-                mplew.writeShort(0);//(equip.getMpR());
+            mplew.write(equip.getLevel());
+            mplew.write(equip.getExpPercentage());
+            mplew.writeInt(0);
+            if (!isCash) {
+                mplew.writeLong(item.getUniqueId()); //some tracking ID
             }
             mplew.writeLong(getTime(-2));
+            mplew.writeInt(-1);
         }
     }
 
@@ -581,7 +554,7 @@ public class PacketHelper {
     }
 
     public static final void addPetItemInfo(final MaplePacketLittleEndianWriter mplew, final IItem item, final MaplePet pet) {
-        PacketHelper.addExpirationTime(mplew, -1); //always
+        addExpirationTime(mplew, item.getExpiration());
         mplew.writeAsciiString(pet.getName(), 13);
         mplew.write(pet.getLevel());
         mplew.writeShort(pet.getCloseness());

@@ -3,17 +3,25 @@ package client.inventory;
 import constants.GameConstants;
 
 public class ModifyInventory {
+    
+    public static class Types {
+        public static final int ADD = 0;
+        public static final int UPDATE = 1;
+        public static final int MOVE = 2;
+        public static final int REMOVE = 3;
+       
+    }
 
     private int mode;
     private IItem item;
     private short oldPos;
 
-    public ModifyInventory(final int mode, final Item item) {
+    public ModifyInventory(final int mode, final IItem item) {
         this.mode = mode;
         this.item = item.copy();
     }
 
-    public ModifyInventory(final int mode, final Item item, final short oldPos) {
+    public ModifyInventory(final int mode, final IItem item, final short oldPos) {
         this.mode = mode;
         this.item = item.copy();
         this.oldPos = oldPos;

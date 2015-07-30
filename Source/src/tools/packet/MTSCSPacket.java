@@ -657,7 +657,7 @@ public class MTSCSPacket {
         mplew.writeShort(SendPacketOpcode.CS_OPERATION.getValue());
         mplew.write(0x5F);
         mplew.writeShort(pos);
-        PacketHelper.addItemInfo(mplew, item, true, true);
+        PacketHelper.addItemInfo(mplew, item, true, false);
 
         return mplew.getPacket();
     }

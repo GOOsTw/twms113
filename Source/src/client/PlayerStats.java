@@ -26,6 +26,7 @@ import client.inventory.IItem;
 import client.inventory.Equip;
 import client.inventory.IEquip;
 import client.inventory.MapleWeaponType;
+import client.inventory.ModifyInventory;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.List;
@@ -885,7 +886,8 @@ public class PlayerStats implements Serializable {
                 durabilityHandling.remove(eqq);
                 final short pos = chr.getInventory(MapleInventoryType.EQUIP).getNextFreeSlot();
                 MapleInventoryManipulator.unequip(chr.getClient(), eqq.getPosition(), pos);
-                chr.getClient().getSession().write(MaplePacketCreator.updateSpecialItemUse(eqq, (byte) 1, pos));
+                chr.getClient().sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.UPDATE,eqq, pos)));
+                //chr.getClient().getSession().write(MaplePacketCreator.updateSpecialItemUse(eqq, (byte) 1, pos));
             } else {
                 chr.forceReAddItem(eqq.copy(), MapleInventoryType.EQUIPPED);
             }
