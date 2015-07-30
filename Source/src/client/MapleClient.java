@@ -82,7 +82,7 @@ public class MapleClient implements Serializable {
             CASH_SHOP_TRANSITION = 4,
             LOGIN_CS_LOGGEDIN = 5,
             CHANGE_CHANNEL = 6;
-    public static final int DEFAULT_CHARSLOT = 6;
+    public static final int DEFAULT_CHARSLOT = 3;
     public static final String CLIENT_KEY = "CLIENT";
     private final MapleAESOFB send, receive;
     private final IoSession session;

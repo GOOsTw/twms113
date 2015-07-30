@@ -344,18 +344,26 @@ public class PacketHelper {
         }
     }
 
-    public static final void addItemInfo(final MaplePacketLittleEndianWriter mplew, final IItem item, final boolean zeroPosition, final boolean leaveOut) {
-        addItemInfo(mplew, item, zeroPosition, leaveOut, false);
+    public static final void addItemInfo(final MaplePacketLittleEndianWriter mplew, final IItem item, final boolean zeroPosition) {
+        addItemInfo(mplew, item, zeroPosition);
     }
 
-    public static final void addItemInfo(final MaplePacketLittleEndianWriter mplew, final IItem item, final boolean zeroPosition, final boolean leaveOut, final boolean trade) {
+    public static final void addItemInfo(final MaplePacketLittleEndianWriter mplew, final IItem item, final boolean zeroPosition, final boolean leaveOut) {
         short pos = item.getPosition();
         MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-
+        IEquip equip = null;
+        if (item.getType() == 1) {
+            equip = (IEquip) item;
+        }
         boolean isCash = ii.isCash(item.getItemId());
         if (zeroPosition) {
-            if (!leaveOut) {
-                mplew.write(0);
+            if (equip != null) {
+                if (pos < 0) {
+                    pos *= -1;
+                }
+                mplew.write(pos > 100 ? pos - 100 : pos);
+            } else {
+                mplew.write(pos);
             }
         } else {
             if (pos <= -1) {
@@ -364,11 +372,7 @@ public class PacketHelper {
                     pos -= 100;
                 }
             }
-            /*            if (!trade && item.getType() == 1) {
-             mplew.writeShort(pos);
-             } else {*/
             mplew.write(pos);
-//            }
         }
         mplew.write(item.getPet() != null ? 3 : item.getType());
         mplew.writeInt(item.getItemId());
@@ -383,8 +387,8 @@ public class PacketHelper {
             addPetItemInfo(mplew, item, item.getPet());
         } else {
             addExpirationTime(mplew, item.getExpiration());
-            if (item.getType() == 1) {
-                final IEquip equip = (IEquip) item;
+            if (item.getType() == 1 && equip != null) {
+
                 mplew.write(equip.getUpgradeSlots());
                 mplew.write(equip.getLevel());
                 mplew.writeShort(equip.getStr());

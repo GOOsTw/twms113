@@ -75,6 +75,7 @@ import server.StructPotentialItem;
 import server.Timer;
 import server.Timer.CloneTimer;
 import server.life.MapleMonster;
+import server.life.MapleNPC;
 import server.maps.Event_PyramidSubway;
 import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
@@ -1177,6 +1178,13 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public boolean isCash(final int itemId) {
         return MapleItemInformationProvider.getInstance().isCash(itemId);
+    }
+    
+    public void removeNpc(int mapId, int npcId) {
+        MapleMap map = c.getChannelServer().getMapFactory().getMap(mapId);
+        MapleNPC targetNpc = map.getNPCById(npcId);
+        if( targetNpc != null )
+            this.getPlayer().getClient().sendPacket(MaplePacketCreator.removeNPC(targetNpc.getObjectId()));
     }
 
     public void buffGuild(final int buff, final int duration, final String msg) {

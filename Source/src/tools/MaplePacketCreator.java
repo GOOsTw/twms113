@@ -47,6 +47,7 @@ import client.inventory.IEquip.ScrollResult;
 import client.MapleDisease;
 import client.inventory.MapleRing;
 import client.SkillMacro;
+import client.inventory.ModifyInventory;
 import handling.ByteArrayMaplePacket;
 import handling.MaplePacket;
 import handling.SendPacketOpcode;
@@ -460,7 +461,7 @@ public class MaplePacketCreator {
         if (item == null) {
             mplew.write(0);
         } else {
-            PacketHelper.addItemInfo(mplew, item, false, false, true);
+            PacketHelper.addItemInfo(mplew, item, false, false);
         }
         return mplew.getPacket();
     }
@@ -1383,6 +1384,48 @@ public class MaplePacketCreator {
 
         return mplew.getPacket();
     }
+    
+     public static MaplePacket modifyInventory(boolean updateTick, final List<ModifyInventory> mods) {
+        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+        mplew.writeShort(SendPacketOpcode.MODIFY_INVENTORY_ITEM.getValue());
+        mplew.write(updateTick ? 1 : 0);
+        mplew.write(mods.size());
+        int addMovement = -1;
+        for (ModifyInventory mod : mods) {
+            mplew.write(mod.getMode());
+            mplew.write(mod.getInventoryType());
+            mplew.writeShort(mod.getMode() == 2 ? mod.getOldPosition() : mod.getPosition());
+            switch (mod.getMode()) {
+                case 0: {//add item
+                    PacketHelper.addItemInfo(mplew, mod.getItem(),  true);
+                    break;
+                }
+                case 1: {//update quantity
+                    mplew.writeShort(mod.getQuantity());
+                    break;
+                }
+                case 2: {//move                  
+                    mplew.writeShort(mod.getPosition());
+                    if (mod.getPosition() < 0 || mod.getOldPosition() < 0) {
+                        addMovement = mod.getOldPosition() < 0 ? 1 : 2;
+                    }
+                    break;
+                }
+                case 3: {//remove
+                    if (mod.getPosition() < 0) {
+                        addMovement = 2;
+                    }
+                    break;
+                }
+            }
+            mod.clear();
+        }
+        if (addMovement > -1) {
+            mplew.write(addMovement);
+        }
+        return mplew.getPacket();
+    }
+
 
     public static MaplePacket getScrollEffect(int chr, ScrollResult scrollSuccess, boolean legendarySpirit) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
@@ -2141,7 +2184,7 @@ public class MaplePacketCreator {
         mplew.writeShort(SendPacketOpcode.PLAYER_INTERACTION.getValue());
         mplew.write(0xE);
         mplew.write(number);
-        PacketHelper.addItemInfo(mplew, item, false, false, true);
+        PacketHelper.addItemInfo(mplew, item, false, false);
 
         return mplew.getPacket();
     }
