@@ -12,7 +12,7 @@ function start(mode, type, selection) {
 function end(mode, type, selection) {
     if (mode == 0) {
 	if (status == 0) {
-	    qm.sendNext("I guess you are not ready to tackle on the responsibilities of an official knight.");
+	    qm.sendNext("我猜你還沒準備好。");
 	    qm.dispose();
 	    return;
 	} else if (status >= 2) {
@@ -25,7 +25,7 @@ function end(mode, type, selection) {
 	status++;
     }
     if (status == 0) {
-		qm.sendYesNo("You've saved Erev. Do you want to become a Captain Knight?");
+		qm.sendYesNo("你存在皇家騎士團，那麼你想成為一名騎士官員？");
     } else if (status == 1) {
 	    qm.forceCompleteQuest();
 	    if (qm.getJob() == 1111) {
@@ -39,9 +39,9 @@ function end(mode, type, selection) {
 	    } else if (qm.getJob() == 1511) {
 		qm.changeJob(1512);
 	    }
-	    qm.sendNext("You are now an official knight of the Knights of Cygnus.");
+	    qm.sendNext("你現在皇家騎士團的騎士官員。");
     } else if (status == 3) {
-	qm.sendPrev("Now that you are officially a Knight of cygnus, act like one so you will keep Goodness's name up high.");
+	qm.sendPrev("現在回去找女皇吧。");
 	qm.dispose();
     }
 }

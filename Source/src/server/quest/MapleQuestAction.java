@@ -304,12 +304,12 @@ public class MapleQuestAction implements Serializable {
                     final short count = (short) MapleDataTool.getInt(iEntry.getChildByPath("count"), 1);
                     if (count < 0) { // remove items
                         if (!c.haveItem(id, count, false, true)) {
-                            c.dropMessage(1, "You are short of some item to complete quest.");
+                            c.dropMessage(1, "您是短一些項目來完成任務。");
                             return false;
                         }
                     } else { // add items
                         if (MapleItemInformationProvider.getInstance().isPickupRestricted(id) && c.haveItem(id, 1, true, false)) {
-                            c.dropMessage(1, "You have this item already: " + MapleItemInformationProvider.getInstance().getName(id));
+                            c.dropMessage(1, "你已經有了這個道具: " + MapleItemInformationProvider.getInstance().getName(id));
                             return false;
                         }
                         switch (GameConstants.getInventoryType(id)) {
@@ -332,19 +332,19 @@ public class MapleQuestAction implements Serializable {
                     }
                 }
                 if (c.getInventory(MapleInventoryType.EQUIP).getNumFreeSlot() < eq) {
-                    c.dropMessage(1, "Please make space for your Equip inventory.");
+                    c.dropMessage(1, "請確認裝備欄是否滿了。");
                     return false;
                 } else if (c.getInventory(MapleInventoryType.USE).getNumFreeSlot() < use) {
-                    c.dropMessage(1, "Please make space for your Use inventory.");
+                    c.dropMessage(1, "請確認消耗欄是否滿了。");
                     return false;
                 } else if (c.getInventory(MapleInventoryType.SETUP).getNumFreeSlot() < setup) {
-                    c.dropMessage(1, "Please make space for your Setup inventory.");
+                    c.dropMessage(1, "請確認裝飾欄是否滿了。");
                     return false;
                 } else if (c.getInventory(MapleInventoryType.ETC).getNumFreeSlot() < etc) {
-                    c.dropMessage(1, "Please make space for your Etc inventory.");
+                    c.dropMessage(1, "請確認其他欄是否滿了。");
                     return false;
                 } else if (c.getInventory(MapleInventoryType.CASH).getNumFreeSlot() < cash) {
-                    c.dropMessage(1, "Please make space for your Cash inventory.");
+                    c.dropMessage(1, "請確認特殊欄是否滿了。");
                     return false;
                 }
                 return true;
@@ -352,10 +352,10 @@ public class MapleQuestAction implements Serializable {
             case money: {
                 final int meso = MapleDataTool.getInt(data, 0);
                 if (c.getMeso() + meso < 0) { // Giving, overflow
-                    c.dropMessage(1, "Meso exceed the max amount, 2147483647.");
+                    c.dropMessage(1, "楓幣不足.");
                     return false;
                 } else if (meso < 0 && c.getMeso() < Math.abs(meso)) { //remove meso
-                    c.dropMessage(1, "Insufficient meso.");
+                    c.dropMessage(1, "楓幣不足.");
                     return false;
                 }
                 return true;
@@ -409,7 +409,7 @@ public class MapleQuestAction implements Serializable {
                         final int period = MapleDataTool.getInt(iEntry.getChildByPath("period"), 0) / 1440;
                         final String name = MapleItemInformationProvider.getInstance().getName(id);
                         if (id / 10000 == 114 && name != null && name.length() > 0) { //medal
-                            final String msg = "You have attained title <" + name + ">";
+                            final String msg = "你獲得了勳章 <" + name + ">";
                             c.dropMessage(-1, msg);
                             c.dropMessage(5, msg);
                         }
