@@ -203,7 +203,7 @@ public class BuddyEntry {
             PreparedStatement ps = con.prepareStatement("SELECT id, name, level, job FROM characters WHERE name = ?");
             ps.setString(1, buddyName);
             ResultSet rs = ps.executeQuery();
-             if (!rs.next()) {
+             if (rs.next()) {
                  return new BuddyEntry(
                          rs.getString("name"),
                          rs.getInt("id"),
@@ -227,13 +227,13 @@ public class BuddyEntry {
             PreparedStatement ps = con.prepareStatement("SELECT id, name, level, job FROM characters WHERE id = ?");
             ps.setInt(1, buddyCharId);
             ResultSet rs = ps.executeQuery();
-             if (!rs.next()) {
+             if (rs.next()) {
                  return new BuddyEntry(
                          rs.getString("name"),
                          rs.getInt("id"),
                          BuddyList.DEFAULT_GROUP,
                          -1,
-                         false,
+                         true,
                          rs.getInt("level"),
                          rs.getInt("job"));
              } else {
