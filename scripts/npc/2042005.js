@@ -12,7 +12,7 @@ function action(mode, type, selection) {
     else
         cm.dispose();
     if (status == 0 && mode == 1) {
-        var selStr = "請選擇一種場地!\r\n#L100#兌換黃金楓葉標誌#l";
+        var selStr = "請選擇一種擂台賽場地!\r\n#L100#兌換黃金楓葉標誌#l";
 	var found = false;
         for (var i = 0; i < 3; i++){
             if (getCPQField(i+1) != "") {
@@ -21,16 +21,16 @@ function action(mode, type, selection) {
             }
         }
         if (cm.getParty() == null) {
-            cm.sendSimple("You are not in a party.\r\n#L100#兌換黃金楓葉標誌#l");
+            cm.sendSimple("請組隊再來找我。\r\n#L100#楓葉黃金標誌兌換#l");
         } else {
             if (cm.isLeader()) {
 		if (found) {
                     cm.sendSimple(selStr);
 		} else {
-		    cm.sendSimple("There are no rooms at the moment.\r\n#L100#兌換黃金楓葉標誌#l");
+		    cm.sendSimple("目前沒有房間.\r\n#L100#兌換黃金楓葉標誌#l");
 		}
             } else {
-                cm.sendSimple("Please tell your party leader to speak with me.\r\n#L100#兌換黃金楓葉標誌#l");
+                cm.sendSimple("請叫你的隊長來找我\r\n#L100#楓葉黃金標誌兌換#l");
             }
         }
     } else if (status == 1) {
@@ -40,26 +40,26 @@ function action(mode, type, selection) {
 	    var mapid = 980030000+((selection+1)*1000);
             if (cm.getEventManager("cpq2").getInstance("cpq"+mapid) == null) {
                 var party = cm.getParty().getMembers();
-                if (cm.getParty() != null && party.size() == 3) {
-                    if (checkLevelsAndMap(50, 200) == 1) {
-                        cm.sendOk("A player in your party is not the appropriate level.");
+                if (cm.getParty() != null && party.size() == 1) {
+                    if (checkLevelsAndMap(50, 200) == 3) {
+                        cm.sendOk("隊伍裡有人等級不符合。");
                         cm.dispose();
                     } else if (checkLevelsAndMap(50, 200) == 2) {
-                        cm.sendOk("Everyone in your party isnt in this map.");
+                        cm.sendOk("在地圖上找不到您的隊友。");
                         cm.dispose();
                     } else {
                         cm.getEventManager("cpq2").startInstance(""+mapid, cm.getPlayer());
                         cm.dispose();
                     }
                 } else {
-                    cm.sendOk("Your party is not the appropriate size.");
+                    cm.sendOk("隊伍裡人數只能3個人。");
                 }
             } else if (cm.getParty() != null && cm.getEventManager("cpq2").getInstance("cpq"+mapid).getPlayerCount() == cm.getParty().getMembers().size()) {
                 if (checkLevelsAndMap(50, 200) == 1) {
-                    cm.sendOk("A player in your party is not the appropriate level.");
+                    cm.sendOk("隊伍裡有人等級不符合。");
                     cm.dispose();
                 } else if (checkLevelsAndMap(50, 200) == 2) {
-                    cm.sendOk("Everyone in your party isnt in this map.");
+                    cm.sendOk("在地圖上找不到您的隊友。");
                     cm.dispose();
                 } else {
                     //Send challenge packet here
@@ -68,11 +68,11 @@ function action(mode, type, selection) {
                     //if (owner.getConversation() != 1) {
                         cm.openNpc(owner.getClient(), 2042006);
                     //}
-                    cm.sendOk("Your challenge has been sent.");
+                    cm.sendOk("您的挑戰已經發送。");
                     cm.dispose();
                 }
             } else {
-                cm.sendOk("The two parties participating in Monster Carnival must have an equal number of party member");
+                cm.sendOk("怪物擂台2必須是雙方隊伍等級相符合。");
                 cm.dispose();
             }
 	} else {
@@ -81,9 +81,9 @@ function action(mode, type, selection) {
 	} else if (status == 2) {
 	    if (selection == 0) {
 		if (!cm.haveItem(4001129,50)) {
-		    cm.sendOk("You have no items.");
+		    cm.sendOk("很抱歉您並沒有#t4001129# #b50#k個");
 		} else if (!cm.canHold(1122007,1)) {
-		    cm.sendOk("Please make room");
+		    cm.sendOk("請清出空間.");
 		} else {
 		    cm.gainItem(1122007,1);
 		    cm.gainItem(4001129,-50);
@@ -91,9 +91,9 @@ function action(mode, type, selection) {
 		cm.dispose();
 	    } else if (selection == 1) {
 		if (!cm.haveItem(4001129,30)) {
-		    cm.sendOk("You have no items.");
+		    cm.sendOk("很抱歉您並沒有#t4001129# #b30#k個");
 		} else if (!cm.canHold(2041211,1)) {
-		    cm.sendOk("Please make room");
+		    cm.sendOk("請清出空間.");
 		} else {
 		    cm.gainItem(2041211,1);
 		    cm.gainItem(4001129,-30);
@@ -101,9 +101,9 @@ function action(mode, type, selection) {
 		cm.dispose();
 	    } else if (selection == 2) {
 		if (!cm.haveItem(4001254,50)) {
-		    cm.sendOk("You have no items.");
+		    cm.sendOk("很抱歉您並沒有#t4001254# #b50#k個");
 		} else if (!cm.canHold(1122058,1)) {
-		    cm.sendOk("Please make room");
+		    cm.sendOk("請清出空間.");
 		} else {
 		    cm.gainItem(1122058,1);
 		    cm.gainItem(4001254,-50);

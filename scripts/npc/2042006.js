@@ -1,4 +1,4 @@
-var status = 0;
+﻿var status = 0;
 var request;
 
 function start() {
@@ -15,7 +15,7 @@ function action(mode, type, selection) {
     if (status == 0) {
         request = cm.getNextCarnivalRequest();
         if (request != null) {
-            cm.sendYesNo(request.getChallengeInfo() + "\r\nWould you like to battle this party at the Monster Carnival 2?")
+            cm.sendYesNo(request.getChallengeInfo() + "\r\n是否想跟他們挑戰??")
         } else {
             cm.dispose();
         }
@@ -24,7 +24,7 @@ function action(mode, type, selection) {
             cm.getChar().getEventInstance().registerCarnivalParty(request.getChallenger(), request.getChallenger().getMap(), 1);
             cm.dispose();
         } catch (e) {
-            cm.sendOk("The challenge is no longer valid.");
+            cm.sendOk("目前挑戰不再是有效的。");
         }
         status = -1;
     }

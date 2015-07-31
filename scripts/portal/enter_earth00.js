@@ -1,3 +1,3 @@
 function enter(pi) {
-    pi.warp(120000101);
+    pi.warp(221000300, "earth00");
 }

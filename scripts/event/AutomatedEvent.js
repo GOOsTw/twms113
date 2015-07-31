@@ -26,6 +26,6 @@ function cancelSchedule() {
 
 function setup() {
     em.scheduleRandomEvent();
-    setupTask = em.schedule("scheduleNew", 600000); // 10分
+    setupTask = em.schedule("scheduleNew", 120000); // 2分
     nextTime += 1000 * 60 * 240; // 4小時
 }

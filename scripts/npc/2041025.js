@@ -1,4 +1,4 @@
-/*
+﻿/*
 	Machine Apparatus - Origin of Clocktower(220080001)
 */
 
@@ -15,7 +15,7 @@ function action(mode, type, selection) {
 	status--;
     }
     if (status == 0) {
-	cm.sendYesNo("Beep... beep... you can make your escape to a safer place through me. Beep... beep... would you like to leave this place?");
+	cm.sendYesNo("嘟...嘟...你想要離開嗎？？");
     } else if (status == 1) {
 	cm.warp(220080000);
 	if (cm.getPlayerCount(220080001) == 0) {

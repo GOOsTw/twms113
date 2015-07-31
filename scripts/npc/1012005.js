@@ -116,8 +116,8 @@ function action(mode, type, selection) {
     } else if (status == 8) {
 	cm.sendNextPrev("對了！寵物不大喜歡吃人類的食物。我的徒弟#b科爾#k在弓箭手村的市集裡賣#b寵物食品#k，如果需要食物就到弓箭手村去。最好先買好食物，以防寵物失去力氣哦。");
     } else if (status == 9) {
-	cm.sendNextPrev("阿對了！如果太久沒餵寵物吃東西的話它會自己回家。雖然下次將它拿出來在餵它也可以，但因為對健康不好，所以每一餐都要準時餵食喔。解說能夠理解嗎?");
-    cm.dispose();
+	cm.sendNext("阿對了！如果太久沒餵寵物吃東西的話它會自己回家。雖然下次將它拿出來在餵它也可以，但因為對健康不好，所以每一餐都要準時餵食喔。解說能夠理解嗎?");
+	cm.safeDispose();
 	} else if (status == 11) {
 	cm.sendNext("過一段時間後對了！這些傢伙會停掉的。就會恢復到原本木偶的樣子。魔法的力量和生命水用光的話，不過並不是永遠停掉哦，再給它擦上生命水的話，就能復活哦。");
     } else if (status == 12) {
@@ -132,6 +132,7 @@ function action(mode, type, selection) {
 	    cm.gainMeso(-250000);
 	    cm.gainItem(4160011, 1);
 	}
-	cm.dispose();
+	cm.safeDispose();
+	return;
     }
 }

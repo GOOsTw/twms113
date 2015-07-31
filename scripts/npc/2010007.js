@@ -1,4 +1,4 @@
-/* guild creation npc */
+﻿/* guild creation npc */
 var status = -1;
 var sel;
 
@@ -17,7 +17,7 @@ function action(mode, type, selection) {
 	status--;
 
     if (status == 0)
-	cm.sendSimple("找老夫有什麼事情\r\n#b#L0#創建公會#l\r\n#L1#解散公會#l\r\n#L2#擴充公會人數#l#k");
+	cm.sendSimple("你想要做什麼？\r\n#b#L0#創建公會#l\r\n#L1#解散公會#l\r\n#L2#擴充公會人數#l#k");
     else if (status == 1) {
 	sel = selection;
 	if (selection == 0) {
@@ -28,7 +28,7 @@ function action(mode, type, selection) {
 		cm.sendYesNo("創建公會需要 #b500,000 楓幣#k, 你確定要創建公會嗎?");
 	} else if (selection == 1) {
 	    if (cm.getPlayerStat("GID") <= 0 || cm.getPlayerStat("GRANK") != 1) {
-		cm.sendOk("你不是公會會長所以不能解散公會".");
+		cm.sendOk("你不是公會會長所以不能解散公會");
 		cm.dispose();
 	    } else
 		cm.sendYesNo("你確定要解散你的公會?你將無法恢復並且GP消失.");

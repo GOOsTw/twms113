@@ -508,6 +508,10 @@ public class MapScriptMethods {
                 c.getPlayer().writeStatus("blueTeamDamage", "0");
                 break;
             }
+            case Ghost: {
+            c.getPlayer().getMap().startMapEffect("這個地圖感覺陰森森的..有種莫名的奇怪感覺..", 5120025);
+            break;
+            }
             case PRaid_D_Enter:
             case PRaid_B_Enter:
             case PRaid_WinEnter: //handled by event
@@ -532,10 +536,6 @@ public class MapScriptMethods {
             case dojang_QcheckSet:
             case evanTogether:
             case aranTutorAlone:
-            case Ghost: {
-                c.getPlayer().getMap().startMapEffect("這個地圖感覺陰森森的..有種莫名的奇怪感覺..", 5120025);
-                break;
-            }
             case evanAlone: { //no idea
                 c.getSession().write(MaplePacketCreator.enableActions());
                 break;

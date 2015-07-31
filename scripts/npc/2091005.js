@@ -1,4 +1,4 @@
-/*
+﻿/*
 	Map : Mu Lung Training Center
 	Npc : So Gong
         Desc : Training Center Start
@@ -12,11 +12,11 @@ function start() {
     mapid = cm.getMapId();
 
     if (mapid == 925020001) {
-	cm.sendSimple("My master is the most powerful man in Mu Lung. Are you telling me you're trying to challenge our great master? Don't say I didn't warn you. \r #b#L0#我要單人挑戰#l \n\r #L1#我要組隊進入#l \n\r #L2#我要兌換腰帶#l \n\r #L3#我要重置我的點數#l \n\r #L5# What's a Mu Lung Training Tower?#l");
+	cm.sendSimple("我們主人是武陵道場的師傅。你想要挑戰我們師傅？不要說我沒提醒你他是最強的。 \r #b#L0#我要單人挑戰#l \n\r #L1#我要組隊進入#l \n\r #L2#我要兌換腰帶#l \n\r #L3#我要重置我的點數#l \n\r #L5#什麼是武陵道場?#l");
     } else if (isRestingSpot(mapid)) {
-	cm.sendSimple("I'm amazed to know that you've safely reached up to this level. I can guarantee you, however, that it won't get any easier. What do you think? Do you want to keep going?#b \n\r #L0# Yes, I'll keep going.#l \n\r #L1# I want out#l \n\r #L2# I want to save my progress on record.#l");
+	cm.sendSimple("我很驚訝，您已經安全的達到這層了，我可以向你保證，它沒有這麼容易過關的，你想要堅辭下去？#b \n\r #L0#是，我想繼續。#l \n\r #L1# 我想離開#l \n\r #L2# 我想要保存這一次的紀錄下一次用。#l");
     } else {
-	cm.sendYesNo("What? You're ready to quit already? You just need to move on to the next level. Are you sure you want to quit?");
+	cm.sendYesNo("你想要離開了？？");
     }
 }
 
@@ -32,24 +32,29 @@ function action(mode, type, selection) {
 	    sel = selection;
 
 	    if (sel == 5) {
-		cm.sendNext("My master is the most powerful individual in Mu Lung, and he is responsible for erecting this amazing Mu Lung Training Tower. Mu Lung Training Tower is a colossal training facility that consists of 38 floors. Each floor represents additional levels of difficulty. Of course, with your skills, reaching the top floor will be impossible...");
+		cm.sendNext("#b[武陵道場]#k 自己#e#rGoogle#k!");
 		cm.dispose();
 	    } else if (sel == 3) {
-		cm.sendYesNo("You know if you reset your training points, then it'll return to 0, right? I can honestly say that it's not necessarily a bad thing. Once you reset your training points and start over again, then you'll be able to receive the belts once more. Do you want to reset your training points?");
+		cm.sendYesNo("你是真的要重置！？ \r\n別怪我沒警告你。");
 	    } else if (sel == 2) {
-		cm.sendSimple("Your total training points so far are #b"+cm.getDojoPoints()+"#k. Our master loves talented individuals, so if you rack up enough training points, you'll be able to receive a belt based on your training points...\n\r #L0##i1132000:# #t1132000#(200)#l \n\r #L1##i1132001:# #t1132001#(1800)#l \n\r #L2##i1132002:# #t1132002#(4000)#l \n\r #L3##i1132003:# #t1132003#(9200)#l \n\r #L4##i1132004:# #t1132004#(17000)#l");
+		cm.sendSimple("現在你的道場點數有 #b"+cm.getDojoPoints()+"#k. 我們的主人喜歡有才華的人，所以如果你有了足夠的道場點數，你就可以根據你的道場點數換取腰帶...\n\r #L0##i1132000:# #t1132000#(200)#l \n\r #L1##i1132001:# #t1132001#(1800)#l \n\r #L2##i1132002:# #t1132002#(4000)#l \n\r #L3##i1132003:# #t1132003#(9200)#l \n\r #L4##i1132004:# #t1132004#(17000)#l");
 	    } else if (sel == 1) {
 		if (cm.getParty() != null) {
 		    if (cm.isLeader()) {
-			cm.sendOk("Would you like to Enter now?");
+			cm.sendOk("走囉。");
 		    } else {
-			cm.sendOk("Hey, you're not even a leader of your party. What are you doing trying to sneak in? Tell your party leader to talk to me if you want to enter the premise...");
+			cm.sendOk("請找你的隊長來找我說話。");
 		    }
+		} else {
+			cm.sendOk("你好像沒有組隊。");
+			cm.dispose();
+			return;
 		}
 	    } else if (sel == 0) {
 		if (cm.getParty() != null) {
-			cm.sendOk("Please leave your party.");
+			cm.sendOk("你離開你的組隊。.");
 			cm.dispose();
+			return;
 		}
 		var record = cm.getQuestRecord(150000);
 		var data = record.getCustomData();
@@ -66,7 +71,7 @@ function action(mode, type, selection) {
 	} else if (status == 1) {
 	    if (sel == 3) {
 		cm.setDojoRecord(true);
-		cm.sendOk("I have resetted your training points to 0.");
+		cm.sendOk("我已經幫您歸零，好運。");
 	    } else if (sel == 2) {
 		var record = cm.getDojoRecord();
 		var required = 0;
@@ -94,11 +99,12 @@ function action(mode, type, selection) {
 		    if (cm.canHold(item)) {
 			cm.gainItem(item, 1);
 			cm.setDojoRecord(false);
+			cm.sendOk("恭喜兌換成功！！");
 		    } else {
 			cm.sendOk("請確認一下你的背包是否滿了.");
 		    }
 		} else {
-		    cm.sendOk("You either already have it or insufficient training points. Do try getting the weaker belts first.");
+		    cm.sendOk("你好像沒有足夠的道場點數可以換....");
 		}
 		cm.dispose();
 	} else if (sel == 1) {
@@ -122,16 +128,16 @@ function action(mode, type, selection) {
 		//cm.getQuestRecord(150000).setCustomData(null);
 		cm.dispose();
 	    } else if (sel == 1) {
-		cm.askAcceptDecline("Do you want to quit? You really want to leave here?");
+		cm.askAcceptDecline("你真的想要離開這裡？");
 	    } else if (sel == 2) {
 		if (cm.getParty() == null) {
 			var stage = get_stageId(cm.getMapId());
 
 			cm.getQuestRecord(150000).setCustomData(stage);
-			cm.sendOk("I have just recorded your progress. The next time you get here, I'll sent you directly to this level.");
+			cm.sendOk("我剛剛保存你這次的紀錄，下次當你返回我就直接送你到這裡。");
 			cm.dispose();
 		} else {
-			cm.sendOk("Hey.. you can't record your progress with a team...");
+			cm.sendOk("嘿，小傢伙你不能保存..因為這是組隊挑戰！");
 			cm.dispose();
 		}
 	    }

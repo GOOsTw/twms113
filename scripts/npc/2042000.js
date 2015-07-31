@@ -21,7 +21,7 @@ function action(mode, type, selection) {
             }
         }
         if (cm.getParty() == null) {
-            cm.sendSimple("這位大哥 你沒有隊伍-.-\r\n#L100#楓葉黃金標誌兌換#l");
+            cm.sendSimple("請組隊再來找我。\r\n#L100#楓葉黃金標誌兌換#l");
         } else {
             if (cm.isLeader()) {
 		if (found) {

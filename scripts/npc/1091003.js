@@ -14,8 +14,8 @@ function action(mode, type, selection) {
     else
 	cm.dispose();
     if (status == 0 && mode == 1) {
-	var selStr = "What? You want to make your own weapons and gloves? Seriously... it's tough to do it by yourself if you don't have experience... I'll help you out. I've been a pirate for 20 years, and for 20 years I have made various items for the crew here. It's easy for me.";
-	var options = new Array("Make a Knuckler","Make a Gun","Make a pair of gloves");
+	var selStr = "什麼？你想做自己的武器和手套？認真？......如果你沒有經驗的話，很難自己做出來...交給我這個20年的老手吧，因為這對我很容易的。";
+	var options = new Array("做指虎","做火槍","做海盜手套");
 	for (var i = 0; i < options.length; i++){
 	    selStr += "\r\n#L" + i + "# " + options[i] + "#l";
 	}
@@ -25,8 +25,8 @@ function action(mode, type, selection) {
     else if (status == 1 && mode == 1) {
 	selectedType = selection;
 	if (selectedType == 0){ //Making a Knuckler
-	    var selStr = "As long as you bring in the materials required, I'll make you a fine Knuckler. Which Knuckler would you like to make?";
-	    var knucklers = new Array("Leather Arms (Level limit: 15, Pirate)", "Double Tail Knuckler (Level limit: 20, Pirate)", "Norman Grip (Level limit: 25, Pirate)", "Prime Hands (Level limit: 30, Pirate)", "Silver Maiden (Level limit: 35, Pirate)", "Neozard (Level limit: 40, Pirate)", "Fury Claw (Level limit: 50, Pirate)");
+	    var selStr = "所以老兄你想做什麼呢？？";
+	    var knucklers = new Array("#t1482001# (等級限制: 15, 海盜)", "#t1482002# (等級限制: 20, 海盜)", "#t1482003# (等級限制: 25, 海盜)", "#t1482004# (等級限制: 30, 海盜)", "#t1482005# (等級限制: 35, 海盜)", "#t1482006# (等級限制: 40, 海盜)", "#t1482007# (等級限制: 50, 海盜)");
 	    for (var i = 0; i < knucklers.length; i++){
 		selStr += "\r\n#L" + i + "# " + knucklers[i] + "#l";
 	    }
@@ -34,17 +34,17 @@ function action(mode, type, selection) {
 	    cm.sendSimple(selStr);
 	}
 	else if (selectedType == 1){ //Making a Gun
-	    var selStr = "As long as you bring in the materials required, I'll make you a fine Gun. Which Gun would you like to make?";
-	    var guns = new Array("Dellinger Special (Level limit: 15, Pirate)", "The Negotiator (Level limit: 20, Pirate)", "Golden Hook (Level limit: 25, Pirate)", "Cold Mind (Level limit: 30, Pirate)", "Shooting Star (Level limit: 35, Pirate)", "Lunar Shooter (Level limit: 40, Pirate)", "Mr. Rasfelt (Level limit: 50, Pirate)");
+	    var selStr = "所以老兄你想做什麼呢？？";
+	    var guns = new Array("#t1492001# (等級限制: 15, 海盜)", "#t1492002# (等級限制: 20, 海盜)", "#t1492003# (等級限制: 25, 海盜)", "#t1492004# (等級限制: 30, 海盜)", "#t1492005# (等級限制: 35, 海盜)", "#t1492006# (等級限制: 40, 海盜)", "#t1492007# (等級限制: 50, 海盜)");
 	    for (var i = 0; i < guns.length; i++){
 		selStr += "\r\n#L" + i + "# " + guns[i] + "#l";
 	    }
 	    equip = true;
 	    cm.sendSimple(selStr);
 	}
-	else if (selectedType == 2){ //Making a pair of pirate gloves
-	    var selStr = "As long as you bring in the materials required, I'll make you a fine glove. Which glove would you like to make?";
-	    var gloves = new Array ("Green Lagger Halfglove","Brown Leather Armour Glove","Hard Leather Glove","Yellow Tartis","Brown Jewelled","Brown Barbee","Brown Royce","Black Schult");
+	else if (selectedType == 2){ //Making a pair of 海盜 gloves
+	    var selStr = "所以老兄你想做什麼呢？？";
+	    var gloves = new Array ("#t1082180#","#t1082183#","#t1082186#","#t1082189#","#t1082192#","#t1082195#","#t1082198#","#t1082201#");
 	    for (var i = 0; i < gloves.length; i++){
 		selStr += "\r\n#L" + i + "# " + gloves[i] + "#l";
 	    }
@@ -87,7 +87,7 @@ function action(mode, type, selection) {
 	    cost = costSet[selectedItem];
 	    levelLimit = levelLimitSet[selectedItem];
 	}
-	else if (selectedType == 2){ //Making a pair of pirate gloves
+	else if (selectedType == 2){ //Making a pair of 海盜 gloves
 	    var itemSet = new Array(1082180, 1082183, 1082186, 1082189, 1082192, 1082195, 1082198, 1082201);
 	    var matSet = new Array(new Array(4000021,4021003),4000021,new Array(4011000,4000021),new Array(4021006,4000021,4003000),new Array(4011000,4000021,4003000),new Array(4000021,4011000,4011001,4003000),new Array(4011000,4000021,4000030,4003000),new Array(4011007,4021008,4021007,4000030,4003000));
 	    var matQtySet = new Array(new Array(15,1),35,new Array(2,20),new Array(2,50,10),new Array(3,60,15),new Array(80,3,3,25),new Array(3,20,40,30),new Array(1,1,1,50,50));
@@ -100,7 +100,7 @@ function action(mode, type, selection) {
 	    levelLimit = levelLimitSet[selectedItem];
 	}
 			
-	prompt = "Making one #t" + item + "# requires the items listed below. The level limit for this item is " + levelLimit + ", so check and make sure you really need this item before getting it. What do you think? Do you really want one?\r\n";
+	prompt = "你想要做一雙 #t" + item + "#? 在這種情況下, 我為了要做出最棒的鞋子，我建議你確保裝備欄空間足夠。#b";
 		
 	if (mats instanceof Array){
 	    for(var i = 0; i < mats.length; i++){
@@ -112,7 +112,7 @@ function action(mode, type, selection) {
 	}
 		
 	if (cost > 0)
-	    prompt += "\r\n#i4031138# " + cost * qty + " meso";
+	    prompt += "\r\n#i4031138# " + cost * qty + " 楓幣";
 		
 	cm.sendYesNo(prompt);
     }
@@ -120,7 +120,7 @@ function action(mode, type, selection) {
 	var pass = true;
 		
 	if (cm.getMeso() < cost * qty) {
-	    cm.sendNext("Check and make sure you have all the necessary items to make this. Also, make sure your Equips inventory has room. I can't give you the item if your inventory is full, you know.")
+	    cm.sendNext("抱歉我只接受楓幣.")
 	} else {
 	    if (mats instanceof Array) {
 		for (var i = 0; pass && i < mats.length; i++) {
@@ -136,7 +136,7 @@ function action(mode, type, selection) {
 	}
 			
 	if (pass == false)
-	    cm.sendNext("Check and make sure you have all the necessary items to make this. Also, make sure your Equips inventory has room. I can't give you the item if your inventory is full, you know.");
+	    cm.sendOk("很抱歉由於你的材料不足，所以我不想幫你做了。");
 	else {
 	    if (mats instanceof Array) {
 		for (var i = 0; i < mats.length; i++){
@@ -153,7 +153,7 @@ function action(mode, type, selection) {
 		cm.gainItem(4003000, 15 * qty);
 	    else
 		cm.gainItem(item, qty);
-	    cm.sendOk("All done. If you need anything else... Well, I'm not going anywhere.");
+	    cm.sendOk("製作完畢。");
 	}
 	cm.dispose();
     }

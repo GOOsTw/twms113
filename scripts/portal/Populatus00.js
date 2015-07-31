@@ -1,6 +1,6 @@
-function enter(pi) {
+﻿function enter(pi) {
 	if (pi.getPlayer().getClient().getChannel() != 1 && pi.getPlayer().getClient().getChannel() != 2) {
-		pi.playerMessage(5, "This boss may only be attempted on channel 1 and 2");
+		pi.playerMessage(5, "拉圖斯只能在頻道1和2 能打而已。");
 		return false;
 	}
     if (pi.haveItem(4031870)) {
@@ -8,6 +8,7 @@ function enter(pi) {
 	return true;
     }
     if (!pi.haveItem(4031172)) {
+	pi.playerMessage(5, "不明的力量無法進入，需要有玩具獎牌。");
 	return false;
     }
     if (pi.getPlayerCount(220080001) <= 0) { // Papu Map
@@ -24,7 +25,7 @@ function enter(pi) {
 	    pi.warp(220080001, "st00");
 	    return true;
 	} else {
-	    pi.playerMessage(5, "The battle against Papulatus has already begun, so you may not enter this place.");
+	    pi.playerMessage(5, "裡面的戰鬥已經開始，請稍後再嘗試。");
 	    return false;
 	}
     }

@@ -1,4 +1,4 @@
-var status = -1;
+﻿var status = -1;
 var picked = 0;
 var state = -1;
 
@@ -18,7 +18,7 @@ function action(mode, type, selection) {
     }
 
     if (status == 0) {
-        cm.sendSimple("開店不要擺飛鏢或是彈丸或是冰火膠囊喔 會不能買\r\n#b#L0#我要領取黑色小豬#l\r\n#b#L1#我要領取禮包#l\r\n#b#L2#我要打開藍色小箱子#l\r\n#b#L3#當鋪裡的大蟾蜍錢包(100等以上才能領)解未來東京任務用#l\r\n#b#L4#我要騎銀色豬豬!!#l\r\n#b#L5#我要進行忍影瞬殺的任務(四轉盜賊限定)#l\r\n#b#L6#我要刪除銀或金寶箱空白道具(並且補償一次道具)#k");
+        cm.sendSimple("開店不要擺飛鏢或是彈丸或是冰火膠囊喔 會不能買\r\n#b#L0#我要領取黑色小豬#l\r\n#b#L1#我要領取禮包#l\r\n#b#L2#我要打開藍色小箱子#l\r\n#b#L3#當鋪裡的大蟾蜍錢包(100等以上才能領)解未來東京任務用#l\r\n#b#L4#我要騎銀色豬豬!!#l\r\n#b#L5#我要進行忍影瞬殺的任務(四轉盜賊限定)#l\r\n#b#L6#我要刪除銀或金寶箱空白道具(並且補償一次道具)#l\r\n#b#L7#我要完成燈泡不能接的任務#k");
     } else if (status == 1) {
         if (selection == 0) {
             	if (!cm.haveItem(5000007, 1, true, true) && cm.canHold(5000007,1)) {
@@ -52,9 +52,7 @@ function action(mode, type, selection) {
                     cm.gainItem(2020020 ,100);
                     cm.sendOk("#b蛋糕不要吃太多~旅遊愉快~");
                     cm.dispose();
-                    }
-                    else
-                    {
+                    } else {
                     cm.sendOk("#b檢查一下背包有沒有藍色禮物盒哦");
                     cm.dispose();
                     }
@@ -76,9 +74,7 @@ function action(mode, type, selection) {
                     cm.gainItem(1902001 ,1);
                     cm.sendOk("#b好好珍惜野豬~~");
                     cm.dispose();
-                    }
-                    else
-                    {
+                    } else {
                     cm.sendOk("請檢查一下背包有沒有金色皮革４００個、木頭肩護帶４００個、骷髏肩護帶４００個,或者是你等級不夠");                  
                 }
             cm.dispose();
@@ -91,9 +87,7 @@ function action(mode, type, selection) {
                     cm.warp(910300000, 3);
                     cm.spawnMonster(9300088, 6, -572, -1894)
                     cm.dispose();
-                    }
-                    else
-                    {
+                    } else {
                     cm.sendOk("這是跟盜賊有關的事情哦,或者你沒有達到120等");
                     cm.dispose();
                 }
@@ -114,6 +108,10 @@ function action(mode, type, selection) {
                     cm.sendOk("抱歉你沒有空白道具...");
                     cm.dispose();
             }
+		} else if (selection == 7) {
+				cm.forceCompleteQuest(20527);
+				cm.sendOk("完成任務。");
+				cm.dispose();
+			}
         }
     }
-}

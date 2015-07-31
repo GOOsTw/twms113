@@ -191,7 +191,7 @@ function action(mode, type, selection) {
 	var complete = true;
 		
 	if (cm.getMeso() < cost) {
-	    cm.sendOk("My fee is for the good of all of Leafre. If you cannot pay it, then begone.")
+	    cm.sendOk("我只接受楓幣。")
 	} else {
 	    if (mats instanceof Array) {
 		for(var i = 0; complete && i < mats.length; i++) {
@@ -228,13 +228,13 @@ function action(mode, type, selection) {
 		var deleted = Math.floor(Math.random() * 10);
 		if (deleted != 0){
 		    cm.gainItem(item, 1, true)
-		    cm.sendOk("該過程完成。善待你的武器好，免得你使你們龍的憤怒.");
+		    cm.sendOk("完成。善待好你的武器，免得你使龍的憤怒.");
 		} else {
 		    cm.sendOk("不幸的是，龍的精髓...抵觸你的武器。我很抱歉是我的疏失.....");
 		}
 	    } else { //just give basic item
 		cm.gainItem(item, 1);
-		cm.sendOk("該過程完成。善待你的武器好，免得你使你們龍的憤怒。");
+		cm.sendOk("完成。善待好你的武器，免得你使龍的憤怒.");
 	    }
 	}
 	cm.dispose();

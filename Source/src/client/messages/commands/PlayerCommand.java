@@ -33,7 +33,8 @@ public class PlayerCommand {
         protected int npc = -1;
         private static final int[] npcs = { //Ish yur job to make sure these are in order and correct ;(
             9010017,
-            9000001,};
+            9000001,
+            9000058};
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
@@ -76,10 +77,20 @@ public class PlayerCommand {
         }
     }
     
+   public static class save extends 存檔 {
+   }
+        public static class 存檔 extends CommandExecute {
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            c.getPlayer().saveToDB(false, true);
+            c.getPlayer().dropMessage(5, "保存成功！");
+            return 1;
+        }
+    }
+        
     public static class ea extends 查看 {
     }
         public static class 查看 extends CommandExecute {
-
         @Override
         public int execute(MapleClient c, String[] splitted) {
             NPCScriptManager.getInstance().dispose(c);
@@ -92,8 +103,8 @@ public class PlayerCommand {
     }
         
 
-            public static class mob extends 怪物 {
-    }
+public static class mob extends 怪物 {
+}
         public static class 怪物 extends CommandExecute {
         @Override
         public int execute(MapleClient c, String[] splitted) {
@@ -111,8 +122,17 @@ public class PlayerCommand {
             return 1;
         }
     }
-        public static class fm extends 自由 {
+        
+public static class npc extends 萬能{
+}
+        public static class 萬能 extends OpenNPCCommand{
+            public 萬能() {
+                npc = 2;
+            }
         }
+       
+public static class fm extends 自由 {
+}
         public static class 自由 extends CommandExecute {
         @Override
         public int execute(MapleClient c, String[] splitted) {
@@ -156,21 +176,21 @@ public class PlayerCommand {
         }
     }
         
-            public static class help extends 幫助 {
-    }
-    public static class 幫助 extends CommandExecute {
+public static class help extends 幫助 {
+}
 
+    public static class 幫助 extends CommandExecute {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             c.getPlayer().dropMessage(5, "SyncMs 玩家指令");
             c.getPlayer().dropMessage(5, "@查看/@ea <解除異常+查看當前狀態>");
             c.getPlayer().dropMessage(5, "@丟裝/@DropCash <丟棄點裝>");
             c.getPlayer().dropMessage(5, "@怪物/@mob <查看身邊怪物訊息>");
-            c.getPlayer().dropMessage(5, "@CGM 訊息 <傳送訊息給GM>");
+            c.getPlayer().dropMessage(5, "@萬能/@npc <工具箱>");
+            c.getPlayer().dropMessage(5, "@存檔/@save <存檔>");
             c.getPlayer().dropMessage(5, "@自由/@fm <回自由-需要1張回家卷軸>");
             c.getPlayer().dropMessage(5, "@event <參加活動>");
-
-            
+            c.getPlayer().dropMessage(5, "@CGM 訊息 <傳送訊息給GM>");
             return 1;
         }
     }

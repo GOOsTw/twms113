@@ -1,4 +1,4 @@
-/* Sarah
+﻿/* Sarah
 	Ludibrium : Tara and Sarah's House (220000303)
 	
 	Refining NPC: 
@@ -17,6 +17,14 @@ var stimulator = false;
 var stimID = 4130000;
 
 function action(mode, type, selection) {
+	if (status == 0 && mode == 0) {
+	cm.dispose();
+	return;
+    } else if (status >= 1 && mode == 0) {
+	cm.sendNext("需要的時候可以來找我。");
+	cm.dispose();
+	return;
+    }
     if (mode == 1) {
 	status++;
     } else {
@@ -25,9 +33,9 @@ function action(mode, type, selection) {
     }
 
     if (status == 0) {
-	var selStr = "Hello, and welcome to the Ludibrium Glove Store. How can I help you today?#b"
-	var options = new Array("What's a stimulator?","Create a Warrior glove","Create a Bowman glove","Create a Magician glove","Create a Thief glove",
-	"Create a Warrior glove with a Stimulator","Create a Bowman glove with a Stimulator","Create a Magician glove with a Stimulator","Create a Thief glove with a Stimulator");
+	var selStr = "嗨，我是#p2040020# 今天可以為你做點什麼？？#b"
+	var options = new Array("什麼是催化劑?","做一雙劍士手套","做一雙弓箭手手套","做一雙法師手套","做一雙盜賊手套",
+	    "做一雙劍士手套使用催化劑","做一雙弓箭手手套使用催化劑","做一雙法師手套使用催化劑","做一雙盜賊手套使用催化劑");
 	for (var i = 0; i < options.length; i++){
 	    selStr += "\r\n#L" + i + "# " + options[i] + "#l";
 	}
@@ -40,71 +48,71 @@ function action(mode, type, selection) {
 	else
 	    stimulator = false;
 	if (selectedType == 0) { //What's a stim?
-	    cm.sendNext("A stimulator is a special potion that I can add into the process of creating certain items. It gives it stats as though it had dropped from a monster. However, it is possible to have no change, and it is also possible for the item to be below average. There's also a 10% chance of not getting any item when using a stimulator, so please choose wisely.")
+	    cm.sendNext("催化劑是一種特殊的藥水，我可以加入到創建某些項目的進程。它給它統計中，就好像從一個怪物下降。然而，它可能有沒有變化，而且也有可能為項低於平均水平。還有沒有得到任何項目使用刺激的時候，所以請明智的選擇有10％的機會。");
 	    cm.safeDispose();
 	}
 	else if (selectedType == 1){ //warrior glove
-	    var selStr = "Warrior glove? Sure thing, which kind?#b";
-	    var items = new Array ("Bronze Missel#k - Warrior Lv. 30#b","Steel Briggon#k - Warrior Lv. 35#b","Iron Knuckle#k - Warrior Lv. 40#b","Steel Brist#k - Warrior Lv. 50#b");
+	    var selStr = "很好，那麼你想做哪一個？？#b";
+	    var items = new Array ("#t1082007##k - 劍士 等級. 30#b","#t1082008##k - 劍士 等級. 35#b","#t1082023##k - 劍士 等級. 40#b","#t1082009##k - 劍士 等級. 50#b");
 	    for (var i = 0; i < items.length; i++){
 		selStr += "\r\n#L" + i + "# " + items[i] + "#l";
 	    }
 	    cm.sendSimple(selStr);
 	}
 	else if (selectedType == 2){ //bowman glove
-	    var selStr = "Bowman glove? Sure thing, which kind?#b";
-	    var items = new Array ("Brown Marker#k - Bowman Lv. 30#b","Bronze Scaler#k - Bowman Lv. 35#b","Aqua Brace#k - Bowman Lv. 40#b","Blue Willow#k - Bowman Lv. 50#b");
+	    var selStr = "很好，那麼你想做哪一個？？#b";
+	    var items = new Array ("#t1082048##k - 弓箭手 等級. 30#b","#t1082068##k - 弓箭手 等級. 35#b","#t1082071##k - 弓箭手 等級. 40#b","#t1082084##k - 弓箭手 等級. 50#b");
 	    for (var i = 0; i < items.length; i++){
 		selStr += "\r\n#L" + i + "# " + items[i] + "#l";
 	    }
 	    cm.sendSimple(selStr);
 	}
 	else if (selectedType == 3){ //magician glove
-	    var selStr = "Magician glove? Sure thing, which kind?#b";
-	    var items = new Array ("Red Lutia#k - Magician Lv. 30#b","Red Noel#k - Magician Lv. 35#b","Red Arten#k - Magician Lv. 40#b","Red Pennance#k - Magician Lv. 50#b");
+	    var selStr = "很好，那麼你想做哪一個？？#b";
+	    var items = new Array ("#t1082051##k - 法師 等級. 30#b","#t1082054##k - 法師 等級. 35#b","#t1082062##k - 法師 等級. 40#b","#t1082081##k - 法師 等級. 50#b");
 	    for (var i = 0; i < items.length; i++){
 		selStr += "\r\n#L" + i + "# " + items[i] + "#l";
 	    }
 	    cm.sendSimple(selStr);
 	}
 	else if (selectedType == 4){ //thief glove
-	    var selStr = "Thief glove? Sure thing, which kind?#b";
-	    var gloves = new Array ("Steel Sylvia#k - Thief Lv. 30#b","Steel Arbion#k - Thief Lv. 35#b","Red Cleave#k - Thief Lv. 40#b","Blue Moon Glove#k - Thief Lv. 50#b");
+	    var selStr = "很好，那麼你想做哪一個？？#b";
+	    var gloves = new Array ("#t1082042##k - 盜賊 等級. 30#b","#t1082046##k - 盜賊 等級. 35#b","#t1082075##k - 盜賊 等級. 40#b","#t1082065##k - 盜賊 等級. 50#b");
 	    for (var i = 0; i < gloves.length; i++){
 		selStr += "\r\n#L" + i + "# " + gloves[i] + "#l";
 	    }
 	    cm.sendSimple(selStr);
 	}
 	else if (selectedType == 5){ //warrior glove w/ Stim
-	    var selStr = "Warrior glove with a stimulator? Sure thing, which kind?#b";
-	    var crystals = new Array ("Steel Missel#k - Warrior Lv. 30#b","Orihalcon Missel#k - Warrior Lv. 30#b","Yellow Briggon#k - Warrior Lv. 35#b","Dark Briggon#k - Warrior Lv. 35#b",
-	    "Adamantium Knuckle#k - Warrior Lv. 40#b","Dark Knuckle#k - Warrior Lv. 40#b","Mithril Brist#k - Warrior Lv. 50#b","Gold Brist#k - Warrior Lv. 50#b");
+	    var selStr = "很好，那麼你想做哪一個？？#b";
+	    var crystals = new Array ("#t1082005##k - 劍士 等級. 30#b","#t1082006##k - 劍士 等級. 30#b","#t1082035##k - 劍士 等級. 35#b","#t1082036##k - 劍士 等級. 35#b",
+	    "#t1082024##k - 劍士 等級. 40#b","#t1082025##k - 劍士 等級. 40#b","#t1082010##k - 劍士 等級. 50#b","#t1082011##k - 劍士 等級. 50#b");
 	    for (var i = 0; i < crystals.length; i++){
 		selStr += "\r\n#L" + i + "# " + crystals[i] + "#l";
 	    }
 	    cm.sendSimple(selStr);
 	}
 	else if (selectedType == 6){ //bowman glove w/ stim
-	    var selStr = "Bowman glove with a stimulator? Sure thing, which kind?#b";
-	    var crystals = new Array ("Green Marker#k - Bowman Lv. 30#b","Black Marker#k - Bowman Lv. 30#b","Mithril Scaler#k - Bowman Lv. 35#b","Gold Scaler#k - Bowman Lv. 35#b","Gold Brace#k - Bowman Lv. 40#b","Dark Brace#k - Bowman Lv. 40#b","Red Willow#k - Bowman Lv. 50#b","Dark Willow#k - Bowman Lv. 50#b");
+	    var selStr = "很好，那麼你想做哪一個？？#b";
+	    var crystals = new Array ("#t1082049##k - 弓箭手 等級. 30#b","#t1082050##k - 弓箭手 等級. 30#b","#t1082069##k - 弓箭手 等級. 35#b","#t1082070##k - 弓箭手 等級. 35#b","#t1082072##k - 弓箭手 等級. 40#b","#t1082073##k - 弓箭手 等級. 40#b","#t1082085##k - 弓箭手 等級. 50#b","#t1082083##k - 弓箭手 等級. 50#b");
 	    for (var i = 0; i < crystals.length; i++){
 		selStr += "\r\n#L" + i + "# " + crystals[i] + "#l";
 	    }
 	    cm.sendSimple(selStr);
 	}
 	else if (selectedType == 7){ //magician glove w/ stim
-	    var selStr = "Magician glove with a stimulator? Sure thing, which kind?#b";
-	    var items = new Array ("Blue Lutia#k - Magician Lv. 30#b","Black Lutia#k - Magician Lv. 30#b","Blue Noel#k - Magician Lv. 35#b","Dark Noel#k - Magician Lv. 35#b",
-	    "Blue Arten#k - Magician Lv. 40#b","Dark Arten#k - Magician Lv. 40#b","Blue Pennance#k - Magician Lv. 50#b","Dark Pennance#k - Magician Lv. 50#b");
+	    var selStr = "很好，那麼你想做哪一個？？#b";
+	    var items = new Array ("#t1082052##k - 法師 等級. 30#b","#t1082053##k - 法師 等級. 30#b","#t1082055##k - 法師 等級. 35#b","#t1082056##k - 法師 等級. 35#b",
+	    "#t1082063##k - 法師 等級. 40#b","#t1082064##k - 法師 等級. 40#b","#t1082082##k - 法師 等級. 50#b","#t1082080##k - 法師 等級. 50#b");
 	    for (var i = 0; i < items.length; i++){
 		selStr += "\r\n#L" + i + "# " + items[i] + "#l";
 	    }
 	    cm.sendSimple(selStr);
 	}
 	else if (selectedType == 8){ //thief glove w/ stim
-	    var selStr = "Thief glove with a stimulator? Sure thing, which kind?#b";
-	    var gloves = new Array ("Silver Sylvia#k - Thief Lv. 30#b","Gold Sylvia#k - Thief Lv. 30#b","Orihalcon Arbion#k - Thief Lv. 35#b","Gold Arbion#k - Thief Lv. 35#b","Gold Cleave#k - Thief Lv. 40#b",
-	    "Dark Cleave#k - Thief Lv. 40#b","Red Moon Glove#k - Thief Lv. 50#b","Brown Moon Glove#k - Thief Lv. 50#b");
+	    var selStr = "很好，那麼你想做哪一個？？#b";
+	    var gloves = new Array ("#t1082043##k - 盜賊 等級. 30#b","#t1082044##k - 盜賊 等級. 30#b","#t1082047##k - 盜賊 等級. 35#b","#t1082045##k - 盜賊 等級. 35#b","#t1082076##k - 盜賊 等級. 40#b",
+	    "#t1082074##k - 盜賊 等級. 40#b","#t1082067##k - 盜賊 等級. 50#b","#t1082066##k - 盜賊 等級. 50#b");
 	    for (var i = 0; i < gloves.length; i++){
 		selStr += "\r\n#L" + i + "# " + gloves[i] + "#l";
 	    }
@@ -195,7 +203,7 @@ function action(mode, type, selection) {
 	    cost = costSet[selectedItem];
 	}
 		
-	var prompt = "You want me to make a #t" + item + "#? In that case, I'm going to need specific items from you in order to make it. Make sure you have room in your inventory, though!#b";
+	var prompt = "你想要做一雙 #t" + item + "#? 在這種情況下，為了要做出好品質的裝備。請確保您有空間在您的裝備欄！#b";
 
 	if(stimulator)
 	    prompt += "\r\n#i"+stimID+"# 1 #t" + stimID + "#";
@@ -210,14 +218,14 @@ function action(mode, type, selection) {
 	}
 		
 	if (cost > 0)
-	    prompt += "\r\n#i4031138# " + cost + " meso";
+	    prompt += "\r\n#i4031138# " + cost + " 楓幣";
 		
 	cm.sendYesNo(prompt);
     } else if (status == 3) {
 	var complete = true;
 		
 	if (cm.getMeso() < cost) {
-	    cm.sendOk("Sorry, we only accept meso.")
+	    cm.sendOk("我只接受楓幣。");
 	} else {
 	    if (mats instanceof Array) {
 		for (var i = 0; complete && i < mats.length; i++) {
@@ -239,7 +247,7 @@ function action(mode, type, selection) {
 	}
 			
 	if (!complete)
-	    cm.sendOk("Sorry, but I have to have those items to get this exactly right. Perhaps next time.");
+	    cm.sendOk("由於你沒有足夠的材料，所以我不幫忙做了。");
 	else {
 	    if (mats instanceof Array) {
 		for (var i = 0; i < mats.length; i++){
@@ -255,13 +263,13 @@ function action(mode, type, selection) {
 		var deleted = Math.floor(Math.random() * 10);
 		if (deleted != 0) {
 		    cm.gainItem(item, 1, true);
-		    cm.sendOk("There, the gloves are ready. Be careful, they're still hot.");
+		    cm.sendOk("完成。善待你的手套，免得你使手套壞掉.");
 		} else {
-		    cm.sendOk("Eek! I think I accidently added too much stimulator and, well, the whole thing is unusable now... Sorry, but I can't offer a refund.");
+		    cm.sendOk("不幸的是，催化劑...抵觸你的手套。我很抱歉是我的疏失.....");
 		}
 	    } else { //just give basic item
 		cm.gainItem(item, 1);
-		cm.sendOk("There, the gloves are ready. Be careful, they're still hot.");
+		cm.sendOk("完成。善待你的手套，免得你使手套壞掉.");
 	    }
 	}
 	cm.safeDispose();

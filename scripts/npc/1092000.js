@@ -1,8 +1,8 @@
-/**
+﻿/**
 	Tangyoon - Nautilus Cook
 **/
 
 function start() {
-    cm.sendOk("The stable us off-limits to everyone else, and I'm afraid I can't let you go there as well.");
+    cm.sendOk("我怕我不能讓你走到那裡。");
     cm.dispose();
 }
