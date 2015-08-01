@@ -13,7 +13,7 @@ function init() {
 }
 
 function scheduleNew() {
-    setupTask = em.schedule("start", 60000);
+    setupTask = em.schedule("start", 300000);
 }
 
 function cancelSchedule() {
