@@ -1,4 +1,4 @@
-/*
+﻿/*
 	Nella - Hidden Street : 1st Accompaniment
 */
 
@@ -27,9 +27,9 @@ function action(mode, type, selection){
 	} else {
 	    var outText;
 	    if (mapId == 103000805) {
-		outText = "Are you ready to leave this map?";
+		outText = "你確定要離開地圖？？";
 	    } else {
-		outText = "Once you leave the map, you'll have to restart the whole quest if you want to try it again.  Do you still want to leave this map?";
+		outText = "一旦你離開地圖，你將不得不重新啟動整個任務，如果你想再次嘗試。你還是要離開這個地圖？";
 	    }
 	    if (status == 0) {
 		cm.sendYesNo(outText);

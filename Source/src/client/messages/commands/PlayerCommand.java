@@ -34,7 +34,8 @@ public class PlayerCommand {
         private static final int[] npcs = { //Ish yur job to make sure these are in order and correct ;(
             9010017,
             9000001,
-            9000058};
+            9000058,
+            9330082};
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
@@ -77,6 +78,12 @@ public class PlayerCommand {
         }
     }
     
+    public static class bspq extends OpenNPCCommand {
+        public bspq() {
+            npc = 3;
+        }
+    }
+    
    public static class save extends 存檔 {
    }
         public static class 存檔 extends CommandExecute {
@@ -97,6 +104,7 @@ public class PlayerCommand {
             c.getSession().write(MaplePacketCreator.enableActions());
             c.getPlayer().dropMessage(1, "解卡完畢.");
             c.getPlayer().dropMessage(6, "當前時間是" + FilePrinter.getLocalDateString() + " GMT+8 | 經驗值倍率 " + (Math.round(c.getPlayer().getEXPMod()) * 100) * Math.round(c.getPlayer().getStat().expBuff / 100.0) + "%, 掉寶倍率 " + (Math.round(c.getPlayer().getDropMod()) * 100) * Math.round(c.getPlayer().getStat().dropBuff / 100.0) + "%, 楓幣倍率 " + Math.round(c.getPlayer().getStat().mesoBuff / 100.0) * 100 + "%");
+            c.getPlayer().dropMessage(6, "目前剩餘 " + c.getPlayer().getCSPoints(1) + " GASH " + c.getPlayer().getCSPoints(2) + " 楓葉點數 ");
             c.getPlayer().dropMessage(6, "當前延遲 " + c.getPlayer().getClient().getLatency() + " 毫秒");
             return 1;
         }
@@ -191,6 +199,7 @@ public static class help extends 幫助 {
             c.getPlayer().dropMessage(5, "@自由/@fm <回自由-需要1張回家卷軸>");
             c.getPlayer().dropMessage(5, "@event <參加活動>");
             c.getPlayer().dropMessage(5, "@CGM 訊息 <傳送訊息給GM>");
+            c.getPlayer().dropMessage(5, "@bspq <BOSSPQ兌換NPC>");
             return 1;
         }
     }

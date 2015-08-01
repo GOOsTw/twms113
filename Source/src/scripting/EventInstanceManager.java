@@ -261,7 +261,16 @@ public class EventInstanceManager {
             }
         }
     }
-
+    
+    public final void saveNX(final int points) {
+        if (disposed) {
+            return;
+        }
+        for (MapleCharacter chr : getPlayers()) {
+            chr.modifyCSPoints(1, points, true);
+        }
+    }
+    
     public List<MapleCharacter> getPlayers() {
         if (disposed) {
             return Collections.emptyList();

@@ -1,5 +1,5 @@
-var eventmapid = 220080001;
-var returnmap = 980010000;
+﻿var eventmapid = 740000000;
+var returnmap = 910000000;
 
 var monster = new Array(
     4130103, // Rombot
@@ -10,9 +10,7 @@ var monster = new Array(
     9300028, // Ergoth
     8180000, // Manon
     8180001, // Griffey
-    9500392, // Ravana HARD
     8220003, // Lev
-    8210011, // Ani (Second Tower)
     9400014, // Black Crow
     8500001 // Papulatus
     );
@@ -28,7 +26,7 @@ function setup(partyid) {
     // If there are more than 1 map for this, you'll need to do mapid + instancename
     var map = eim.createInstanceMapS(eventmapid);
     map.toggleDrops();
-    map.spawnNpc(9250156, new java.awt.Point(-780, -557));
+    map.spawnNpc(9209101, new java.awt.Point(854, -24));
 
     eim.setProperty("points", 0);
     eim.setProperty("monster_number", 0);
@@ -121,7 +119,7 @@ function monsterSpawn(eim) { // Custom function
     eim.registerMonster(mob);
 
     var map = eim.getMapInstance(0);
-    map.spawnMonsterOnGroundBelow(mob, new java.awt.Point(-400, -386));
+    map.spawnMonsterOnGroundBelow(mob, new java.awt.Point(-191, 261));
 }
 
 function playerEntry(eim, player) {
@@ -162,15 +160,16 @@ function allMonstersDead(eim) {
 
     eim.setProperty("points", totalp);
 
-    eim.broadcastPlayerMsg(5, "Your team've gained "+num+" points! With a total of "+totalp+".");
+    eim.broadcastPlayerMsg(5, "你的隊伍獲得了 "+num+" 點數! 總共為 "+totalp+".");
 
     eim.saveBossQuest(num);
     
     if (mobnum < monster.length) {
-	eim.broadcastPlayerMsg(6, "Prepare! The next boss will appear in a glimpse of an eye!");
+	eim.broadcastPlayerMsg(6, "準備！下一隻的BOSS即將來臨。");
 	} else {
 	eim.saveBossQuest(1000);
-	eim.broadcastPlayerMsg(5, "Your team've beaten the MED mode and have gained an extra 1000 points!");
+	eim.saveNX(150);
+	eim.broadcastPlayerMsg(5, "恭喜整隊挑戰普通模式成功額外獲得150 GASH點。");
     }
 // When invoking unregisterMonster(MapleMonster mob) OR killed
 // Happens only when size = 0

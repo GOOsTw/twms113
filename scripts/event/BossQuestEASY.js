@@ -1,5 +1,5 @@
-var eventmapid = 910340500;
-var returnmap = 980010000;
+﻿var eventmapid = 740000000;
+var returnmap = 910000000;
 
 var monster = new Array(
     9300003, // Slime King
@@ -13,13 +13,11 @@ var monster = new Array(
     4220000, // Sherp
     7220001, // Old Fox
     5220003, // Timer
-    9400633, //Astaroth
     3220001, // Dweu
     6220001, // Jeno
     7220000, // Tae Roon
     7220002, // Ghost Priest
     8220002, // Chimera
-    6160003, //Xerxes
     8220001 // Yeti on Skis
     );
 
@@ -34,7 +32,7 @@ function setup(partyid) {
     // If there are more than 1 map for this, you'll need to do mapid + instancename
     var map = eim.createInstanceMapS(eventmapid);
     map.toggleDrops();
-    map.spawnNpc(9250156, new java.awt.Point(37, -855));
+    map.spawnNpc(9209101, new java.awt.Point(854, -24));
 
     eim.setProperty("points", 0);
     eim.setProperty("monster_number", 0);
@@ -55,7 +53,7 @@ function monsterSpawn(eim) { // Custom function
     eim.registerMonster(mob);
 
     var map = eim.getMapInstance(0);
-    map.spawnMonsterOnGroundBelow(mob, new java.awt.Point(0, -435));
+    map.spawnMonsterOnGroundBelow(mob, new java.awt.Point(-191, 261));
 }
 
 function playerEntry(eim, player) {
@@ -96,15 +94,16 @@ function allMonstersDead(eim) {
 
     eim.setProperty("points", totalp);
 
-    eim.broadcastPlayerMsg(5, "Your team've gained "+num+" points! With a total of "+totalp+".");
+    eim.broadcastPlayerMsg(5, "你的隊伍獲得了 "+num+" 點數! 總共為 "+totalp+".");
 
     eim.saveBossQuest(num);
 
     if (mobnum < monster.length) {
-	eim.broadcastPlayerMsg(6, "Prepare! The next boss will appear in a glimpse of an eye!");
+	eim.broadcastPlayerMsg(6, "準備！下一隻的BOSS即將來臨。");
 } else {
 	eim.saveBossQuest(200);
-	eim.broadcastPlayerMsg(5, "Your team've beaten the EASY mode and have gained an extra 200 points!");
+	eim.saveNX(20);
+	eim.broadcastPlayerMsg(5, "恭喜整隊挑戰簡單模式成功額外獲得20 GASH點。");
     }
 // When invoking unregisterMonster(MapleMonster mob) OR killed
 // Happens only when size = 0
