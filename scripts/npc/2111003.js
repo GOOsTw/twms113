@@ -1,10 +1,10 @@
-/* Author: aaroncsn(MapleSea Like)(Incomplete)
+﻿/* Author: aaroncsn(MapleSea Like)(Incomplete)
 	NPC Name: 		Humanoid A
 	Map(s): 		Sunset Road: Magatia(2610000000)
 	Description: 		Unknown
 */
 
 function start(){
-	cm.sendNext("I want to be a human, a human being with a warm heart...so that maybe I can hold her hand. Unfortunately, that's not possible right now.");
+	cm.sendNext("我想是一個人，一個人有著溫暖的心臟......這樣也許我可以牽她的手。不幸的是，現在這是不可能的.");
 	cm.dispose();
 	}

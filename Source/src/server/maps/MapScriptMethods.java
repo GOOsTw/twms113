@@ -302,22 +302,22 @@ public class MapScriptMethods {
             case StageMsg_davy: {
                 switch (c.getPlayer().getMapId()) {
                     case 925100000:
-                        c.getPlayer().getMap().startMapEffect("Defeat the monsters outside of the ship to advance!", 5120020);
+                        c.getPlayer().getMap().startMapEffect("打倒船上的所有怪物!", 5120020);
                         break;
                     case 925100100:
-                        c.getPlayer().getMap().startMapEffect("We must prove ourselves! Get me Pirate Medals!", 5120020);
+                        c.getPlayer().getMap().startMapEffect("我們必須證明自己！請給我海盜獎牌!", 5120020);
                         break;
                     case 925100200:
-                        c.getPlayer().getMap().startMapEffect("Defeat the guards here to pass!", 5120020);
+                        c.getPlayer().getMap().startMapEffect("打倒船上所有的怪物!", 5120020);
                         break;
                     case 925100300:
-                        c.getPlayer().getMap().startMapEffect("Eliminate the guards here to pass!", 5120020);
+                        c.getPlayer().getMap().startMapEffect("打倒船上所有的怪物!", 5120020);
                         break;
                     case 925100400:
-                        c.getPlayer().getMap().startMapEffect("Lock the doors! Seal the root of the Ship's power!", 5120020);
+                        c.getPlayer().getMap().startMapEffect("打敗怪物然後把鑰匙放入門縫裡!", 5120020);
                         break;
                     case 925100500:
-                        c.getPlayer().getMap().startMapEffect("Destroy the Lord Pirate!", 5120020);
+                        c.getPlayer().getMap().startMapEffect("打倒這隻BOSS即可過關。", 5120020);
                         break;
                 }
                 final EventManager em = c.getChannelServer().getEventSM().getEventManager("Pirate");

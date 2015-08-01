@@ -1,4 +1,4 @@
-/**
+﻿/**
 -- Odin JavaScript --------------------------------------------------------------------------------
 	Alcaster - El Nath Market (211000100)
 -- By ---------------------------------------------------------------------------------------------
@@ -16,7 +16,7 @@ var amount;
 var totalcost;
 var item = new Array(2050003,2050004,4006000,4006001);
 var cost = new Array(300,400,5000,5000);
-var msg = new Array("that cures the state of being sealed and cursed","that cures all",", possessing magical power, that is used for high-quality skills",", possessing the power of summoning that is used for high-quality skills");
+var msg = new Array("聖水","萬能療傷","魔法石","召喚石");
 var status = -1;
 
 function action(mode, type, selection) {
@@ -24,7 +24,7 @@ function action(mode, type, selection) {
 	status++;
     } else {
 	if (status == 2) {
-	    cm.sendNext("I see. Understand that I have many different items here. Take a look around. I'm only selling these items to you, so I won't be ripping you off in any way shape or form.");
+	    cm.sendNext("你需要的話再來找我。.");
 	    cm.safeDispose();
 	    return;
 	}
@@ -35,31 +35,31 @@ function action(mode, type, selection) {
 	if (cm.getQuestStatus(3035) == 2) {
 	    var selStr;
 	    for (var i = 0; i < item.length; i++){
-		selStr += "\r\n#L" + i + "# #b#t" + item[i] + "# (Price: "+cost[i]+" mesos)#k#l";
+		selStr += "\r\n#L" + i + "# #b#t" + item[i] + "# (價格: "+cost[i]+" 楓幣)#k#l";
 	    }
-	    cm.sendSimple("Thanks to you #b#t4031056##k is safely sealed. Of course, also as a result, I used up about half of the power I have accumulated over the last 800 years or so...but now I can die in peace. Oh, by the way... are you looking for rare items by any chance? As a sign of appreciation for your hard work, I'll sell some items I have to you, and ONLY you. Pick out the one you want!"+selStr);
+	    cm.sendSimple("謝謝你購買 #b#t4031056##k "+selStr);
 	}
 	else {
-	    cm.sendNext("If you decide to help me out, then in return, I'll make the item available for sale.");
+	    cm.sendNext("如果你幫助我，作為獎勵我會把我最棒的物品賣給你。");
 	    cm.safeDispose();
 	}
     } else if (status == 1) {
 	selected = selection;
-	cm.sendGetNumber("Is #b#t"+item[selected]+"##k really the item that you need? It's the item "+msg[selected]+". It may not be the easiest item to acquire, but I'll give you a good deal on it. It'll cost you #b"+cost[selected]+" mesos#k per item. How many would you like to purchase?", 0, 1, 100);
+	cm.sendGetNumber("#b#t"+item[selected]+"##k 真的是你需要的道具？這個道具 "+msg[selected]+". 它可能不是獲取最簡單的項目，但我會給你一個很好的協議就可以了。它會花費你 #b"+cost[selected]+" 楓幣#k 你想購買多少？？", 0, 1, 100);
     } else if (status == 2) {
 	amount = selection;
 	totalcost = cost[selected] * amount;
 	if (amount == 0) {
-	    cm.sendOk("If you're not going to buy anything, then I've got nothing to sell neither.");
+	    cm.sendOk("如果你不打算買任何東西的話，我也沒有什麼可賣。");
 	    cm.dispose();
 	}
-	cm.sendYesNo("Are you sure you want to buy #r"+amount+" #t"+item[selected]+"(s)##k? It'll cost you "+cost[selected]+" mesos per #t"+item[selected]+"#, which will cost you #r"+totalcost+" mesos#k in total.");
+	cm.sendYesNo("你真的想要買 #r"+amount+" #t"+item[selected]+"##k? 費用是 "+cost[selected]+" 楓幣 每個 #t"+item[selected]+"#, 總共費用是 #r"+totalcost+" 楓幣#k");
     } else if(status == 3) {
 	if(cm.getMeso() < totalcost || !cm.canHold(item[selected])) {
-	    cm.sendNext("Are you sure you have enough mesos? Please check and see if your etc. or use inventory is full, or if you have at least #r"+totalcost+"#k mesos.");
+	    cm.sendNext("你確定你的楓幣足夠嗎，如果沒有至少也要有 #r"+totalcost+"#k 楓幣.");
 	    cm.dispose();
 	}
-	cm.sendNext("Thank you. If you ever find yourself needing items down the road, make sure to drop by here. I may have gotten old over the years, but I can still make magic items with ease.");
+	cm.sendNext("謝謝。如果你發現自己需要的物品的道路，確保這裡所下降。我可能已經得到了舊歷年，但我仍然可以輕鬆的魔法物品。.");
 	cm.gainMeso(-totalcost);
 	cm.gainItem(item[selected], amount);
 	cm.safeDispose();

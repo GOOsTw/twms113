@@ -26,7 +26,7 @@ function action(mode, type, selection) {
 	    var have2 = cm.getPlayer().getOneInfo(1204, "have2");
 	    var have3 = cm.getPlayer().getOneInfo(1204, "have3");
 	    if (cmp == null) {
-		cm.sendOk("30 Pirate PQ = Lord Pirate's Hat(1)\r\n80 Pirate PQ = Lord Pirate's Hat(2)\r\n200 Pirate PQ = Lord Pirate's Hat(3)\r\n350 Pirate PQ = Lord Pirate's Hat(4)");
+		cm.sendOk("30 場海盜PQ = #t1002571#\r\n80 場海盜PQ = #t1002572#\r\n200 場海盜PQ = #t1002573#\r\n350 場海盜PQ = #t1002574#");
 	    } else {
 		var cmp_i = parseInt(cmp);
 		var have0_i = parseInt(have0);
@@ -36,53 +36,53 @@ function action(mode, type, selection) {
 		if (have3_i > 0) {
 		    if (cm.canHold(1002574,1)) {
 		    	cm.gainItem(1002574,1);
-			cm.sendOk("I have given you the hat.");
+			cm.sendOk("我已經給你帽子了。");
 		    } else {
-			cm.sendOk("I have already given you the hat,but if you want another,please make room.");
+			cm.sendOk("我已經給你帽子了但如果你想要其它的，請清出裝備欄空間。");
 		    }
 		} else if (have2_i > 0) {
 		    if (cmp_i >= 350) {	
 			if (cm.canHold(1002574,1)) {
 		    	    cm.gainItem(1002574,1);
-			    cm.sendOk("I have given you the hat.");
+			    cm.sendOk("我已經給你帽子了。");
 		    	} else {
-			    cm.sendOk("Please make room.");
+			    cm.sendOk("請清出裝備欄空間。");
 		        } 
 		    } else {
-			cm.sendOk("You need 350 Pirate PQ to get the next hat. Current : " + cmp_i);
+			cm.sendOk("你需要有玩30場 目前總共 : " + cmp_i);
 		    }
 		} else if (have1_i > 0) {
 		    if (cmp_i >= 200) {	
 			if (cm.canHold(1002573,1)) {
 		    	    cm.gainItem(1002573,1);
-			    cm.sendOk("I have given you the hat.");
+			    cm.sendOk("我已經給你帽子了。");
 		    	} else {
-			    cm.sendOk("Please make room.");
+			    cm.sendOk("請清出裝備欄空間。");
 		        } 
 		    } else {
-			cm.sendOk("You need 200 Pirate PQ to get the next hat. Current : " + cmp_i);
+			cm.sendOk("你需要有玩200場 目前總共 : " + cmp_i);
 		    }
 		} else if (have0_i > 0) {
 		    if (cmp_i >= 80) {	
 			if (cm.canHold(1002572,1)) {
 		    	    cm.gainItem(1002572,1);
-			    cm.sendOk("I have given you the hat.");
+			    cm.sendOk("我已經給你帽子了。");
 		    	} else {
-			    cm.sendOk("Please make room.");
+			    cm.sendOk("請清出裝備欄空間。");
 		        } 
 		    } else {
-			cm.sendOk("You need 80 Pirate PQ to get the next hat. Current : " + cmp_i);
+			cm.sendOk("你需要有玩80場 目前總共 : " + cmp_i);
 		    }
 		} else {
 		    if (cmp_i >= 30) {	
 			if (cm.canHold(1002571,1)) {
 		    	    cm.gainItem(1002571,1);
-			    cm.sendOk("I have given you the hat.");
+			    cm.sendOk("我已經給你帽子了。");
 		    	} else {
-			    cm.sendOk("Please make room.");
+			    cm.sendOk("請清出裝備欄空間。");
 		        } 
 		    } else {
-			cm.sendOk("You need 30 Pirate PQ to get the next hat. Current : " + cmp_i);
+			cm.sendOk("你需要有玩30場 目前總共 : " + cmp_i);
 		    }
 		}
 	    }

@@ -1,4 +1,4 @@
-/**
+﻿/**
 -- Odin JavaScript --------------------------------------------------------------------------------
 	Faito(Showa Exchange Quest) - Showa Town(801000300)
 -- By ---------------------------------------------------------------------------------------------
@@ -143,7 +143,7 @@ function action(mode, type, selection) {
 	status++;
     } else {
 	if (status == 0) {
-	    cm.sendOk("Really? Let me know if you ever change your mind.");
+	    cm.sendOk("真的嗎？讓我知道，如果你改變了主意。");
 	    cm.safeDispose();
 	    return;
 	}
@@ -151,7 +151,7 @@ function action(mode, type, selection) {
     }
 
     if (status == 0) {
-	cm.sendYesNo("If you're looking for someone that can pinpoint the characteristics of various items, you're looking at one right now. I'm currently looking for something. Would you like to hear my story?");
+	cm.sendYesNo("如果你正在尋找某人，可以精確定位各種物品的特點，你看一個現在。目前，我正在尋找的東西。你想聽聽我的故事嗎？");
     } else if (status == 1) {
 	var eQuestChoice = makeChoices(eQuestChoices);
 	cm.sendSimple(eQuestChoice);
@@ -162,20 +162,20 @@ function action(mode, type, selection) {
 	prizeItem = reward[itemSet][0];
 	prizeQuantity = reward[itemSet][1];
 	if (!cm.canHold(prizeItem)){
-	    cm.sendNext("What? I can't give you the reward if your equip., use, or etc. inventory is full. Please go take a look right now.");
+	    cm.sendNext("什麼？我不能給你獎勵，確保你的道具欄有無滿。");
 	} else if (checkQuantity(requiredItem) >= 100){   // check they have >= 100 in Inventory
 	    cm.gainItem(requiredItem,-100);
 	    cm.gainItem(prizeItem,prizeQuantity);
-	    cm.sendOk("Hmmm ... if not for this minor scratch ... sigh. I'm afaird I can only deem this a standard-quality item. Well, here's \r\n#t"+ prizeItem +"# for you.");
+	    cm.sendOk("嗯......如果不是因為這個小划痕......嘆了口氣。恐怕我只能認為這是一個標準的品質項目。那麼，這裡的 \r\n#t"+ prizeItem +"# 給你。");
 	} else{
-	    cm.sendOk("Hey, what do you think you're doing? Go lie someone that DOESN'T know what he's talking about. Not me!");
+	    cm.sendOk("嘿，你覺得你在做什麼？不是我去騙別人，不知道他在說什麼！");
 	}
 	cm.safeDispose();
     }
 }
 
 function makeChoices(a){
-    var result  = "The items I'm looking for are 1,2,3 ... phew, too many to\r\nmention. Anyhow, if you gather up 100 of the same items,\r\nthen i may trade it with something similiar. What? You may\r\nnot know this, but i keep my end of the promise, so you\r\nneed not worry. Now, shall we trade?\r\n";
+    var result  = "我在尋找項目1,2,3... 太多了\r\n提。總之，如果你收集了相同的項目100個，\r\n然後我可以用類似的東西換它。什麼？你可以\r\n不知道這一點，但我信守承諾我結束，所以你\r\n不用擔心。現在，我們應該交易？\r\n";
     for (var x = 0; x< a.length; x++){
 	result += " #L" + x + "##v" + a[x] + "##t" + a[x] + "##l\r\n";
     }
