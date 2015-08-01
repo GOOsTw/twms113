@@ -36,3 +36,4 @@ server.settings.maxCharacters = 3
 server.settings.ip            = 127.0.0.1
 server.settings.packetLog     = true
 server.settings.debug = true
+server.crypt  = true

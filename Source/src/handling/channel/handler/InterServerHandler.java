@@ -40,6 +40,7 @@ import handling.world.PlayerBuffStorage;
 import handling.world.World;
 import handling.world.guild.MapleGuild;
 import java.util.Collection;
+import server.ServerProperties;
 import server.maps.FieldLimitType;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
@@ -47,10 +48,12 @@ import tools.packet.FamilyPacket;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public class InterServerHandler {
+    
+    private static final boolean isCSOpen = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.cashshop.enable", "false"));
 
     public static final void EnterCS(final MapleClient c, final MapleCharacter chr, final boolean mts) {
 //        if (!chr.isAlive() || chr.getEventInstance() != null || c.getChannelServer() == null) {
-        if (chr.isGM() == false) {
+        if (  !isCSOpen && chr.isGM() == false) {
             c.getSession().write(MaplePacketCreator.serverBlocked(2));
             c.getSession().write(MaplePacketCreator.enableActions());
             return;
