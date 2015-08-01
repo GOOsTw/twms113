@@ -3238,7 +3238,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
         }
         if (GameConstants.isKOC(job) && level == 70) {
-            client.getSession().write(MaplePacketCreator.startMapEffect("恭喜達到30等請回耶雷弗三轉吧。", 5120000, true));
+            client.getSession().write(MaplePacketCreator.startMapEffect("恭喜達到70等請回耶雷弗三轉吧。", 5120000, true));
         }
 
         /*        if (getSubcategory() == 1) { //db level 2

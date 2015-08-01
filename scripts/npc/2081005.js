@@ -1,4 +1,4 @@
-/*
+﻿/*
 	Keroben - Leafre Cave of life - Entrance
 */
 
@@ -21,7 +21,7 @@ function action(mode, type, selection) {
 	    var time = parseInt(data);
 	morph = cm.getMorphState();
 	if (morph == 2210003 || (cm.isQuestFinished(7301) && time + (6 * 3600000) < cm.getCurrentTime())) {
-	    cm.sendNext("Oh, my Brother! Don't worry about human's invasion. I'll protect you all. Come in.");
+	    cm.sendNext("哦，我的兄弟！不要擔心人類的入侵。我會保護你的。進來。");
 	} else {
 	    var hp = cm.getPlayerStat("HP");
 	    if (hp > 500) {
@@ -29,7 +29,7 @@ function action(mode, type, selection) {
 	    } else if (hp > 1 && hp <= 500) {
 		cm.addHP(-(hp - 1));
 	    }
-	    cm.sendNext("That's far enough, human! No one is allowed beyond this point. Get away from here!");
+	    cm.sendNext("這是遠遠不夠的，人類！任何人不得超過此點。從這裡滾開！");
 	}
     } else if (status == 1) {
 	if (morph == 2210003 || (cm.isQuestFinished(7301) && time + (6 * 3600000) < cm.getCurrentTime())) {

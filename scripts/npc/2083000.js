@@ -5,6 +5,6 @@
 var status = -1;
 
 function action(mode, type, selection) {
-	cm.sendOk("安安你好安安");
+	cm.sendOk("#b(一座石碑，上面寫著看不懂的文字……。)");
 	cm.safeDispose();
 }

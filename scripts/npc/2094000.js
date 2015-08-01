@@ -1,12 +1,10 @@
-
-
-function action(mode, type, selection) {
+﻿function action(mode, type, selection) {
 	cm.removeAll(4001117);
 	cm.removeAll(4001120);
 	cm.removeAll(4001121);
 	cm.removeAll(4001122);
 	    if (cm.getPlayer().getParty() == null || !cm.isLeader()) {
-		cm.sendOk("The leader of the party must be here.");
+		cm.sendOk("請找隊長來找我。");
 	    } else {
 		var party = cm.getPlayer().getParty().getMembers();
 		var mapId = cm.getPlayer().getMapId();
@@ -25,12 +23,12 @@ function action(mode, type, selection) {
 		if (next && size >= 2) {
 			var em = cm.getEventManager("Pirate");
 			if (em == null) {
-				cm.sendOk("Please try again later.");
+				cm.sendOk("找不到腳本，請聯繫GM！！");
 			} else {
 				em.startInstance(cm.getPlayer().getParty(), cm.getPlayer().getMap());
 			}
 		} else {
-			cm.sendOk("All 2+ members of your party must be here and above level 55.");
+			cm.sendOk("需要2個人以上 等級必須是55到100級");
 		}
 	    }
 	cm.dispose();

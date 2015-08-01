@@ -1,4 +1,4 @@
-/* Vogen
+﻿/* Vogen
 	El Nath: El Nath Market (211000100)
 	
 	Refining NPC: 
@@ -30,8 +30,8 @@ function action(mode, type, selection) {
     else
 	cm.dispose();
     if (status == 0 && mode == 1) {
-	var selStr = "Hm? Who might you be? Oh, you've heard about my forging skills? In that case, I'd be glad to process some of your ores... for a fee.#b"
-	var options = new Array("Refine a mineral ore","Refine a jewel ore","Refine a rare jewel","Refine a crystal ore","Create materials","Create Arrows");
+	var selStr = "嗨，我是高登 有什麼我可以幫助你的？？#b"
+	var options = new Array("做一些礦石","提煉一些寶石礦","提煉一些高級寶石礦","提煉一些高級水晶","做一些物料","做一些弓箭");
 	for (var i = 0; i < options.length; i++){
 	    selStr += "\r\n#L" + i + "# " + options[i] + "#l";
 	}
@@ -39,47 +39,47 @@ function action(mode, type, selection) {
     } else if (status == 1 && mode == 1) {
 	selectedType = selection;
 	if (selectedType == 0){ //mineral refine
-	    var selStr = "So, what kind of mineral ore would you like to refine?#b";
-	    var minerals = new Array ("Bronze","Steel","Mithril","Adamantium","Silver","Orihalcon","Gold");
+	    var selStr = "需要什麼嗎？？#b";
+	    var minerals = new Array ("#t4011000#","#t4011001#","#t4011002#","#t4011003#","#t4011004#","#t4011005#","#t4011006#");
 	    for (var i = 0; i < minerals.length; i++){
 		selStr += "\r\n#L" + i + "# " + minerals[i] + "#l";
 	    }
 	    equip = false;
 	    cm.sendSimple(selStr);
 	} else if (selectedType == 1){ //jewel refine
-	    var selStr = "So, what kind of jewel ore would you like to refine?#b";
-	    var jewels = new Array ("Garnet","Amethyst","Aquamarine","Emerald","Opal","Sapphire","Topaz","Diamond","Black Crystal");
+	    var selStr = "需要什麼嗎？？#b";
+	    var jewels = new Array ("#t4021000#","#t4021001#","#t4021002#","#t4021003#","#t4021004#","#t4021005#","#t4021006#","#t4021007#","#t4021008#");
 	    for (var i = 0; i < jewels.length; i++){
 		selStr += "\r\n#L" + i + "# " + jewels[i] + "#l";
 	    }
 	    equip = false;
 	    cm.sendSimple(selStr);
 	} else if (selectedType == 2){ //rock refine
-	    var selStr = "A rare jewel? Which one were you thinking of?#b";
-	    var items = new Array ("Moon Rock","Star Rock");
+	    var selStr = "需要什麼嗎？？#b";
+	    var items = new Array ("#t4011007#","#t4021009#");
 	    for (var i = 0; i < items.length; i++){
 		selStr += "\r\n#L" + i + "# " + items[i] + "#l";
 	    }
 	    cm.sendSimple(selStr);
 	} else if (selectedType == 3){ //crystal refine
-	    var selStr = "Crystal ore? It's hard to find those around here...#b";
-	    var crystals = new Array ("Power Crystal","Wisdom Crystal","DEX Crystal","LUK Crystal","Dark Crystal");
+	    var selStr = "需要什麼嗎？？#b";
+	    var crystals = new Array ("#t4005000#","#t4005001#","#t4005002#","#t4005003#","#t4005004#");
 	    for (var i = 0; i < crystals.length; i++){
 		selStr += "\r\n#L" + i + "# " + crystals[i] + "#l";
 	    }
 	    equip = false;
 	    cm.sendSimple(selStr);
 	} else if (selectedType == 4){ //material refine
-	    var selStr = "Materials? I know of a few materials that I can make for you...#b";
-	    var materials = new Array ("Make Processed Wood with Tree Branch","Make Processed Wood with Firewood","Make Screws (packs of 15)");
+	    var selStr = "需要什麼嗎？？#b";
+	    var materials = new Array ("#t4003001#","#t4003001#","#t4003000# (一組15個)");
 	    for (var i = 0; i < materials.length; i++){
 		selStr += "\r\n#L" + i + "# " + materials[i] + "#l";
 	    }
 	    equip = false;
 	    cm.sendSimple(selStr);
 	} else if (selectedType == 5){ //arrow refine
-	    var selStr = "Arrows? Not a problem at all.#b";
-	    var arrows = new Array ("Arrow for Bow","Arrow for Crossbow","Bronze Arrow for Bow","Bronze Arrow for Crossbow","Steel Arrow for Bow","Steel Arrow for Crossbow");
+	    var selStr = "需要什麼嗎？？#b";
+	    var arrows = new Array ("#t2060000#","#t2061000#","#t2060001#","#t2061001#","#t2060002#","#t2061002#");
 	    for (var i = 0; i < arrows.length; i++){
 		selStr += "\r\n#L" + i + "# " + arrows[i] + "#l";
 	    }
@@ -140,7 +140,7 @@ function action(mode, type, selection) {
 	    cost = costSet[selectedItem];
 	}
 		
-	var prompt = "So, you want me to make some #t" + item + "#s? In that case, how many do you want me to make?";
+	var prompt = "你想要做一些 #t" + item + "#? 在這種情況下, 我為了要做出最棒的品質，我建議你確保裝備欄空間足夠。#b";
 		
 	cm.sendGetNumber(prompt,1,1,100)
     }
@@ -165,13 +165,13 @@ function action(mode, type, selection) {
 	    cost = costSet[selectedItem];
 	}
 		
-	var prompt = "You want me to make ";
+	var prompt = "你想要我做 ";
 	if (qty == 1)
-	    prompt += "a #t" + item + "#?";
+	    prompt += "一個 #t" + item + "#?";
 	else
 	    prompt += qty + " #t" + item + "#?";
 			
-	prompt += " In that case, I'm going to need specific items from you in order to make it. Make sure you have room in your inventory, though!#b";
+	prompt += " 我為了要做出最棒的品質，我建議你確保裝備欄空間足夠。#b";
 		
 	if (mats instanceof Array){
 	    for(var i = 0; i < mats.length; i++){
@@ -183,14 +183,14 @@ function action(mode, type, selection) {
 	}
 		
 	if (cost > 0)
-	    prompt += "\r\n#i4031138# " + cost * qty + " meso";
+	    prompt += "\r\n#i4031138# " + cost * qty + " 楓幣";
 		
 	cm.sendYesNo(prompt);
     } else if (status == 4 && mode == 1) {
 	var complete = true;
 		
 	if (cm.getMeso() < cost * qty) {
-	    cm.sendOk("I'm afraid you cannot afford my services.")
+	    cm.sendNext("抱歉我只接受楓幣.");
 	} else {
 	    if (mats instanceof Array) {
 		for (var i = 0; complete && i < mats.length; i++) {
@@ -206,7 +206,7 @@ function action(mode, type, selection) {
 	}
 			
 	if (!complete) {
-	    cm.sendOk("I can't refine anything for you without the proper items.");
+	    cm.sendOk("很抱歉由於你的材料不足，所以我不想幫你做了。");
 	} else {
 	    if (mats instanceof Array) {
 		for (var i = 0; i < mats.length; i++){
@@ -226,7 +226,7 @@ function action(mode, type, selection) {
 		cm.gainItem(4003000, 15 * qty);
 	    else
 		cm.gainItem(item, qty);
-	    cm.sendOk("All done. If you need anything else, just ask.");
+	    cm.sendOk("製作完畢。");
 	}
 	cm.dispose();
     }

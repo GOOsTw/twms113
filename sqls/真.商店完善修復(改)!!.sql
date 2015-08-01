@@ -1,15 +1,7 @@
-/*
-MySQL Data Transfer
-Source Host: localhost
-Source Database: kao
-Target Host: localhost
-Target Database: kao
-Date: 2015/4/7 ¤U¤È 05:46:50
-*/
-
 SET FOREIGN_KEY_CHECKS=0;
+
 -- ----------------------------
--- Table structure for shopitems
+-- Table structure for `shopitems`
 -- ----------------------------
 DROP TABLE IF EXISTS `shopitems`;
 CREATE TABLE `shopitems` (
@@ -22,20 +14,10 @@ CREATE TABLE `shopitems` (
   `reqitem` int(11) NOT NULL,
   `reqitemq` int(11) NOT NULL,
   PRIMARY KEY (`shopitemid`)
-) ENGINE=MyISAM AUTO_INCREMENT=20025 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=20026 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
--- Table structure for shops
--- ----------------------------
-DROP TABLE IF EXISTS `shops`;
-CREATE TABLE `shops` (
-  `shopid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `npcid` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`shopid`)
-) ENGINE=MyISAM AUTO_INCREMENT=10000001 DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records 
+-- Records of shopitems
 -- ----------------------------
 INSERT INTO `shopitems` VALUES ('20024', '1', '1302000', '50', '1', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('1', '1', '1312004', '50', '2', '0', '0', '0');
@@ -2768,17 +2750,17 @@ INSERT INTO `shopitems` VALUES ('3503', '83', '1302021', '1250000', '0', '0', '0
 INSERT INTO `shopitems` VALUES ('3504', '83', '1302022', '80000', '0', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('3505', '83', '1332024', '2000000', '0', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('3506', '83', '1382011', '2000000', '0', '0', '0', '0');
-INSERT INTO `shopitems` VALUES ('3507', '84', '2070000', '500', '0', '104', '0', '0');
-INSERT INTO `shopitems` VALUES ('3508', '84', '2020014', '8100', '0', '108', '0', '0');
-INSERT INTO `shopitems` VALUES ('3509', '84', '2022002', '1000', '0', '112', '0', '0');
-INSERT INTO `shopitems` VALUES ('3510', '84', '2001002', '4000', '0', '116', '0', '0');
-INSERT INTO `shopitems` VALUES ('3511', '84', '2000006', '620', '0', '120', '0', '0');
-INSERT INTO `shopitems` VALUES ('3512', '84', '2000003', '200', '0', '124', '0', '0');
-INSERT INTO `shopitems` VALUES ('3513', '84', '2020012', '4500', '0', '128', '0', '0');
-INSERT INTO `shopitems` VALUES ('3514', '84', '2001001', '2300', '0', '132', '0', '0');
-INSERT INTO `shopitems` VALUES ('3515', '84', '2000002', '320', '0', '136', '0', '0');
-INSERT INTO `shopitems` VALUES ('3516', '84', '2000001', '160', '0', '140', '0', '0');
-INSERT INTO `shopitems` VALUES ('3517', '84', '2060003', '40', '0', '144', '0', '0');
+INSERT INTO `shopitems` VALUES ('3507', '84', '2070000', '500', '0', '1', '0', '0');
+INSERT INTO `shopitems` VALUES ('3508', '84', '2020014', '8100', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('3509', '84', '2022002', '1000', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('3510', '84', '2001002', '4000', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('3511', '84', '2000006', '620', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('3512', '84', '2000003', '200', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('3513', '84', '2020012', '4500', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('3514', '84', '2001001', '2300', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('3515', '84', '2000002', '320', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('3516', '84', '2000001', '160', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('3517', '84', '2060003', '40', '0', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('3518', '85', '1002136', '100000', '0', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('3519', '85', '1032002', '110000', '0', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('3520', '85', '1040029', '110000', '0', '0', '0', '0');
@@ -3129,6 +3111,21 @@ INSERT INTO `shopitems` VALUES ('9677', '98', '1462004', '200000', '0', '24', '0
 INSERT INTO `shopitems` VALUES ('9678', '98', '1462005', '250000', '0', '25', '0', '0');
 INSERT INTO `shopitems` VALUES ('9679', '98', '1472004', '30000', '0', '26', '0', '0');
 INSERT INTO `shopitems` VALUES ('9680', '98', '1472007', '60000', '0', '27', '0', '0');
+INSERT INTO `shopitems` VALUES ('20025', '84', '2061003', '40', '0', '0', '0', '0');
+
+-- ----------------------------
+-- Table structure for `shops`
+-- ----------------------------
+DROP TABLE IF EXISTS `shops`;
+CREATE TABLE `shops` (
+  `shopid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `npcid` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`shopid`)
+) ENGINE=MyISAM AUTO_INCREMENT=10000001 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of shops
+-- ----------------------------
 INSERT INTO `shops` VALUES ('1', '11000');
 INSERT INTO `shops` VALUES ('2', '11100');
 INSERT INTO `shops` VALUES ('3', '21000');
@@ -3224,7 +3221,5 @@ INSERT INTO `shops` VALUES ('92', '9330029');
 INSERT INTO `shops` VALUES ('93', '9110100');
 INSERT INTO `shops` VALUES ('94', '9110102');
 INSERT INTO `shops` VALUES ('95', '9270021');
-INSERT INTO `shops` VALUES ('95', '9270021');
-INSERT INTO `shops` VALUES ('96', '1081000');
 INSERT INTO `shops` VALUES ('97', '2040051');
 INSERT INTO `shops` VALUES ('98', '2050000');
