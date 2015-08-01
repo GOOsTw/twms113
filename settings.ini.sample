@@ -2,7 +2,8 @@
 server.wzpath = \wz
 
 #Database Setting
-server.settings.db.url           = jdbc:mysql://localhost:3306/twms?autoReconnect=true&maxReconnects=999&characterEncoding=BIG5
+server.settings.db.name = twms
+server.settings.db.ip = 127.0.0.1
 server.settings.db.user          = root
 server.settings.db.password          = lkk19940326
 

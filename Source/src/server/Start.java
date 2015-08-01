@@ -29,6 +29,8 @@ public class Start {
     public final static void main(final String args[]) {
 
         System.setProperty("file.encoding", "utf-8");
+        
+        System.out.println("[TWMS v113] Server Emulator");
 
         if (Boolean.parseBoolean(ServerProperties.getProperty("server.settings.Admin"))) {
             System.out.println("[!!! Admin Only Mode Active !!!]");

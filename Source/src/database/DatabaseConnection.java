@@ -1,35 +1,15 @@
-/*
- This file is part of the OdinMS Maple Story Server
- Copyright (C) 2008 ~ 2010 Patrick Huy <patrick.huy@frz.cc> 
- Matthias Butz <matze@odinms.de>
- Jan Christian Meyer <vimes@odinms.de>
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU Affero General Public License version 3
- as published by the Free Software Foundation. You may not use, modify
- or distribute this program under any other version of the
- GNU Affero General Public License.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Affero General Public License for more details.
-
- You should have received a copy of the GNU Affero General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package database;
 
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.apache.tomcat.jdbc.pool.PoolProperties;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Properties;
 import server.ServerProperties;
 
 /**
- * All OdinMS servers maintain a Database Connection. This class therefore
+ * All servers maintain a Database Connection. This class therefore
  * "singletonices" the connection per process.
  *
  *
@@ -37,7 +17,9 @@ import server.ServerProperties;
  */
 public class DatabaseConnection {
 
-    private static final ThreadLocal<Connection> con = new ThreadLocalConnection();
+    private static final ThreadLocal<Connection> con = new DatabaseConnection.ThreadLocalConnection();
+    private static final PoolProperties poolProps = new PoolProperties();
+    private static final DataSource dataSource = new DataSource();
     public static final int CLOSE_CURRENT_RESULT = 1;
     /**
      * The constant indicating that the current <code>ResultSet</code> object
@@ -83,39 +65,61 @@ public class DatabaseConnection {
      */
     public static final int NO_GENERATED_KEYS = 2;
 
-    public static final Connection getConnection() {
+    public static Connection getConnection() {
         return con.get();
     }
 
-    public static final void closeAll() throws SQLException {
-        for (final Connection con : ThreadLocalConnection.allConnections) {
-            con.close();
+    public static void closeAll() throws SQLException {
+        for (final Connection connection : DatabaseConnection.ThreadLocalConnection.allConnections) {
+            if (connection != null) {
+                connection.close();
+            }
         }
     }
 
     private static final class ThreadLocalConnection extends ThreadLocal<Connection> {
 
-        public static final Collection<Connection> allConnections = new LinkedList<Connection>();
+        public static final Collection<Connection> allConnections = new LinkedList<>();
 
         @Override
         protected final Connection initialValue() {
+//            try {
+//                Class.forName("com.mysql.jdbc.Driver"); // touch the mysql driver
+//            } catch (final ClassNotFoundException e) {
+//                System.err.println("ERROR" + e);
+//            }
+
             try {
-                Class.forName("com.mysql.jdbc.Driver"); // touch the mysql driver
-            } catch (final ClassNotFoundException e) {
-                System.err.println("ERROR" + e);
-            }
-            try {
-                Properties props = new Properties();
-                props.put("user", ServerProperties.getProperty("server.settings.db.user"));
-                props.put("password", ServerProperties.getProperty("server.settings.db.password"));
-                props.put("autoReconnect", "true");
-                final Connection con = DriverManager.getConnection(ServerProperties.getProperty("server.settings.db.url"), props);
+//                final Connection con = DriverManager.getConnection("jdbc:mysql://" + ServerConstants.SQL_IP + ":" + ServerConstants.SQL_PORT + "/" + ServerConstants.SQL_DATABASE + "?autoReconnect=true&characterEncoding=UTF8", ServerConstants.SQL_USER, ServerConstants.SQL_PASSWORD);
+                final Connection con = dataSource.getConnection();
                 allConnections.add(con);
                 return con;
             } catch (SQLException e) {
                 System.err.println("ERROR" + e);
                 return null;
             }
+        }
+    }
+
+    static {
+        try {
+
+            String db = ServerProperties.getProperty("server.settings.db.name", "twms");
+            String ip = ServerProperties.getProperty("server.settings.db.ip", "127.0.0.1");
+            poolProps.setUrl("jdbc:mysql://" + ip + ":3306/" + db + "?autoReconnect=true&characterEncoding=UTF8");
+            poolProps.setDriverClassName("com.mysql.jdbc.Driver");
+            poolProps.setUsername(ServerProperties.getProperty("server.settings.db.user", "root"));
+            poolProps.setPassword(ServerProperties.getProperty("server.settings.db.password", "root"));
+
+            poolProps.setMinIdle(20);
+            poolProps.setInitialSize(30);
+            poolProps.setMaxIdle(100);
+
+            dataSource.setPoolProperties(poolProps);
+
+        } catch (Exception e) {
+            System.out.println("[數據庫訊息] 找不到JDBC驅動.");
+            System.exit(0);
         }
     }
 }
