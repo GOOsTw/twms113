@@ -19,7 +19,7 @@ public class ServerProperties {
     private static final Properties props = new Properties();
 
     private static final String[] toLoad = {
-        "Settings.ini"
+        "settings.ini"
     };
 
     private ServerProperties() {
