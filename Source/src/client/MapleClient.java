@@ -101,7 +101,7 @@ public class MapleClient implements Serializable {
     private final transient Set<String> macs = new HashSet<>();
     private final transient Map<String, ScriptEngine> engines = new HashMap<>();
     private transient ScheduledFuture<?> idleTask = null;
-    private transient String secondPassword, salt2; // To be used only on login
+    private transient String secondPassword; // To be used only on login
     private final transient Lock mutex = new ReentrantLock(true);
     private final transient Lock npc_mutex = new ReentrantLock();
     private final static Lock login_mutex = new ReentrantLock(true);
@@ -367,15 +367,11 @@ public class MapleClient implements Serializable {
 
                     accId = rs.getInt("id");
                     secondPassword = rs.getString("2ndpassword");
-                    salt2 = rs.getString("salt2");
                     gm = rs.getInt("gm") > 0;
                     greason = rs.getByte("greason");
                     tempban = getTempBanCalendar(rs);
                     gender = rs.getByte("gender");
-
-                    if (secondPassword != null && salt2 != null) {
-                        secondPassword = LoginCrypto.rand_r(secondPassword);
-                    }
+                   
                     ps.close();
 
                     if (banned > 0 && !gm) {
@@ -436,15 +432,11 @@ public class MapleClient implements Serializable {
 
                     accId = rs.getInt("id");
                     secondPassword = rs.getString("2ndpassword");
-                    salt2 = rs.getString("salt2");
                     gm = rs.getInt("gm") > 0;
                     greason = rs.getByte("greason");
                     tempban = getTempBanCalendar(rs);
                     gender = rs.getByte("gender");
 
-                    if (secondPassword != null && salt2 != null) {
-                        secondPassword = LoginCrypto.rand_r(secondPassword);
-                    }
                     ps.close();
 
                     if (banned > 0 && !gm) {
@@ -617,22 +609,20 @@ public class MapleClient implements Serializable {
             loggedIn = !serverTransition;
         }
     }
-
+    
     public final void updateSecondPassword() {
 
         final Connection con = DatabaseConnection.getConnection();
 
-        try (PreparedStatement ps = con.prepareStatement("UPDATE `accounts` SET `2ndpassword` = ?, `salt2` = ? WHERE id = ?")) {
-            final String newSalt = LoginCrypto.makeSalt();
-            ps.setString(1, LoginCrypto.rand_s(LoginCrypto.makeSaltedSha512Hash(secondPassword, newSalt)));
-            ps.setString(2, newSalt);
-            ps.setInt(3, accId);
+        try (PreparedStatement ps = con.prepareStatement("UPDATE `accounts` SET `2ndpassword` = ? WHERE id = ?")) {
+            ps.setString(1, LoginCrypto.hexSha1(this.secondPassword));
+            ps.setInt(2, accId);
             ps.executeUpdate();
-
         } catch (SQLException e) {
             System.err.println("error updating login state" + e);
         }
     }
+
 
     public final void updateGender() {
 

@@ -541,9 +541,11 @@ public class MTSCSPacket {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.CS_OPERATION.getValue());
-        mplew.write(0x6A);
-        mplew.write(err);
-
+        mplew.write(0x4F);
+        mplew.writeShort(err);
+        if (err == 194 || err == 193) {
+            mplew.writeInt(err);
+        }
         return mplew.getPacket();
     }
 
