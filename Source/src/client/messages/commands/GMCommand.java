@@ -289,34 +289,6 @@ public class GMCommand {
             return 1;
         }
     }
-    
-    
-        public static class spy extends CommandExecute {
-            
-        @Override
-       public int execute(MapleClient c, String[] splitted) {
-            if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, "使用規則: !spy <玩家名字>");
-            } else {
-                MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
-                 if (victim.getGMLevel() > 3) {
-                        c.getPlayer().dropMessage(5, "你不能查看比你高權限的人!");
-                        return 0;
-                    }
-                if (victim != null) {
-                    c.getPlayer().dropMessage(5, "此玩家狀態:");
-                    c.getPlayer().dropMessage(5, "等級: " + victim.getLevel() + "職業: " + victim.getJob() + "名聲: " + victim.getFame());
-                    c.getPlayer().dropMessage(5, "地圖: " + victim.getMapId() +  " - " + victim.getMap().getMapName().toString());
-                    c.getPlayer().dropMessage(5, "力量: " + victim.getStat().getStr() + "  ||  敏捷: " + victim.getStat().getDex() + "  ||  智力: " + victim.getStat().getInt() + "  ||  幸運: " + victim.getStat().getLuk());
-                    c.getPlayer().dropMessage(5, "擁有 " + victim.getMeso() + " 楓幣.");
-                    victim.dropMessage(5, c.getPlayer().getName() + " GM在觀察您..");
-                } else {
-                    c.getPlayer().dropMessage(5, "找不到此玩家.");
-                }
-        }
-            return 1;
-    }
- }
 
     public static class online1 extends CommandExecute {
 
