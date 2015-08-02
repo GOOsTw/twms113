@@ -982,8 +982,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ResultSet rs = null;
 
         try {
-            con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
-            con.setAutoCommit(false);
+            //con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+            //con.setAutoCommit(false);
 
             ps = con.prepareStatement("UPDATE characters SET level = ?, fame = ?, str = ?, dex = ?, luk = ?, `int` = ?, exp = ?, hp = ?, mp = ?, maxhp = ?, maxmp = ?, sp = ?, ap = ?, gm = ?, skincolor = ?, gender = ?, job = ?, hair = ?, face = ?, map = ?, meso = ?, hpApUsed = ?, spawnpoint = ?, party = ?, buddyCapacity = ?, monsterbookcover = ?, dojo_pts = ?, dojoRecord = ?, pets = ?, subcategory = ?, marriageId = ?, currentrep = ?, totalrep = ?, charmessage = ?, expression = ?, constellation = ?, blood = ?, month = ?, day = ?, beans = ?, prefix = ?, name = ? WHERE id = ?");
             ps.setInt(1, level);
@@ -1284,8 +1284,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 if (rs != null) {
                     rs.close();
                 }
-                con.setAutoCommit(true);
-                con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+               
             } catch (SQLException e) {
                 FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error going back to autocommit mode");
             }
