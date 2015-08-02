@@ -1,34 +1,36 @@
 /*
- This file is part of the OdinMS Maple Story Server
- Copyright (C) 2008 ~ 2010 Patrick Huy <patrick.huy@frz.cc> 
- Matthias Butz <matze@odinms.de>
- Jan Christian Meyer <vimes@odinms.de>
+ 此文件是 風迷.OD.TW 核心服務器 -<MapleStory Server>
+ Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
+ Matthias Butz <matze@MrCoffee.de>
+ Jan Christian Meyer <vimes@MrCoffee.de>
 
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU Affero General Public License version 3
- as published by the Free Software Foundation. You may not use, modify
- or distribute this program under any other version of the
- GNU Affero General Public License.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Affero General Public License for more details.
-
- You should have received a copy of the GNU Affero General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 此文件原作者為德國  OdinMS 團隊  以上是開發人員聯繫訊息 本程序遵守
+ 版本首要發布  GNU 協議進行修改發布 你可以無偿使用此文件或者進行修改
+ 但是禁止使用本程序進行一切商業行為,如有發現 根據當地法律的制度 導致
+ 任何法律責任，我們將不予承擔 本程序發布是免費的 並不收取額外費用 擁有
+ 此文件副本的人遵守 GNU 規定 但請保留修改發布人的訊息 謝謝！
+ ==============================================================
+ 當前版本修復製作維護人員: 風迷人物
+ 您應該已經收到一份拷貝的GNU通用公共許可證Affero程式一起。如果不是，請參閱
+ <http://www.gnu.org/licenses/>.
  */
 package database;
 
+import database.DatabaseException;
+import java.lang.Thread.State;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import server.ServerProperties;
+import static sun.misc.ThreadGroupUtils.getRootThreadGroup;
 
 /**
  * All OdinMS servers maintain a Database Connection. This class therefore
@@ -39,103 +41,139 @@ import server.ServerProperties;
  */
 public class DatabaseConnection {
 
-    private static final ThreadLocal<Connection> con = new ThreadLocalConnection();
-    public static final int CLOSE_CURRENT_RESULT = 1;
-    /**
-     * The constant indicating that the current <code>ResultSet</code> object
-     * should not be closed when calling <code>getMoreResults</code>.
-     *
-     * @since 1.4
-     */
-    public static final int KEEP_CURRENT_RESULT = 2;
-    /**
-     * The constant indicating that all <code>ResultSet</code> objects that have
-     * previously been kept open should be closed when calling
-     * <code>getMoreResults</code>.
-     *
-     * @since 1.4
-     */
-    public static final int CLOSE_ALL_RESULTS = 3;
-    /**
-     * The constant indicating that a batch statement executed successfully but
-     * that no count of the number of rows it affected is available.
-     *
-     * @since 1.4
-     */
-    public static final int SUCCESS_NO_INFO = -2;
-    /**
-     * The constant indicating that an error occured while executing a batch
-     * statement.
-     *
-     * @since 1.4
-     */
-    public static final int EXECUTE_FAILED = -3;
-    /**
-     * The constant indicating that generated keys should be made available for
-     * retrieval.
-     *
-     * @since 1.4
-     */
-    public static final int RETURN_GENERATED_KEYS = 1;
-    /**
-     * The constant indicating that generated keys should not be made available
-     * for retrieval.
-     *
-     * @since 1.4
-     */
-    public static final int NO_GENERATED_KEYS = 2;
+    private static final HashMap<Integer, ConWrapper> connections
+            = new HashMap();
+    private final static Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
+    private static String dbDriver = "", dbUrl = "", dbUser = "", dbPass = "";
+    private static long connectionTimeOut = 30 * 60 * 60;
 
-    public static final Connection getConnection() {
-        Connection conn = con.get();
-        try {
-            if(conn != null && !conn.isClosed())
-                return conn;
-            else {
-                con.remove();
-                return ((ThreadLocalConnection)(con)).reConnect();
-            }
-        } catch (SQLException ex) {
-            return ((ThreadLocalConnection)(con)).reConnect();
+    public static Connection getConnection() {
+
+        if(!isInitialized()){
+            InitDB();
         }
-    }
-
-    public static final void closeAll() throws SQLException {
-        for (final Connection connect : ThreadLocalConnection.allConnections) {
-            connect.close();
-        }
-    }
-
-    private static final class ThreadLocalConnection extends ThreadLocal<Connection> {
-
-        public static final Collection<Connection> allConnections = new LinkedList<>();
         
-        public final Connection reConnect() {
-            return this.initialValue();
+        Thread cThread = Thread.currentThread();
+        Integer threadID = (int) cThread.getId();
+        ConWrapper ret;
+
+        ret = connections.get(threadID);
+
+        if (ret == null) {
+            Connection retCon = connectToDB();
+            ret = new ConWrapper(retCon);
+            connections.put(threadID, ret);
+            log.info("[Database] Thread [" + threadID + "] has created a new Database Connection.");
+            //System.err.println("[Database] Thread [" + threadID + "] has created a new Database Connection.");
+        }
+        Connection c = ret.getConnection();
+        try {
+            if (c.isClosed()) {
+                Connection retCon = connectToDB();
+                connections.remove(threadID);
+                ret = new ConWrapper(retCon);
+                connections.put(threadID, ret);
+            }
+        } catch (Exception e) {
+
         }
 
-        @Override
-        protected final Connection initialValue() {
-            try {
-                Class.forName("com.mysql.jdbc.Driver"); // touch the mysql driver
-            } catch (final ClassNotFoundException e) {
-                System.err.println("ERROR" + e);
-            }
-            try {
-                Properties props = new Properties();
-                props.put("user", ServerProperties.getProperty("server.settings.db.user"));
-                props.put("password", ServerProperties.getProperty("server.settings.db.password"));
-                props.put("autoReconnect", "true");
-                String db = ServerProperties.getProperty("server.settings.db.name", "twms");
-                String ip = ServerProperties.getProperty("server.settings.db.ip", "127.0.0.1");
-                String url = "jdbc:mysql://" + ip + ":3306/" + db + "?autoReconnect=true&characterEncoding=UTF8";
+        return ret.getConnection();
+    }
 
-                final Connection con = DriverManager.getConnection(url, props);
-                allConnections.add(con);
-                return con;
-            } catch (SQLException e) {
-                System.err.println("ERROR" + e);
-                return null;
-            }
+    ThreadGroup[] getAllThreadGroups() {
+        final ThreadGroup root = getRootThreadGroup();
+        int nAlloc = root.activeGroupCount();
+        int n = 0;
+        ThreadGroup[] groups;
+        do {
+            nAlloc *= 2;
+            groups = new ThreadGroup[nAlloc];
+            n = root.enumerate(groups, true);
+        } while (n == nAlloc);
+
+        ThreadGroup[] allGroups = new ThreadGroup[n + 1];
+        allGroups[0] = root;
+        System.arraycopy(groups, 0, allGroups, 1, n);
+        return allGroups;
+    }
+
+    private static Connection connectToDB() {
+
+        try {
+            Connection con = DriverManager.getConnection(dbUrl, dbUser, dbPass);
+            return con;
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+
         }
     }
+
+    static class ConWrapper {
+
+        private long lastAccessTime;
+        private Connection connection;
+
+        public ConWrapper(Connection con) {
+            this.connection = con;
+        }
+
+        public void close() {
+            if (connection == null) {
+                return;
+            }
+            if (!expiredConnection()) {
+                try {
+                    this.connection.close();
+                } catch (SQLException ex) {
+
+                }
+            }
+            return;
+        }
+
+        public Connection getConnection() {
+            if (expiredConnection()) {
+                try { // Assume that the connection is stale
+                    connection.close();
+                } catch (SQLException err) {
+                    // Who cares
+                }
+                this.connection = connectToDB();
+            }
+
+            lastAccessTime = System.currentTimeMillis(); // Record Access
+            return this.connection;
+        }
+
+        /**
+         * Returns whether this connection has expired
+         *
+         * @return
+         */
+        public boolean expiredConnection() {
+            return System.currentTimeMillis() - lastAccessTime >= connectionTimeOut;
+        }
+    }
+
+    public static boolean isInitialized() {
+        return !dbUser.equals("");
+    }
+
+    public static void InitDB() {
+
+        dbDriver = "com.mysql.jdvc.Driver";
+        String db = ServerProperties.getProperty("server.settings.db.name", "twms");
+        String ip = ServerProperties.getProperty("server.settings.db.ip", "127.0.0.1");
+        dbUrl = "jdbc:mysql://" + ip + ":3306/" + db + "?autoReconnect=true&characterEncoding=UTF8";
+        dbUser =  ServerProperties.getProperty("server.settings.db.user");
+        dbPass =  ServerProperties.getProperty("server.settings.db.password");
+    }
+
+    public static void closeAll() throws SQLException {
+        for (ConWrapper con : connections.values()) {
+            con.connection.close();
+        }
+    }
+
 }

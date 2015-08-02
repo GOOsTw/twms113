@@ -20,6 +20,8 @@
  */
 package database;
 
+import java.sql.SQLException;
+
 public class DatabaseException extends RuntimeException {
 
     private static final long serialVersionUID = -420103154764822555L;
@@ -30,5 +32,9 @@ public class DatabaseException extends RuntimeException {
 
     public DatabaseException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    DatabaseException(SQLException e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

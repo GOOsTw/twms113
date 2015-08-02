@@ -44,7 +44,7 @@ public class MapleStorage implements Serializable {
 
     public static int create(int id) throws SQLException {
         Connection con = DatabaseConnection.getConnection();
-        PreparedStatement ps = con.prepareStatement("INSERT INTO storages (accountid, slots, meso) VALUES (?, ?, ?)", DatabaseConnection.RETURN_GENERATED_KEYS);
+        PreparedStatement ps = con.prepareStatement("INSERT INTO storages (accountid, slots, meso) VALUES (?, ?, ?)");
         ps.setInt(1, id);
         ps.setInt(2, 4);
         ps.setInt(3, 0);

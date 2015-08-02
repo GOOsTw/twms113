@@ -218,7 +218,7 @@ public class MapleGuild implements java.io.Serializable {
                 ps.execute();
                 ps.close();
 
-                ps = con.prepareStatement("INSERT INTO bbs_threads(`postercid`, `name`, `timestamp`, `icon`, `startpost`, `guildid`, `localthreadid`) VALUES(?, ?, ?, ?, ?, ?, ?)", DatabaseConnection.RETURN_GENERATED_KEYS);
+                ps = con.prepareStatement("INSERT INTO bbs_threads(`postercid`, `name`, `timestamp`, `icon`, `startpost`, `guildid`, `localthreadid`) VALUES(?, ?, ?, ?, ?, ?, ?)");
                 ps.setInt(6, id);
                 for (MapleBBSThread bb : bbs.values()) {
                     ps.setInt(1, bb.ownerID);

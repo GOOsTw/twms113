@@ -321,16 +321,16 @@ public class MapleStatEffect implements Serializable {
                 case 33001003:
                 case 35101006:
                 case 35001003: //TEMP.BOOSTER
-                    statups.add(new Pair<MapleBuffStat, Integer>(MapleBuffStat.BOOSTER, ret.x));
+                    statups.add(new Pair<>(MapleBuffStat.BOOSTER, ret.x));
                     break;
                 case 5121009:
                 case 15111005:
-                    statups.add(new Pair<MapleBuffStat, Integer>(MapleBuffStat.SPEED_INFUSION, ret.x));
+                    statups.add(new Pair<>(MapleBuffStat.SPEED_INFUSION, ret.x));
                     break;
                 case 4321000: //tornado spin uses same buffstats
                     ret.duration = 1000;
-                    statups.add(new Pair<MapleBuffStat, Integer>(MapleBuffStat.DASH_SPEED, 100 + ret.x));
-                    statups.add(new Pair<MapleBuffStat, Integer>(MapleBuffStat.DASH_JUMP, ret.y)); //always 0 but its there
+                    statups.add(new Pair<>(MapleBuffStat.DASH_SPEED, 100 + ret.x));
+                    statups.add(new Pair<>(MapleBuffStat.DASH_JUMP, ret.y)); //always 0 but its there
                     break;
                 case 5001005: // Dash
                 case 15001003:
@@ -695,11 +695,11 @@ public class MapleStatEffect implements Serializable {
                 //case 35111004: //siege
                 case 35101002: //TEMP
                     ret.duration = 5000;
-                    statups.add(new Pair<MapleBuffStat, Integer>(MapleBuffStat.MECH_CHANGE, (int) level)); //ya wtf
+                    statups.add(new Pair<>(MapleBuffStat.MECH_CHANGE, (int) level)); //ya wtf
                     break;
                 case 35121005: //missile
                     ret.duration = 60 * 120 * 1000;
-                    statups.add(new Pair<MapleBuffStat, Integer>(MapleBuffStat.MECH_CHANGE, (int) level)); //ya wtf
+                    statups.add(new Pair<>(MapleBuffStat.MECH_CHANGE, (int) level)); //ya wtf
                     break;
                 default:
                     break;
@@ -1142,7 +1142,7 @@ public class MapleStatEffect implements Serializable {
         }
     }
 
-    private final void applyBuffEffect(final MapleCharacter applyfrom, final MapleCharacter applyto, final boolean primary, final int newDuration) {
+    private void applyBuffEffect(final MapleCharacter applyfrom, final MapleCharacter applyto, final boolean primary, final int newDuration) {
         int localDuration = newDuration;
         if (primary) {
             localDuration = alchemistModifyVal(applyfrom, localDuration, false);
@@ -1278,13 +1278,13 @@ public class MapleStatEffect implements Serializable {
                 break;
             default:
                 if (isMorph() || isPirateMorph()) {
-                    final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<MapleBuffStat, Integer>(MapleBuffStat.MORPH, Integer.valueOf(getMorph(applyto))));
+                    final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.MORPH, Integer.valueOf(getMorph(applyto))));
                     applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveForeignBuff(applyto.getId(), stat, this), false);
                 } else if (isMonsterRiding()) {
                     final int mountid = parseMountInfo(applyto, sourceid);
                     final int mountid2 = parseMountInfo_Pure(applyto, sourceid);
                     if (mountid != 0 && mountid2 != 0) {
-                        final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<MapleBuffStat, Integer>(MapleBuffStat.MONSTER_RIDING, 0));
+                        final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.MONSTER_RIDING, 0));
                         applyto.getClient().getSession().write(MaplePacketCreator.cancelBuff(null));
                         applyto.getClient().getSession().write(MaplePacketCreator.giveMount(mountid, sourceid, stat));
                         applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.showMonsterRiding(applyto.getId(), stat, mountid, sourceid), false);
@@ -1979,7 +1979,7 @@ public class MapleStatEffect implements Serializable {
 
         public CancelEffectAction(final MapleCharacter target, final MapleStatEffect effect, final long startTime) {
             this.effect = effect;
-            this.target = new WeakReference<MapleCharacter>(target);
+            this.target = new WeakReference<>(target);
             this.startTime = startTime;
         }
 

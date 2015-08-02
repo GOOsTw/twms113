@@ -67,7 +67,7 @@ public class CheatingOffensePersister {
 
             /*try {
              Connection con = DatabaseConnection.getConnection();
-             PreparedStatement insertps = con.prepareStatement("INSERT INTO cheatlog (characterid, offense, count, lastoffensetime, param) VALUES (?, ?, ?, ?, ?)", DatabaseConnection.RETURN_GENERATED_KEYS);
+             PreparedStatement insertps = con.prepareStatement("INSERT INTO cheatlog (characterid, offense, count, lastoffensetime, param) VALUES (?, ?, ?, ?, ?)");
              PreparedStatement updateps = con.prepareStatement("UPDATE cheatlog SET count = ?, lastoffensetime = ?, param = ? WHERE id = ?");
              for (CheatingOffenseEntry offense : offenses) {
              String parm = offense.getParam() == null ? "" : offense.getParam();

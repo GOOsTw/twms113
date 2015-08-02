@@ -159,7 +159,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
             ps.setInt(2, ownerId);
             ps.execute();
             ps.close();
-            ps = con.prepareStatement("INSERT INTO hiredmerch (characterid, accountid, Mesos, time) VALUES (?, ?, ?, ?)", DatabaseConnection.RETURN_GENERATED_KEYS);
+            ps = con.prepareStatement("INSERT INTO hiredmerch (characterid, accountid, Mesos, time) VALUES (?, ?, ?, ?)");
             ps.setInt(1, ownerId);
             ps.setInt(2, ownerAccount);
             ps.setInt(3, meso.get());

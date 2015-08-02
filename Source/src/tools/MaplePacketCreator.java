@@ -1857,7 +1857,7 @@ public class MaplePacketCreator {
 
         mplew.writeShort(0);
         for (Pair<MapleBuffStat, Integer> stat : statups) {
-            mplew.writeInt(stat.getRight().intValue());
+            mplew.writeInt(stat.getRight());
             mplew.writeLong(skillid);
             mplew.writeZeroBytes(infusion ? 6 : 1);
             mplew.writeShort(duration);
@@ -1878,7 +1878,7 @@ public class MaplePacketCreator {
         writeLongMask(mplew, statups);
         mplew.writeShort(0);
         for (Pair<MapleBuffStat, Integer> stat : statups) {
-            mplew.writeInt(stat.getRight().intValue());
+            mplew.writeInt(stat.getRight());
             mplew.writeLong(skillid);
             mplew.writeZeroBytes(infusion ? 7 : 1);
             mplew.writeShort(duration);//duration... seconds
