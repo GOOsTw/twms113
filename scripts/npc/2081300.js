@@ -45,7 +45,7 @@ function action(mode, type, selection) {
 	    cm.dispose();
 	    return;
 	}
-	if (cm.getPlayer().getRemainingSp() <= (cm.getLevel() - 120) * 3) {
+	if (cm.getPlayerStat("RSP") > (cm.getPlayerStat("LVL") - 120) * 3) {
 	    cm.sendOk("你的技能點數還沒點完..");
 	    cm.dispose();
 	    return;
