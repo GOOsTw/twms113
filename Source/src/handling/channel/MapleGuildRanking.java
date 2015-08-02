@@ -33,7 +33,9 @@ public class MapleGuildRanking {
 
     private static MapleGuildRanking instance = new MapleGuildRanking();
     private List<GuildRankingInfo> ranks = new LinkedList<GuildRankingInfo>();
-
+    private List<levelRankingInfo> ranks1 = new LinkedList<levelRankingInfo>();
+    private List<mesoRankingInfo> ranks2 = new LinkedList<mesoRankingInfo>();
+    
     public static MapleGuildRanking getInstance() {
         return instance;
     }
@@ -44,7 +46,21 @@ public class MapleGuildRanking {
         }
         return ranks;
     }
-
+    
+    public List<levelRankingInfo> getRank1() {
+        if (ranks1.isEmpty()) {
+            showlvl();
+        }
+        return ranks1;
+    }
+    
+    public List<mesoRankingInfo> getRank2() {
+        if (ranks2.isEmpty()) {
+            showmeso();
+        }
+        return ranks2;
+    }
+    
     private void reload() {
         ranks.clear();
         try {
@@ -70,7 +86,119 @@ public class MapleGuildRanking {
             e.printStackTrace();
         }
     }
+    private void showlvl() {
+        ranks1.clear();
+        try {
+            Connection con = DatabaseConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM characters WHERE gm < 1 ORDER BY `level` DESC LIMIT 20");
+            ResultSet rs = ps.executeQuery();
 
+            while (rs.next()) {
+                final levelRankingInfo rank1 = new levelRankingInfo (
+                        rs.getString("name"),
+                        rs.getInt("level"),
+                        rs.getInt("str"),
+                        rs.getInt("dex"),
+                        rs.getInt("int"),
+                        rs.getInt("luk"));
+                        ranks1.add(rank1);
+            }
+            ps.close();
+            rs.close();
+        } catch (SQLException e) {
+            System.err.println("未能顯示等級排行");
+            e.printStackTrace();
+        }
+    }
+    
+     private void showmeso() {
+        ranks2.clear();
+        try {
+            Connection con = DatabaseConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM characters WHERE gm < 1 ORDER BY `meso` DESC LIMIT 20");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                final mesoRankingInfo rank2 = new mesoRankingInfo (
+                        rs.getString("name"),
+                        rs.getInt("meso"),
+                        rs.getInt("str"),
+                        rs.getInt("dex"),
+                        rs.getInt("int"),
+                        rs.getInt("luk"));
+                        ranks2.add(rank2);
+            }
+        
+            ps.close();
+            rs.close();
+        } catch (SQLException e) {
+            System.err.println("未能顯示楓幣排行");
+            e.printStackTrace();
+        }
+    }   
+   public static class mesoRankingInfo {
+      private String name;
+      private int meso, str, dex, intt, luk;
+      
+      public mesoRankingInfo(String name, int meso, int str, int dex, int intt, int luk) {
+          this.name = name;
+          this.meso = meso;
+          this.str = str;
+          this.dex =dex;
+          this.intt = intt;
+          this.luk = luk;
+      }
+      public String getName() {
+          return name;
+      }
+      public int getmeso() {
+          return meso;
+      }
+      public int getstr(){
+          return str;
+      }
+      public int getdex(){
+          return dex;
+      }
+      public int getintt(){
+          return intt;
+      }
+      public int getluk(){
+          return luk;
+      }
+   }
+   public static class levelRankingInfo {
+
+        private String name;
+        private int level, str, dex, intt, luk;
+
+        public levelRankingInfo(String name, int level, int str, int dex, int intt, int luk) {
+            this.name = name;
+            this.level = level;
+            this.str = str;
+            this.dex = dex;
+            this.intt = intt;
+            this.luk = luk;
+        }
+           public String getName() {
+            return name;
+           }
+           public int getlevel(){
+               return level;
+           }
+           public int getstr(){
+               return str;
+           }
+           public int getdex(){
+               return dex;
+           }
+           public int getintt(){
+               return intt;
+           }
+           public int getluk(){
+               return luk;
+           }
+   }
     public static class GuildRankingInfo {
 
         private String name;
