@@ -101,7 +101,8 @@ public class InterServerHandler {
         }
         c.setPlayer(player);
         c.setAccID(player.getAccountID());
-
+        c.loadAccountData(player.getAccountID());
+        
         if (!c.CheckIPAddress()) { // Remote hack
             c.getSession().close();
             return;

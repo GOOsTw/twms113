@@ -371,7 +371,7 @@ public class MapleClient implements Serializable {
                     greason = rs.getByte("greason");
                     tempban = getTempBanCalendar(rs);
                     gender = rs.getByte("gender");
-                   
+
                     ps.close();
 
                     if (banned > 0 && !gm) {
@@ -496,6 +496,41 @@ public class MapleClient implements Serializable {
         return loginok;
     }
 
+    public void loadAccountData(int accountID) {
+        Connection con = DatabaseConnection.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = con.prepareStatement("SELECT id, 2ndpassword, gm, greason, gender FROM accounts WHERE id = ?");
+            ps.setInt(1, accountID);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                accId = rs.getInt("id");
+                secondPassword = rs.getString("2ndpassword");
+                gm = rs.getInt("gm") > 0;
+                greason = rs.getByte("greason");
+                tempban = getTempBanCalendar(rs);
+                gender = rs.getByte("gender");
+
+                ps.close();
+                rs.close();
+
+            }
+        } catch (SQLException e) {
+            FilePrinter.printError("MapleClient.txt", e);
+        } finally {
+            try {
+                if (ps != null && !ps.isClosed()) {
+                    ps.close();
+                }
+                if (rs != null && !rs.isClosed()) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+            }
+        }
+    }
+
     public final void update2ndPassword() {
 
         try {
@@ -609,7 +644,7 @@ public class MapleClient implements Serializable {
             loggedIn = !serverTransition;
         }
     }
-    
+
     public final void updateSecondPassword() {
 
         final Connection con = DatabaseConnection.getConnection();
@@ -622,7 +657,6 @@ public class MapleClient implements Serializable {
             System.err.println("error updating login state" + e);
         }
     }
-
 
     public final void updateGender() {
 
@@ -1021,7 +1055,7 @@ public class MapleClient implements Serializable {
             public void run() {
                 try {
                     if (getLatency() < 0) {
-                       
+
                         if (getSession().isConnected()) {
                             getSession().close(true);
                         }

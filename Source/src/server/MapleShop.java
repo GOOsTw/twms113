@@ -102,7 +102,9 @@ public class MapleShop {
             
             if (price >= 0 && c.getPlayer().getMeso() >= price) {
                 if (MapleInventoryManipulator.checkSpace(c, itemId, quantity, "")) {
+                    
                     c.getPlayer().gainMeso(-price, false);
+                    
                     if (GameConstants.isPet(itemId)) {
                         MapleInventoryManipulator.addById(c, itemId, quantity, "", MaplePet.createPet(itemId, MapleInventoryIdentifier.getInstance()), -1);
                     } else {
