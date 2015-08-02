@@ -771,6 +771,14 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void displayGuildRanks() {
         c.getSession().write(MaplePacketCreator.showGuildRanks(npc, MapleGuildRanking.getInstance().getRank()));
     }
+    
+    public void showlvl() {
+        c.getSession().write(MaplePacketCreator.showlevelRanks(npc, MapleGuildRanking.getInstance().getRank1()));
+    }
+    
+    public void showmeso() {
+        c.getSession().write(MaplePacketCreator.showmesoRanks(npc, MapleGuildRanking.getInstance().getRank2()));
+    }
 
     public boolean removePlayerFromInstance() {
         if (c.getPlayer().getEventInstance() != null) {

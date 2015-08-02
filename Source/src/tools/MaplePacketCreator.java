@@ -52,6 +52,7 @@ import handling.ByteArrayMaplePacket;
 import handling.MaplePacket;
 import handling.SendPacketOpcode;
 import constants.ServerConstants;
+import handling.channel.MapleGuildRanking;
 import handling.world.MapleParty;
 import handling.world.MaplePartyCharacter;
 import handling.world.PartyOperation;
@@ -3686,7 +3687,47 @@ public class MaplePacketCreator {
         }
         return mplew.getPacket();
     }
+    
+   public static MaplePacket showmesoRanks(int npcid, List<MapleGuildRanking.mesoRankingInfo> all) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
+        mplew.writeShort(SendPacketOpcode.GUILD_OPERATION.getValue());
+        mplew.write(0x49);
+        mplew.writeInt(npcid);
+        mplew.writeInt(all.size());
+
+        for (MapleGuildRanking.mesoRankingInfo info : all) {
+            mplew.writeMapleAsciiString(info.getName());
+            mplew.writeInt(info.getmeso());
+            mplew.writeInt(info.getstr());
+            mplew.writeInt(info.getdex());
+            mplew.writeInt(info.getintt());
+            mplew.writeInt(info.getluk());            
+        }
+
+        return mplew.getPacket();
+    }
+   
+   public static MaplePacket showlevelRanks(int npcid, List<MapleGuildRanking.levelRankingInfo> all) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.GUILD_OPERATION.getValue());
+        mplew.write(0x49);
+        mplew.writeInt(npcid);
+        mplew.writeInt(all.size());
+
+        for (MapleGuildRanking.levelRankingInfo info : all) {
+            mplew.writeMapleAsciiString(info.getName());
+            mplew.writeInt(info.getlevel());
+            mplew.writeInt(info.getstr());
+            mplew.writeInt(info.getdex());
+            mplew.writeInt(info.getintt());
+            mplew.writeInt(info.getluk());
+        }
+
+        return mplew.getPacket();
+    }
+   
     public static MaplePacket showGuildRanks(int npcid, List<GuildRankingInfo> all) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
@@ -4765,4 +4806,5 @@ public class MaplePacketCreator {
         //mplew.write(HexTool.getByteArrayFromHexString("DA 01 00 05 BD 0F 01 60 00 00 00 FF 0E 01 61 00 00 00 69 0E 01 62 00 00 00 05 0F 01 63 00 00 00 C6 0F 01 64 00 00 00"));
         return mplew.getPacket();
     }
+
 }
