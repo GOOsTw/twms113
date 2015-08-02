@@ -326,7 +326,7 @@ public class InventoryHandler {
                     }
                 }
             }
-            c.sendPacket(MaplePacketCreator.modifyInventory(true, new ModifyInventory(ModifyInventory.Types.ADD, magnify)));
+            c.sendPacket(MaplePacketCreator.modifyInventory(true, new ModifyInventory(ModifyInventory.Types.MOVE, magnify)));
             //c.getSession().write(MaplePacketCreator.scrolledItem(magnify, toReveal, false, true));
             c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getPotentialReset(c.getPlayer().getId(), eqq.getPosition()));
             MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, magnify.getPosition(), (short) 1, false);
@@ -481,19 +481,19 @@ public class InventoryHandler {
         if (whiteScroll) {
             MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, wscroll.getPosition(), (short) 1, false, false);
         }
-
-        if (scrollSuccess == IEquip.ScrollResult.CURSE) {
-            c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.REMOVE, scroll)));
-            //c.getSession().write(MaplePacketCreator.scrolledItem(scroll, toScroll, true, false));
+        final List<ModifyInventory> mods = new ArrayList<>();
+        if (scrollSuccess == Equip.ScrollResult.CURSE) {
+            mods.add(new ModifyInventory(3, toScroll));
             if (dst < 0) {
-                chr.getInventory(MapleInventoryType.EQUIPPED).removeItem(toScroll.getPosition());
+                c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).removeItem(toScroll.getPosition());
             } else {
-                chr.getInventory(MapleInventoryType.EQUIP).removeItem(toScroll.getPosition());
+                c.getPlayer().getInventory(MapleInventoryType.EQUIP).removeItem(toScroll.getPosition());
             }
-        } else if (vegas == 0) {
-            c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.ADD, scroll)));
-            //c.getSession().write(MaplePacketCreator.scrolledItem(scroll, scrolled, false, false));
+        } else {
+            mods.add(new ModifyInventory(3, scrolled));
+            mods.add(new ModifyInventory(0, scrolled));
         }
+        c.sendPacket(MaplePacketCreator.modifyInventory(true, mods));
 
         chr.getMap().broadcastMessage(chr, MaplePacketCreator.getScrollEffect(c.getPlayer().getId(), scrollSuccess, legendarySpirit), vegas == 0);
 
@@ -501,6 +501,9 @@ public class InventoryHandler {
         if (dst < 0 && (scrollSuccess == IEquip.ScrollResult.SUCCESS || scrollSuccess == IEquip.ScrollResult.CURSE) && vegas == 0) {
             chr.equipChanged();
         }
+
+        c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.UPDATE, scroll)));
+
         return true;
     }
 
@@ -1084,7 +1087,7 @@ public class InventoryHandler {
                                 if (improvingMaxHPLevel >= 1) {
                                     maxhp += improvingMaxHP.getEffect(improvingMaxHPLevel).getY();
                                 }
-                            } else if ((job >= 200 && job <= 232) ) { // Magician
+                            } else if ((job >= 200 && job <= 232)) { // Magician
                                 maxhp += Randomizer.rand(10, 20);
                             } else if ((job >= 300 && job <= 322) || (job >= 400 && job <= 434) || (job >= 1300 && job <= 1312) || (job >= 1400 && job <= 1412) || (job >= 3300 && job <= 3312)) { // Bowman
                                 maxhp += Randomizer.rand(16, 20);
@@ -1270,26 +1273,26 @@ public class InventoryHandler {
                 }
                 break;
             }
-	    case 5050001: // SP Reset (1st job)
-	    case 5050002: // SP Reset (2nd job)
-	    case 5050003: // SP Reset (3rd job)
-	    case 5050004: { // SP Reset (4th job)
-		int skill1 = slea.readInt();
-		int skill2 = slea.readInt();
+            case 5050001: // SP Reset (1st job)
+            case 5050002: // SP Reset (2nd job)
+            case 5050003: // SP Reset (3rd job)
+            case 5050004: { // SP Reset (4th job)
+                int skill1 = slea.readInt();
+                int skill2 = slea.readInt();
 
-		ISkill skillSPTo = SkillFactory.getSkill(skill1);
-		ISkill skillSPFrom = SkillFactory.getSkill(skill2);
+                ISkill skillSPTo = SkillFactory.getSkill(skill1);
+                ISkill skillSPFrom = SkillFactory.getSkill(skill2);
 
-		if (skillSPTo.isBeginnerSkill() || skillSPFrom.isBeginnerSkill()) {
-		    break;
-		}
-		if ((c.getPlayer().getSkillLevel(skillSPTo) + 1 <= skillSPTo.getMaxLevel()) && c.getPlayer().getSkillLevel(skillSPFrom) > 0) {
-		    c.getPlayer().changeSkillLevel(skillSPFrom, (byte) (c.getPlayer().getSkillLevel(skillSPFrom) - 1), c.getPlayer().getMasterLevel(skillSPFrom));
-		    c.getPlayer().changeSkillLevel(skillSPTo, (byte) (c.getPlayer().getSkillLevel(skillSPTo) + 1), c.getPlayer().getMasterLevel(skillSPTo));
-		    used = true;
-		}
-		break;
-	    }
+                if (skillSPTo.isBeginnerSkill() || skillSPFrom.isBeginnerSkill()) {
+                    break;
+                }
+                if ((c.getPlayer().getSkillLevel(skillSPTo) + 1 <= skillSPTo.getMaxLevel()) && c.getPlayer().getSkillLevel(skillSPFrom) > 0) {
+                    c.getPlayer().changeSkillLevel(skillSPFrom, (byte) (c.getPlayer().getSkillLevel(skillSPFrom) - 1), c.getPlayer().getMasterLevel(skillSPFrom));
+                    c.getPlayer().changeSkillLevel(skillSPTo, (byte) (c.getPlayer().getSkillLevel(skillSPTo) + 1), c.getPlayer().getMasterLevel(skillSPTo));
+                    used = true;
+                }
+                break;
+            }
             case 5060000: { // Item Tag
                 final IItem item = c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).getItem(slea.readByte());
 
@@ -1314,7 +1317,7 @@ public class InventoryHandler {
                     final Equip eq = (Equip) item;
                     if (eq.getState() >= 5) {
                         eq.renewPotential();
-                        c.sendPacket(MaplePacketCreator.modifyInventory(true, new ModifyInventory(ModifyInventory.Types.ADD, item)));
+                        c.sendPacket(MaplePacketCreator.modifyInventory(true, new ModifyInventory(ModifyInventory.Types.MOVE, item)));
                         //c.getSession().write(MaplePacketCreator.scrolledItem(toUse, item, false, true));
                         //c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getPotentialEffect(c.getPlayer().getId(), eq.getItemId()));
                         c.getPlayer().forceReAddItem_NoUpdate(item, MapleInventoryType.EQUIP);
@@ -1458,8 +1461,8 @@ public class InventoryHandler {
                     c.getPlayer().dropMessage(5, "必須等級10級以上才可以使用.");
                     break;
                 }
-              if (!c.getPlayer().getCheatTracker().canAvatarSmega2()) {
-             c.getPlayer().dropMessage(6, "很抱歉為了防止刷廣,所以你每10秒只能用一次.");
+                if (!c.getPlayer().getCheatTracker().canAvatarSmega2()) {
+                    c.getPlayer().dropMessage(6, "很抱歉為了防止刷廣,所以你每10秒只能用一次.");
                     break;
                 }
                 if (!c.getChannelServer().getMegaphoneMuteState()) {
@@ -1474,18 +1477,18 @@ public class InventoryHandler {
                     sb.append(" : ");
                     sb.append(message);
                     final boolean ear = slea.readByte() != 0;
-                     if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1){; 
-                             c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");                 
-                             c.getSession().write(MaplePacketCreator.enableActions());
-                             return;
-                         }
-                if(c.getPlayer().isPlayer()){
-                  c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.serverNotice(2, sb.toString()));
-                      System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
-               } else if(c.getPlayer().isGM()){
-             c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.serverNotice(2, sb.toString()));
-             System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
-                }
+                    if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1) {;
+                        c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
+                        c.getSession().write(MaplePacketCreator.enableActions());
+                        return;
+                    }
+                    if (c.getPlayer().isPlayer()) {
+                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.serverNotice(2, sb.toString()));
+                        System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
+                    } else if (c.getPlayer().isGM()) {
+                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.serverNotice(2, sb.toString()));
+                        System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
+                    }
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
@@ -1507,25 +1510,25 @@ public class InventoryHandler {
                     if (message.length() > 65) {
                         break;
                     }
-                      final boolean ear = slea.readByte() != 0;
-                     if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1){ 
-                             c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");                 
-                             c.getSession().write(MaplePacketCreator.enableActions());
-                             return;
-                         }                  
+                    final boolean ear = slea.readByte() != 0;
+                    if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1) {
+                        c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
+                        c.getSession().write(MaplePacketCreator.enableActions());
+                        return;
+                    }
                     final StringBuilder sb = new StringBuilder();
                     addMedalString(c.getPlayer(), sb);
                     sb.append(c.getPlayer().getName());
                     sb.append(" : ");
                     sb.append(message);
 
-                if(c.getPlayer().isPlayer()){
-                  c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.serverNotice(2, sb.toString()));
-                      System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
-               } else if(c.getPlayer().isGM()){
-             c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.serverNotice(2, sb.toString()));
-             System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
-                }
+                    if (c.getPlayer().isPlayer()) {
+                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.serverNotice(2, sb.toString()));
+                        System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
+                    } else if (c.getPlayer().isGM()) {
+                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.serverNotice(2, sb.toString()));
+                        System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
+                    }
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
@@ -1537,7 +1540,7 @@ public class InventoryHandler {
                     c.getPlayer().dropMessage(5, "必須等級10級以上才可以使用.");
                     break;
                 }
-              if (!c.getPlayer().getCheatTracker().canAvatarSmega2()) {
+                if (!c.getPlayer().getCheatTracker().canAvatarSmega2()) {
                     c.getPlayer().dropMessage(6, "很抱歉為了防止刷廣,所以你每10秒只能用一次.");
                     break;
                 }
@@ -1556,18 +1559,18 @@ public class InventoryHandler {
                         messages.add(c.getPlayer().getName() + " : " + message);
                     }
                     final boolean ear = slea.readByte() > 0;
-                     if (c.getPlayer().isPlayer() && messages.indexOf("幹") != -1 || messages.indexOf("豬") != -1 || messages.indexOf("笨") != -1 || messages.indexOf("靠") != -1 || messages.indexOf("腦包") != -1 || messages.indexOf("腦") != -1 || messages.indexOf("智障") != -1 || messages.indexOf("白目") != -1 || messages.indexOf("白吃") != -1){ 
-                             c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");                 
-                             c.getSession().write(MaplePacketCreator.enableActions());
-                             return;
-                         }
-                if(c.getPlayer().isPlayer()){
-           World.Broadcast.broadcastSmega(MaplePacketCreator.tripleSmega(messages, ear, c.getChannel()).getBytes());
-                      System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + messages);
-               } else if(c.getPlayer().isGM()){
-           World.Broadcast.broadcastSmega(MaplePacketCreator.tripleSmega(messages, ear, c.getChannel()).getBytes());
-             System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + messages);
-                }
+                    if (c.getPlayer().isPlayer() && messages.indexOf("幹") != -1 || messages.indexOf("豬") != -1 || messages.indexOf("笨") != -1 || messages.indexOf("靠") != -1 || messages.indexOf("腦包") != -1 || messages.indexOf("腦") != -1 || messages.indexOf("智障") != -1 || messages.indexOf("白目") != -1 || messages.indexOf("白吃") != -1) {
+                        c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
+                        c.getSession().write(MaplePacketCreator.enableActions());
+                        return;
+                    }
+                    if (c.getPlayer().isPlayer()) {
+                        World.Broadcast.broadcastSmega(MaplePacketCreator.tripleSmega(messages, ear, c.getChannel()).getBytes());
+                        System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + messages);
+                    } else if (c.getPlayer().isGM()) {
+                        World.Broadcast.broadcastSmega(MaplePacketCreator.tripleSmega(messages, ear, c.getChannel()).getBytes());
+                        System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + messages);
+                    }
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
@@ -1579,7 +1582,7 @@ public class InventoryHandler {
                     c.getPlayer().dropMessage(5, "必須等級10級以上才可以使用.");
                     break;
                 }
-                            if (!c.getPlayer().getCheatTracker().canAvatarSmega2()) {
+                if (!c.getPlayer().getCheatTracker().canAvatarSmega2()) {
                     c.getPlayer().dropMessage(6, "很抱歉為了防止刷廣,所以你每10秒只能用一次.");
                     break;
                 }
@@ -1596,18 +1599,18 @@ public class InventoryHandler {
                     sb.append(message);
 
                     final boolean ear = slea.readByte() != 0;
-                   if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1){ 
-                    c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");                 
-                     c.getSession().write(MaplePacketCreator.enableActions());
-                             return;
-                         }
-                if(c.getPlayer().isPlayer()){
-                  c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.serverNotice(2, sb.toString()));
-                      System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
-               } else if(c.getPlayer().isGM()){
-             c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.serverNotice(2, sb.toString()));
-             System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
-                }
+                    if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1) {
+                        c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
+                        c.getSession().write(MaplePacketCreator.enableActions());
+                        return;
+                    }
+                    if (c.getPlayer().isPlayer()) {
+                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.serverNotice(2, sb.toString()));
+                        System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
+                    } else if (c.getPlayer().isGM()) {
+                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.serverNotice(2, sb.toString()));
+                        System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
+                    }
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
@@ -1619,7 +1622,7 @@ public class InventoryHandler {
                     c.getPlayer().dropMessage(5, "必須等級10級以上才可以使用.");
                     break;
                 }
-              if (!c.getPlayer().getCheatTracker().canAvatarSmega2()) {
+                if (!c.getPlayer().getCheatTracker().canAvatarSmega2()) {
                     c.getPlayer().dropMessage(6, "很抱歉為了防止刷廣,所以你每10秒只能用一次.");
                     break;
                 }
@@ -1636,18 +1639,18 @@ public class InventoryHandler {
                     sb.append(message);
 
                     final boolean ear = slea.readByte() != 0;
-                     if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1){ 
-                             c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");                 
-                             c.getSession().write(MaplePacketCreator.enableActions());
-                             return;
-                         }
-                if(c.getPlayer().isPlayer()){
-                      World.Broadcast.broadcastSmega(MaplePacketCreator.serverNotice(10, c.getChannel(), sb.toString(), ear).getBytes());
-                      System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
-               } else if(c.getPlayer().isGM()){
-                      World.Broadcast.broadcastSmega(MaplePacketCreator.serverNotice(10, c.getChannel(), sb.toString(), ear).getBytes());
-             System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
-                }
+                    if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1) {
+                        c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
+                        c.getSession().write(MaplePacketCreator.enableActions());
+                        return;
+                    }
+                    if (c.getPlayer().isPlayer()) {
+                        World.Broadcast.broadcastSmega(MaplePacketCreator.serverNotice(10, c.getChannel(), sb.toString(), ear).getBytes());
+                        System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
+                    } else if (c.getPlayer().isGM()) {
+                        World.Broadcast.broadcastSmega(MaplePacketCreator.serverNotice(10, c.getChannel(), sb.toString(), ear).getBytes());
+                        System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
+                    }
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
@@ -1659,7 +1662,7 @@ public class InventoryHandler {
                     c.getPlayer().dropMessage(5, "必須要10等以上才能使用.");
                     break;
                 }
-               if (!c.getPlayer().getCheatTracker().canAvatarSmega2()) {
+                if (!c.getPlayer().getCheatTracker().canAvatarSmega2()) {
                     c.getPlayer().dropMessage(6, "很抱歉為了防止刷廣,所以你每10秒只能用一次.");
                     break;
                 }
@@ -1676,18 +1679,18 @@ public class InventoryHandler {
                     sb.append(message);
 
                     final boolean ear = slea.readByte() != 0;
-                     if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1 ){ 
-                             c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");                 
-                             c.getSession().write(MaplePacketCreator.enableActions());
-                             return;
-                         }
-                if(c.getPlayer().isPlayer()){
-                     World.Broadcast.broadcastSmega(MaplePacketCreator.serverNotice(3, c.getChannel(), sb.toString(), ear).getBytes());
-                      System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
-               } else if(c.getPlayer().isGM()){
+                    if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1) {
+                        c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
+                        c.getSession().write(MaplePacketCreator.enableActions());
+                        return;
+                    }
+                    if (c.getPlayer().isPlayer()) {
                         World.Broadcast.broadcastSmega(MaplePacketCreator.serverNotice(3, c.getChannel(), sb.toString(), ear).getBytes());
-             System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
-                }
+                        System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
+                    } else if (c.getPlayer().isGM()) {
+                        World.Broadcast.broadcastSmega(MaplePacketCreator.serverNotice(3, c.getChannel(), sb.toString(), ear).getBytes());
+                        System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
+                    }
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
@@ -1699,7 +1702,7 @@ public class InventoryHandler {
                     c.getPlayer().dropMessage(5, "必須等級10級以上才可以使用.");
                     break;
                 }
-               if (!c.getPlayer().getCheatTracker().canAvatarSmega2()) {
+                if (!c.getPlayer().getCheatTracker().canAvatarSmega2()) {
                     c.getPlayer().dropMessage(6, "很抱歉為了防止刷廣,所以你每10秒只能用一次.");
                     break;
                 }
@@ -1723,18 +1726,18 @@ public class InventoryHandler {
                         byte pos = (byte) slea.readInt();
                         item = c.getPlayer().getInventory(MapleInventoryType.getByType(invType)).getItem(pos);
                     }
-                     if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1){ 
-                             c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");                 
-                             c.getSession().write(MaplePacketCreator.enableActions());
-                             return;
-                         }
-                if(c.getPlayer().isPlayer()){
-                    World.Broadcast.broadcastSmega(MaplePacketCreator.itemMegaphone(sb.toString(), ear, c.getChannel(), item).getBytes());
-                      System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
-               } else if(c.getPlayer().isGM()){
-                    World.Broadcast.broadcastSmega(MaplePacketCreator.itemMegaphone(sb.toString(), ear, c.getChannel(), item).getBytes());
-             System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
-                }
+                    if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1) {
+                        c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
+                        c.getSession().write(MaplePacketCreator.enableActions());
+                        return;
+                    }
+                    if (c.getPlayer().isPlayer()) {
+                        World.Broadcast.broadcastSmega(MaplePacketCreator.itemMegaphone(sb.toString(), ear, c.getChannel(), item).getBytes());
+                        System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
+                    } else if (c.getPlayer().isGM()) {
+                        World.Broadcast.broadcastSmega(MaplePacketCreator.itemMegaphone(sb.toString(), ear, c.getChannel(), item).getBytes());
+                        System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
+                    }
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
@@ -2028,7 +2031,7 @@ public class InventoryHandler {
                     c.getPlayer().dropMessage(5, "必須等級10級以上才可以使用.");
                     break;
                 }
-             if (!c.getPlayer().getCheatTracker().canAvatarSmega2()) {
+                if (!c.getPlayer().getCheatTracker().canAvatarSmega2()) {
                     c.getPlayer().dropMessage(6, "很抱歉為了防止刷廣,所以你每10秒只能用一次.");
                     break;
                 }
@@ -2038,25 +2041,25 @@ public class InventoryHandler {
                         break;
                     }
                     final boolean ear = slea.readByte() != 0;
-                     if (c.getPlayer().isPlayer() && text.indexOf("幹") != -1 || text.indexOf("豬") != -1 || text.indexOf("笨") != -1 || text.indexOf("靠") != -1 || text.indexOf("腦包") != -1 || text.indexOf("腦") != -1 || text.indexOf("智障") != -1 || text.indexOf("白目") != -1 || text.indexOf("白吃") != -1){ 
-                             c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");                 
-                             c.getSession().write(MaplePacketCreator.enableActions());
-                             return;
-                         }
-                if(c.getPlayer().isPlayer()){
-            World.Broadcast.broadcastSmega(MaplePacketCreator.getAvatarMega(c.getPlayer(), c.getChannel(), itemId, text, ear).getBytes());
-                      System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + text);
-               } else if(c.getPlayer().isGM()){
-            World.Broadcast.broadcastSmega(MaplePacketCreator.getAvatarMega(c.getPlayer(), c.getChannel(), itemId, text, ear).getBytes()); 
-             System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + text);
-                }
-                used = true;
+                    if (c.getPlayer().isPlayer() && text.indexOf("幹") != -1 || text.indexOf("豬") != -1 || text.indexOf("笨") != -1 || text.indexOf("靠") != -1 || text.indexOf("腦包") != -1 || text.indexOf("腦") != -1 || text.indexOf("智障") != -1 || text.indexOf("白目") != -1 || text.indexOf("白吃") != -1) {
+                        c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
+                        c.getSession().write(MaplePacketCreator.enableActions());
+                        return;
+                    }
+                    if (c.getPlayer().isPlayer()) {
+                        World.Broadcast.broadcastSmega(MaplePacketCreator.getAvatarMega(c.getPlayer(), c.getChannel(), itemId, text, ear).getBytes());
+                        System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + text);
+                    } else if (c.getPlayer().isGM()) {
+                        World.Broadcast.broadcastSmega(MaplePacketCreator.getAvatarMega(c.getPlayer(), c.getChannel(), itemId, text, ear).getBytes());
+                        System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + text);
+                    }
+                    used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
                 }
                 break;
             }
-              
+
             case 5450000: { // Mu Mu the Travelling Merchant
                 MapleShopFactory.getInstance().getShop(61).sendShop(c);
                 //used = true;
