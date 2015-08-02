@@ -89,7 +89,7 @@ public class MapleShop {
         }
         
         if (!GameConstants.isMountItemAvailable(itemId, c.getPlayer().getJob())) {
-            c.getPlayer().dropMessage(1, "You may not buy this item.");
+            c.getPlayer().dropMessage(1, "你不可以買這道具。");
             c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
@@ -117,7 +117,7 @@ public class MapleShop {
                         MapleInventoryManipulator.addById(c, itemId, quantity);
                     }
                 } else {
-                    c.getPlayer().dropMessage(1, "Your Inventory is full");
+                    c.getPlayer().dropMessage(1, "你的道具欄滿了。");
                 }
                 c.sendPacket(MaplePacketCreator.confirmShopTransaction((byte) 0));
             }
@@ -135,7 +135,7 @@ public class MapleShop {
                     MapleInventoryManipulator.addById(c, itemId, quantity);
                 }
             } else {
-                c.getPlayer().dropMessage(1, "Your Inventory is full");
+                c.getPlayer().dropMessage(1, "你的道具欄滿了。");
             }
             c.sendPacket(MaplePacketCreator.confirmShopTransaction((byte) 0));
         }
@@ -154,7 +154,7 @@ public class MapleShop {
             quantity = item.getQuantity();
         }
         if (quantity < 0) {
-            AutobanManager.getInstance().addPoints(c, 1000, 0, "Selling " + quantity + " " + item.getItemId() + " (" + type.name() + "/" + slot + ")");
+            AutobanManager.getInstance().addPoints(c, 1000, 0, "賣了 " + quantity + " " + item.getItemId() + " (" + type.name() + "/" + slot + ")");
             return;
         }
         short iQuant = item.getQuantity();
@@ -165,7 +165,7 @@ public class MapleShop {
         if (ii.cantSell(item.getItemId())) {
             return;
         }
-        if (quantity <= iQuant && iQuant > 0) {
+        if (quantity <= iQuant &&  ( iQuant > 0 || GameConstants.isRechargable(item.getItemId()) ) ) {
             MapleInventoryManipulator.removeFromSlot(c, type, slot, quantity, false);
             double price;
             if (GameConstants.isThrowingStar(item.getItemId()) || GameConstants.isBullet(item.getItemId())) {

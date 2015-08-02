@@ -482,7 +482,7 @@ public class MapleMapFactory {
             case 104000400: // Mano
                 mobtime = 2700;
                 monsterid = 2220000;
-                msg = "紅寶王大大出現了,塊陶阿";
+                msg = "紅寶王大大出現了";
                 pos1 = new Point(439, 185);
                 pos2 = new Point(301, -85);
                 pos3 = new Point(107, -355);
@@ -490,7 +490,7 @@ public class MapleMapFactory {
             case 101030404: // Stumpy
                 mobtime = 2700;
                 monsterid = 3220000;
-                msg = "樹妖王大大出現了,小心被他的樹枝屌插到";
+                msg = "樹妖王大大出現了";
                 pos1 = new Point(867, 1282);
                 pos2 = new Point(810, 1570);
                 pos3 = new Point(838, 2197);
@@ -498,7 +498,7 @@ public class MapleMapFactory {
             case 110040000: // King Clang
                 mobtime = 1200;
                 monsterid = 5220001;
-                msg = "巨居蟹大大出現了,小心你的ㄐㄐ被他夾斷";
+                msg = "巨居蟹大大出現了";
                 pos1 = new Point(-355, 179);
                 pos2 = new Point(-1283, -113);
                 pos3 = new Point(-571, -593);
@@ -506,7 +506,7 @@ public class MapleMapFactory {
             case 250010304: // Tae Roon
                 mobtime = 2100;
                 monsterid = 7220000;
-                msg = "流浪熊大大出現了,我他媽會放雷電喔";
+                msg = "流浪熊大大出現了";
                 pos1 = new Point(-210, 33);
                 pos2 = new Point(-234, 393);
                 pos3 = new Point(-654, 33);
@@ -522,7 +522,7 @@ public class MapleMapFactory {
             case 250010503: // Ghost Priest
                 mobtime = 1800;
                 monsterid = 7220002;
-                msg = "喵仙怪人大大出現了,小心被他CC到死喔";
+                msg = "喵仙怪人大大出現了";
                 pos1 = new Point(-303, 543);
                 pos2 = new Point(227, 543);
                 pos3 = new Point(719, 543);
@@ -554,7 +554,7 @@ public class MapleMapFactory {
             case 100040106: // Faust
                 mobtime = 1800;
                 monsterid = 5220002;
-                msg = "The blue fog became darker when Faust appeared.";
+                msg = "藍色的霧氣變得更暗時出現了殭屍猴王";
                 pos1 = new Point(1000, 278);
                 pos2 = new Point(557, 278);
                 pos3 = new Point(95, 278);
@@ -562,7 +562,7 @@ public class MapleMapFactory {
             case 220050100: // Timer
                 mobtime = 1500;
                 monsterid = 5220003;
-                msg = "Click clock! Timer has appeared with an irregular clock sound.";
+                msg = "滴答滴答....咕咕鐘出現了!";
                 pos1 = new Point(-467, 1032);
                 pos2 = new Point(532, 1032);
                 pos3 = new Point(-47, 1032);
@@ -594,7 +594,7 @@ public class MapleMapFactory {
             case 261030000: // Chimera
                 mobtime = 2700;
                 monsterid = 8220002;
-                msg = "奇美拉出現了,小心他的BB彈";
+                msg = "奇美拉出現了";
                 pos1 = new Point(-1094, -405);
                 pos2 = new Point(-772, -116);
                 pos3 = new Point(-108, 181);
