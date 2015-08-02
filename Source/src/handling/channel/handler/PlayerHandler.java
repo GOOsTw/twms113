@@ -649,7 +649,7 @@ public class PlayerHandler {
                 maxdamage *= numFinisherOrbs;
             } else if (comboBuff != null) {
                 ISkill combo;
-                if (c.getPlayer().getJob() == 1110 || c.getPlayer().getJob() == 1111) {
+                if (c.getPlayer().getJob() == 1110 || c.getPlayer().getJob() == 1111 || c.getPlayer().getJob() == 1112) {
                     combo = SkillFactory.getSkill(11111001);
                 } else {
                     combo = SkillFactory.getSkill(1111002);
@@ -713,6 +713,7 @@ public class PlayerHandler {
             }
 
             switch (attack.skill) {
+                case 13111007:
                 case 21110004: // Ranged but uses attackcount instead
                 case 14101006: // Vampure
                     bulletCount = effect.getAttackCount();
