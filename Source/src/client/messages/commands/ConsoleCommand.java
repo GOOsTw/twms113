@@ -5,6 +5,7 @@
  */
 package client.messages.commands;
 
+import client.MapleCharacter;
 import client.MapleClient;
 import database.DatabaseConnection;
 import handling.channel.ChannelServer;
@@ -99,7 +100,7 @@ public class ConsoleCommand {
         public int execute(String[] splitted) {
             try {
                 com.mysql.jdbc.Connection dcon = (com.mysql.jdbc.Connection) DatabaseConnection.getConnection();
-                com.mysql.jdbc.PreparedStatement ps = (com.mysql.jdbc.PreparedStatement) dcon.prepareStatement("UPDATE accounts SET loggedin = 0");
+                com.mysql.jdbc.PreparedStatement ps = (com.mysql.jdbc.PreparedStatement) dcon.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE loggedin = 1");
                 ps.executeUpdate();
                 ps.close();
                 System.out.println("所有帳號解卡完畢");
@@ -197,7 +198,21 @@ public class ConsoleCommand {
             return 1;
         }
     }
-
+    public static class saveall extends ConsoleCommandExecute {
+        private int p = 0;
+        @Override
+        public int execute(String[] splitted) {
+            for (ChannelServer cserv : ChannelServer.getAllInstances()) {
+                for (MapleCharacter chr : cserv.getPlayerStorage().getAllCharacters()) {
+                    p++;
+                    chr.saveToDB(false, true);
+                    System.out.println("[保存] " + p + "個玩家數據保存到數據中.");
+                } 
+            }
+    return 1;
+    }
+    }
+   
     public static class ReloadChannel extends ConsoleCommandExecute {
 
         @Override
@@ -261,6 +276,7 @@ public class ConsoleCommand {
             System.out.println("online 線上玩家");
             System.out.println("say 伺服器說話");
             System.out.println("dodown 解除所有卡帳");
+            System.out.println("saveall 全服存檔");
             System.out.println("-------------------------");
             System.out.println("╰〝★指令列表〞╯");
             return 1;

@@ -957,16 +957,6 @@ public class AdminCommand {
         }
     }
 
-    public static class Online extends CommandExecute {
-
-        @Override
-        public int execute(MapleClient c, String[] splitted) {
-            c.getPlayer().dropMessage(6, "Characters connected to channel " + c.getChannel() + ":");
-            c.getPlayer().dropMessage(6, c.getChannelServer().getPlayerStorage().getOnlinePlayers(true));
-            return 1;
-        }
-    }
-
     public static class Say extends CommandExecute {
 
         @Override
@@ -3012,43 +3002,6 @@ public class AdminCommand {
         }
     }
 
-    public static class Warp extends CommandExecute {
-
-        @Override
-        public int execute(MapleClient c, String[] splitted) {
-            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
-            if (victim != null) {
-                if (splitted.length == 2) {
-                    c.getPlayer().changeMap(victim.getMap(), victim.getMap().findClosestSpawnpoint(victim.getPosition()));
-                } else {
-                    MapleMap target = ChannelServer.getInstance(c.getChannel()).getMapFactory().getMap(Integer.parseInt(splitted[2]));
-                    victim.changeMap(target, target.getPortal(0));
-                }
-            } else {
-                try {
-                    victim = c.getPlayer();
-                    int ch = World.Find.findChannel(splitted[1]);
-                    if (ch < 0) {
-                        MapleMap target = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted[1]));
-                        c.getPlayer().changeMap(target, target.getPortal(0));
-                    } else {
-                        victim = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(splitted[1]);
-                        c.getPlayer().dropMessage(6, "Cross changing channel. Please wait.");
-                        if (victim.getMapId() != c.getPlayer().getMapId()) {
-                            final MapleMap mapp = c.getChannelServer().getMapFactory().getMap(victim.getMapId());
-                            c.getPlayer().changeMap(mapp, mapp.getPortal(0));
-                        }
-                        c.getPlayer().changeChannel(ch);
-                    }
-                } catch (Exception e) {
-                    c.getPlayer().dropMessage(6, "Something went wrong " + e.getMessage());
-                    return 0;
-                }
-            }
-            return 1;
-        }
-    }
-
     public static class WarpMapTo extends CommandExecute {
 
         @Override
@@ -3060,7 +3013,7 @@ public class AdminCommand {
                     chr.changeMap(target, target.getPortal(0));
                 }
             } catch (Exception e) {
-                c.getPlayer().dropMessage(5, "Error: " + e.getMessage());
+                c.getPlayer().dropMessage(5, "錯誤: " + e.getMessage());
                 return 0; //assume drunk GM
             }
             return 1;
@@ -3077,12 +3030,12 @@ public class AdminCommand {
             } else {
                 int ch = World.Find.findChannel(splitted[1]);
                 if (ch < 0) {
-                    c.getPlayer().dropMessage(5, "Not found.");
+                    c.getPlayer().dropMessage(5, "找不到");
                     return 0;
                 }
                 victim = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(splitted[1]);
-                c.getPlayer().dropMessage(5, "Victim is cross changing channel.");
-                victim.dropMessage(5, "Cross changing channel.");
+                c.getPlayer().dropMessage(5, "正在把玩家傳到這來");
+                victim.dropMessage(5, "正在傳送到GM那邊");
                 if (victim.getMapId() != c.getPlayer().getMapId()) {
                     final MapleMap mapp = victim.getClient().getChannelServer().getMapFactory().getMap(c.getPlayer().getMapId());
                     victim.changeMap(mapp, mapp.getPortal(0));

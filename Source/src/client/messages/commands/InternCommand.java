@@ -161,8 +161,11 @@ public class InternCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
+            int total = 0;
+            int curConnected = c.getChannelServer().getConnectedClients();  
             c.getPlayer().dropMessage(6, "上線的角色 頻道-" + c.getChannel() + ":");
             c.getPlayer().dropMessage(6, c.getChannelServer().getPlayerStorage().getOnlinePlayers(true));
+            c.getPlayer().dropMessage(6, new StringBuilder().append("當前伺服器總計線上人數: ").append(total).toString());
             return 1;
         }
     }
@@ -200,7 +203,7 @@ public class InternCommand {
         }
     }
 
-    public static class Warp extends CommandExecute {
+        public static class Warp extends CommandExecute {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
@@ -221,7 +224,7 @@ public class InternCommand {
                         c.getPlayer().changeMap(target, target.getPortal(0));
                     } else {
                         victim = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(splitted[1]);
-                        c.getPlayer().dropMessage(6, "Cross changing channel. Please wait.");
+                        c.getPlayer().dropMessage(6, "正在改變頻道請等待");
                         if (victim.getMapId() != c.getPlayer().getMapId()) {
                             final MapleMap mapp = c.getChannelServer().getMapFactory().getMap(victim.getMapId());
                             c.getPlayer().changeMap(mapp, mapp.getPortal(0));
@@ -229,13 +232,14 @@ public class InternCommand {
                         c.getPlayer().changeChannel(ch);
                     }
                 } catch (Exception e) {
-                    c.getPlayer().dropMessage(6, "Something went wrong " + e.getMessage());
+                    c.getPlayer().dropMessage(6, "出問題了 " + e.getMessage());
                     return 0;
                 }
             }
             return 1;
         }
     }
+
     public static class CnGM extends CommandExecute {
 
         @Override
