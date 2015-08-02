@@ -1023,7 +1023,7 @@ public class MapleClient implements Serializable {
                     if (getLatency() < 0) {
                        
                         if (getSession().isConnected()) {
-                            getSession().close();
+                            getSession().close(true);
                         }
                     }
                 } catch (final NullPointerException e) {

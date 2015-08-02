@@ -178,7 +178,7 @@ public class MapleInventoryManipulator {
                 if (period > 0) {
                     nItem.setExpiration(System.currentTimeMillis() + (period * 24 * 60 * 60 * 1000));
                 }
-                c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.UPDATE, nItem)));
+                c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.ADD, nItem)));
                 //c.sendPacket(MaplePacketCreator.addInventorySlot(type, nItem));
                 c.sendPacket(MaplePacketCreator.enableActions());
             }
