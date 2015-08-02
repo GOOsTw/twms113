@@ -509,8 +509,8 @@ public class MapScriptMethods {
                 break;
             }
             case Ghost: {
-            c.getPlayer().getMap().startMapEffect("這個地圖感覺陰森森的..有種莫名的奇怪感覺..", 5120025);
-            break;
+                c.getPlayer().getMap().startMapEffect("這個地圖感覺陰森森的..有種莫名的奇怪感覺..", 5120025);
+                break;
             }
             case PRaid_D_Enter:
             case PRaid_B_Enter:
@@ -649,19 +649,19 @@ public class MapScriptMethods {
                     boolean changedd = false;
                     for (int i = 0; i < m.maps.length; i++) {
                         try {
-                        boolean changed = false;
-                        if (c.getPlayer().getMapId() == m.maps[i]) {
-                            if (quest.substring(i + 6, i + 7).equals("0")) {
-                                sb.append("1");
-                                changed = true;
-                                changedd = true;
+                            boolean changed = false;
+                            if (c.getPlayer().getMapId() == m.maps[i]) {
+                                if (quest.substring(i + 6, i + 7).equals("0")) {
+                                    sb.append("1");
+                                    changed = true;
+                                    changedd = true;
+                                }
                             }
-                        }
-                        if (!changed) {
-                            sb.append(quest.substring(i + 6, i + 7));
-                        }
-                        } catch(Exception e) {
-                            FilePrinter.printError("MSMethod Length Error", e, quest );
+                            if (!quest.equals("") && !changed) {
+                                sb.append(quest.substring(i + 6, i + 7));
+                            }
+                        } catch (Exception e) {
+                            FilePrinter.printError("MSMethod Length Error", e, quest);
                         }
                     }
                     if (changedd) {

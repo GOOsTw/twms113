@@ -84,7 +84,7 @@ public class CashShopOperation {
 
         if (mts) {
             CashShopServer.getPlayerStorageMTS().registerPlayer(chr);
-            client.getSession().write(MTSCSPacket.startMTS(chr, client));
+            client.sendPacket(MTSCSPacket.startMTS(chr, client));
             MTSOperation.MTSUpdate(MTSStorage.getInstance().getCart(client.getPlayer().getId()), client);
         } else {
             CashShopServer.getPlayerStorage().registerPlayer(chr);
