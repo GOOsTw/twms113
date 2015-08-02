@@ -200,7 +200,7 @@ public abstract class Timer {
             try {
                 r.run();
             } catch (Throwable t) {
-                FilePrinter.printError("Timer", t);
+                FilePrinter.printError("Timer.txt", t);
             }
         }
     }

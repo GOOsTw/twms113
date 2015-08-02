@@ -87,14 +87,19 @@ public class MapleShop {
             AutobanManager.getInstance().addPoints(c, 1000, 0, "Buying " + quantity + " " + itemId);
             return;
         }
+        
         if (!GameConstants.isMountItemAvailable(itemId, c.getPlayer().getJob())) {
             c.getPlayer().dropMessage(1, "You may not buy this item.");
             c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
+        
         MapleShopItem item = findById(itemId);
+        
         if (item != null && item.getPrice() > 0 && item.getReqItem() == 0) {
+            
             final int price = GameConstants.isRechargable(itemId) ? item.getPrice() : (item.getPrice() * quantity);
+            
             if (price >= 0 && c.getPlayer().getMeso() >= price) {
                 if (MapleInventoryManipulator.checkSpace(c, itemId, quantity, "")) {
                     c.getPlayer().gainMeso(-price, false);

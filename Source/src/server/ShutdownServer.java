@@ -60,19 +60,21 @@ public class ShutdownServer implements Runnable {
         } catch (SQLException e) {
             System.err.println("THROW" + e);
         }
+        EventTimer.getInstance().stop();
         WorldTimer.getInstance().stop();
         MapTimer.getInstance().stop();
         MobTimer.getInstance().stop();
         BuffTimer.getInstance().stop();
         CloneTimer.getInstance().stop();
-        EventTimer.getInstance().stop();
         EtcTimer.getInstance().stop();
+        
+        
+        
 
         try {
             Thread.sleep(5000);
         } catch (Exception e) {
-            //shutdown
+            
         }
-        System.exit(0); //not sure if this is really needed for ChannelServer
     }
 }
