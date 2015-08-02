@@ -146,7 +146,9 @@ public class InternCommand {
                     c.getPlayer().dropMessage(5, "地圖: " + victim.getMapId() +  " - " + victim.getMap().getMapName().toString());
                     c.getPlayer().dropMessage(5, "力量: " + victim.getStat().getStr() + "  ||  敏捷: " + victim.getStat().getDex() + "  ||  智力: " + victim.getStat().getInt() + "  ||  幸運: " + victim.getStat().getLuk());
                     c.getPlayer().dropMessage(5, "擁有 " + victim.getMeso() + " 楓幣.");
-                    victim.dropMessage(5, c.getPlayer().getName() + " GM在觀察您..");
+                    c.getPlayer().dropMessage(5, "擁有 " + victim.getCSPoints(1) + " GASH " + victim.getCSPoints(2) + " 楓葉點數 ");
+                    c.getPlayer().dropMessage(5, "延遲 " + victim.getClient().getLatency());
+                    //victim.dropMessage(5, c.getPlayer().getName() + " GM在觀察您..");
                 } else {
                     c.getPlayer().dropMessage(5, "找不到此玩家.");
                 }
