@@ -149,6 +149,7 @@ public class CharLoginHandler {
         if (c.getAccountName().equals(username)) {
             c.setGender(slea.readByte());
             c.setSecondPassword(password);
+            c.update2ndPassword();
             c.updateGender();
             c.getSession().write(LoginPacket.getGenderChanged(c));
             c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
