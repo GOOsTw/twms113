@@ -131,15 +131,16 @@ public class AdminCommand {
             return 1;
         }
     }
+
     public static class ShutdownTime extends CommandExecute {
 
         private static ScheduledFuture<?> ts = null;
         private int minutesLeft = 0;
-       private static Thread t = null;
+        private static Thread t = null;
 
         public int execute(MapleClient c, String[] splitted) {
             minutesLeft = Integer.parseInt(splitted[1]);
-             c.getPlayer().dropMessage(6, "本私服器將在 " + minutesLeft + "分鐘後關閉. 請盡速關閉精靈商人 並下線.");
+            c.getPlayer().dropMessage(6, "本私服器將在 " + minutesLeft + "分鐘後關閉. 請盡速關閉精靈商人 並下線.");
             if (ts == null && (t == null || !t.isAlive())) {
                 t = new Thread(ShutdownServer.getInstance());
                 ts = EventTimer.getInstance().register(new Runnable() {
@@ -147,10 +148,10 @@ public class AdminCommand {
                     @Override
                     public void run() {
                         if (minutesLeft == 0) {
-			ShutdownServer.getInstance();
+                            ShutdownServer.getInstance().run();
                             t.start();
                             ts.cancel(false);
-			return;
+                            return;
                         }
                         World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0, "本私服器將在 " + minutesLeft + "分鐘後關閉. 請盡速關閉精靈商人 並下線.").getBytes());;
                         System.out.println("本私服器將在 " + minutesLeft + "分鐘後關閉.");
@@ -163,19 +164,23 @@ public class AdminCommand {
             return 1;
         }
     }
+
     public static class saveall extends CommandExecute {
+
         private int p = 0;
-        public int execute(MapleClient c, String[] splitted) {      
-   for (ChannelServer cserv : ChannelServer.getAllInstances()) {
-          for (MapleCharacter chr : cserv.getPlayerStorage().getAllCharacters()) {
-      p++;
-      chr.saveToDB(false, true);
-  }
-   }
-       c.getPlayer().dropMessage("[保存] "+p+"個玩家數據保存到數據中.");
+
+        public int execute(MapleClient c, String[] splitted) {
+            for (ChannelServer cserv : ChannelServer.getAllInstances()) {
+                for (MapleCharacter chr : cserv.getPlayerStorage().getAllCharacters()) {
+                    p++;
+                    chr.saveToDB(false, false);
+                }
+            }
+            c.getPlayer().dropMessage("[保存] " + p + "個玩家數據保存到數據中.");
             return 0;
         }
-        }
+    }
+
     public static class 鮪魚ban你 extends CommandExecute {
 
         protected boolean hellban = false;
@@ -1169,7 +1174,7 @@ public class AdminCommand {
                 c.getPlayer().dropMessage(6, "請確認有在正確的頻道");
             } else {
                 chrs.setPoints(chrs.getPoints() + Integer.parseInt(splitted[2]));
-                c.getPlayer().dropMessage(6, "在您給了" + splitted[1] +" " + splitted[2]  + "點了之後 共擁有 " + chrs.getPoints() + " 點");
+                c.getPlayer().dropMessage(6, "在您給了" + splitted[1] + " " + splitted[2] + "點了之後 共擁有 " + chrs.getPoints() + " 點");
             }
             return 1;
         }
@@ -1285,7 +1290,7 @@ public class AdminCommand {
             MapleInventoryType type = GameConstants.getInventoryType(itemid);
             for (IItem item : chr.getInventory(type).listById(itemid)) {
                 item.setFlag((byte) (item.getFlag() | ItemFlag.LOCK.getValue()));
-                chr.getClient().sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory( ModifyInventory.Types.UPDATE, item)));
+                chr.getClient().sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.UPDATE, item)));
                 //chr.getClient().getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type.getType()));
             }
             if (type == MapleInventoryType.EQUIP) {
@@ -2607,7 +2612,7 @@ public class AdminCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             Point pos = c.getPlayer().getPosition();
-            c.getPlayer().dropMessage(6, "X: " + pos.x + " | Y: " + pos.y + " | RX0: " + (pos.x + 50) + " | RX1: " + (pos.x - 50) + " | FH: " + c.getPlayer().getFH() + "| CY:"+ pos.y);
+            c.getPlayer().dropMessage(6, "X: " + pos.x + " | Y: " + pos.y + " | RX0: " + (pos.x + 50) + " | RX1: " + (pos.x - 50) + " | FH: " + c.getPlayer().getFH() + "| CY:" + pos.y);
             return 1;
         }
     }

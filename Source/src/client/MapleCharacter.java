@@ -192,6 +192,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private transient List<Integer> pendingExpiration = null, pendingSkills = null;
     private final transient Map<Integer, Integer> movedMobs = new HashMap<>();
     private String teleportname = "";
+    private boolean isSaveing = false;
 
     private MapleCharacter(final boolean ChannelServer) {
         setStance(0);
@@ -623,19 +624,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     ret.points = rs.getInt("points");
                     ret.vpoints = rs.getInt("vpoints");
 
-                    if (rs.getTimestamp("lastlogon") != null) {
-                        final Calendar cal = Calendar.getInstance();
-                        cal.setTimeInMillis(rs.getTimestamp("lastlogon").getTime());
-                        if (cal.get(Calendar.DAY_OF_WEEK) + 1 == Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
-                            ret.acash += 500;
-                        }
-                    }
-                    rs.close();
-                    ps.close();
-
-                    ps = con.prepareStatement("UPDATE accounts SET lastlogon = CURRENT_TIMESTAMP() WHERE id = ?");
-                    ps.setInt(1, ret.accountid);
-                    ps.executeUpdate();
                 } else {
                     rs.close();
                 }
@@ -982,9 +970,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void saveToDB(boolean dc, boolean fromcs) {
-        if (isClone()) {
+        if (isClone() && isSaveing) {
             return;
         }
+        isSaveing = true;
         Connection con = DatabaseConnection.getConnection();
 
         PreparedStatement ps = null;
@@ -1299,6 +1288,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             } catch (SQLException e) {
                 FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error going back to autocommit mode");
             }
+            isSaveing = false;
         }
     }
 

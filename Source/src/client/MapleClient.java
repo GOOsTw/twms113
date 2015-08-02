@@ -1021,6 +1021,7 @@ public class MapleClient implements Serializable {
             public void run() {
                 try {
                     if (getLatency() < 0) {
+                       
                         if (getSession().isConnected()) {
                             getSession().close();
                         }

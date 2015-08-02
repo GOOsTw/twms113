@@ -648,6 +648,7 @@ public class MapScriptMethods {
                     final StringBuilder sb = new StringBuilder("enter=");
                     boolean changedd = false;
                     for (int i = 0; i < m.maps.length; i++) {
+                        try {
                         boolean changed = false;
                         if (c.getPlayer().getMapId() == m.maps[i]) {
                             if (quest.substring(i + 6, i + 7).equals("0")) {
@@ -658,6 +659,9 @@ public class MapScriptMethods {
                         }
                         if (!changed) {
                             sb.append(quest.substring(i + 6, i + 7));
+                        }
+                        } catch(Exception e) {
+                            FilePrinter.printError("MSMethod Length Error", e, quest );
                         }
                     }
                     if (changedd) {

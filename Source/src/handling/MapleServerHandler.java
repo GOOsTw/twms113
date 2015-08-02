@@ -242,10 +242,11 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
     @Override
     public void exceptionCaught(final IoSession session, final Throwable cause) throws Exception {
-       int x = 0;
-        /*	MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
-         log.error(MapleClient.getLogMessage(client, cause.getMessage()), cause);*/
-//	cause.printStackTrace();
+        final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
+
+        if (client != null) {
+            client.disconnect(false, cs);
+        }
     }
 
     @Override
@@ -302,15 +303,14 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         byte ivSend[] = {82, 48, 120, 115};
         ivRecv[3] = (byte) (Math.random() * 255);
         ivSend[3] = (byte) (Math.random() * 255);
-        
-        
+
         final MapleClient client = new MapleClient(
                 new MapleAESOFB(ivSend, (short) (0xFFFF - ServerConstants.MAPLE_VERSION)), // Sent Cypher
                 new MapleAESOFB(ivRecv, ServerConstants.MAPLE_VERSION), // Recv Cypher
                 session);
 
         client.setChannel(channel);
-        
+
         session.write(LoginPacket.getHello(ServerConstants.MAPLE_VERSION, ivSend, ivRecv));
         session.setAttribute(MapleClient.CLIENT_KEY, client);
 
@@ -341,10 +341,13 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         }
     }
 
-    
     @Override
     public void sessionClosed(final IoSession session) throws Exception {
         final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
+
+        if (client != null && client.getPlayer() != null) {
+            client.getPlayer().saveToDB(true, cs);
+        }
 
         if (client != null) {
             try {
@@ -439,6 +442,8 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         }
         if (client != null) {
             client.sendPing();
+        } else {
+            session.close(true);
         }
         super.sessionIdle(session, status);
     }
@@ -452,6 +457,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 // Does nothing for now, HackShield's heartbeat
                 break;
             case HELLO_LOGIN:
+                if(slea.available() >= 5) {
+                    FilePrinter.print("38Logs.txt", slea.toString(), true);
+                }
                 CharLoginHandler.Welcome(c);
                 // Does nothing for now, HackShield's heartbeat
                 break;

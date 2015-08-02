@@ -40,7 +40,7 @@ public class ConsoleCommand {
                 try {
                     t = new Thread(server.ShutdownServer.getInstance());
                     t.start();
-                    
+
                 } catch (Exception ex) {
                     Logger.getLogger(ConsoleCommand.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -51,65 +51,69 @@ public class ConsoleCommand {
 
         }
     }
-       public static class ShutdownTime extends ConsoleCommandExecute {
+
+    public static class ShutdownTime extends ConsoleCommandExecute {
+
         private int minutesLeft = 0;
         private static Thread t = null;
-        private static ScheduledFuture<?> ts = null;        
+        private static ScheduledFuture<?> ts = null;
+
         public int execute(String[] splitted) {
-            if(splitted.length > 1) {
-             minutesLeft = Integer.parseInt(splitted[1]);
-            if (ts == null && (t == null || !t.isAlive())) {
+            if (splitted.length > 1) {
+                minutesLeft = Integer.parseInt(splitted[1]);
+                if (ts == null && (t == null || !t.isAlive())) {
                     t = new Thread(server.ShutdownServer.getInstance());
-                      ts = Timer.EventTimer.getInstance().register(new Runnable() {
-            @Override
-           public void run() {
-           if (minutesLeft == 1 ){
-           for (handling.channel.ChannelServer cserv : handling.channel.ChannelServer.getAllInstances()) {
-            cserv.closeAllMerchant();
-            }
-            System.out.println("精靈商人儲存完畢.");
-            }else if (minutesLeft == 0) {
-			ShutdownServer.getInstance();
-                            t.start();
-                            ts.cancel(false);
-			return;
+                    ts = Timer.EventTimer.getInstance().register(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (minutesLeft == 1) {
+                                for (handling.channel.ChannelServer cserv : handling.channel.ChannelServer.getAllInstances()) {
+                                    cserv.closeAllMerchant();
+                                }
+                                System.out.println("精靈商人儲存完畢.");
+                            } else if (minutesLeft == 0) {
+                                ShutdownServer.getInstance().run();
+                                t.start();
+                                ts.cancel(false);
+                                return;
+                            }
+                            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0, "本私服器將在 " + minutesLeft + "分鐘後關閉. 請盡速關閉精靈商人 並下線.").getBytes());;
+                            System.out.println("本私服器將在 " + minutesLeft + "分鐘後關閉.");
+                            minutesLeft--;
                         }
-                        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0, "本私服器將在 " + minutesLeft + "分鐘後關閉. 請盡速關閉精靈商人 並下線.").getBytes());;
-                        System.out.println("本私服器將在 " + minutesLeft + "分鐘後關閉.");
-                        minutesLeft--;
-                    }
-                }, 60000);
+                    }, 60000);
+                } else {
+                    System.out.println("好吧真拿你沒辦法..伺服器關閉時間修改...請等待關閉完畢..請勿強制關閉服務器..否則後果自負!");
+                }
             } else {
-                 System.out.println("好吧真拿你沒辦法..伺服器關閉時間修改...請等待關閉完畢..請勿強制關閉服務器..否則後果自負!");
+                System.out.println("使用規則: shutdowntime <關閉時間>");
+                return 0;
             }
-             }else {
-               System.out.println("使用規則: shutdowntime <關閉時間>");
-               return 0;
-             }
-        return 1;
+            return 1;
         }
     }
 
-      public static class dodown extends ConsoleCommandExecute {
-      @Override
-          public int execute (String[] splitted) {
-              try {
-           com.mysql.jdbc.Connection dcon = (com.mysql.jdbc.Connection) DatabaseConnection.getConnection();
-           com.mysql.jdbc.PreparedStatement ps = (com.mysql.jdbc.PreparedStatement) dcon.prepareStatement("UPDATE accounts SET loggedin = 0");
-           ps.executeUpdate();
-           ps.close();
-           System.out.println("所有帳號解卡完畢");
-           } catch (SQLException ex) {
-           System.out.println("解卡異常請查看MYSQL");
+    public static class dodown extends ConsoleCommandExecute {
+
+        @Override
+        public int execute(String[] splitted) {
+            try {
+                com.mysql.jdbc.Connection dcon = (com.mysql.jdbc.Connection) DatabaseConnection.getConnection();
+                com.mysql.jdbc.PreparedStatement ps = (com.mysql.jdbc.PreparedStatement) dcon.prepareStatement("UPDATE accounts SET loggedin = 0");
+                ps.executeUpdate();
+                ps.close();
+                System.out.println("所有帳號解卡完畢");
+            } catch (SQLException ex) {
+                System.out.println("解卡異常請查看MYSQL");
+            }
+            return 1;
         }
-    return 1;
-      }
-  }
-          
+    }
+
     public static class ExpRate extends ConsoleCommandExecute {
 
         @Override
-        public int execute( String[] splitted) {
+        public int execute(String[] splitted) {
             if (splitted.length > 2) {
                 final int rate = Integer.parseInt(splitted[1]);
                 if (splitted[2].equalsIgnoreCase("all")) {
@@ -131,7 +135,7 @@ public class ConsoleCommand {
     public static class DropRate extends ConsoleCommandExecute {
 
         @Override
-        public int execute( String[] splitted) {
+        public int execute(String[] splitted) {
             if (splitted.length > 2) {
                 final int rate = Integer.parseInt(splitted[1]);
                 if (splitted.length > 2 && splitted[2].equalsIgnoreCase("all")) {
@@ -153,7 +157,7 @@ public class ConsoleCommand {
     public static class MesoRate extends ConsoleCommandExecute {
 
         @Override
-        public int execute( String[] splitted) {
+        public int execute(String[] splitted) {
             if (splitted.length > 2) {
                 final int rate = Integer.parseInt(splitted[1]);
                 if (splitted[2].equalsIgnoreCase("all")) {
@@ -175,7 +179,7 @@ public class ConsoleCommand {
     public static class CashRate extends ConsoleCommandExecute {
 
         @Override
-        public int execute( String[] splitted) {
+        public int execute(String[] splitted) {
             if (splitted.length > 2) {
                 final int rate = Integer.parseInt(splitted[1]);
                 if (splitted[2].equalsIgnoreCase("all")) {
@@ -194,14 +198,13 @@ public class ConsoleCommand {
         }
     }
 
-    
     public static class ReloadChannel extends ConsoleCommandExecute {
 
         @Override
         public int execute(String[] splitted) {
-            
-            if(splitted[1].equalsIgnoreCase("all")) {
-                for( ChannelServer csrv : ChannelServer.getAllInstances()) {
+
+            if (splitted[1].equalsIgnoreCase("all")) {
+                for (ChannelServer csrv : ChannelServer.getAllInstances()) {
                     csrv.closeAllMerchant();
                     csrv.shutdown(this);
                 }
@@ -212,13 +215,13 @@ public class ConsoleCommand {
                 csrv.closeAllMerchant();
                 ChannelServer.startChannel(channel);
             }
-   
+
             return 1;
-            
+
         }
-        
+
     }
-    
+
     public static class ReloadMap extends ConsoleCommandExecute {
 
         @Override
@@ -238,36 +241,39 @@ public class ConsoleCommand {
             return 1;
         }
     }
+
     public static class help extends ConsoleCommandExecute {
-     @Override
+
+        @Override
         public int execute(String[] splitted) {
-                System.out.println("╭〝☆指令列表〞★╮");
-                System.out.println("-------------------------");                
-                System.out.println("exprate  經驗倍率");
-                System.out.println("droprate 掉寶倍率");
-                System.out.println("mesorate 金錢倍率"); 
-                System.out.println("cashrate 點數倍率");
-                System.out.println("-------------------------");
-                System.out.println("shutdown 關閉私服");
-                System.out.println("shotdowntime <時間> 倒數關閉服務器");
-                System.out.println("reloadchannel 重新載入頻道");
-                System.out.println("reloadmap 重新載入地圖");
-                System.out.println("-------------------------");
-                System.out.println("online 線上玩家");
-                System.out.println("say 伺服器說話");
-                System.out.println("dodown 解除所有卡帳");
-                System.out.println("-------------------------");
-                System.out.println("╰〝★指令列表〞╯");
-                return 1;
+            System.out.println("╭〝☆指令列表〞★╮");
+            System.out.println("-------------------------");
+            System.out.println("exprate  經驗倍率");
+            System.out.println("droprate 掉寶倍率");
+            System.out.println("mesorate 金錢倍率");
+            System.out.println("cashrate 點數倍率");
+            System.out.println("-------------------------");
+            System.out.println("shutdown 關閉私服");
+            System.out.println("shotdowntime <時間> 倒數關閉服務器");
+            System.out.println("reloadchannel 重新載入頻道");
+            System.out.println("reloadmap 重新載入地圖");
+            System.out.println("-------------------------");
+            System.out.println("online 線上玩家");
+            System.out.println("say 伺服器說話");
+            System.out.println("dodown 解除所有卡帳");
+            System.out.println("-------------------------");
+            System.out.println("╰〝★指令列表〞╯");
+            return 1;
+        }
     }
- }
+
     public static class Online extends ConsoleCommandExecute {
 
         @Override
         public int execute(String[] splitted) {
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
-                System.out.println( "Characters connected to channel " + String.valueOf(cserv.getChannel()) + ":");
-                System.out.println( cserv.getPlayerStorage().getOnlinePlayers(true));
+                System.out.println("Characters connected to channel " + String.valueOf(cserv.getChannel()) + ":");
+                System.out.println(cserv.getPlayerStorage().getOnlinePlayers(true));
             }
             return 1;
         }
@@ -283,10 +289,10 @@ public class ConsoleCommand {
                 sb.append(StringUtil.joinStringFrom(splitted, 1));
                 World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, sb.toString()).getBytes());
             } else {
-                System.out.println( "指令規則: say <message>");
+                System.out.println("指令規則: say <message>");
                 return 0;
             }
             return 1;
         }
     }
-  }
+}

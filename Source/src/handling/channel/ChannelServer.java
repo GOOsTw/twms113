@@ -565,8 +565,12 @@ public class ChannelServer implements Serializable {
     public void saveAll() {
         int ppl = 0;
         for (MapleCharacter chr : this.players.getAllCharacters()) {
-            ++ppl;
-            chr.saveToDB(false, false);
+            try{
+                chr.saveToDB(false, false);
+                ++ppl;
+            } catch(Exception e) {
+                
+            }
         }
         System.out.println("[自動存檔] 已經將頻道 " + this.channel + " 的 " + ppl + " 個玩家保存到數據中.");
     }
