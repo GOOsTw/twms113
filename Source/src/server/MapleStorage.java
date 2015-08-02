@@ -19,6 +19,7 @@ import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import database.DatabaseConnection;
 import database.DatabaseException;
+import java.sql.Statement;
 import java.util.EnumMap;
 import tools.MaplePacketCreator;
 import tools.Pair;
@@ -44,7 +45,7 @@ public class MapleStorage implements Serializable {
 
     public static int create(int id) throws SQLException {
         Connection con = DatabaseConnection.getConnection();
-        PreparedStatement ps = con.prepareStatement("INSERT INTO storages (accountid, slots, meso) VALUES (?, ?, ?)");
+        PreparedStatement ps = con.prepareStatement("INSERT INTO storages (accountid, slots, meso) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         ps.setInt(1, id);
         ps.setInt(2, 4);
         ps.setInt(3, 0);

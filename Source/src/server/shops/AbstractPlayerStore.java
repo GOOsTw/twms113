@@ -38,6 +38,7 @@ import client.inventory.MapleInventoryType;
 import database.DatabaseConnection;
 import handling.MaplePacket;
 import handling.channel.ChannelServer;
+import java.sql.Statement;
 import java.util.ArrayList;
 import server.maps.AbstractMapleMapObject;
 import server.maps.MapleMap;
@@ -159,7 +160,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
             ps.setInt(2, ownerId);
             ps.execute();
             ps.close();
-            ps = con.prepareStatement("INSERT INTO hiredmerch (characterid, accountid, Mesos, time) VALUES (?, ?, ?, ?)");
+            ps = con.prepareStatement("INSERT INTO hiredmerch (characterid, accountid, Mesos, time) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, ownerId);
             ps.setInt(2, ownerAccount);
             ps.setInt(3, meso.get());
