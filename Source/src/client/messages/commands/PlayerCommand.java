@@ -3,6 +3,7 @@ package client.messages.commands;
 import constants.GameConstants;
 import constants.ServerConstants.PlayerGMRank;
 import client.MapleClient;
+import client.MapleStat;
 import client.inventory.MapleInventoryType;
 import scripting.NPCScriptManager;
 import tools.MaplePacketCreator;
@@ -94,7 +95,15 @@ public class PlayerCommand {
             return 1;
         }
     }
-        
+        public static class expfix extends CommandExecute {
+            @Override
+            public int execute(MapleClient c, String[] splitted){
+             c.getPlayer().setExp(0);
+             c.getPlayer().updateSingleStat(MapleStat.EXP, c.getPlayer().getExp());
+             c.getPlayer().dropMessage(5, "經驗修復完成");
+             return 1;
+            }
+        }
     public static class ea extends 查看 {
     }
         public static class 查看 extends CommandExecute {
@@ -200,6 +209,7 @@ public static class help extends 幫助 {
             c.getPlayer().dropMessage(5, "@event <參加活動>");
             c.getPlayer().dropMessage(5, "@CGM 訊息 <傳送訊息給GM>");
             c.getPlayer().dropMessage(5, "@bspq <BOSSPQ兌換NPC>");
+            c.getPlayer().dropMessage(5, "@expfix <修復經驗假死");
             return 1;
         }
     }
