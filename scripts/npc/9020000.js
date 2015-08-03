@@ -35,13 +35,13 @@ function start() {
 	if (next) {
 	    var em = cm.getEventManager("KerningPQ");
 	    if (em == null) {
-		cm.sendOk("This PQ is not currently available.");
+		cm.sendOk("找不到腳本，請聯繫GM！");
 	    } else {
 		var prop = em.getProperty("state");
 		if (prop == null || prop.equals("0")) {
 		    em.startInstance(cm.getParty(),cm.getMap());
 		} else {
-		    cm.sendOk("Someone is already attempting on the quest.");
+		    cm.sendOk("已經有隊伍在裡面挑戰了。");
 		}
 		cm.removeAll(4001008);
 		cm.removeAll(4001007);

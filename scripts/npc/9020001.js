@@ -84,7 +84,7 @@ function action(mode, type, selection) {
 		preamble = eim.getProperty("leader1stpreamble");
 
 		if (preamble == null) {
-		    cm.sendNext("Hello. Welcome to the first stage. Look around and you'll see Ligators wandering around. When you defeat them, they will cough up a #bcoupon#k. Every member of the party other than the leader should talk to me, geta  question, and gather up the same number of #bcoupons#k as the answer to the question I'll give to them.\r\nIf you gather up the right amount of #bcoupons#k, I'll give the #bpass#k to that player. Once all the party members other than the leader gather up the #bpasses#k and give them to the leader, the leader will hand over the #bpasses#k to me, clearing the stage in the process. The faster you take care of the stages, the more stages you'll be able to challenge. So I suggest you take care of things quickly and swiftly. Well then, best of luck to you.");
+		    cm.sendNext("嗨，我是#p9020001# 歡迎來到墮落城市PQ 我需要隊員的通行證，請叫隊員收集完成後把卡片收集起來然後給我。");
 		    eim.setProperty("leader1stpreamble", "done");
 		    cm.dispose();
 		} else { // Check how many they have compared to number of party members
@@ -95,12 +95,12 @@ function action(mode, type, selection) {
 			cm.dispose();
 		    } else {
 			var numpasses = party.size() -1;
-			var strpasses = "#b" + numpasses.toString() + " passes#k";
+			var strpasses = "#b" + numpasses.toString() + " 張通行證#k";
 			if (!cm.haveItem(4001008, numpasses)) {
-			    cm.sendNext("I'm sorry, but you are short on the number of passes. You need to give me the right number of passes; it should be the number of members of your party minus the leader, " + strpasses + " to clear the stage. Tell your party members to solve the questions, gather up the passes, and give them to you.");
+			    cm.sendNext("我很抱歉我不能讓你過關，我需要: " + strpasses + " 交給我之後我就會讓你過關。");
 			    cm.dispose();
 			} else {
-			    cm.sendNext("You gathered up " + strpasses + "! Congratulations on clearing the stage! I'll make the portal that sends you to the next stage. There's a time limit on getting there, so please hurry. Best of luck to you all!");
+			    cm.sendNext("你收集 " + strpasses + "! 恭喜過關。");
 			    clear(1,eim,cm);
 			    cm.givePartyExp(100, party);
 			    cm.gainItem(4001008, -numpasses);
@@ -122,7 +122,7 @@ function action(mode, type, selection) {
 		    var questionNum = Math.floor(Math.random() * questions.length);
 		    eim.setProperty(qstring, questionNum.toString());
 		}
-		cm.sendNext("Here, you need to collect #bcoupons#k by defeating the same number of Ligators as the answer to the questions asked individually.");
+		cm.sendNext("在這裡，你需要收集 #b優惠券#k 過擊敗鱷魚的數目相同的答案為單獨提出的問題。");
 	    } else if (status == 0) { // Otherwise, check for stage completed
 		var complete = eim.getProperty(curMap.toString() + "stageclear");
 		if (complete != null) {
@@ -137,14 +137,14 @@ function action(mode, type, selection) {
 		    if (!qcorr) { // Not too many
 			qcorr = cm.haveItem(4001007, numcoupons);
 			if (qcorr) { // Just right
-			    cm.sendNext("That's the right answer! For that you have just received a #bpass#k. Please hand it to the leader of the party.");
+			    cm.sendNext("來，這是我答應你的 #b#t4001008##k. 快點拿去給你的隊長吧。");
 			    cm.gainItem(4001007, -numcoupons);
 			    cm.gainItem(4001008, 1);
 			    enough = true;
 			}
 		    }
 		    if (!enough) {
-			cm.sendNext("I'm sorry, but that is not the right answer! Please have the correct number of coupons in your inventory.");
+			cm.sendNext("我很抱歉，但是這是不正確的答案！請在您的給我的正確數量。");
 		    }
 		    cm.dispose();
 		}
@@ -174,23 +174,23 @@ function action(mode, type, selection) {
 		var passes = cm.haveItem(4001008,10);
 		if (passes) {
 		    // Clear stage
-		    cm.sendNext("Here's the portal that leads you to the last, bonus stage. It's a stage that allows you to defeat regular monsters a little easier. You'll be given a set amount of time to hunt as much as possible, but you can always leave the stage in the middle of it through the NPC. Again, congratulations on clearing all the stages. Take care...");
+		    cm.sendNext("恭喜過關！");
 		    party = eim.getPlayers();
 		    cm.gainItem(4001008, -10);
 		    clear(5,eim,cm);
 		    cm.givePartyExp(1500, party);
 		    cm.dispose();
 		} else { // Not done yet
-		    cm.sendNext("Hello. Welcome to the 5th and final stage. Walk around the map and you'll be able to find some Boss monsters. Defeat all of them, gather up #bthe passes#k, and please get them to me. Once you earn your pass, the leader of your party will collect them, and then get them to me once the #bpasses#k are gathered up. The monsters may be familiar to you, but they may be much stronger than you think, so please be careful. Good luck!");
+		    cm.sendNext("歡迎來到最終階段你只要把通行證收集起來交給我就行了！");
 		}
 		cm.dispose();
 	    } else { // Members
-		cm.sendNext("Welcome to the 5th and final stage.  Walk around the map and you will be able to find some Boss monsters.  Defeat them all, gather up the #bpasses#k, and give them to your leader.  Once you are done, return to me to collect your reward.");
+		cm.sendNext("歡迎來到最終階段~現在你只要把所有的通行證交給隊長就行了！");
 		cm.dispose();
 	    }
 	} else { // Give rewards and warp to bonus
 	    if (status == 0) {
-		cm.sendNext("Incredible! You cleared all the stages to get to this point. Here's a small prize for your job well done. Before you accept it, however, please make sure your use and etc. inventories have empty slots available.\r\n#bYou will not receive a prize if you have no free slots!#k");
+		cm.sendNext("真的很不可思議！");
 	    }
 	    if (status == 1) {
 		getPrize(eim,cm);
@@ -198,7 +198,7 @@ function action(mode, type, selection) {
 	    }
 	}
     } else { // No map found
-	cm.sendNext("Invalid map, this means the stage is incomplete.");
+	cm.sendNext("無效的地圖，請聯絡GM！");
 	cm.dispose();
     }
 }
@@ -229,26 +229,26 @@ function rectanglestages (cm) {
     var debug = false;
     var eim = cm.getChar().getEventInstance();
     if (curMap == 2) {
-	var nthtext = "2nd";
-	var nthobj = "ropes";
-	var nthverb = "hang";
-	var nthpos = "hang on the ropes too low";
+	var nthtext = "2";
+	var nthobj = "繩子";
+	var nthverb = "掛";
+	var nthpos = "掛在繩子太低";
 	var curcombo = stage2combos;
 	var currect = stage2rects;
 	var objset = [0,0,0,0];
     } else if (curMap == 3) {
-	var nthtext = "3rd";
-	var nthobj = "platforms";
-	var nthverb = "stand";
-	var nthpos = "stand too close to the edges";
+	var nthtext = "3";
+	var nthobj = "平台";
+	var nthverb = "站";
+	var nthpos = "站在太靠近邊緣";
 	var curcombo = stage3combos;
 	var currect = stage3rects;
 	var objset = [0,0,0,0,0];
     } else if (curMap == 4) {
-	var nthtext = "4th";
-	var nthobj = "barrels";
-	var nthverb = "stand";
-	var nthpos = "stand too close to the edges";
+	var nthtext = "4";
+	var nthobj = "酒桶";
+	var nthverb = "站";
+	var nthpos = "站在太靠近邊緣";
 	var curcombo = stage4combos;
 	var currect = stage4rects;
 	var objset = [0,0,0,0,0,0];
@@ -259,7 +259,7 @@ function rectanglestages (cm) {
 	    party = eim.getPlayers();
 	    preamble = eim.getProperty("leader" + nthtext + "preamble");
 	    if (preamble == null) {
-		cm.sendNext("Hi. Welcome to the " + nthtext + " stage. Next to me, you'll see a number of " + nthobj + ". Out of these " + nthobj + ", #b3 are connected to the portal that sends you to the next stage#k. All you need to do is have #b3 party members find the correct " + nthobj + " and " + nthverb + " on them.#k\r\nBUT, it doesn't count as an answer if you " + nthpos + "; please be near the middle of the " + nthobj + " to be counted as a correct answer. Also, only 3 members of your party are allowed on the " + nthobj + ". Once they are " + nthverb + "ing on them, the leader of the party must #bdouble-click me to check and see if the answer's correct or not#k. Now, find the right " + nthobj + " to " + nthverb + " on!");
+		cm.sendNext("嗨，歡迎來到第 " + nthtext + " 階段. 在我旁邊，你會看到一些 " + nthobj + ", #b你需要三名隊員掛在上面猜我的答案，如果猜對就讓你過關，加油吧！ \r\n喔~對了不能#r" + nthpos + "不然會不能過關哦！");
 		eim.setProperty("leader" + nthtext + "preamble","done");
 		var sequenceNum = Math.floor(Math.random() * curcombo.length);
 		eim.setProperty("stage" + nthtext + "combo",sequenceNum.toString());

@@ -1265,7 +1265,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 }
             }
 
-            con.commit();
+           // con.commit();
         } catch (SQLException | DatabaseException e) {
             FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error saving character data");
             try {

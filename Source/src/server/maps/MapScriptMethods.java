@@ -200,48 +200,44 @@ public class MapScriptMethods {
                 c.getPlayer().getMap().startMapEffect("粥環繞月球的月見草種子和保護月球兔子！", 5120016);
                 break;
             }
-            /*            case StageMsg_together: {
+             case StageMsg_together: {
              switch (c.getPlayer().getMapId()) {
              case 103000800:
-             c.getPlayer().getMap().startMapEffect("Solve the question and gather the amount of passes!", 5120017);
              break;
              case 103000801:
-             c.getPlayer().getMap().startMapEffect("Get on the ropes and unveil the correct combination!", 5120017);
              break;
              case 103000802:
-             c.getPlayer().getMap().startMapEffect("Get on the platforms and unveil the correct combination!", 5120017);
              break;
              case 103000803:
-             c.getPlayer().getMap().startMapEffect("Get on the barrels and unveil the correct combination!", 5120017);
              break;
              case 103000804:
-             c.getPlayer().getMap().startMapEffect("Defeat King Slime and his minions!", 5120017);
+             c.getPlayer().getMap().startMapEffect("請打敗超級綠水靈!", 5120017);
              break;
              }
              break;
-             }*/
+             }
             case StageMsg_romio: {
                 switch (c.getPlayer().getMapId()) {
                     case 926100000:
-                        c.getPlayer().getMap().startMapEffect("Please find the hidden door by investigating the Lab!", 5120021);
+                        c.getPlayer().getMap().startMapEffect("通過調查實驗室，請找到隱藏的門!", 5120021);
                         break;
                     case 926100001:
-                        c.getPlayer().getMap().startMapEffect("Find  your way through this darkness!", 5120021);
+                        c.getPlayer().getMap().startMapEffect("通過這個黑暗中找到自己的方式!", 5120021);
                         break;
                     case 926100100:
-                        c.getPlayer().getMap().startMapEffect("Fill the beakers to power the energy!", 5120021);
+                        c.getPlayer().getMap().startMapEffect("把燒杯填滿!", 5120021);
                         break;
                     case 926100200:
-                        c.getPlayer().getMap().startMapEffect("Get the files for the experiment through each door!", 5120021);
+                        c.getPlayer().getMap().startMapEffect("通過每個門獲得用於實驗中的文件!", 5120021);
                         break;
                     case 926100203:
-                        c.getPlayer().getMap().startMapEffect("Please defeat all the monsters!", 5120021);
+                        c.getPlayer().getMap().startMapEffect("請打敗所有怪物!", 5120021);
                         break;
                     case 926100300:
-                        c.getPlayer().getMap().startMapEffect("Find your way through the Lab!", 5120021);
+                        c.getPlayer().getMap().startMapEffect("通過實驗找到自己的方式!", 5120021);
                         break;
                     case 926100401:
-                        c.getPlayer().getMap().startMapEffect("Please, protect my love!", 5120021);
+                        c.getPlayer().getMap().startMapEffect("請保護我的愛人!", 5120021);
 
                         break;
                 }
@@ -250,25 +246,25 @@ public class MapScriptMethods {
             case StageMsg_juliet: {
                 switch (c.getPlayer().getMapId()) {
                     case 926110000:
-                        c.getPlayer().getMap().startMapEffect("Please find the hidden door by investigating the Lab!", 5120022);
+                        c.getPlayer().getMap().startMapEffect("通過調查實驗室，請找到隱藏的門!", 5120022);
                         break;
                     case 926110001:
-                        c.getPlayer().getMap().startMapEffect("Find  your way through this darkness!", 5120022);
+                        c.getPlayer().getMap().startMapEffect("通過這個黑暗中找到自己的方式!", 5120022);
                         break;
                     case 926110100:
-                        c.getPlayer().getMap().startMapEffect("Fill the beakers to power the energy!", 5120022);
+                        c.getPlayer().getMap().startMapEffect("把燒杯填滿!", 5120022);
                         break;
                     case 926110200:
-                        c.getPlayer().getMap().startMapEffect("Get the files for the experiment through each door!", 5120022);
+                        c.getPlayer().getMap().startMapEffect("通過每個門獲得用於實驗中的文件!", 5120022);
                         break;
                     case 926110203:
-                        c.getPlayer().getMap().startMapEffect("Please defeat all the monsters!", 5120022);
+                        c.getPlayer().getMap().startMapEffect("請打敗所有怪物!", 5120022);
                         break;
                     case 926110300:
-                        c.getPlayer().getMap().startMapEffect("Find your way through the Lab!", 5120022);
+                        c.getPlayer().getMap().startMapEffect("通過實驗找到自己的方式!", 5120022);
                         break;
                     case 926110401:
-                        c.getPlayer().getMap().startMapEffect("Please, protect my love!", 5120022);
+                        c.getPlayer().getMap().startMapEffect("請保護我的愛人!", 5120022);
                         break;
                 }
                 break;
@@ -285,7 +281,7 @@ public class MapScriptMethods {
                         c.getPlayer().getMap().startMapEffect("對荊棘施放稀釋的毒液4個！", 5120023);
                         break;
                     case 930000300:
-                        c.getPlayer().getMap().startMapEffect("媽媽你在哪裡嗚嗚 哭哭喔我迷路了", 5120023);
+                        c.getPlayer().getMap().startMapEffect("媽媽你在哪裡嗚嗚 哭哭我迷路了", 5120023);
                         break;
                     case 930000400:
                         c.getPlayer().getMap().startMapEffect("找我對話拿淨化之珠其中一個隊員集滿10個怪物株給我！", 5120023);
@@ -657,7 +653,7 @@ public class MapScriptMethods {
                                     changedd = true;
                                 }
                             }
-                            if (!quest.equals("") && !changed) {
+                            if (!quest.trim().equals("") && !changed) {
                                 sb.append(quest.substring(i + 6, i + 7));
                             }
                         } catch (Exception e) {

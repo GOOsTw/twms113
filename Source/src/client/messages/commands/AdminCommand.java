@@ -177,7 +177,8 @@ public class AdminCommand {
                 }
             }
             c.getPlayer().dropMessage("[保存] " + p + "個玩家數據保存到數據中.");
-            return 0;
+            p = 0;
+            return 1;
         }
     }
 
