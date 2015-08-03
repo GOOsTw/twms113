@@ -4535,7 +4535,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void useCP(int ammount) {
-        availableCP -= ammount;
+        if( availableCP >= ammount )
+            availableCP -= ammount;
     }
 
     public int getAvailableCP() {
