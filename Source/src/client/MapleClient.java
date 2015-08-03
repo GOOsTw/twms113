@@ -501,7 +501,7 @@ public class MapleClient implements Serializable {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = con.prepareStatement("SELECT id, 2ndpassword, gm, greason, gender FROM accounts WHERE id = ?");
+            ps = con.prepareStatement("SELECT id, 2ndpassword, gm, greason, gender, tempban FROM accounts WHERE id = ?");
             ps.setInt(1, accountID);
             rs = ps.executeQuery();
             if (rs.next()) {
