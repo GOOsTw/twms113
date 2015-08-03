@@ -169,7 +169,7 @@ function clearPQ(eim) {
     while (iter.hasNext()) { // Time is automatically processed
 	var chr = iter.next();
 	chr.changeMap(bonusMap, bonusMap.getPortal(0));
-	chr.modifyCSPoints(1, 4000, true);
+	chr.modifyCSPoints(1, 50, true);
     }
 	em.setProperty("state", "2");
 	eim.restartEventTimer(120000); //2 mins for teh lulz
