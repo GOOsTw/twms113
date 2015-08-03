@@ -94,6 +94,8 @@ public class Start {
                 Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        System.exit(0);
     }
 
     

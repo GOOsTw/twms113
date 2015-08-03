@@ -61,6 +61,7 @@ public class CashShopOperation {
 
         client.setPlayer(chr);
         client.setAccID(chr.getAccountID());
+        client.loadAccountData(chr.getAccountID());
 
         if (!client.CheckIPAddress()) { // Remote hack
             client.disconnect(false, true);
@@ -85,7 +86,7 @@ public class CashShopOperation {
         if (mts) {
             CashShopServer.getPlayerStorageMTS().registerPlayer(chr);
             client.sendPacket(MTSCSPacket.startMTS(chr, client));
-            MTSOperation.MTSUpdate(MTSStorage.getInstance().getCart(client.getPlayer().getId()), client);
+            //MTSOperation.MTSUpdate(MTSStorage.getInstance().getCart(client.getPlayer().getId()), client);
         } else {
             CashShopServer.getPlayerStorage().registerPlayer(chr);
             client.sendPacket(MTSCSPacket.warpCS(client));
