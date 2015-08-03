@@ -22,7 +22,7 @@ CREATE TABLE `shopitems` (
 INSERT INTO `shopitems` VALUES ('20024', '1', '1302000', '50', '1', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('1', '1', '1312004', '50', '2', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('2', '1', '1322005', '50', '3', '0', '0', '0');
-INSERT INTO `shopitems` VALUES ('3', '1', '1332005', '50', '4', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('3', '1', '1332005', '500', '4', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('4', '2', '2000000', '30', '1', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('5', '2', '2000001', '150', '2', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('6', '2', '2000002', '280', '3', '0', '0', '0');
@@ -82,16 +82,6 @@ INSERT INTO `shopitems` VALUES ('59', '5', '1002118', '30000', '19', '0', '0', '
 INSERT INTO `shopitems` VALUES ('60', '5', '1002119', '30000', '20', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('61', '5', '1002120', '30000', '21', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('62', '5', '1002121', '30000', '22', '0', '0', '0');
-INSERT INTO `shopitems` VALUES ('170', '6', '2010002', '50', '0', '0', '0', '0');
-INSERT INTO `shopitems` VALUES ('171', '6', '2010001', '150', '0', '0', '0', '0');
-INSERT INTO `shopitems` VALUES ('172', '6', '2010003', '60', '0', '0', '0', '0');
-INSERT INTO `shopitems` VALUES ('173', '6', '2010004', '180', '0', '0', '0', '0');
-INSERT INTO `shopitems` VALUES ('174', '6', '2020028', '3000', '0', '0', '0', '0');
-INSERT INTO `shopitems` VALUES ('175', '6', '2030000', '400', '0', '0', '0', '0');
-INSERT INTO `shopitems` VALUES ('176', '6', '2030004', '500', '0', '0', '0', '0');
-INSERT INTO `shopitems` VALUES ('177', '6', '2060000', '1', '0', '0', '0', '0');
-INSERT INTO `shopitems` VALUES ('178', '6', '2061000', '1', '0', '0', '0', '0');
-INSERT INTO `shopitems` VALUES ('179', '6', '2050000', '200', '0', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('73', '5', '1002010', '800', '0', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('74', '5', '1002057', '800', '0', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('75', '5', '1002156', '20000', '0', '0', '0', '0');
@@ -141,6 +131,16 @@ INSERT INTO `shopitems` VALUES ('166', '6', '2002002', '500', '0', '0', '0', '0'
 INSERT INTO `shopitems` VALUES ('167', '6', '2002004', '500', '0', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('168', '6', '2002005', '500', '0', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('169', '6', '2010000', '30', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('170', '6', '2010002', '50', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('171', '6', '2010001', '150', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('172', '6', '2010003', '60', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('173', '6', '2010004', '180', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('174', '6', '2020028', '3000', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('175', '6', '2030000', '400', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('176', '6', '2030004', '500', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('177', '6', '2060000', '1', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('178', '6', '2061000', '1', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('179', '6', '2050000', '200', '0', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('122', '5', '1060005', '14000', '0', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('123', '5', '1060056', '44000', '0', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('124', '5', '1060057', '44000', '0', '0', '0', '0');
@@ -3112,6 +3112,29 @@ INSERT INTO `shopitems` VALUES ('9678', '98', '1462005', '250000', '0', '25', '0
 INSERT INTO `shopitems` VALUES ('9679', '98', '1472004', '30000', '0', '26', '0', '0');
 INSERT INTO `shopitems` VALUES ('9680', '98', '1472007', '60000', '0', '27', '0', '0');
 INSERT INTO `shopitems` VALUES ('20025', '84', '2061003', '40', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9681', '99', '2330000', '600', '0', '1', '0', '0');
+INSERT INTO `shopitems` VALUES ('9682', '99', '2070000', '500', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9683', '99', '2001002', '4000', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9684', '99', '2001001', '2300', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9685', '99', '2001000', '3200', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9686', '99', '2020002', '320', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9687', '99', '2022000', '1650', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9688', '99', '2020000', '420', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9689', '99', '2022003', '1100', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9690', '99', '2020006', '530', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9691', '99', '2020004', '450', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9692', '99', '2020003', '450', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9693', '99', '2020005', '320', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9694', '99', '2020001', '220', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9695', '99', '2010004', '310', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9696', '99', '2010003', '100', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9697', '99', '2010001', '106', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9698', '99', '2010002', '50', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9699', '99', '2010000', '30', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9700', '99', '2000003', '200', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9701', '99', '2000002', '320', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9702', '99', '2000001', '160', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9703', '99', '2000000', '50', '0', '0', '0', '0');
 
 -- ----------------------------
 -- Table structure for `shops`
@@ -3223,3 +3246,4 @@ INSERT INTO `shops` VALUES ('94', '9110102');
 INSERT INTO `shops` VALUES ('95', '9270021');
 INSERT INTO `shops` VALUES ('97', '2040051');
 INSERT INTO `shops` VALUES ('98', '2050000');
+INSERT INTO `shops` VALUES ('99', '1081000');
