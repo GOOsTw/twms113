@@ -1285,7 +1285,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 if (rs != null) {
                     rs.close();
                 }
-               
+                con.setAutoCommit(true);
+                con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
             } catch (SQLException e) {
                 FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error going back to autocommit mode");
             }
