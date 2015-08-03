@@ -6,7 +6,7 @@
 
 function start() {
     if (cm.getMapId() != 922010000) {
-	cm.sendYesNo("Are you sure you want to leave the #rParty Quest#k? You'll have to start over if you change your mind.");
+	cm.sendYesNo("你真的要離開#r組隊任務了#k？");
     } else {
 	if (cm.haveItem(4001022)) {
 	    cm.removeAll(4001022);
