@@ -647,7 +647,7 @@ public class MapScriptMethods {
                         try {
                             boolean changed = false;
                             if (c.getPlayer().getMapId() == m.maps[i]) {
-                                if (quest.substring(i + 6, i + 7).equals("0")) {
+                                if ( !quest.trim().equals("") && quest.substring(i + 6, i + 7).equals("0")) {
                                     sb.append("1");
                                     changed = true;
                                     changedd = true;
