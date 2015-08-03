@@ -89,9 +89,6 @@ public class StaticLifeMovement extends AbstractLifeMovement {
                 lew.writePos(pixelsPerSecond);
                 lew.writeShort(fh);
                 break;
-            case 10:
-                lew.write(wui);
-                break;
         }
         if (getType() != 10) {
             lew.write(getNewstate());
