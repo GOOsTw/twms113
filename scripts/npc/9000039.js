@@ -97,7 +97,7 @@ function action(mode, type, selection) {
 				cm.sendOk("You have too much A-Cash.");
 			} else {
 				cm.getPlayer().setPoints(cm.getPlayer().getPoints() - acashp);
-				cm.getPlayer().modifyCSPoints(1, 100000, true);
+				cm.getPlayer().modifyCSPoints(1, 100, true);
 				cm.sendOk("There! Thank you for those points, I have given you A-Cash. Come again~");
 			}
 		}
