@@ -52,7 +52,10 @@ public class MapleCarnivalParty {
     }
 
     public void useCP(MapleCharacter player, int ammount) {
-        availableCP -= ammount;
+        if( availableCP >= ammount )
+            availableCP -= ammount;
+        else
+            availableCP = 0;
         player.useCP(ammount);
     }
 
