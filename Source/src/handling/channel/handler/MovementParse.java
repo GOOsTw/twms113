@@ -104,7 +104,7 @@ public class MovementParse {
                     final short duration = 0;
                     final int wui = lea.readByte();
                     final StaticLifeMovement mov = new StaticLifeMovement(command, null, duration, newstate, 0);
-                    mov.setWui(wui);
+                    mov.setWui(command);
                     res.add(mov);
                     break;
                 }
