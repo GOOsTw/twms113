@@ -982,8 +982,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ResultSet rs = null;
 
         try {
-            //con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
-            //con.setAutoCommit(false);
+            con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+            con.setAutoCommit(false);
 
             ps = con.prepareStatement("UPDATE characters SET level = ?, fame = ?, str = ?, dex = ?, luk = ?, `int` = ?, exp = ?, hp = ?, mp = ?, maxhp = ?, maxmp = ?, sp = ?, ap = ?, gm = ?, skincolor = ?, gender = ?, job = ?, hair = ?, face = ?, map = ?, meso = ?, hpApUsed = ?, spawnpoint = ?, party = ?, buddyCapacity = ?, monsterbookcover = ?, dojo_pts = ?, dojoRecord = ?, pets = ?, subcategory = ?, marriageId = ?, currentrep = ?, totalrep = ?, charmessage = ?, expression = ?, constellation = ?, blood = ?, month = ?, day = ?, beans = ?, prefix = ?, name = ? WHERE id = ?");
             ps.setInt(1, level);
@@ -1265,11 +1265,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 }
             }
 
-           // con.commit();
+            con.commit();
         } catch (SQLException | DatabaseException e) {
             FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error saving character data");
             try {
-                con.rollback();
+                 if( con != null )
+                    con.rollback();
             } catch (SQLException ex) {
                 FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error Rolling Back");
             }
