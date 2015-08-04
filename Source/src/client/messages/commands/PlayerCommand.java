@@ -18,7 +18,6 @@ import server.MapleInventoryManipulator;
 import server.maps.SavedLocationType;
 import tools.FilePrinter;
 
-
 /**
  *
  * @author Emilyx3
@@ -64,30 +63,36 @@ public class PlayerCommand {
             return 1;
         }
     }
+
     public static class DropCash extends 丟裝 {
     }
+
     public static class 丟裝 extends OpenNPCCommand {
 
         public 丟裝() {
             npc = 0;
         }
     }
-    
+
     public static class event extends OpenNPCCommand {
+
         public event() {
             npc = 1;
         }
     }
-    
+
     public static class bspq extends OpenNPCCommand {
+
         public bspq() {
             npc = 3;
         }
     }
-    
-   public static class save extends 存檔 {
-   }
-        public static class 存檔 extends CommandExecute {
+
+    public static class save extends 存檔 {
+    }
+
+    public static class 存檔 extends CommandExecute {
+
         @Override
         public int execute(MapleClient c, String[] splitted) {
             c.getPlayer().saveToDB(false, true);
@@ -95,18 +100,23 @@ public class PlayerCommand {
             return 1;
         }
     }
-        public static class expfix extends CommandExecute {
-            @Override
-            public int execute(MapleClient c, String[] splitted){
-             c.getPlayer().setExp(0);
-             c.getPlayer().updateSingleStat(MapleStat.EXP, c.getPlayer().getExp());
-             c.getPlayer().dropMessage(5, "經驗修復完成");
-             return 1;
-            }
+
+    public static class expfix extends CommandExecute {
+
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            c.getPlayer().setExp(0);
+            c.getPlayer().updateSingleStat(MapleStat.EXP, c.getPlayer().getExp());
+            c.getPlayer().dropMessage(5, "經驗修復完成");
+            return 1;
         }
+    }
+
     public static class ea extends 查看 {
     }
-        public static class 查看 extends CommandExecute {
+
+    public static class 查看 extends CommandExecute {
+
         @Override
         public int execute(MapleClient c, String[] splitted) {
             NPCScriptManager.getInstance().dispose(c);
@@ -118,11 +128,12 @@ public class PlayerCommand {
             return 1;
         }
     }
-        
 
-public static class mob extends 怪物 {
-}
-        public static class 怪物 extends CommandExecute {
+    public static class mob extends 怪物 {
+    }
+
+    public static class 怪物 extends CommandExecute {
+
         @Override
         public int execute(MapleClient c, String[] splitted) {
             MapleMonster mob = null;
@@ -139,34 +150,38 @@ public static class mob extends 怪物 {
             return 1;
         }
     }
-        
-public static class npc extends 萬能{
-}
-        public static class 萬能 extends OpenNPCCommand{
-            public 萬能() {
-                npc = 2;
-            }
+
+    public static class npc extends 萬能 {
+    }
+
+    public static class 萬能 extends OpenNPCCommand {
+
+        public 萬能() {
+            npc = 2;
         }
-       
-public static class fm extends 自由 {
-}
-        public static class 自由 extends CommandExecute {
+    }
+
+    public static class fm extends 自由 {
+    }
+
+    public static class 自由 extends CommandExecute {
+
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (c.getPlayer().getLevel() < 10 && c.getPlayer().getJob() != 200) {
-                c.getPlayer().dropMessage( "你必須超過 10 等來使用此指令.");
+                c.getPlayer().dropMessage("你必須超過 10 等來使用此指令.");
                 return 0;
             }
             if (c.getPlayer().haveItem(2030000)) { //是否有回家卷軸
-            MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, 2030000, 1, true, false);
-            c.getPlayer().saveLocation(SavedLocationType.FREE_MARKET);
-            MapleMap map = c.getChannelServer().getMapFactory().getMap(910000000);
-            c.getPlayer().changeMap(map, map.getPortal(0));
-            c.getPlayer().dropMessage(5, "回到自由了");
-            return 1;
+                MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, 2030000, 1, true, false);
+                c.getPlayer().saveLocation(SavedLocationType.FREE_MARKET);
+                MapleMap map = c.getChannelServer().getMapFactory().getMap(910000000);
+                c.getPlayer().changeMap(map, map.getPortal(0));
+                c.getPlayer().dropMessage(5, "回到自由了");
+                return 1;
             } else {
-            c.getPlayer().dropMessage(5, "沒有回家卷軸,所以不能使用回自由指令!");
-            return 0;
+                c.getPlayer().dropMessage(5, "沒有回家卷軸,所以不能使用回自由指令!");
+                return 0;
             }
         }
     }
@@ -179,12 +194,12 @@ public static class fm extends 自由 {
                 c.getPlayer().dropMessage(6, "請打字謝謝.");
                 return 1;
             }
-            if (c.getPlayer().isGM()){
+            if (c.getPlayer().isGM()) {
                 c.getPlayer().dropMessage(6, "因為你自己是GM所法使用此指令,可以嘗試!cngm <訊息> 來建立GM聊天頻道~");
                 return 1;
             }
             if (!c.getPlayer().getCheatTracker().GMSpam(100000, 1)) { // 5 minutes.
-                World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "頻道 " + c.getPlayer().getClient().getChannel() + " 玩家 [" + c.getPlayer().getName()+ "] : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
+                World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "頻道 " + c.getPlayer().getClient().getChannel() + " 玩家 [" + c.getPlayer().getName() + "] : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
                 c.getPlayer().dropMessage(6, "訊息已經寄送給GM了!");
             } else {
                 c.getPlayer().dropMessage(6, "為了防止對GM刷屏所以每1分鐘只能發一次.");
@@ -192,11 +207,12 @@ public static class fm extends 自由 {
             return 1;
         }
     }
-        
-public static class help extends 幫助 {
-}
+
+    public static class help extends 幫助 {
+    }
 
     public static class 幫助 extends CommandExecute {
+
         @Override
         public int execute(MapleClient c, String[] splitted) {
             c.getPlayer().dropMessage(5, "SyncMs 玩家指令");

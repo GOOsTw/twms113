@@ -207,10 +207,10 @@ public class CharLoginHandler {
     public static final void CreateChar(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         final String name = slea.readMapleAsciiString();
         final int JobType = slea.readInt(); // 1 = Adventurer, 0 = Cygnus, 2 = Aran
-        if (JobType == 0 || JobType == 2) {
-            c.getSession().write(MaplePacketCreator.serverNotice(1, "很抱歉\r\n暫時只能創冒險家\r\n日後如果BUG差不多會開放其他職業。"));
-            return;
-        }
+       /* if (JobType == 0 || JobType == 2) {
+         c.getSession().write(MaplePacketCreator.serverNotice(1, "很抱歉\r\n暫時只能創冒險家\r\n日後如果BUG差不多會開放其他職業。"));
+         return;
+         }*/
         final short db = 0; //whether dual blade = 1 or adventurer = 0
         final int face = slea.readInt();
         final int hair = slea.readInt();
@@ -223,7 +223,7 @@ public class CharLoginHandler {
 
         final byte gender = c.getGender();
 
-        if (gender == 0 && ( JobType == 1 || JobType == 2 ) ) {
+        if (gender == 0 && (JobType == 1 || JobType == 0)) {
             if (face != 20100 && face != 20401 && face != 20402) {
                 return;
             }
@@ -242,8 +242,8 @@ public class CharLoginHandler {
             if (weapon != 1302000 && weapon != 1322005 && weapon != 1312004) {
                 return;
             }
-            
-        } else if (gender == 1 && ( JobType == 1 || JobType == 2 ) ) {
+
+        } else if (gender == 1 && (JobType == 1 || JobType == 0)) {
             if (face != 21002 && face != 21700 && face != 21201) {
                 return;
             }
@@ -262,24 +262,37 @@ public class CharLoginHandler {
             if (weapon != 1302000 && weapon != 1322005 && weapon != 1312004) {
                 return;
             }
-            
-        } else if ( JobType == 2 ) {
-            if (face != 21002 && face != 21700 && face != 21201) {
+
+        } else if (JobType == 2) {
+
+            if (gender == 0) {
+                if (face != 20100 && face != 20401 && face != 20402) {
+                    return;
+                }
+                if (hair != 30030 && hair != 30027 && hair != 30000) {
+                    return;
+                }
+            } else if (gender == 1) {
+                if (face != 21002 && face != 21700 && face != 21201) {
+                    return;
+                }
+                if (hair != 31002 && hair != 31047 && hair != 31057) {
+                    return;
+                }
+            }
+            if (top != 1042167) {
                 return;
             }
-            if (hair != 31002 && hair != 31047 && hair != 31057) {
+            if (bottom != 1062115) {
                 return;
             }
-            if( top != 1042167)
+            if (shoes != 1072383) {
                 return;
-            if( bottom != 1062115)
+            }
+            if (weapon != 1442079) {
                 return;
-            if( shoes != 1072383)
-                return;
-            if ( weapon != 1442079)
-                return; 
+            }
         }
-        
 
         MapleCharacter newchar = MapleCharacter.getDefault(c, JobType);
         newchar.setWorld((byte) c.getWorld());
@@ -324,6 +337,7 @@ public class CharLoginHandler {
                 newchar.getInventory(MapleInventoryType.ETC).addItem(new Item(4161001, (byte) 0, (short) 1, (byte) 0));
                 break;
             case 2: // Aran
+                newchar.setSkinColor((byte) 1);
                 newchar.getInventory(MapleInventoryType.ETC).addItem(new Item(4161048, (byte) 0, (short) 1, (byte) 0));
                 break;
             case 3: //Evan

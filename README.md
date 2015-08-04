@@ -20,7 +20,6 @@ http://puu.sh/jmoZx/158ec24af8.jpg
 
 掉寶加倍沒效果
 cm.removeNpc 這個removeNpc函數 使用了NPC不會消失 會卡在地圖上 正常來說NPC會消失  
-狂狼勇士無法創建 創了會卡在創角畫面  
 轉了任何皇家職業後 貴族技能不能點 點了會卡住  
 升到200級的時候MapleStory會整個Crash  
 精靈商人無法使用  
