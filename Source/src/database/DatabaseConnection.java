@@ -46,6 +46,16 @@ public class DatabaseConnection {
     private final static Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
     private static String dbDriver = "", dbUrl = "", dbUser = "", dbPass = "";
     private static long connectionTimeOut = 30 * 60 * 60;
+    
+    public static void close() {
+        Thread cThread = Thread.currentThread();
+        Integer threadID = (int) cThread.getId();
+        ConWrapper ret = connections.get(threadID);
+        Connection c = ret.getConnection();
+        if( ret != null && !c.isClosed() ) {
+             c.close();
+        }
+    }
 
     public static Connection getConnection() {
 
@@ -165,7 +175,7 @@ public class DatabaseConnection {
         dbDriver = "com.mysql.jdvc.Driver";
         String db = ServerProperties.getProperty("server.settings.db.name", "twms");
         String ip = ServerProperties.getProperty("server.settings.db.ip", "127.0.0.1");
-        dbUrl = "jdbc:mysql://" + ip + ":3306/" + db + "?autoReconnect=true&characterEncoding=UTF8";
+        dbUrl = "jdbc:mysql://" + ip + ":3306/" + db + "?autoReconnect=true&characterEncoding=UTF8&?connectTimeout=200000";
         dbUser =  ServerProperties.getProperty("server.settings.db.user");
         dbPass =  ServerProperties.getProperty("server.settings.db.password");
     }
