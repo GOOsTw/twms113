@@ -1,4 +1,4 @@
-/*
+﻿/*
 	Blue Balloon - LudiPQ 8th stage NPC
 */
 
@@ -189,7 +189,7 @@ function boxStage(cm) {
 	    party = eim.getPlayers();
 	    preamble = eim.getProperty("leader" + nthtext + "preamble");
 	    if (preamble == null) {
-		cm.sendNext("Hi. Welcome to the eighth stage. Next to me, there are nine boxes. All you have to do, is have 5 people stand on them and then, the leader must click on me to see if it is correct. Good Luck!");
+		cm.sendNext("嗨，我是#p2040043# 這一階段完成後，就可以打BOSS\r\n規則非常簡單需要您們團隊的默契，那麼加油吧！");
 		eim.setProperty("leader" + nthtext + "preamble","done");
 		eim.setProperty("stage" + nthtext + "combo", Math.floor(Math.random() * curcombo.length).toString());
 		cm.dispose();
@@ -198,7 +198,7 @@ function boxStage(cm) {
 		if (complete != null) {
 		    var mapClear = "8stageclear";
 		    eim.setProperty(mapClear,"true"); // Just to be sure
-		    cm.sendNext("Please hurry on to the next stage, the portal has opened!");
+		    cm.sendNext("請趕快到下一個階段，門已經打開了！");
 		} else {
 		    var totplayers = 0;
 		    for (i = 0; i < objset.length; i++) {
@@ -253,16 +253,16 @@ function boxStage(cm) {
 	if (status == 0) {
 	    var complete = eim.getProperty("8stageclear");
 	    if (complete != null) {
-		cm.sendNext("Please hurry on to the next stage, the portal has opened!");
+		cm.sendNext("請趕快到下一個階段，門已經打開了！");
 		cm.dispose();
 	    } else {
-		cm.sendNext("Please have the party leader talk to me.");
+		cm.sendNext("請找隊長來找我。");
 		cm.dispose();
 	    }
 	} else {
 	    var complete = eim.getProperty("8stageclear");
 	    if (complete != null) {
-		cm.sendNext("Please hurry on to the next stage, the portal has opened!");
+		cm.sendNext("請趕快到下一個階段，門已經打開了！");
 		cm.dispose();
 	    }
 	    cm.dispose();
