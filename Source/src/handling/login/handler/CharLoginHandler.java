@@ -223,7 +223,7 @@ public class CharLoginHandler {
 
         final byte gender = c.getGender();
 
-        if (gender == 0) {
+        if (gender == 0 && ( JobType == 1 || JobType == 2 ) ) {
             if (face != 20100 && face != 20401 && face != 20402) {
                 return;
             }
@@ -236,7 +236,14 @@ public class CharLoginHandler {
             if (bottom != 1060002 && bottom != 1060006) {
                 return;
             }
-        } else if (gender == 1) {
+            if (shoes != 1072001 && shoes != 1072005 && shoes != 1072037 && shoes != 1072038) {
+                return;
+            }
+            if (weapon != 1302000 && weapon != 1322005 && weapon != 1312004) {
+                return;
+            }
+            
+        } else if (gender == 1 && ( JobType == 1 || JobType == 2 ) ) {
             if (face != 21002 && face != 21700 && face != 21201) {
                 return;
             }
@@ -249,15 +256,30 @@ public class CharLoginHandler {
             if (bottom != 1061002 && bottom != 1061008) {
                 return;
             }
-        } else {
-            return;
+            if (shoes != 1072001 && shoes != 1072005 && shoes != 1072037 && shoes != 1072038) {
+                return;
+            }
+            if (weapon != 1302000 && weapon != 1322005 && weapon != 1312004) {
+                return;
+            }
+            
+        } else if ( JobType == 2 ) {
+            if (face != 21002 && face != 21700 && face != 21201) {
+                return;
+            }
+            if (hair != 31002 && hair != 31047 && hair != 31057) {
+                return;
+            }
+            if( top != 1042167)
+                return;
+            if( bottom != 1062115)
+                return;
+            if( shoes != 1072383)
+                return;
+            if ( weapon != 1442079)
+                return; 
         }
-        if (shoes != 1072001 && shoes != 1072005 && shoes != 1072037 && shoes != 1072038) {
-            return;
-        }
-        if (weapon != 1302000 && weapon != 1322005 && weapon != 1312004) {
-            return;
-        }
+        
 
         MapleCharacter newchar = MapleCharacter.getDefault(c, JobType);
         newchar.setWorld((byte) c.getWorld());
