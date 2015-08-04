@@ -26,6 +26,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,23 +47,26 @@ public class DatabaseConnection {
     private final static Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
     private static String dbDriver = "", dbUrl = "", dbUser = "", dbPass = "";
     private static long connectionTimeOut = 30 * 60 * 60;
-    
+
     public static void close() {
-        Thread cThread = Thread.currentThread();
-        Integer threadID = (int) cThread.getId();
-        ConWrapper ret = connections.get(threadID);
-        Connection c = ret.getConnection();
-        if( ret != null && !c.isClosed() ) {
-             c.close();
+        try {
+            Thread cThread = Thread.currentThread();
+            Integer threadID = (int) cThread.getId();
+            ConWrapper ret = connections.get(threadID);
+            Connection c = ret.getConnection();
+            if (ret != null && !c.isClosed()) {
+                c.close();
+            }
+        } catch (SQLException ex) {
         }
     }
 
     public static Connection getConnection() {
 
-        if(!isInitialized()){
+        if (!isInitialized()) {
             InitDB();
         }
-        
+
         Thread cThread = Thread.currentThread();
         Integer threadID = (int) cThread.getId();
         ConWrapper ret;
@@ -115,7 +119,6 @@ public class DatabaseConnection {
             return con;
         } catch (SQLException e) {
             throw new DatabaseException(e);
-
         }
     }
 
@@ -176,14 +179,36 @@ public class DatabaseConnection {
         String db = ServerProperties.getProperty("server.settings.db.name", "twms");
         String ip = ServerProperties.getProperty("server.settings.db.ip", "127.0.0.1");
         dbUrl = "jdbc:mysql://" + ip + ":3306/" + db + "?autoReconnect=true&characterEncoding=UTF8&?connectTimeout=200000";
-        dbUser =  ServerProperties.getProperty("server.settings.db.user");
-        dbPass =  ServerProperties.getProperty("server.settings.db.password");
+        dbUser = ServerProperties.getProperty("server.settings.db.user");
+        dbPass = ServerProperties.getProperty("server.settings.db.password");
     }
 
-    public static void closeAll() throws SQLException {
+    public static void closeTimeout()  {
+        int i = 0;
         for (ConWrapper con : connections.values()) {
-            con.connection.close();
+            con.close();
+            i++;
+        }
+        System.out.println("[Database] 已經關閉" + String.valueOf(i) + "個無用連線.");
+    }
+
+    public static void closeAll() {
+        for (ConWrapper con : connections.values()) {
+            try {
+                con.connection.close();
+            } catch (SQLException ex) {
+            }
         }
     }
+
+    public final static Runnable CloseSQLConnections = new Runnable() {
+
+        @Override
+        public void run() {
+             DatabaseConnection.closeTimeout();
+        }
+    };
+
+      
 
 }

@@ -64,7 +64,7 @@ public class ShutdownServer implements Runnable {
             World.Alliance.save();
             World.Family.save();
             DatabaseConnection.closeAll();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.err.println("THROW" + e);
         }
 

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import client.MapleClient;
+import database.DatabaseConnection;
 import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
 import handling.cashshop.handler.*;

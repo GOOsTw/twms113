@@ -2,7 +2,6 @@ package server;
 
 import client.SkillFactory;
 import client.messages.ConsoleCommandProcessor;
-import constants.ServerConstants;
 import handling.MapleServerHandler;
 import handling.channel.ChannelServer;
 import handling.channel.MapleGuildRanking;
@@ -12,6 +11,7 @@ import handling.login.LoginInformationProvider;
 import handling.world.World;
 import java.sql.SQLException;
 import database.DatabaseConnection;
+import static database.DatabaseConnection.CloseSQLConnections;
 import handling.world.family.MapleFamilyBuff;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class Start {
     public final static void main(final String args[]) {
 
         System.setProperty("file.encoding", "utf-8");
-        
+
         System.out.println("[TWMS v113] Server Emulator");
 
         if (Boolean.parseBoolean(ServerProperties.getProperty("server.settings.Admin"))) {
@@ -54,6 +54,7 @@ public class Start {
         CloneTimer.getInstance().start();
         EventTimer.getInstance().start();
         BuffTimer.getInstance().start();
+        WorldTimer.getInstance().register(CloseSQLConnections, 30 * 60 * 60);
         LoginInformationProvider.getInstance();
         MapleQuest.initQuests();
         MapleLifeFactory.loadQuestCounts();
@@ -94,11 +95,9 @@ public class Start {
                 Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         System.exit(0);
     }
-
-    
 
     public static class Shutdown implements Runnable {
 
