@@ -131,18 +131,19 @@ public class DatabaseConnection {
             this.connection = con;
         }
 
-        public void close() {
+        public boolean close() {
             if (connection == null) {
-                return;
+                return false;
             }
             if (!expiredConnection()) {
                 try {
                     this.connection.close();
+                    return true;
                 } catch (SQLException ex) {
-
+                    return false
                 }
             }
-            return;
+            return false;
         }
 
         public Connection getConnection() {
@@ -178,7 +179,7 @@ public class DatabaseConnection {
         dbDriver = "com.mysql.jdvc.Driver";
         String db = ServerProperties.getProperty("server.settings.db.name", "twms");
         String ip = ServerProperties.getProperty("server.settings.db.ip", "127.0.0.1");
-        dbUrl = "jdbc:mysql://" + ip + ":3306/" + db + "?autoReconnect=true&characterEncoding=UTF8&?connectTimeout=200000";
+        dbUrl = "jdbc:mysql://" + ip + ":3306/" + db + "?autoReconnect=true&characterEncoding=UTF8&?connectTimeout=2000000";
         dbUser = ServerProperties.getProperty("server.settings.db.user");
         dbPass = ServerProperties.getProperty("server.settings.db.password");
     }
@@ -186,8 +187,8 @@ public class DatabaseConnection {
     public static void closeTimeout()  {
         int i = 0;
         for (ConWrapper con : connections.values()) {
-            con.close();
-            i++;
+            if(con.close())
+               i++;
         }
         System.out.println("[Database] 已經關閉" + String.valueOf(i) + "個無用連線.");
     }
