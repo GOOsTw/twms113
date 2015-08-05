@@ -346,7 +346,7 @@ public class PacketHelper {
         boolean isCash = ii.isCash(item.getItemId());
         boolean isPet = item.getPet() != null && item.getPet().getUniqueId() > -1;
         boolean isRing = false;
-        boolean hasUniqueId = item.getUniqueId() > 0 && !GameConstants.isRing(item.getItemId()) && item.getItemId() / 10000 != 166;
+        boolean hasUniqueId = item.getUniqueId() > 0 && !GameConstants.isMarrigeRing(item.getItemId()) && item.getItemId() / 10000 != 166;
         Equip equip = null;
         short pos = item.getPosition();
         if (item.getType() == 1) {
