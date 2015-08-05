@@ -3543,7 +3543,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public final void equipChanged() {
-        map.broadcastMessage(this, MaplePacketCreator.updateCharLook(this), true);
+        map.broadcastMessage(this, MaplePacketCreator.updateCharLook(this), false);
         stats.recalcLocalStats();
         if (getMessenger() != null) {
             World.Messenger.updateMessenger(getMessenger().getId(), getName(), client.getChannel());
@@ -4717,7 +4717,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             if (item.getRing() != null) {
                 ring = item.getRing();
                 ring.setEquipped(true);
-                if (GameConstants.isFriendshipRing(item.getItemId()) || GameConstants.isCrushRing(item.getItemId())) {
+                if (GameConstants.isEffectRing(item.getItemId())) {
                     if (equip) {
                         if (GameConstants.isCrushRing(item.getItemId())) {
                             crings.add(ring);
@@ -4738,7 +4738,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (equip) {
             iv = getInventory(MapleInventoryType.EQUIP);
             for (IItem item : iv.list()) {
-                if (item.getRing() != null && GameConstants.isCrushRing(item.getItemId())) {
+                if (item.getRing() != null && GameConstants.isEffectRing(item.getItemId())) {
                     ring = item.getRing();
                     ring.setEquipped(false);
                     if (GameConstants.isFriendshipRing(item.getItemId())) {
