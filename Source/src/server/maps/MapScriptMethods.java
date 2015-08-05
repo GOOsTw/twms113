@@ -131,6 +131,7 @@ public class MapScriptMethods {
         check_count,
         Massacre_first,
         Massacre_result,
+        TD_MC_gasi2,
         aranTutorAlone,
         evanAlone,
         dojang_QcheckSet,
@@ -720,6 +721,10 @@ public class MapScriptMethods {
             }
             case TD_MC_gasi: {
                 showIntro(c, "Effect/Direction2.img/gasi");
+                break;
+            }
+            case TD_MC_gasi2: {
+                showIntro(c, "Effect/Direction2.img/gasi2");
                 break;
             }
             case aranDirection: {
