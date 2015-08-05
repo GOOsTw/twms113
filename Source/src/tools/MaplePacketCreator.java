@@ -1545,9 +1545,8 @@ public class MaplePacketCreator {
         mplew.writeInt(rings.size());
         for (MapleRing ring : rings) {
             
-            mplew.writeInt(ring.getRingId());
-            mplew.writeInt(ring.getPartnerRingId());
-            mplew.writeLong(0);
+            mplew.writeLong(ring.getRingId());
+            mplew.writeLong(ring.getPartnerRingId());
             mplew.writeInt(ring.getItemId());
         }
     }
