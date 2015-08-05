@@ -369,7 +369,12 @@ public class PacketHelper {
         //marriage rings arent cash items so dont have uniqueids, but we assign them anyway for the sake of rings
         mplew.write(hasUniqueId ? 1 : 0);
         if (hasUniqueId) {
-            mplew.writeLong(item.getUniqueId());
+            if( isPet )
+                mplew.writeLong(item.getPet().getUniqueId());
+            else if ( isRing )
+                mplew.writeLong(item.getRing().getRingId());
+            else
+                mplew.writeLong(item.getUniqueId());
         }
 
         if (item.getPet() != null) { // Pet
