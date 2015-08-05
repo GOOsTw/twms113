@@ -955,8 +955,8 @@ public class MaplePacketCreator {
         Pair<List<MapleRing>, List<MapleRing>> rings = chr.getRings(true);
         addRingInfo(mplew, rings.getLeft());
         addRingInfo(mplew, rings.getRight());
+        addMarriageRingLook(mplew, chr);
         mplew.writeShort(0);
-        mplew.write(0); // 台版自己加的
         if (chr.getCarnivalParty() != null) {
             mplew.write(chr.getCarnivalParty().getTeam());
         } else if (chr.getMapId() == 109080000 || chr.getMapId() == 109080010) {
@@ -1544,8 +1544,10 @@ public class MaplePacketCreator {
         mplew.write(rings.size() > 0 ? 1 : 0);
         mplew.writeInt(rings.size());
         for (MapleRing ring : rings) {
-            mplew.writeLong(ring.getRingId());
-            mplew.writeLong(ring.getPartnerRingId());
+            
+            mplew.writeInt(ring.getRingId());
+            mplew.writeInt(ring.getPartnerRingId());
+            mplew.writeLong(0);
             mplew.writeInt(ring.getItemId());
         }
     }

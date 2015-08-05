@@ -3543,7 +3543,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public final void equipChanged() {
-        map.broadcastMessage(this, MaplePacketCreator.updateCharLook(this), false);
+        map.broadcastMessage(this, MaplePacketCreator.updateCharLook(this), true);
         stats.recalcLocalStats();
         if (getMessenger() != null) {
             World.Messenger.updateMessenger(getMessenger().getId(), getName(), client.getChannel());

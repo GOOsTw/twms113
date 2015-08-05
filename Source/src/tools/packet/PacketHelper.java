@@ -164,20 +164,16 @@ public class PacketHelper {
         for (MapleRing ring : cRing) {
             mplew.writeInt(ring.getPartnerChrId());
             mplew.writeAsciiString(ring.getPartnerName(), 15);
-            mplew.writeInt(ring.getRingId());
-            mplew.writeInt(0);
-            mplew.writeInt(ring.getPartnerRingId());
-            mplew.writeInt(0);
+            mplew.writeLong(ring.getRingId());
+            mplew.writeLong(ring.getPartnerRingId());
         }
         List<MapleRing> fRing = aRing.getRight();
         mplew.writeShort(fRing.size());
         for (MapleRing ring : fRing) {
             mplew.writeInt(ring.getPartnerChrId());
             mplew.writeAsciiString(ring.getPartnerName(), 15);
-            mplew.writeInt(ring.getRingId());
-            mplew.writeInt(0);
-            mplew.writeInt(ring.getPartnerRingId());
-            mplew.writeInt(0);
+            mplew.writeLong(ring.getRingId());
+            mplew.writeLong(ring.getPartnerRingId());
             mplew.writeInt(ring.getItemId());
         }
         mplew.writeShort((short) (chr.getMarriageRing(false) != null ? 1 : 0));
@@ -196,7 +192,6 @@ public class PacketHelper {
     }
 
     public static void addInventoryInfo(MaplePacketLittleEndianWriter mplew, MapleCharacter chr) {
-        mplew.writeLong(PacketHelper.getTime(System.currentTimeMillis()));
         mplew.writeInt(chr.getMeso()); // mesos
         mplew.writeInt(chr.getId());
         mplew.writeInt(chr.getBeans());
@@ -369,12 +364,13 @@ public class PacketHelper {
         //marriage rings arent cash items so dont have uniqueids, but we assign them anyway for the sake of rings
         mplew.write(hasUniqueId ? 1 : 0);
         if (hasUniqueId) {
-            if( isPet )
+            if (isPet) {
                 mplew.writeLong(item.getPet().getUniqueId());
-            else if ( isRing )
+            } else if (isRing) {
                 mplew.writeLong(item.getRing().getRingId());
-            else
+            } else {
                 mplew.writeLong(item.getUniqueId());
+            }
         }
 
         if (item.getPet() != null) { // Pet
@@ -431,7 +427,7 @@ public class PacketHelper {
         boolean isCash = ii.isCash(item.getItemId());
         boolean isPet = item.getPet() != null && item.getPet().getUniqueId() > -1;
         boolean isRing = false;
-       
+
         Equip equip = null;
         short pos = item.getPosition();
         if (item.getType() == 1) {
@@ -544,6 +540,8 @@ public class PacketHelper {
         } else {
             mplew.write(0);
         }
+        mplew.writeLong(PacketHelper.getTime(System.currentTimeMillis()));
+
         // End
         addInventoryInfo(mplew, chr);
         addSkillInfo(mplew, chr);
