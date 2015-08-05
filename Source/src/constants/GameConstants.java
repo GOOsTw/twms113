@@ -89,6 +89,35 @@ public class GameConstants {
         return exp[level];
     }
 
+    public static boolean isMarrigeRing(int itemid) {
+            switch (itemid) {
+                case 1112300:
+                case 1112301:
+                case 1112302:
+                case 1112303:
+                case 1112304:
+                case 1112305:
+                case 1112306:
+                case 1112307:
+                case 1112308:
+                case 1112309:
+                case 1112310:
+                case 1112311:
+                case 1112315:
+                case 1112316:
+                case 1112317:
+                case 1112318:
+                case 1112319:
+                case 1112320:
+                case 1112803:
+                case 1112806:
+                case 1112807:
+                case 1112808:
+                case 1112809:
+                    return true;
+            }
+            return false;
+        }
     public static int getClosenessNeededForLevel(final int level) {
         return closeness[level - 1];
     }
