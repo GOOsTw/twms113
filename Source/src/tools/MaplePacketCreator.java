@@ -107,14 +107,14 @@ public class MaplePacketCreator {
 
         return mplew.getPacket();
     }
-    
-    public static final MaplePacket getChannelChange(String ip, final int port ) {
+
+    public static final MaplePacket getChannelChange(String ip, final int port) {
         byte[] ipd = {127, 0, 0, 1};
         try {
             ipd = InetAddress.getByName(ip).getAddress();
         } catch (UnknownHostException ex) {
         }
-        return getChannelChange(ipd,port);
+        return getChannelChange(ipd, port);
     }
 
     public static final MaplePacket getChannelChange(final byte[] ip, final int port) {
@@ -500,7 +500,7 @@ public class MaplePacketCreator {
         mplew.write(1);
         mplew.writeInt(life.getObjectId());
         mplew.writeInt(life.getId());
-        
+
         mplew.writeShort(life.getPosition().x);
         mplew.writeShort(life.getCy());
         mplew.write(life.getF() == 1 ? 0 : 1);
@@ -508,7 +508,7 @@ public class MaplePacketCreator {
         mplew.writeShort(life.getRx0());
         mplew.writeShort(life.getRx1());
         mplew.write(MiniMap ? 1 : 0);
-        
+
         return mplew.getPacket();
     }
 
@@ -948,13 +948,13 @@ public class MaplePacketCreator {
         mplew.writeInt(chr.getMount().getFatigue()); // tiredness
         PacketHelper.addAnnounceBox(mplew, chr);
         mplew.write(chr.getChalkboard() != null && chr.getChalkboard().length() > 0 ? 1 : 0);
-        
+
         if (chr.getChalkboard() != null && chr.getChalkboard().length() > 0) {
             mplew.writeMapleAsciiString(chr.getChalkboard());
         }
-        
-        Pair<List<MapleRing>, List<MapleRing>> rings = chr.getRings(true);
-        
+
+        Pair<List<MapleRing>, List<MapleRing>> rings = chr.getRings(false);
+
         addRingInfo(mplew, rings.getLeft());
         addRingInfo(mplew, rings.getRight());
         mplew.writeShort(0);
@@ -966,16 +966,17 @@ public class MaplePacketCreator {
         }
         return mplew.getPacket();
     }
-    
+
     private static void addMarriageRingLook(final MaplePacketLittleEndianWriter mplew, MapleCharacter chr) {
 
-        mplew.write(chr.getMarriageRing(false) != null ? (byte)1 : (byte)0);
+        mplew.write(chr.getMarriageRing(false) != null ? (byte) 1 : (byte) 0);
         if (chr.getMarriageRing(false) != null) {
             mplew.writeInt(chr.getId());
             mplew.writeInt(chr.getMarriageRing(false).getPartnerChrId());
             mplew.writeInt(chr.getMarriageRing(false).getRingId());
         }
     }
+
     public static MaplePacket removePlayerFromMap(int cid) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
@@ -1385,11 +1386,10 @@ public class MaplePacketCreator {
 //
 //        return mplew.getPacket();
 //    }
-    
     public static MaplePacket modifyInventory(boolean updateTick, final ModifyInventory mod) {
         return modifyInventory(updateTick, Collections.singletonList(mod));
     }
-    
+
     public static MaplePacket modifyInventory(boolean updateTick, final List<ModifyInventory> mods) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.MODIFY_INVENTORY_ITEM.getValue());
@@ -1402,7 +1402,7 @@ public class MaplePacketCreator {
             mplew.writeShort(mod.getMode() == 2 ? mod.getOldPosition() : mod.getPosition());
             switch (mod.getMode()) {
                 case 0: {//add item
-                    PacketHelper.addItemInfo(mplew, mod.getItem(),  true, false);
+                    PacketHelper.addItemInfo(mplew, mod.getItem(), true, false);
                     break;
                 }
                 case 1: {//update quantity
@@ -1430,7 +1430,6 @@ public class MaplePacketCreator {
         }
         return mplew.getPacket();
     }
-
 
     public static MaplePacket getScrollEffect(int chr, ScrollResult scrollSuccess, boolean legendarySpirit) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
@@ -1535,8 +1534,8 @@ public class MaplePacketCreator {
         mplew.writeInt(chr.getId());
         mplew.write(1);
         PacketHelper.addCharLook(mplew, chr, false);
-        Pair<List<MapleRing>, List<MapleRing>> rings = chr.getRings(getRings);
-        addRingInfo(mplew, rings.getLeft());
+        Pair<List<MapleRing>, List<MapleRing>> rings = chr.getRings(false);
+        addRingInfo(mplew, rings.getLeft());    
         addRingInfo(mplew, rings.getRight());
         addMarriageRingLook(mplew, chr);
         mplew.writeInt(0);
@@ -1544,7 +1543,7 @@ public class MaplePacketCreator {
     }
 
     public static void addRingInfo(MaplePacketLittleEndianWriter mplew, List<MapleRing> rings) {
-        mplew.writeBool(rings.size() > 0);
+        mplew.write(rings.size() > 0 ? 1 : 0);
         mplew.writeInt(rings.size());
         for (MapleRing ring : rings) {
             mplew.writeLong(ring.getRingId());
@@ -3687,8 +3686,8 @@ public class MaplePacketCreator {
         }
         return mplew.getPacket();
     }
-    
-   public static MaplePacket showmesoRanks(int npcid, List<MapleGuildRanking.mesoRankingInfo> all) {
+
+    public static MaplePacket showmesoRanks(int npcid, List<MapleGuildRanking.mesoRankingInfo> all) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.GUILD_OPERATION.getValue());
@@ -3702,13 +3701,13 @@ public class MaplePacketCreator {
             mplew.writeInt(info.getstr());
             mplew.writeInt(info.getdex());
             mplew.writeInt(info.getintt());
-            mplew.writeInt(info.getluk());            
+            mplew.writeInt(info.getluk());
         }
 
         return mplew.getPacket();
     }
-   
-   public static MaplePacket showlevelRanks(int npcid, List<MapleGuildRanking.levelRankingInfo> all) {
+
+    public static MaplePacket showlevelRanks(int npcid, List<MapleGuildRanking.levelRankingInfo> all) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.GUILD_OPERATION.getValue());
@@ -3727,7 +3726,7 @@ public class MaplePacketCreator {
 
         return mplew.getPacket();
     }
-   
+
     public static MaplePacket showGuildRanks(int npcid, List<GuildRankingInfo> all) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
