@@ -3,7 +3,7 @@ var points;
 function start() {
     var record = cm.getQuestRecord(150001);
     points = record.getCustomData() == null ? "0" : record.getCustomData();
-    cm.sendSimple("想挑戰BOSS副本嗎？？\n\r\n\r #L99#回自由#l\r\n#b#L3#查看可兌換點數#l#k \r\n\r\n #b#L0##v03994115##l#l#L1##v03994116##l#L2##v03994117##l#L28##v03994118##l");
+    cm.sendSimple("想挑戰BOSS副本嗎？？\n\r\n\r #b#L3#查看可兌換點數#l#k \r\n\r\n #b#L0##v03994115##l#l#L1##v03994116##l#L2##v03994117##l#L28##v03994118##l");
 }
 
 function action(mode, type, selection) {
@@ -29,18 +29,22 @@ function action(mode, type, selection) {
                         if (next) {
                             var q = cm.getEventManager("BossQuestEASY");
                             if (q == null) {
-                                cm.sendOk("Unknown error occured");
+                                cm.sendOk("找不到腳本，請聯繫GM！");
+								cm.dispose();
                             } else {
                                 q.startInstance(cm.getParty(), cm.getMap());
                             }
                         } else {
                             cm.sendOk("全部隊友必須達到70等.");
+							cm.dispose();
                         }
                     } else {
                         cm.sendOk("你不是隊長.");
+						cm.dispose();
                     }
                 } else {
                     cm.sendOk("你沒有隊伍.");
+					cm.dispose();
                 }
                 break;
             case 1:
@@ -63,18 +67,22 @@ function action(mode, type, selection) {
                         if (next) {
                             var q = cm.getEventManager("BossQuestMed");
                             if (q == null) {
-                                cm.sendOk("Unknown error occured");
+                                cm.sendOk("找不到腳本，請聯繫GM！");
+								cm.dispose();
                             } else {
                                 q.startInstance(cm.getParty(), cm.getMap());
                             }
                         } else {
                             cm.sendOk("全部隊友必須達到100等.");
+							cm.dispose();
                         }
                     } else {
                         cm.sendOk("你不是隊長.");
+						cm.dispose();
                     }
                 } else {
                     cm.sendOk("你沒有隊伍.");
+					cm.dispose();
                 }
                 break;
             case 2:
@@ -97,18 +105,22 @@ function action(mode, type, selection) {
                         if (next) {
                             var q = cm.getEventManager("BossQuestHARD");
                             if (q == null) {
-                                cm.sendOk("Unknown error occured");
+                                cm.sendOk("找不到腳本，請聯繫GM！");
+								cm.dispose();
                             } else {
                                 q.startInstance(cm.getParty(), cm.getMap());
                             }
                         } else {
                             cm.sendOk("全部隊友必須達到120等.");
+							cm.dispose();
                         }
                     } else {
                         cm.sendOk("你不是隊長.");
+						cm.dispose();
                     }
                 } else {
                     cm.sendOk("你沒有隊伍.");
+					cm.dispose();
                 }
                 break;
             case 28:
@@ -131,26 +143,30 @@ function action(mode, type, selection) {
                         if (next) {
                             var q = cm.getEventManager("BossQuestHELL");
                             if (q == null) {
-                                cm.sendOk("Unknown error occured");
+                                cm.sendOk("找不到腳本，請聯繫GM！");
+								cm.dispose();
                             } else {
                                 q.startInstance(cm.getParty(), cm.getMap());
                             }
                         } else {
                             cm.sendOk("全部隊友必須達到160等.");
+							cm.dispose();
                         }
                     } else {
                         cm.sendOk("你不是隊長.");
+						cm.dispose();
                     }
                 } else {
                     cm.sendOk("你沒有隊伍.");
+					cm.dispose();
                 }
                 break;
             case 3:
                 cm.sendOk("#b點數數量 : " + points);
                 break;
-            case 99:
+            /*case 99:
                 cm.warp(910000000);
-                break;
+                break;*/
         }
     }
     cm.dispose();

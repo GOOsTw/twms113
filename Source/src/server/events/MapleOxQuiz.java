@@ -97,7 +97,7 @@ public class MapleOxQuiz extends MapleEvent {
                     }
                 }
                 if (toSend.getCharactersSize() - number <= 1 || timesAsked == 10) {
-                    toSend.broadcastMessage(MaplePacketCreator.serverNotice(6, "The event has ended"));
+                    toSend.broadcastMessage(MaplePacketCreator.serverNotice(6, "本次活動已經結束。"));
                     unreset();
                     for (MapleCharacter chr : toSend.getCharactersThreadsafe()) {
                         if (chr != null && !chr.isGM() && chr.isAlive()) {
@@ -143,10 +143,10 @@ public class MapleOxQuiz extends MapleEvent {
         double x = chr.getPosition().getX();
         double y = chr.getPosition().getY();
         if ((x > -234 && y > -26 && answer == 0) || (x < -234 && y > -26 && answer == 1)) {
-            chr.dropMessage(6, "[Ox Quiz] Correct!"); //i think this is its own packet
+            chr.dropMessage(6, "[是非題大考驗] 正確！"); //i think this is its own packet
             return true;
         }
-        chr.dropMessage(6, "[Ox Quiz] Incorrect!");
+        chr.dropMessage(6, "[是非題大考驗] 錯誤！");
         return false;
     }
 }
