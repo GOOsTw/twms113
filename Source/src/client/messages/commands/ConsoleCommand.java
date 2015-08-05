@@ -11,6 +11,8 @@ import database.DatabaseConnection;
 import handling.channel.ChannelServer;
 import handling.world.World;
 import java.sql.SQLException;
+import java.text.NumberFormat;
+import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +26,31 @@ import tools.StringUtil;
  * @author Flower
  */
 public class ConsoleCommand {
+
+    public static class Info extends ConsoleCommandExecute {
+
+        @Override
+        public int execute(String[] paramArrayOfString) {
+            Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+            Runtime runtime = Runtime.getRuntime();
+
+            NumberFormat format = NumberFormat.getInstance();
+
+            StringBuilder sb = new StringBuilder();
+            Long maxMemory = runtime.maxMemory();
+            Long allocatedMemory = runtime.totalMemory();
+            Long freeMemory = runtime.freeMemory();
+            System.out.println("------------------ 系統資訊 ------------------");
+            System.out.println("線程數 :" + ((Integer) threadSet.size()).toString());
+            System.out.println("SQL連接數 :" + ((Integer) DatabaseConnection.getConnectionsCount()).toString());
+            System.out.println("記憶體最大限制 :" + maxMemory.toString() );
+            System.out.println("已申請記憶體 :" + allocatedMemory.toString() );
+            System.out.println("尚未使用記憶體 :" + freeMemory.toString() );
+            
+            return 1;
+        }
+
+    }
 
     public static class Shutdown extends ConsoleCommandExecute {
 
@@ -198,8 +225,11 @@ public class ConsoleCommand {
             return 1;
         }
     }
+
     public static class saveall extends ConsoleCommandExecute {
+
         private int p = 0;
+
         @Override
         public int execute(String[] splitted) {
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
@@ -207,12 +237,12 @@ public class ConsoleCommand {
                     p++;
                     chr.saveToDB(false, true);
                     System.out.println("[保存] " + p + "個玩家數據保存到數據中.");
-                } 
+                }
             }
-    return 1;
+            return 1;
+        }
     }
-    }
-   
+
     public static class ReloadChannel extends ConsoleCommandExecute {
 
         @Override

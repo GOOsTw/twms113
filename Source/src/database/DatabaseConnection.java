@@ -48,6 +48,10 @@ public class DatabaseConnection {
     private static String dbDriver = "", dbUrl = "", dbUser = "", dbPass = "";
     private static long connectionTimeOut = 30 * 60 * 60;
 
+    public static int getConnectionsCount() {
+        return connections.size();
+    }
+
     public static void close() {
         try {
             Thread cThread = Thread.currentThread();
@@ -132,18 +136,20 @@ public class DatabaseConnection {
         }
 
         public boolean close() {
-            if (connection == null) {
+            synchronized (connection) {
+                if (connection == null) {
+                    return false;
+                }
+                if (!expiredConnection()) {
+                    try {
+                        this.connection.close();
+                        return true;
+                    } catch (SQLException ex) {
+                        return false;
+                    }
+                }
                 return false;
             }
-            if (!expiredConnection()) {
-                try {
-                    this.connection.close();
-                    return true;
-                } catch (SQLException ex) {
-                    return false
-                }
-            }
-            return false;
         }
 
         public Connection getConnection() {
@@ -184,20 +190,25 @@ public class DatabaseConnection {
         dbPass = ServerProperties.getProperty("server.settings.db.password");
     }
 
-    public static void closeTimeout()  {
+    public static void closeTimeout() {
         int i = 0;
-        for (ConWrapper con : connections.values()) {
-            if(con.close())
-               i++;
+        synchronized (connections) {
+            for (ConWrapper con : connections.values()) {
+                if (con.close()) {
+                    i++;
+                }
+            }
         }
         System.out.println("[Database] 已經關閉" + String.valueOf(i) + "個無用連線.");
     }
 
     public static void closeAll() {
-        for (ConWrapper con : connections.values()) {
-            try {
-                con.connection.close();
-            } catch (SQLException ex) {
+        synchronized (connections) {
+            for (ConWrapper con : connections.values()) {
+                try {
+                    con.connection.close();
+                } catch (SQLException ex) {
+                }
             }
         }
     }
@@ -206,10 +217,8 @@ public class DatabaseConnection {
 
         @Override
         public void run() {
-             DatabaseConnection.closeTimeout();
+            DatabaseConnection.closeTimeout();
         }
     };
-
-      
 
 }
