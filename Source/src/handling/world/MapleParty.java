@@ -30,13 +30,24 @@ public class MapleParty implements Serializable {
 
     private static final long serialVersionUID = 9179541993413738569L;
     private MaplePartyCharacter leader;
-    private List<MaplePartyCharacter> members = new LinkedList<MaplePartyCharacter>();
+    private final List<MaplePartyCharacter> members = new LinkedList<>();
     private int id;
+    private int averageLevel = 0;
+    
+    private void calculateAverageLevel() {
+        int value = 0;
+        for( MaplePartyCharacter chr : members ) {
+            value  += chr.getLevel();
+        }
+        value = (int)((double)averageLevel / (double)members.size());
+        this.averageLevel = value;
+    }
 
     public MapleParty(int id, MaplePartyCharacter chrfor) {
         this.leader = chrfor;
         this.members.add(this.leader);
         this.id = id;
+        this.averageLevel = 0;
     }
 
     public boolean containsMembers(MaplePartyCharacter member) {
@@ -45,10 +56,12 @@ public class MapleParty implements Serializable {
 
     public void addMember(MaplePartyCharacter member) {
         members.add(member);
+        calculateAverageLevel();
     }
 
     public void removeMember(MaplePartyCharacter member) {
         members.remove(member);
+        calculateAverageLevel();
     }
 
     public void updateMember(MaplePartyCharacter member) {
@@ -58,6 +71,7 @@ public class MapleParty implements Serializable {
                 members.set(i, member);
             }
         }
+        calculateAverageLevel();
     }
 
     public MaplePartyCharacter getMemberById(int id) {
@@ -74,7 +88,7 @@ public class MapleParty implements Serializable {
     }
 
     public Collection<MaplePartyCharacter> getMembers() {
-        return new LinkedList<MaplePartyCharacter>(members);
+        return new LinkedList<>(members);
     }
 
     public int getId() {
@@ -117,5 +131,9 @@ public class MapleParty implements Serializable {
             return false;
         }
         return true;
+    }
+    
+    public int getAverageLevel() {
+        return this.averageLevel;
     }
 }

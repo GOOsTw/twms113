@@ -54,22 +54,21 @@ public class Event_DojoAgent {
         return false;
     }
 
-    public static boolean warpNextMap_Agent(final MapleCharacter c, final boolean fromResting) {
-        final int currentmap = c.getMapId();
+    public static boolean warpNextMap_Agent(final MapleCharacter player, final boolean fromResting) {
+        final int currentmap = player.getMapId();
         final int thisStage = (currentmap - baseAgentMapId) / 100;
-
-        MapleMap map = c.getMap();
+        MapleMap map = player.getMap();
         if (map.getSpawnedMonstersOnMap() > 0) {
             return false;
         }
         if (!fromResting) {
             clearMap(map, true);
-            c.modifyCSPoints(1, 5, true);
+            player.modifyCSPoints(1, 5, true);
         }
-        final ChannelServer ch = c.getClient().getChannelServer();
+        final ChannelServer ch = player.getClient().getChannelServer();
         if (currentmap >= 970032700 && currentmap <= 970032800) {
             map = ch.getMapFactory().getMap(baseAgentMapId);
-            c.changeMap(map, map.getPortal(0));
+            player.changeMap(map, map.getPortal(0));
             return true;
         }
         final int nextmapid = baseAgentMapId + ((thisStage + 1) * 100);
@@ -77,7 +76,7 @@ public class Event_DojoAgent {
             map = ch.getMapFactory().getMap(i);
             if (map.getCharactersSize() == 0) {
                 clearMap(map, false);
-                c.changeMap(map, map.getPortal(0));
+                player.changeMap(map, map.getPortal(0));
                 map.respawn(true);
                 return true;
             }
@@ -150,14 +149,17 @@ public class Event_DojoAgent {
                         MapleCharacter chr = currentmap.getCharacterById(mem.getId());
                         if (chr != null) {
                             final int point = (points * 3);
-                            chr.modifyCSPoints(1, points , true);
+                            final int pLevel = c.getParty().getAverageLevel();
+                            final int cspoints = (int) ((int) (thisStage * 15) - (int) (pLevel * 1.3) * 1.2);
+                            chr.modifyCSPoints(1, cspoints, true);
                             chr.setDojo(chr.getDojo() + point);
                             chr.getClient().getSession().write(MaplePacketCreator.Mulung_Pts(point, chr.getDojo()));
                         }
                     }
                 } else {
                     final int point = ((points + 1) * 3);
-                    c.modifyCSPoints(1, points , true);
+                    final int cspoints = (int) ((int) (thisStage * 15) - (int) (c.getLevel() * 1.3) * 1.7);
+                    c.modifyCSPoints(1, cspoints, true);
                     c.setDojo(c.getDojo() + point);
                     c.getClient().getSession().write(MaplePacketCreator.Mulung_Pts(point, c.getDojo()));
                 }
