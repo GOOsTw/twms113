@@ -1544,9 +1544,9 @@ public class MaplePacketCreator {
     }
 
     public static void addRingInfo(MaplePacketLittleEndianWriter mplew, List<MapleRing> rings) {
-        mplew.write(rings.size());
+        mplew.writeBool(rings.size() > 0);
+        mplew.writeInt(rings.size());
         for (MapleRing ring : rings) {
-            mplew.writeInt(1);
             mplew.writeLong(ring.getRingId());
             mplew.writeLong(ring.getPartnerRingId());
             mplew.writeInt(ring.getItemId());
