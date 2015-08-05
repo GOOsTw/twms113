@@ -215,7 +215,6 @@ public class MaplePacketCreator {
         mplew.writeShort(SendPacketOpcode.SET_FIELD.getValue());
         mplew.writeInt(chr.getClient().getChannel() - 1);
         mplew.writeInt(0x2); // Count
-//        mplew.write(0);
         mplew.writeInt(to.getId());
         mplew.write(spawnPoint);
         mplew.writeShort(chr.getStat().getHp());
