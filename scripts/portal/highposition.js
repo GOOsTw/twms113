@@ -1,4 +1,4 @@
-function enter(pi) {
+﻿function enter(pi) {
     if (pi.getPlayer().getLevel() < 15 || pi.isQuestFinished(29004)) {
 	return false;
     }
@@ -29,8 +29,8 @@ function enter(pi) {
     if (changedd) {
 	pi.updateInfoQuest(27017, new_quest);
 	pi.forceStartQuest(27018, number+1, true);
-	pi.getPlayer().dropMessage(-1, (number+1) +"/5 completed");
-	pi.getPlayer().dropMessage(-1, "Currently taking on the Title - The One Who Stood On Top");
-	pi.showQuestMsg("Currently taking on the Title - The One Who Stood On Top " + (number+1) + "/5 completed");
+	pi.getPlayer().dropMessage(-1, (number+1) +"/5 完成");
+	pi.getPlayer().dropMessage(-1, "目前正在挑戰在巔峰的人稱號");
+	pi.showQuestMsg("目前正在挑戰 - 戰在巔峰的人 " + (number+1) + "/5 完成");
     }
 }
