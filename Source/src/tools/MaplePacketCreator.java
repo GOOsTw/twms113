@@ -952,7 +952,7 @@ public class MaplePacketCreator {
             mplew.writeMapleAsciiString(chr.getChalkboard());
         }
 
-        Pair<List<MapleRing>, List<MapleRing>> rings = chr.getRings(true);
+        Pair<List<MapleRing>, List<MapleRing>> rings = chr.getRings(false);
         addRingInfo(mplew, rings.getLeft());
         addRingInfo(mplew, rings.getRight());
         addMarriageRingLook(mplew, chr);
@@ -1532,7 +1532,7 @@ public class MaplePacketCreator {
         mplew.writeInt(chr.getId());
         mplew.write(1);
         PacketHelper.addCharLook(mplew, chr, false);
-        Pair<List<MapleRing>, List<MapleRing>> rings = chr.getRings(true);
+        Pair<List<MapleRing>, List<MapleRing>> rings = chr.getRings(false);
         addRingInfo(mplew, rings.getLeft());    
         addRingInfo(mplew, rings.getRight());
         addMarriageRingLook(mplew, chr);
@@ -1544,7 +1544,6 @@ public class MaplePacketCreator {
         mplew.write(rings.size() > 0 ? 1 : 0);
         mplew.writeInt(rings.size());
         for (MapleRing ring : rings) {
-            
             mplew.writeLong(ring.getRingId());
             mplew.writeLong(ring.getPartnerRingId());
             mplew.writeInt(ring.getItemId());
