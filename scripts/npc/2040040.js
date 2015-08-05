@@ -6,9 +6,10 @@ var exp = 3770;
 
 function action(mode, type, selection) {
     var eim = cm.getEventInstance();
-    var stage5status = eim.getProperty("stage5status");
+    
+    var stage5status = eim != null ?  eim.getProperty("stage5status") : null;
 
-    if (stage5status == null) {
+    if (stage5status == null ) {
 	if (cm.isLeader()) { // Leader
 	    var stage5leader = eim.getProperty("stage5leader");
 	    if (stage5leader == "done") {
