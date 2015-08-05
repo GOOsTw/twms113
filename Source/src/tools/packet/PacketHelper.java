@@ -169,7 +169,7 @@ public class PacketHelper {
             mplew.writeInt(ring.getPartnerRingId());
             mplew.writeInt(0);
         }
-        List<MapleRing> fRing = aRing.getLeft();
+        List<MapleRing> fRing = aRing.getRight();
         mplew.writeShort(fRing.size());
         for (MapleRing ring : fRing) {
             mplew.writeInt(ring.getPartnerChrId());
