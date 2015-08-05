@@ -31,20 +31,24 @@ function action(mode, type, selection) {
                             if (q == null) {
                                 cm.sendOk("找不到腳本，請聯繫GM！");
 								cm.dispose();
+								break;
                             } else {
                                 q.startInstance(cm.getParty(), cm.getMap());
                             }
                         } else {
                             cm.sendOk("全部隊友必須達到70等.");
 							cm.dispose();
+							break;
                         }
                     } else {
                         cm.sendOk("你不是隊長.");
 						cm.dispose();
+						break;
                     }
                 } else {
                     cm.sendOk("你沒有隊伍.");
 					cm.dispose();
+					break;
                 }
                 break;
             case 1:
@@ -69,20 +73,24 @@ function action(mode, type, selection) {
                             if (q == null) {
                                 cm.sendOk("找不到腳本，請聯繫GM！");
 								cm.dispose();
+								break;
                             } else {
                                 q.startInstance(cm.getParty(), cm.getMap());
                             }
                         } else {
                             cm.sendOk("全部隊友必須達到100等.");
 							cm.dispose();
+							break;
                         }
                     } else {
                         cm.sendOk("你不是隊長.");
 						cm.dispose();
+						break;
                     }
                 } else {
                     cm.sendOk("你沒有隊伍.");
 					cm.dispose();
+					break;
                 }
                 break;
             case 2:
@@ -113,14 +121,17 @@ function action(mode, type, selection) {
                         } else {
                             cm.sendOk("全部隊友必須達到120等.");
 							cm.dispose();
+							break;
                         }
                     } else {
                         cm.sendOk("你不是隊長.");
 						cm.dispose();
+						break;
                     }
                 } else {
                     cm.sendOk("你沒有隊伍.");
 					cm.dispose();
+					break;
                 }
                 break;
             case 28:
@@ -151,18 +162,22 @@ function action(mode, type, selection) {
                         } else {
                             cm.sendOk("全部隊友必須達到160等.");
 							cm.dispose();
+							break;
                         }
                     } else {
                         cm.sendOk("你不是隊長.");
 						cm.dispose();
+						break;
                     }
                 } else {
                     cm.sendOk("你沒有隊伍.");
 					cm.dispose();
+					break;
                 }
                 break;
             case 3:
                 cm.sendOk("#b點數數量 : " + points);
+				cm.dispose();
                 break;
             /*case 99:
                 cm.warp(910000000);
