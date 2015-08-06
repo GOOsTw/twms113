@@ -84,6 +84,7 @@ public class DatabaseConnection {
         if (ret == null) {
             Connection retCon = connectToDB();
             ret = new ConWrapper(retCon);
+      
             lock.lock();
             try {
                 connections.put(threadID, ret);
@@ -140,8 +141,8 @@ public class DatabaseConnection {
         private Connection connection;
 
         public ConWrapper(Connection con) {
-            this.connection = con;
             this.lastAccessTime = System.currentTimeMillis();
+            this.connection = con;
         }
 
         public boolean close() {
@@ -196,7 +197,7 @@ public class DatabaseConnection {
         dbDriver = "com.mysql.jdvc.Driver";
         String db = ServerProperties.getProperty("server.settings.db.name", "twms");
         String ip = ServerProperties.getProperty("server.settings.db.ip", "localhost");
-        dbUrl = "jdbc:mysql://" + ip + ":3306/" + db + "?autoReconnect=true&characterEncoding=UTF8&?connectTimeout=2000000";
+        dbUrl = "jdbc:mysql://" + ip + ":3306/" + db + "?autoReconnect=true&characterEncoding=UTF8&?connectTimeout=120000000";
         dbUser = ServerProperties.getProperty("server.settings.db.user");
         dbPass = ServerProperties.getProperty("server.settings.db.password");
     }
