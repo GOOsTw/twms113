@@ -153,7 +153,7 @@ public class Event_DojoAgent {
                         if (chr != null) {
                             final int point = (points * 3);
                             final int pLevel = c.getParty().getAverageLevel();
-                            int cspoints = (int) ((int) (((thisStage * 15) - (int) (pLevel * 1.3)) * 1.2));
+                            int cspoints = (int) ((int) (((thisStage * 10) - (int) (pLevel * 3.0)) * 1.2));
                             if (cspoints <= 0) {
                                 cspoints = 5;
                             }
@@ -164,7 +164,7 @@ public class Event_DojoAgent {
                     }
                 } else {
                     final int point = ((points + 1) * 3);
-                    int cspoints = (int) ((int) (((thisStage * 15) - (int) (pLevel * 1.3)) * 1.7));
+                    int cspoints = (int) ((int) (((thisStage * 10) - (int) (pLevel * 3.0)) * 1.3));
                     if (cspoints <= 0) {
                         cspoints = 5;
                     }
