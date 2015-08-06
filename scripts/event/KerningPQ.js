@@ -91,6 +91,14 @@ function clearPQ(eim) {
     em.setProperty("state", "0");
 }
 
+function scheduledTimeout(eim) {
+       eim.unregisterPlayer(player);
+
+    var exit = eim.getMapFactory().getMap(103000890);
+    player.changeMap(exit, exit.getPortal(0));
+}
+
+
 function allMonstersDead(eim) {
 }
 
