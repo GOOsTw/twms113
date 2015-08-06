@@ -474,6 +474,8 @@ public class PlayerStats implements Serializable {
             }
         }
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        expMod = 1;
+        dropMod = 1;
         for (IItem item : chra.getInventory(MapleInventoryType.CASH)) {
             if (expMod < 3 && (item.getItemId() == 5211060 || item.getItemId() == 5211050 || item.getItemId() == 5211051 || item.getItemId() == 5211052 || item.getItemId() == 5211053 || item.getItemId() == 5211054)) {
                 expMod = 3;//overwrite
