@@ -477,23 +477,19 @@ public class PlayerStats implements Serializable {
         for (IItem item : chra.getInventory(MapleInventoryType.CASH)) {
             if (expMod < 3 && (item.getItemId() == 5211060 || item.getItemId() == 5211050 || item.getItemId() == 5211051 || item.getItemId() == 5211052 || item.getItemId() == 5211053 || item.getItemId() == 5211054)) {
                 expMod = 3;//overwrite
-            } else if (expMod == 1 && (item.getItemId() == 5210000 || item.getItemId() == 5210001 || item.getItemId() == 5210002 || item.getItemId() == 5210003 || item.getItemId() == 5210004 || item.getItemId() == 5210005 || item.getItemId() == 5211061 || item.getItemId() == 5211000 || item.getItemId() == 5211001 || item.getItemId() == 5211002 || item.getItemId() == 5211003 || item.getItemId() == 5211046 || item.getItemId() == 5211047 || item.getItemId() == 5211048 || item.getItemId() == 5211049)) {
+            } else if (expMod == 1 && (item.getItemId() == 5210000)) {
                 expMod = 2;
-            } else if (expMod == 1 && item.getItemId() == 5210006 && (hour >= 22 || hour <= 2)) {
+            } else if (expMod == 1 && item.getItemId() == 5210001 && hour >= 0 && hour <= 6) {
                 expMod = 2;
-            } else if (expMod == 1 && item.getItemId() == 5210007 && hour >= 2 && hour <= 6) {
+            } else if (expMod == 1 && item.getItemId() == 5210002 && hour >= 6 && hour <= 12) {
                 expMod = 2;
-            } else if (expMod == 1 && item.getItemId() == 5210008 && hour >= 6 && hour <= 10) {
+            } else if (expMod == 1 && item.getItemId() == 5210003 && hour >= 12 && hour <= 18) {
                 expMod = 2;
-            } else if (expMod == 1 && item.getItemId() == 5210009 && hour >= 10 && hour <= 14) {
-                expMod = 2;
-            } else if (expMod == 1 && item.getItemId() == 5210010 && hour >= 14 && hour <= 18) {
-                expMod = 2;
-            } else if (expMod == 1 && item.getItemId() == 5210011 && hour >= 18 && hour <= 22) {
+            } else if (expMod == 1 && item.getItemId() == 5210004 && hour >= 18 && hour <= 24) {
                 expMod = 2;
             }
             if (dropMod == 1) {
-                if (item.getItemId() == 5360009 || item.getItemId() == 5360010 || item.getItemId() == 5360011 || item.getItemId() == 5360012 || item.getItemId() == 5360013 || item.getItemId() == 5360014 || item.getItemId() == 5360017 || item.getItemId() == 5360050 || item.getItemId() == 5360053 || item.getItemId() == 5360042 || item.getItemId() == 5360052) {
+                if (item.getItemId() == 5360015) {
                     dropMod = 2;
                 } else if (item.getItemId() == 5360000 && hour >= 0 && hour <= 6) {
                     dropMod = 2;
