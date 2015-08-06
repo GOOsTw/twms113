@@ -63,6 +63,12 @@ public class PlayerStorage {
         }
     }
 
+    public final List<MapleCharacter> getAllCharactersThreadSafe() {
+        List<MapleCharacter> ret = new ArrayList<>();
+        ret.addAll(getAllCharacters());
+        return ret;
+    }
+
     public final void registerPlayer(final MapleCharacter chr) {
         wL.lock();
         try {

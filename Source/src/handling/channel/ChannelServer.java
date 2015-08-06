@@ -564,7 +564,7 @@ public class ChannelServer implements Serializable {
 
     public void saveAll() {
         int ppl = 0;
-        for (MapleCharacter chr : this.players.getAllCharacters()) {
+        for (MapleCharacter chr : this.players.getAllCharactersThreadSafe()) {
             try{
                 chr.saveToDB(false, false);
                 ++ppl;
