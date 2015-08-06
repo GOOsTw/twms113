@@ -953,9 +953,10 @@ public class MaplePacketCreator {
         }
 
         Pair<List<MapleRing>, List<MapleRing>> rings = chr.getRings(false);
-        rings.getLeft().addAll(rings.getRight());
-        addRingInfo(mplew, rings.getLeft());
-        addRingInfo(mplew, rings.getRight());
+        List<MapleRing> allrings = rings.getLeft();
+        allrings.addAll(rings.getRight());
+        addRingInfo(mplew, allrings);
+        addRingInfo(mplew, allrings);
         addMarriageRingLook(mplew, chr);
         mplew.writeShort(0);
         if (chr.getCarnivalParty() != null) {
@@ -1534,9 +1535,10 @@ public class MaplePacketCreator {
         mplew.write(1);
         PacketHelper.addCharLook(mplew, chr, false);
         Pair<List<MapleRing>, List<MapleRing>> rings = chr.getRings(false);
-        rings.getLeft().addAll(rings.getRight());
-        addRingInfo(mplew, rings.getLeft());    
-        addRingInfo(mplew, rings.getRight());
+        List<MapleRing> allrings = rings.getLeft();
+        allrings.addAll(rings.getRight());
+        addRingInfo(mplew, allrings);
+        addRingInfo(mplew, allrings);
         addMarriageRingLook(mplew, chr);
         mplew.writeInt(0);
         return mplew.getPacket();
