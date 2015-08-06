@@ -11,10 +11,11 @@ import tools.MaplePacketCreator;
 import tools.StringUtil;
 
 public class InternCommand {
-        public static ServerConstants.PlayerGMRank getPlayerLevelRequired() {
+
+    public static ServerConstants.PlayerGMRank getPlayerLevelRequired() {
         return ServerConstants.PlayerGMRank.INTERN;
     }
-        
+
     public static class Ban extends CommandExecute {
 
         protected boolean hellban = false;
@@ -128,22 +129,24 @@ public class InternCommand {
             }
         }
     }
-        public static class spy extends CommandExecute {
-            
+
+    public static class spy extends CommandExecute {
+
         @Override
-       public int execute(MapleClient c, String[] splitted) {
+        public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
                 c.getPlayer().dropMessage(6, "使用規則: !spy <玩家名字>");
             } else {
                 MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
-                 if (victim.getGMLevel() > 3) {
+
+                if (victim != null) {
+                    if (victim.getGMLevel() > 3) {
                         c.getPlayer().dropMessage(5, "你不能查看比你高權限的人!");
                         return 0;
                     }
-                if (victim != null) {
                     c.getPlayer().dropMessage(5, "此玩家狀態:");
                     c.getPlayer().dropMessage(5, "等級: " + victim.getLevel() + "職業: " + victim.getJob() + "名聲: " + victim.getFame());
-                    c.getPlayer().dropMessage(5, "地圖: " + victim.getMapId() +  " - " + victim.getMap().getMapName().toString());
+                    c.getPlayer().dropMessage(5, "地圖: " + victim.getMapId() + " - " + victim.getMap().getMapName().toString());
                     c.getPlayer().dropMessage(5, "力量: " + victim.getStat().getStr() + "  ||  敏捷: " + victim.getStat().getDex() + "  ||  智力: " + victim.getStat().getInt() + "  ||  幸運: " + victim.getStat().getLuk());
                     c.getPlayer().dropMessage(5, "擁有 " + victim.getMeso() + " 楓幣.");
                     c.getPlayer().dropMessage(5, "擁有 " + victim.getCSPoints(1) + " GASH " + victim.getCSPoints(2) + " 楓葉點數 ");
@@ -152,58 +155,58 @@ public class InternCommand {
                 } else {
                     c.getPlayer().dropMessage(5, "找不到此玩家.");
                 }
-        }
+            }
             return 1;
+        }
     }
- }
 
     public static class online1 extends CommandExecute {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
             int total = 0;
-            int curConnected = c.getChannelServer().getConnectedClients();  
+            int curConnected = c.getChannelServer().getConnectedClients();
             c.getPlayer().dropMessage(6, "上線的角色 頻道-" + c.getChannel() + ":");
             c.getPlayer().dropMessage(6, c.getChannelServer().getPlayerStorage().getOnlinePlayers(true));
             c.getPlayer().dropMessage(6, new StringBuilder().append("當前伺服器總計線上人數: ").append(total).toString());
             return 1;
         }
     }
-    
+
     public static class online extends CommandExecute {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-          int total = 0;
-          int curConnected = c.getChannelServer().getConnectedClients();  
-          c.getPlayer().dropMessage(6, "-------------------------------------------------------------------------------------");  
-           c.getPlayer().dropMessage(6, new StringBuilder().append("頻道: ").append(c.getChannelServer().getChannel()).append(" 線上人數: ").append(curConnected).toString());
+            int total = 0;
+            int curConnected = c.getChannelServer().getConnectedClients();
+            c.getPlayer().dropMessage(6, "-------------------------------------------------------------------------------------");
+            c.getPlayer().dropMessage(6, new StringBuilder().append("頻道: ").append(c.getChannelServer().getChannel()).append(" 線上人數: ").append(curConnected).toString());
             total += curConnected;
-            for (MapleCharacter chr : c.getChannelServer().getPlayerStorage().getAllCharacters()) {    
+            for (MapleCharacter chr : c.getChannelServer().getPlayerStorage().getAllCharacters()) {
                 if (chr != null && c.getPlayer().getGMLevel() >= chr.getGMLevel()) {
-                        StringBuilder ret = new StringBuilder();
-                        ret.append(" 角色暱稱 ");
-                        ret.append(StringUtil.getRightPaddedStr(chr.getName(), ' ', 13));
-                        ret.append(" ID: ");
-                        ret.append(chr.getId());
-                        ret.append(" 等級: ");
-                        ret.append(StringUtil.getRightPaddedStr(String.valueOf(chr.getLevel()), ' ', 3));
-                        ret.append(" 職業: ");
-                        ret.append(chr.getJob());
-                        if (chr.getMap() != null) {
+                    StringBuilder ret = new StringBuilder();
+                    ret.append(" 角色暱稱 ");
+                    ret.append(StringUtil.getRightPaddedStr(chr.getName(), ' ', 13));
+                    ret.append(" ID: ");
+                    ret.append(chr.getId());
+                    ret.append(" 等級: ");
+                    ret.append(StringUtil.getRightPaddedStr(String.valueOf(chr.getLevel()), ' ', 3));
+                    ret.append(" 職業: ");
+                    ret.append(chr.getJob());
+                    if (chr.getMap() != null) {
                         ret.append(" 地圖: ");
-                        ret.append(chr.getMapId()+ " - "+ chr.getMap().getMapName().toString());
+                        ret.append(chr.getMapId() + " - " + chr.getMap().getMapName().toString());
                         c.getPlayer().dropMessage(6, ret.toString());
                     }
-                   }
                 }
+            }
             c.getPlayer().dropMessage(6, new StringBuilder().append("當前伺服器總計線上人數: ").append(total).toString());
             c.getPlayer().dropMessage(6, "-------------------------------------------------------------------------------------");
             return 1;
         }
     }
 
-        public static class Warp extends CommandExecute {
+    public static class Warp extends CommandExecute {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
@@ -245,13 +248,13 @@ public class InternCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
 
-                World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(5, "<GM聊天視窗>" + "頻道" + c.getPlayer().getClient().getChannel() + " [" + c.getPlayer().getName()+ "] : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
-            
+            World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(5, "<GM聊天視窗>" + "頻道" + c.getPlayer().getClient().getChannel() + " [" + c.getPlayer().getName() + "] : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
+
             return 1;
         }
     }
-    
-        public static class Hide extends CommandExecute {
+
+    public static class Hide extends CommandExecute {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
@@ -266,7 +269,7 @@ public class InternCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             c.getPlayer().dispelBuff(9001004);
-                c.getPlayer().dropMessage(6,"管理員隱藏 = 關閉 \r\n 開啟請輸入!hide");
+            c.getPlayer().dropMessage(6, "管理員隱藏 = 關閉 \r\n 開啟請輸入!hide");
             return 1;
         }
     }
