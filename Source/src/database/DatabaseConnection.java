@@ -91,7 +91,6 @@ public class DatabaseConnection {
                 lock.unlock();
             }
             log.info("[Database] Thread [" + threadID + "] has created a new Database Connection.");
-            //System.err.println("[Database] Thread [" + threadID + "] has created a new Database Connection.");
         }
         Connection c = ret.getConnection();
         try {
@@ -142,6 +141,7 @@ public class DatabaseConnection {
 
         public ConWrapper(Connection con) {
             this.connection = con;
+            this.lastAccessTime = System.currentTimeMillis();
         }
 
         public boolean close() {
@@ -173,7 +173,6 @@ public class DatabaseConnection {
                 }
                 this.connection = connectToDB();
             }
-
             lastAccessTime = System.currentTimeMillis(); // Record Access
             return this.connection;
         }
