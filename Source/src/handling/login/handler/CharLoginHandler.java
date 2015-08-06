@@ -63,6 +63,11 @@ public class CharLoginHandler {
     }
 
     public static final void login(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+        
+        if( slea.available() <= 4) {
+            c.getSession().close(true);
+            return;
+        }
         final String login = slea.readMapleAsciiString();
         final String pwd = slea.readMapleAsciiString();
 
