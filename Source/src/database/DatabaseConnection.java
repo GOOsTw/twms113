@@ -24,8 +24,11 @@ import java.lang.management.ThreadMXBean;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
 import org.slf4j.Logger;
@@ -47,6 +50,7 @@ public class DatabaseConnection {
     private final static Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
     private static String dbDriver = "", dbUrl = "", dbUser = "", dbPass = "";
     private static long connectionTimeOut = 30 * 60 * 60 * 1000;
+    private static ReentrantLock lock = new ReentrantLock();// 锁对象
 
     public static int getConnectionsCount() {
         return connections.size();
@@ -80,7 +84,12 @@ public class DatabaseConnection {
         if (ret == null) {
             Connection retCon = connectToDB();
             ret = new ConWrapper(retCon);
-            connections.put(threadID, ret);
+            lock.lock();
+            try {
+                connections.put(threadID, ret);
+            } finally {
+                lock.unlock();
+            }
             log.info("[Database] Thread [" + threadID + "] has created a new Database Connection.");
             //System.err.println("[Database] Thread [" + threadID + "] has created a new Database Connection.");
         }
@@ -136,20 +145,23 @@ public class DatabaseConnection {
         }
 
         public boolean close() {
-            synchronized (connection) {
-                if (connection == null) {
-                    return false;
-                }
-                if (!expiredConnection()) {
-                    try {
-                        this.connection.close();
-                        return true;
-                    } catch (SQLException ex) {
-                        return false;
-                    }
-                }
-                return false;
+            boolean ret = false;
+
+            if (connection == null) {
+                ret = false;
             }
+            if (!expiredConnection()) {
+                lock.lock();
+                try {
+                    this.connection.close();
+                    ret = true;
+                } catch (SQLException ex) {
+                    ret = false;
+                } finally {
+                    lock.unlock();
+                }
+            }
+            return ret;
         }
 
         public Connection getConnection() {
@@ -192,12 +204,20 @@ public class DatabaseConnection {
 
     public static void closeTimeout() {
         int i = 0;
-        synchronized (connections) {
-            for (ConWrapper con : connections.values()) {
-                if (con.close()) {
-                    i++;
+        lock.lock();
+        List<Integer> keys = new ArrayList(connections.keySet());
+        try {
+            synchronized (connections) {
+                for (Integer tid :keys) {
+                    ConWrapper con = connections.get(tid);
+                    if (con.close()) {
+                        connections.remove(tid);
+                        i++;
+                    }
                 }
             }
+        } finally {
+            lock.unlock();
         }
         System.out.println("[Database] 已經關閉" + String.valueOf(i) + "個無用連線.");
     }
