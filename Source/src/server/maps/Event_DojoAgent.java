@@ -395,24 +395,11 @@ public class Event_DojoAgent {
                 return;
         }
         if (mobid != 0) {
-            map.broadcastMessage(MaplePacketCreator.getClock(3000));
+          
             final int rand = Randomizer.nextInt(3);
             MapTimer.getInstance().schedule(new Runnable() {
                 @Override
                 public void run() {
-                    map.broadcastMessage(MaplePacketCreator.stopClock());
-                    map.broadcastMessage(MaplePacketCreator.getClockTime(0, 20, 0));
-                    ScheduledFuture<?> task = MapTimer.getInstance().schedule(new Runnable() {
-                        @Override
-                        public void run() {
-                            List<MapleCharacter> chrs = map.getCharactersThreadsafe();
-                            map.broadcastMessage(MaplePacketCreator.stopClock());
-                            for (MapleCharacter chr : chrs) {
-                                MapleMap target = ChannelServer.getInstance(map.getChannel()).getMapFactory().getMap(925020002);
-                                chr.changeMap(target, target.getPortal(0));
-                            }
-                        }
-                    }, 20 * 60 * 1000);
                     map.spawnMonsterWithEffect(MapleLifeFactory.getMonster(mobid), 15, rand == 0 ? point1 : rand == 1 ? point2 : point3);
                 }
             }, 3000);
