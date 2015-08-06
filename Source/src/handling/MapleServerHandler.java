@@ -446,6 +446,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             client.sendPing();
         } else {
             session.close(true);
+            return;
         }
         super.sessionIdle(session, status);
     }

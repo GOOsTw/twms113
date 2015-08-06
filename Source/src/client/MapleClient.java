@@ -1048,20 +1048,16 @@ public class MapleClient implements Serializable {
     public final void sendPing() {
         lastPing = System.currentTimeMillis();
         session.write(LoginPacket.getPing());
-
         PingTimer.getInstance().schedule(new Runnable() {
 
             @Override
             public void run() {
                 try {
                     if (getLatency() < 0) {
-
-                        if (getSession().isConnected()) {
-                            getSession().close(true);
-                        }
+                        getSession().close(true);
                     }
                 } catch (final NullPointerException e) {
-                    // client already gone
+                    getSession().close(true);
                 }
             }
         }, 15000); // note: idletime gets added to this too

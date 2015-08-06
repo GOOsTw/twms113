@@ -25,9 +25,12 @@ import java.awt.Point;
 import client.MapleCharacter;
 import handling.channel.ChannelServer;
 import handling.world.MaplePartyCharacter;
+import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 import server.Randomizer;
 import server.Timer.MapTimer;
 import server.life.MapleLifeFactory;
+import tools.FilePrinter;
 import tools.MaplePacketCreator;
 
 public class Event_DojoAgent {
@@ -150,7 +153,10 @@ public class Event_DojoAgent {
                         if (chr != null) {
                             final int point = (points * 3);
                             final int pLevel = c.getParty().getAverageLevel();
-                            final int cspoints = (int) ((int) (thisStage * 15) - (int) (pLevel * 1.3) * 1.2);
+                            int cspoints = (int) ((int) (thisStage * 15) - (int) (pLevel * 1.3) * 1.2);
+                            if (cspoints <= 0) {
+                                cspoints = 5;
+                            }
                             chr.modifyCSPoints(1, cspoints, true);
                             chr.setDojo(chr.getDojo() + point);
                             chr.getClient().getSession().write(MaplePacketCreator.Mulung_Pts(point, chr.getDojo()));
@@ -158,7 +164,10 @@ public class Event_DojoAgent {
                     }
                 } else {
                     final int point = ((points + 1) * 3);
-                    final int cspoints = (int) ((int) (thisStage * 15) - (int) (c.getLevel() * 1.3) * 1.7);
+                    int cspoints = (int) ((int) (thisStage * 15) - (int) (c.getLevel() * 1.3) * 1.7);
+                    if (cspoints <= 0) {
+                        cspoints = 5;
+                    }
                     c.modifyCSPoints(1, cspoints, true);
                     c.setDojo(c.getDojo() + point);
                     c.getClient().getSession().write(MaplePacketCreator.Mulung_Pts(point, c.getDojo()));
@@ -221,7 +230,7 @@ public class Event_DojoAgent {
                 }
             }
         } catch (Exception rm) {
-            rm.printStackTrace();
+            FilePrinter.printError("武陵道場.txt", rm);
         }
         return false;
     }
@@ -386,12 +395,24 @@ public class Event_DojoAgent {
                 return;
         }
         if (mobid != 0) {
+            map.broadcastMessage(MaplePacketCreator.getClock(3000));
             final int rand = Randomizer.nextInt(3);
-
             MapTimer.getInstance().schedule(new Runnable() {
-
                 @Override
                 public void run() {
+                    map.broadcastMessage(MaplePacketCreator.stopClock());
+                    map.broadcastMessage(MaplePacketCreator.getClockTime(0, 20, 0));
+                    ScheduledFuture<?> task = MapTimer.getInstance().schedule(new Runnable() {
+                        @Override
+                        public void run() {
+                            List<MapleCharacter> chrs = map.getCharactersThreadsafe();
+                            map.broadcastMessage(MaplePacketCreator.stopClock());
+                            for (MapleCharacter chr : chrs) {
+                                MapleMap target = ChannelServer.getInstance(map.getChannel()).getMapFactory().getMap(925020002);
+                                chr.changeMap(target, target.getPortal(0));
+                            }
+                        }
+                    }, 20 * 60 * 1000);
                     map.spawnMonsterWithEffect(MapleLifeFactory.getMonster(mobid), 15, rand == 0 ? point1 : rand == 1 ? point2 : point3);
                 }
             }, 3000);
