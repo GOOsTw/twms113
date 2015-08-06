@@ -46,7 +46,7 @@ public class DatabaseConnection {
             = new HashMap();
     private final static Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
     private static String dbDriver = "", dbUrl = "", dbUser = "", dbPass = "";
-    private static long connectionTimeOut = 30 * 60 * 60;
+    private static long connectionTimeOut = 30 * 60 * 60 * 1000;
 
     public static int getConnectionsCount() {
         return connections.size();
@@ -184,7 +184,7 @@ public class DatabaseConnection {
 
         dbDriver = "com.mysql.jdvc.Driver";
         String db = ServerProperties.getProperty("server.settings.db.name", "twms");
-        String ip = ServerProperties.getProperty("server.settings.db.ip", "127.0.0.1");
+        String ip = ServerProperties.getProperty("server.settings.db.ip", "localhost");
         dbUrl = "jdbc:mysql://" + ip + ":3306/" + db + "?autoReconnect=true&characterEncoding=UTF8&?connectTimeout=2000000";
         dbUser = ServerProperties.getProperty("server.settings.db.user");
         dbPass = ServerProperties.getProperty("server.settings.db.password");

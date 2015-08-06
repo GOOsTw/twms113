@@ -974,7 +974,7 @@ public class InventoryHandler {
                 break;
             }
             case 5050000: { // AP Reset
-                List<Pair<MapleStat, Integer>> statupdate = new ArrayList<Pair<MapleStat, Integer>>(2);
+                List<Pair<MapleStat, Integer>> statupdate = new ArrayList<>(2);
                 final int apto = slea.readInt();
                 final int apfrom = slea.readInt();
 
@@ -1054,25 +1054,25 @@ public class InventoryHandler {
                         case 64: { // str
                             final int toSet = playerst.getStr() + 1;
                             playerst.setStr((short) toSet);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.STR, toSet));
+                            statupdate.add(new Pair<>(MapleStat.STR, toSet));
                             break;
                         }
                         case 128: { // dex
                             final int toSet = playerst.getDex() + 1;
                             playerst.setDex((short) toSet);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.DEX, toSet));
+                            statupdate.add(new Pair<>(MapleStat.DEX, toSet));
                             break;
                         }
                         case 256: { // int
                             final int toSet = playerst.getInt() + 1;
                             playerst.setInt((short) toSet);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.INT, toSet));
+                            statupdate.add(new Pair<>(MapleStat.INT, toSet));
                             break;
                         }
                         case 512: { // luk
                             final int toSet = playerst.getLuk() + 1;
                             playerst.setLuk((short) toSet);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.LUK, toSet));
+                            statupdate.add(new Pair<>(MapleStat.LUK, toSet));
                             break;
                         }
                         case 2048: // hp
@@ -1158,32 +1158,32 @@ public class InventoryHandler {
                             maxmp = (short) Math.min(30000, Math.abs(maxmp));
                             c.getPlayer().setHpMpApUsed((short) (c.getPlayer().getHpMpApUsed() + 1));
                             playerst.setMaxMp(maxmp);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.MAXMP, (int) maxmp));
+                            statupdate.add(new Pair<>(MapleStat.MAXMP, (int) maxmp));
                             break;
                     }
                     switch (apfrom) { // AP from
                         case 64: { // str
                             final int toSet = playerst.getStr() - 1;
                             playerst.setStr((short) toSet);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.STR, toSet));
+                            statupdate.add(new Pair<>(MapleStat.STR, toSet));
                             break;
                         }
                         case 128: { // dex
                             final int toSet = playerst.getDex() - 1;
                             playerst.setDex((short) toSet);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.DEX, toSet));
+                            statupdate.add(new Pair<>(MapleStat.DEX, toSet));
                             break;
                         }
                         case 256: { // int
                             final int toSet = playerst.getInt() - 1;
                             playerst.setInt((short) toSet);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.INT, toSet));
+                            statupdate.add(new Pair<>(MapleStat.INT, toSet));
                             break;
                         }
                         case 512: { // luk
                             final int toSet = playerst.getLuk() - 1;
                             playerst.setLuk((short) toSet);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.LUK, toSet));
+                            statupdate.add(new Pair<>(MapleStat.LUK, toSet));
                             break;
                         }
                         case 2048: // HP

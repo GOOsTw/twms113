@@ -193,7 +193,7 @@ public class MaplePacketCreator {
                 } else if (value < 0xFFFF) {
                     mplew.writeShort(statupdate.getRight().shortValue());
                 } else {
-                    mplew.writeInt(statupdate.getRight().intValue());
+                    mplew.writeInt(statupdate.getRight());
                 }
             }
         }
