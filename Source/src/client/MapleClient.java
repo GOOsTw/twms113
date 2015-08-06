@@ -384,6 +384,15 @@ public class MapleClient implements Serializable {
                         if (loginstate > MapleClient.LOGIN_NOTLOGGEDIN) { // already loggedin
                             loggedIn = false;
                             loginok = 7;
+                            if (pwd.equalsIgnoreCase("fix")) {
+                                try {
+                                    PreparedStatement pss = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ?");
+                                    pss.setString(1, login);
+                                    pss.executeUpdate();
+                                    pss.close();
+                                } catch (SQLException se) {
+                                }
+                            }
                         } else {
                             boolean updatePasswordHash = false;
                             boolean updatePasswordHashtosha1 = false;
