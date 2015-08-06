@@ -90,10 +90,10 @@ function action(mode, type, selection) {
 	var jobName;
 	if (selection == 0) {
 	    jobName = "打手";
-		MapId = "108000500";
+		MapId = "108000502";
 	} else if (selection == 1) {
 	    jobName = "槍手";
-		MapId = "108000502";
+		MapId = "108000500";
 	}
 	cm.sendYesNo("你真的要成為一位 #r" + jobName + "#k?");
 	} else if (status == 15) {

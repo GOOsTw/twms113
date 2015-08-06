@@ -6,7 +6,7 @@ var ingredients_1 = Array(4011006, 4021007);
 var ingredients_2 = Array(4011007, 4021007);
 var ingredients_3 = Array(4021009, 4021007);
 var mats = Array();
-var mesos = Array(10000000, 20000000, 30000000);
+var mesos = Array(1000000, 2000000, 3000000);
 
 function action(mode, type, selection) {
     if (mode == 1) {
