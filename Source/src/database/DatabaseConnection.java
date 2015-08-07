@@ -24,8 +24,11 @@ import java.lang.management.ThreadMXBean;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
 import org.slf4j.Logger;
@@ -46,7 +49,8 @@ public class DatabaseConnection {
             = new HashMap();
     private final static Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
     private static String dbDriver = "", dbUrl = "", dbUser = "", dbPass = "";
-    private static long connectionTimeOut = 30 * 60 * 60;
+    private static long connectionTimeOut = 30 * 60 * 60 * 1000;
+    private static ReentrantLock lock = new ReentrantLock();// 锁对象
 
     public static int getConnectionsCount() {
         return connections.size();
@@ -80,9 +84,14 @@ public class DatabaseConnection {
         if (ret == null) {
             Connection retCon = connectToDB();
             ret = new ConWrapper(retCon);
-            connections.put(threadID, ret);
+      
+            lock.lock();
+            try {
+                connections.put(threadID, ret);
+            } finally {
+                lock.unlock();
+            }
             log.info("[Database] Thread [" + threadID + "] has created a new Database Connection.");
-            //System.err.println("[Database] Thread [" + threadID + "] has created a new Database Connection.");
         }
         Connection c = ret.getConnection();
         try {
@@ -132,24 +141,28 @@ public class DatabaseConnection {
         private Connection connection;
 
         public ConWrapper(Connection con) {
+            this.lastAccessTime = System.currentTimeMillis();
             this.connection = con;
         }
 
         public boolean close() {
-            synchronized (connection) {
-                if (connection == null) {
-                    return false;
-                }
-                if (!expiredConnection()) {
-                    try {
-                        this.connection.close();
-                        return true;
-                    } catch (SQLException ex) {
-                        return false;
-                    }
-                }
-                return false;
+            boolean ret = false;
+
+            if (connection == null) {
+                ret = false;
             }
+            if (!expiredConnection()) {
+                lock.lock();
+                try {
+                    this.connection.close();
+                    ret = true;
+                } catch (SQLException ex) {
+                    ret = false;
+                } finally {
+                    lock.unlock();
+                }
+            }
+            return ret;
         }
 
         public Connection getConnection() {
@@ -161,7 +174,6 @@ public class DatabaseConnection {
                 }
                 this.connection = connectToDB();
             }
-
             lastAccessTime = System.currentTimeMillis(); // Record Access
             return this.connection;
         }
@@ -184,20 +196,28 @@ public class DatabaseConnection {
 
         dbDriver = "com.mysql.jdvc.Driver";
         String db = ServerProperties.getProperty("server.settings.db.name", "twms");
-        String ip = ServerProperties.getProperty("server.settings.db.ip", "127.0.0.1");
-        dbUrl = "jdbc:mysql://" + ip + ":3306/" + db + "?autoReconnect=true&characterEncoding=UTF8&?connectTimeout=2000000";
+        String ip = ServerProperties.getProperty("server.settings.db.ip", "localhost");
+        dbUrl = "jdbc:mysql://" + ip + ":3306/" + db + "?autoReconnect=true&characterEncoding=UTF8&?connectTimeout=120000000";
         dbUser = ServerProperties.getProperty("server.settings.db.user");
         dbPass = ServerProperties.getProperty("server.settings.db.password");
     }
 
     public static void closeTimeout() {
         int i = 0;
-        synchronized (connections) {
-            for (ConWrapper con : connections.values()) {
-                if (con.close()) {
-                    i++;
+        lock.lock();
+        List<Integer> keys = new ArrayList(connections.keySet());
+        try {
+            synchronized (connections) {
+                for (Integer tid :keys) {
+                    ConWrapper con = connections.get(tid);
+                    if (con.close()) {
+                        connections.remove(tid);
+                        i++;
+                    }
                 }
             }
+        } finally {
+            lock.unlock();
         }
         System.out.println("[Database] 已經關閉" + String.valueOf(i) + "個無用連線.");
     }

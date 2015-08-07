@@ -54,7 +54,7 @@ public class Start {
         CloneTimer.getInstance().start();
         EventTimer.getInstance().start();
         BuffTimer.getInstance().start();
-        WorldTimer.getInstance().register(CloseSQLConnections, 30 * 60 * 60);
+        WorldTimer.getInstance().register(CloseSQLConnections, 30 * 60 * 60 * 1000);
         LoginInformationProvider.getInstance();
         MapleQuest.initQuests();
         MapleLifeFactory.loadQuestCounts();

@@ -18,7 +18,6 @@ http://puu.sh/jmoZx/158ec24af8.jpg
 
 烈焰巫師二轉 自然力重置(12101005) 放了沒效果  
 
-掉寶加倍沒效果
 cm.removeNpc 這個removeNpc函數 使用了NPC不會消失 會卡在地圖上 正常來說NPC會消失  
 轉了任何皇家職業後 貴族技能不能點 點了會卡住  
 升到200級的時候MapleStory會整個Crash  

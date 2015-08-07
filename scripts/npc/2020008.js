@@ -82,7 +82,7 @@ function action(mode, type, selection) {
 					cm.gainItem(4031057, -1);
 					cm.gainItem(4031058, -1);
 					cm.sendOk("恭喜轉職了!");
-					cm.worldMessage("『轉職快報』：恭喜玩家."+ cm.getChar().getName() +"  成功三轉-神槍手讓我們熱烈的祝福他/她吧！");
+					cm.worldMessage("『轉職快報』：恭喜玩家."+ cm.getChar().getName() +"  成功三轉-十字軍讓我們熱烈的祝福他/她吧！");
                     cm.dispose();
                 } else if (cm.getJob()==120) {
                     cm.changeJob(121);
@@ -90,7 +90,7 @@ function action(mode, type, selection) {
 					cm.gainItem(4031057, -1);
 					cm.gainItem(4031058, -1);
 					cm.sendOk("恭喜轉職了!");
-					cm.worldMessage("『轉職快報』：恭喜玩家."+ cm.getChar().getName() +"  成功三轉-神槍手讓我們熱烈的祝福他/她吧！");
+					cm.worldMessage("『轉職快報』：恭喜玩家."+ cm.getChar().getName() +"  成功三轉-騎士讓我們熱烈的祝福他/她吧！");
                     cm.dispose();
                 } else if (cm.getJob()==130) {
                     cm.changeJob(131);
@@ -98,7 +98,7 @@ function action(mode, type, selection) {
 					cm.gainItem(4031057, -1);
 					cm.gainItem(4031058, -1);
 					cm.sendOk("恭喜轉職了!");
-					cm.worldMessage("『轉職快報』：恭喜玩家."+ cm.getChar().getName() +"  成功三轉-神槍手讓我們熱烈的祝福他/她吧！");
+					cm.worldMessage("『轉職快報』：恭喜玩家."+ cm.getChar().getName() +"  成功三轉-龍騎士讓我們熱烈的祝福他/她吧！");
                     cm.dispose();
                 }
             } else if (cm.haveItem(4031057, 1))

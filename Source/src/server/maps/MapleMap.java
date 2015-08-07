@@ -127,6 +127,7 @@ public final class MapleMap {
     private MapleNodes nodes;
     private MapleSquadType squad;
     private Map<String, Integer> environment = new LinkedHashMap<String, Integer>();
+    private ScheduledFuture<?> MulungDojoLeaveTask = null;
 
     public MapleMap(final int mapid, final int channel, final int returnMapId, final float monsterRate) {
         this.mapid = mapid;
@@ -2932,9 +2933,17 @@ public final class MapleMap {
         cancelSquadSchedule();
         resetPortals();
         environment.clear();
+        if( MulungDojoLeaveTask != null && !MulungDojoLeaveTask.isCancelled()) {
+            MulungDojoLeaveTask.cancel(true);
+            MulungDojoLeaveTask = null;
+        }
         if (respawn) {
             respawn(true);
         }
+    }
+    
+    public void setMulungDojoLeaveTask(ScheduledFuture<?> task) {
+        MulungDojoLeaveTask = task ;
     }
 
     public final void cancelSquadSchedule() {

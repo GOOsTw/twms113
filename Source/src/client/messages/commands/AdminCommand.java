@@ -957,6 +957,22 @@ public class AdminCommand {
             return 1;
         }
     }
+    
+    public static class serverMsg extends CommandExecute {
+
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            if (splitted.length > 1) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(StringUtil.joinStringFrom(splitted, 1));
+                World.Broadcast.broadcastMessage(MaplePacketCreator.serverMessage(sb.toString()).getBytes());
+            } else {
+                c.getPlayer().dropMessage(6, "指令規則: !serverMsg <message>");
+                return 0;
+            }
+            return 1;
+        }
+    }
 
     public static class Say extends CommandExecute {
 

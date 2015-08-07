@@ -338,7 +338,6 @@ public class PacketHelper {
     public static final void addItemInfo(final MaplePacketLittleEndianWriter mplew, final IItem item, final boolean zeroPosition, final boolean leaveOut) {
 
         MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-        boolean isCash = ii.isCash(item.getItemId());
         boolean isPet = item.getPet() != null && item.getPet().getUniqueId() > -1;
         boolean isRing = false;
         boolean hasUniqueId = item.getUniqueId() > 0 && !GameConstants.isMarrigeRing(item.getItemId()) && item.getItemId() / 10000 != 166;

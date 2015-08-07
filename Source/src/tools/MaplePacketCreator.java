@@ -413,13 +413,13 @@ public class MaplePacketCreator {
 
         return mplew.getPacket();
     }
-
+    
     public static MaplePacket tripleSmega(List<String> message, boolean ear, int channel) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.SERVERMESSAGE.getValue());
-        mplew.write(12);
-
+        //mplew.write(12);
+        mplew.write(0x0A);
         if (message.get(0) != null) {
             mplew.writeMapleAsciiString(message.get(0));
         }
@@ -429,6 +429,30 @@ public class MaplePacketCreator {
                 mplew.writeMapleAsciiString(message.get(i));
             }
         }
+        mplew.write(channel - 1);
+        mplew.write(ear ? 1 : 0);
+
+        return mplew.getPacket();
+    }
+    
+     public static MaplePacket HeartSmega(List<String> message, boolean ear, int channel) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.SERVERMESSAGE.getValue());
+        mplew.write(11);
+        mplew.writeMapleAsciiString(message.get(0));
+        mplew.write(channel - 1);
+        mplew.write(ear ? 1 : 0);
+
+        return mplew.getPacket();
+    }   
+     
+    public static MaplePacket SkullSmega(List<String> message, boolean ear, int channel) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.SERVERMESSAGE.getValue());
+        mplew.write(12);
+        mplew.writeMapleAsciiString(message.get(0));
         mplew.write(channel - 1);
         mplew.write(ear ? 1 : 0);
 
@@ -953,8 +977,10 @@ public class MaplePacketCreator {
         }
 
         Pair<List<MapleRing>, List<MapleRing>> rings = chr.getRings(false);
-        addRingInfo(mplew, rings.getLeft());
-        addRingInfo(mplew, rings.getRight());
+        List<MapleRing> allrings = rings.getLeft();
+        allrings.addAll(rings.getRight());
+        addRingInfo(mplew, allrings);
+        addRingInfo(mplew, allrings);
         addMarriageRingLook(mplew, chr);
         mplew.writeShort(0);
         if (chr.getCarnivalParty() != null) {
@@ -1533,8 +1559,10 @@ public class MaplePacketCreator {
         mplew.write(1);
         PacketHelper.addCharLook(mplew, chr, false);
         Pair<List<MapleRing>, List<MapleRing>> rings = chr.getRings(false);
-        addRingInfo(mplew, rings.getLeft());    
-        addRingInfo(mplew, rings.getRight());
+        List<MapleRing> allrings = rings.getLeft();
+        allrings.addAll(rings.getRight());
+        addRingInfo(mplew, allrings);
+        addRingInfo(mplew, allrings);
         addMarriageRingLook(mplew, chr);
         mplew.writeInt(0);
         return mplew.getPacket();

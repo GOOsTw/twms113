@@ -1,4 +1,4 @@
-var status = -1;
+﻿var status = -1;
 
 function action(mode, type, selection) {
     if (mode == 1) {
@@ -8,13 +8,13 @@ function action(mode, type, selection) {
     }
     switch(cm.getPlayer().getMapId()) {
 	case 930000000:
-	    cm.sendNext("Welcome. Please enter the portal.");
+	    cm.sendNext("歡迎，請進入。");
 	    break;
 	case 930000100:
-	    cm.sendNext("We have to eliminate all these contaminated monsters!");
+	    cm.sendNext("我們必須消除所有這些怪物的污染！");
 	    break;
 	case 930000200:
-	    cm.sendNext("We have to eliminate all these contaminated reactors!");
+	    cm.sendNext("我們必須消除所有這些被污染的反應堆！");
 	    break;
 	case 930000300:
 	    cm.warpParty(930000400);
@@ -31,7 +31,7 @@ function action(mode, type, selection) {
 	    }
 	    break;
 	case 930000600:
-	    cm.sendNext("This is it! Place the Magic Stone on the Altar!");
+	    cm.sendNext("就是這個！");
 	    break;
 	case 930000700:
             if (cm.canHold(4001198,1)) {

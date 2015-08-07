@@ -724,7 +724,6 @@ public class MapScriptMethods {
                 break;
             }
             case TD_MC_gasi2: {
-                showIntro(c, "Effect/Direction2.img/gasi2");
                 break;
             }
             case aranDirection: {

@@ -12,7 +12,7 @@ function action(mode, type, selection) {
 		cm.dispose();
 	} else {
 		if (mode == 0) {
-			cm.sendOk("Alright, see you next time.");
+			cm.sendOk("需要的時候再來找我。");
 			cm.dispose();
 			return;
 		}
@@ -21,7 +21,7 @@ function action(mode, type, selection) {
 		else
 			status--;
 		if (status == 0) {
-			cm.sendSimple("你的寵物死掉了嗎？？ #b\r\n#L2#我要復活我的寵物#l#k");
+			cm.sendSimple("您好，我是#p1032102# 有什麼我可以幫您的嗎？？ \r\n#r#L0#我要升級寶貝龍寵物#l#k\r\n#g#L1#我要升級我的機器人#l#k\r\n#b#L2#我要復活我的寵物#l#k\r\n#L3#我想要得到三寵技能#l#k");
 		} else if (status == 1) {
 			if (selection == 0) {
 				var currentpet = null;
@@ -35,7 +35,7 @@ function action(mode, type, selection) {
 					}
 				}
 				if (pet == null || !cm.haveItem(5380000,1)) {
-					cm.sendOk("You do not meet the requirements. You need #i5380000##t5380000#, as well as either one of #d#i5000029##t5000029##k, #g#i5000030##t5000030##k, #r#i5000031##t5000031##k, #b#i5000032##t5000032##k, or #e#i5000033##t5000033##n equipped at level 15 or higher. Please come back when you do.");
+					cm.sendOk("您沒有 #i5380000##t5380000#, 然後，寵物等級15級後我再告訴您怎麼做。");
 					cm.dispose();
 				} else {
 					var id = pet.getPetItemId();
@@ -65,9 +65,9 @@ function action(mode, type, selection) {
 					cm.getPlayer().unequipPet(pet, true, false);
 					cm.gainItem(5380000, -1);
 					cm.removeSlot(5, slot, 1);
-					cm.gainPet(after, name, level, closeness, fullness, 45, flag);
+					cm.gainPet(after, name, level, closeness, fullness, flag);
 					cm.getPlayer().spawnPet(slot);
-					cm.sendOk("Your dragon has now evolved!! It used to be a #i" + id + "##t" + id + "#, and now it's a #i" + after + "##t" + after + "#!");
+					cm.sendOk("您的龍已經進化了！它曾經是一隻 #i" + id + "##t" + id + "#, 而現在是一隻 #i" + after + "##t" + after + "#!");
 					cm.dispose();
 				}
 			} else if (selection == 1) {
@@ -82,7 +82,7 @@ function action(mode, type, selection) {
 					}
 				}
 				if (pet == null || !cm.haveItem(5380000,1)) {
-					cm.sendOk("You do not meet the requirements. You need #i5380000##t5380000#, as well as either one of #g#i5000048##t5000048##k, #r#i5000049##t5000049##k, #b#i5000050##t5000050##k, #d#i5000051##t5000051##k, #d#i5000052##t5000052##k, or #e#i5000053##t5000053##n equipped at level 15 or higher. Please come back when you do.");
+					cm.sendOk("您沒有 #i5380000##t5380000#, 然後，寵物等級15級後我再告訴您怎麼做。");
 					cm.dispose();
 				} else {
 					var id = pet.getPetItemId();
@@ -114,10 +114,19 @@ function action(mode, type, selection) {
 					cm.getPlayer().unequipPet(pet, true, false);
 					cm.gainItem(5380000, -1);
 					cm.removeSlot(5, slot, 1);
-					cm.gainPet(after, name, level, closeness, fullness, 45, flag);
+					cm.gainPet(after, name, level, closeness, fullness, flag);
 					cm.getPlayer().spawnPet(slot);
-					cm.sendOk("Your robo has now evolved!! It used to be a #i" + id + "##t" + id + "#, and now it's a #i" + after + "##t" + after + "#!");
+					cm.sendOk("您的龍已經進化了！它曾經是一隻 #i" + id + "##t" + id + "#, 而現在是一隻 #i" + after + "##t" + after + "#!");
 					cm.dispose();
+				}
+			} else if (selection == 3) {
+				if (cm.haveItem(5380000,15)){
+				cm.teachSkill(0000008, 1, 1);
+				cm.sendOk("已經學會囉！！");
+				cm.dispose();
+				} else {
+				cm.sendOk("很抱歉我需要#t5380000# 15個。");
+				cm.dispose();
 				}
 			} else if (selection == 2) { //revive	
 				var inv = cm.getInventory(5);
@@ -133,7 +142,7 @@ function action(mode, type, selection) {
 					cm.sendOk("你沒有死掉的寵物");
 					cm.dispose();
 				} else {
-					var selStr = "Please choose which pet to revive. You will need the Water of Life to revive it.#b\r\n";
+					var selStr = "請選擇一個想復活的寵物。#b\r\n";
 					for (var i = 0; i < theitems.length; i++) {
 						selStr += "\r\n#L" + i + "##v" + theitems[i].getItemId() + "##i" + theitems[i].getItemId() + "##l";
 					}
@@ -142,9 +151,9 @@ function action(mode, type, selection) {
 			}
 		} else if (status == 2) {
 			if (theitems.length <= 0) {
-				cm.sendOk("You have no expired pets.");
+				cm.sendOk("沒有死亡的寵物。");
 			} else if (!cm.haveItem(5180000,1)) {
-				cm.sendOk("You will need the #v5180000##i5180000#.");
+				cm.sendOk("我需要 #v5180000##i5180000#.");
 			} else {
 				theitems[selection].setExpiration(cm.getCurrentTime() + (45 * 24 * 60 * 60 * 1000));
 				cm.getPlayer().fakeRelog();
