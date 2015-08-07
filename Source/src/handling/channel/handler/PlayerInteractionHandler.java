@@ -185,12 +185,12 @@ public class PlayerInteractionHandler {
                                 c.getSession().write(PlayerShopPacket.getHiredMerch(chr, merchant, false));
                             } else {
                                 if (!merchant.isOpen() || !merchant.isAvailable()) {
-                                    chr.dropMessage(1, "這個商店在整理或者是沒再販賣東西");
+                                    chr.dropMessage(1, "這個商店在整理或者是沒再販賣東西。");
                                 } else {
                                     if (ips.getFreeSlot() == -1) {
-                                        chr.dropMessage(1, "商店人數已經滿了,請稍後再進入");
+                                        chr.dropMessage(1, "商店人數已經滿了，請稍後再進入。");
                                     } else if (merchant.isInBlackList(chr.getName())) {
-                                        chr.dropMessage(1, "你被這家商店加入黑名單了,所以不能進入");
+                                        chr.dropMessage(1, "被加入黑名單了，所以不能進入。");
                                     } else {
                                         chr.setPlayerShop(ips);
                                         merchant.addVisitor(chr);
@@ -200,7 +200,7 @@ public class PlayerInteractionHandler {
                             }
                         } else {
                             if (ips instanceof MaplePlayerShop && ((MaplePlayerShop) ips).isBanned(chr.getName())) {
-                                chr.dropMessage(1, "你被這家商店加入黑名單了,所以不能進入.");
+                                chr.dropMessage(1, "被加入黑名單了，所以不能進入。");
                                 return;
                             } else {
                                 if (ips.getFreeSlot() < 0 || ips.getVisitorSlot(chr) > -1 || !ips.isOpen() || !ips.isAvailable()) {
