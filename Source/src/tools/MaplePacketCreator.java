@@ -1957,6 +1957,13 @@ public class MaplePacketCreator {
 
         return mplew.getPacket();
     }
+    
+    public static MaplePacket hiredMerchantBox() {
+        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+        mplew.writeShort(SendPacketOpcode.ENTRUSTED_SHOP_CHECK_RESULT.getValue()); // header.
+        mplew.write(0x07);
+        return mplew.getPacket();
+    }
 
     public static MaplePacket giveDebuff(final List<Pair<MapleDisease, Integer>> statups, int skillid, int level, int duration) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();

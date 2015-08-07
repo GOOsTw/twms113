@@ -76,7 +76,7 @@ public class HiredMerchantHandler {
         }
     }
 
-    private static final byte checkExistance(final int accid, final int charid) {
+    private static byte checkExistance(final int accid, final int charid) {
         Connection con = DatabaseConnection.getConnection();
         try {
             PreparedStatement ps = con.prepareStatement("SELECT * from hiredmerch where accountid = ? OR characterid = ?");
