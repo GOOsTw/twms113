@@ -5,7 +5,7 @@ function action(mode, type, selection) {
 	status++;
     } else {
 	if (status == 0) {
-	    cm.sendOk("Ok, feel free to hang around until you're ready to go!");
+	    cm.sendOk("好吧，等你有需要再來找我。");
 	    cm.dispose();
 	    return;
 	}
@@ -43,7 +43,7 @@ function action(mode, type, selection) {
 //	    if (status == 0) {
 //	    	cm.sendYesNo("你要回去嗎?");
 //	    } else {
-		cm.warpMap(680000400,0);
+		cm.warpMap(680000500,0);
 		cm.dispose();
 //	    }
 	    return;

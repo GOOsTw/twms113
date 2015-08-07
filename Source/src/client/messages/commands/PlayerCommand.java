@@ -168,6 +168,10 @@ public class PlayerCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
+            if ((c.getPlayer().getMapId() >= 925020109 && c.getPlayer().getMapId() <= 925023814)) {
+                    c.getPlayer().dropMessage(5, "你不能在這裡使用指令.");
+                    return 0;
+                }
             if (c.getPlayer().getLevel() < 10 && c.getPlayer().getJob() != 200) {
                 c.getPlayer().dropMessage("你必須超過 10 等來使用此指令.");
                 return 0;

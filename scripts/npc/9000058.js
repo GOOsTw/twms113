@@ -109,6 +109,10 @@ function action(mode, type, selection) {
                     cm.dispose();
             }
 		} else if (selection == 7) {
+			if (cm.getQuestStatus(29507) == 1) {
+				cm.gainItem(1142082, 1);
+				cm.forceCompleteQuest(29507);
+			}
 				cm.forceCompleteQuest(20527);
 				cm.sendOk("完成任務。");
 				cm.dispose();
