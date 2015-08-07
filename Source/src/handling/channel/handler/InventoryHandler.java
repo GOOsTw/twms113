@@ -1591,16 +1591,13 @@ public class InventoryHandler {
                 }
                 if (!c.getChannelServer().getMegaphoneMuteState()) {
                     final String message = slea.readMapleAsciiString();
-
                     if (message.length() > 65) {
                         break;
                     }
                     final StringBuilder sb = new StringBuilder();
                     addMedalString(c.getPlayer(), sb);
-                    sb.append(c.getPlayer().getName());
-                    sb.append(" : ");
-                    sb.append(message);
-
+                    final List<String> messages = new LinkedList<String>();
+                    messages.add(sb + c.getPlayer().getName() + " : " + message);
                     final boolean ear = slea.readByte() != 0;
                     if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1) {
                         c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
@@ -1608,10 +1605,10 @@ public class InventoryHandler {
                         return;
                     }
                     if (c.getPlayer().isPlayer()) {
-                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.serverNotice(2, sb.toString()));
+                        World.Broadcast.broadcastSmega(MaplePacketCreator.HeartSmega(messages, ear, c.getChannel()).getBytes());
                         System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
                     } else if (c.getPlayer().isGM()) {
-                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.serverNotice(2, sb.toString()));
+                        World.Broadcast.broadcastSmega(MaplePacketCreator.HeartSmega(messages, ear, c.getChannel()).getBytes());
                         System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
                     }
                     used = true;
@@ -1631,7 +1628,6 @@ public class InventoryHandler {
                 }
                 if (!c.getChannelServer().getMegaphoneMuteState()) {
                     final String message = slea.readMapleAsciiString();
-
                     if (message.length() > 65) {
                         break;
                     }
@@ -2068,27 +2064,26 @@ public class InventoryHandler {
             }
 
             case 5450000: { // Mu Mu the Travelling Merchant
-               for (int i : GameConstants.blockedMaps) {
-                if (c.getPlayer().getMapId() == i) {
-                c.getPlayer().dropMessage(5, "你不能在這張地圖裡使用，如果卡住請使用 @ea 來解卡。");
-                c.getSession().write(MaplePacketCreator.enableActions());
-                return;
+                for (int i : GameConstants.blockedMaps) {
+                    if (c.getPlayer().getMapId() == i) {
+                        c.getPlayer().dropMessage(5, "你不能在這張地圖裡使用，如果卡住請使用 @ea 來解卡。");
+                        c.getSession().write(MaplePacketCreator.enableActions());
+                        return;
                     }
                 }
                 if (c.getPlayer().getLevel() < 10) {
-                 c.getPlayer().dropMessage(5, "你還沒有10等以上");
+                    c.getPlayer().dropMessage(5, "你還沒有10等以上");
                 } else if (c.getPlayer().getMap().getSquadByMap() != null || c.getPlayer().getEventInstance() != null || c.getPlayer().getMap().getEMByMap() != null || c.getPlayer().getMapId() >= 990000000) {
                     c.getPlayer().dropMessage(5, "你不能在這張地圖裡使用，如果卡住請使用 @ea 來解卡。");
                 } else if ((c.getPlayer().getMapId() >= 680000210 && c.getPlayer().getMapId() <= 680000502) || (c.getPlayer().getMapId() / 1000 == 980000 && c.getPlayer().getMapId() != 980000000) || (c.getPlayer().getMapId() / 100 == 1030008) || (c.getPlayer().getMapId() / 100 == 922010) || (c.getPlayer().getMapId() / 10 == 13003000)) {
                     c.getPlayer().dropMessage(5, "你不能在這張地圖裡使用，如果卡住請使用 @ea 來解卡。");
                 } else {
-                MapleShopFactory.getInstance().getShop(61).sendShop(c);
+                    MapleShopFactory.getInstance().getShop(61).sendShop(c);
                 }
                 //used = true;
                 break;
             }
-            
-               
+
             default:
                 if (itemId / 10000 == 512) {
                     final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();

@@ -435,6 +435,18 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
     
+     public static MaplePacket HeartSmega(List<String> message, boolean ear, int channel) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.SERVERMESSAGE.getValue());
+        mplew.write(11);
+        mplew.writeMapleAsciiString(message.get(0));
+        mplew.write(channel - 1);
+        mplew.write(ear ? 1 : 0);
+
+        return mplew.getPacket();
+    }   
+     
     public static MaplePacket SkullSmega(List<String> message, boolean ear, int channel) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
