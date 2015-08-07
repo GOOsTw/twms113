@@ -193,7 +193,7 @@ public class MaplePacketCreator {
                 } else if (value < 0xFFFF) {
                     mplew.writeShort(statupdate.getRight().shortValue());
                 } else {
-                    mplew.writeInt(statupdate.getRight());
+                    mplew.writeInt(statupdate.getRight().intValue());
                 }
             }
         }
@@ -413,13 +413,13 @@ public class MaplePacketCreator {
 
         return mplew.getPacket();
     }
-
+    
     public static MaplePacket tripleSmega(List<String> message, boolean ear, int channel) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.SERVERMESSAGE.getValue());
-        mplew.write(12);
-
+        //mplew.write(12);
+        mplew.write(0x0A);
         if (message.get(0) != null) {
             mplew.writeMapleAsciiString(message.get(0));
         }
@@ -429,6 +429,18 @@ public class MaplePacketCreator {
                 mplew.writeMapleAsciiString(message.get(i));
             }
         }
+        mplew.write(channel - 1);
+        mplew.write(ear ? 1 : 0);
+
+        return mplew.getPacket();
+    }
+    
+    public static MaplePacket SkullSmega(List<String> message, boolean ear, int channel) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.SERVERMESSAGE.getValue());
+        mplew.write(12);
+        mplew.writeMapleAsciiString(message.get(0));
         mplew.write(channel - 1);
         mplew.write(ear ? 1 : 0);
 

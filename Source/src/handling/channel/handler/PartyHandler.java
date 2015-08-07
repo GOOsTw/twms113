@@ -52,10 +52,10 @@ public class PartyHandler {
                     }
                 }
             } else {
-                c.getPlayer().dropMessage(5, "The party you are trying to join does not exist");
+                c.getPlayer().dropMessage(5, "已拒絕組隊邀請。");
             }
         } else {
-            c.getPlayer().dropMessage(5, "You can't join the party as you are already in one");
+            c.getPlayer().dropMessage(5, "不能加入組隊，因為已經有組隊了。");
         }
 
     }
@@ -76,7 +76,7 @@ public class PartyHandler {
                     if (partyplayer.equals(party.getLeader()) && party.getMembers().size() == 1) { //only one, reupdate
                         c.getSession().write(MaplePacketCreator.partyCreated(party.getId()));
                     } else {
-                        c.getPlayer().dropMessage(5, "You can't create a party as you are already in one");
+                        c.getPlayer().dropMessage(5, "不能創建組隊，因為已經有組隊了。");
                     }
                 }
                 break;
@@ -115,10 +115,10 @@ public class PartyHandler {
                             c.getSession().write(MaplePacketCreator.partyStatusMessage(17));
                         }
                     } else {
-                        c.getPlayer().dropMessage(5, "The party you are trying to join does not exist");
+                        c.getPlayer().dropMessage(5, "已拒絕組隊邀請。");
                     }
                 } else {
-                    c.getPlayer().dropMessage(5, "You can't join the party as you are already in one");
+                    c.getPlayer().dropMessage(5, "不能加入組隊，因為已經有組隊了。");
                 }
                 break;
             case 4: // invite

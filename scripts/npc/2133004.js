@@ -1,4 +1,4 @@
-var status = -1;
+﻿var status = -1;
 
 function action(mode, type, selection) {
     if (mode == 1) {
@@ -9,7 +9,7 @@ function action(mode, type, selection) {
     switch(cm.getPlayer().getMapId()) {
 	case 930000500:
 	    if (!cm.haveItem(4001163)) {
-	    	cm.sendNext("Get me the Purple Stone of Magic from here.");
+	    	cm.sendNext("把#b#t4001163##k帶來給我。");
 	    } else {
                 cm.warpParty(930000600);
 	    }
