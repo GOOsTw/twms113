@@ -1988,7 +1988,7 @@ public class InventoryHandler {
                     c.getSession().write(MaplePacketCreator.getOwlSearched(itemSearch, hms));
                     used = true;
                 } else {
-                    c.getPlayer().dropMessage(1, "Unable to find the item.");
+                    c.getPlayer().dropMessage(1, "找不到物品.");
                 }
                 break;
             }
