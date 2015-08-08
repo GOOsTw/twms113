@@ -84,14 +84,13 @@ public class DatabaseConnection {
         if (ret == null) {
             Connection retCon = connectToDB();
             ret = new ConWrapper(retCon);
-      
+
             lock.lock();
             try {
                 connections.put(threadID, ret);
             } finally {
                 lock.unlock();
             }
-            log.info("[Database] Thread [" + threadID + "] has created a new Database Connection.");
         }
         Connection c = ret.getConnection();
         try {
@@ -150,16 +149,17 @@ public class DatabaseConnection {
 
             if (connection == null) {
                 ret = false;
-            }
-            if (!expiredConnection()) {
-                lock.lock();
-                try {
-                    this.connection.close();
-                    ret = true;
-                } catch (SQLException ex) {
-                    ret = false;
-                } finally {
-                    lock.unlock();
+            } else {
+                if (expiredConnection()) {
+                    lock.lock();
+                    try {
+                        this.connection.close();
+                        ret = true;
+                    } catch (SQLException ex) {
+                        ret = false;
+                    } finally {
+                        lock.unlock();
+                    }
                 }
             }
             return ret;
@@ -208,10 +208,9 @@ public class DatabaseConnection {
         List<Integer> keys = new ArrayList(connections.keySet());
         try {
             synchronized (connections) {
-                for (Integer tid :keys) {
+                for (Integer tid : keys) {
                     ConWrapper con = connections.get(tid);
                     if (con.close()) {
-                        connections.remove(tid);
                         i++;
                     }
                 }
@@ -219,7 +218,7 @@ public class DatabaseConnection {
         } finally {
             lock.unlock();
         }
-        System.out.println("[Database] 已經關閉" + String.valueOf(i) + "個無用連線.");
+        System.out.println("[Database] 已經關閉" + String.valueOf(i) + "/"+ String.valueOf(connections.size())+ "個無用連線.");
     }
 
     public static void closeAll() {

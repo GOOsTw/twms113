@@ -814,7 +814,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public static void saveNewCharToDB(final MapleCharacter chr, final int type, final boolean db) {
         Connection con = DatabaseConnection.getConnection();
-
         PreparedStatement ps = null;
         PreparedStatement pse = null;
         ResultSet rs = null;
@@ -970,11 +969,13 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
     }
 
-    public void saveToDB(boolean dc, boolean fromcs) {
+    public int saveToDB(boolean dc, boolean fromcs) {
         if (isClone() && isSaveing) {
-            return;
+            return -1;
         }
         isSaveing = true;
+        int retValue = 1;
+
         Connection con = DatabaseConnection.getConnection();
 
         PreparedStatement ps = null;
@@ -984,8 +985,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         try {
             con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             con.setAutoCommit(false);
-            
-
             ps = con.prepareStatement("UPDATE characters SET level = ?, fame = ?, str = ?, dex = ?, luk = ?, `int` = ?, exp = ?, hp = ?, mp = ?, maxhp = ?, maxmp = ?, sp = ?, ap = ?, gm = ?, skincolor = ?, gender = ?, job = ?, hair = ?, face = ?, map = ?, meso = ?, hpApUsed = ?, spawnpoint = ?, party = ?, buddyCapacity = ?, monsterbookcover = ?, dojo_pts = ?, dojoRecord = ?, pets = ?, subcategory = ?, marriageId = ?, currentrep = ?, totalrep = ?, charmessage = ?, expression = ?, constellation = ?, blood = ?, month = ?, day = ?, beans = ?, prefix = ?, name = ? WHERE id = ?");
             ps.setInt(1, level);
             ps.setShort(2, fame);
@@ -1065,9 +1064,14 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.setInt(41, prefix);
             ps.setString(42, name);
             ps.setInt(43, id);
+            ps.execute();
 
+            if (ps.executeUpdate() < 1) {
+                ps.close();
+                throw new DatabaseException("Character not in database (" + id + ")");
+            }
             ps.close();
-            
+
             deleteWhereCharacterId(con, "DELETE FROM skillmacros WHERE characterid = ?");
             for (int i = 0; i < 5; i++) {
                 final SkillMacro macro = skillMacros[i];
@@ -1121,7 +1125,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 ps.executeUpdate();
                 rs = ps.getGeneratedKeys();
                 rs.next();
-
                 if (q.hasMobKills()) {
                     for (int mob : q.getMobKills().keySet()) {
                         pse.setInt(1, rs.getInt(1));
@@ -1188,17 +1191,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
             ps.close();
 
-            /* deleteWhereCharacterId(con, "DELETE FROM buddies WHERE characterid = ? AND pending = 0");
-             ps = con.prepareStatement("INSERT INTO buddies (characterid, `buddyid`, `pending`) VALUES (?, ?, 0)");
-             ps.setInt(1, id);
-             for (BuddylistEntry entry : buddylist.getBuddies()) {
-             if (entry.isVisible()) {
-             ps.setInt(2, entry.getCharacterId());
-             ps.execute();
-             }
-             }
-             ps.close();*/
-            // if (buddylist.changed()) {
             deleteWhereCharacterId(con, "DELETE FROM buddies WHERE characterid = ?");
             ps = con.prepareStatement("INSERT INTO buddies (characterid, `buddyid`, `pending`) VALUES (?, ?, ?)");
             ps.setInt(1, id);
@@ -1208,8 +1200,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 ps.execute();
             }
             ps.close();
-            //buddylist.setChanged(false);
-            // }
 
             ps = con.prepareStatement("UPDATE accounts SET `ACash` = ?, `mPoints` = ?, `points` = ?, `vpoints` = ? WHERE id = ?");
             ps.setInt(1, acash);
@@ -1226,6 +1216,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             if (cs != null) {
                 cs.save();
             }
+            
             PlayerNPC.updateByCharId(this);
             keylayout.saveKeys(id);
             mount.saveMount(id);
@@ -1264,10 +1255,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
             con.commit();
         } catch (SQLException | DatabaseException e) {
+            retValue = 0;
             FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error saving character data");
             try {
-                 if( con != null )
+                if (con != null) {
                     con.rollback();
+                }
             } catch (SQLException ex) {
                 FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error Rolling Back");
             }
@@ -1282,13 +1275,19 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 if (rs != null) {
                     rs.close();
                 }
-                con.setAutoCommit(true);
-                con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+                if (con != null) {
+                    con.setAutoCommit(true);
+                    con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+                }
+                isSaveing = false;
+                
             } catch (SQLException e) {
+                retValue = 0;
                 FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error going back to autocommit mode");
             }
-            isSaveing = false;
+
         }
+        return retValue;
     }
 
     private void deleteWhereCharacterId(Connection con, String sql) throws SQLException {
@@ -4533,8 +4532,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void useCP(int ammount) {
-        if( availableCP >= ammount )
+        if (availableCP >= ammount) {
             availableCP -= ammount;
+        }
     }
 
     public int getAvailableCP() {
@@ -5166,7 +5166,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         client.updateLoginState(MapleClient.CHANGE_CHANNEL, client.getSessionIPAddress());
 
         client.getSession().write(MaplePacketCreator.getChannelChange(toch.getIP(), toch.getPort()));
-        
+
         getMap().removePlayer(this);
         client.setPlayer(null);
         client.setReceiving(false);

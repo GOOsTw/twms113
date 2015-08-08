@@ -20,6 +20,7 @@
 /*     */ import provider.MapleDataProvider;
 /*     */ import provider.MapleDataProviderFactory;
 /*     */ import provider.MapleDataTool;
+import server.ServerProperties;
 /*     */ import tools.Pair;
 /*     */ import tools.StringUtil;
 /*     */
@@ -36,11 +37,10 @@
     /*  40 */    protected static Map<Integer, Boolean> bossCache = new HashMap();
     /*     */
     /*     */ public static void main(String[] args) throws FileNotFoundException, IOException, NotBoundException, InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException, MalformedObjectNameException {
-        /*  43 */ MapleData data = MapleDataProviderFactory.getDataProvider(new File(new StringBuilder().append(System.getProperty("wzpath")).append("String.wz").toString())).getData("MonsterBook.img");
+        /*  43 */ MapleData data = MapleDataProviderFactory.getDataProvider(new StringBuilder().append(ServerProperties.getProperty("server.wzpath")).append("/String.wz").toString()).getData("MonsterBook.img");
         /*     */
         /*  45 */ System.out.println("準備提取數據!");
         /*  46 */ System.out.println("按任意鍵繼續...");
-        /*  47 */ System.console().readLine();
         /*     */
         /*  49 */ long currtime = System.currentTimeMillis();
         /*  50 */    // addFlagData = Boolean.parseBoolean(args[0]);
@@ -787,7 +787,7 @@
         /*     */    }
     /*     */
     /*     */ private static void getAllItems() {
-        /* 810 */ MapleDataProvider data = MapleDataProviderFactory.getDataProvider(new File(new StringBuilder().append(System.getProperty("wzpath")).append("/String.wz").toString()));
+        /* 810 */ MapleDataProvider data = MapleDataProviderFactory.getDataProvider(new File(new StringBuilder().append(ServerProperties.getProperty("server.wzpath")).append("/String.wz").toString()));
         /*     */
         /* 812 */ List itemPairs = new ArrayList();
         /*     */
@@ -839,8 +839,8 @@
     /*     */
     /*     */ public static void getAllMobs() {
         /* 862 */ List itemPairs = new ArrayList();
-        /* 863 */ MapleDataProvider data = MapleDataProviderFactory.getDataProvider(new File(new StringBuilder().append(System.getProperty("wzpath")).append("/String.wz").toString()));
-        /* 864 */ MapleDataProvider mobData = MapleDataProviderFactory.getDataProvider(new File(new StringBuilder().append(System.getProperty("wzpath")).append("/Mob.wz").toString()));
+        /* 863 */ MapleDataProvider data = MapleDataProviderFactory.getDataProvider(new File(new StringBuilder().append(ServerProperties.getProperty("server.wzpath")).append("/String.wz").toString()));
+        /* 864 */ MapleDataProvider mobData = MapleDataProviderFactory.getDataProvider(new File(new StringBuilder().append(ServerProperties.getProperty("server.wzpath")).append("/Mob.wz").toString()));
         /* 865 */ MapleData mob = data.getData("Mob.img");
         /*     */
         /* 870 */ for (MapleData itemFolder : mob.getChildren()) {
