@@ -157,14 +157,14 @@ public class Event_DojoAgent {
                             if (cspoints <= 0) {
                                 cspoints = 5;
                             }
-                            chr.modifyCSPoints(1, cspoints, true);
+                            chr.modifyCSPoints(1, points, true);
                             chr.setDojo(chr.getDojo() + point);
                             chr.getClient().getSession().write(MaplePacketCreator.Mulung_Pts(point, chr.getDojo()));
                         }
                     }
                 } else {
                     final int point = ((points + 1) * 3);
-                    int cspoints = (int) ((((double)thisStage) * 3.3 + ((double)(thisStage - c.getLevel())) * 4 ) * 1.3 );
+                    int cspoints = (int) ((((double)thisStage) * 3.3 + ((double)(thisStage - c.getLevel())) * 5 ) * 1.3 );
                     if (cspoints <= 0) {
                         cspoints = 5;
                     }
