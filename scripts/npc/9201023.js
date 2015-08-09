@@ -13,11 +13,8 @@ function start() {
 function action(mode, type, selection) {
     if (mode == 1) {
         status++;
-    } else if (status == 0 && mode == 0) {
-        cm.sendOk("你居然要放棄這麼好的機會？那裡真的很美~。你不會是還沒遇到心愛的人吧？沒錯，如果你有心愛的人，怎麼會對這麼浪漫的消息聽而不聞呢！！");
-        cm.dispose();
-        return;
     } else {
+		cm.sendOk("你居然要放棄這麼好的機會？那裡真的很美~。你不會是還沒遇到心愛的人吧？沒錯，如果你有心愛的人，怎麼會對這麼浪漫的消息聽而不聞呢！！");
         cm.dispose();
         return;
     }
