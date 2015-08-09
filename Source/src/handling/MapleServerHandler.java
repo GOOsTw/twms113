@@ -366,7 +366,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             }
         }
         DatabaseConnection.close();
-        
      
         super.sessionClosed(session);
     }

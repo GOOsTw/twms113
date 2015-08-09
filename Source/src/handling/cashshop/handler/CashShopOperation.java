@@ -76,8 +76,7 @@ public class CashShopOperation {
             }
         }
         if (!allowLogin) {
-            client.setPlayer(null);
-            client.getSession().close(true);
+            client.disconnect(false, false);
             return;
         }
 
