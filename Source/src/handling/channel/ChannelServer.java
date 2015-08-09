@@ -32,6 +32,7 @@ import java.util.Map;
 
 import client.MapleCharacter;
 import constants.ServerConstants;
+import database.DatabaseConnection;
 import handling.ByteArrayMaplePacket;
 import handling.MaplePacket;
 import handling.MapleServerHandler;
@@ -384,7 +385,7 @@ public class ChannelServer implements Serializable {
             merchLock.writeLock().unlock();
         }
     }
-
+    
     public final int addMerchant(final HiredMerchant hMerchant) {
         merchLock.writeLock().lock();
 
@@ -567,12 +568,18 @@ public class ChannelServer implements Serializable {
         List<MapleCharacter> all = this.players.getAllCharactersThreadSafe();
         for (MapleCharacter chr : all) {
             try{
-                chr.saveToDB(false, false);
+               int res = chr.saveToDB(false, false);
+               if(res == 1)
                 ++ppl;
+               else
+                  System.out.println("[自動存檔] 角色:" + chr.getName() + " 儲存失敗." );
             } catch(Exception e) {
                 
             }
         }
         System.out.println("[自動存檔] 已經將頻道 " + this.channel + " 的 " + ppl + " 個玩家保存到數據中.");
     }
+   
+    
+    
 }

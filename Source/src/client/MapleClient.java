@@ -54,6 +54,7 @@ import handling.world.guild.MapleGuildCharacter;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import server.maps.MapleMap;
 import server.shops.IMaplePlayerShop;
@@ -1318,6 +1319,22 @@ public class MapleClient implements Serializable {
             System.err.println("Error while unbanning" + e);
             return -2;
         }
+    }
+    
+    public static List<Integer> getLoggedIdsFromDB(int state) {
+        List<Integer> ret = new ArrayList<>();
+        try {
+            Connection con = DatabaseConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement("SELECT id from accounts where loggedin = ?");
+            ps.setInt(1, state);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                ret.add(rs.getInt("id"));
+            }
+        } catch (SQLException ex) {
+            
+        }  
+        return ret;
     }
 
     public boolean isMonitored() {

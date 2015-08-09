@@ -81,7 +81,7 @@ public class CashShopOperation {
             return;
         }
 
-        client.updateLoginState(MapleClient.LOGIN_LOGGEDIN, client.getSessionIPAddress());
+        client.updateLoginState(MapleClient.LOGIN_CS_LOGGEDIN, client.getSessionIPAddress());
 
         if (mts) {
             CashShopServer.getPlayerStorageMTS().registerPlayer(chr);
