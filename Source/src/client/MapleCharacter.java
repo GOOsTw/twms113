@@ -1064,8 +1064,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.setInt(41, prefix);
             ps.setString(42, name);
             ps.setInt(43, id);
-            ps.execute();
-
             if (ps.executeUpdate() < 1) {
                 ps.close();
                 throw new DatabaseException("Character not in database (" + id + ")");
@@ -1252,7 +1250,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     ps.close();
                 }
             }
-
             con.commit();
         } catch (SQLException | DatabaseException e) {
             retValue = 0;
@@ -5742,4 +5739,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public int getPrefix() {
         return prefix;
     }
+    
+    
 }

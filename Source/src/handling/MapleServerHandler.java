@@ -366,9 +366,8 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             }
         }
         DatabaseConnection.close();
-        if(client != null) {
-            client.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, client.getSessionIPAddress());
-        }
+        
+     
         super.sessionClosed(session);
     }
 
