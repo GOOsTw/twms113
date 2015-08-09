@@ -52,7 +52,7 @@ function action(mode, type, selection) {
 					cm.dispose();
 				}
 			} else {
-				cm.sendOk("很抱歉,我需要 #b漢斯的信件#k 請去找漢斯拿取謝謝");
+				cm.sendOk("很抱歉,我需要 #b達克魯的信件#k 請去找達克魯拿取謝謝");
 				cm.dispose();
 			}
     }
