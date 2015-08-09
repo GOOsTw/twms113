@@ -1064,7 +1064,8 @@ public class MapleClient implements Serializable {
             public void run() {
                 try {
                     if (getLatency() < 0) {
-                        getSession().close(true);
+                        MapleClient.this.disconnect(true, false);
+                        MapleClient.this.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, MapleClient.this.getSessionIPAddress());
                     }
                 } catch (final NullPointerException e) {
                     getSession().close(true);
