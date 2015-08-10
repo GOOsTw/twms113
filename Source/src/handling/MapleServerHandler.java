@@ -635,7 +635,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 InventoryHandler.ItemMove(slea, c);
                 break;
             case ITEM_PICKUP:
-                InventoryHandler.Pickup_Player(slea, c, c.getPlayer());
+                InventoryHandler.PlayerPickup(slea, c, c.getPlayer());
                 break;
             case USE_CASH_ITEM:
                 InventoryHandler.UseCashItem(slea, c);
@@ -829,7 +829,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 PetHandler.PetFood(slea, c, c.getPlayer());
                 break;
             case PET_LOOT:
-                InventoryHandler.Pickup_Pet(slea, c, c.getPlayer());
+                InventoryHandler.PetPickup(slea, c, c.getPlayer());
                 break;
             case PET_AUTO_POT:
                 PetHandler.Pet_AutoPotion(slea, c, c.getPlayer());

@@ -975,8 +975,8 @@ public class InventoryHandler {
             }
             case 5050000: { // AP Reset
                 List<Pair<MapleStat, Integer>> statupdate = new ArrayList<Pair<MapleStat, Integer>>(2);
-                final int apto = slea.readInt();
-                final int apfrom = slea.readInt();
+                final MapleStat apto = MapleStat.getByValue(slea.readInt());
+                final MapleStat apfrom = MapleStat.getByValue(slea.readInt());
 
                 if (apto == apfrom) {
                     break; // Hack
@@ -986,69 +986,69 @@ public class InventoryHandler {
                 used = true;
 
                 switch (apto) { // AP to
-                    case 64: // str
+                    case STR: // str
                         if (playerst.getStr() >= 999) {
                             used = false;
                         }
                         break;
-                    case 128: // dex
+                    case DEX: // dex
                         if (playerst.getDex() >= 999) {
                             used = false;
                         }
                         break;
-                    case 256: // int
+                    case INT: // int
                         if (playerst.getInt() >= 999) {
                             used = false;
                         }
                         break;
-                    case 512: // luk
+                    case LUK: // luk
                         if (playerst.getLuk() >= 999) {
                             used = false;
                         }
                         break;
-                    case 2048: // hp
+                    case HP: // hp
                         if (playerst.getMaxHp() >= 30000) {
                             used = false;
                         }
                         break;
-                    case 8192: // mp
+                    case MP: // mp
                         if (playerst.getMaxMp() >= 30000) {
                             used = false;
                         }
                         break;
                 }
                 switch (apfrom) { // AP to
-                    case 64: // str
-                        if (playerst.getStr() <= 4 
+                    case STR: // str
+                        if (playerst.getStr() <= 4
                                 || (c.getPlayer().getJob() % 1000 / 100 == 1 && playerst.getStr() <= 35)) {
                             used = false;
                         }
                         break;
-                    case 128: // dex
-                        if (playerst.getDex() <= 4 
-                                || (c.getPlayer().getJob() % 1000 / 100 == 3 && playerst.getDex() <= 25) 
-                                || (c.getPlayer().getJob() % 1000 / 100 == 4 && playerst.getDex() <= 25) 
+                    case DEX: // dex
+                        if (playerst.getDex() <= 4
+                                || (c.getPlayer().getJob() % 1000 / 100 == 3 && playerst.getDex() <= 25)
+                                || (c.getPlayer().getJob() % 1000 / 100 == 4 && playerst.getDex() <= 25)
                                 || (c.getPlayer().getJob() % 1000 / 100 == 5 && playerst.getDex() <= 20)) {
                             used = false;
                         }
                         break;
-                    case 256: // int
-                        if (playerst.getInt() <= 4 
+                    case INT: // int
+                        if (playerst.getInt() <= 4
                                 || (c.getPlayer().getJob() % 1000 / 100 == 2 && playerst.getInt() <= 20)) {
                             used = false;
                         }
                         break;
-                    case 512: // luk
+                    case LUK: // luk
                         if (playerst.getLuk() <= 4) {
                             used = false;
                         }
                         break;
-                    case 2048: // hp
+                    case HP: // hp
                         if (c.getPlayer().getHpMpApUsed() <= 0 || c.getPlayer().getHpMpApUsed() >= 10000) {
                             used = false;
                         }
                         break;
-                    case 8192: // mp
+                    case MP: // mp
                         if (c.getPlayer().getHpMpApUsed() <= 0 || c.getPlayer().getHpMpApUsed() >= 10000) {
                             used = false;
                         }
@@ -1056,31 +1056,31 @@ public class InventoryHandler {
                 }
                 if (used) {
                     switch (apto) { // AP to
-                        case 64: { // str
+                        case STR: { // str
                             final int toSet = playerst.getStr() + 1;
                             playerst.setStr((short) toSet);
                             statupdate.add(new Pair<MapleStat, Integer>(MapleStat.STR, toSet));
                             break;
                         }
-                        case 128: { // dex
+                        case DEX: { // dex
                             final int toSet = playerst.getDex() + 1;
                             playerst.setDex((short) toSet);
                             statupdate.add(new Pair<MapleStat, Integer>(MapleStat.DEX, toSet));
                             break;
                         }
-                        case 256: { // int
+                        case INT: { // int
                             final int toSet = playerst.getInt() + 1;
                             playerst.setInt((short) toSet);
                             statupdate.add(new Pair<MapleStat, Integer>(MapleStat.INT, toSet));
                             break;
                         }
-                        case 512: { // luk
+                        case LUK: { // luk
                             final int toSet = playerst.getLuk() + 1;
                             playerst.setLuk((short) toSet);
                             statupdate.add(new Pair<MapleStat, Integer>(MapleStat.LUK, toSet));
                             break;
                         }
-                        case 2048: // hp
+                        case HP: // hp
                             short maxhp = playerst.getMaxHp();
 
                             if (job == 0) { // Beginner
@@ -1130,7 +1130,7 @@ public class InventoryHandler {
                             statupdate.add(new Pair<MapleStat, Integer>(MapleStat.MAXHP, (int) maxhp));
                             break;
 
-                        case 8192: // mp
+                        case MP: // mp
                             short maxmp = playerst.getMaxMp();
 
                             if (job == 0) { // Beginner
@@ -1167,31 +1167,31 @@ public class InventoryHandler {
                             break;
                     }
                     switch (apfrom) { // AP from
-                        case 64: { // str
+                        case STR: { // str
                             final int toSet = playerst.getStr() - 1;
                             playerst.setStr((short) toSet);
                             statupdate.add(new Pair<MapleStat, Integer>(MapleStat.STR, toSet));
                             break;
                         }
-                        case 128: { // dex
+                        case DEX: { // dex
                             final int toSet = playerst.getDex() - 1;
                             playerst.setDex((short) toSet);
                             statupdate.add(new Pair<MapleStat, Integer>(MapleStat.DEX, toSet));
                             break;
                         }
-                        case 256: { // int
+                        case INT: { // int
                             final int toSet = playerst.getInt() - 1;
                             playerst.setInt((short) toSet);
                             statupdate.add(new Pair<MapleStat, Integer>(MapleStat.INT, toSet));
                             break;
                         }
-                        case 512: { // luk
+                        case LUK: { // luk
                             final int toSet = playerst.getLuk() - 1;
                             playerst.setLuk((short) toSet);
                             statupdate.add(new Pair<MapleStat, Integer>(MapleStat.LUK, toSet));
                             break;
                         }
-                        case 2048: // HP
+                        case HP: // HP
                             short maxhp = playerst.getMaxHp();
                             if (job == 0) { // Beginner
                                 maxhp -= 12;
@@ -1239,7 +1239,7 @@ public class InventoryHandler {
                             playerst.setMaxHp(maxhp);
                             statupdate.add(new Pair<MapleStat, Integer>(MapleStat.MAXHP, (int) maxhp));
                             break;
-                        case 8192: // MP
+                        case MP: // MP
                             short maxmp = playerst.getMaxMp();
                             if (job == 0) { // Beginner
                                 maxmp -= 8;
@@ -1763,12 +1763,13 @@ public class InventoryHandler {
                 if (tvType == 3) {
                     slea.readByte(); //who knows
                 }
-                boolean ear = tvType != 1 && tvType != 2 && slea.readByte() > 1; //for tvType 1/2, there is no byte. 
-                MapleCharacter victim = tvType == 1 || tvType == 4 ? null : c.getChannelServer().getPlayerStorage().getCharacterByName(slea.readMapleAsciiString()); //for tvType 4, there is no string.
+                boolean ear = tvType != 1 && tvType != 2 && slea.readByte() > 1; //for tvType 1/2, there is no byte.
+                final String victimName = slea.readMapleAsciiString();
+                MapleCharacter victim = tvType == 1 || tvType == 4 ? null : c.getChannelServer().getPlayerStorage().getCharacterByName(victimName); //for tvType 4, there is no string.
                 if (tvType == 0 || tvType == 3) { //doesn't allow two
                     victim = null;
                 } else if (victim == null) {
-                    c.getPlayer().dropMessage(1, "That character is not in the channel.");
+                    c.getPlayer().dropMessage(1, "找不到" + victimName);
                     break;
                 }
                 String message = slea.readMapleAsciiString();
@@ -1875,45 +1876,17 @@ public class InventoryHandler {
                 break;
             }
             case 5170000: { // Pet name change
-/*                final int uniqueid = (int) slea.readLong();*/
                 MaplePet pet = c.getPlayer().getPet(0);
                 int slo = 0;
-
                 if (pet == null) {
                     break;
                 }
-                /*                if (pet.getUniqueId() != uniqueid) {
-                 pet = c.getPlayer().getPet(1);
-                 slo = 1;
-                 if (pet != null) {
-                 if (pet.getUniqueId() != uniqueid) {
-                 pet = c.getPlayer().getPet(2);
-                 slo = 2;
-                 if (pet != null) {
-                 if (pet.getUniqueId() != uniqueid) {
-                 break;
-                 }
-                 } else {
-                 break;
-                 }
-                 }
-                 } else {
-                 break;
-                 }
-                 }*/
                 String nName = slea.readMapleAsciiString();
-                /*                for (String z : GameConstants.RESERVED) {
-                 if (pet.getName().indexOf(z) != -1 || nName.indexOf(z) != -1) {
-                 break;
-                 }
-                 }*/
-//                if (MapleCharacterUtil.canChangePetName(nName)) {
                 pet.setName(nName);
                 c.getSession().write(PetPacket.updatePet(pet, c.getPlayer().getInventory(MapleInventoryType.CASH).getItem((byte) pet.getInventoryPosition())));
                 c.getSession().write(MaplePacketCreator.enableActions());
                 c.getPlayer().getMap().broadcastMessage(MTSCSPacket.changePetName(c.getPlayer(), nName, slo));
                 used = true;
-//                }
                 break;
             }
             case 5240000:
@@ -1946,7 +1919,6 @@ public class InventoryHandler {
             case 5240027:
             case 5240028: { // Pet food
                 MaplePet pet = c.getPlayer().getPet(0);
-
                 if (pet == null) {
                     break;
                 }
@@ -2142,16 +2114,14 @@ public class InventoryHandler {
         }
     }
 
-    public static final void Pickup_Player(final SeekableLittleEndianAccessor slea, MapleClient c, final MapleCharacter chr) {
-        if (c.getPlayer().getPlayerShop() != null || c.getPlayer().getConversation() > 0 || c.getPlayer().getTrade() != null) { //hack
+    public static final void PlayerPickup(final SeekableLittleEndianAccessor slea, MapleClient c, final MapleCharacter chr) {
+        if (chr.getPlayerShop() != null || c.getPlayer().getConversation() > 0 || c.getPlayer().getTrade() != null) { //hack
             return;
         }
         chr.updateTick(slea.readInt());
         slea.skip(1); // [4] Seems to be tickcount, [1] always 0
         final Point Client_Reportedpos = slea.readPos();
-        if (chr == null) {
-            return;
-        }
+     
         final MapleMapObject ob = chr.getMap().getMapObject(slea.readInt(), MapleMapObjectType.ITEM);
 
         if (ob == null) {
@@ -2182,7 +2152,7 @@ public class InventoryHandler {
             }
             if (mapitem.getMeso() > 0) {
                 if (chr.getParty() != null && mapitem.getOwner() != chr.getId()) {
-                    final List<MapleCharacter> toGive = new LinkedList<MapleCharacter>();
+                    final List<MapleCharacter> toGive = new LinkedList<>();
 
                     for (MaplePartyCharacter z : chr.getParty().getMembers()) {
                         MapleCharacter m = chr.getMap().getCharacterById(z.getId());
@@ -2221,7 +2191,7 @@ public class InventoryHandler {
         }
     }
 
-    public static final void Pickup_Pet(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void PetPickup(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         if (chr == null) {
             return;
         }
@@ -2343,7 +2313,7 @@ public class InventoryHandler {
         }
     }
 
-    private static final void addMedalString(final MapleCharacter c, final StringBuilder sb) {
+    private static void addMedalString(final MapleCharacter c, final StringBuilder sb) {
         final IItem medal = c.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -21);
         if (medal != null) { // Medal
             sb.append("<");
@@ -2352,7 +2322,7 @@ public class InventoryHandler {
         }
     }
 
-    private static final boolean getIncubatedItems(MapleClient c) {
+    private static boolean getIncubatedItems(MapleClient c) {
         if (c.getPlayer().getInventory(MapleInventoryType.EQUIP).getNumFreeSlot() < 2 || c.getPlayer().getInventory(MapleInventoryType.USE).getNumFreeSlot() < 2 || c.getPlayer().getInventory(MapleInventoryType.SETUP).getNumFreeSlot() < 2) {
             c.getPlayer().dropMessage(5, "Please make room in your inventory.");
             return false;

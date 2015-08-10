@@ -20,7 +20,6 @@
  */
 package client;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,51 +35,73 @@ import provider.MapleDataTool;
 import server.ServerProperties;
 import tools.StringUtil;
 
+/**
+ * 技能工廠
+ *
+ * @author user
+ */
 public class SkillFactory {
 
+    /**
+     * 技能資料
+     */
     private static final Map<Integer, ISkill> skills = new HashMap<>();
-    private static final Map<Integer, List<Integer>> skillsByJob = new HashMap<>();
-    private static final Map<Integer, SummonSkillEntry> SummonSkillInformation = new HashMap<>();
-    private final static MapleData stringData = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/String.wz").getData("Skill.img");
+    /**
+     * 召喚獸技能資料
+     */
+    private static final Map<Integer, List<Integer>> summonSkills = new HashMap<>();
+    /**
+     * 召喚獸技能資訊
+     */
+    private static final Map<Integer, SummonSkillEntry> summonSkillsInfo = new HashMap<>();
+
+    private final static MapleData stringSkills = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/String.wz").getData("Skill.img");
 
     public static final ISkill getSkill(final int id) {
+
         if (!skills.isEmpty()) {
             return skills.get(id);
         }
-        System.out.println("Loading SkillFactory :::");
-        final MapleDataProvider datasource = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/Skill.wz");
-        final MapleDataDirectoryEntry root = datasource.getRoot();
 
-        int skillid;
+        System.out.println("讀取技能資料中 :::");
+
+        final MapleDataProvider skillWZ = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/Skill.wz");
+        final MapleDataDirectoryEntry root = skillWZ.getRoot();
+
+        int skillId;
         MapleData summon_data;
         SummonSkillEntry sse;
 
         for (MapleDataFileEntry topDir : root.getFiles()) { // Loop thru jobs
+            
             if (topDir.getName().length() <= 8) {
-                for (MapleData data : datasource.getData(topDir.getName())) { // Loop thru each jobs
+                
+                for (MapleData data : skillWZ.getData(topDir.getName())) { // Loop thru each jobs
                     if (data.getName().equals("skill")) {
-                        for (MapleData data2 : data) { // Loop thru each jobs
-                            if (data2 != null) {
-                                skillid = Integer.parseInt(data2.getName());
+                        for (MapleData subData : data) { // Loop thru each jobs
+                            
+                            if (subData != null) {
+                                skillId = Integer.parseInt(subData.getName());
 
-                                Skill skil = Skill.loadFromData(skillid, data2);
-                                List<Integer> job = skillsByJob.get(skillid / 10000);
+                                Skill skil = Skill.loadFromData(skillId, subData);
+                                List<Integer> job = summonSkills.get(skillId / 10000);
                                 if (job == null) {
                                     job = new ArrayList<>();
-                                    skillsByJob.put(skillid / 10000, job);
+                                    summonSkills.put(skillId / 10000, job);
                                 }
-                                job.add(skillid);
-                                skil.setName(getName(skillid));
+                                job.add(skillId);
+                                skil.setName(getName(skillId));
 
-                                skills.put(skillid, skil);
+                                skills.put(skillId, skil);
 
-                                summon_data = data2.getChildByPath("summon/attack1/info");
+                                summon_data = subData.getChildByPath("summon/attack1/info");
+                                
                                 if (summon_data != null) {
                                     sse = new SummonSkillEntry();
                                     sse.attackAfter = (short) MapleDataTool.getInt("attackAfter", summon_data, 999999);
                                     sse.type = (byte) MapleDataTool.getInt("type", summon_data, 0);
                                     sse.mobCount = (byte) MapleDataTool.getInt("mobCount", summon_data, 1);
-                                    SummonSkillInformation.put(skillid, sse);
+                                    summonSkillsInfo.put(skillId, sse);
                                 }
                             }
                         }
@@ -92,7 +113,7 @@ public class SkillFactory {
     }
 
     public static final List<Integer> getSkillsByJob(final int jobId) {
-        return skillsByJob.get(jobId);
+        return summonSkills.get(jobId);
     }
 
     public static final String getSkillName(final int id) {
@@ -106,7 +127,7 @@ public class SkillFactory {
     public static final String getName(final int id) {
         String strId = Integer.toString(id);
         strId = StringUtil.getLeftPaddedStr(strId, '0', 7);
-        MapleData skillroot = stringData.getChildByPath(strId);
+        MapleData skillroot = stringSkills.getChildByPath(strId);
         if (skillroot != null) {
             return MapleDataTool.getString(skillroot.getChildByPath("name"), "");
         }
@@ -114,7 +135,7 @@ public class SkillFactory {
     }
 
     public static final SummonSkillEntry getSummonData(final int skillid) {
-        return SummonSkillInformation.get(skillid);
+        return summonSkillsInfo.get(skillid);
     }
 
     public static final Collection<ISkill> getAllSkills() {

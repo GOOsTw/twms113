@@ -70,6 +70,7 @@ public class PlayerStats implements Serializable {
     private transient float speedMod, jumpMod, localmaxbasedamage;
     // Elemental properties
     public transient int def, element_ice, element_fire, element_light, element_psn;
+    public final static short maxStr = 999;
     public ReentrantLock lock = new ReentrantLock(); //we're getting concurrentmodificationexceptions, but would this slow things down?
 
     public PlayerStats(final MapleCharacter chr) {

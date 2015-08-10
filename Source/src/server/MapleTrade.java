@@ -270,8 +270,7 @@ public class MapleTrade {
             c1.getTrade().setPartner(c2.getTrade());
             c2.getClient().getSession().write(MaplePacketCreator.getTradeInvite(c1));
         } else {
-            c1.getClient().getSession().write(MaplePacketCreator.serverNotice(5, "The other player is already trading with someone else."));
-            cancelTrade(c1.getTrade(), c1.getClient());
+            c1.getClient().getSession().write(MaplePacketCreator.serverNotice(5, c2.getName() + "忙碌中"));
         }
     }
 
@@ -283,7 +282,7 @@ public class MapleTrade {
 //            c1.dropMessage(-2, "System : Use @tradehelp to see the list of trading commands");
 //            c2.dropMessage(-2, "System : Use @tradehelp to see the list of trading commands");
         } else {
-            c1.getClient().getSession().write(MaplePacketCreator.serverNotice(5, "The other player has already closed the trade"));
+            c1.getClient().getSession().write(MaplePacketCreator.serverNotice(5, "交易已經被關閉."));
         }
     }
 
@@ -294,7 +293,7 @@ public class MapleTrade {
                 MapleCharacter other = trade.getPartner().getChr();
                 other.getTrade().cancel(other.getClient());
                 other.setTrade(null);
-                other.dropMessage(5, c.getName() + " has declined your trade request");
+                other.dropMessage(5, c.getName() + " 拒絕了你的邀請.");
             }
             trade.cancel(c.getClient());
             c.setTrade(null);

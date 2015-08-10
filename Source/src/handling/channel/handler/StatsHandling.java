@@ -45,39 +45,42 @@ public class StatsHandling {
 
         final PlayerStats stat = chr.getStat();
         final int job = chr.getJob();
+        final int statValue = slea.readInt();
+        
+        final MapleStat state = MapleStat.getByValue(statValue);
         
         if (chr.getRemainingAp() > 0) {
             
-            switch (slea.readInt()) {
-                case 64: // Str
+            switch (state) {
+                case STR : // Str
                     if (stat.getStr() >= 999) {
                         return;
                     }
                     stat.setStr((short) (stat.getStr() + 1));
-                    statupdate.add(new Pair<MapleStat, Integer>(MapleStat.STR, (int) stat.getStr()));
+                    statupdate.add(new Pair<>(MapleStat.STR, (int) stat.getStr()));
                     break;
-                case 128: // Dex
+                case DEX: // Dex
                     if (stat.getDex() >= 999) {
                         return;
                     }
                     stat.setDex((short) (stat.getDex() + 1));
-                    statupdate.add(new Pair<MapleStat, Integer>(MapleStat.DEX, (int) stat.getDex()));
+                    statupdate.add(new Pair<>(MapleStat.DEX, (int) stat.getDex()));
                     break;
-                case 256: // Int
+                case INT: // Int
                     if (stat.getInt() >= 999) {
                         return;
                     }
                     stat.setInt((short) (stat.getInt() + 1));
-                    statupdate.add(new Pair<MapleStat, Integer>(MapleStat.INT, (int) stat.getInt()));
+                    statupdate.add(new Pair<>(MapleStat.INT, (int) stat.getInt()));
                     break;
-                case 512: // Luk
+                case LUK: // Luk
                     if (stat.getLuk() >= 999) {
                         return;
                     }
                     stat.setLuk((short) (stat.getLuk() + 1));
-                    statupdate.add(new Pair<MapleStat, Integer>(MapleStat.LUK, (int) stat.getLuk()));
+                    statupdate.add(new Pair<>(MapleStat.LUK, (int) stat.getLuk()));
                     break;
-                case 2048: // HP
+                case HP: // HP
                     short maxhp = stat.getMaxHp();
                     if (chr.getHpMpApUsed() >= 10000 || maxhp >= 30000) {
                         return;
@@ -128,7 +131,7 @@ public class StatsHandling {
                     stat.setMaxHp(maxhp);
                     statupdate.add(new Pair<MapleStat, Integer>(MapleStat.MAXHP, (int) maxhp));
                     break;
-                case 8192: // MP
+                case MP: // MP
                     short maxmp = stat.getMaxMp();
                     if (chr.getHpMpApUsed() >= 10000 || stat.getMaxMp() >= 30000) {
                         return;

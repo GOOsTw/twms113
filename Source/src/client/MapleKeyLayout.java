@@ -55,7 +55,7 @@ public class MapleKeyLayout implements Serializable {
     public final void writeData(final MaplePacketLittleEndianWriter mplew) {
         Pair<Byte, Integer> binding;
         for (int x = 0; x < 90; x++) {
-            binding = keymap.get(Integer.valueOf(x));
+            binding = keymap.get(x);
             if (binding != null) {
                 mplew.write(binding.getLeft());
                 mplew.writeInt(binding.getRight());
@@ -67,7 +67,7 @@ public class MapleKeyLayout implements Serializable {
     }
 
     public final void saveKeys(final int charid) throws SQLException {
-        if (!changed || keymap.size() == 0) {
+        if (!changed || keymap.isEmpty()) {
             return;
         }
         Connection con = DatabaseConnection.getConnection();
