@@ -165,10 +165,11 @@ public class AdminCommand {
         }
     }
 
-    public static class saveall extends CommandExecute {
+    public static class saveAll extends CommandExecute {
 
         private int p = 0;
 
+        @Override
         public int execute(MapleClient c, String[] splitted) {
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                 for (MapleCharacter chr : cserv.getPlayerStorage().getAllCharacters()) {
@@ -285,7 +286,7 @@ public class AdminCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(5, "[Syntax] !" + getCommand() + " <IGN> <Reason>");
+                c.getPlayer().dropMessage(5, "[使用方法] !" + getCommand() + " <IGN> <Reason>");
                 return 0;
             }
             StringBuilder sb = new StringBuilder(c.getPlayer().getName());
@@ -450,6 +451,7 @@ public class AdminCommand {
 
     public static class Kill extends CommandExecute {
 
+        @Override
         public int execute(MapleClient c, String[] splitted) {
             MapleCharacter player = c.getPlayer();
             if (splitted.length < 2) {
@@ -496,7 +498,7 @@ public class AdminCommand {
         public int execute(MapleClient c, String[] splitted) {
             MapleCharacter player = c.getPlayer();
             if (splitted.length < 2) {
-                c.getPlayer().dropMessage(6, "Syntax: !fame <player> <amount>");
+                c.getPlayer().dropMessage(6, "[使用方法] !fame <玩家> <名聲>");
                 return 0;
             }
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
@@ -504,7 +506,7 @@ public class AdminCommand {
             try {
                 fame = Short.parseShort(splitted[2]);
             } catch (NumberFormatException nfe) {
-                c.getPlayer().dropMessage(6, "Invalid Number... baka.");
+                c.getPlayer().dropMessage(6, "不合法的數字");
                 return 0;
             }
             if (victim != null && player.allowedToTarget(victim)) {
@@ -580,8 +582,8 @@ public class AdminCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             c.getPlayer().setRemainingAp((short) CommandProcessorUtil.getOptionalIntArg(splitted, 1, 1));
-            final List<Pair<MapleStat, Integer>> statupdate = new ArrayList<Pair<MapleStat, Integer>>();
-            c.getSession().write(MaplePacketCreator.updatePlayerStats(statupdate, c.getPlayer().getJob()));
+            final List<Pair<MapleStat, Integer>> statupdate = new ArrayList<>();
+            c.getSession().write(MaplePacketCreator.updateAp(c.getPlayer(), false));
             return 1;
         }
 
@@ -883,14 +885,14 @@ public class AdminCommand {
             if (!c.getPlayer().isAdmin()) {
                 for (int i : GameConstants.itemBlock) {
                     if (itemId == i) {
-                        c.getPlayer().dropMessage(5, "很抱歉，此物品您的ＧＭ等級無法呼叫.");
+                        c.getPlayer().dropMessage(5, "很抱歉，此物品您的GM等級無法呼叫.");
                         return 0;
                     }
                 }
             }
             MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
             if (GameConstants.isPet(itemId)) {
-                c.getPlayer().dropMessage(5, "Please purchase a pet from the cash shop instead.");
+                c.getPlayer().dropMessage(5, "請從商城購買寵物.");
             } else if (!ii.itemExists(itemId)) {
                 c.getPlayer().dropMessage(5, itemId + "  不存在");
             } else {
@@ -925,9 +927,9 @@ public class AdminCommand {
             final short quantity = (short) CommandProcessorUtil.getOptionalIntArg(splitted, 2, 1);
             MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
             if (GameConstants.isPet(itemId)) {
-                c.getPlayer().dropMessage(5, "Please purchase a pet from the cash shop instead.");
+                c.getPlayer().dropMessage(5, "寵物請到購物商城購買.");
             } else if (!ii.itemExists(itemId)) {
-                c.getPlayer().dropMessage(5, itemId + " does not exist");
+                c.getPlayer().dropMessage(5, itemId + " 不存在");
             } else {
                 IItem toDrop;
                 if (GameConstants.getInventoryType(itemId) == MapleInventoryType.EQUIP) {
@@ -1597,7 +1599,7 @@ public class AdminCommand {
             final StringBuilder builder = new StringBuilder();
             final MapleCharacter other = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             if (other == null) {
-                builder.append("...does not exist");
+                builder.append("...不存在");
                 c.getPlayer().dropMessage(6, builder.toString());
                 return 0;
             }
@@ -1605,64 +1607,64 @@ public class AdminCommand {
                 other.getClient().sendPing();
             }
             builder.append(MapleClient.getLogMessage(other, ""));
-            builder.append(" at ").append(other.getPosition().x);
+            builder.append(" 在 ").append(other.getPosition().x);
             builder.append(" /").append(other.getPosition().y);
 
-            builder.append(" || HP : ");
+            builder.append(" || 血量 : ");
             builder.append(other.getStat().getHp());
             builder.append(" /");
             builder.append(other.getStat().getCurrentMaxHp());
 
-            builder.append(" || MP : ");
+            builder.append(" || 魔量 : ");
             builder.append(other.getStat().getMp());
             builder.append(" /");
             builder.append(other.getStat().getCurrentMaxMp());
 
-            builder.append(" || WATK : ");
+            builder.append(" || 物理攻擊力 : ");
             builder.append(other.getStat().getTotalWatk());
-            builder.append(" || MATK : ");
+            builder.append(" || 魔法攻擊力 : ");
             builder.append(other.getStat().getTotalMagic());
-            builder.append(" || MAXDAMAGE : ");
+            builder.append(" || 最高攻擊 : ");
             builder.append(other.getStat().getCurrentMaxBaseDamage());
-            builder.append(" || DAMAGE% : ");
+            builder.append(" || 攻擊%數 : ");
             builder.append(other.getStat().dam_r);
-            builder.append(" || BOSSDAMAGE% : ");
+            builder.append(" || BOSS攻擊%數 : ");
             builder.append(other.getStat().bossdam_r);
 
-            builder.append(" || STR : ");
+            builder.append(" || 力量 : ");
             builder.append(other.getStat().getStr());
-            builder.append(" || DEX : ");
+            builder.append(" || 敏捷 : ");
             builder.append(other.getStat().getDex());
-            builder.append(" || INT : ");
+            builder.append(" || 智力 : ");
             builder.append(other.getStat().getInt());
-            builder.append(" || LUK : ");
+            builder.append(" || 幸運 : ");
             builder.append(other.getStat().getLuk());
 
-            builder.append(" || Total STR : ");
+            builder.append(" || 全部力量 : ");
             builder.append(other.getStat().getTotalStr());
-            builder.append(" || Total DEX : ");
+            builder.append(" || 全部敏捷 : ");
             builder.append(other.getStat().getTotalDex());
-            builder.append(" || Total INT : ");
+            builder.append(" || 全部智力 : ");
             builder.append(other.getStat().getTotalInt());
-            builder.append(" || Total LUK : ");
+            builder.append(" || 全部幸運 : ");
             builder.append(other.getStat().getTotalLuk());
 
-            builder.append(" || EXP : ");
+            builder.append(" || 經驗值 : ");
             builder.append(other.getExp());
 
-            builder.append(" || hasParty : ");
+            builder.append(" || 組隊狀態 : ");
             builder.append(other.getParty() != null);
 
-            builder.append(" || hasTrade: ");
+            builder.append(" || 交易狀態: ");
             builder.append(other.getTrade() != null);
             builder.append(" || Latency: ");
             builder.append(other.getClient().getLatency());
-            builder.append(" || PING: ");
+            builder.append(" || 最後PING: ");
             builder.append(other.getClient().getLastPing());
-            builder.append(" || PONG: ");
+            builder.append(" || 最後PONG: ");
             builder.append(other.getClient().getLastPong());
-            builder.append(" || remoteAddress: ");
-
+            builder.append(" || IP: ");
+            builder.append(other.getClient().getSessionIPAddress());
             other.getClient().DebugMessage(builder);
 
             c.getPlayer().dropMessage(6, builder.toString());
@@ -1674,7 +1676,7 @@ public class AdminCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-            StringBuilder builder = new StringBuilder("Players on Map: ");
+            StringBuilder builder = new StringBuilder("在此地圖的玩家: ");
             for (MapleCharacter chr : c.getPlayer().getMap().getCharactersThreadsafe()) {
                 if (builder.length() > 150) { // wild guess :o
                     builder.setLength(builder.length() - 2);
@@ -1708,7 +1710,7 @@ public class AdminCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             java.util.Map<Integer, Integer> connected = World.getConnected();
-            StringBuilder conStr = new StringBuilder("Connected Clients: ");
+            StringBuilder conStr = new StringBuilder("已連接的客戶端: ");
             boolean first = true;
             for (int i : connected.keySet()) {
                 if (!first) {
@@ -1717,10 +1719,10 @@ public class AdminCommand {
                     first = false;
                 }
                 if (i == 0) {
-                    conStr.append("Total: ");
+                    conStr.append("所有: ");
                     conStr.append(connected.get(i));
                 } else {
-                    conStr.append("Channel");
+                    conStr.append("頻道 ");
                     conStr.append(i);
                     conStr.append(": ");
                     conStr.append(connected.get(i));
@@ -1826,7 +1828,7 @@ public class AdminCommand {
             }
             for (int i = 0; i < threads.length; i++) {
                 String tstring = threads[i].toString();
-                if (tstring.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
+                if (tstring.toLowerCase().contains(filter.toLowerCase())) {
                     c.getPlayer().dropMessage(6, i + ": " + tstring);
                 }
             }

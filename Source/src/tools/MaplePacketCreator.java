@@ -45,6 +45,8 @@ import client.MapleQuestStatus;
 import client.MapleStat;
 import client.inventory.IEquip.ScrollResult;
 import client.MapleDisease;
+import static client.MapleStat.AVAILABLEAP;
+import static client.MapleStat.AVAILABLESP;
 import client.inventory.MapleRing;
 import client.SkillMacro;
 import client.inventory.ModifyInventory;
@@ -193,7 +195,7 @@ public class MaplePacketCreator {
                 } else if (value < 0xFFFF) {
                     mplew.writeShort(statupdate.getRight().shortValue());
                 } else {
-                    mplew.writeInt(statupdate.getRight().intValue());
+                    mplew.writeInt(statupdate.getRight());
                 }
             }
         }
@@ -204,7 +206,16 @@ public class MaplePacketCreator {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.UPDATE_STATS.getValue());
         mplew.write(itemReaction ? 1 : 0);
-        mplew.writeInt(0x8000);
+        mplew.writeInt(AVAILABLESP.getValue());
+        mplew.writeShort(chr.getRemainingSp());
+        return mplew.getPacket();
+    }
+    
+    public static final MaplePacket updateAp(MapleCharacter chr, final boolean itemReaction) { //this will do..
+        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+        mplew.writeShort(SendPacketOpcode.UPDATE_STATS.getValue());
+        mplew.write(itemReaction ? 1 : 0);
+        mplew.writeInt(AVAILABLEAP.getValue());
         mplew.writeShort(chr.getRemainingSp());
         return mplew.getPacket();
     }
