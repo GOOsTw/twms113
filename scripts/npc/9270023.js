@@ -24,7 +24,7 @@ function action(mode, type, selection) {
     else
 	status--;
     if (status == 0) {
-	cm.sendSimple("If you use this regular coupon, your face may transform into a random new look...do you still want to do it using #b#t5152037##k, I will do it anyways for you. But don't forget, it will be random!\r\n\#L2#OK!#l");
+	cm.sendSimple("使用一般的整形會員卡的話，你只能隨機更換臉型喔...你想要使用 #b#t5152037##k來整形嘛？ 不過別忘記喔，這是是隨機的\r\n\#L2#可以嘛!#l");
     } else if (status == 1) {
 	cm.dispose();
     } else if (selection == 2) {
@@ -39,12 +39,12 @@ function action(mode, type, selection) {
 		facenew.push(fface[i] + cm.getChar().getFace() % 1000 - (cm.getChar().getFace() % 100));
 	    }
 	}
-	cm.sendYesNo("If you use the regular coupon, your face may transform into a random new look...do you still want to do it using #b#t5152037##k?");
+	cm.sendYesNo("如果使用一般的會員卡，你只能隨機更換臉型，請問你還是想要使用 #b#t5152037##k 來更換臉型嘛？");
     } else if (status == 2) {
 	if (cm.setAvatar(5152037, facenew[Math.floor(Math.random() * facenew.length)]) == 1){
-	    cm.sendOk("Enjoy your new and improved face!");
+	    cm.sendOk("享受你新的造型吧！");
 	} else {
-	    cm.sendOk("Hmm ... it looks like you don't have the coupon specifically for this place. Sorry to say this, but without the coupon, there's no plastic surgery for you...");
+	    cm.sendOk("嗯 ... 你好像沒有這裡的整形會員卡欸？很抱歉，如果你沒有會員卡，我不能夠為你服務喔～");
 	}
     }
-}
+}	
