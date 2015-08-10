@@ -41,7 +41,7 @@ function action(mode, type, selection) {
 	}
 	cm.sendYesNo("If you use the regular coupon, your face may transform into a random new look...do you still want to do it using #b#t5152037##k?");
     } else if (status == 2) {
-	if (cm.setAvatar(5152037, facenew[Math.floor(Math.random() * facenew.length)] == 1){
+	if (cm.setAvatar(5152037, facenew[Math.floor(Math.random() * facenew.length)]) == 1){
 	    cm.sendOk("Enjoy your new and improved face!");
 	} else {
 	    cm.sendOk("Hmm ... it looks like you don't have the coupon specifically for this place. Sorry to say this, but without the coupon, there's no plastic surgery for you...");
