@@ -4,8 +4,11 @@ import client.MapleCharacter;
 import client.MapleClient;
 import client.SkillFactory;
 import constants.ServerConstants;
+import database.DatabaseConnection;
 import handling.channel.ChannelServer;
 import handling.world.World;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import server.maps.MapleMap;
 import tools.MaplePacketCreator;
 import tools.StringUtil;
@@ -102,6 +105,24 @@ public class InternCommand {
                 c.getPlayer().dropMessage(6, "[UnbanIP] Both IP and Macs were unbanned.");
             }
             return ret_ > 0 ? 1 : 0;
+        }
+    }
+
+    public static class Fuck extends CommandExecute {
+
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            Connection con = DatabaseConnection.getConnection();
+            try {
+                try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE id = " + c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]))) {
+                    ps.executeUpdate();
+                }
+            } catch (Exception e) {
+                c.getPlayer().dropMessage(6, "解除異常成功 " + splitted[1]);
+                return 0;
+            }
+            c.getPlayer().dropMessage(6, "解除異常成功 " + splitted[1]);
+            return 1;
         }
     }
 
