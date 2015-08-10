@@ -162,7 +162,7 @@ function monsterValue(eim, mobId) {
     } else if (mobId == 9300040) {
 	var st = parseInt(em.getProperty("stage2"));
 	if (st < 14) {
-	     eim.broadcastPlayerMsg(6, "遠古精靈出現了！");
+	     eim.broadcastPlayerMsg(6, "女神的紅獨角獅出現了！");
 	     var mob = em.getMonster(9300040);
 	     em.setProperty("stage2", st+1);
 	     eim.registerMonster(mob);
