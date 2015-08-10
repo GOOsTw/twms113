@@ -3136,6 +3136,7 @@ INSERT INTO `shopitems` VALUES ('9701', '99', '2000002', '320', '0', '0', '0', '
 INSERT INTO `shopitems` VALUES ('9702', '99', '2000001', '160', '0', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('9703', '99', '2000000', '50', '0', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('9704', '13', '2043700', '70000', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9705', '72', '2022001', '500', '0', '0', '0', '0');
 
 -- ----------------------------
 -- Table structure for `shops`

@@ -799,4 +799,5 @@ INSERT INTO `drop_data` VALUES ('22868', '9420549', '1002927', '1', '1', '0', '9
 INSERT INTO `drop_data` VALUES ('22869', '9420549', '1002927', '1', '1', '0', '300000');
 INSERT INTO `drop_data` VALUES ('22870', '9420549', '1002927', '1', '1', '0', '300000');
 INSERT INTO `drop_data` VALUES ('22871', '9420549', '1002927', '1', '1', '0', '300000');
+INSERT INTO `drop_data` VALUES ('22872', '9600008', '2022430', '1', '1', '0', '500000');
 INSERT INTO `drop_data` VALUES ('38016', '9300173', '4001161', '1', '1', '0', '999999');
