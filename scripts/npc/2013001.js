@@ -1,4 +1,4 @@
-function action(mode, type, selection) {
+﻿function action(mode, type, selection) {
     if (cm.getPlayer().getMapId() == 920011200) { //exit
 	for (var i = 4001044; i < 4001064; i++) {
 		cm.removeAll(i); //holy
@@ -9,17 +9,17 @@ function action(mode, type, selection) {
     }
     var em = cm.getEventManager("OrbisPQ");
     if (em == null) {
-	cm.sendOk("Please try again later.");
+	cm.sendOk("腳本出錯，請聯繫管理員。");
 	cm.dispose();
 	return;
     }
     if (!cm.isLeader()) {
-	cm.sendOk("I only wish to speak to your leader!");
+	cm.sendOk("我只能跟你的隊長說話。");
 	cm.dispose();
 	return;
     }
     if (em.getProperty("pre").equals("0")) {
-	cm.sendNext("Please save me, I've been trapped in the seal by Papa Pixie, the terror of our tower! He's misplaced all of our Minerva Statue's parts and we have to get it all back! Oh pardon me, I am the tower's Chamberlain, Eak. I am Minerva's royal servant. Please, help me by placing 20 Cloud Pieces in the orb you see!");
+	cm.sendNext("我被遠古精靈困在這座塔，快收集材料讓我出去。");
 	cm.dispose();
 	return;
     }
@@ -33,15 +33,15 @@ function action(mode, type, selection) {
 		if (em.getProperty("finished").equals("0")) {
 		    cm.warpParty(920010800); //GARDEN.	
 		} else {
-		    cm.sendOk("Thank you for saving Minerva! Please, talk to her!");
+		    cm.sendOk("謝謝你救了我們，請您找女神說話。");
 		}
 	    } else {
-		cm.sendOk("Please, save Minerva! Gather the six pieces of her statue and talk to me to retrieve the final piece!");
+		cm.sendOk("請收集六個女神雕像的碎片，然後來找我談話獲得最後一塊。");
 	    }
 	    break;
 	case 920010200: //walkway
 	    if (!cm.haveItem(4001050,30)) {
-		cm.sendOk("Gather the 30 Statue Pieces from the monsters in this stage, and please bring them to me so I can put them together!");
+		cm.sendOk("我需要#b#t4001050##k 30個。");
 	    } else {
 		cm.removeAll(4001050);
 		cm.gainItem(4001044,1); //first piece
@@ -51,7 +51,7 @@ function action(mode, type, selection) {
 	    break;
 	case 920010300: //storage
 	    if (!cm.haveItem(4001051,15)) {
-		cm.sendOk("Gather the 15 Statue Pieces from the monsters in this stage, and please bring them to me so I can put them together!");
+		cm.sendOk("我需要#b#t4001051##k 15個。");
 	    } else {
 		cm.removeAll(4001051);
 		cm.gainItem(4001045,1); //second piece
@@ -61,7 +61,7 @@ function action(mode, type, selection) {
 	    break;
 	case 920010400: //lobby
 	    if (em.getProperty("stage3").equals("0")) {
-		cm.sendOk("Please, find the LP for the current day of week and place it on the music player.\r\n#v4001056#Sunday\r\n#v4001057#Monday\r\n#v4001058#Tuesday\r\n#v4001059#Wednesday\r\n#v4001060#Thursday\r\n#v4001061#Friday\r\n#v4001062#Saturday\r\n");
+		cm.sendOk("請找到今天的唱片，並把它放入音樂盒撥放\r\n#v4001056#星期日\r\n#v4001057#星期一\r\n#v4001058#星期二\r\n#v4001059#星期三\r\n#v4001060#星期四\r\n#v4001061#星期五\r\n#v4001062#星期六\r\n");
 	    } else if (em.getProperty("stage3").equals("1")) {
 		if (cm.canHold(4001046,1)) {
 		    cm.gainItem(4001046,1); //third piece
@@ -69,10 +69,10 @@ function action(mode, type, selection) {
 		    clear();
 		    em.setProperty("stage3", "2");
 		} else {
-		    cm.sendOk("Please make room!");
+		    cm.sendOk("請清出一些空間。");
 		}
 	    } else {
-		cm.sendOk("Thank you so much!");
+		cm.sendOk("謝謝你。");
 	    }
 	    break;
 	case 920010500: //sealed
@@ -85,7 +85,7 @@ function action(mode, type, selection) {
 		    total += z;
 		}
 		if (total < 5) {
-		    cm.sendOk("There needs to be 5 players on the platforms.");
+		    cm.sendOk("需要5個玩家站在平台上。");
 		} else {
 		    var num_correct = 0;
 		    for (var i = 0; i < 3; i++) {
@@ -100,26 +100,26 @@ function action(mode, type, selection) {
 			    cm.givePartyExp(7500);
 	    		    em.setProperty("stage4", "1");
 			} else {
-			    cm.sendOk("Please make room!");
+			    cm.sendOk("請清出一些空間。");
 			}
 		    } else {
     	    		cm.showEffect(true, "quest/party/wrong_kor");
     	    		cm.playSound(true, "Party1/Failed");
 			if (num_correct > 0) {
-			    cm.sendOk("One of the platforms is correct.");
+			    cm.sendOk("一個平台是正確的。");
 			} else {
-			    cm.sendOk("All of the platforms are wrong.");
+			    cm.sendOk("所有平台都是錯的。");
 			}
 		    }
 		}
 	    } else {
-		cm.sendOk("The portal is opened! Go!");
+		cm.sendOk("這麼門已經開了！");
 	    }
 	    cm.dispose();
 	    break;
 	case 920010600: //lounge
 	    if (!cm.haveItem(4001052,40)) {
-		cm.sendOk("Gather the 40 Statue Pieces from the monsters in this stage, and please bring them to me so I can put them together!");
+		cm.sendOk("我需要#b#t4001052##k 40個。");
 	    } else {
 		cm.removeAll(4001052);
 		cm.gainItem(4001048,1); //fifth piece
@@ -140,7 +140,7 @@ function action(mode, type, selection) {
 		    }
 	    	}
 		if (total != 2) {
-		    cm.sendOk("There needs to be 2 levers at the top of the map pushed on.");
+		    cm.sendOk("需要有兩個人在頂部回答題目。");
 		} else {
 		    var num_correct = 0;
 		    for (var i = 0; i < 5; i++) {
@@ -155,30 +155,30 @@ function action(mode, type, selection) {
 			    cm.givePartyExp(7500);
 	    		    em.setProperty("stage6", "1");
 			} else {
-			    cm.sendOk("Please make room!");
+			    cm.sendOk("請清出一些空間。");
 			}
 		    } else {
     	    		cm.showEffect(true, "quest/party/wrong_kor");
     	    		cm.playSound(true, "Party1/Failed");
 			if (num_correct >= 3) {
-			    cm.sendOk("One of the levers is correct.");
+			    cm.sendOk("一個槓桿是正確的。");
 			} else {
-			    cm.sendOk("Both of the levers are wrong.");
+			    cm.sendOk("兩個槓桿都是錯誤的。");
 			}
 		    }
 		}
 	    } else {
-		cm.sendOk("Thank you!!");
+		cm.sendOk("謝謝你。");
 	    }
 	    break;
 	case 920010800:
 	    cm.warpParty(920010100);
 	    break;
 	case 920010900:
-	    cm.sendNext("This is the jail of the tower. You may find some goodies here, but other than that I don't think we have any pieces here."); 
+	    cm.sendNext("這是塔的監獄。你可能會發現一些好吃的東西在這裡，但除此之外，我不認為我們有什麼在這裡件。"); 
 	    break;
 	case 920011000:
-	    cm.sendNext("This is the hidden room of the tower. You may find some goodies here, but other than that I don't think we have any pieces here."); 
+	    cm.sendNext("這是隱藏的房間塔。你可能會發現一些好吃的東西在這裡，但除此之外，我不認為我們有什麼在這裡件。"); 
 	    break;
     }
     cm.dispose();
