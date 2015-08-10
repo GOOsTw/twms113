@@ -16,25 +16,17 @@
  */
 package database;
 
-import database.DatabaseException;
-import java.lang.Thread.State;
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadInfo;
-import java.lang.management.ThreadMXBean;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import server.ServerProperties;
-import static sun.misc.ThreadGroupUtils.getRootThreadGroup;
 
 /**
  * All OdinMS servers maintain a Database Connection. This class therefore
@@ -49,8 +41,8 @@ public class DatabaseConnection {
             = new HashMap();
     private final static Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
     private static String dbDriver = "", dbUrl = "", dbUser = "", dbPass = "";
-    private static long connectionTimeOut = 30 * 60 * 60 * 1000;
-    private static ReentrantLock lock = new ReentrantLock();// 锁对象
+    private static final long connectionTimeOut = 30 * 60 * 60 * 1000;
+    private static final ReentrantLock lock = new ReentrantLock();// 锁对象
 
     public static int getConnectionsCount() {
         return connections.size();
@@ -61,9 +53,11 @@ public class DatabaseConnection {
             Thread cThread = Thread.currentThread();
             Integer threadID = (int) cThread.getId();
             ConWrapper ret = connections.get(threadID);
-            Connection c = ret.getConnection();
-            if (ret != null && !c.isClosed()) {
-                c.close();
+            if (ret != null) {
+                Connection c = ret.getConnection();
+                if (!c.isClosed()) {
+                    c.close();
+                }
             }
         } catch (SQLException ex) {
         }
@@ -83,8 +77,7 @@ public class DatabaseConnection {
 
         if (ret == null) {
             Connection retCon = connectToDB();
-            ret = new ConWrapper(retCon);
-
+            ret = new ConWrapper(threadID, retCon);
             lock.lock();
             try {
                 connections.put(threadID, ret);
@@ -92,54 +85,33 @@ public class DatabaseConnection {
                 lock.unlock();
             }
         }
+
         Connection c = ret.getConnection();
         try {
             if (c.isClosed()) {
                 Connection retCon = connectToDB();
+                lock.lock();
                 connections.remove(threadID);
-                ret = new ConWrapper(retCon);
                 connections.put(threadID, ret);
+                ret = new ConWrapper(threadID, retCon);
             }
         } catch (Exception e) {
 
+        } finally {
+            lock.unlock();
         }
 
         return ret.getConnection();
     }
 
-    ThreadGroup[] getAllThreadGroups() {
-        final ThreadGroup root = getRootThreadGroup();
-        int nAlloc = root.activeGroupCount();
-        int n = 0;
-        ThreadGroup[] groups;
-        do {
-            nAlloc *= 2;
-            groups = new ThreadGroup[nAlloc];
-            n = root.enumerate(groups, true);
-        } while (n == nAlloc);
-
-        ThreadGroup[] allGroups = new ThreadGroup[n + 1];
-        allGroups[0] = root;
-        System.arraycopy(groups, 0, allGroups, 1, n);
-        return allGroups;
-    }
-
-    private static Connection connectToDB() {
-
-        try {
-            Connection con = DriverManager.getConnection(dbUrl, dbUser, dbPass);
-            return con;
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
-    }
-
     static class ConWrapper {
 
+        private final int tid;
         private long lastAccessTime;
         private Connection connection;
 
-        public ConWrapper(Connection con) {
+        public ConWrapper(int tid, Connection con) {
+            this.tid = tid;
             this.lastAccessTime = System.currentTimeMillis();
             this.connection = con;
         }
@@ -169,9 +141,7 @@ public class DatabaseConnection {
             if (expiredConnection()) {
                 try { // Assume that the connection is stale
                     connection.close();
-                } catch (SQLException err) {
-                    // Who cares
-                }
+                } catch (SQLException err) { }
                 this.connection = connectToDB();
             }
             lastAccessTime = System.currentTimeMillis(); // Record Access
@@ -185,6 +155,16 @@ public class DatabaseConnection {
          */
         public boolean expiredConnection() {
             return System.currentTimeMillis() - lastAccessTime >= connectionTimeOut;
+        }
+    }
+
+    private static Connection connectToDB() {
+
+        try {
+            Connection con = DriverManager.getConnection(dbUrl, dbUser, dbPass);
+            return con;
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
         }
     }
 
@@ -218,7 +198,7 @@ public class DatabaseConnection {
         } finally {
             lock.unlock();
         }
-        System.out.println("[Database] 已經關閉" + String.valueOf(i) + "/"+ String.valueOf(connections.size())+ "個無用連線.");
+        System.out.println("[Database] 已經關閉" + String.valueOf(i) + "/" + String.valueOf(connections.size()) + "個無用連線.");
     }
 
     public static void closeAll() {

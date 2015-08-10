@@ -3741,11 +3741,11 @@ public class MaplePacketCreator {
 
         for (MapleGuildRanking.mesoRankingInfo info : all) {
             mplew.writeMapleAsciiString(info.getName());
-            mplew.writeInt(info.getmeso());
-            mplew.writeInt(info.getstr());
-            mplew.writeInt(info.getdex());
-            mplew.writeInt(info.getintt());
-            mplew.writeInt(info.getluk());
+            mplew.writeInt(((Long)(info.getMeso())).intValue());
+            mplew.writeInt(info.getStr());
+            mplew.writeInt(info.getDex());
+            mplew.writeInt(info.getInt());
+            mplew.writeInt(info.getLuk());
         }
 
         return mplew.getPacket();
@@ -3761,11 +3761,11 @@ public class MaplePacketCreator {
 
         for (MapleGuildRanking.levelRankingInfo info : all) {
             mplew.writeMapleAsciiString(info.getName());
-            mplew.writeInt(info.getlevel());
-            mplew.writeInt(info.getstr());
-            mplew.writeInt(info.getdex());
-            mplew.writeInt(info.getintt());
-            mplew.writeInt(info.getluk());
+            mplew.writeInt(info.getLevel());
+            mplew.writeInt(info.getStr());
+            mplew.writeInt(info.getDex());
+            mplew.writeInt(info.getInt());
+            mplew.writeInt(info.getLuk());
         }
 
         return mplew.getPacket();

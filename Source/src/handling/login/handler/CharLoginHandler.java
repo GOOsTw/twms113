@@ -35,8 +35,10 @@ import handling.channel.ChannelServer;
 import handling.login.LoginInformationProvider;
 import handling.login.LoginServer;
 import handling.login.LoginWorker;
+import handling.world.World;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.MapleItemInformationProvider;
@@ -366,9 +368,9 @@ public class CharLoginHandler {
         Secondpw_Client = slea.readMapleAsciiString();
 //        }
 //        slea.readMapleAsciiString();
-        final int Character_ID = slea.readInt();
+        final int characterId = slea.readInt();
 
-        if (!c.login_Auth(Character_ID)) {
+        if (!c.login_Auth(characterId)) {
             c.getSession().write(LoginPacket.secondPwError((byte) 0x14));
             return; // Attempting to delete other character
         }
@@ -388,9 +390,11 @@ public class CharLoginHandler {
         // TODO, implement 13 digit Asiasoft passport too.
 
         if (state == 0) {
-            state = (byte) c.deleteCharacter(Character_ID);
+            state = (byte) c.deleteCharacter(characterId);
         }
-        c.getSession().write(LoginPacket.deleteCharResponse(Character_ID, state));
+        
+       
+        c.getSession().write(LoginPacket.deleteCharResponse(characterId, state));
     }
 
     public static final void Character_WithoutSecondPassword(final SeekableLittleEndianAccessor slea, final MapleClient c) {

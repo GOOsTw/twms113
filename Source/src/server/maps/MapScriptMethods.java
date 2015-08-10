@@ -160,6 +160,7 @@ public class MapScriptMethods {
         PRaid_WinEnter,
         PRaid_FailEnter,
         Ghost,
+        TD_MC_keycheck,
         NULL;
 
         private static onUserEnter fromString(String Str) {
@@ -798,6 +799,10 @@ public class MapScriptMethods {
                 //}
                 //left blank because pyramidsubway handles this.
                 break;
+            }
+            case TD_MC_keycheck: {
+                 c.sendPacket(MaplePacketCreator.enableActions());
+                 break;
             }
             default: {
                 System.out.println("未處理的腳本 : " + scriptName + ", 型態 : onUserEnter - 地圖ID " + c.getPlayer().getMapId());

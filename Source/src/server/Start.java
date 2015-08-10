@@ -54,7 +54,7 @@ public class Start {
         CloneTimer.getInstance().start();
         EventTimer.getInstance().start();
         BuffTimer.getInstance().start();
-        WorldTimer.getInstance().register(CloseSQLConnections, 30 * 60 * 60 * 1000);
+        WorldTimer.getInstance().register(CloseSQLConnections, 30 * 60 * 1000);
         LoginInformationProvider.getInstance();
         MapleQuest.initQuests();
         MapleLifeFactory.loadQuestCounts();
@@ -64,7 +64,7 @@ public class Start {
         SkillFactory.getSkill(99999999);
         MapleOxQuizFactory.getInstance().initialize();
         MapleCarnivalFactory.getInstance();
-        MapleGuildRanking.getInstance().getRank();
+        MapleGuildRanking.getInstance().getGuildRank();
         MapleFamilyBuff.getBuffEntry();
         MapleServerHandler.registerMBean();
         RankingWorker.getInstance().run();

@@ -31,32 +31,32 @@ import database.DatabaseConnection;
 
 public class MapleGuildRanking {
 
-    private static MapleGuildRanking instance = new MapleGuildRanking();
-    private List<GuildRankingInfo> ranks = new LinkedList<GuildRankingInfo>();
-    private List<levelRankingInfo> ranks1 = new LinkedList<levelRankingInfo>();
-    private List<mesoRankingInfo> ranks2 = new LinkedList<mesoRankingInfo>();
+    private static final MapleGuildRanking instance = new MapleGuildRanking();
+    private List<GuildRankingInfo> ranks = new LinkedList<>();
+    private List<levelRankingInfo> ranks1 = new LinkedList<>();
+    private List<mesoRankingInfo> ranks2 = new LinkedList<>();
     
     public static MapleGuildRanking getInstance() {
         return instance;
     }
 
-    public List<GuildRankingInfo> getRank() {
+    public List<GuildRankingInfo> getGuildRank() {
         if (ranks.isEmpty()) {
             reload();
         }
         return ranks;
     }
     
-    public List<levelRankingInfo> getRank1() {
+    public List<levelRankingInfo> getLevelRank() {
         if (ranks1.isEmpty()) {
-            showlvl();
+            showLevelRank();
         }
         return ranks1;
     }
     
-    public List<mesoRankingInfo> getRank2() {
+    public List<mesoRankingInfo> getMesoRank() {
         if (ranks2.isEmpty()) {
-            showmeso();
+            showMesoRank();
         }
         return ranks2;
     }
@@ -83,10 +83,9 @@ public class MapleGuildRanking {
             rs.close();
         } catch (SQLException e) {
             System.err.println("Error handling guildRanking");
-            e.printStackTrace();
         }
     }
-    private void showlvl() {
+    private void showLevelRank() {
         ranks1.clear();
         try {
             Connection con = DatabaseConnection.getConnection();
@@ -111,17 +110,17 @@ public class MapleGuildRanking {
         }
     }
     
-     private void showmeso() {
+     private void showMesoRank() {
         ranks2.clear();
         try {
             Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM characters WHERE gm < 1 ORDER BY `meso` DESC LIMIT 20");
+            PreparedStatement ps = con.prepareStatement("SELECT *, ( chr.meso + s.meso ) as money FROM `characters` as chr , `storages` as s WHERE chr.gm < 1  AND s.accountid = chr.id ORDER BY money DESC LIMIT 20");
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
                 final mesoRankingInfo rank2 = new mesoRankingInfo (
                         rs.getString("name"),
-                        rs.getInt("meso"),
+                        rs.getLong("money"),
                         rs.getInt("str"),
                         rs.getInt("dex"),
                         rs.getInt("int"),
@@ -132,70 +131,71 @@ public class MapleGuildRanking {
             ps.close();
             rs.close();
         } catch (SQLException e) {
-            System.err.println("未能顯示楓幣排行");
+            System.err.println("未能顯示財產排行");
             e.printStackTrace();
         }
     }   
    public static class mesoRankingInfo {
       private String name;
-      private int meso, str, dex, intt, luk;
+      private long meso;
+      private int str, dex, _int, luk;
       
-      public mesoRankingInfo(String name, int meso, int str, int dex, int intt, int luk) {
+      public mesoRankingInfo(String name, long meso, int str, int dex, int intt, int luk) {
           this.name = name;
           this.meso = meso;
           this.str = str;
           this.dex =dex;
-          this.intt = intt;
+          this._int = intt;
           this.luk = luk;
       }
       public String getName() {
           return name;
       }
-      public int getmeso() {
+      public long getMeso() {
           return meso;
       }
-      public int getstr(){
+      public int getStr(){
           return str;
       }
-      public int getdex(){
+      public int getDex(){
           return dex;
       }
-      public int getintt(){
-          return intt;
+      public int getInt(){
+          return _int;
       }
-      public int getluk(){
+      public int getLuk(){
           return luk;
       }
    }
    public static class levelRankingInfo {
 
         private String name;
-        private int level, str, dex, intt, luk;
+        private int level, str, dex, _int, luk;
 
         public levelRankingInfo(String name, int level, int str, int dex, int intt, int luk) {
             this.name = name;
             this.level = level;
             this.str = str;
             this.dex = dex;
-            this.intt = intt;
+            this._int = intt;
             this.luk = luk;
         }
            public String getName() {
             return name;
            }
-           public int getlevel(){
+           public int getLevel(){
                return level;
            }
-           public int getstr(){
+           public int getStr(){
                return str;
            }
-           public int getdex(){
+           public int getDex(){
                return dex;
            }
-           public int getintt(){
-               return intt;
+           public int getInt(){
+               return _int;
            }
-           public int getluk(){
+           public int getLuk(){
                return luk;
            }
    }

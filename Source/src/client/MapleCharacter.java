@@ -1065,6 +1065,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.setString(42, name);
             ps.setInt(43, id);
             if (ps.executeUpdate() < 1) {
+                
                 ps.close();
                 throw new DatabaseException("Character not in database (" + id + ")");
             }
@@ -5144,7 +5145,13 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public void changeChannel(final int channel) {
         final ChannelServer toch = ChannelServer.getInstance(channel);
-
+        
+        
+        int res = this.saveToDB(false, false);
+        
+        if(res == 1)
+            dropMessage(5, "角色保存成功！");
+        
         if (channel == client.getChannel() || toch == null || toch.isShutdown()) {
             client.getSession().write(MaplePacketCreator.serverBlocked(1));
             return;
@@ -5158,12 +5165,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         PlayerBuffStorage.addBuffsToStorage(getId(), getAllBuffs());
         PlayerBuffStorage.addCooldownsToStorage(getId(), getCooldowns());
         PlayerBuffStorage.addDiseaseToStorage(getId(), getAllDiseases());
-        World.ChannelChange_Data(new CharacterTransfer(this), getId(), channel);
+        World.channelChangeData(new CharacterTransfer(this), getId(), channel);
         ch.removePlayer(this);
         client.updateLoginState(MapleClient.CHANGE_CHANNEL, client.getSessionIPAddress());
-
-        client.getSession().write(MaplePacketCreator.getChannelChange(toch.getIP(), toch.getPort()));
-
+        client.sendPacket(MaplePacketCreator.getChannelChange(toch.getIP(), toch.getPort()));
         getMap().removePlayer(this);
         client.setPlayer(null);
         client.setReceiving(false);
