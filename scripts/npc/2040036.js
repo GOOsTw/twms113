@@ -11,6 +11,10 @@ function start() {
 
 function action(mode, type, selection) {
     var eim = cm.getEventInstance();
+
+    if(eim == null)
+    	return;
+
     var stage1status = eim.getProperty("stage1status");
 
     if (stage1status == null) {

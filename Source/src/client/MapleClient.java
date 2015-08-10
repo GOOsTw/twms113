@@ -1065,7 +1065,6 @@ public class MapleClient implements Serializable {
         lastPing = System.currentTimeMillis();
         session.write(LoginPacket.getPing());
         PingTimer.getInstance().schedule(new Runnable() {
-
             @Override
             public void run() {
                 try {

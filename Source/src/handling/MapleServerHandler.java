@@ -68,62 +68,21 @@ import tools.FilePrinter;
 
 public class MapleServerHandler extends IoHandlerAdapter implements MapleServerHandlerMBean {
 
-    public static final boolean Log_Packets = true;
+    public static final boolean isLogPackets = true;
     private int channel = -1;
     private boolean cs;
     private final List<String> BlockedIP = new ArrayList<>();
     private final Map<String, Pair<Long, Byte>> tracker = new ConcurrentHashMap<>();
-    //Screw locking. Doesn't matter.
-//    private static final ReentrantReadWriteLock IPLoggingLock = new ReentrantReadWriteLock();
     private static final String nl = System.getProperty("line.separator");
     private static final File loggedIPs = new File("iplogs/logIps.txt");
     private static final HashMap<String, FileWriter> logIPMap = new HashMap<>();
     private static boolean debugMode = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.debug", "false"));
-    //Note to Zero: Use an enumset. Don't iterate through an array.
     private static final EnumSet<RecvPacketOpcode> blocked = EnumSet.noneOf(RecvPacketOpcode.class);
 
     static {
-        //reloadLoggedIPs();
+     
         RecvPacketOpcode[] block = new RecvPacketOpcode[]{RecvPacketOpcode.NPC_ACTION, RecvPacketOpcode.MOVE_PLAYER, RecvPacketOpcode.MOVE_PET, RecvPacketOpcode.MOVE_SUMMON, RecvPacketOpcode.MOVE_LIFE, RecvPacketOpcode.HEAL_OVER_TIME, RecvPacketOpcode.STRANGE_DATA};
         blocked.addAll(Arrays.asList(block));
-    }
-
-    public static void reloadLoggedIPs() {
-//        IPLoggingLock.writeLock().lock();
-//        try {
-        for (FileWriter fw : logIPMap.values()) {
-            if (fw != null) {
-                try {
-                    fw.write("=== Closing Log ===");
-                    fw.write(nl);
-                    fw.flush(); //Just in case.
-                    fw.close();
-                } catch (IOException ex) {
-                    System.out.println("Error closing Packet Log.");
-                    System.out.println(ex);
-                }
-            }
-        }
-        logIPMap.clear();
-        try {
-            Scanner sc = new Scanner(loggedIPs);
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine().trim();
-                if (line.length() > 0) {
-                    FileWriter fw = new FileWriter(new File("PacketLog_" + line + ".txt"), true);
-                    fw.write("=== Creating Log ===");
-                    fw.write(nl);
-                    fw.flush();
-                    logIPMap.put(line, fw);
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Could not reload packet logged IPs.");
-            System.out.println(e);
-        }
-//        } finally {
-//            IPLoggingLock.writeLock().unlock();
-//        }
     }
 
     //Return the Filewriter if the IP is logged. Null otherwise.
@@ -133,20 +92,20 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         return logIPMap.get(realIP);
     }
 // <editor-fold defaultstate="collapsed" desc="Packet Log Implementation">
-    private static final int Log_Size = 10000;
-    private static final ArrayList<LoggedPacket> Packet_Log = new ArrayList<>(Log_Size);
-    private static final ReentrantReadWriteLock Packet_Log_Lock = new ReentrantReadWriteLock();
-    private static final File Packet_Log_Output = new File("PacketLog.txt");
+    private static final int packetLogMaxSize = 10000;
+    private static final ArrayList<LoggedPacket> packetLog = new ArrayList<>(packetLogMaxSize);
+    private static final ReentrantReadWriteLock packetLogLock = new ReentrantReadWriteLock();
+    private static final File packetLogFile = new File("PacketLog.txt");
 
     public static void log(SeekableLittleEndianAccessor packet, RecvPacketOpcode op, MapleClient c, IoSession io) {
         if (blocked.contains(op)) {
             return;
         }
         try {
-            Packet_Log_Lock.writeLock().lock();
+            packetLogLock.writeLock().lock();
             LoggedPacket logged = null;
-            if (Packet_Log.size() == Log_Size) {
-                logged = Packet_Log.remove(0);
+            if (packetLog.size() == packetLogMaxSize) {
+                logged = packetLog.remove(0);
             }
             //This way, we don't create new LoggedPacket objects, we reuse them =]
             if (logged == null) {
@@ -160,9 +119,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                         c == null || c.getAccountName() == null ? "[Null]" : c.getAccountName(),
                         c == null || c.getPlayer() == null || c.getPlayer().getName() == null ? "[Null]" : c.getPlayer().getName());
             }
-            Packet_Log.add(logged);
+            packetLog.add(logged);
         } finally {
-            Packet_Log_Lock.writeLock().unlock();
+            packetLogLock.writeLock().unlock();
         }
     }
 
@@ -212,20 +171,19 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     @Override
     public void writeLog() {
         try {
-            Packet_Log_Lock.readLock().lock();
+            packetLogLock.readLock().lock();
             String newLine = System.getProperty("line.separator");
-            for (LoggedPacket loggedPacket : Packet_Log) {
+            for (LoggedPacket loggedPacket : packetLog) {
                 FilePrinter.print(FilePrinter.PacketLogs, loggedPacket.toString());
             }
         } finally {
-            Packet_Log_Lock.readLock().unlock();
+            packetLogLock.readLock().unlock();
         }
     }
 
     public MapleServerHandler() {
         //ONLY FOR THE MBEAN
     }
-    // </editor-fold>
 
     public MapleServerHandler(final int channel, final boolean cs) {
         this.channel = channel;
@@ -256,7 +214,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         final String address = session.getRemoteAddress().toString().split(":")[0];
 
         if (BlockedIP.contains(address)) {
-            session.close();
+            session.close(true);
             return;
         }
         final Pair<Long, Byte> track = tracker.get(address);
@@ -285,20 +243,21 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
         if (channel > -1) {
             if (ChannelServer.getInstance(channel).isShutdown()) {
-                session.close();
+                session.close(true);
                 return;
             }
         } else if (cs) {
             if (CashShopServer.isShutdown()) {
-                session.close();
+                session.close(true);
                 return;
             }
         } else {
             if (LoginServer.isShutdown()) {
-                session.close();
+                session.close(true);
                 return;
             }
         }
+        
         byte key[] = {0x13, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, (byte) 0xB4, 0x00, 0x00, 0x00, 0x1B, 0x00, 0x00, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x33, 0x00, 0x00, 0x00, 0x52, 0x00, 0x00, 0x00};
         byte ivRecv[] = {70, 114, 122, 82};
         byte ivSend[] = {82, 48, 120, 115};
@@ -324,7 +283,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             sb.append("[Login Server]");
         }
         sb.append("IoSession opened ").append(address);
-        System.out.println(sb.toString());
+        //System.out.println(sb.toString());
 
         FileWriter fw = isLoggedIP(session);
         if (fw != null) {
@@ -361,7 +320,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 }
                 client.disconnect(true, cs);
             } finally {
-                session.close();
                 session.removeAttribute(MapleClient.CLIENT_KEY);
             }
         }
@@ -402,7 +360,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                             FilePrinter.print("UnHandledPacketLogs.txt", String.valueOf(recv) + " (" + Integer.toHexString(header_num) + ") Handled: \r\n" + slea.toString() + "\r\n");
                         }
                     }
-                    if (Log_Packets) {
+                    if (isLogPackets) {
                         log(slea, recv, c, session);
                     }
                     handlePacket(recv, slea, c, cs);

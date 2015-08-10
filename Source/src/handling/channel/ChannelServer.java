@@ -573,6 +573,10 @@ public class ChannelServer implements Serializable {
                 ++ppl;
                else
                   System.out.println("[自動存檔] 角色:" + chr.getName() + " 儲存失敗." );
+               
+               if( chr.getClient().getLatency() < 0 ) {
+                   chr.getClient().disconnect(true, false);
+               }
             } catch(Exception e) {
                 
             }

@@ -254,16 +254,6 @@ public class AdminCommand {
         }
     }
 
-    public static class ReloadIPMonitor extends CommandExecute {
-
-        @Override
-        public int execute(MapleClient c, String[] splitted) {
-            MapleServerHandler.reloadLoggedIPs();
-            return 1;
-        }
-
-    }
-
     public static class HellBan extends Ban {
 
         public HellBan() {
