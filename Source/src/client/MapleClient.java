@@ -456,10 +456,7 @@ public class MapleClient implements Serializable {
                             unban();
                         }
                         byte loginstate = getLoginState();
-                        if (loginstate > MapleClient.LOGIN_NOTLOGGEDIN) { // already loggedin
-                            loggedIn = false;
-                            loginok = 7;
-                        } else {
+                       
                             boolean updatePasswordHash = false;
                             boolean updatePasswordHashtosha1 = false;
                             // Check if the passwords are correct here. :B
@@ -495,7 +492,10 @@ public class MapleClient implements Serializable {
                                     pss.executeUpdate();
                                 }
                             }
-                        }
+                            if (loginstate > MapleClient.LOGIN_NOTLOGGEDIN) { // already loggedin
+                            loggedIn = false;
+                            loginok = 7;
+                           }
                     }
                 }
                 rs.close();
