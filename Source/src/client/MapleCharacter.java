@@ -194,6 +194,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private final transient Map<Integer, Integer> movedMobs = new HashMap<>();
     private String teleportname = "";
     private boolean isSaveing = false;
+    public int Car = 0;
 
     private MapleCharacter(final boolean ChannelServer) {
         setStance(0);
