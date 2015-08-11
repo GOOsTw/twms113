@@ -1066,7 +1066,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.setString(42, name);
             ps.setInt(43, id);
             if (ps.executeUpdate() < 1) {
-                
+
                 ps.close();
                 throw new DatabaseException("Character not in database (" + id + ")");
             }
@@ -1216,7 +1216,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             if (cs != null) {
                 cs.save();
             }
-            
+
             PlayerNPC.updateByCharId(this);
             keylayout.saveKeys(id);
             mount.saveMount(id);
@@ -1279,7 +1279,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
                 }
                 isSaveing = false;
-                
+
             } catch (SQLException e) {
                 retValue = 0;
                 FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error going back to autocommit mode");
@@ -1454,6 +1454,34 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             return false;
         }
         return mbsvh.effect.isSkill() && mbsvh.effect.getSourceId() == skill.getId();
+    }
+
+    public boolean changeFace(int color) {
+        int f = 0;
+        if (face % 1000 < 100) {
+            f = face + color;
+        } else if ((face % 1000 >= 100) && (face % 1000 < 200)) {
+            f = face - 100 + color;
+        } else if ((face % 1000 >= 200) && (face % 1000 < 300)) {
+            f = face - 200 + color;
+        } else if ((face % 1000 >= 300) && (face % 1000 < 400)) {
+            f = face - 300 + color;
+        } else if ((face % 1000 >= 400) && (face % 1000 < 500)) {
+            f = face - 400 + color;
+        } else if ((face % 1000 >= 500) && (face % 1000 < 600)) {
+            f = face - 500 + color;
+        } else if ((face % 1000 >= 600) && (face % 1000 < 700)) {
+            f = face - 600 + color;
+        } else if ((face % 1000 >= 700) && (face % 1000 < 800)) {
+            f = face - 700 + color;
+        }
+        if (!MapleItemInformationProvider.getInstance().faceExists(f)) {
+            return false;
+        }
+        face = f;
+        updateSingleStat(MapleStat.FACE, face);
+        equipChanged();
+        return true;
     }
 
     public int getBuffSource(MapleBuffStat stat) {
@@ -3538,6 +3566,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public final void equipChanged() {
+        if (map == null) {
+            return;
+        }
         map.broadcastMessage(this, MaplePacketCreator.updateCharLook(this), false);
         stats.recalcLocalStats();
         if (getMessenger() != null) {
@@ -4549,6 +4580,27 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         availableCP = 0;
     }
 
+    public static int getIdByName(String name) {
+        try {
+            int id;
+            try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT id FROM characters WHERE name = ?")) {
+                ps.setString(1, name);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (!rs.next()) {
+                        rs.close();
+                        ps.close();
+                        return -1;
+                    }
+                    id = rs.getInt("id");
+                }
+            }
+            return id;
+        } catch (Exception e) {
+            System.err.println("錯誤 'getIdByName' " + e);
+        }
+        return -1;
+    }
+
     public void addCarnivalRequest(MapleCarnivalChallenge request) {
         pendingCarnivalRequests.add(request);
     }
@@ -5146,13 +5198,13 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public void changeChannel(final int channel) {
         final ChannelServer toch = ChannelServer.getInstance(channel);
-        
-        
+
         int res = this.saveToDB(false, false);
-        
-        if(res == 1)
+
+        if (res == 1) {
             dropMessage(5, "角色保存成功！");
-        
+        }
+
         if (channel == client.getChannel() || toch == null || toch.isShutdown()) {
             client.getSession().write(MaplePacketCreator.serverBlocked(1));
             return;
@@ -5745,6 +5797,5 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public int getPrefix() {
         return prefix;
     }
-    
-    
+
 }

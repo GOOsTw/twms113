@@ -28,6 +28,7 @@ import provider.MapleDataProviderFactory;
 import provider.MapleDataTool;
 import server.StructSetItem.SetItem;
 import tools.Pair;
+import tools.StringUtil;
 
 public class MapleItemInformationProvider {
 
@@ -78,6 +79,7 @@ public class MapleItemInformationProvider {
     protected final Map<Integer, Pair<Integer, List<StructRewardItem>>> RewardItem = new HashMap<Integer, Pair<Integer, List<StructRewardItem>>>();
     protected final Map<Byte, StructSetItem> setItems = new HashMap<Byte, StructSetItem>();
     protected final Map<Integer, Pair<Integer, List<Integer>>> questItems = new HashMap<Integer, Pair<Integer, List<Integer>>>();
+    protected final Map<Integer, String> faceList = new HashMap<Integer, String>();
 
     protected MapleItemInformationProvider() {
         System.out.println("Loading MapleItemInformationProvider :::");
@@ -280,7 +282,6 @@ public class MapleItemInformationProvider {
         }
         return type[cat - 30];
     }
-    
 
     protected final MapleData getStringData(final int itemId) {
         String cat = null;
@@ -1229,6 +1230,37 @@ public class MapleItemInformationProvider {
 
         notSaleCache.put(itemId, bRestricted);
         return bRestricted;
+    }
+
+    public final void loadStyles(boolean reload) {
+        if (reload) {
+            faceList.clear();
+        }
+        if (!faceList.isEmpty()) {
+            return;
+        }
+        String[] types = {"Face"};
+        for (String type : types) {
+            for (MapleData c : stringData.getData("Eqp.img").getChildByPath("Eqp/" + type)) {
+                if (equipData.getData(type + "/" + StringUtil.getLeftPaddedStr(c.getName() + ".img", '0', 12)) != null) {
+                    int dataid = Integer.parseInt(c.getName());
+                    String name = MapleDataTool.getString("name", c, "無名稱");
+                    if (type.equals("Face")) {
+                        faceList.put(dataid, name);
+                    }
+                }
+            }
+        }
+    }
+
+    public boolean faceExists(int face) {
+        return faceList.containsKey(face);
+    }
+
+    public final Map<Integer, String> getFaceList() {
+        Map<Integer, String> list = new HashMap<Integer, String>();
+        list.putAll(faceList);
+        return list;
     }
 
     public final Pair<Integer, List<StructRewardItem>> getRewardItem(final int itemid) {

@@ -243,16 +243,16 @@ public class ConsoleCommand {
         }
     }
 
-    public static class serverMsg extends CommandExecute {
+    public static class serverMsg extends ConsoleCommandExecute {
 
         @Override
-        public int execute(MapleClient c, String[] splitted) {
+        public int execute(String[] splitted) {
             if (splitted.length > 1) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(StringUtil.joinStringFrom(splitted, 1));
                 World.Broadcast.broadcastMessage(MaplePacketCreator.serverMessage(sb.toString()).getBytes());
             } else {
-                c.getPlayer().dropMessage(6, "指令規則: !serverMsg <message>");
+                System.out.println("指令規則: !serverMsg <message>");
                 return 0;
             }
             return 1;

@@ -1790,6 +1790,23 @@ public class InventoryHandler {
                 used = true;
                 break;
             }
+            case 5152100:
+            case 5152101:
+            case 5152102:
+            case 5152103:
+            case 5152104:
+            case 5152105:
+            case 5152106:
+            case 5152107: { // 日拋隱形眼鏡
+                int color = (itemId - 5152100) * 100;
+
+                if (color >= 0 && c.getPlayer().changeFace(color)) {
+                    used = true;
+                } else {
+                    c.getPlayer().dropMessage(1, "使用日拋隱形眼鏡出現錯誤。");
+                }
+                break;
+            }
             case 5190001:
             case 5190002:
             case 5190003:
