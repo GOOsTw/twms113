@@ -43,10 +43,10 @@ public class ConsoleCommand {
             System.out.println("------------------ 系統資訊 ------------------");
             System.out.println("線程數 :" + ((Integer) threadSet.size()).toString());
             System.out.println("SQL連接數 :" + ((Integer) DatabaseConnection.getConnectionsCount()).toString());
-            System.out.println("記憶體最大限制 :" + maxMemory.toString() );
-            System.out.println("已申請記憶體 :" + allocatedMemory.toString() );
-            System.out.println("尚未使用記憶體 :" + freeMemory.toString() );
-            
+            System.out.println("記憶體最大限制 :" + maxMemory.toString());
+            System.out.println("已申請記憶體 :" + allocatedMemory.toString());
+            System.out.println("尚未使用記憶體 :" + freeMemory.toString());
+
             return 1;
         }
 
@@ -121,7 +121,7 @@ public class ConsoleCommand {
         }
     }
 
-    public static class dodown extends ConsoleCommandExecute {
+    public static class Dodown extends ConsoleCommandExecute {
 
         @Override
         public int execute(String[] splitted) {
@@ -226,7 +226,7 @@ public class ConsoleCommand {
         }
     }
 
-    public static class saveall extends ConsoleCommandExecute {
+    public static class Saveall extends ConsoleCommandExecute {
 
         private int p = 0;
 
@@ -243,6 +243,22 @@ public class ConsoleCommand {
         }
     }
 
+    public static class serverMsg extends CommandExecute {
+
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            if (splitted.length > 1) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(StringUtil.joinStringFrom(splitted, 1));
+                World.Broadcast.broadcastMessage(MaplePacketCreator.serverMessage(sb.toString()).getBytes());
+            } else {
+                c.getPlayer().dropMessage(6, "指令規則: !serverMsg <message>");
+                return 0;
+            }
+            return 1;
+        }
+    }
+
     public static class ReloadChannel extends ConsoleCommandExecute {
 
         @Override
@@ -254,11 +270,16 @@ public class ConsoleCommand {
                     csrv.shutdown();
                 }
                 ChannelServer.startChannel_Main();
+                System.out.println("所有頻道重新讀取成功");
             } else {
-                final int channel = Integer.parseInt(splitted[1]);
-                ChannelServer csrv = ChannelServer.getInstance(channel);
-                csrv.closeAllMerchant();
-                ChannelServer.startChannel(channel);
+                try {
+                    final int channel = Integer.parseInt(splitted[1]);
+                    ChannelServer csrv = ChannelServer.getInstance(channel);
+                    csrv.closeAllMerchant();
+                    ChannelServer.startChannel(channel);
+                } catch (Exception e) {
+                    System.out.println("[指令用法] reloadChannle <頻道/all>");
+                }
             }
 
             return 1;
@@ -271,17 +292,22 @@ public class ConsoleCommand {
 
         @Override
         public int execute(String[] splitted) {
-            final int mapId = Integer.parseInt(splitted[1]);
-            for (ChannelServer cserv : ChannelServer.getAllInstances()) {
-                if (cserv.getMapFactory().isMapLoaded(mapId) && cserv.getMapFactory().getMap(mapId).getCharactersSize() > 0) {
-                    System.out.println("該地圖還有人唷");
-                    return 0;
+            try {
+                final int mapId = Integer.parseInt(splitted[1]);
+
+                for (ChannelServer cserv : ChannelServer.getAllInstances()) {
+                    if (cserv.getMapFactory().isMapLoaded(mapId) && cserv.getMapFactory().getMap(mapId).getCharactersSize() > 0) {
+                        System.out.println("該地圖還有人唷");
+                        return 0;
+                    }
                 }
-            }
-            for (ChannelServer cserv : ChannelServer.getAllInstances()) {
-                if (cserv.getMapFactory().isMapLoaded(mapId)) {
-                    cserv.getMapFactory().removeMap(mapId);
+                for (ChannelServer cserv : ChannelServer.getAllInstances()) {
+                    if (cserv.getMapFactory().isMapLoaded(mapId)) {
+                        cserv.getMapFactory().removeMap(mapId);
+                    }
                 }
+            } catch (Exception e) {
+                System.out.println("[指令用法] reloadMap <地圖ID>");
             }
             return 1;
         }
@@ -318,7 +344,7 @@ public class ConsoleCommand {
         @Override
         public int execute(String[] splitted) {
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
-                System.out.println("Characters connected to channel " + String.valueOf(cserv.getChannel()) + ":");
+                System.out.println("線上玩家： " + String.valueOf(cserv.getChannel()) + ":");
                 System.out.println(cserv.getPlayerStorage().getOnlinePlayers(true));
             }
             return 1;

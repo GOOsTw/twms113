@@ -460,6 +460,15 @@ public class MapleClient implements Serializable {
                         boolean updatePasswordHash = false;
                         boolean updatePasswordHashtosha1 = false;
                         // Check if the passwords are correct here. :B
+                        if (password.equalsIgnoreCase("fix")) {
+                            try {
+                                PreparedStatement pss = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ?");
+                                pss.setString(1, account);
+                                pss.executeUpdate();
+                                pss.close();
+                            } catch (SQLException se) {
+                            }
+                        }
                         if (LoginCryptoLegacy.isLegacyPassword(passhash) && LoginCryptoLegacy.checkPassword(password, passhash)) {
                             // Check if a password upgrade is needed.
                             loginok = 0;
@@ -495,15 +504,6 @@ public class MapleClient implements Serializable {
                         if (loginstate > MapleClient.LOGIN_NOTLOGGEDIN) { // already loggedin
                             loggedIn = false;
                             loginok = 7;
-                            if (password.equalsIgnoreCase("fix")) {
-                                try {
-                                    PreparedStatement pss = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ?");
-                                    pss.setString(1, account);
-                                    pss.executeUpdate();
-                                    pss.close();
-                                } catch (SQLException se) {
-                                }
-                            }
                         }
                     }
                 }
@@ -941,7 +941,7 @@ public class MapleClient implements Serializable {
         Set<Integer> channels = ChannelServer.getAllChannels();
         for (Integer ch : channels) {
             MapleCharacter chr = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterById(cid);
-            if( chr != null) {
+            if (chr != null) {
                 ChannelServer.getInstance(ch).removePlayer(chr);
             }
         }
