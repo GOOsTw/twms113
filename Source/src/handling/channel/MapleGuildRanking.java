@@ -35,7 +35,7 @@ public class MapleGuildRanking {
     private List<GuildRankingInfo> ranks = new LinkedList<>();
     private List<levelRankingInfo> ranks1 = new LinkedList<>();
     private List<mesoRankingInfo> ranks2 = new LinkedList<>();
-    
+
     public static MapleGuildRanking getInstance() {
         return instance;
     }
@@ -46,21 +46,21 @@ public class MapleGuildRanking {
         }
         return ranks;
     }
-    
+
     public List<levelRankingInfo> getLevelRank() {
         if (ranks1.isEmpty()) {
             showLevelRank();
         }
         return ranks1;
     }
-    
+
     public List<mesoRankingInfo> getMesoRank() {
         if (ranks2.isEmpty()) {
             showMesoRank();
         }
         return ranks2;
     }
-    
+
     private void reload() {
         ranks.clear();
         try {
@@ -85,6 +85,7 @@ public class MapleGuildRanking {
             System.err.println("Error handling guildRanking");
         }
     }
+
     private void showLevelRank() {
         ranks1.clear();
         try {
@@ -93,14 +94,14 @@ public class MapleGuildRanking {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                final levelRankingInfo rank1 = new levelRankingInfo (
+                final levelRankingInfo rank1 = new levelRankingInfo(
                         rs.getString("name"),
                         rs.getInt("level"),
                         rs.getInt("str"),
                         rs.getInt("dex"),
                         rs.getInt("int"),
                         rs.getInt("luk"));
-                        ranks1.add(rank1);
+                ranks1.add(rank1);
             }
             ps.close();
             rs.close();
@@ -109,8 +110,8 @@ public class MapleGuildRanking {
             e.printStackTrace();
         }
     }
-    
-     private void showMesoRank() {
+
+    private void showMesoRank() {
         ranks2.clear();
         try {
             Connection con = DatabaseConnection.getConnection();
@@ -118,56 +119,65 @@ public class MapleGuildRanking {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                final mesoRankingInfo rank2 = new mesoRankingInfo (
+                final mesoRankingInfo rank2 = new mesoRankingInfo(
                         rs.getString("name"),
                         rs.getLong("money"),
                         rs.getInt("str"),
                         rs.getInt("dex"),
                         rs.getInt("int"),
                         rs.getInt("luk"));
-                        ranks2.add(rank2);
+                ranks2.add(rank2);
             }
-        
+
             ps.close();
             rs.close();
         } catch (SQLException e) {
             System.err.println("未能顯示財產排行");
             e.printStackTrace();
         }
-    }   
-   public static class mesoRankingInfo {
-      private String name;
-      private long meso;
-      private int str, dex, _int, luk;
-      
-      public mesoRankingInfo(String name, long meso, int str, int dex, int intt, int luk) {
-          this.name = name;
-          this.meso = meso;
-          this.str = str;
-          this.dex =dex;
-          this._int = intt;
-          this.luk = luk;
-      }
-      public String getName() {
-          return name;
-      }
-      public long getMeso() {
-          return meso;
-      }
-      public int getStr(){
-          return str;
-      }
-      public int getDex(){
-          return dex;
-      }
-      public int getInt(){
-          return _int;
-      }
-      public int getLuk(){
-          return luk;
-      }
-   }
-   public static class levelRankingInfo {
+    }
+
+    public static class mesoRankingInfo {
+
+        private String name;
+        private long meso;
+        private int str, dex, _int, luk;
+
+        public mesoRankingInfo(String name, long meso, int str, int dex, int intt, int luk) {
+            this.name = name;
+            this.meso = meso;
+            this.str = str;
+            this.dex = dex;
+            this._int = intt;
+            this.luk = luk;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public long getMeso() {
+            return meso;
+        }
+
+        public int getStr() {
+            return str;
+        }
+
+        public int getDex() {
+            return dex;
+        }
+
+        public int getInt() {
+            return _int;
+        }
+
+        public int getLuk() {
+            return luk;
+        }
+    }
+
+    public static class levelRankingInfo {
 
         private String name;
         private int level, str, dex, _int, luk;
@@ -180,25 +190,32 @@ public class MapleGuildRanking {
             this._int = intt;
             this.luk = luk;
         }
-           public String getName() {
+
+        public String getName() {
             return name;
-           }
-           public int getLevel(){
-               return level;
-           }
-           public int getStr(){
-               return str;
-           }
-           public int getDex(){
-               return dex;
-           }
-           public int getInt(){
-               return _int;
-           }
-           public int getLuk(){
-               return luk;
-           }
-   }
+        }
+
+        public int getLevel() {
+            return level;
+        }
+
+        public int getStr() {
+            return str;
+        }
+
+        public int getDex() {
+            return dex;
+        }
+
+        public int getInt() {
+            return _int;
+        }
+
+        public int getLuk() {
+            return luk;
+        }
+    }
+
     public static class GuildRankingInfo {
 
         private String name;

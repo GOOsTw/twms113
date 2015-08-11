@@ -95,8 +95,12 @@ public class PlayerCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-            c.getPlayer().saveToDB(true, true);
-            c.getPlayer().dropMessage(5, "保存成功！");
+            int res = c.getPlayer().saveToDB(true, true);
+            if (res == 1) {
+                c.getPlayer().dropMessage(5, "保存成功！");
+            } else {
+                c.getPlayer().dropMessage(5, "保存失敗！");
+            }
             return 1;
         }
     }

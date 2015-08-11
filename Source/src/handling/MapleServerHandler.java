@@ -80,7 +80,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     private static final EnumSet<RecvPacketOpcode> blocked = EnumSet.noneOf(RecvPacketOpcode.class);
 
     static {
-     
+
         RecvPacketOpcode[] block = new RecvPacketOpcode[]{RecvPacketOpcode.NPC_ACTION, RecvPacketOpcode.MOVE_PLAYER, RecvPacketOpcode.MOVE_PET, RecvPacketOpcode.MOVE_SUMMON, RecvPacketOpcode.MOVE_LIFE, RecvPacketOpcode.HEAL_OVER_TIME, RecvPacketOpcode.STRANGE_DATA};
         blocked.addAll(Arrays.asList(block));
     }
@@ -257,7 +257,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 return;
             }
         }
-        
+
         byte key[] = {0x13, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, (byte) 0xB4, 0x00, 0x00, 0x00, 0x1B, 0x00, 0x00, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x33, 0x00, 0x00, 0x00, 0x52, 0x00, 0x00, 0x00};
         byte ivRecv[] = {70, 114, 122, 82};
         byte ivSend[] = {82, 48, 120, 115};
@@ -306,11 +306,11 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
 
         if (client != null && client.getPlayer() != null) {
-            client.getPlayer().saveToDB(true, cs);
+            client.disconnect(true, cs);
         }
 
         if (client != null) {
-           
+
             try {
                 FileWriter fw = isLoggedIP(session);
                 if (fw != null) {
@@ -318,13 +318,12 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                     fw.write(nl);
                     fw.flush();
                 }
-                client.disconnect(true, cs);
             } finally {
                 session.removeAttribute(MapleClient.CLIENT_KEY);
             }
         }
         DatabaseConnection.close();
-     
+
         super.sessionClosed(session);
     }
 
@@ -420,7 +419,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 // Does nothing for now, HackShield's heartbeat
                 break;
             case HELLO_LOGIN:
-                if(slea.available() >= 5) {
+                if (slea.available() >= 5) {
                     FilePrinter.print("38Logs.txt", slea.toString(), true);
                 }
                 CharLoginHandler.Welcome(c);

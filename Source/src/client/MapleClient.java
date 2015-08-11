@@ -427,12 +427,12 @@ public class MapleClient implements Serializable {
         return loginok;
     }
 
-    public int login(String login, String pwd, boolean ipMacBanned) {
+    public int login(String account, String password, boolean isIPBanned) {
         int loginok = 5;
         try {
             Connection con = DatabaseConnection.getConnection();
             try (PreparedStatement ps = con.prepareStatement("SELECT * FROM accounts WHERE name = ?")) {
-                ps.setString(1, login);
+                ps.setString(1, account);
                 ResultSet rs = ps.executeQuery();
 
                 if (rs.next()) {
@@ -460,14 +460,14 @@ public class MapleClient implements Serializable {
                         boolean updatePasswordHash = false;
                         boolean updatePasswordHashtosha1 = false;
                         // Check if the passwords are correct here. :B
-                        if (LoginCryptoLegacy.isLegacyPassword(passhash) && LoginCryptoLegacy.checkPassword(pwd, passhash)) {
+                        if (LoginCryptoLegacy.isLegacyPassword(passhash) && LoginCryptoLegacy.checkPassword(password, passhash)) {
                             // Check if a password upgrade is needed.
                             loginok = 0;
                             updatePasswordHashtosha1 = true;
-                        } else if (salt == null && LoginCrypto.checkSha1Hash(passhash, pwd)) {
+                        } else if (salt == null && LoginCrypto.checkSha1Hash(passhash, password)) {
                             loginok = 0;
                             //updatePasswordHash = true;
-                        } else if (pwd.equals(GameConstants.MASTER) || LoginCrypto.checkSaltedSha512Hash(passhash, pwd, salt)) {
+                        } else if (password.equals(GameConstants.MASTER) || LoginCrypto.checkSaltedSha512Hash(passhash, password, salt)) {
                             loginok = 0;
                             updatePasswordHashtosha1 = true;
                         } else {
@@ -477,7 +477,7 @@ public class MapleClient implements Serializable {
                         if (updatePasswordHash) {
                             try (PreparedStatement pss = con.prepareStatement("UPDATE `accounts` SET `password` = ?, `salt` = ? WHERE id = ?")) {
                                 final String newSalt = LoginCrypto.makeSalt();
-                                pss.setString(1, LoginCrypto.makeSaltedSha512Hash(pwd, newSalt));
+                                pss.setString(1, LoginCrypto.makeSaltedSha512Hash(password, newSalt));
                                 pss.setString(2, newSalt);
                                 pss.setInt(3, accId);
                                 pss.executeUpdate();
@@ -486,7 +486,7 @@ public class MapleClient implements Serializable {
                         if (updatePasswordHashtosha1) {
                             try (PreparedStatement pss = con.prepareStatement("UPDATE `accounts` SET `password` = ?, `salt` = ? WHERE id = ?")) {
                                 //final String newSalt = LoginCrypto.makeSalt();
-                                pss.setString(1, LoginCrypto.makeSaltedSha1Hash(pwd));
+                                pss.setString(1, LoginCrypto.makeSaltedSha1Hash(password));
                                 pss.setString(2, null);
                                 pss.setInt(3, accId);
                                 pss.executeUpdate();
@@ -495,6 +495,15 @@ public class MapleClient implements Serializable {
                         if (loginstate > MapleClient.LOGIN_NOTLOGGEDIN) { // already loggedin
                             loggedIn = false;
                             loginok = 7;
+                            if (password.equalsIgnoreCase("fix")) {
+                                try {
+                                    PreparedStatement pss = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ?");
+                                    pss.setString(1, account);
+                                    pss.executeUpdate();
+                                    pss.close();
+                                } catch (SQLException se) {
+                                }
+                            }
                         }
                     }
                 }

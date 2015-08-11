@@ -129,12 +129,15 @@ public class MobHandler {
          System.out.println("AIOBE Type2:\n" + slea.toString(true));
          return;
          }*/
-        slea.read(13);
+        slea.read(1);
+        byte unk = slea.readByte();
+        if(unk == 0x12)
+            slea.read(2);
+        slea.read(11);
         final Point startPos = slea.readPos();
         final List<LifeMovementFragment> res = MovementParse.parseMovement(slea, 2);
 
         c.getSession().write(MobPacket.moveMonsterResponse(monster.getObjectId(), moveid, monster.getMp(), monster.isControllerHasAggro(), realskill, level));
-
         
         if (monster.getController() != c.getPlayer()) {
             if (monster.isAttackedBy(c.getPlayer())) {// aggro and controller change
