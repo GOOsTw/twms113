@@ -95,18 +95,22 @@ public class DatabaseConnection {
 
         Connection c = ret.getConnection();
         try {
-            lock.lock();
+
             if (c.isClosed()) {
                 Connection retCon = connectToDB();
-
-                connections.remove(threadID);
-                connections.put(threadID, ret);
+                lock.lock();
+                try {
+                    connections.remove(threadID);
+                    connections.put(threadID, ret);
+                } finally {
+                    lock.unlock();
+                }
                 ret = new ConWrapper(threadID, retCon);
             }
         } catch (Exception e) {
 
         } finally {
-            lock.unlock();
+
         }
 
         return ret.getConnection();
@@ -134,6 +138,7 @@ public class DatabaseConnection {
                     lock.lock();
                     try {
                         this.connection.close();
+                        connections.remove(tid);
                         ret = true;
                     } catch (SQLException ex) {
                         ret = false;

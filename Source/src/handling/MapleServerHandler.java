@@ -36,6 +36,7 @@ import handling.cashshop.handler.*;
 import handling.channel.handler.*;
 import handling.login.LoginServer;
 import handling.login.handler.*;
+import handling.world.World;
 import java.io.File;
 import java.io.FileWriter;
 import java.lang.management.ManagementFactory;
@@ -240,7 +241,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         }
         tracker.put(address, new Pair<>(System.currentTimeMillis(), count));
         // End of IP checking.
-
+        
         if (channel > -1) {
             if (ChannelServer.getInstance(channel).isShutdown()) {
                 session.close(true);
@@ -258,11 +259,8 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             }
         }
 
-        byte key[] = {0x13, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, (byte) 0xB4, 0x00, 0x00, 0x00, 0x1B, 0x00, 0x00, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x33, 0x00, 0x00, 0x00, 0x52, 0x00, 0x00, 0x00};
-        byte ivRecv[] = {70, 114, 122, 82};
-        byte ivSend[] = {82, 48, 120, 115};
-        ivRecv[3] = (byte) (Math.random() * 255);
-        ivSend[3] = (byte) (Math.random() * 255);
+        byte ivRecv[] = {70, 114, 122, (byte) (Math.random() * 255)};
+        byte ivSend[] = {82, 48, 120, (byte) (Math.random() * 255)};
 
         final MapleClient client = new MapleClient(
                 new MapleAESOFB(ivSend, (short) (0xFFFF - ServerConstants.MAPLE_VERSION)), // Sent Cypher
@@ -274,56 +272,38 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         session.write(LoginPacket.getHello(ServerConstants.MAPLE_VERSION, ivSend, ivRecv));
         session.setAttribute(MapleClient.CLIENT_KEY, client);
 
-        StringBuilder sb = new StringBuilder();
-        if (channel > -1) {
-            sb.append("[Channel Server] Channel ").append(channel).append(" : ");
-        } else if (cs) {
-            sb.append("[Cash Server]");
-        } else {
-            sb.append("[Login Server]");
-        }
-        sb.append("IoSession opened ").append(address);
+        //StringBuilder sb = new StringBuilder();
+        //if (channel > -1) {
+        //    sb.append("[Channel Server] Channel ").append(channel).append(" : ");
+        //} else if (cs) {
+        //    sb.append("[Cash Server]");
+        //} else {
+        //    sb.append("[Login Server]");
+        //}
+        //sb.append("IoSession opened ").append(address);
         //System.out.println(sb.toString());
 
-        FileWriter fw = isLoggedIP(session);
-        if (fw != null) {
-            if (channel > -1) {
-                fw.write("=== Logged Into Channel " + channel + " ===");
-                fw.write(nl);
-            } else if (cs) {
-                fw.write("=== Logged Into CashShop Server ===");
-                fw.write(nl);
-            } else {
-                fw.write("=== Logged Into Login Server ===");
-                fw.write(nl);
-            }
-            fw.flush();
-        }
     }
 
     @Override
     public void sessionClosed(final IoSession session) throws Exception {
         final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
-
-        if (client != null && client.getPlayer() != null) {
-            client.disconnect(true, cs);
-        }
-
-        if (client != null) {
-
-            try {
-                FileWriter fw = isLoggedIP(session);
-                if (fw != null) {
-                    fw.write("=== Session Closed ===");
-                    fw.write(nl);
-                    fw.flush();
-                }
-            } finally {
-                session.removeAttribute(MapleClient.CLIENT_KEY);
+        if(client !=  null ) {
+            if( ! (client.getLoginState() == MapleClient.CASH_SHOP_TRANSITION 
+                    || client.getLoginState() == MapleClient.CHANGE_CHANNEL
+                    || client.getLoginState() == MapleClient.LOGIN_SERVER_TRANSITION ) && client.getPlayer() != null) {
+                client.disconnect(true, cs);
+                int ch = World.Find.findChannel(client.getPlayer().getId());
+                ChannelServer.getInstance(ch).removePlayer(client.getPlayer());
             }
         }
+        /*if (client != null && client.getPlayer() != null) {
+            client.disconnect(true, cs);
+        }*/
+        if (client != null) {
+            session.removeAttribute(MapleClient.CLIENT_KEY);
+        }
         DatabaseConnection.close();
-
         super.sessionClosed(session);
     }
 
