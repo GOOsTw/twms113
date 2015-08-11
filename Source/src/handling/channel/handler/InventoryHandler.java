@@ -527,7 +527,7 @@ public class InventoryHandler {
                         MapleInventoryManipulator.addById(c, 4001169, (short) 1);
                     } else {
                         map.broadcastMessage(MaplePacketCreator.catchMonster(mob.getId(), itemid, (byte) 0));
-                        chr.dropMessage(5, "The monster has too much physical strength, so you cannot catch it.");
+                        chr.dropMessage(5, "因對手怪物的生命值過高，所以無法捕捉！");
                     }
                     break;
                 }
@@ -540,7 +540,7 @@ public class InventoryHandler {
                         MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, itemid, 1, false, false);
                     } else {
                         map.broadcastMessage(MaplePacketCreator.catchMonster(mob.getId(), itemid, (byte) 0));
-                        chr.dropMessage(5, "The monster has too much physical strength, so you cannot catch it.");
+                        chr.dropMessage(5, "因對手怪物的生命值過高，所以無法捕捉！");
                     }
                     break;
                 }
@@ -568,7 +568,7 @@ public class InventoryHandler {
                         MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, itemid, 1, false, false);
                     } else {
                         map.broadcastMessage(MaplePacketCreator.catchMonster(mob.getId(), itemid, (byte) 0));
-                        chr.dropMessage(5, "The monster has too much physical strength, so you cannot catch it.");
+                        chr.dropMessage(5, "因對手怪物的生命值過高，所以無法捕捉！");
                     }
                     break;
                 }

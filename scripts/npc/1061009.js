@@ -45,7 +45,7 @@ function start() {
 		cm.spawnMobOnMap(9001003,1,-276,-3,108010401);
 		cm.sendOk("盜賊3轉的試煉即將開始!!");
 		cm.dispose();
-		} else if (cm.getPlayer().getMapId() == 107000402 && cm.getJob() == 510 || cm.getJob() == 520) {
+		} else if (cm.getPlayer().getMapId() == 105070200 && cm.getJob() == 510 || cm.getJob() == 520) {
 		cm.warp(108010500, 0);
 		cm.spawnMobOnMap(9001004,1,-276,-3,108010501);
 		cm.sendOk("海盜3轉的試煉即將開始!!");
