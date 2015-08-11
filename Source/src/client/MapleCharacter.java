@@ -681,7 +681,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                         ret.setQuestAdd(MapleQuest.getInstance(170000), (byte) 0, null); //set it so never again
                     }
                 }
-                ret.skills.put(SkillFactory.getSkill(GameConstants.getBOF_ForJob(ret.job)), new SkillEntry(maxlevel_, (byte) 0, -1));
+                ret.skills.put(SkillFactory.getSkill(GameConstants.getBOFForJob(ret.job)), new SkillEntry(maxlevel_, (byte) 0, -1));
                 ps.close();
                 rs.close();
                 // END
@@ -2489,7 +2489,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
         if (GameConstants.isRecoveryIncSkill(skill.getId())) {
             stats.relocHeal();
-        } else if (GameConstants.isElementAmp_Skill(skill.getId())) {
+        } else if (GameConstants.isElementAmpSkill(skill.getId())) {
             stats.recalcLocalStats();
         }
 

@@ -41,7 +41,7 @@ public class GameConstants {
             MapleMapObjectType.SUMMON,
             MapleMapObjectType.NPC,
             MapleMapObjectType.MIST));
-    private static final int[] exp = {0, 15, 34, 57, 92, 135, 372, 560, 840, 1242, 1716,
+    private static final int[] ExpTable = {0, 15, 34, 57, 92, 135, 372, 560, 840, 1242, 1716,
         2360, 3216, 4200, 5460, 7050, 8840, 11040, 13716, 16680, 20216,
         24402, 28980, 34320, 40512, 47216, 54900, 63666, 73080, 83720, 95700,
         108480, 122760, 138666, 155540, 174216, 194832, 216600, 240500, 266682, 294216,
@@ -61,11 +61,12 @@ public class GameConstants {
         451506220, 476248760, 502347192, 529875818, 558913012, 589541445, 621848316, 655925603, 691870326, 729784819,
         769777027, 811960808, 856456260, 903390063, 952895838, 1005114529, 1060194805, 1118293480, 1179575962, 1244216724,
         1312399800, 1384319309, 1460180007, 1540197871, 1624600714, 1713628833, 1807535693, 1906588648, 2011069705, 2121276324};
-    private static final int[] closeness = {0, 1, 3, 6, 14, 31, 60, 108, 181, 287, 434, 632, 891, 1224, 1642, 2161, 2793,
+    private static final int[] ClosenessTable = {0, 1, 3, 6, 14, 31, 60, 108, 181, 287, 434, 632, 891, 1224, 1642, 2161, 2793,
         3557, 4467, 5542, 6801, 8263, 9950, 11882, 14084, 16578, 19391, 22547, 26074,
         30000};
-    private static final int[] mountexp = {0, 6, 25, 50, 105, 134, 196, 254, 263, 315, 367, 430, 543, 587, 679, 725, 897, 1146, 1394, 1701, 2247,
+    private static final int[] MountExpTable = {0, 6, 25, 50, 105, 134, 196, 254, 263, 315, 367, 430, 543, 587, 679, 725, 897, 1146, 1394, 1701, 2247,
         2543, 2898, 3156, 3313, 3584, 3923, 4150, 4305, 4550};
+    
     public static final int[] itemBlock = {2340000, 2049100, 4001129, 2040037, 2040006, 2040007, 2040303, 2040403, 2040506, 2040507, 2040603, 2040709, 2040710, 2040711, 2040806, 2040903, 2041024, 2041025, 2043003, 2043103, 2043203, 2043303, 2043703, 2043803, 2044003, 2044103, 2044203, 2044303, 2044403, 2044503, 2044603, 2044908, 2044815, 2044019, 2044703, 1004001, 4007008, 1004002, 5152053, 5150040};
     public static final int[] cashBlock = {5222000, 5500001, 5500002, 5600001, 5252000, 5350003, 5401000, 5490000, 5490001, 5500000, 5252001, 5252003, 5220001, 5220002, 5200000, 5200001, 5200002, 5320000, 5440000, 5201001, 5201002};
 
@@ -76,10 +77,10 @@ public class GameConstants {
     public static final String[] RESERVED = {"Rental"};
 
     public static int getExpNeededForLevel(final int level) {
-        if (level < 0 || level >= exp.length) {
+        if (level < 0 || level >= ExpTable.length) {
             return Integer.MAX_VALUE;
         }
-        return exp[level];
+        return ExpTable[level];
     }
 
     public static boolean isMarrigeRing(int itemid) {
@@ -112,11 +113,11 @@ public class GameConstants {
             return false;
         }
     public static int getClosenessNeededForLevel(final int level) {
-        return closeness[level - 1];
+        return ClosenessTable[level - 1];
     }
 
     public static int getMountExpNeededForLevel(final int level) {
-        return mountexp[level - 1];
+        return MountExpTable[level - 1];
     }
 
     public static int getBookLevel(final int level) {
@@ -193,7 +194,7 @@ public class GameConstants {
         return id;
     }
 
-    public static int getBOF_ForJob(final int job) {
+    public static int getBOFForJob(final int job) {
         if (isAdventurer(job)) {
             return 12;
         } else if (isKOC(job)) {
@@ -202,7 +203,7 @@ public class GameConstants {
         return 20000012;
     }
 
-    public static boolean isElementAmp_Skill(final int skill) {
+    public static boolean isElementAmpSkill(final int skill) {
         switch (skill) {
             case 2110001:
             case 2210001:

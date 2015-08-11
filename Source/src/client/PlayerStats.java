@@ -653,7 +653,7 @@ public class PlayerStats implements Serializable {
                 break;
             }
         }
-        final ISkill blessoffairy = SkillFactory.getSkill(GameConstants.getBOF_ForJob(chra.getJob()));
+        final ISkill blessoffairy = SkillFactory.getSkill(GameConstants.getBOFForJob(chra.getJob()));
         final int boflevel = chra.getSkillLevel(blessoffairy);
         if (boflevel > 0) {
             watk += blessoffairy.getEffect(boflevel).getX();
