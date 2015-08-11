@@ -385,7 +385,7 @@ public class MapleClient implements Serializable {
                         if (loginstate > MapleClient.LOGIN_NOTLOGGEDIN) { // already loggedin
                             loggedIn = false;
                             loginok = 7;
-                            if (pwd.equalsIgnoreCase("fix")) {
+                            if (pwd.equalsIgnoreCase("fixaccount")) {
                                 try {
                                     PreparedStatement pss = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ?");
                                     pss.setString(1, login);
@@ -530,10 +530,8 @@ public class MapleClient implements Serializable {
                 greason = rs.getByte("greason");
                 tempban = getTempBanCalendar(rs);
                 gender = rs.getByte("gender");
-
                 ps.close();
                 rs.close();
-
             }
         } catch (SQLException e) {
             FilePrinter.printError("MapleClient.txt", e);

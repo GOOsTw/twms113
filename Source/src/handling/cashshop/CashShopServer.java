@@ -95,6 +95,7 @@ public class CashShopServer {
         //MTSStorage.getInstance().saveBuyNow(true);
         System.out.println("[購物商城] 解除綁定端口...");
         acceptor.unbind();
+        acceptor.dispose();
         finishedShutdown = true;
         System.out.println("[購物商城] 關閉完成...");
     }

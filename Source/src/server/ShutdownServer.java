@@ -1,6 +1,5 @@
 package server;
 
-
 import database.DatabaseConnection;
 import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
@@ -53,16 +52,8 @@ public class ShutdownServer implements Runnable {
 
         System.out.println("家族資料儲存完畢");
 
-        LoginServer.shutdown();
-
-        System.out.println("登陸伺服器關閉完成.");
-
-        CashShopServer.shutdown();
-
-        System.out.println("購物商城伺服器關閉完成.");
-        
         Set<Integer> channels = ChannelServer.getAllChannels();
- 
+
         for (Integer channel : channels) {
             try {
                 ChannelServer cs = ChannelServer.getInstance(channel);
@@ -73,6 +64,19 @@ public class ShutdownServer implements Runnable {
                 System.out.println("頻道" + String.valueOf(channel) + " 關閉失敗.");
             }
         }
+        try {
+            LoginServer.shutdown();
+            System.out.println("登陸伺服器關閉完成.");
+        } catch (Exception e) {
+            System.out.println("登陸伺服器關閉失敗");
+        }
+        try {
+            CashShopServer.shutdown();
+            System.out.println("購物商城伺服器關閉完成.");
+        } catch (Exception e) {
+            System.out.println("購物商城伺服器關閉失敗");
+        }
+
         try {
             DatabaseConnection.closeAll();
             System.out.println("資料庫清除連線完成");

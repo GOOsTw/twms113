@@ -92,7 +92,9 @@ public class LoginServer {
             return;
         }
         System.out.println("登入伺服器關閉中...");
+        
         acceptor.unbind();
+        acceptor.dispose();
         System.out.println("登入伺服器關閉完畢...");
         finishedShutdown = true; //nothing. lol
     }

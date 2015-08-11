@@ -180,6 +180,7 @@ public class ChannelServer implements Serializable {
         try {
             if (acceptor != null) {
                 acceptor.unbind();
+                acceptor.dispose();
                 acceptor = null;
                 System.out.println("頻道 " + channel + ", 解除端口成功");
             }

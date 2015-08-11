@@ -90,7 +90,10 @@ public class Start {
         while (!World.isShutDown) {
             try {
                 System.out.print(">>");
-                ConsoleCommandProcessor.processCommand(br.readLine());
+                String cmd = br.readLine();
+                if(cmd.equals(""))
+                    continue;
+                ConsoleCommandProcessor.processCommand(cmd);
             } catch (IOException ex) {
                 Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
             }
