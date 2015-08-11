@@ -113,9 +113,13 @@ public class InternCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             Connection con = DatabaseConnection.getConnection();
+            MapleCharacter victim;
             try {
-                try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE id = " + c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]))) {
+                try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE id = " + + MapleCharacter.getIdByName(splitted[1]))) {
+                    victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
+                    victim.getClient().getSession().close();
                     ps.executeUpdate();
+                    ps.close();
                 }
             } catch (Exception e) {
                 c.getPlayer().dropMessage(6, "解除異常成功 " + splitted[1]);
