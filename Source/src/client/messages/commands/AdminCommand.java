@@ -172,7 +172,9 @@ public class AdminCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
-                for (MapleCharacter chr : cserv.getPlayerStorage().getAllCharacters()) {
+                List<MapleCharacter> chrs = cserv.getPlayerStorage().getAllCharactersThreadSafe();
+
+                for (MapleCharacter chr : chrs) {
                     p++;
                     chr.saveToDB(false, false);
                 }
@@ -949,7 +951,7 @@ public class AdminCommand {
             return 1;
         }
     }
-    
+
     public static class serverMsg extends CommandExecute {
 
         @Override
@@ -957,6 +959,8 @@ public class AdminCommand {
             if (splitted.length > 1) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(StringUtil.joinStringFrom(splitted, 1));
+                for(ChannelServer ch : ChannelServer.getAllInstances())
+                    ch.setServerMessage(sb.toString());
                 World.Broadcast.broadcastMessage(MaplePacketCreator.serverMessage(sb.toString()).getBytes());
             } else {
                 c.getPlayer().dropMessage(6, "指令規則: !serverMsg <message>");

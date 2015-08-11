@@ -761,6 +761,7 @@ public class MapScriptMethods {
                 c.getSession().write(UIPacket.IntroDisableUI(false));
                 c.getSession().write(UIPacket.IntroLock(false));
                 c.getSession().write(MaplePacketCreator.enableActions());
+                
                 break;
             }
             case rienArrow: {

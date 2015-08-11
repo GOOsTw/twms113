@@ -12,6 +12,7 @@ import handling.channel.ChannelServer;
 import handling.world.World;
 import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
@@ -233,7 +234,8 @@ public class ConsoleCommand {
         @Override
         public int execute(String[] splitted) {
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
-                for (MapleCharacter chr : cserv.getPlayerStorage().getAllCharacters()) {
+                List<MapleCharacter> chrs = cserv.getPlayerStorage().getAllCharactersThreadSafe();
+                for (MapleCharacter chr : chrs) {
                     p++;
                     chr.saveToDB(false, true);
                     System.out.println("[保存] " + p + "個玩家數據保存到數據中.");
@@ -250,6 +252,8 @@ public class ConsoleCommand {
             if (splitted.length > 1) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(StringUtil.joinStringFrom(splitted, 1));
+                for(ChannelServer ch : ChannelServer.getAllInstances())
+                    ch.setServerMessage(sb.toString());
                 World.Broadcast.broadcastMessage(MaplePacketCreator.serverMessage(sb.toString()).getBytes());
             } else {
                 System.out.println("指令規則: !serverMsg <message>");

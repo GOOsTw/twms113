@@ -27,11 +27,14 @@ import java.util.Map;
 
 import handling.MapleServerHandler;
 import handling.mina.MapleCodecFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.buffer.SimpleBufferAllocator;
 import org.apache.mina.core.filterchain.IoFilter;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.session.IdleStatus;
+import org.apache.mina.core.session.IoSession;
 
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
@@ -92,10 +95,18 @@ public class LoginServer {
             return;
         }
         System.out.println("登入伺服器關閉中...");
-        
+
+        for (IoSession session : acceptor.getManagedSessions().values()) {
+            try {
+                session.close(false).await();
+            } catch (InterruptedException ex) {
+            }
+        }
         acceptor.unbind();
         acceptor.dispose();
-        System.out.println("登入伺服器關閉完畢...");
+
+        System.out.println(
+                "登入伺服器關閉完畢...");
         finishedShutdown = true; //nothing. lol
     }
 

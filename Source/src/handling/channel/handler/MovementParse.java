@@ -50,7 +50,7 @@ public class MovementParse {
                     final short ywobble = lea.readShort();
                     final short unk = lea.readShort();
                     short fh = 0;
-                    if (command == 15 || command == 16) {
+                    if (command == 15) {
                         fh = lea.readShort();
                     }
                     byte newstate = lea.readByte();
@@ -117,6 +117,13 @@ public class MovementParse {
                     short duration = lea.readShort();
                     StaticLifeMovement mov = new StaticLifeMovement(command, null, duration, newstate, 0);
                     mov.setPixelsPerSecond(new Point(xwobble, ywobble));
+                    res.add(mov);
+                    break;
+                }
+                case 21: {
+                    byte newstate = lea.readByte();
+                    short duration = lea.readShort();
+                    StaticLifeMovement mov = new StaticLifeMovement(command, null, duration, newstate, 0);
                     res.add(mov);
                     break;
                 }

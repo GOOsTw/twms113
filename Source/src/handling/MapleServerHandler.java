@@ -303,6 +303,10 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         if (client != null) {
             session.removeAttribute(MapleClient.CLIENT_KEY);
         }
+        
+        if( client != null && channel == -1 && !cs && client.getLoginState() != MapleClient.LOGIN_SERVER_TRANSITION) {
+            client.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, client.getSessionIPAddress());
+        }
         DatabaseConnection.close();
         super.sessionClosed(session);
     }

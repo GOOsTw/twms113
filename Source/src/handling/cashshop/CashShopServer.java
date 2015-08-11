@@ -27,6 +27,7 @@ import handling.channel.PlayerStorage;
 import handling.mina.MapleCodecFactory;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.buffer.SimpleBufferAllocator;
+import org.apache.mina.core.session.IoSession;
 
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
@@ -94,6 +95,12 @@ public class CashShopServer {
         playersMTS.disconnectAll();
         //MTSStorage.getInstance().saveBuyNow(true);
         System.out.println("[購物商城] 解除綁定端口...");
+        for (IoSession session : acceptor.getManagedSessions().values()) {
+            try {
+                session.close(false).await();
+            } catch (InterruptedException ex) {
+            }
+        }
         acceptor.unbind();
         acceptor.dispose();
         finishedShutdown = true;

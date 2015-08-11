@@ -477,22 +477,22 @@ public class InventoryHandler {
         }
 
         // Update
-         MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, scroll.getPosition(), (short) 1, false, false);
+        MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, scroll.getPosition(), (short) 1, false, false);
         
         if (whiteScroll) {
             MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, wscroll.getPosition(), (short) 1, false, false);
         }
         final List<ModifyInventory> mods = new ArrayList<>();
         if (scrollSuccess == Equip.ScrollResult.CURSE) {
-            mods.add(new ModifyInventory(3, toScroll));
+            mods.add(new ModifyInventory(ModifyInventory.Types.REMOVE, toScroll));
             if (dst < 0) {
                 c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).removeItem(toScroll.getPosition());
             } else {
                 c.getPlayer().getInventory(MapleInventoryType.EQUIP).removeItem(toScroll.getPosition());
             }
         } else {
-            mods.add(new ModifyInventory(3, scrolled));
-            mods.add(new ModifyInventory(0, scrolled));
+            mods.add(new ModifyInventory(ModifyInventory.Types.REMOVE, scrolled));
+            mods.add(new ModifyInventory(ModifyInventory.Types.ADD, scrolled));
         }
         c.sendPacket(MaplePacketCreator.modifyInventory(true, mods));
 
@@ -503,7 +503,7 @@ public class InventoryHandler {
             chr.equipChanged();
         }
 
-        c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.UPDATE, scroll)));
+        //c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.UPDATE, scroll)));
 
         return true;
     }

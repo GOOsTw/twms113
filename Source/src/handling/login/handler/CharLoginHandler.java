@@ -65,8 +65,8 @@ public class CharLoginHandler {
     }
 
     public static final void login(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-        
-        if( slea.available() <= 4) {
+
+        if (slea.available() <= 4) {
             c.getSession().close(true);
             return;
         }
@@ -214,10 +214,10 @@ public class CharLoginHandler {
     public static final void CreateChar(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         final String name = slea.readMapleAsciiString();
         final int JobType = slea.readInt(); // 1 = Adventurer, 0 = Cygnus, 2 = Aran
-        if (JobType == 0 || JobType == 2) {
-         c.getSession().write(MaplePacketCreator.serverNotice(1, "很抱歉\r\n暫時只能創冒險家\r\n日後如果BUG差不多會開放其他職業。"));
-         return;
-         }
+        if (JobType == 0) {
+            c.getSession().write(MaplePacketCreator.serverNotice(1, "很抱歉\r\n皇家騎士團還未開放\r\n日後如果BUG差不多會開放其他職業。"));
+            return;
+        }
         final short db = 0; //whether dual blade = 1 or adventurer = 0
         final int face = slea.readInt();
         final int hair = slea.readInt();
@@ -392,8 +392,7 @@ public class CharLoginHandler {
         if (state == 0) {
             state = (byte) c.deleteCharacter(characterId);
         }
-        
-       
+
         c.getSession().write(LoginPacket.deleteCharResponse(characterId, state));
     }
 
