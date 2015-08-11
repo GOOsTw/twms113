@@ -725,7 +725,7 @@ public class World {
         }
 
         public static void save() {
-            System.out.println("Saving guilds...");
+            System.out.println("儲存公會資料...");
             lock.writeLock().lock();
             try {
                 for (MapleGuild a : guilds.values()) {
@@ -1212,7 +1212,7 @@ public class World {
         }
 
         public static void save() {
-            System.out.println("Saving alliances...");
+            System.out.println("儲存聯盟資料...");
             lock.writeLock().lock();
             try {
                 for (MapleGuildAlliance a : alliances.values()) {
@@ -1285,7 +1285,7 @@ public class World {
         }
 
         public static void save() {
-            System.out.println("Saving families...");
+            System.out.println("儲存家族資料...");
             lock.writeLock().lock();
             try {
                 for (MapleFamily a : families.values()) {

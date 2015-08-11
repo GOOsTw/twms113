@@ -251,7 +251,7 @@ public class ConsoleCommand {
             if (splitted[1].equalsIgnoreCase("all")) {
                 for (ChannelServer csrv : ChannelServer.getAllInstances()) {
                     csrv.closeAllMerchant();
-                    csrv.shutdown(this);
+                    csrv.shutdown();
                 }
                 ChannelServer.startChannel_Main();
             } else {

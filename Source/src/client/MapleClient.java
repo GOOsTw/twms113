@@ -929,7 +929,7 @@ public class MapleClient implements Serializable {
     }
 
     public final int deleteCharacter(final int cid) {
-        Set<Integer> channels = ChannelServer.getAllInstance();
+        Set<Integer> channels = ChannelServer.getAllChannels();
         for (Integer ch : channels) {
             MapleCharacter chr = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterById(cid);
             if( chr != null) {

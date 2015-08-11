@@ -77,7 +77,7 @@ public class Start {
         CashShopServer.run_startup_configurations();
         System.out.println("[購物商城伺服器啟動完成]");
         CheatTimer.getInstance().register(AutobanManager.getInstance(), 60000);
-        Runtime.getRuntime().addShutdownHook(new Thread(new Shutdown()));
+        Runtime.getRuntime().addShutdownHook(new Thread(ShutdownServer.getInstance()));
         try {
             SpeedRunner.getInstance().loadSpeedRuns();
         } catch (SQLException e) {
@@ -95,15 +95,7 @@ public class Start {
                 Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
-        System.exit(0);
     }
 
-    public static class Shutdown implements Runnable {
-
-        @Override
-        public void run() {
-            new Thread(ShutdownServer.getInstance()).start();
-        }
-    }
+    
 }

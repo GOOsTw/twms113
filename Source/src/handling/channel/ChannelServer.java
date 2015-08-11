@@ -73,7 +73,7 @@ public class ChannelServer implements Serializable {
     public static long serverStartTime;
     private int expRate, mesoRate, dropRate, cashRate;
     private short port = 8585;
-    private String ip = "127.0.0.0";
+    private String ip = "127.0.0.1";
     private static final short DEFAULT_PORT = 8585;
     private final int channel;
     private final String key;
@@ -102,7 +102,7 @@ public class ChannelServer implements Serializable {
         mapFactory.setChannel(channel);
     }
 
-    public static Set<Integer> getAllInstance() {
+    public static Set<Integer> getAllChannels() {
         return new HashSet<>(instances.keySet());
     }
 
@@ -159,7 +159,7 @@ public class ChannelServer implements Serializable {
         }
     }
 
-    public final void shutdown(Object threadToNotify) {
+    public final void shutdown() {
         if (finishedShutdown) {
             return;
         }
@@ -177,18 +177,20 @@ public class ChannelServer implements Serializable {
 
         System.out.println("頻道 " + channel + ", 解除端口綁定中...");
 
-        acceptor.unbind();
-        acceptor = null;
+        try {
+            if (acceptor != null) {
+                acceptor.unbind();
+                acceptor = null;
+                System.out.println("頻道 " + channel + ", 解除端口成功");
+            }
+        } catch (Exception e) {
+            System.out.println("頻道 " + channel + ", 解除端口失敗");
+        }
 
-        //temporary while we dont have !addchannel
         instances.remove(channel);
         LoginServer.removeChannel(channel);
         setFinishShutdown();
-//        if (threadToNotify != null) {
-//            synchronized (threadToNotify) {
-//                threadToNotify.notify();
-//            }
-//        }
+
     }
 
     public final void unbind() {
@@ -273,6 +275,7 @@ public class ChannelServer implements Serializable {
     public final String getIP() {
         return this.ip;
     }
+
     public final int getChannel() {
         return channel;
     }
@@ -385,7 +388,7 @@ public class ChannelServer implements Serializable {
             merchLock.writeLock().unlock();
         }
     }
-    
+
     public final int addMerchant(final HiredMerchant hMerchant) {
         merchLock.writeLock().lock();
 
@@ -567,23 +570,22 @@ public class ChannelServer implements Serializable {
         int ppl = 0;
         List<MapleCharacter> all = this.players.getAllCharactersThreadSafe();
         for (MapleCharacter chr : all) {
-            try{
-               int res = chr.saveToDB(false, false);
-               if(res == 1)
-                ++ppl;
-               else
-                  System.out.println("[自動存檔] 角色:" + chr.getName() + " 儲存失敗." );
-               
-               if( chr.getClient().getLatency() < 0 ) {
-                   chr.getClient().disconnect(true, false);
-               }
-            } catch(Exception e) {
-                
+            try {
+                int res = chr.saveToDB(false, false);
+                if (res == 1) {
+                    ++ppl;
+                } else {
+                    System.out.println("[自動存檔] 角色:" + chr.getName() + " 儲存失敗.");
+                }
+
+                if (chr.getClient().getLatency() < 0) {
+                    chr.getClient().disconnect(true, false);
+                }
+            } catch (Exception e) {
+
             }
         }
         System.out.println("[自動存檔] 已經將頻道 " + this.channel + " 的 " + ppl + " 個玩家保存到數據中.");
     }
-   
-    
-    
+
 }

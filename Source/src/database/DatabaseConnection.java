@@ -58,7 +58,14 @@ public class DatabaseConnection {
                 if (!c.isClosed()) {
                     c.close();
                 }
+                lock.lock();
+                try {
+                    connections.remove(threadID);
+                } finally {
+                    lock.unlock();
+                }
             }
+
         } catch (SQLException ex) {
         }
     }
@@ -88,9 +95,10 @@ public class DatabaseConnection {
 
         Connection c = ret.getConnection();
         try {
+            lock.lock();
             if (c.isClosed()) {
                 Connection retCon = connectToDB();
-                lock.lock();
+
                 connections.remove(threadID);
                 connections.put(threadID, ret);
                 ret = new ConWrapper(threadID, retCon);
@@ -141,7 +149,8 @@ public class DatabaseConnection {
             if (expiredConnection()) {
                 try { // Assume that the connection is stale
                     connection.close();
-                } catch (SQLException err) { }
+                } catch (SQLException err) {
+                }
                 this.connection = connectToDB();
             }
             lastAccessTime = System.currentTimeMillis(); // Record Access

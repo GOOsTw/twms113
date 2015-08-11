@@ -95,7 +95,7 @@ public class PlayerCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-            c.getPlayer().saveToDB(false, true);
+            c.getPlayer().saveToDB(true, true);
             c.getPlayer().dropMessage(5, "保存成功！");
             return 1;
         }
@@ -169,9 +169,9 @@ public class PlayerCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if ((c.getPlayer().getMapId() >= 925020109 && c.getPlayer().getMapId() <= 925023814)) {
-                    c.getPlayer().dropMessage(5, "你不能在這裡使用指令.");
-                    return 0;
-                }
+                c.getPlayer().dropMessage(5, "你不能在這裡使用指令.");
+                return 0;
+            }
             if (c.getPlayer().getLevel() < 10 && c.getPlayer().getJob() != 200) {
                 c.getPlayer().dropMessage("你必須超過 10 等來使用此指令.");
                 return 0;
@@ -187,6 +187,24 @@ public class PlayerCommand {
                 c.getPlayer().dropMessage(5, "沒有回家卷軸,所以不能使用回自由指令!");
                 return 0;
             }
+        }
+    }
+
+    public static class car extends 卡圖 {
+    }
+
+    public static class 卡圖 extends CommandExecute {
+
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            if (c.getPlayer().Car == c.getPlayer().getMapId() && c.getPlayer().getMapId() / 1000000 != 4) {
+                MapleMap map = c.getChannelServer().getMapFactory().getMap(100000000);
+                c.getPlayer().changeMap(map, map.getPortal(0));
+            } else {
+                c.getPlayer().dropMessage(1, "你並沒有卡圖啊。");
+            }
+            c.getPlayer().Car = 0;
+            return 1;
         }
     }
 
@@ -226,6 +244,7 @@ public class PlayerCommand {
             c.getPlayer().dropMessage(5, "@萬能/@npc <工具箱>");
             c.getPlayer().dropMessage(5, "@存檔/@save <存檔>");
             c.getPlayer().dropMessage(5, "@自由/@fm <回自由-需要1張回家卷軸>");
+            c.getPlayer().dropMessage(5, "@卡圖/@car <卡圖修復>");
             c.getPlayer().dropMessage(5, "@event <參加活動>");
             c.getPlayer().dropMessage(5, "@CGM 訊息 <傳送訊息給GM>");
             c.getPlayer().dropMessage(5, "@bspq <BOSSPQ兌換NPC>");
