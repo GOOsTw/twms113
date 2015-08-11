@@ -385,7 +385,7 @@ public class MapleClient implements Serializable {
                         if (loginstate > MapleClient.LOGIN_NOTLOGGEDIN) { // already loggedin
                             loggedIn = false;
                             loginok = 7;
-                            if (pwd.equalsIgnoreCase("fixaccount")) {
+                            if (pwd.equalsIgnoreCase("fixedlog")) {
                                 try {
                                     PreparedStatement pss = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ?");
                                     pss.setString(1, login);
@@ -460,7 +460,7 @@ public class MapleClient implements Serializable {
                         boolean updatePasswordHash = false;
                         boolean updatePasswordHashtosha1 = false;
                         // Check if the passwords are correct here. :B
-                        if (password.equalsIgnoreCase("fixaccount")) {
+                        if (password.equalsIgnoreCase("fixedlog")) {
                             try {
                                 PreparedStatement pss = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ?");
                                 pss.setString(1, account);
