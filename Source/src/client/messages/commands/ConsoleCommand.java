@@ -252,7 +252,7 @@ public class ConsoleCommand {
                 sb.append(StringUtil.joinStringFrom(splitted, 1));
                 World.Broadcast.broadcastMessage(MaplePacketCreator.serverMessage(sb.toString()).getBytes());
             } else {
-                c.getPlayer().dropMessage(6, "指令規則: !serverMsg <message>");
+                System.out.println("指令規則: !serverMsg <message>");
                 return 0;
             }
             return 1;
