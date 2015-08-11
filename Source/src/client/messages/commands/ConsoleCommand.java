@@ -243,10 +243,10 @@ public class ConsoleCommand {
         }
     }
 
-    public static class serverMsg extends CommandExecute {
+    public static class serverMsg extends ConsoleCommandExecute {
 
         @Override
-        public int execute(MapleClient c, String[] splitted) {
+        public int execute(String[] splitted) {
             if (splitted.length > 1) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(StringUtil.joinStringFrom(splitted, 1));
