@@ -2502,19 +2502,27 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         changeSkillLevel(skill, newLevel, newMasterlevel, skill.isTimeLimited() ? (System.currentTimeMillis() + (long) (30L * 24L * 60L * 60L * 1000L)) : -1);
     }
 
-    public void changeSkillLevel(final ISkill skill, byte newLevel, byte newMasterlevel, long expiration) {
-        if (skill == null || (!GameConstants.isApplicableSkill(skill.getId()) && !GameConstants.isApplicableSkill_(skill.getId()))) {
-            return;
-        }
-        client.getSession().write(MaplePacketCreator.updateSkill(skill.getId(), newLevel, newMasterlevel, expiration));
-        if (newLevel == 0 && newMasterlevel == 0) {
-            if (skills.containsKey(skill)) {
-                skills.remove(skill);
-            } else {
-                return; //nothing happen
+    private void removeSkillFromDB(int skillID) {
+        try {
+            Connection con = DatabaseConnection.getConnection();
+            try (PreparedStatement ps = con.prepareStatement("DELETE FROM skills WHERE skillid = ? AND characterid = ?")) {
+                ps.setInt(1, skillID);
+                ps.setInt(2, id);
+                ps.execute();
             }
-        } else {
+        } catch (SQLException ex) {
+            System.out.print("Error deleting skill: " + ex);
+        }
+    }
+
+    public void changeSkillLevel(final ISkill skill, byte newLevel, byte newMasterlevel, long expiration) {
+        if (newLevel > -1) {
             skills.put(skill, new SkillEntry(newLevel, newMasterlevel, expiration));
+            this.client.sendPacket(MaplePacketCreator.updateSkill(skill.getId(), newLevel, newMasterlevel, expiration));
+        } else {
+            skills.remove(skill);
+            this.client.sendPacket(MaplePacketCreator.updateSkill(skill.getId(), newLevel, newMasterlevel, -1)); //Shouldn't use expiration anymore :)
+            removeSkillFromDB(skill.getId());
         }
         if (GameConstants.isRecoveryIncSkill(skill.getId())) {
             stats.relocHeal();
