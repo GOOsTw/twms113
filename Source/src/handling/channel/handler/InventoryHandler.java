@@ -150,7 +150,7 @@ public class InventoryHandler {
         final MapleInventoryType invType = MapleInventoryType.getByType(mode);
         MapleInventory Inv = c.getPlayer().getInventory(invType);
 
-        final List<IItem> itemMap = new LinkedList<IItem>();
+        final List<IItem> itemMap = new LinkedList<>();
         for (IItem item : Inv.list()) {
             itemMap.add(item.copy()); // clone all  items T___T.
         }
@@ -168,14 +168,14 @@ public class InventoryHandler {
         sortedItems.clear();
     }
 
-    private static final List<IItem> sortItems(final List<IItem> passedMap) {
-        final List<Integer> itemIds = new ArrayList<Integer>(); // empty list.
+    private static List<IItem> sortItems(final List<IItem> passedMap) {
+        final List<Integer> itemIds = new ArrayList<>(); // empty list.
         for (IItem item : passedMap) {
             itemIds.add(item.getItemId()); // adds all item ids to the empty list to be sorted.
         }
         Collections.sort(itemIds); // sorts item ids
 
-        final List<IItem> sortedList = new LinkedList<IItem>(); // ordered list pl0x <3.
+        final List<IItem> sortedList = new LinkedList<>(); // ordered list pl0x <3.
 
         for (Integer val : itemIds) {
             for (IItem item : passedMap) {

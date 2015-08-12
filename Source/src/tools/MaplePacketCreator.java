@@ -416,10 +416,10 @@ public class MaplePacketCreator {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.SERVERMESSAGE.getValue());
-        mplew.write(/*rareness == 2 ? 15 : */14);
+        mplew.write(/*rareness == 2 ? 15 : */13);
         mplew.writeMapleAsciiString(name + message);
         mplew.writeInt(0); // 0~3 i think
-        mplew.writeMapleAsciiString(name);
+        //mplew.writeMapleAsciiString(name);
         PacketHelper.addItemInfo(mplew, item, true, true);
 
         return mplew.getPacket();

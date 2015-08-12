@@ -157,7 +157,11 @@ public abstract class Timer {
     }
 
     public void stop() {
-        ses.shutdown();
+        try {
+            ses.shutdownNow();
+        } catch (Exception e) {
+
+        }
     }
 
     public ScheduledFuture<?> register(Runnable r, long repeatTime, long delay) {
@@ -178,7 +182,7 @@ public abstract class Timer {
         if (ses == null) {
             return null;
         }
-        return ses.schedule(new LoggingSaveRunnable(r,file), delay, TimeUnit.MILLISECONDS);
+        return ses.schedule(new LoggingSaveRunnable(r, file), delay, TimeUnit.MILLISECONDS);
     }
 
     public ScheduledFuture<?> scheduleAtTimestamp(Runnable r, long timestamp) {

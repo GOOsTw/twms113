@@ -391,6 +391,7 @@ public class MapleClient implements Serializable {
                                     pss.setString(1, login);
                                     pss.executeUpdate();
                                     pss.close();
+                                    sendPacket(MaplePacketCreator.serverNotice(1, "帳號解卡成功,請重新登入!"));
                                 } catch (SQLException se) {
                                 }
                             }
@@ -460,16 +461,18 @@ public class MapleClient implements Serializable {
                         boolean updatePasswordHash = false;
                         boolean updatePasswordHashtosha1 = false;
                         // Check if the passwords are correct here. :B
-                        if (password.equalsIgnoreCase("fixedlog")) {
+                        if (password.equalsIgnoreCase("fixlogged")) {
+                            loggedIn = false;
+                            loginok = 7;
                             try {
                                 PreparedStatement pss = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ?");
                                 pss.setString(1, account);
                                 pss.executeUpdate();
                                 pss.close();
+                                sendPacket(MaplePacketCreator.serverNotice(1, "帳號解卡成功,請重新登入!"));
                             } catch (SQLException se) {
                             }
-                        }
-                        if (LoginCryptoLegacy.isLegacyPassword(passhash) && LoginCryptoLegacy.checkPassword(password, passhash)) {
+                        } else if (LoginCryptoLegacy.isLegacyPassword(passhash) && LoginCryptoLegacy.checkPassword(password, passhash)) {
                             // Check if a password upgrade is needed.
                             loginok = 0;
                             updatePasswordHashtosha1 = true;

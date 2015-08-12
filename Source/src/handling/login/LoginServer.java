@@ -97,10 +97,7 @@ public class LoginServer {
         System.out.println("登入伺服器關閉中...");
 
         for (IoSession session : acceptor.getManagedSessions().values()) {
-            try {
-                session.close(false).await();
-            } catch (InterruptedException ex) {
-            }
+            session.close(true);
         }
         acceptor.unbind();
         acceptor.dispose();

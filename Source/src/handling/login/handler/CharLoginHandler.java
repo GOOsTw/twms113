@@ -344,7 +344,7 @@ public class CharLoginHandler {
                 newchar.getInventory(MapleInventoryType.ETC).addItem(new Item(4161001, (byte) 0, (short) 1, (byte) 0));
                 break;
             case 2: // Aran
-                newchar.setSkinColor((byte) 1);
+                newchar.setSkinColor((byte) 11);
                 newchar.getInventory(MapleInventoryType.ETC).addItem(new Item(4161048, (byte) 0, (short) 1, (byte) 0));
                 break;
             case 3: //Evan

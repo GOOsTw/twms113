@@ -96,10 +96,7 @@ public class CashShopServer {
         //MTSStorage.getInstance().saveBuyNow(true);
         System.out.println("[購物商城] 解除綁定端口...");
         for (IoSession session : acceptor.getManagedSessions().values()) {
-            try {
-                session.close(false).await();
-            } catch (InterruptedException ex) {
-            }
+            session.close(true);
         }
         acceptor.unbind();
         acceptor.dispose();

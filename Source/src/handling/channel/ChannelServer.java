@@ -181,10 +181,7 @@ public class ChannelServer implements Serializable {
         try {
             if (acceptor != null) {
                 for (IoSession session : acceptor.getManagedSessions().values()) {
-                    try {
-                        session.close(false).await();
-                    } catch (InterruptedException ex) {
-                    }
+                    session.close(true);
                 }
                 acceptor.unbind();
                 acceptor.dispose();

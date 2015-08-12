@@ -118,7 +118,7 @@ public class Event_DojoAgent {
             if (party && c.getParty() != null) {
                 for (MaplePartyCharacter mem : c.getParty().getMembers()) {
                     MapleCharacter chr = mapidd.getCharacterById(mem.getId());
-                    if (chr != null) {
+                    if (chr != null && chr.isAlive()) {
                         chr.changeMap(map, map.getPortal(0));
                     }
                 }

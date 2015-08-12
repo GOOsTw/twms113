@@ -235,7 +235,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             if (count >= 10) {
                 BlockedIP.add(address);
                 tracker.remove(address); // Cleanup
-                session.close();
+                session.close(true);
                 return;
             }
         }

@@ -540,14 +540,14 @@ public class MapleInventoryManipulator {
         final List<ModifyInventory> mods = new ArrayList<>();
         if (!type.equals(MapleInventoryType.EQUIP) && initialTarget != null && initialTarget.getItemId() == source.getItemId() && !GameConstants.isRechargable(source.getItemId())) {
             if ((olddstQ + oldsrcQ) > slotMax) {
-                mods.add(new ModifyInventory(1, source));
-                mods.add(new ModifyInventory(1, initialTarget));
+                mods.add(new ModifyInventory(ModifyInventory.Types.UPDATE, source));
+                mods.add(new ModifyInventory(ModifyInventory.Types.UPDATE, initialTarget));
             } else {
-                mods.add(new ModifyInventory(3, source));
-                mods.add(new ModifyInventory(1, initialTarget));
+                mods.add(new ModifyInventory(ModifyInventory.Types.REMOVE, source));
+                mods.add(new ModifyInventory(ModifyInventory.Types.UPDATE, initialTarget));
             }
         } else {
-            mods.add(new ModifyInventory(2, source, src));
+            mods.add(new ModifyInventory(ModifyInventory.Types.MOVE, source, src));
         }
         c.sendPacket(MaplePacketCreator.modifyInventory(true, mods));
     }
