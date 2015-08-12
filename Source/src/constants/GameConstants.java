@@ -194,7 +194,7 @@ public class GameConstants {
         return id;
     }
 
-    public static int getBOFForJob(final int job) {
+    public static int getBOF_ForJob(final int job) {
         if (isAdventurer(job)) {
             return 12;
         } else if (isKOC(job)) {
@@ -894,7 +894,6 @@ public class GameConstants {
         1422013, 3, // Lemonite
         1322029, 3, // Ruin Hammer
         1412010, 3, // Colonian Axe
-
         1002587, 3, // Black Wisconsin
         1402044, 1, // Pumpkin lantern
         2101013, 4, // Summoning Showa boss
@@ -1019,14 +1018,14 @@ public class GameConstants {
         1012141, 10
     };
     public static int[] fishingReward = {
-        0, 90, // Meso
-        1, 70, // EXP
+        0, 40, // Meso
+        1, 40, // EXP
         1302021, 5, // Pico Pico Hammer
         1072238, 1, // Voilet Snowshoe
         1072239, 1, // Yellow Snowshoe
         2049100, 1, // Chaos Scroll
-        2049301, 1, // Equip Enhancer Scroll
-        2049401, 1, // Potential Scroll
+        //2049301, 1, // Equip Enhancer Scroll
+        //2049401, 1, // Potential Scroll
         1302000, 3, // Sword
         1442011, 1, // Surfboard
         //4000517, 8, // Golden Fish
@@ -1052,7 +1051,10 @@ public class GameConstants {
         4031646, 2, // Salmon (183cm)
         4031647, 1, // Salmon (227cm)
         4031648, 1, // Salmon (288cm)
-        4031629, 1 // Pot
+        4031629, 1, // Pot
+        1102041, 1, // 粉披
+        1102042, 1, // 紫披
+        2101120, 1  // 魚怪召喚袋
     };
 
     public static boolean isDragonItem(int itemId) {

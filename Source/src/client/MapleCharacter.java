@@ -682,7 +682,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                         ret.setQuestAdd(MapleQuest.getInstance(170000), (byte) 0, null); //set it so never again
                     }
                 }
-                ret.skills.put(SkillFactory.getSkill(GameConstants.getBOFForJob(ret.job)), new SkillEntry(maxlevel_, (byte) 0, -1));
+                ret.skills.put(SkillFactory.getSkill(GameConstants.getBOF_ForJob(ret.job)), new SkillEntry(maxlevel_, (byte) 0, -1));
                 ps.close();
                 rs.close();
                 // END
@@ -1566,7 +1566,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
                 switch (randval) {
                     case 0: // Meso
-                        final int money = Randomizer.rand(expMulti ? 15 : 10, expMulti ? 75000 : 50000);
+                        final int money = Randomizer.rand(expMulti ? 15 : 10, expMulti ? 15000 : 30000);
                         gainMeso(money, true);
                         client.getSession().write(UIPacket.fishingUpdate((byte) 1, money));
                         break;
@@ -2502,27 +2502,19 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         changeSkillLevel(skill, newLevel, newMasterlevel, skill.isTimeLimited() ? (System.currentTimeMillis() + (long) (30L * 24L * 60L * 60L * 1000L)) : -1);
     }
 
-    private void removeSkillFromDB(int skillID) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            try (PreparedStatement ps = con.prepareStatement("DELETE FROM skills WHERE skillid = ? AND characterid = ?")) {
-                ps.setInt(1, skillID);
-                ps.setInt(2, id);
-                ps.execute();
-            }
-        } catch (SQLException ex) {
-            System.out.print("Error deleting skill: " + ex);
-        }
-    }
-
     public void changeSkillLevel(final ISkill skill, byte newLevel, byte newMasterlevel, long expiration) {
-        if (newLevel > -1) {
-            skills.put(skill, new SkillEntry(newLevel, newMasterlevel, expiration));
-            this.client.sendPacket(MaplePacketCreator.updateSkill(skill.getId(), newLevel, newMasterlevel, expiration));
+        if (skill == null || (!GameConstants.isApplicableSkill(skill.getId()) && !GameConstants.isApplicableSkill_(skill.getId()))) {
+            return;
+        }
+        client.getSession().write(MaplePacketCreator.updateSkill(skill.getId(), newLevel, newMasterlevel, expiration));
+        if (newLevel == 0 && newMasterlevel == 0) {
+            if (skills.containsKey(skill)) {
+                skills.remove(skill);
+            } else {
+                return; //nothing happen
+            }
         } else {
-            skills.remove(skill);
-            this.client.sendPacket(MaplePacketCreator.updateSkill(skill.getId(), newLevel, newMasterlevel, -1)); //Shouldn't use expiration anymore :)
-            removeSkillFromDB(skill.getId());
+            skills.put(skill, new SkillEntry(newLevel, newMasterlevel, expiration));
         }
         if (GameConstants.isRecoveryIncSkill(skill.getId())) {
             stats.relocHeal();
