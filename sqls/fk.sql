@@ -821,4 +821,10 @@ INSERT INTO `drop_data` VALUES ('22890', '9410032', '2384050', '1', '1', '0', '1
 INSERT INTO `drop_data` VALUES ('22891', '9410033', '2385029', '1', '1', '0', '1000');
 INSERT INTO `drop_data` VALUES ('22892', '9410034', '2385030', '1', '1', '0', '1000');
 INSERT INTO `drop_data` VALUES ('22893', '9410035', '2388047', '1', '1', '0', '1000');
+INSERT INTO `drop_data` VALUES ('22894', '9410039', '0', '10', '100', '0', '400000');
+INSERT INTO `drop_data` VALUES ('22895', '100130', '0', '1', '10', '0', '400000');
+INSERT INTO `drop_data` VALUES ('22896', '100134', '0', '1', '10', '0', '400000');
+INSERT INTO `drop_data` VALUES ('22897', '100131', '0', '1', '10', '0', '400000');
+INSERT INTO `drop_data` VALUES ('22898', '100132', '0', '1', '10', '0', '400000');
+INSERT INTO `drop_data` VALUES ('22899', '100133', '0', '1', '10', '0', '400000');
 INSERT INTO `drop_data` VALUES ('38016', '9300173', '4001161', '1', '1', '0', '999999');
