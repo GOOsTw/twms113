@@ -36,7 +36,8 @@ public enum SavedLocationType {
     PVP(11),
     HOTEL(12),
     PACH(13),
-    ENGLISH(14);
+    ENGLISH(14),
+    SLEEP(15);
     private int index;
 
     private SavedLocationType(int index) {

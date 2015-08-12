@@ -722,6 +722,15 @@ public class GameConstants {
 
     public static byte gachaponRareItem(final int id) {
         switch (id) {
+            case 2022217: // 殘暴炎魔的御守
+            case 2022221: // 緞帶肥肥的御守
+            case 2022222: // 遠古精靈的御守
+            case 2022223: // 企鵝王的御守
+                return 1;
+            case 3010054: // 綿羊單人床
+            case 2022483: // 加持道具
+            case 2210029: // 黃金豬  變身道具
+                return 2;
             case 2340000: // White Scroll
             case 2049100: // Chaos Scroll
             case 2049000: // Reverse Scroll
@@ -764,7 +773,7 @@ public class GameConstants {
             case 1372042: // Elemental wand lvl 130
             case 1092049: // Dragon Khanjar
             case 1382037: // Blade Staff
-                return 2;
+                return 3;
             case 1102084: // Pink Gaia Cape
             case 1102041: // Pink Adventurer Cape
             case 1402044: // Pumpkin Lantern
@@ -776,14 +785,13 @@ public class GameConstants {
             case 3010064: // Brown Sand Bunny Cushion
             case 3010063: // Starry Moon Cushion
             case 3010068: // Teru Teru Chair
-            case 3010054: // Baby Bear's Dream
             case 3012001: // Round the Campfire
             case 3012002: // Rubber Ducky Bath
             case 3010020: // Portable Meal Table
             case 3010041: // Skull Throne
 
             case 1082179: //yellow marker
-                return 2;
+                return 3;
             //1 = wedding msg o.o
         }
         return 0;

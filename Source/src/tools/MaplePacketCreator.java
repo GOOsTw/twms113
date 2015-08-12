@@ -412,14 +412,13 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static MaplePacket getGachaponMega(final String name, final String message, final IItem item, final byte rareness) {
+public static MaplePacket getGachaponMega(final String name, final String message, final IItem item, final byte rareness) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.SERVERMESSAGE.getValue());
-        mplew.write(/*rareness == 2 ? 15 : */14);
+        mplew.write(/*rareness == 2 ? 15 : */13);
         mplew.writeMapleAsciiString(name + message);
         mplew.writeInt(0); // 0~3 i think
-        mplew.writeMapleAsciiString(name);
         PacketHelper.addItemInfo(mplew, item, true, true);
 
         return mplew.getPacket();
@@ -4849,5 +4848,4 @@ public class MaplePacketCreator {
         //mplew.write(HexTool.getByteArrayFromHexString("DA 01 00 05 BD 0F 01 60 00 00 00 FF 0E 01 61 00 00 00 69 0E 01 62 00 00 00 05 0F 01 63 00 00 00 C6 0F 01 64 00 00 00"));
         return mplew.getPacket();
     }
-
 }

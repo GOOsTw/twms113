@@ -1,4 +1,6 @@
 function enter(pi) {
-	pi.playerMessage(5, "很抱歉，暫時不開放!");
-	return false;
+    pi.saveLocation("SLEEP");
+    pi.playPortalSE();
+    pi.warp(749030000, "out00");
+	return true;
 }

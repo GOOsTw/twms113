@@ -447,11 +447,16 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
             if (item == null) {
                 return -1;
-            }
+            } 
             final byte rareness = GameConstants.gachaponRareItem(item.getItemId());
-            if (rareness > 0) {
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName(), " : Lucky winner of Gachapon!", item, rareness).getBytes());
+            if (rareness == 1) {
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName(), " : 被他抽到了，大家恭喜他吧！", item, rareness).getBytes()); 
+            } else if (rareness == 2) {
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName(), " : 被他成功轉到了，大家恭喜他吧！", item, rareness).getBytes()); 
+            } else if (rareness > 2) {
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName(), " : 被他從楓葉轉蛋機轉到了，大家恭喜他吧！", item, rareness).getBytes());
             }
+            
             return item.getItemId();
         } catch (Exception e) {
             e.printStackTrace();

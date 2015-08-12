@@ -23,7 +23,10 @@ function action(mode, type, selection) {
 	if (Math.floor(Math.random() * 300) == 0) {
 	    var rareList = new Array(2022217, 2022221, 2022222, 2022223);
 		
-	    item = cm.gainGachaponItem(rareList[Math.floor(Math.random() * rareList.length)], 1, "微微安御守轉蛋NPC");
+	    item = cm.gainGachaponItem(rareList[Math.floor(Math.random() * rareList.length)], 1, "薇薇安御守");
+		/*cm.sendNext("#b已經給您#r#v" + id + ":##t" + id + ":##b x" + gain + " 了唷,請去背包查收吧。");
+        cm.WorldMessage("	恭喜 " + cm.getPlayer().getName() + "從正義轉蛋抽到了" + MapleItemInformationProvider.getInstance().getName(id) + "x" + gain);
+        cm.dispose();*/
 	} else {
 	    var itemList = new Array(2022216, 2022218, 2022219, 2022220);
 
