@@ -453,12 +453,10 @@ public class MapleMapFactory {
             builder.append("event_5th");
         } else if (mapid >= 700000000 && mapid < 700000300) {
             builder.append("wedding");
-        } else if (mapid >= 701000000 && mapid < 701020000) {
-            builder.append("china");
         } else if (mapid >= 800000000 && mapid < 900000000) {
             builder.append("jp");
-        } else if (mapid >= 700000000 && mapid < 782000002){
-        builder.append("chinese");
+        } else if (mapid >= 700000000 && mapid < 782000002) {
+            builder.append("chinese");
         } else {
             builder.append("etc");
         }
