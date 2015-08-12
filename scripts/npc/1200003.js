@@ -47,7 +47,6 @@ function action(mode, type, selection) {
 	}
     } else if (status == 3) {
 	if (cm.haveItem(4032338)) {
-	    cm.gainItem(4032338, -1);
 	    cm.warpBack(200090070,104000000,80);
 	    cm.dispose();
 	} else {

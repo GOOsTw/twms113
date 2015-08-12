@@ -20,7 +20,7 @@ function action(mode, type, selection) {
 	}
     } else if (status == 1) {
 	var item;
-	if (Math.floor(Math.random() * 50) == 0) {
+	if (Math.floor(Math.random() * 30) == 0) {
 	    var rareList = new Array(3010054, 2022483, 2210029);
 		
 	    item = cm.gainGachaponItem(rareList[Math.floor(Math.random() * rareList.length)], 1, "楓葉旅館");

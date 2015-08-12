@@ -17,8 +17,12 @@ function action(mode, type, selection) {
     }
 
     if (status == 0) {
-	cm.sendSimple("我能為您做什麼嗎？？\n\r #b#L0#我想去釣魚。#l \n\r #L2#回去原本的地圖。#l");
-    } else if (status == 1) {
+	if (cm.getPlayer().getMapId() == 910000000) {
+	cm.sendSimple("我能為您做什麼嗎？？\n\r #b#L0#我想去釣魚。#l");	
+    } else {
+	cm.sendSimple("我能為您做什麼嗎？？\n\r #b#L0#我想去釣魚。#l \n\r #L2#回去原本的地圖。#l");	
+	}
+	} else if (status == 1) {
 	sel = selection;
 	if (sel == 0) {
 	    cm.sendSimple("哪去哪個釣魚場？？?\r\n#b#L0##m749050500##l\r\n#L1##m749050501##l\r\n#L2##m749050502##l#k");

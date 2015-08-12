@@ -42,6 +42,10 @@ function action(mode, type, selection) {
 	    cm.sendOk("你的技能點數還沒點完..");
 	    cm.dispose();
 	    return;
+	} else if (!cm.haveItem(4031348, 1)){
+		cm.sendOk("我需要#t4031348# 1張。");
+		cm.dispose();
+		return;
 	} else {
 	    if (cm.canHold(2280003)) {
 		cm.gainItem(2280003, 1);
@@ -52,6 +56,7 @@ function action(mode, type, selection) {
 		    cm.teachSkill(5121001,0,10);
 		    cm.teachSkill(5121002,0,10);
 		    cm.teachSkill(5121009,0,10);
+			cm.gainItem(4031348, -1);
 		    cm.sendNext("恭喜你轉職為 #b拳霸#k.我送你一些神秘小禮物^^");
 		} else if (cm.getJob() == 521) {
 		    cm.changeJob(522);
@@ -59,6 +64,7 @@ function action(mode, type, selection) {
 		    cm.teachSkill(5220001,0,10);
 		    cm.teachSkill(5220002,0,10);
 		    cm.teachSkill(5220011,0,10);
+			cm.gainItem(4031348, -1);
 		    cm.sendNext("恭喜你轉職為 #b槍神#k.我送你一些神秘小禮物^^");
 		}
 	    } else {

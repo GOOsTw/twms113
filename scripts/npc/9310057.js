@@ -58,9 +58,9 @@ function action(mode, type, selection) {
 		}
 	    } else if (status == 2) {
 	        if (!cm.haveItem(4001137, needed[selection])) {
-		    cm.sendNext("You don't have the needed 乖寶寶印章.");
+		    cm.sendNext("您沒有#b#t4001137##k");
 		} else if (!cm.canHold(rewards[selection], 1)) {
-		    cm.sendNext("Please make the inventory space.");
+		    cm.sendNext("請空出一些空間。");
 		} else {
 		    cm.gainItem(4001137, -needed[selection]);
 		    if (expires[selection] > 0) {
@@ -79,12 +79,12 @@ function action(mode, type, selection) {
 	        if (selection == 0 || selection == 1 || selection == 2) {
    		    var em = cm.getEventManager("English");
     		    if (em == null) {
-			cm.sendOk("Please try again later.");
+			cm.sendOk("請再嘗試一次。");
 			cm.dispose();
 			return;
     		    }
 		    if (cm.getPlayer().getParty() == null || !cm.isLeader()) {
-			cm.sendOk("The leader of the party must be here.");
+			cm.sendOk("隊長必須在這裡。");
 		    } else {
 			var party = cm.getPlayer().getParty().getMembers();
 			var mapId = cm.getPlayer().getMapId();
@@ -104,10 +104,10 @@ function action(mode, type, selection) {
 		    		if (em.getInstance("English" + selection) == null) {
 					em.startInstance_Party("" + selection, cm.getPlayer());
 		    		} else {
-					cm.sendOk("Another party quest has already entered this channel.");
+					cm.sendOk("已經有另外一個隊伍正在挑戰了。");
 		    		}
 			} else {
-				cm.sendOk("All members of your party must be here.");
+				cm.sendOk("隊伍成員必須全部在這裡。");
 			}
 		    }
 		} else if (selection == 3) {

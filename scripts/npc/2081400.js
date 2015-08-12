@@ -42,6 +42,10 @@ function action(mode, type, selection) {
 	    cm.sendOk("你的技能點數還沒點完..");
 	    cm.dispose();
 	    return;
+	} else if (!cm.haveItem(4031348, 1)){
+		cm.sendOk("我需要#t4031348# 1張。");
+		cm.dispose();
+		return;
 	} else {
 	    if (cm.canHold(2280003)) {
 		cm.gainItem(2280003, 1);
@@ -51,12 +55,14 @@ function action(mode, type, selection) {
 		    cm.teachSkill(4120002,0,10);
 		    cm.teachSkill(4121006,0,10);
 		    cm.teachSkill(4120005,0,10);
+			cm.gainItem(4031348, -1);
 		    cm.sendNext("恭喜你轉職為 #b夜使者#k.我送你一些神秘小禮物^^");
 		} else if (cm.getJob() == 421) {
 		    cm.changeJob(422);
 		    cm.teachSkill(4220002,0,10);
 		    cm.teachSkill(4221007,0,10);
 		    cm.teachSkill(4220005,0,10);
+			cm.gainItem(4031348, -1);
 		    cm.sendNext("恭喜你轉職為 #b暗影神偷#k.我送你一些神秘小禮物^^");
 	    } else {
 		cm.sendOk("你沒有多的欄位請清空再來嘗試一次!");

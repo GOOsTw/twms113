@@ -1,4 +1,4 @@
-var status = -1;
+﻿var status = -1;
 var letter = Array("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z");
 
 function action(mode, type, selection) {
@@ -11,11 +11,11 @@ function action(mode, type, selection) {
 	status--;
     }
     if (status == 0) {
-	cm.sendSimple("#b#L0#Answer question.#l\r\n#L1#Exit Map#l");
+	cm.sendSimple("#b#L0#回答問題。#l\r\n#L1#離開地圖。#l");
     } else if (status == 1) {
 	if (selection == 0) {
 	    if (!cm.isLeader() || cm.getPlayer().getEventInstance() == null) {
-		cm.sendOk("Please get your party leader here.");
+		cm.sendOk("請找隊長來找我談話。");
 	    } else {
 		//calculate letters needed
 		var letters = cm.getPlayer().getEventInstance().getProperty("answer");
@@ -56,9 +56,9 @@ function action(mode, type, selection) {
 		    }
 	        }
 		if (lettersNot > 0) {
-		    cm.sendNext("You have a letter which is not part of the answer at all. #eWrong answer!#n");
+		    cm.sendNext("你有字母但是你回答了 #e錯誤的答案！#n");
 		} else if (done != needed.length) {
-		    cm.sendNext("You do not have enough letters. #eWrong answer!#n");
+		    cm.sendNext("你回答了 #e錯誤的答案！#n");
 		} else { //correct
                     for (var i = 3994059; i < 3994085; i++) {
 	                cm.givePartyItems(i, 0, true);
