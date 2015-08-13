@@ -10,6 +10,10 @@ function start() {
 }
 
 function action(mode, type, selection) {
+
+	if( cm == null )
+		return;
+	
     var eim = cm.getEventInstance();
 
     if(eim == null)

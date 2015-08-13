@@ -372,6 +372,12 @@ public class MapleMapFactory {
     public Collection<MapleMap> getAllMaps() {
         return maps.values();
     }
+    
+    public Collection<MapleMap> getAllMapThreadSafe() {
+        Collection<MapleMap> ret = new ArrayList<>();
+        ret.addAll(maps.values());
+        return ret;
+    }
 
     public Collection<MapleMap> getAllInstanceMaps() {
         return instanceMap.values();

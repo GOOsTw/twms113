@@ -31,6 +31,7 @@ import server.Randomizer;
 import server.MapleItemInformationProvider;
 import server.life.MapleLifeFactory;
 import server.life.MapleMonster;
+import server.life.OverrideMonsterStats;
 import server.quest.MapleQuest;
 import server.quest.MapleQuest.MedalQuest;
 import tools.FilePrinter;
@@ -70,6 +71,7 @@ public class MapScriptMethods {
         PRaid_D_Fenter,
         PRaid_B_Fenter,
         GhostF,
+        summon_pepeking,
         NULL;
 
         private static onFirstUserEnter fromString(String Str) {
@@ -161,6 +163,8 @@ public class MapScriptMethods {
         PRaid_FailEnter,
         Ghost,
         TD_MC_keycheck,
+        pepeking_effect,
+        findvioleta,
         NULL;
 
         private static onUserEnter fromString(String Str) {
@@ -202,22 +206,22 @@ public class MapScriptMethods {
                 c.getPlayer().getMap().startMapEffect("粥環繞月球的月見草種子和保護月球兔子！", 5120016);
                 break;
             }
-             case StageMsg_together: {
-             switch (c.getPlayer().getMapId()) {
-             case 103000800:
-             break;
-             case 103000801:
-             break;
-             case 103000802:
-             break;
-             case 103000803:
-             break;
-             case 103000804:
-             c.getPlayer().getMap().startMapEffect("請打敗超級綠水靈!", 5120017);
-             break;
-             }
-             break;
-             }
+            case StageMsg_together: {
+                switch (c.getPlayer().getMapId()) {
+                    case 103000800:
+                        break;
+                    case 103000801:
+                        break;
+                    case 103000802:
+                        break;
+                    case 103000803:
+                        break;
+                    case 103000804:
+                        c.getPlayer().getMap().startMapEffect("請打敗超級綠水靈!", 5120017);
+                        break;
+                }
+                break;
+            }
             case StageMsg_romio: {
                 switch (c.getPlayer().getMapId()) {
                     case 926100000:
@@ -456,8 +460,22 @@ public class MapScriptMethods {
                 c.getPlayer().getMap().resetFully();
                 break;
             }
+            case summon_pepeking: {
+                c.getPlayer().getMap().resetFully();
+                final int rand = Randomizer.nextInt(10);
+                int mob_ToSpawn = 100100;
+                if (rand >= 4) { //60%
+                    mob_ToSpawn = 3300007;
+                } else if (rand >= 1) {
+                    mob_ToSpawn = 3300006;
+                } else {
+                    mob_ToSpawn = 3300005;
+                }
+                c.getPlayer().getMap().spawnMonsterOnGroundBelow(MapleLifeFactory.getMonster(mob_ToSpawn), c.getPlayer().getPosition());
+                break;
+            }
             default: {
-                System.out.println("未處理的腳本 : " + scriptName + ", 型態 : onUserEnter - 地圖ID " + c.getPlayer().getMapId());
+                System.out.println("未處理的腳本 : " + scriptName + ", 型態 : onFirstUserEnter - 地圖ID " + c.getPlayer().getMapId());
                 FilePrinter.printError("MapScriptMethods.txt", "未處理的腳本 : " + scriptName + ", 型態 : onUserEnter - 地圖ID " + c.getPlayer().getMapId());
                 break;
             }
@@ -649,7 +667,7 @@ public class MapScriptMethods {
                         try {
                             boolean changed = false;
                             if (c.getPlayer().getMapId() == m.maps[i]) {
-                                if ( !quest.trim().equals("") && quest.substring(i + 6, i + 7).equals("0")) {
+                                if (!quest.trim().equals("") && quest.substring(i + 6, i + 7).equals("0")) {
                                     sb.append("1");
                                     changed = true;
                                     changedd = true;
@@ -761,7 +779,7 @@ public class MapScriptMethods {
                 c.getSession().write(UIPacket.IntroDisableUI(false));
                 c.getSession().write(UIPacket.IntroLock(false));
                 c.getSession().write(MaplePacketCreator.enableActions());
-                
+
                 break;
             }
             case rienArrow: {
@@ -802,9 +820,39 @@ public class MapScriptMethods {
                 break;
             }
             case TD_MC_keycheck: {
-                 c.sendPacket(MaplePacketCreator.enableActions());
+                c.sendPacket(MaplePacketCreator.enableActions());
+                break;
+            }
+            case pepeking_effect: {
+                c.sendPacket(MaplePacketCreator.showEffect("pepeKing/frame/W"));
+                if (c.getPlayer().getMap().getAllMonster().isEmpty()) {
+                    int rand = Randomizer.rand(0, 2);
+                    MapleMonster mob = MapleLifeFactory.getMonster(3300005 + rand);
+                    OverrideMonsterStats oms = new OverrideMonsterStats();
+                    oms.setOExp(7110);
+                    oms.setOHp(mob.getMobMaxHp());
+                    oms.setOMp(mob.getMobMaxMp());
+                    mob.setOverrideStats(oms);
+                    c.getPlayer().getMap().spawnMonsterOnGroundBelow(mob, new Point(358, -68));
+                    if (rand == 0) {
+                        c.sendPacket(MaplePacketCreator.showEffect("pepeKing/pepe/pepeB"));
+                    } else if (rand == 1) {
+                        c.sendPacket(MaplePacketCreator.showEffect("pepeKing/pepe/pepeG"));
+                    } else if (rand == 2) {
+                        c.sendPacket(MaplePacketCreator.showEffect("pepeKing/pepe/pepeW"));
+                    }
+                } else {
+                    c.sendPacket(MaplePacketCreator.showEffect("pepeKing/pepe/pepeB"));
+                }
+                c.sendPacket(MaplePacketCreator.showEffect("pepeKing/chat/nugu"));
+                c.sendPacket(MaplePacketCreator.showEffect("pepeKing/frame/B"));
                  break;
             }
+            case findvioleta: {
+                c.getPlayer().getMap().resetFully();
+                 break;
+            }
+            
             default: {
                 System.out.println("未處理的腳本 : " + scriptName + ", 型態 : onUserEnter - 地圖ID " + c.getPlayer().getMapId());
                 FilePrinter.printError("MapScriptMethods.txt", "未處理的腳本 : " + scriptName + ", 型態 : onUserEnter - 地圖ID " + c.getPlayer().getMapId());

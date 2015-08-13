@@ -7,8 +7,7 @@ function start() {
     action(1, 0, 0);
 }
 
-function action(mode, type, selection) {
-    if(mode == 0 && status == 0) {
+equals    if(mode == 0 && status == 0) {
 	cm.sendNext("我明白。這是非常可以理解的，考慮到你將面臨內部一個非常危險的怪物的事實。如果你覺得心臟的改變，那麼請你跟我說話。我確信可以從別人像你使用的幫助。");
 	cm.dispose();
 	return;
@@ -30,7 +29,7 @@ function action(mode, type, selection) {
 感謝。其實, #b#p2040001##k 問你拿  #b#t4031093##k 為測試自己的能力，看看你是否能處理這個問題，所以不要把它當做一個隨機請求的方式。我覺得你這樣的人能處理好逆境.");
 	} else if(status == 2) {
 	    cm.sendYesNo("前段時間，一個怪物來到這裡從另一個層面得益於尺寸的裂縫，並偷走了鐘擺。它躲在自己的房間裡那邊偽裝成一個玩具屋。這一切看起來是一樣的我，所以沒有辦法找到它。你會幫助我們找到它？");
-	    if (dh != null && dh.getProperty("noEntry").equals("true")) {
+	    if (dh != null && dh.getProperty("noEntry") != null && dh.getProperty("noEntry").equals("true")) {
 			entry = false;
 	    }
 	} else if(status == 3) {

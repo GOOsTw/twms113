@@ -4,14 +4,43 @@ var status = -1;
 var sel, select;
 var bosspq = 682020000;
 var items = [
-/*永恆武器*/ [[1302081, 120000], [1312037, 120000], [1322060, 120000], [1332073, 120000], [1332074, 120000], [1372044, 120000], [1382057, 120000], [1402046, 120000], [1412033, 120000], [1422037, 120000], [1432047, 120000], [1442063, 120000], [1452057, 120000], [1462050, 120000], [1472068, 120000], [1482023, 120000], [1492023, 120000]],
-/*飛鏢*/ [[2070006, 5000], [2070005, 2500], [2330005, 5000]],
-/*其它*/ [[1122017, 30000], [2340000, 150000], [3993002, 10000]]
+    /*永恆武器*/
+    [
+        [1302081, 120000],
+        [1312037, 120000],
+        [1322060, 120000],
+        [1332073, 120000],
+        [1332074, 120000],
+        [1372044, 120000],
+        [1382057, 120000],
+        [1402046, 120000],
+        [1412033, 120000],
+        [1422037, 120000],
+        [1432047, 120000],
+        [1442063, 120000],
+        [1452057, 120000],
+        [1462050, 120000],
+        [1472068, 120000],
+        [1482023, 120000],
+        [1492023, 120000]
+    ],
+    /*飛鏢*/
+    [
+        [2070006, 5000],
+        [2070005, 2500],
+        [2330005, 5000]
+    ],
+    /*其它*/
+    [
+        [1122017, 30000],
+        [2340000, 150000],
+        [3993002, 10000]
+    ]
 ]; //id, price
 
 function start() {
     action(1, 0, 0);
-} 
+}
 
 function action(mode, type, selection) {
     var record = cm.getQuestRecord(150001);
@@ -21,10 +50,10 @@ function action(mode, type, selection) {
         return;
     }
     mode == 1 ? status++ : status--;
-    
+
     if (status == 0) {
         points = record.getCustomData() == null ? "0" : record.getCustomData();
-        cm.sendSimple("您好，我是#p9330082#\n\r 目前您有:#b"+points+"#k點數\r\n\r\n#fUI/UIWindow.img/QuestIcon/4/0#\r\n#L2#兌換點數#l\r\n#L3#永恆武器#l\r\n#L4#飛鏢#l\r\n#L5#其他#l");//\r\n #L10#測試#l\r\n\r\n#L8#永恆裝備#l\r\n#L9#永恆武器(116)#l
+        cm.sendSimple("您好，我是#p9330082#\n\r 目前您有:#b" + points + "#k點數\r\n\r\n#fUI/UIWindow.img/QuestIcon/4/0#\r\n#L2#兌換點數#l\r\n#L3#永恆武器#l\r\n#L4#飛鏢#l\r\n#L5#其他#l"); //\r\n #L10#測試#l\r\n\r\n#L8#永恆裝備#l\r\n#L9#永恆武器(116)#l
     } else if (status == 1) {
         select = selection;
         switch (selection) {
@@ -53,7 +82,7 @@ function action(mode, type, selection) {
         if (select == 1 || select == 2) {
             if (cm.haveItem(itemid, selection)) {
                 intPoints += (pricemultipy * cm.itemQuantity(itemid));
-                record.setCustomData(""+intPoints+"");
+                record.setCustomData("" + intPoints + "");
                 cm.gainItem(itemid, -selection);
                 cm.sendOk("完成! 請查看你的點數。");
             } else {
@@ -63,7 +92,7 @@ function action(mode, type, selection) {
             gainReward(intPoints, record, select - 3);
         }
         cm.dispose();
-}
+    }
 }
 
 function chooseItem(index) {
@@ -77,7 +106,7 @@ function chooseItem(index) {
 function gainReward(intPoints, record, index) {
     if (intPoints >= items[index][sel][1] && cm.canHold(items[index][sel][0])) {
         intPoints -= items[index][sel][1];
-        record.setCustomData(""+intPoints+"");
+        record.setCustomData("" + intPoints + "");
         cm.gainItem(items[index][sel][0], isProjectitle(items[index][sel][0]) ? (isBullet(items[index][sel][0]) ? 3000 : 1000) : 1); // 3000 for bullets, they're unrechargable
         cm.sendOk("享受 :P");
     } else {

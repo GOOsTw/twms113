@@ -34,39 +34,37 @@ function playerEntry(eim, player) {
     player.tryPartyQuest(1201);
 }
 
-function playerDead(eim, player) {
-}
+function playerDead(eim, player) {}
 
 function changedMap(eim, player, mapid) {
     switch (mapid) {
-	case 103000800: // 1st Stage
-	case 103000801: // 2nd Stage
-	case 103000802: // 3rd Stage
-	case 103000803: // 4th Stage
-	case 103000804: // 5th Stage
-    	case 103000805: // Bonus stage
-	    return;
+        case 103000800: // 1st Stage
+        case 103000801: // 2nd Stage
+        case 103000802: // 3rd Stage
+        case 103000803: // 4th Stage
+        case 103000804: // 5th Stage
+        case 103000805: // Bonus stage
+            return;
     }
     eim.unregisterPlayer(player);
 
     if (eim.disposeIfPlayerBelow(0, 0)) {
-	em.setProperty("state", "0");
+        em.setProperty("state", "0");
     }
 }
 
-function playerRevive(eim, player) {
-}
+function playerRevive(eim, player) {}
 
 function playerDisconnected(eim, player) {
     return -2;
 }
 
-function leftParty(eim, player) {			
+function leftParty(eim, player) {
     // If only 2 players are left, uncompletable
     if (eim.disposeIfPlayerBelow(3, 103000890)) {
-	em.setProperty("started", "false");
+        em.setProperty("started", "false");
     } else {
-	playerExit(eim, player);
+        playerExit(eim, player);
     }
 }
 
@@ -92,15 +90,18 @@ function clearPQ(eim) {
 }
 
 function scheduledTimeout(eim) {
-       eim.unregisterPlayer(player);
 
+    var players = eim.getPlayers();
     var exit = eim.getMapFactory().getMap(103000890);
-    player.changeMap(exit, exit.getPortal(0));
+    for (var i = 0; i < player.size(); i++) {
+        var player = players.get(i);
+        eim.unregisterPlayer(player);
+        player.changeMap(exit, exit.getPortal(0));
+    }
+
 }
 
 
-function allMonstersDead(eim) {
-}
+function allMonstersDead(eim) {}
 
-function cancelSchedule() {
-}
+function cancelSchedule() {}

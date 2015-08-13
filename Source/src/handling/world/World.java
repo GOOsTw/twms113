@@ -1226,7 +1226,7 @@ public class World {
 
     public static class Family {
 
-        private static final Map<Integer, MapleFamily> families = new LinkedHashMap<Integer, MapleFamily>();
+        private static final Map<Integer, MapleFamily> families = new LinkedHashMap<>();
         private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
         static {
@@ -1350,10 +1350,11 @@ public class World {
         public void run() {
             numTimes++;
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
-                for (MapleMap map : cserv.getMapFactory().getAllMaps()) { //iterating through each map o_x
+                Collection<MapleMap> maps =  cserv.getMapFactory().getAllMapThreadSafe();
+                for (MapleMap map : maps) { //iterating through each map o_x
                     handleMap(map, numTimes, map.getCharactersSize());
                 }
-                for (MapleMap map : cserv.getMapFactory().getAllInstanceMaps()) {
+                for (MapleMap map : maps) {
                     handleMap(map, numTimes, map.getCharactersSize());
                 }
             }
