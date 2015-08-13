@@ -142,7 +142,7 @@ function action(mode, type, selection) {
 	    prompt += "1個 #t" + item + "#?";
         else
         prompt += qty + " #t" + item + "#?";
-		prompt += " 在這種情況下，我要為了讓你需要的東西下。請確保您是否有這麼多空間可以放!#b";
+		prompt += " 在這種情況下，我要為了做出好的品質。請確保您是否有這麼多空間可以放!#b";
 		
 	if (mats instanceof Array){
 	    for (var i = 0; i < mats.length; i++) {
@@ -160,7 +160,7 @@ function action(mode, type, selection) {
 	var complete = true;
 		
 	if (cm.getMeso() < cost * qty) {
-	    cm.sendOk("Cash only, no credit.")
+	    cm.sendOk("我只需要現金謝謝。")
 	} else {
 	    if (mats instanceof Array) {
 		for (var i = 0; complete && i < mats.length; i++) {

@@ -1,5 +1,5 @@
 ﻿/* Kedrick
-	Fishking King NPC
+    Fishking King NPC
 */
 
 var status = -1;
@@ -17,7 +17,11 @@ function action(mode, type, selection) {
     }
 
     if (status == 0) {
-        cm.sendSimple("我能為您做什麼嗎？？\n\r #b#L0#我想去釣魚。#l \n\r #L2#回去原本的地圖。#l");
+        if (cm.getPlayer().getMapId() == 910000000) {
+            cm.sendSimple("我能為您做什麼嗎？？\n\r #b#L0#我想去釣魚。#l");
+        } else {
+            cm.sendSimple("我能為您做什麼嗎？？\n\r #b#L0#我想去釣魚。#l \n\r #L2#回去原本的地圖。#l");
+        }
     } else if (status == 1) {
         sel = selection;
         if (sel == 0) {
@@ -30,7 +34,7 @@ function action(mode, type, selection) {
             cm.clearSavedLocation("FISHING");
             cm.warp(returnMap, 0);
             cm.dispose();
-        }
+        } >>> >>> > 4e a9102e043af173a8b47f3a61332b4634821a86
     } else if (status == 2) {
         if (sel == 0 && selection <= 2 && selection >= 0) {
             if (cm.getPlayer().getMapId() < 749050500 || cm.getPlayer().getMapId() > 749050502) {

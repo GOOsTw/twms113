@@ -51,7 +51,7 @@ function action(mode, type, selection) {
 	    cm.warp(2010000,0);
 	    cm.dispose();
 	} else {
-	    cm.gainMeso(-1500);
+	    cm.gainMeso(-150);
 	    cm.warp(2010000,0);
 	    cm.dispose();
 	}

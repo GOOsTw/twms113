@@ -34,14 +34,17 @@
             cm.warpParty(920010800); //GARDEN.  
         } else {
             cm.sendOk("謝謝你救了我們，請您找女神說話。");
+			cm.dispose();
         }
         } else {
         cm.sendOk("請收集六個女神雕像的碎片，然後來找我談話獲得最後一塊。");
+		cm.dispose();
         }
         break;
     case 920010200: //walkway
         if (!cm.haveItem(4001050,30)) {
-        cm.sendOk("我需要#b#t4001050##k 30個。");
+		cm.sendOk("我需要#b#t4001050# 30個#k，目前有#c4001050#個。");
+		cm.dispose();
         } else {
         cm.removeAll(4001050);
         cm.gainItem(4001044,1); //first piece
@@ -51,7 +54,8 @@
         break;
     case 920010300: //storage
         if (!cm.haveItem(4001051,15)) {
-        cm.sendOk("我需要#b#t4001051##k 15個。");
+        cm.sendOk("我需要#b#t4001051# 15個#k，目前有#c4001051#個。");
+		cm.dispose();
         } else {
         cm.removeAll(4001051);
         cm.gainItem(4001045,1); //second piece
@@ -86,6 +90,7 @@
         }
         if (total < 5) {
             cm.sendOk("需要5個玩家站在平台上。");
+			cm.dispose();
         } else {
             var num_correct = 0;
             for (var i = 0; i < 3; i++) {
@@ -107,19 +112,23 @@
                     cm.playSound(true, "Party1/Failed");
             if (num_correct > 0) {
                 cm.sendOk("一個平台是正確的。");
+				cm.dispose();
             } else {
                 cm.sendOk("所有平台都是錯的。");
+				cm.dispose();
             }
             }
         }
         } else {
         cm.sendOk("這麼門已經開了！");
+		cm.dispose();
         }
         cm.dispose();
         break;
     case 920010600: //lounge
         if (!cm.haveItem(4001052,40)) {
-        cm.sendOk("我需要#b#t4001052##k 40個。");
+		cm.sendOk("我需要#b#t4001052# 40個#k，目前有#c4001052#個。");
+		cm.dispose();
         } else {
         cm.removeAll(4001052);
         cm.gainItem(4001048,1); //fifth piece
@@ -141,6 +150,7 @@
             }
         if (total != 2) {
             cm.sendOk("需要有兩個人在頂部回答題目。");
+			cm.dispose();
         } else {
             var num_correct = 0;
             for (var i = 0; i < 5; i++) {
@@ -156,14 +166,17 @@
                     em.setProperty("stage6", "1");
             } else {
                 cm.sendOk("請清出一些空間。");
+				cm.dispose();
             }
             } else {
                     cm.showEffect(true, "quest/party/wrong_kor");
                     cm.playSound(true, "Party1/Failed");
             if (num_correct >= 3) {
                 cm.sendOk("一個槓桿是正確的。");
+				cm.dispose();
             } else {
                 cm.sendOk("兩個槓桿都是錯誤的。");
+				cm.dispose();
             }
             }
         }
