@@ -194,7 +194,7 @@ public class GameConstants {
         return id;
     }
 
-    public static int getBOF_ForJob(final int job) {
+    public static int getBofForJob(final int job) {
         if (isAdventurer(job)) {
             return 12;
         } else if (isKOC(job)) {
