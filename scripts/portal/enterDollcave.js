@@ -1,3 +1,9 @@
 function enter(pi) {
-    pi.warp(910050300,0);
+    if (pi.getQuestStatus(21728) == 1) {
+        pi.warp(105040300, 0);
+        return true;
+    } else {
+        pi.playerMessage(5, "因不明的力量，而無法進入此洞穴。");
+        return false;
+    }
 }
