@@ -20,7 +20,6 @@
  */
 package handling.channel.handler;
 
-import java.rmi.RemoteException;
 import java.util.Iterator;
 
 import client.MapleCharacter;
@@ -28,29 +27,56 @@ import client.MapleClient;
 import handling.MaplePacket;
 import handling.world.World;
 import handling.world.guild.*;
+import java.util.Objects;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public class GuildHandler {
 
+    private enum GuildOperation {
+
+        CREATE((byte) 0x2),
+        INVITE((byte) 0x5),
+        ACCEPTED((byte) 0x6),
+        LEAVING((byte) 0x7),
+        EXPEL((byte) 0x8),
+        CHANGE_RANK_TITLE((byte) 0xD),
+        CHANGE_RANK((byte) 0xE),
+        CHANGE_EMBLEM((byte) 0xF),
+        CHANGE_NOTICE((byte) 0x10);
+
+        byte value;
+
+        private GuildOperation(byte op) {
+            this.value = op;
+        }
+
+        public static final GuildOperation getByValue(final byte value) {
+            for (final GuildOperation op : GuildOperation.values()) {
+                if (op.value == value) {
+                    return op;
+                }
+            }
+            return null;
+        }
+
+    }
+
     public static final void DenyGuildRequest(final String from, final MapleClient c) {
         final MapleCharacter cfrom = c.getChannelServer().getPlayerStorage().getCharacterByName(from);
         if (cfrom != null) {
-            cfrom.getClient().getSession().write(MaplePacketCreator.denyGuildInvitation(c.getPlayer().getName()));
+            cfrom.getClient().sendPacket(MaplePacketCreator.denyGuildInvitation(c.getPlayer().getName()));
         }
     }
 
-    private static final boolean isGuildNameAcceptable(final String name) {
+    private static boolean isGuildNameAcceptable(final String name) {
         if (name.length() > 15) {
             return false;
         }
-        if (name.length() < 3) {
-            return false;
-        }
-        return true;
+        return name.length() >= 3;
     }
 
-    private static final void respawnPlayer(final MapleCharacter mc) {
+    private static void respawnPlayer(final MapleCharacter mc) {
         mc.getMap().broadcastMessage(mc, MaplePacketCreator.removePlayerFromMap(mc.getId()), false);
         mc.getMap().broadcastMessage(mc, MaplePacketCreator.spawnPlayerMapobject(mc), false);
     }
@@ -75,12 +101,22 @@ public class GuildHandler {
             Invited oth = (Invited) other;
             return (gid == oth.gid && name.equals(oth.name));
         }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 67 * hash + Objects.hashCode(this.name);
+            hash = 67 * hash + this.gid;
+            return hash;
+        }
     }
-    private static final java.util.List<Invited> invited = new java.util.LinkedList<Invited>();
+    private static final java.util.List<Invited> invited = new java.util.LinkedList<>();
     private static long nextPruneTime = System.currentTimeMillis() + 20 * 60 * 1000;
 
     public static final void Guild(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-        if (System.currentTimeMillis() >= nextPruneTime) {
+
+        if (System.currentTimeMillis()
+                >= nextPruneTime) {
             Iterator<Invited> itr = invited.iterator();
             Invited inv;
             while (itr.hasNext()) {
@@ -92,8 +128,11 @@ public class GuildHandler {
             nextPruneTime = System.currentTimeMillis() + 20 * 60 * 1000;
         }
 
-        switch (slea.readByte()) {
-            case 0x02: // Create guild
+        GuildOperation operation = GuildOperation.getByValue(slea.readByte());
+
+        switch (operation) {
+
+            case CREATE: {
                 if (c.getPlayer().getGuildId() > 0 || c.getPlayer().getMapId() != 200000301) {
                     c.getPlayer().dropMessage(1, "你不能在創建一個新的公會.");
                     return;
@@ -107,52 +146,60 @@ public class GuildHandler {
                     c.getPlayer().dropMessage(1, "這個公會名稱是不被准許的.");
                     return;
                 }
+
                 int guildId = World.Guild.createGuild(c.getPlayer().getId(), guildName);
+
                 if (guildId == 0) {
-                    c.getSession().write(MaplePacketCreator.genericGuildMessage((byte) 0x1c));
+                    c.sendPacket(MaplePacketCreator.genericGuildMessage((byte) 0x1c));
                     return;
                 }
+
                 c.getPlayer().gainMeso(-500000, true, false, true);
                 c.getPlayer().setGuildId(guildId);
                 c.getPlayer().setGuildRank((byte) 1);
                 c.getPlayer().saveGuildStatus();
-                c.getSession().write(MaplePacketCreator.showGuildInfo(c.getPlayer()));
+                c.sendPacket(MaplePacketCreator.showGuildInfo(c.getPlayer()));
+
                 World.Guild.setGuildMemberOnline(c.getPlayer().getMGC(), true, c.getChannel());
                 c.getPlayer().dropMessage(1, "恭喜你成功創建一個公會.");
                 respawnPlayer(c.getPlayer());
+
                 break;
-            case 0x05: // invitation
+            }
+
+            case INVITE: {
                 if (c.getPlayer().getGuildId() <= 0 || c.getPlayer().getGuildRank() > 2) { // 1 == guild master, 2 == jr
                     return;
                 }
-                String name = slea.readMapleAsciiString();
-                final MapleGuildResponse mgr = MapleGuild.sendInvite(c, name);
+                String playerName = slea.readMapleAsciiString();
+                final MapleGuildResponse mgr = MapleGuild.sendInvite(c, playerName);
 
                 if (mgr != null) {
-                    c.getSession().write(mgr.getPacket());
+                    c.sendPacket(mgr.getPacket());
                 } else {
-                    Invited inv = new Invited(name, c.getPlayer().getGuildId());
+                    Invited inv = new Invited(playerName, c.getPlayer().getGuildId());
                     if (!invited.contains(inv)) {
                         invited.add(inv);
                     }
                 }
                 break;
-            case 0x06: // accepted guild invitation
+            }
+            case ACCEPTED: {
                 if (c.getPlayer().getGuildId() > 0) {
                     return;
                 }
-                guildId = slea.readInt();
+                int guildId = slea.readInt();
                 int cid = slea.readInt();
 
                 if (cid != c.getPlayer().getId()) {
                     return;
                 }
-                name = c.getPlayer().getName().toLowerCase();
+                String playerName = c.getPlayer().getName().toLowerCase();
                 Iterator<Invited> itr = invited.iterator();
 
                 while (itr.hasNext()) {
                     Invited inv = itr.next();
-                    if (guildId == inv.gid && name.equals(inv.name)) {
+                    if (guildId == inv.gid && playerName.equals(inv.name)) {
                         c.getPlayer().setGuildId(guildId);
                         c.getPlayer().setGuildRank((byte) 5);
                         itr.remove();
@@ -163,11 +210,11 @@ public class GuildHandler {
                             c.getPlayer().setGuildId(0);
                             return;
                         }
-                        c.getSession().write(MaplePacketCreator.showGuildInfo(c.getPlayer()));
+                        c.sendPacket(MaplePacketCreator.showGuildInfo(c.getPlayer()));
                         final MapleGuild gs = World.Guild.getGuild(guildId);
                         for (MaplePacket pack : World.Alliance.getAllianceInfo(gs.getAllianceId(), true)) {
                             if (pack != null) {
-                                c.getSession().write(pack);
+                                c.sendPacket(pack);
                             }
                         }
                         c.getPlayer().saveGuildStatus();
@@ -176,28 +223,31 @@ public class GuildHandler {
                     }
                 }
                 break;
-            case 0x07: // leaving
+            }
+            case LEAVING: {
 
-                cid = slea.readInt();
-                name = slea.readMapleAsciiString();
+                int cid = slea.readInt();
+                String name = slea.readMapleAsciiString();
 
                 if (cid != c.getPlayer().getId() || !name.equals(c.getPlayer().getName()) || c.getPlayer().getGuildId() <= 0) {
                     return;
                 }
                 World.Guild.leaveGuild(c.getPlayer().getMGC());
-                c.getSession().write(MaplePacketCreator.showGuildInfo(null));
-                c.getSession().write(MaplePacketCreator.fuckGuildInfo(c.getPlayer()));
+                c.sendPacket(MaplePacketCreator.showGuildInfo(null));
+                c.sendPacket(MaplePacketCreator.fuckGuildInfo(c.getPlayer()));
                 break;
-            case 0x08: // Expel
-                cid = slea.readInt();
-                name = slea.readMapleAsciiString();
+            }
+            case EXPEL: {
+                int cid = slea.readInt();
+                String name = slea.readMapleAsciiString();
 
                 if (c.getPlayer().getGuildRank() > 2 || c.getPlayer().getGuildId() <= 0) {
                     return;
                 }
                 World.Guild.expelMember(c.getPlayer().getMGC(), name, cid);
                 break;
-            case 0x0d: // Guild rank titles change
+            }
+            case CHANGE_RANK_TITLE: {
                 if (c.getPlayer().getGuildId() <= 0 || c.getPlayer().getGuildRank() != 1) {
                     return;
                 }
@@ -208,8 +258,9 @@ public class GuildHandler {
 
                 World.Guild.changeRankTitle(c.getPlayer().getGuildId(), ranks);
                 break;
-            case 0x0e: // Rank change
-                cid = slea.readInt();
+            }
+            case CHANGE_RANK: {
+                int cid = slea.readInt();
                 byte newRank = slea.readByte();
 
                 if ((newRank <= 1 || newRank > 5) || c.getPlayer().getGuildRank() > 2 || (newRank <= 2 && c.getPlayer().getGuildRank() != 1) || c.getPlayer().getGuildId() <= 0) {
@@ -218,7 +269,8 @@ public class GuildHandler {
 
                 World.Guild.changeRank(c.getPlayer().getGuildId(), cid, newRank);
                 break;
-            case 0x0f: // guild emblem change
+            }
+            case CHANGE_EMBLEM: {
                 if (c.getPlayer().getGuildId() <= 0 || c.getPlayer().getGuildRank() != 1 || c.getPlayer().getMapId() != 200000301) {
                     return;
                 }
@@ -227,6 +279,7 @@ public class GuildHandler {
                     c.getPlayer().dropMessage(1, "你的楓幣不夠,無法創建公會徽章");
                     return;
                 }
+                
                 final short bg = slea.readShort();
                 final byte bgcolor = slea.readByte();
                 final short logo = slea.readShort();
@@ -237,13 +290,15 @@ public class GuildHandler {
                 c.getPlayer().gainMeso(-1000000, true, false, true);
                 respawnPlayer(c.getPlayer());
                 break;
-            case 0x10: // guild notice change
+            }
+            case CHANGE_NOTICE: {
                 final String notice = slea.readMapleAsciiString();
                 if (notice.length() > 100 || c.getPlayer().getGuildId() <= 0 || c.getPlayer().getGuildRank() > 2) {
                     return;
                 }
                 World.Guild.setGuildNotice(c.getPlayer().getGuildId(), notice);
                 break;
+            }
         }
     }
 }

@@ -80,6 +80,7 @@ import java.lang.ref.WeakReference;
 import java.sql.Statement;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import tools.MockIOSession;
 import scripting.EventInstanceManager;
@@ -195,6 +196,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private String teleportname = "";
     private boolean isSaveing = false;
     public int Car = 0;
+    private static final ReentrantLock saveLock = new ReentrantLock();// 锁对象
 
     private MapleCharacter(final boolean ChannelServer) {
         setStance(0);
@@ -971,9 +973,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public int saveToDB(boolean dc, boolean fromcs) {
-        if (isClone() && isSaveing) {
+        if (isClone()) {
             return -1;
         }
+        saveLock.lock();
         isSaveing = true;
         int retValue = 1;
 
@@ -1278,13 +1281,13 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     con.setAutoCommit(true);
                     con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
                 }
-                isSaveing = false;
 
             } catch (SQLException e) {
                 retValue = 0;
                 FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error going back to autocommit mode");
             }
-
+            isSaveing = false;
+            saveLock.unlock();
         }
         return retValue;
     }
@@ -3932,7 +3935,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void saveGuildStatus() {
-        MapleGuild.setOfflineGuildStatus(guildid, guildrank, allianceRank, id);
+        MapleGuild.saveCharacterGuildInfo(guildid, guildrank, allianceRank, id);
     }
 
     public void familyUpdate() {

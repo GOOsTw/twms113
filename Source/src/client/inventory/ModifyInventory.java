@@ -9,7 +9,6 @@ public class ModifyInventory {
         public static final int UPDATE = 1;
         public static final int MOVE = 2;
         public static final int REMOVE = 3;
-       
     }
 
     private int mode;

@@ -78,7 +78,7 @@ public class World {
     }
 
     public static Map<Integer, Integer> getConnected() {
-        Map<Integer, Integer> ret = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> ret = new HashMap<>();
         int total = 0;
         for (ChannelServer cs : ChannelServer.getAllInstances()) {
             int curConnected = cs.getConnectedClients();
@@ -157,7 +157,7 @@ public class World {
                 }
                 ps.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+
             }
         }
 
@@ -345,7 +345,7 @@ public class World {
 
     public static class Messenger {
 
-        private static Map<Integer, MapleMessenger> messengers = new HashMap<Integer, MapleMessenger>();
+        private static final Map<Integer, MapleMessenger> messengers = new HashMap<>();
         private static final AtomicInteger runningMessengerId = new AtomicInteger();
 
         static {
@@ -512,7 +512,7 @@ public class World {
 
     public static class Guild {
 
-        private static final Map<Integer, MapleGuild> guilds = new LinkedHashMap<Integer, MapleGuild>();
+        private static final Map<Integer, MapleGuild> guilds = new LinkedHashMap<>();
         private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
         static {
@@ -541,7 +541,7 @@ public class World {
                 lock.writeLock().lock();
                 try {
                     ret = new MapleGuild(id);
-                    if (ret == null || ret.getId() <= 0 || !ret.isProper()) { //failed to load
+                    if (ret.getId() <= 0 || !ret.isProper()) { //failed to load
                         return null;
                     }
                     guilds.put(id, ret);
@@ -789,7 +789,6 @@ public class World {
         public static void setGuildAndRank(int cid, int guildid, int rank, int alliancerank) {
             int ch = Find.findChannel(cid);
             if (ch == -1) {
-                // System.out.println("ERROR: cannot find player in given channel");
                 return;
             }
             MapleCharacter mc = getStorage(ch).getCharacterById(cid);
