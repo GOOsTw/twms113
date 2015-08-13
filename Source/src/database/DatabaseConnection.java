@@ -95,7 +95,6 @@ public class DatabaseConnection {
 
         Connection c = ret.getConnection();
         try {
-
             if (c.isClosed()) {
                 Connection retCon = connectToDB();
                 lock.lock();
@@ -201,12 +200,10 @@ public class DatabaseConnection {
         lock.lock();
         List<Integer> keys = new ArrayList(connections.keySet());
         try {
-            synchronized (connections) {
-                for (Integer tid : keys) {
-                    ConWrapper con = connections.get(tid);
-                    if (con.close()) {
-                        i++;
-                    }
+            for (Integer tid : keys) {
+                ConWrapper con = connections.get(tid);
+                if (con.close()) {
+                    i++;
                 }
             }
         } finally {
