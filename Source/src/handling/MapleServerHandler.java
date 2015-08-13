@@ -241,7 +241,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         }
         tracker.put(address, new Pair<>(System.currentTimeMillis(), count));
         // End of IP checking.
-        
+
         if (channel > -1) {
             if (ChannelServer.getInstance(channel).isShutdown()) {
                 session.close(true);
@@ -282,29 +282,29 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         //}
         //sb.append("IoSession opened ").append(address);
         //System.out.println(sb.toString());
-
     }
 
     @Override
     public void sessionClosed(final IoSession session) throws Exception {
         final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
-        if(client !=  null ) {
-            if( ! (client.getLoginState() == MapleClient.CASH_SHOP_TRANSITION 
+        if (client != null) {
+            if(client.getPlayer() != null) {
+                client.getPlayer().saveToDB(true, cs);
+            }
+            if (!(client.getLoginState() == MapleClient.CASH_SHOP_TRANSITION
                     || client.getLoginState() == MapleClient.CHANGE_CHANNEL
-                    || client.getLoginState() == MapleClient.LOGIN_SERVER_TRANSITION ) && client.getPlayer() != null) {
+                    || client.getLoginState() == MapleClient.LOGIN_SERVER_TRANSITION) && client.getPlayer() != null) {
                 client.disconnect(true, cs);
                 int ch = World.Find.findChannel(client.getPlayer().getId());
                 ChannelServer.getInstance(ch).removePlayer(client.getPlayer());
             }
         }
-        /*if (client != null && client.getPlayer() != null) {
-            client.disconnect(true, cs);
-        }*/
+      
         if (client != null) {
             session.removeAttribute(MapleClient.CLIENT_KEY);
         }
-        
-        if( client != null && channel == -1 && !cs && client.getLoginState() != MapleClient.LOGIN_SERVER_TRANSITION) {
+
+        if (client != null && channel == -1 && !cs && client.getLoginState() != MapleClient.LOGIN_SERVER_TRANSITION) {
             client.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, client.getSessionIPAddress());
         }
         DatabaseConnection.close();

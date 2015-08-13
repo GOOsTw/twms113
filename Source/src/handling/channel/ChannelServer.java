@@ -185,7 +185,6 @@ public class ChannelServer implements Serializable {
                 for (IoSession session : acceptor.getManagedSessions().values()) {
                     session.close(true);
                 }
-                acceptor.unbind();
                 acceptor.dispose();
                 acceptor = null;
                 System.out.println("頻道 " + channel + ", 解除端口成功");

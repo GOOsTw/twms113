@@ -98,7 +98,6 @@ public class CashShopServer {
         for (IoSession session : acceptor.getManagedSessions().values()) {
             session.close(true);
         }
-        acceptor.unbind();
         acceptor.dispose();
         finishedShutdown = true;
         System.out.println("[購物商城] 關閉完成...");

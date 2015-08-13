@@ -34,7 +34,7 @@ function action(mode, type, selection) {
             cm.clearSavedLocation("FISHING");
             cm.warp(returnMap, 0);
             cm.dispose();
-        } >>> >>> > 4e a9102e043af173a8b47f3a61332b4634821a86
+        }
     } else if (status == 2) {
         if (sel == 0 && selection <= 2 && selection >= 0) {
             if (cm.getPlayer().getMapId() < 749050500 || cm.getPlayer().getMapId() > 749050502) {

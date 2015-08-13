@@ -99,7 +99,6 @@ public class LoginServer {
         for (IoSession session : acceptor.getManagedSessions().values()) {
             session.close(true);
         }
-        acceptor.unbind();
         acceptor.dispose();
 
         System.out.println(
