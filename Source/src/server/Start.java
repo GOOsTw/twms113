@@ -26,25 +26,38 @@ import server.quest.MapleQuest;
 
 public class Start {
 
+    private static void resetAllLoginState() {
+        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("UPDATE accounts SET loggedin = 0")) {
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            throw new RuntimeException("【錯誤】 請確認資料庫是否正確連接");
+        }
+    }
+
     public final static void main(final String args[]) {
 
+        System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
         System.setProperty("file.encoding", "utf-8");
 
-        System.out.println("[TWMS v113] Server Emulator");
+        System.out.println("【台版楓之谷模擬器】");
+        System.out.println("【版本】 v113");
 
-        if (Boolean.parseBoolean(ServerProperties.getProperty("server.settings.Admin"))) {
-            System.out.println("[!!! Admin Only Mode Active !!!]");
+        boolean adminMode = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.Admin"));
+        boolean autoReg = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.AutoRegister"));
+
+        if (adminMode) {
+            System.out.println("【管理員模式】開啟");
+        } else {
+            System.out.println("【管理員模式】關閉");
         }
-        if (Boolean.parseBoolean(ServerProperties.getProperty("server.settings.AutoRegister"))) {
-            System.out.println("Loading Autoregister mode :::");
+
+        if (autoReg) {
+            System.out.println("【自動註冊】開啟");
+        } else {
+            System.out.println("【自動註冊】關閉");
         }
-        try {
-            final PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("UPDATE accounts SET loggedin = 0");
-            ps.executeUpdate();
-            ps.close();
-        } catch (SQLException ex) {
-            throw new RuntimeException("[EXCEPTION] Please check if the SQL server is active.");
-        }
+        
+        resetAllLoginState();
 
         World.init();
         WorldTimer.getInstance().start();
@@ -73,9 +86,9 @@ public class Start {
         LoginServer.run_startup_configurations();
         ChannelServer.startChannel_Main();
 
-        System.out.println("[購物商城伺服器啟動中]");
+        System.out.println("購物商城 啟動中:::");
         CashShopServer.run_startup_configurations();
-        System.out.println("[購物商城伺服器啟動完成]");
+        System.out.println("購物商城 啟動完畢:::");
         CheatTimer.getInstance().register(AutobanManager.getInstance(), 60000);
         Runtime.getRuntime().addShutdownHook(new Thread(ShutdownServer.getInstance()));
         try {
@@ -85,14 +98,15 @@ public class Start {
         }
         World.registerRespawn();
         LoginServer.setOn();
-        System.out.println("Loaded Complete :::");
+        System.out.println("伺服器開啟完畢 :::");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (!World.isShutDown) {
             try {
                 System.out.print(">>");
                 String cmd = br.readLine();
-                if(cmd.equals(""))
+                if (cmd.equals("")) {
                     continue;
+                }
                 ConsoleCommandProcessor.processCommand(cmd);
             } catch (IOException ex) {
                 Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
@@ -100,5 +114,4 @@ public class Start {
         }
     }
 
-    
 }

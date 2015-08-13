@@ -48,6 +48,7 @@ import tools.packet.PetPacket;
 public class World {
 
     public static boolean isShutDown = false;
+
     //Touch everything...
     public static void init() {
         World.Find.findChannel(0);
@@ -62,15 +63,15 @@ public class World {
         StringBuilder ret = new StringBuilder();
         int totalUsers = 0;
         for (ChannelServer cs : ChannelServer.getAllInstances()) {
-            ret.append("Channel ");
+            ret.append("頻道 ");
             ret.append(cs.getChannel());
             ret.append(": ");
             int channelUsers = cs.getConnectedClients();
             totalUsers += channelUsers;
             ret.append(channelUsers);
-            ret.append(" users\n");
+            ret.append(" 個玩家\n");
         }
-        ret.append("Total users online: ");
+        ret.append("總共線上人數: ");
         ret.append(totalUsers);
         ret.append("\n");
         return ret.toString();
@@ -89,7 +90,7 @@ public class World {
     }
 
     public static List<CheaterData> getCheaters() {
-        List<CheaterData> allCheaters = new ArrayList<CheaterData>();
+        List<CheaterData> allCheaters = new ArrayList<>();
         for (ChannelServer cs : ChannelServer.getAllInstances()) {
             allCheaters.addAll(cs.getCheaters());
         }
@@ -142,7 +143,7 @@ public class World {
 
     public static class Party {
 
-        private static Map<Integer, MapleParty> parties = new HashMap<Integer, MapleParty>();
+        private static Map<Integer, MapleParty> parties = new HashMap<>();
         private static final AtomicInteger runningPartyId = new AtomicInteger();
 
         static {
@@ -150,10 +151,10 @@ public class World {
             PreparedStatement ps;
             try {
                 ps = con.prepareStatement("SELECT MAX(party)+2 FROM characters");
-                ResultSet rs = ps.executeQuery();
-                rs.next();
-                runningPartyId.set(rs.getInt(1));
-                rs.close();
+                try (ResultSet rs = ps.executeQuery()) {
+                    rs.next();
+                    runningPartyId.set(rs.getInt(1));
+                }
                 ps.close();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -515,7 +516,7 @@ public class World {
         private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
         static {
-            System.out.println("Loading Guilds :::");
+            System.out.println("Guilds 讀取中:::");
             Collection<MapleGuild> allGuilds = MapleGuild.loadAll();
             for (MapleGuild g : allGuilds) {
                 if (g.isProper()) {
@@ -880,9 +881,9 @@ public class World {
 
     public static class Find {
 
-        private static ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-        private static HashMap<Integer, Integer> idToChannel = new HashMap<Integer, Integer>();
-        private static HashMap<String, Integer> nameToChannel = new HashMap<String, Integer>();
+        private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+        private static final HashMap<Integer, Integer> idToChannel = new HashMap<>();
+        private static final HashMap<String, Integer> nameToChannel = new HashMap<>();
 
         public static void register(int id, String name, int channel) {
             lock.writeLock().lock();
@@ -959,7 +960,7 @@ public class World {
         }
 
         public static CharacterIdChannelPair[] multiBuddyFind(int charIdFrom, Collection<Integer> characterIds) {
-            List<CharacterIdChannelPair> foundsChars = new ArrayList<CharacterIdChannelPair>(characterIds.size());
+            List<CharacterIdChannelPair> foundsChars = new ArrayList<>(characterIds.size());
             for (Integer i : characterIds) {
                 Integer channel = findChannel(i);
                 if (channel > 0) {
@@ -973,11 +974,11 @@ public class World {
 
     public static class Alliance {
 
-        private static final Map<Integer, MapleGuildAlliance> alliances = new LinkedHashMap<Integer, MapleGuildAlliance>();
+        private static final Map<Integer, MapleGuildAlliance> alliances = new LinkedHashMap<>();
         private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
         static {
-            System.out.println("Loading GuildAlliances :::");
+            System.out.println("GuildAlliances 讀取中:::");
             Collection<MapleGuildAlliance> allGuilds = MapleGuildAlliance.loadAll();
             for (MapleGuildAlliance g : allGuilds) {
                 alliances.put(g.getId(), g);
@@ -996,7 +997,7 @@ public class World {
                 lock.writeLock().lock();
                 try {
                     ret = new MapleGuildAlliance(allianceid);
-                    if (ret == null || ret.getId() <= 0) { //failed to load
+                    if (ret.getId() <= 0) { //failed to load
                         return null;
                     }
                     alliances.put(allianceid, ret);
@@ -1179,7 +1180,7 @@ public class World {
                         guild.changeARank(5);
                         guild.setAllianceId(0);
                         guild.broadcast(MaplePacketCreator.disbandAlliance(allianceid));
-                    } else if (g_ != null) {
+                    } else {
                         guild.broadcast(MaplePacketCreator.serverNotice(5, "[" + g_.getName() + "] Guild has left the alliance."));
                         guild.broadcast(MaplePacketCreator.changeGuildInAlliance(alliance, g_, false));
                         guild.broadcast(MaplePacketCreator.removeGuildFromAlliance(alliance, g_, expelled));
@@ -1199,7 +1200,7 @@ public class World {
         }
 
         public static List<MaplePacket> getAllianceInfo(final int allianceid, final boolean start) {
-            List<MaplePacket> ret = new ArrayList<MaplePacket>();
+            List<MaplePacket> ret = new ArrayList<>();
             final MapleGuildAlliance alliance = getAlliance(allianceid);
             if (alliance != null) {
                 if (start) {
@@ -1251,7 +1252,7 @@ public class World {
                 lock.writeLock().lock();
                 try {
                     ret = new MapleFamily(id);
-                    if (ret == null || ret.getId() <= 0 || !ret.isProper()) { //failed to load
+                    if (ret.getId() <= 0 || !ret.isProper()) { //failed to load
                         return null;
                     }
                     families.put(id, ret);
@@ -1350,7 +1351,7 @@ public class World {
         public void run() {
             numTimes++;
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
-                Collection<MapleMap> maps =  cserv.getMapFactory().getAllMapThreadSafe();
+                Collection<MapleMap> maps = cserv.getMapFactory().getAllMapThreadSafe();
                 for (MapleMap map : maps) { //iterating through each map o_x
                     handleMap(map, numTimes, map.getCharactersSize());
                 }

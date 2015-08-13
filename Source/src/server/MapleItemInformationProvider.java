@@ -82,7 +82,7 @@ public class MapleItemInformationProvider {
     protected final Map<Integer, String> faceList = new HashMap<Integer, String>();
 
     protected MapleItemInformationProvider() {
-        System.out.println("Loading MapleItemInformationProvider :::");
+        System.out.println("MapleItemInformationProvider 讀取中:::");
     }
 
     public final void load() {

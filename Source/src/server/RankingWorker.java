@@ -58,7 +58,7 @@ public class RankingWorker {
     }
 
     public final void run() {
-        System.out.println("Loading Ranking Server :::");
+        System.out.println("Ranking Server 讀取中:::");
         loadJobCommands();
         try {
             con = DatabaseConnection.getConnection();
