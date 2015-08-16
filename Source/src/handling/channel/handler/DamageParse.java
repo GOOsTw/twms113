@@ -826,9 +826,9 @@ public class DamageParse {
                 case 11111007:
                     elements.add(Element.HOLY);
                     break;
-                case 12101005:
-                    elements.clear(); //neutral
-                    break;
+               case 12101005:
+                   elements.clear(); //neutral
+                   break;
             }
         }
         if (player.getBuffedValue(MapleBuffStat.LIGHTNING_CHARGE) != null) {

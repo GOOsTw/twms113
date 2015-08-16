@@ -2021,6 +2021,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         switch (getJob()) {
             case 1110:
             case 1111:
+            case 1112:
                 theCombol = SkillFactory.getSkill(11111001);
                 break;
             default:

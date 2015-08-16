@@ -160,6 +160,8 @@ public class Skill implements ISkill {
                 case 30001026:
                 case 9101004: // hide is a buff -.- atleast for us o.o"
                 case 1111002: // combo
+                case 11111001: // combo
+                case 12101005: // Elemental Reset
                 case 4211003: // pickpocket
                 case 4111001: // mesoup
                 case 15111002: // Super Transformation
