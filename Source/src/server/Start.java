@@ -83,8 +83,8 @@ public class Start {
         RankingWorker.getInstance().run();
         // MTSStorage.load();
         CashItemFactory.getInstance().initialize();
-        LoginServer.run_startup_configurations();
-        ChannelServer.startChannel_Main();
+        LoginServer.setup();
+        ChannelServer.startAllChannels();
 
         System.out.println("購物商城 啟動中:::");
         CashShopServer.run_startup_configurations();

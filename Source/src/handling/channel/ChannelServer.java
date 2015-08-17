@@ -32,7 +32,6 @@ import java.util.Map;
 
 import client.MapleCharacter;
 import constants.ServerConstants;
-import database.DatabaseConnection;
 import handling.ByteArrayMaplePacket;
 import handling.MaplePacket;
 import handling.MapleServerHandler;
@@ -121,7 +120,7 @@ public class ChannelServer implements Serializable {
         events.put(MapleEventType.尋寶, new MapleJewel(channel, MapleEventType.尋寶.mapids));
     }
 
-    public final void run_startup_configurations() {
+    public final void setup() {
         setChannel(channel); //instances.put
         try {
             expRate = Integer.parseInt(ServerProperties.getProperty("server.settings.expRate", "1"));
@@ -138,6 +137,7 @@ public class ChannelServer implements Serializable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        
         ip = ServerProperties.getProperty("server.settings.ip");
         socket = ip + ":" + port;
 
@@ -167,7 +167,7 @@ public class ChannelServer implements Serializable {
             return;
         }
         broadcastPacket(MaplePacketCreator.serverNotice(0, "這個頻道正在關閉中."));
-        // dc all clients by hand so we get sessionClosed...
+       
         shutdown = true;
 
         System.out.println("頻道 " + channel + ", 儲存商人資料...");
@@ -185,6 +185,7 @@ public class ChannelServer implements Serializable {
                 for (IoSession session : acceptor.getManagedSessions().values()) {
                     session.close(true);
                 }
+                acceptor.unbind(new InetSocketAddress(port));
                 acceptor.dispose();
                 acceptor = null;
                 System.out.println("頻道 " + channel + ", 解除端口成功");
@@ -205,14 +206,6 @@ public class ChannelServer implements Serializable {
 
     public final MapleMapFactory getMapFactory() {
         return mapFactory;
-    }
-
-    public static final ChannelServer newInstance(final String key, final int channel) {
-        return new ChannelServer(key, channel);
-    }
-
-    public static final ChannelServer getInstance(final int channel) {
-        return instances.get(channel);
     }
 
     public final void addPlayer(final MapleCharacter chr) {
@@ -274,6 +267,22 @@ public class ChannelServer implements Serializable {
         this.cashRate = cashRate;
     }
 
+    public final int getMesoRate() {
+        return mesoRate;
+    }
+
+    public final void setMesoRate(final int mesoRate) {
+        this.mesoRate = mesoRate;
+    }
+
+    public final int getDropRate() {
+        return dropRate;
+    }
+
+    public final void setDropRate(final int dropRate) {
+        this.dropRate = dropRate;
+    }
+
     public final String getIP() {
         return this.ip;
     }
@@ -311,41 +320,6 @@ public class ChannelServer implements Serializable {
         eventSM.cancel();
         eventSM = new EventScriptManager(this, ServerProperties.getProperty("K．").split(","));
         eventSM.init();
-    }
-
-    public final int getMesoRate() {
-        return mesoRate;
-    }
-
-    public final void setMesoRate(final int mesoRate) {
-        this.mesoRate = mesoRate;
-    }
-
-    public final int getDropRate() {
-        return dropRate;
-    }
-
-    public final void setDropRate(final int dropRate) {
-        this.dropRate = dropRate;
-    }
-
-    public static final void startChannel_Main() {
-        serverStartTime = System.currentTimeMillis();
-
-        int count = Integer.parseInt(ServerProperties.getProperty("server.settings.channel.count", "0"));
-        for (int i = 0; i < count; i++) {
-            newInstance(ServerConstants.Channel_Key[i], i + 1).run_startup_configurations();
-        }
-    }
-
-    public static final void startChannel(final int channel) {
-        serverStartTime = System.currentTimeMillis();
-        for (int i = 0; i < Integer.parseInt(ServerProperties.getProperty("server.settings.channel.count", "0")); i++) {
-            if (channel == i + 1) {
-                newInstance(ServerConstants.Channel_Key[i], i + 1).run_startup_configurations();
-                break;
-            }
-        }
     }
 
     public Map<MapleSquadType, MapleSquad> getAllSquads() {
@@ -507,11 +481,7 @@ public class ChannelServer implements Serializable {
         return port;
     }
 
-    public static final Set<Integer> getChannelServer() {
-        return new HashSet<Integer>(instances.keySet());
-    }
-
-    public final void setShutdown() {
+    public final void setPrepareShutdown() {
         this.shutdown = true;
         System.out.println("頻道 " + channel + " 準備關閉.");
     }
@@ -523,10 +493,6 @@ public class ChannelServer implements Serializable {
 
     public final boolean isAdminOnly() {
         return adminOnly;
-    }
-
-    public final static int getChannelCount() {
-        return instances.size();
     }
 
     public final MapleServerHandler getServerHandler() {
@@ -590,4 +556,38 @@ public class ChannelServer implements Serializable {
         System.out.println("[自動存檔] 已經將頻道 " + this.channel + " 的 " + ppl + " 個玩家保存到數據中.");
     }
 
+    public final static int getChannelCount() {
+        return instances.size();
+    }
+
+    public static final Set<Integer> getChannels() {
+        return new HashSet<>(instances.keySet());
+    }
+
+    public static final ChannelServer newInstance(final String key, final int channel) {
+        return new ChannelServer(key, channel);
+    }
+
+    public static final ChannelServer getInstance(final int channel) {
+        return instances.get(channel);
+    }
+
+    public static final void startAllChannels() {
+        serverStartTime = System.currentTimeMillis();
+
+        int count = Integer.parseInt(ServerProperties.getProperty("server.settings.channel.count", "0"));
+        for (int i = 0; i < count; i++) {
+            newInstance(ServerConstants.Channel_Key[i], i + 1).setup();
+        }
+    }
+
+    public static final void startChannel(final int channel) {
+        serverStartTime = System.currentTimeMillis();
+        for (int i = 0; i < Integer.parseInt(ServerProperties.getProperty("server.settings.channel.count", "0")); i++) {
+            if (channel == i + 1) {
+                newInstance(ServerConstants.Channel_Key[i], i + 1).setup();
+                break;
+            }
+        }
+    }
 }

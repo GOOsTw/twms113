@@ -32,9 +32,9 @@ import database.DatabaseConnection;
 public class MapleGuildRanking {
 
     private static final MapleGuildRanking instance = new MapleGuildRanking();
-    private List<GuildRankingInfo> ranks = new LinkedList<>();
-    private List<levelRankingInfo> ranks1 = new LinkedList<>();
-    private List<mesoRankingInfo> ranks2 = new LinkedList<>();
+    private final List<GuildRankingInfo> ranks = new LinkedList<>();
+    private final List<levelRankingInfo> ranks1 = new LinkedList<>();
+    private final List<mesoRankingInfo> ranks2 = new LinkedList<>();
 
     public static MapleGuildRanking getInstance() {
         return instance;
@@ -63,11 +63,11 @@ public class MapleGuildRanking {
 
     private void reload() {
         ranks.clear();
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM guilds ORDER BY `GP` DESC LIMIT 50");
-            ResultSet rs = ps.executeQuery();
 
+        Connection con = DatabaseConnection.getConnection();
+        ResultSet rs;
+        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM guilds ORDER BY `GP` DESC LIMIT 50")) {
+            rs = ps.executeQuery();
             while (rs.next()) {
                 final GuildRankingInfo rank = new GuildRankingInfo(
                         rs.getString("name"),
@@ -79,7 +79,7 @@ public class MapleGuildRanking {
 
                 ranks.add(rank);
             }
-            ps.close();
+
             rs.close();
         } catch (SQLException e) {
             System.err.println("Error handling guildRanking");
@@ -107,17 +107,16 @@ public class MapleGuildRanking {
             rs.close();
         } catch (SQLException e) {
             System.err.println("未能顯示等級排行");
-            e.printStackTrace();
         }
     }
 
     private void showMesoRank() {
         ranks2.clear();
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT *, ( chr.meso + s.meso ) as money FROM `characters` as chr , `storages` as s WHERE chr.gm < 1  AND s.accountid = chr.id ORDER BY money DESC LIMIT 20");
-            ResultSet rs = ps.executeQuery();
 
+        Connection con = DatabaseConnection.getConnection();
+        ResultSet rs;
+        try (PreparedStatement ps = con.prepareStatement("SELECT *, ( chr.meso + s.meso ) as money FROM `characters` as chr , `storages` as s WHERE chr.gm < 1  AND s.accountid = chr.id ORDER BY money DESC LIMIT 20")) {
+            rs = ps.executeQuery();
             while (rs.next()) {
                 final mesoRankingInfo rank2 = new mesoRankingInfo(
                         rs.getString("name"),
@@ -129,7 +128,6 @@ public class MapleGuildRanking {
                 ranks2.add(rank2);
             }
 
-            ps.close();
             rs.close();
         } catch (SQLException e) {
             System.err.println("未能顯示財產排行");
@@ -139,9 +137,9 @@ public class MapleGuildRanking {
 
     public static class mesoRankingInfo {
 
-        private String name;
-        private long meso;
-        private int str, dex, _int, luk;
+        private final String name;
+        private final long meso;
+        private final int str, dex, _int, luk;
 
         public mesoRankingInfo(String name, long meso, int str, int dex, int intt, int luk) {
             this.name = name;
@@ -179,8 +177,8 @@ public class MapleGuildRanking {
 
     public static class levelRankingInfo {
 
-        private String name;
-        private int level, str, dex, _int, luk;
+        private final String name;
+        private final int level, str, dex, _int, luk;
 
         public levelRankingInfo(String name, int level, int str, int dex, int intt, int luk) {
             this.name = name;
@@ -218,8 +216,8 @@ public class MapleGuildRanking {
 
     public static class GuildRankingInfo {
 
-        private String name;
-        private int gp, logo, logocolor, logobg, logobgcolor;
+        private final String name;
+        private final int gp, logo, logocolor, logobg, logobgcolor;
 
         public GuildRankingInfo(String name, int gp, int logo, int logocolor, int logobg, int logobgcolor) {
             this.name = name;

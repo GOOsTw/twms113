@@ -68,13 +68,14 @@ public class LoginWorker {
             }
             c.setIdleTask(PingTimer.getInstance().schedule(new Runnable() {
 
+                @Override
                 public void run() {
-//                    c.getSession().close();
+                    c.getSession().close(true);
                 }
             }, 10 * 60 * 10000));
         } else {
             c.getSession().write(LoginPacket.getLoginFailed(7));
-            return;
+
         }
     }
 }

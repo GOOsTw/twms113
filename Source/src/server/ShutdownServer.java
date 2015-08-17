@@ -58,7 +58,7 @@ public class ShutdownServer implements Runnable {
             try {
                 ChannelServer cs = ChannelServer.getInstance(channel);
                 cs.saveAll();
-                cs.setShutdown();
+                cs.setPrepareShutdown();
                 cs.shutdown();
             } catch (Exception e) {
                 System.out.println("頻道" + String.valueOf(channel) + " 關閉失敗.");

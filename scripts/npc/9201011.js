@@ -10,7 +10,7 @@ function action(mode, type, selection) {
 	status--;
     }
     if (cm.getMapId() != 680000110) {
-	cm.sendOk("If you want to have a wedding, please speak with my helpers.");
+	cm.sendOk("如果你想要舉辦一個婚禮，請與我的助手說話。");
 	cm.dispose();
 	return;
     }

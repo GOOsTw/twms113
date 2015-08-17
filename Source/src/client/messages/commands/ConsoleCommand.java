@@ -273,7 +273,7 @@ public class ConsoleCommand {
                     csrv.closeAllMerchant();
                     csrv.shutdown();
                 }
-                ChannelServer.startChannel_Main();
+                ChannelServer.startAllChannels();
                 System.out.println("所有頻道重新讀取成功");
             } else {
                 try {

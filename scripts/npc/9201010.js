@@ -14,7 +14,7 @@ function action(mode, type, selection) {
 	return;
     }
     if (status == 0) {
-	cm.sendYesNo("Do you want to enter the Wedding Hall?");
+	cm.sendYesNo("你想進入結婚禮堂?");
     } else if (status == 1) {
 
 	    var marr = cm.getQuestRecord(160001);
@@ -25,20 +25,20 @@ function action(mode, type, selection) {
 	    }
 	    if (data.equals("1")) {
 		if (cm.getPlayer().getMarriageId() <= 0) {
-		    cm.sendOk("Something wrong has happened: you aren't engaged with anybody.");
+		    cm.sendOk("好像出什麼錯誤了，你還沒有跟任何人結婚啊！");
 		    cm.dispose();
 		    return;
 		}
 	    	var chr = cm.getMap().getCharacterById(cm.getPlayer().getMarriageId());
 	    	if (chr == null) {
-		    cm.sendOk("Make sure your partner is in the map.");
+		    cm.sendOk("確認你的另一半在同一張地圖喔。");
 		    cm.dispose();
 		    return;
 	    	}
 		var maps = Array(680000110, 680000300, 680000401);
 		for (var i = 0; i < maps.length; i++) {
 		    if (cm.getMap(maps[i]).getCharactersSize() > 0) {
-			cm.sendNext("Someone is already having a wedding, please come later.");
+			cm.sendNext("禮堂內已經有人在結婚了，請晚點再來～");
 			cm.dispose();
 			return;
 		    }
@@ -46,17 +46,17 @@ function action(mode, type, selection) {
 		var map = cm.getMap(680000110);
 		cm.getPlayer().changeMap(map, map.getPortal(0));
 		chr.changeMap(map, map.getPortal(0));
-		cm.worldMessage(5, "<Channel " + cm.getClient().getChannel() + "> " + cm.getPlayer().getName() + " and " + chr.getName() + "'s wedding is about to be started.");
+		cm.worldMessage(5, "<頻道 " + cm.getClient().getChannel() + "> " + cm.getPlayer().getName() + " 與 " + chr.getName() + "即將步入禮堂，請大家快過來祝福他們。");
 	    } else {
 		if (cm.getMap(680000110).getCharactersSize() == 0) {
-		    cm.sendNext("No one is already having a wedding, please come later.");
+		    cm.sendNext("現在禮堂沒有舉辦任何婚禮喔，請稍後再來。");
 		    cm.dispose();
 		    return;
 		}
 		if (cm.haveItem(4150000)) {
 		    cm.warp(680000110,0);
 		} else {
-		    cm.sendOk("You do not have a wedding invitation.");
+		    cm.sendOk("你並沒有婚禮的邀請函。");
 		}
 	    }
 	cm.dispose();

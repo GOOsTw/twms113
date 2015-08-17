@@ -27,8 +27,6 @@ import java.util.Map;
 
 import handling.MapleServerHandler;
 import handling.mina.MapleCodecFactory;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.buffer.SimpleBufferAllocator;
 import org.apache.mina.core.filterchain.IoFilter;
@@ -45,7 +43,6 @@ import tools.FilePrinter;
 public class LoginServer {
 
     public static final short PORT = 8484;
-    private static InetSocketAddress InetSocketadd;
     private static IoAcceptor acceptor;
     private static Map<Integer, Integer> load = new HashMap<>();
     private static String serverName, eventMessage;
@@ -62,7 +59,7 @@ public class LoginServer {
         load.remove(channel);
     }
 
-    public static final void run_startup_configurations() {
+    public static final void setup() {
         try {
             userLimit = Integer.parseInt(ServerProperties.getProperty("server.settings.userlimit"));
             serverName = ServerProperties.getProperty("server.settings.serverName");
@@ -79,8 +76,7 @@ public class LoginServer {
 
             acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 30);
             acceptor.setHandler(new MapleServerHandler(-1, false));
-            InetSocketadd = new InetSocketAddress(PORT);
-            acceptor.bind(InetSocketadd);
+            acceptor.bind(new InetSocketAddress(PORT));
             System.out.println("登入伺服器端口: " + Short.toString(PORT) + " \n\n");
 
         } catch (IOException ex) {
@@ -99,6 +95,7 @@ public class LoginServer {
         for (IoSession session : acceptor.getManagedSessions().values()) {
             session.close(true);
         }
+        acceptor.unbind(new InetSocketAddress(PORT));
         acceptor.dispose();
 
         System.out.println(
