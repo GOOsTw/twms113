@@ -11,7 +11,7 @@ public class ModifyInventory {
         public static final int REMOVE = 3;
     }
 
-    private int mode;
+    private final int mode;
     private IItem item;
     private short oldPos;
 

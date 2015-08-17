@@ -298,7 +298,7 @@ public class StatsHandling {
                 return;
             }
             total += tempVal;
-            extras += gainStatByType(chr, MapleStat.getBy5ByteEncoding(type), tempVal);
+            extras += gainStatByType(chr, MapleStat.getByValue(type), tempVal);
         }
         short remainingAp = (short) ((chr.getRemainingAp() - total) + extras);
         chr.setRemainingAp((short) remainingAp);

@@ -20,7 +20,6 @@
  */
 package client.inventory;
 
-import constants.GameConstants;
 import java.awt.Point;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,13 +28,11 @@ import java.sql.SQLException;
 import java.io.Serializable;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import database.DatabaseConnection;
 import server.MapleItemInformationProvider;
-import server.movement.LifeMovement;
 import server.movement.LifeMovementFragment;
 import server.movement.StaticLifeMovement;
+import tools.FilePrinter;
 
 public class MaplePet implements Serializable {
 
@@ -89,7 +86,8 @@ public class MaplePet implements Serializable {
 
     private static final long serialVersionUID = 9179541993413738569L;
     private String name;
-    private int Fh = 0, stance = 0, uniqueid, petitemid, secondsLeft = 0;
+    private final int uniqueid, petitemid;
+    private int Fh = 0, stance = 0, secondsLeft = 0;
     private Point pos;
     private byte fullness = 100, level = 1, summoned = 0;
     private short inventorypos = 0, closeness = 0, flags = 0;
@@ -108,34 +106,33 @@ public class MaplePet implements Serializable {
     }
 
     public static final MaplePet loadFromDb(final int itemid, final int petid, final short inventorypos) {
-        try {
-            final MaplePet ret = new MaplePet(itemid, petid, inventorypos);
 
-            Connection con = DatabaseConnection.getConnection(); // Get a connection to the database
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM pets WHERE petid = ?"); // Get pet details..
+        final MaplePet ret = new MaplePet(itemid, petid, inventorypos);
+
+        Connection con = DatabaseConnection.getConnection(); // Get a connection to the database
+        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM pets WHERE petid = ?") // Get pet details..
+                ) {
             ps.setInt(1, petid);
 
-            final ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                rs.close();
-                ps.close();
-                return null;
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    rs.close();
+                    ps.close();
+                    return null;
+                }
+
+                ret.setName(rs.getString("name"));
+                ret.setCloseness(rs.getShort("closeness"));
+                ret.setLevel(rs.getByte("level"));
+                ret.setFullness(rs.getByte("fullness"));
+                ret.setSecondsLeft(rs.getInt("seconds"));
+                ret.setFlags(rs.getShort("flags"));
+                ret.changed = false;
             }
-
-            ret.setName(rs.getString("name"));
-            ret.setCloseness(rs.getShort("closeness"));
-            ret.setLevel(rs.getByte("level"));
-            ret.setFullness(rs.getByte("fullness"));
-            ret.setSecondsLeft(rs.getInt("seconds"));
-            ret.setFlags(rs.getShort("flags"));
-            ret.changed = false;
-
-            rs.close();
-            ps.close();
 
             return ret;
         } catch (SQLException ex) {
-            Logger.getLogger(MaplePet.class.getName()).log(Level.SEVERE, null, ex);
+            FilePrinter.printError("MaplePet.txt", ex, "loadFromDb");
             return null;
         }
     }
@@ -144,8 +141,8 @@ public class MaplePet implements Serializable {
         if (!changed) {
             return;
         }
-        try {
-            final PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("UPDATE pets SET name = ?, level = ?, closeness = ?, fullness = ?, seconds = ?, flags = ? WHERE petid = ?");
+
+        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("UPDATE pets SET name = ?, level = ?, closeness = ?, fullness = ?, seconds = ?, flags = ? WHERE petid = ?")) {
             ps.setString(1, name); // Set name
             ps.setByte(2, level); // Set Level
             ps.setShort(3, closeness); // Set Closeness
@@ -154,10 +151,10 @@ public class MaplePet implements Serializable {
             ps.setShort(6, flags);
             ps.setInt(7, uniqueid); // Set ID
             ps.executeUpdate(); // Execute statement
-            ps.close();
+
             changed = false;
         } catch (final SQLException ex) {
-            ex.printStackTrace();
+            FilePrinter.printError("MaplePet.txt", ex, "saveToDb");
         }
     }
 
@@ -169,8 +166,8 @@ public class MaplePet implements Serializable {
         if (uniqueid <= -1) { //wah
             uniqueid = MapleInventoryIdentifier.getInstance();
         }
-        try { // Commit to db first
-            PreparedStatement pse = DatabaseConnection.getConnection().prepareStatement("INSERT INTO pets (petid, name, level, closeness, fullness, seconds, flags) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        try ( // Commit to db first
+                PreparedStatement pse = DatabaseConnection.getConnection().prepareStatement("INSERT INTO pets (petid, name, level, closeness, fullness, seconds, flags) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
             pse.setInt(1, uniqueid);
             pse.setString(2, name);
             pse.setByte(3, (byte) level);
@@ -179,9 +176,9 @@ public class MaplePet implements Serializable {
             pse.setInt(6, secondsLeft);
             pse.setShort(7, (short) 0); //flags
             pse.executeUpdate();
-            pse.close();
+           
         } catch (final SQLException ex) {
-            ex.printStackTrace();
+            FilePrinter.printError("MaplePet.txt", ex, "createPet");
             return null;
         }
         final MaplePet pet = new MaplePet(itemid, uniqueid);
@@ -305,10 +302,10 @@ public class MaplePet implements Serializable {
     public final void updatePosition(final List<LifeMovementFragment> movement) {
         for (final LifeMovementFragment move : movement) {
             if (move instanceof StaticLifeMovement) {
-                Point pos = move.getPosition();
-                if (pos != null) {
-                    setPos(pos);
-                    setStance(((StaticLifeMovement)move).getNewstate());
+                Point newPos = move.getPosition();
+                if (newPos != null) {
+                    setPos(newPos);
+                    setStance(((StaticLifeMovement) move).getNewstate());
                 }
             }
         }

@@ -20,7 +20,6 @@
  */
 package client.inventory;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import provider.MapleData;
@@ -32,12 +31,12 @@ import tools.Pair;
 
 public class PetDataFactory {
 
-    private static MapleDataProvider dataRoot = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/Item.wz");
-    private static Map<Pair<Integer, Integer>, PetCommand> petCommands = new HashMap<Pair<Integer, Integer>, PetCommand>();
-    private static Map<Integer, Integer> petHunger = new HashMap<Integer, Integer>();
+    private static final MapleDataProvider dataRoot = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/Item.wz");
+    private static final Map<Pair<Integer, Integer>, PetCommand> petCommands = new HashMap<>();
+    private static final Map<Integer, Integer> petHunger = new HashMap<>();
 
     public static final PetCommand getPetCommand(final int petId, final int skillId) {
-        PetCommand ret = petCommands.get(new Pair<Integer, Integer>(Integer.valueOf(petId), Integer.valueOf(skillId)));
+        PetCommand ret = petCommands.get(new Pair<>(Integer.valueOf(petId), Integer.valueOf(skillId)));
         if (ret != null) {
             return ret;
         }
@@ -49,7 +48,7 @@ public class PetDataFactory {
             inc = MapleDataTool.getInt("interact/" + skillId + "/inc", skillData, 0);
         }
         ret = new PetCommand(petId, skillId, prob, inc);
-        petCommands.put(new Pair<Integer, Integer>(Integer.valueOf(petId), Integer.valueOf(skillId)), ret);
+        petCommands.put(new Pair<>(petId, skillId), ret);
 
         return ret;
     }
@@ -60,7 +59,7 @@ public class PetDataFactory {
             return ret;
         }
         final MapleData hungerData = dataRoot.getData("Pet/" + petId + ".img").getChildByPath("info/hungry");
-        ret = Integer.valueOf(MapleDataTool.getInt(hungerData, 1));
+        ret = MapleDataTool.getInt(hungerData, 1);
         petHunger.put(petId, ret);
 
         return ret;

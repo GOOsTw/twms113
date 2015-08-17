@@ -31,14 +31,15 @@ import java.io.Serializable;
 import database.DatabaseConnection;
 import java.util.Comparator;
 import server.MapleInventoryManipulator;
+import tools.FilePrinter;
 
 public class MapleRing implements Serializable {
 
     private static final long serialVersionUID = 9179541993413738579L;
-    private int ringId;
-    private int ringId2;
-    private int partnerId;
-    private int itemId;
+    private final int ringId;
+    private final int ringId2;
+    private final int partnerId;
+    private final int itemId;
     private String partnerName;
     private boolean equipped = false;
 
@@ -55,24 +56,23 @@ public class MapleRing implements Serializable {
     }
 
     public static MapleRing loadFromDb(int ringId, boolean equipped) {
-        try {
-            Connection con = DatabaseConnection.getConnection(); // Get a connection to the database
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM rings WHERE ringId = ?"); // Get details..
-            ps.setInt(1, ringId);
 
-            ResultSet rs = ps.executeQuery();
-            MapleRing ret = null;
-            if (rs.next()) {
-                ret = new MapleRing(ringId, rs.getInt("partnerRingId"), rs.getInt("partnerChrId"), rs.getInt("itemid"), rs.getString("partnerName"));
-                ret.setEquipped(equipped);
+        Connection con = DatabaseConnection.getConnection(); // Get a connection to the database
+        MapleRing ret;
+        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM rings WHERE ringId = ?") // Get details..
+                ) {
+            ps.setInt(1, ringId);
+            try (ResultSet rs = ps.executeQuery()) {
+                ret = null;
+                if (rs.next()) {
+                    ret = new MapleRing(ringId, rs.getInt("partnerRingId"), rs.getInt("partnerChrId"), rs.getInt("itemid"), rs.getString("partnerName"));
+                    ret.setEquipped(equipped);
+                }
             }
-            rs.close();
-            ps.close();
 
             return ret;
         } catch (SQLException ex) {
-            ex.printStackTrace();
-
+            FilePrinter.printError("MapleRing.txt", ex, "loadFromDB");
             return null;
         }
     }
@@ -107,7 +107,7 @@ public class MapleRing implements Serializable {
             }
             return makeRing(itemid, partner1, partner2, id2, msg, sn);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            FilePrinter.printError("MapleRing.txt", ex, "createRing");
             return 0;
         }
     }
@@ -172,7 +172,7 @@ public class MapleRing implements Serializable {
         return hash;
     }
 
-    public static void removeRingFromDb(MapleCharacter player) {
+    public static void removeRingFromDB(MapleCharacter player) {
         try {
             Connection con = DatabaseConnection.getConnection();
             PreparedStatement ps = con.prepareStatement("SELECT * FROM rings WHERE partnerChrId = ?");
@@ -192,8 +192,8 @@ public class MapleRing implements Serializable {
             ps.setInt(2, otherId);
             ps.executeUpdate();
             ps.close();
-        } catch (SQLException sex) {
-            sex.printStackTrace();
+        } catch (SQLException ex) {
+            FilePrinter.printError("MapleRing.txt", ex, "removeRingFromDB");
         }
     }
 

@@ -21,6 +21,7 @@ public enum MapleStat {
     FAME(0x20000),
     MESO(0x40000),
     PET(0x180008);
+    
     private final int i;
 
     private MapleStat(int i) {
@@ -40,20 +41,6 @@ public enum MapleStat {
         return null;
     }
     
-    public static MapleStat getBy5ByteEncoding(int encoded) {
-        switch (encoded) {
-            case 64:
-                return STR;
-            case 128:
-                return DEX;
-            case 256:
-                return INT;
-            case 512:
-                return LUK;
-        }
-        return null;
-    }
-
     public static enum Temp {
 
         STR(0x1),

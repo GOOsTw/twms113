@@ -30,16 +30,19 @@ import java.io.Serializable;
 
 import database.DatabaseConnection;
 import server.Randomizer;
+import tools.FilePrinter;
 import tools.MaplePacketCreator;
 
 public class MapleMount implements Serializable {
 
     private static final long serialVersionUID = 9179541993413738569L;
-    private int itemid, skillid, exp;
+    private final int skillid;
+    private int itemid;
+    private int exp;
     private byte fatigue, level;
     private transient boolean changed = false;
     private long lastFatigue = 0;
-    private transient WeakReference<MapleCharacter> owner;
+    private final transient WeakReference<MapleCharacter> owner;
 
     public MapleMount(MapleCharacter owner, int id, int skillid, byte fatigue, byte level, int exp) {
         this.itemid = id;
@@ -47,21 +50,24 @@ public class MapleMount implements Serializable {
         this.fatigue = fatigue;
         this.level = level;
         this.exp = exp;
-        this.owner = new WeakReference<MapleCharacter>(owner);
+        this.owner = new WeakReference<>(owner);
     }
 
-    public void saveMount(final int charid) throws SQLException {
+    public void saveMount(final int charid) {
         if (!changed) {
             return;
         }
         Connection con = DatabaseConnection.getConnection();
-        PreparedStatement ps = con.prepareStatement("UPDATE mountdata set `Level` = ?, `Exp` = ?, `Fatigue` = ? WHERE characterid = ?");
-        ps.setByte(1, level);
-        ps.setInt(2, exp);
-        ps.setByte(3, fatigue);
-        ps.setInt(4, charid);
-        ps.executeUpdate();
-        ps.close();
+        try (PreparedStatement ps = con.prepareStatement("UPDATE mountdata set `Level` = ?, `Exp` = ?, `Fatigue` = ? WHERE characterid = ?")) {
+            ps.setByte(1, level);
+            ps.setInt(2, exp);
+            ps.setByte(3, fatigue);
+            ps.setInt(4, charid);
+            ps.executeUpdate();
+
+        } catch (SQLException ex) {
+            FilePrinter.printError("MapleMount.txt", ex, "saveMount");
+        }
     }
 
     public int getItemId() {
