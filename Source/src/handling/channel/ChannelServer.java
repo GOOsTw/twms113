@@ -553,7 +553,7 @@ public class ChannelServer implements Serializable {
 
             }
         }
-        System.out.println("[自動存檔] 已經將頻道 " + this.channel + " 的 " + ppl + " 個玩家保存到數據中.");
+        System.out.println("[自動存檔] 已經將頻道 " + this.channel + " 的 " + ppl + " 個角色保存到數據中.");
     }
 
     public final static int getChannelCount() {

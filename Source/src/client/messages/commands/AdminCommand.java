@@ -90,6 +90,7 @@ import tools.packet.MobPacket;
 import tools.packet.PlayerShopPacket;
 import com.mysql.jdbc.Connection;
 import java.util.concurrent.ScheduledFuture;
+import scripting.NPCScriptManager;
 import server.ServerProperties;
 
 /**
@@ -611,7 +612,41 @@ public class AdminCommand {
             return 1;
         }
     }
+    
+    public static class 關鍵時刻 extends CommandExecute {
 
+        protected static ScheduledFuture<?> ts = null;
+
+        @Override
+        public int execute(final MapleClient c, String[] splitted) {
+            if (splitted.length < 1) {
+                c.getPlayer().dropMessage(0, splitted[0] + "<時間:分鐘>");
+                return 0;
+            }
+            if (ts != null) {
+                ts.cancel(false);
+                c.getPlayer().dropMessage(0, "原定的關鍵時刻已取消。");
+            }
+            int minutesLeft = Integer.parseInt(splitted[1]);
+            ts = EventTimer.getInstance().schedule(new Runnable() {
+                @Override
+                public void run() {
+                    for (ChannelServer cserv : ChannelServer.getAllInstances()) {
+                        for (MapleCharacter mch : cserv.getPlayerStorage().getAllCharacters()) {
+                            if (c.canClickNPC() && !c.getPlayer().isGM()) {
+                                NPCScriptManager.getInstance().start(mch.getClient(), 9010010);
+                            }
+                        }
+                    }
+                    ts.cancel(false);
+                    ts = null;
+                }
+            }, minutesLeft * 60000);
+            c.getPlayer().dropMessage(0, "關鍵時刻預定已完成。");
+            return 1;
+        }
+    }
+    
     public static class GainMeso extends CommandExecute {
 
         @Override

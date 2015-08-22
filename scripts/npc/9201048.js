@@ -13,13 +13,13 @@ function action(mode, type, selection) {
     cm.removeAll(4031594);
     cm.removeAll(4031597);
     if (status == 0) {
-        cm.sendSimple("#b#L0#Get out of here (no refunds)#l\r\n#L1#My party is ready and we want to go in.#l#k");
+        cm.sendSimple("#b#L0#離開這裡 (沒有退費)#l\r\n#L1#我的隊伍已經準備好，我們要挑戰了！#l#k");
     } else if (status == 1) {
         if (selection == 0) {
             cm.warp(670010000, 0);
         } else {
             if (cm.getPlayer().getParty() == null || !cm.isLeader()) {
-                cm.sendOk("The leader of the party must be here.");
+                cm.sendOk("必須要有隊長在這裡。");
             } else {
                 var party = cm.getPlayer().getParty().getMembers();
                 var mapId = cm.getPlayer().getMapId();
@@ -38,12 +38,12 @@ function action(mode, type, selection) {
                 if (next && size >= 6) {
                     var em = cm.getEventManager("Amoria");
                     if (em == null) {
-                        cm.sendOk("Please try again later.");
+                        cm.sendOk("請稍後再嘗試。");
                     } else {
                         em.startInstance(cm.getPlayer().getParty(), cm.getPlayer().getMap());
                     }
                 } else {
-                    cm.sendOk("All 6+ members of your party must be here.");
+                    cm.sendOk("隊伍成員必須有6個以上都在這裡。");
                 }
             }
         }
