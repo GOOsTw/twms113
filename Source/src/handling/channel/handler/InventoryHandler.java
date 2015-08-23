@@ -478,7 +478,7 @@ public class InventoryHandler {
 
         // Update
         MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, scroll.getPosition(), (short) 1, false, false);
-        
+
         if (whiteScroll) {
             MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, wscroll.getPosition(), (short) 1, false, false);
         }
@@ -504,7 +504,6 @@ public class InventoryHandler {
         }
 
         //c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.UPDATE, scroll)));
-
         return true;
     }
 
@@ -1798,14 +1797,14 @@ public class InventoryHandler {
             case 5152105:
             case 5152106:
             case 5152107: { // 日拋隱形眼鏡
-                int color = (itemId - 5152100) * 100;
-
-                if (color >= 0 && c.getPlayer().changeFace(color)) {
-                    used = true;
+                if (c.getPlayer().getLevel() < 30) {
+                    c.getPlayer().dropMessage(5, "必須等級30級以上才可以使用.");
+                    break;
                 } else {
-                    c.getPlayer().dropMessage(1, "使用日拋隱形眼鏡出現錯誤。");
+                    NPCScriptManager.getInstance().start(c, 9209004);
+                    c.getPlayer().dropMessage(5, "開始使用日拋隱形眼鏡NPC。");
+                    break;
                 }
-                break;
             }
             case 5190001:
             case 5190002:
@@ -2139,7 +2138,7 @@ public class InventoryHandler {
         chr.updateTick(slea.readInt());
         slea.skip(1); // [4] Seems to be tickcount, [1] always 0
         final Point Client_Reportedpos = slea.readPos();
-     
+
         final MapleMapObject ob = chr.getMap().getMapObject(slea.readInt(), MapleMapObjectType.ITEM);
 
         if (ob == null) {
