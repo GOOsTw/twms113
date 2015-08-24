@@ -86,6 +86,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     private int stolen = -1; //monster can only be stolen ONCE
     private ScheduledFuture<?> dropItemSchedule;
     private boolean shouldDropItem = false;
+    private long lastAbsorbMP;
 
     //獲得怪物ID 怪物能力值
     public MapleMonster(final int id, final MapleMonsterStats stats) {
@@ -213,6 +214,29 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     //設定當前毒液
     public final void setVenomMulti(final byte venom_counter) {
         this.venom_counter = venom_counter;
+    }
+    
+    /**
+     * 竊取MP
+     * @param amount 竊取數量
+     */
+    public final void absorbMP(int amount) {
+        if(!canAbsorbMP()) 
+            return;
+        if( this.getMp() >= amount) {
+            this.setMp(this.getMp() - amount);
+        } else {
+            this.setMp(0);
+        }
+        this.lastAbsorbMP = System.currentTimeMillis();
+    }
+    
+    public final long getLastAbsorbMP() {
+        return this.lastAbsorbMP;
+    }
+    
+    public final boolean canAbsorbMP() {
+        return System.currentTimeMillis() - this.lastAbsorbMP > 10 * 1000;
     }
 
     //傷害判斷

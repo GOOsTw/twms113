@@ -633,7 +633,7 @@ public class MapleStatEffect implements Serializable {
                 case 20011026: // Soaring
                 case 30001026:
                     ret.duration = 60 * 120 * 1000; //because it seems to dispel asap.
-                    statups.add(new Pair<MapleBuffStat, Integer>(MapleBuffStat.SOARING, 1));
+                    statups.add(new Pair<>(MapleBuffStat.SOARING, 1));
                     break;
                 case 2121002: // mana reflection
                 case 2221002:
@@ -725,7 +725,7 @@ public class MapleStatEffect implements Serializable {
      */
     public final void applyPassive(final MapleCharacter applyto, final MapleMapObject obj) {
         if (makeChanceResult()) {
-            switch (sourceid) { // MP eater
+            switch (sourceid) { // 魔力吸收
                 case 2100000:
                 case 2200000:
                 case 2300000:
@@ -735,8 +735,8 @@ public class MapleStatEffect implements Serializable {
                     final MapleMonster mob = (MapleMonster) obj; // x is absorb percentage
                     if (!mob.getStats().isBoss()) {
                         final int absorbMp = Math.min((int) (mob.getMobMaxMp() * (getX() / 70.0)), mob.getMp());
-                        if (absorbMp > 0) {
-                            mob.setMp(mob.getMp() - absorbMp);
+                        if (absorbMp > 0 && mob.canAbsorbMP()) {
+                            mob.absorbMP(absorbMp);
                             applyto.getStat().setMp((short) (applyto.getStat().getMp() + absorbMp));
                             applyto.getClient().getSession().write(MaplePacketCreator.showOwnBuffEffect(sourceid, 1));
                             applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.showBuffeffect(applyto.getId(), sourceid, 1), false);
