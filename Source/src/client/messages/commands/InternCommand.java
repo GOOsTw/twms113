@@ -115,7 +115,7 @@ public class InternCommand {
             Connection con = DatabaseConnection.getConnection();
             MapleCharacter victim;
             try {
-                try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE id = " + + MapleCharacter.getIdByName(splitted[1]))) {
+                try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE id = " + +MapleCharacter.getIdByName(splitted[1]))) {
                     victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
                     victim.getClient().getSession().close();
                     ps.executeUpdate();
@@ -165,7 +165,7 @@ public class InternCommand {
                 MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
 
                 if (victim != null) {
-                    if (victim.getGMLevel() > 3) {
+                    if (victim.getGMLevel() < 5) {
                         c.getPlayer().dropMessage(5, "你不能查看比你高權限的人!");
                         return 0;
                     }
@@ -272,9 +272,7 @@ public class InternCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-
             World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(5, "<GM聊天視窗>" + "頻道" + c.getPlayer().getClient().getChannel() + " [" + c.getPlayer().getName() + "] : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
-
             return 1;
         }
     }

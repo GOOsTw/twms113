@@ -31,6 +31,7 @@ import client.messages.commands.InternCommand;
 import constants.ServerConstants.CommandType;
 import constants.ServerConstants.PlayerGMRank;
 import database.DatabaseConnection;
+import handling.world.World;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.sql.PreparedStatement;
@@ -38,6 +39,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import tools.FilePrinter;
+import tools.MaplePacketCreator;
 
 public class CommandProcessor {
 
@@ -133,12 +135,22 @@ public class CommandProcessor {
                         int ret = co.execute(c, splitted);
                         if (ret > 0 && c.getPlayer() != null) { //incase d/c after command or something
                             logGMCommandToDB(c.getPlayer(), line);
-                            System.out.println("[ " + c.getPlayer().getName() + " ] 使用了指令: " + line);
+                            if (c.getPlayer().getGMLevel() == 5) {
+                                System.out.println("＜超級管理員＞ " + c.getPlayer().getName() + " 使用了指令: " + line);
+                            } else if (c.getPlayer().getGMLevel() == 4) {
+                                System.out.println("＜領導者＞ " + c.getPlayer().getName() + " 使用了指令: " + line);
+                            } else if (c.getPlayer().getGMLevel() == 3) {
+                                System.out.println("＜巡邏者＞ " + c.getPlayer().getName() + " 使用了指令: " + line);
+                            } else if (c.getPlayer().getGMLevel() == 2) {
+                                System.out.println("＜老實習生＞ " + c.getPlayer().getName() + " 使用了指令: " + line);
+                            } else if (c.getPlayer().getGMLevel() == 1) {
+                                System.out.println("＜新實習生＞ " + c.getPlayer().getName() + " 使用了指令: " + line);
+                            } else {
+                                sendDisplayMessage(c, "你沒有權限可以使用指令.", type);
+                            }
                         }
-                    } else {
-                        sendDisplayMessage(c, "你沒有權限可以使用指令.", type);
+                        return true;
                     }
-                    return true;
                 }
             }
         }

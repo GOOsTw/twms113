@@ -106,6 +106,7 @@ public class MapleClient implements Serializable {
     private final transient Lock mutex = new ReentrantLock(true);
     private final transient Lock npc_mutex = new ReentrantLock();
     private final static Lock login_mutex = new ReentrantLock(true);
+    private long lastNpcClick = 0;
 
     public MapleClient(MapleAESOFB send, MapleAESOFB receive, IoSession session) {
         this.send = send;
@@ -1364,7 +1365,11 @@ public class MapleClient implements Serializable {
     public boolean isReceiving() {
         return receiving;
     }
-
+    
+    public boolean canClickNPC() {
+        return lastNpcClick + 500 < System.currentTimeMillis();
+    }
+    
     public void setReceiving(boolean m) {
         this.receiving = m;
     }

@@ -15,7 +15,7 @@ function action(mode, type, selection) {
 	return;
     }
     if (status == 0) {
-	cm.sendYesNo("Do you want to get this show on the road?");
+	cm.sendYesNo("您想要在這條街上表演嗎？？");
     } else if (status == 1) {
 
 	    var marr = cm.getQuestRecord(160001);
@@ -26,13 +26,13 @@ function action(mode, type, selection) {
 	    }
 	    if (data.equals("1")) {
 		if (cm.getPlayer().getMarriageId() <= 0) {
-		    cm.sendOk("Something wrong has happened: you aren't engaged with anybody.");
+		    cm.sendOk("好像發生了錯誤了，您好像還沒有跟任何人結婚！");
 		    cm.dispose();
 		    return;
 		}
 	    	var chr = cm.getMap().getCharacterById(cm.getPlayer().getMarriageId());
 	    	if (chr == null) {
-		    cm.sendOk("Make sure your partner is in the map.");
+		    cm.sendOk("請確認您的另一半是否在同一張地圖內。");
 		    cm.dispose();
 		    return;
 	    	}
@@ -41,13 +41,13 @@ function action(mode, type, selection) {
 		cm.doWeddingEffect(chr);
 	    } else if (data.equals("2_") || data.equals("2")) {
 		if (cm.getPlayer().getMarriageId() <= 0) {
-		    cm.sendOk("Something wrong has happened: you aren't engaged with anybody.");
+		    cm.sendOk("好像發生了錯誤了，您好像還沒有跟任何人結婚！");
 		    cm.dispose();
 		    return;
 		}
 	    	var chr = cm.getMap().getCharacterById(cm.getPlayer().getMarriageId());
 	    	if (chr == null) {
-		    cm.sendOk("Make sure your partner is in the map.");
+		    cm.sendOk("請確認您的另一半是否在同一張地圖內。");
 		    cm.dispose();
 		    return;
 	    	}
@@ -62,7 +62,7 @@ function action(mode, type, selection) {
 		    cm.warpMap(680000500, 0);
 		}
 	    } else {
-		cm.sendOk("You aren't getting married!");
+		cm.sendOk("您還沒有結婚！！");
 	    }
 	cm.dispose();
     }
