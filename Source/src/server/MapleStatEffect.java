@@ -326,9 +326,7 @@ public class MapleStatEffect implements Serializable {
                 case 1201007:
                     statups.add(new Pair<>(MapleBuffStat.POWERGUARD, ret.x));
                     break;
-                case 32111004: //conversion
-                    statups.add(new Pair<>(MapleBuffStat.CONVERSION, ret.x));
-                    break;
+                
                 case 1301007: // hyper body
                 case 9001008:
                 case 8003:
@@ -373,14 +371,7 @@ public class MapleStatEffect implements Serializable {
                     ret.hpR = -ret.x / 100.0;
                     statups.add(new Pair<>(MapleBuffStat.DRAGON_ROAR, ret.y));
                     break;
-                case 4341007:
-                    statups.add(new Pair<>(MapleBuffStat.THORNS, ret.x << 8 | ret.y));
-                    break;
-                case 4341002:
-                    ret.duration = 60 * 1000;
-                    ret.hpR = -ret.x / 100.0;
-                    statups.add(new Pair<>(MapleBuffStat.FINAL_CUT, ret.y));
-                    break;
+                
                 case 4331002:
                     statups.add(new Pair<>(MapleBuffStat.MIRROR_IMAGE, ret.x));
                     break;
@@ -523,9 +514,7 @@ public class MapleStatEffect implements Serializable {
                 case 2311005:
                     monsterStatus.put(MonsterStatus.DOOM, 1);
                     break;
-                case 32111006:
-                    statups.add(new Pair<>(MapleBuffStat.REAPER, 1));
-                    break;
+                
                 case 4341006:
                 case 3111002: // puppet ranger
                 case 3211002: // puppet sniper
@@ -635,23 +624,7 @@ public class MapleStatEffect implements Serializable {
                     statups.add(new Pair<>(MapleBuffStat.WATK, ret.y));//temp
                     //statups.add(new Pair<>(MapleBuffStat.DASH_SPEED, ret.z));
                     break;
-                case 35001001: //flame
-                case 35101009:
-                case 35111007: //TEMP
-                    //pre-bb = 35111007,
-                    ret.duration = 8000;
-                    statups.add(new Pair<>(MapleBuffStat.MECH_CHANGE, (int) level)); //ya wtf
-                    break;
-                case 35121013:
-                //case 35111004: //siege
-                case 35101002: //TEMP
-                    ret.duration = 5000;
-                    statups.add(new Pair<>(MapleBuffStat.MECH_CHANGE, (int) level)); //ya wtf
-                    break;
-                case 35121005: //missile
-                    ret.duration = 60 * 120 * 1000;
-                    statups.add(new Pair<>(MapleBuffStat.MECH_CHANGE, (int) level)); //ya wtf
-                    break;
+              
                 default:
                     break;
             }
@@ -1132,30 +1105,6 @@ public class MapleStatEffect implements Serializable {
                 break;
             }
            
-            case 32001003: //dark aura
-            case 32120000: {
-                final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.DARK_AURA, 1));
-                applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveForeignBuff(applyto.getId(), stat, this), false);
-                applyto.cancelEffectFromBuffStat(MapleBuffStat.BLUE_AURA);
-                applyto.cancelEffectFromBuffStat(MapleBuffStat.YELLOW_AURA);
-                break;
-            }
-            case 32101002: //blue aura
-            case 32110000: {
-                final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.BLUE_AURA, 1));
-                applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveForeignBuff(applyto.getId(), stat, this), false);
-                applyto.cancelEffectFromBuffStat(MapleBuffStat.YELLOW_AURA);
-                applyto.cancelEffectFromBuffStat(MapleBuffStat.DARK_AURA);
-                break;
-            }
-            case 32101003: //yellow aura
-            case 32120001: {
-                final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.YELLOW_AURA, 1));
-                applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveForeignBuff(applyto.getId(), stat, this), false);
-                applyto.cancelEffectFromBuffStat(MapleBuffStat.BLUE_AURA);
-                applyto.cancelEffectFromBuffStat(MapleBuffStat.DARK_AURA);
-                break;
-            }
             /*            case 1211008:
              case 1211007: { //lightning
              if (applyto.getBuffedValue(MapleBuffStat.WK_CHARGE) != null && applyto.getBuffSource(MapleBuffStat.WK_CHARGE) != sourceid) {
@@ -1166,17 +1115,6 @@ public class MapleStatEffect implements Serializable {
              break;
              }*/
 
-            case 35001001: //flame
-            case 35101009:
-            case 35111007: //TEMP
-            case 35101002: //TEMP
-            case 35121013:
-            //  case 35111004: siege
-            case 35121005: { //missile
-                final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.MECH_CHANGE, 1));
-                applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveForeignBuff(applyto.getId(), stat, this), false);
-                break;
-            }
             case 1111002:
             case 11111001: { // Combo
                 final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.COMBO, 0));
@@ -1202,23 +1140,7 @@ public class MapleStatEffect implements Serializable {
                 normal = false;
                 break;
             }
-            case 4341002: { // Final Cut
-                localstatups = Collections.singletonList(new Pair<>(MapleBuffStat.FINAL_CUT, y));
-                applyto.getClient().getSession().write(MaplePacketCreator.giveBuff(sourceid, localDuration, localstatups, this));
-                normal = false;
-                break;
-            }
-            case 4331003: { // Owl Spirit
-                localstatups = Collections.singletonList(new Pair<>(MapleBuffStat.OWL_SPIRIT, y));
-                applyto.getClient().getSession().write(MaplePacketCreator.giveBuff(sourceid, localDuration, localstatups, this));
-                normal = false;
-                break;
-            }
-            case 4331002: { // Mirror Image
-                final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.MIRROR_IMAGE, 0));
-                applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveForeignBuff(applyto.getId(), stat, this), false);
-                break;
-            }
+            
             case 1121010: // Enrage
                 applyto.handleOrbconsume();
                 break;

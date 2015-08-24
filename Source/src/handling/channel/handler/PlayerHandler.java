@@ -274,7 +274,7 @@ public class PlayerHandler {
                 }
             }
             if (type != -2 && type != -3 && type != -4) {
-                final int bouncedam_ = (Randomizer.nextInt(100) < chr.getStat().DAMreflect_rate ? chr.getStat().DAMreflect : 0) + (type == -1 && chr.getBuffedValue(MapleBuffStat.POWERGUARD) != null ? chr.getBuffedValue(MapleBuffStat.POWERGUARD) : 0) + (type == -1 && chr.getBuffedValue(MapleBuffStat.PERFECT_ARMOR) != null ? chr.getBuffedValue(MapleBuffStat.PERFECT_ARMOR) : 0);
+                final int bouncedam_ = (Randomizer.nextInt(100) < chr.getStat().DAMreflect_rate ? chr.getStat().DAMreflect : 0) + (type == -1 && chr.getBuffedValue(MapleBuffStat.POWERGUARD) != null ? chr.getBuffedValue(MapleBuffStat.POWERGUARD) : 0);
                 if (bouncedam_ > 0 && attacker != null) {
                     long bouncedamage = (long) (damage * bouncedam_ / 100);
                     bouncedamage = Math.min(bouncedamage, attacker.getMobMaxHp() / 10);
@@ -307,16 +307,6 @@ public class PlayerHandler {
                         }
                         break;
                     }
-                }
-            }
-           
-            if (chr.getBuffedValue(MapleBuffStat.SATELLITESAFE_PROC) != null && chr.getBuffedValue(MapleBuffStat.SATELLITESAFE_ABSORB) != null) {
-                double buff = chr.getBuffedValue(MapleBuffStat.SATELLITESAFE_PROC).doubleValue();
-                double buffz = chr.getBuffedValue(MapleBuffStat.SATELLITESAFE_ABSORB).doubleValue();
-                if ((int) ((buff / 100.0) * chr.getStat().getMaxHp()) <= damage) {
-                    damage -= (int) ((buffz / 100.0) * damage);
-                    chr.cancelEffectFromBuffStat(MapleBuffStat.SUMMON);
-                    chr.cancelEffectFromBuffStat(MapleBuffStat.REAPER);
                 }
             }
             if (chr.getBuffedValue(MapleBuffStat.MAGIC_GUARD) != null) {

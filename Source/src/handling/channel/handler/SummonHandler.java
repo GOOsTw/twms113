@@ -180,7 +180,6 @@ public class SummonHandler {
             chr.getMap().removeMapObject(summon);
             chr.removeVisibleMapObject(summon);
             chr.cancelEffectFromBuffStat(MapleBuffStat.SUMMON);
-            chr.cancelEffectFromBuffStat(MapleBuffStat.REAPER);
             //TODO: Multi Summoning, must do something about hack buffstat
         }
     }

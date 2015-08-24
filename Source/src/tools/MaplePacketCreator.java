@@ -849,15 +849,7 @@ public class MaplePacketCreator {
         if (chr.getBuffedValue(MapleBuffStat.MIRROR_IMAGE) != null) {
             fbuffmask |= MapleBuffStat.MIRROR_IMAGE.getValue();
         }
-        if (chr.getBuffedValue(MapleBuffStat.DARK_AURA) != null) {
-            fbuffmask |= MapleBuffStat.DARK_AURA.getValue();
-        }
-        if (chr.getBuffedValue(MapleBuffStat.BLUE_AURA) != null) {
-            fbuffmask |= MapleBuffStat.BLUE_AURA.getValue();
-        }
-        if (chr.getBuffedValue(MapleBuffStat.YELLOW_AURA) != null) {
-            fbuffmask |= MapleBuffStat.YELLOW_AURA.getValue();
-        }
+       
         //if (chr.getBuffedValue(MapleBuffStat.PYRAMID_PQ) != null) {
         //    fbuffmask |= MapleBuffStat.PYRAMID_PQ.getValue();
         //    buffvalue.add(new Pair<Integer, Boolean>(Integer.valueOf(chr.getBuffedValue(MapleBuffStat.PYRAMID_PQ).intValue()), false)); //idk

@@ -565,26 +565,12 @@ public class PlayerStats implements Serializable {
         if (buff != null) {
             localmaxhp_ += (buff.doubleValue() / 100.0) * localmaxhp_;
         }
-        buff = chra.getBuffedValue(MapleBuffStat.CONVERSION);
-        if (buff != null) {
-            localmaxhp_ += (buff.doubleValue() / 100.0) * localmaxhp_;
-        }
+      
         buff = chra.getBuffedValue(MapleBuffStat.MAXMP);
         if (buff != null) {
             localmaxmp_ += (buff.doubleValue() / 100.0) * localmaxmp_;
         }
-        buff = chra.getBuffedValue(MapleBuffStat.MP_BUFF);
-        if (buff != null) {
-            localmaxmp_ += (buff.doubleValue() / 100.0) * localmaxmp_;
-        }
-        buff = chra.getBuffedValue(MapleBuffStat.ENHANCED_MAXHP);
-        if (buff != null) {
-            localmaxhp_ += buff.intValue();
-        }
-        buff = chra.getBuffedValue(MapleBuffStat.ENHANCED_MAXMP);
-        if (buff != null) {
-            localmaxmp_ += buff.intValue();
-        }
+       
         switch (chra.getJob()) {
             case 322: { // Crossbowman
                 final ISkill expert = SkillFactory.getSkill(3220004);
@@ -688,10 +674,7 @@ public class PlayerStats implements Serializable {
         if (buff != null) {
             watk += buff.intValue();
         }
-        buff = chra.getBuffedValue(MapleBuffStat.ENHANCED_WATK);
-        if (buff != null) {
-            watk += buff.intValue();
-        }
+       
         buff = chra.getBuffedValue(MapleBuffStat.MATK);
         if (buff != null) {
             magic += buff.intValue();
@@ -713,11 +696,7 @@ public class PlayerStats implements Serializable {
             jump += buff.intValue();
         }
 
-        buff = chra.getBuffedSkill_Y(MapleBuffStat.FINAL_CUT);
-        if (buff != null) {
-            dam_r *= buff.doubleValue() / 100.0;
-            bossdam_r *= buff.doubleValue() / 100.0;
-        }
+      
         buff = chra.getBuffedSkill_Y(MapleBuffStat.OWL_SPIRIT);
         if (buff != null) {
             dam_r *= buff.doubleValue() / 100.0;
@@ -746,14 +725,7 @@ public class PlayerStats implements Serializable {
             dam_r *= eff.getDamage() / 100.0;
             bossdam_r *= eff.getDamage() / 100.0;
         }
-        buff = chra.getBuffedSkill_X(MapleBuffStat.THORNS);
-        if (buff != null) {
-            added_sharpeye_rate += buff.intValue();
-        }
-        buff = chra.getBuffedSkill_Y(MapleBuffStat.THORNS);
-        if (buff != null) {
-            added_sharpeye_dmg += buff.intValue() - 100;
-        }
+       
         buff = chra.getBuffedSkill_X(MapleBuffStat.SHARP_EYES);
         if (buff != null) {
             added_sharpeye_rate += buff.intValue();
@@ -762,10 +734,7 @@ public class PlayerStats implements Serializable {
         if (buff != null) {
             added_sharpeye_dmg += buff.intValue() - 100;
         }
-        buff = chra.getBuffedValue(MapleBuffStat.CRITICAL_RATE_BUFF);
-        if (buff != null) {
-            added_sharpeye_rate += buff.intValue();
-        }
+        
         if (speed > 140) {
             speed = 140;
         }

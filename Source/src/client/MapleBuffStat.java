@@ -32,48 +32,104 @@ public enum MapleBuffStat implements Serializable {
     //SPEED INFUSION = 0x40000000
     //MONSTER RIDER = 0x20000000
     //COMBAT ORDERS = 0x1000000
-
+    //物理攻擊力
     WATK(0),
+    //物理防禦力
     WDEF(1),
+    //魔法攻擊力
     MATK(2),
+    //魔法防禦力
     MDEF(3),
+    //命中率
     ACC(4),
+    //迴避率
     AVOID(5),
+    //手技 
     HANDS(6),
+    //移動速度 
     SPEED(7),
+    //跳躍力
     JUMP(8),
+    //魔心防禦 
     MAGIC_GUARD(9),
+    //隱藏術  
     DARKSIGHT(10),
+    //攻擊加速    
     BOOSTER(11),
+    //反射之盾
     POWERGUARD(12),
+    //最大HP
     MAXHP(13),
+    //最大MP
     MAXMP(14),
+    //神聖之光 
     INVINCIBLE(15),
+    //無形之箭    
     SOULARROW(16),
+    /*猜測*/
+    STUN(17),
+    //中毒
+    POISON(18),
+    //封印
+    SEAL(19),
+    //黑暗
+    DARKNESS(20),
+    //鬥氣集中
     COMBO(21),
+    //召喚獸
     SUMMON(21), //hack buffstat for summons ^.- (does/should not increase damage... hopefully <3)
+    //屬性攻擊
     WK_CHARGE(22),
+    //龍之力量 ? 需要測試
     DRAGONBLOOD(23),
+    //神聖祈禱
     HOLY_SYMBOL(24),
+    //幸運術
     MESOUP(25),
+    //影分身
     SHADOWPARTNER(26),
+    //勇者掠奪術
     PICKPOCKET(27),
+    //替身術
     PUPPET(28), // HACK - shares buffmask with pickpocket - odin special ^.-
+    //楓幣護盾
     MESOGUARD(29),
-    // Mask 1
-    MORPH(33), // 33
-    RECOVERY(34), // 34
+    HP_LOSS_GUARD(30),
+    //虛弱 
+    WEAKEN(30),
+    //詛咒
+    CURSE(31),
+    //緩慢 
+    SLOW(32),
+    //變身  
+    MORPH(33),
+    //恢復
+    RECOVERY(34),
+    //楓葉祝福  
     MAPLE_WARRIOR(35),
+    //格擋(穩如泰山)   
     STANCE(36),
+    //銳利之眼  
     SHARP_EYES(37),
+    //魔法反擊
     MANA_REFLECTION(38),
-    DRAGON_ROAR(39), // Stuns the user
+    //誘惑  
+    DRAGON_ROAR(39),
+    //暗器傷人
     SPIRIT_CLAW(40),
+    //魔力無限
     INFINITY(41),
+    //進階祝福    
     HOLY_SHIELD(42),
+    //敏捷提升    
     HAMSTRING(43),
+    //命中率增加
     BLIND(44),
+    //集中精力
     CONCENTRATE(45),
+    //不死化
+    ZOMBIFY(46),
+    //英雄的回響  
     ECHO_OF_HERO(47),
     UNKNOWN3(48),
     GHOST_MORPH(49),
@@ -90,19 +146,24 @@ public enum MapleBuffStat implements Serializable {
     SPARK(61),
     ARIANT_COSS_IMU2(62), // no idea, seems the same
     FINALATTACK(63),
-    ELEMENT_RESET(65, true),
+    //自然力重置     
+    ELEMENT_RESET(65),
+    //(CMS_风影漫步)
+    WIND_WALK(66),
+    
     SOUL_STONE(73), //same as pyramid_pq
-    ENERGY_CHARGE(75, true),
+    ENERGY_CHARGE(75),
     DASH_SPEED(76),
-    DASH_JUMP(77, true),
-    MONSTER_RIDING(78, true),
-    SPEED_INFUSION(79, true),
+    DASH_JUMP(77),
+    MONSTER_RIDING(78),
+    SPEED_INFUSION(79),
     HOMING_BEACON(80),
     SOARING(82),
+    FREEZE(83),
     LIGHTNING_CHARGE(84),
     MIRROR_IMAGE(85),
     OWL_SPIRIT(86),
-    ARAN_COMBO(92, true),
+    ARAN_COMBO(92),
     COMBO_DRAIN(93),
     COMBO_BARRIER(94),
     BODY_PRESSURE(95),
@@ -113,9 +174,8 @@ public enum MapleBuffStat implements Serializable {
     //DUMMY_STAT3     (0x40000000L, true),
     //DUMMY_STAT4     (0x80000000L, true),
     //db stuff
-    FINAL_CUT(88),
+    /*FINAL_CUT(88),
     THORNS(89),
-  
     ENHANCED_MAXHP(93),
     ENHANCED_MAXMP(94),
     ENHANCED_WATK(95),
@@ -133,9 +193,7 @@ public enum MapleBuffStat implements Serializable {
     MECH_CHANGE(109), //determined in packet by [skillLevel or something] [skillid] 1E E0 58 52???
     DARK_AURA(111),
     BLUE_AURA(112),
-    YELLOW_AURA(113),;
-    
-   
+    YELLOW_AURA(113),*/;
 
     private static final long serialVersionUID = 0L;
     private final int buffstat;

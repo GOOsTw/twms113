@@ -2276,7 +2276,6 @@ public final class MapleMap {
             }
         }
         chr.cancelEffectFromBuffStat(MapleBuffStat.PUPPET);
-        chr.cancelEffectFromBuffStat(MapleBuffStat.REAPER);
         boolean cancelSummons = false;
         for (final MapleSummon summon : chr.getSummons().values()) {
             if (summon.getMovementType() == SummonMovementType.STATIONARY || summon.getMovementType() == SummonMovementType.CIRCLE_STATIONARY || summon.getMovementType() == SummonMovementType.WALK_STATIONARY) {

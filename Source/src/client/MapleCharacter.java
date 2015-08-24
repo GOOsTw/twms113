@@ -1669,7 +1669,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 if (addMbsvh) {
                     effectsToCancel.add(mbsvh);
                 }
-                if (stat == MapleBuffStat.SUMMON || stat == MapleBuffStat.PUPPET || stat == MapleBuffStat.REAPER) {
+                if (stat == MapleBuffStat.SUMMON || stat == MapleBuffStat.PUPPET ) {
                     final int summonId = mbsvh.effect.getSourceId();
                     final MapleSummon summon = summons.get(summonId);
                     if (summon != null) {
@@ -1752,8 +1752,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
         } else if (effect.isMonsterRiding_()) {
             getMount().cancelSchedule();
-        } else if (effect.isMonsterRiding()) {
-            cancelEffectFromBuffStat(MapleBuffStat.MECH_CHANGE);
         } else if (effect.isAranCombo()) {
             combo = 0;
         }
@@ -2559,7 +2557,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         cancelEffectFromBuffStat(MapleBuffStat.MORPH);
         cancelEffectFromBuffStat(MapleBuffStat.MONSTER_RIDING);
         cancelEffectFromBuffStat(MapleBuffStat.SUMMON);
-        cancelEffectFromBuffStat(MapleBuffStat.REAPER);
         cancelEffectFromBuffStat(MapleBuffStat.PUPPET);
         checkFollow();
         if (job != 0 && job != 1000 && job != 2000 && job != 2001 && job != 3000) {
@@ -5020,9 +5017,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (ret.effects.get(MapleBuffStat.SUMMON) != null) {
             ret.effects.remove(MapleBuffStat.SUMMON);
         }
-        if (ret.effects.get(MapleBuffStat.REAPER) != null) {
-            ret.effects.remove(MapleBuffStat.REAPER);
-        }
+        
         if (ret.effects.get(MapleBuffStat.PUPPET) != null) {
             ret.effects.remove(MapleBuffStat.PUPPET);
         }
@@ -5559,7 +5554,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (!dc) {
             cancelEffectFromBuffStat(MapleBuffStat.MONSTER_RIDING);
             cancelEffectFromBuffStat(MapleBuffStat.SUMMON);
-            cancelEffectFromBuffStat(MapleBuffStat.REAPER);
             cancelEffectFromBuffStat(MapleBuffStat.PUPPET);
         }
         if (getPyramidSubway() != null) {
