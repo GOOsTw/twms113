@@ -309,14 +309,7 @@ public class PlayerHandler {
                     }
                 }
             }
-            final MapleStatEffect magicShield = chr.getStatForBuff(MapleBuffStat.MAGIC_SHIELD);
-            if (magicShield != null) {
-                damage -= (int) ((magicShield.getX() / 100.0) * damage);
-            }
-            final MapleStatEffect blueAura = chr.getStatForBuff(MapleBuffStat.BLUE_AURA);
-            if (blueAura != null) {
-                damage -= (int) ((blueAura.getY() / 100.0) * damage);
-            }
+           
             if (chr.getBuffedValue(MapleBuffStat.SATELLITESAFE_PROC) != null && chr.getBuffedValue(MapleBuffStat.SATELLITESAFE_ABSORB) != null) {
                 double buff = chr.getBuffedValue(MapleBuffStat.SATELLITESAFE_PROC).doubleValue();
                 double buffz = chr.getBuffedValue(MapleBuffStat.SATELLITESAFE_ABSORB).doubleValue();

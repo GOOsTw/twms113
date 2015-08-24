@@ -87,7 +87,7 @@ public class Start {
         ChannelServer.startAllChannels();
 
         System.out.println("購物商城 啟動中:::");
-        CashShopServer.run_startup_configurations();
+        CashShopServer.setup();
         System.out.println("購物商城 啟動完畢:::");
         CheatTimer.getInstance().register(AutobanManager.getInstance(), 60000);
         Runtime.getRuntime().addShutdownHook(new Thread(ShutdownServer.getInstance()));

@@ -23,6 +23,7 @@ package client;
 import java.io.Serializable;
 
 public enum MapleBuffStat implements Serializable {
+
     //DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
     //ENERGY CHARGE = 0x400000
     //teleport mastery = 0x800000
@@ -32,135 +33,129 @@ public enum MapleBuffStat implements Serializable {
     //MONSTER RIDER = 0x20000000
     //COMBAT ORDERS = 0x1000000
 
-    ENHANCED_WDEF(0x1, true),
-    ENHANCED_MDEF(0x2, true),
-    PERFECT_ARMOR(0x4, true),
-    SATELLITESAFE_PROC(0x8, true),
-    SATELLITESAFE_ABSORB(0x10, true),
-    CRITICAL_RATE_BUFF(0x40, true),
-    MP_BUFF(0x80, true),
-    DAMAGE_TAKEN_BUFF(0x100, true),
-    DODGE_CHANGE_BUFF(0x200, true),
-    CONVERSION(0x400, true),
-    REAPER(0x800, true),
-    MECH_CHANGE(0x2000, true), //determined in packet by [skillLevel or something] [skillid] 1E E0 58 52???
-    DARK_AURA(0x8000, true),
-    BLUE_AURA(0x10000, true),
-    YELLOW_AURA(0x20000, true),
-    ENERGY_CHARGE(0x80000000000L, true),
-    DASH_SPEED(0x100000000000L, true),
-    DASH_JUMP(0x200000000000L, true),
-    MONSTER_RIDING(0x400000000000L, true),
-    SPEED_INFUSION(0x800000000000L, true),
-    HOMING_BEACON(0x1000000000000L, true),
-    ELEMENT_RESET(0x200000000L, true),
-    ARAN_COMBO(0x1000000000000000L, true),
-    COMBO_DRAIN(0x2000000000000000L, true),
-    COMBO_BARRIER(0x4000000000000000L, true),
-    BODY_PRESSURE(0x8000000000000000L, true),
-    SMART_KNOCKBACK(0x1, false),
-    PYRAMID_PQ(0x2, false),
-    LIGHTNING_CHARGE(0x4, false),
+    WATK(0),
+    WDEF(1),
+    MATK(2),
+    MDEF(3),
+    ACC(4),
+    AVOID(5),
+    HANDS(6),
+    SPEED(7),
+    JUMP(8),
+    MAGIC_GUARD(9),
+    DARKSIGHT(10),
+    BOOSTER(11),
+    POWERGUARD(12),
+    MAXHP(13),
+    MAXMP(14),
+    INVINCIBLE(15),
+    SOULARROW(16),
+    COMBO(21),
+    SUMMON(21), //hack buffstat for summons ^.- (does/should not increase damage... hopefully <3)
+    WK_CHARGE(22),
+    DRAGONBLOOD(23),
+    HOLY_SYMBOL(24),
+    MESOUP(25),
+    SHADOWPARTNER(26),
+    PICKPOCKET(27),
+    PUPPET(28), // HACK - shares buffmask with pickpocket - odin special ^.-
+    MESOGUARD(29),
+    // Mask 1
+    MORPH(33), // 33
+    RECOVERY(34), // 34
+    MAPLE_WARRIOR(35),
+    STANCE(36),
+    SHARP_EYES(37),
+    MANA_REFLECTION(38),
+    DRAGON_ROAR(39), // Stuns the user
+    SPIRIT_CLAW(40),
+    INFINITY(41),
+    HOLY_SHIELD(42),
+    HAMSTRING(43),
+    BLIND(44),
+    CONCENTRATE(45),
+    ECHO_OF_HERO(47),
+    UNKNOWN3(48),
+    GHOST_MORPH(49),
+    ARIANT_COSS_IMU(50), // The white ball around you
+    DROP_RATE(52),
+    MESO_RATE(53),
+    EXPRATE(54),
+    ACASH_RATE(55),
+    GM_HIDE(56),
+    UNKNOWN7(57),
+    ILLUSION(58),
+    BERSERK_FURY(59),
+    DIVINE_BODY(60),
+    SPARK(61),
+    ARIANT_COSS_IMU2(62), // no idea, seems the same
+    FINALATTACK(63),
+    ELEMENT_RESET(65, true),
+    SOUL_STONE(73), //same as pyramid_pq
+    ENERGY_CHARGE(75, true),
+    DASH_SPEED(76),
+    DASH_JUMP(77, true),
+    MONSTER_RIDING(78, true),
+    SPEED_INFUSION(79, true),
+    HOMING_BEACON(80),
+    SOARING(82),
+    LIGHTNING_CHARGE(84),
+    MIRROR_IMAGE(85),
+    OWL_SPIRIT(86),
+    ARAN_COMBO(92, true),
+    COMBO_DRAIN(93),
+    COMBO_BARRIER(94),
+    BODY_PRESSURE(95),
     //POST BB
     //DUMMY_STAT0     (0x8000000L, true), //appears on login
     //DUMMY_STAT1     (0x10000000L, true),
     //DUMMY_STAT2     (0x20000000L, true),
     //DUMMY_STAT3     (0x40000000L, true),
     //DUMMY_STAT4     (0x80000000L, true),
-
-    SOUL_STONE(0x20000000000L, true), //same as pyramid_pq
-    MAGIC_SHIELD(0x800000000000L, true),
-    MAGIC_RESISTANCE(0x1000000000000L, true),
-    SOARING(0x4000000000000L, true),
-    //    LIGHTNING_CHARGE(0x10000000000000L, true),
     //db stuff
-    MIRROR_IMAGE(0x20000000000000L, true),
-    OWL_SPIRIT(0x40000000000000L, true),
-    FINAL_CUT(0x100000000000000L, true),
-    THORNS(0x200000000000000L, true),
-    DAMAGE_BUFF(0x400000000000000L, true),
-    RAINING_MINES(0x1000000000000000L, true),
-    ENHANCED_MAXHP(0x2000000000000000L, true),
-    ENHANCED_MAXMP(0x4000000000000000L, true),
-    ENHANCED_WATK(0x8000000000000000L, true),
-    MORPH(0x2),
-    RECOVERY(0x4),
-    MAPLE_WARRIOR(0x8),
-    STANCE(0x10),
-    SHARP_EYES(0x20),
-    MANA_REFLECTION(0x40),
-    DRAGON_ROAR(0x80), // Stuns the user
+    FINAL_CUT(88),
+    THORNS(89),
+  
+    ENHANCED_MAXHP(93),
+    ENHANCED_MAXMP(94),
+    ENHANCED_WATK(95),
+    ENHANCED_WDEF(96),
+    ENHANCED_MDEF(97),
+    PERFECT_ARMOR(98),
+    SATELLITESAFE_PROC(99),
+    SATELLITESAFE_ABSORB(100),
+    CRITICAL_RATE_BUFF(102),
+    MP_BUFF(103),
+    DAMAGE_TAKEN_BUFF(104),
+    DODGE_CHANGE_BUFF(105),
+    CONVERSION(106),
+    REAPER(107),
+    MECH_CHANGE(109), //determined in packet by [skillLevel or something] [skillid] 1E E0 58 52???
+    DARK_AURA(111),
+    BLUE_AURA(112),
+    YELLOW_AURA(113),;
+    
+   
 
-    SPIRIT_CLAW(0x100),
-    INFINITY(0x200),
-    HOLY_SHIELD(0x400),
-    HAMSTRING(0x800),
-    BLIND(0x1000),
-    CONCENTRATE(0x2000),
-    ECHO_OF_HERO(0x8000),
-    UNKNOWN3(0x10000),
-    GHOST_MORPH(0x20000),
-    ARIANT_COSS_IMU(0x40000), // The white ball around you
-
-    DROP_RATE(0x100000),
-    MESO_RATE(0x200000),
-    EXPRATE(0x400000),
-    ACASH_RATE(0x800000),
-    GM_HIDE(0x1000000),
-    UNKNOWN7(0x2000000),
-    ILLUSION(0x4000000),
-    BERSERK_FURY(0x8000000),
-    DIVINE_BODY(0x10000000),
-    SPARK(0x20000000),
-    ARIANT_COSS_IMU2(0x40000000), // no idea, seems the same
-    FINALATTACK(0x80000000L),
-    WATK(0x100000000L),
-    WDEF(0x200000000L),
-    MATK(0x400000000L),
-    MDEF(0x800000000L),
-    ACC(0x1000000000L),
-    AVOID(0x2000000000L),
-    HANDS(0x4000000000L),
-    SPEED(0x8000000000L),
-    JUMP(0x10000000000L),
-    MAGIC_GUARD(0x20000000000L),
-    DARKSIGHT(0x40000000000L),
-    BOOSTER(0x80000000000L),
-    POWERGUARD(0x100000000000L),
-    MAXHP(0x200000000000L),
-    MAXMP(0x400000000000L),
-    INVINCIBLE(0x800000000000L),
-    SOULARROW(0x1000000000000L),
-    COMBO(0x20000000000000L),
-    SUMMON(0x20000000000000L), //hack buffstat for summons ^.- (does/should not increase damage... hopefully <3)
-    WK_CHARGE(0x40000000000000L),
-    DRAGONBLOOD(0x80000000000000L),
-    HOLY_SYMBOL(0x100000000000000L),
-    MESOUP(0x200000000000000L),
-    SHADOWPARTNER(0x400000000000000L),
-    PICKPOCKET(0x800000000000000L),
-    PUPPET(0x800000000000000L), // HACK - shares buffmask with pickpocket - odin special ^.-
-
-    MESOGUARD(0x1000000000000000L),;
     private static final long serialVersionUID = 0L;
-    private final long buffstat;
-    private final boolean first;
+    private final int buffstat;
+    private final int first;
 
-    private MapleBuffStat(long buffstat) {
-        this.buffstat = buffstat;
-        first = false;
+    private MapleBuffStat(int buffstat) {
+        this.buffstat = 1 << (buffstat % 32);
+        this.first = (int) Math.floor(buffstat / 32);
     }
 
-    private MapleBuffStat(long buffstat, boolean first) {
-        this.buffstat = buffstat;
-        this.first = first;
+    private MapleBuffStat(int buffstat, boolean stacked) {
+        this.buffstat = 1 << ((buffstat % 32));
+        this.first = (int) Math.floor(buffstat / 32);
     }
 
-    public final boolean isFirst() {
-        return first;
+    public final int getPosition() {
+        return 3 - first;
     }
 
-    public final long getValue() {
+    public final int getValue() {
         return buffstat;
     }
 }

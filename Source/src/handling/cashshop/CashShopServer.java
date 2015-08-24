@@ -45,7 +45,7 @@ public class CashShopServer {
     private static boolean finishedShutdown = false;
     private static MapleServerHandler handler;
 
-    public static final void run_startup_configurations() {
+    public static final void setup() {
         port = Short.valueOf(ServerProperties.getProperty("server.settings.cashshop.port", "8600"));
         ip = ServerProperties.getProperty("server.settings.ip") + ":" + port;
 
@@ -98,6 +98,7 @@ public class CashShopServer {
         for (IoSession session : acceptor.getManagedSessions().values()) {
             session.close(true);
         }
+        acceptor.unbind(new InetSocketAddress(port));
         acceptor.dispose();
         finishedShutdown = true;
         System.out.println("[購物商城] 關閉完成...");

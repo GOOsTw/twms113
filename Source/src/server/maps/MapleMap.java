@@ -1933,9 +1933,7 @@ public final class MapleMap {
         if (environment.size() > 0) {
             chr.getClient().getSession().write(MaplePacketCreator.getUpdateEnvironment(this));
         }
-        if (isTown()) {
-            chr.cancelEffectFromBuffStat(MapleBuffStat.RAINING_MINES);
-        }
+       
     }
 
     public int getNumItems() {

@@ -210,7 +210,7 @@ public class MaplePacketCreator {
         mplew.writeShort(chr.getRemainingSp());
         return mplew.getPacket();
     }
-    
+
     public static final MaplePacket updateAp(MapleCharacter chr, final boolean itemReaction) { //this will do..
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.UPDATE_STATS.getValue());
@@ -412,7 +412,7 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-public static MaplePacket getGachaponMega(final String name, final String message, final IItem item, final byte rareness) {
+    public static MaplePacket getGachaponMega(final String name, final String message, final IItem item, final byte rareness) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.SERVERMESSAGE.getValue());
@@ -422,7 +422,7 @@ public static MaplePacket getGachaponMega(final String name, final String messag
         PacketHelper.addItemInfo(mplew, item, true, true);
         return mplew.getPacket();
     }
-    
+
     public static MaplePacket tripleSmega(List<String> message, boolean ear, int channel) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
@@ -443,8 +443,8 @@ public static MaplePacket getGachaponMega(final String name, final String messag
 
         return mplew.getPacket();
     }
-    
-     public static MaplePacket HeartSmega(List<String> message, boolean ear, int channel) {
+
+    public static MaplePacket HeartSmega(List<String> message, boolean ear, int channel) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.SERVERMESSAGE.getValue());
@@ -454,8 +454,8 @@ public static MaplePacket getGachaponMega(final String name, final String messag
         mplew.write(ear ? 1 : 0);
 
         return mplew.getPacket();
-    }   
-     
+    }
+
     public static MaplePacket SkullSmega(List<String> message, boolean ear, int channel) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
@@ -1821,20 +1821,6 @@ public static MaplePacket getGachaponMega(final String name, final String messag
         return mplew.getPacket();
     }
 
-    private static void writeLongMask(MaplePacketLittleEndianWriter mplew, List<Pair<MapleBuffStat, Integer>> statups) {
-        long firstmask = 0;
-        long secondmask = 0;
-        for (Pair<MapleBuffStat, Integer> statup : statups) {
-            if (statup.getLeft().isFirst()) {
-                firstmask |= statup.getLeft().getValue();
-            } else {
-                secondmask |= statup.getLeft().getValue();
-            }
-        }
-        mplew.writeLong(firstmask);
-        mplew.writeLong(secondmask);
-    }
-
     // List<Pair<MapleDisease, Integer>>
     private static void writeLongDiseaseMask(MaplePacketLittleEndianWriter mplew, List<Pair<MapleDisease, Integer>> statups) {
         long firstmask = 0;
@@ -1850,18 +1836,24 @@ public static MaplePacket getGachaponMega(final String name, final String messag
         mplew.writeLong(secondmask);
     }
 
-    private static void writeLongMaskFromList(MaplePacketLittleEndianWriter mplew, List<MapleBuffStat> statups) {
-        long firstmask = 0;
-        long secondmask = 0;
+    private static void writeBuffState(MaplePacketLittleEndianWriter mplew, List<MapleBuffStat> statups) {
+        int[] mask = new int[4];
         for (MapleBuffStat statup : statups) {
-            if (statup.isFirst()) {
-                firstmask |= statup.getValue();
-            } else {
-                secondmask |= statup.getValue();
-            }
+            mask[statup.getPosition()] |= statup.getValue();
         }
-        mplew.writeLong(firstmask);
-        mplew.writeLong(secondmask);
+        for (int i = 0; i < mask.length; i++) {
+            mplew.writeInt(mask[i]);
+        }
+    }
+
+    private static void writeBuffState2(MaplePacketLittleEndianWriter mplew, List<Pair<MapleBuffStat, Integer>> statups) {
+        int[] mask = new int[4];
+        for (Pair<MapleBuffStat, Integer> statup : statups) {
+            mask[statup.getLeft().getPosition()] |= statup.getLeft().getValue();
+        }
+        for (int i = 0; i < mask.length; i++) {
+            mplew.writeInt(mask[i]);
+        }
     }
 
     public static MaplePacket giveMount(int buffid, int skillid, List<Pair<MapleBuffStat, Integer>> statups) {
@@ -1869,7 +1861,7 @@ public static MaplePacket getGachaponMega(final String name, final String messag
 
         mplew.writeShort(SendPacketOpcode.GIVE_BUFF.getValue());
 
-        writeLongMask(mplew, statups);
+        writeBuffState2(mplew, statups);
 
         mplew.writeShort(0);
         mplew.writeInt(buffid); // 1902000 saddle
@@ -1887,7 +1879,7 @@ public static MaplePacket getGachaponMega(final String name, final String messag
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.GIVE_BUFF.getValue());
-        writeLongMask(mplew, statups);
+        writeBuffState2(mplew, statups);
 
         mplew.writeShort(0);
         for (Pair<MapleBuffStat, Integer> stat : statups) {
@@ -1909,7 +1901,7 @@ public static MaplePacket getGachaponMega(final String name, final String messag
 
         mplew.writeShort(SendPacketOpcode.GIVE_FOREIGN_BUFF.getValue());
         mplew.writeInt(cid);
-        writeLongMask(mplew, statups);
+        writeBuffState2(mplew, statups);
         mplew.writeShort(0);
         for (Pair<MapleBuffStat, Integer> stat : statups) {
             mplew.writeInt(stat.getRight());
@@ -1979,7 +1971,7 @@ public static MaplePacket getGachaponMega(final String name, final String messag
         // 17 00 00 00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 07 00 AE E1 3E 00 68 B9 01 00 00 00 00 00
 
         //lhc patch adds an extra int here
-        writeLongMask(mplew, statups);
+        writeBuffState2(mplew, statups);
 
         for (Pair<MapleBuffStat, Integer> statup : statups) {
             mplew.writeShort(statup.getRight().shortValue());
@@ -1994,7 +1986,7 @@ public static MaplePacket getGachaponMega(final String name, final String messag
 
         return mplew.getPacket();
     }
-    
+
     public static MaplePacket hiredMerchantBox() {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.ENTRUSTED_SHOP_CHECK_RESULT.getValue()); // header.
@@ -2058,7 +2050,7 @@ public static MaplePacket getGachaponMega(final String name, final String messag
         mplew.writeShort(SendPacketOpcode.GIVE_FOREIGN_BUFF.getValue());
         mplew.writeInt(cid);
 
-        writeLongMask(mplew, statups);
+        writeBuffState2(mplew, statups);
 
         mplew.writeShort(0);
         mplew.writeInt(itemId);
@@ -2077,7 +2069,7 @@ public static MaplePacket getGachaponMega(final String name, final String messag
         mplew.writeShort(SendPacketOpcode.GIVE_FOREIGN_BUFF.getValue());
         mplew.writeInt(cid);
 
-        writeLongMask(mplew, statups);
+        writeBuffState2(mplew, statups);
 
         for (Pair<MapleBuffStat, Integer> statup : statups) {
             mplew.writeShort(statup.getRight().shortValue());
@@ -2097,7 +2089,7 @@ public static MaplePacket getGachaponMega(final String name, final String messag
         mplew.writeShort(SendPacketOpcode.CANCEL_FOREIGN_BUFF.getValue());
         mplew.writeInt(cid);
 
-        writeLongMaskFromList(mplew, statups);
+        writeBuffState(mplew, statups);
 
         return mplew.getPacket();
     }
@@ -2108,7 +2100,7 @@ public static MaplePacket getGachaponMega(final String name, final String messag
         mplew.writeShort(SendPacketOpcode.CANCEL_BUFF.getValue());
 
         if (statups != null) {
-            writeLongMaskFromList(mplew, statups);
+            writeBuffState(mplew, statups);
             mplew.write(3);
         } else {
             mplew.writeLong(0);
@@ -3739,7 +3731,7 @@ public static MaplePacket getGachaponMega(final String name, final String messag
 
         for (MapleGuildRanking.mesoRankingInfo info : all) {
             mplew.writeMapleAsciiString(info.getName());
-            mplew.writeInt(((Long)(info.getMeso())).intValue());
+            mplew.writeInt(((Long) (info.getMeso())).intValue());
             mplew.writeInt(info.getStr());
             mplew.writeInt(info.getDex());
             mplew.writeInt(info.getInt());

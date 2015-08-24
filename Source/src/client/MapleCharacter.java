@@ -3207,6 +3207,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             sb.append(" 達到了 200 等 是我們的英雄!");
             World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, sb.toString()).getBytes());
         }
+        
         maxhp = (short) Math.min(30000, Math.abs(maxhp));
         maxmp = (short) Math.min(30000, Math.abs(maxmp));
 

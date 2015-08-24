@@ -712,11 +712,7 @@ public class PlayerStats implements Serializable {
         if (buff != null) {
             jump += buff.intValue();
         }
-        buff = chra.getBuffedValue(MapleBuffStat.DAMAGE_BUFF);
-        if (buff != null) {
-            dam_r += buff.doubleValue();
-            bossdam_r += buff.doubleValue();
-        }
+
         buff = chra.getBuffedSkill_Y(MapleBuffStat.FINAL_CUT);
         if (buff != null) {
             dam_r *= buff.doubleValue() / 100.0;
@@ -737,12 +733,7 @@ public class PlayerStats implements Serializable {
             dam_r *= bx.getEffect(chra.getSkillLevel(bx)).getDamage() / 100.0;
             bossdam_r *= bx.getEffect(chra.getSkillLevel(bx)).getDamage() / 100.0;
         }
-        buff = chra.getBuffedValue(MapleBuffStat.PYRAMID_PQ);
-        if (buff != null) {
-            final MapleStatEffect eff = chra.getStatForBuff(MapleBuffStat.PYRAMID_PQ);
-            dam_r *= eff.getBerserk() / 100.0;
-            bossdam_r *= eff.getBerserk() / 100.0;
-        }
+
         buff = chra.getBuffedValue(MapleBuffStat.WK_CHARGE);
         if (buff != null) {
             final MapleStatEffect eff = chra.getStatForBuff(MapleBuffStat.WK_CHARGE);
