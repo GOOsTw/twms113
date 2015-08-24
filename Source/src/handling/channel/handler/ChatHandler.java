@@ -60,7 +60,7 @@ public class ChatHandler {
 			chr.getCheatTracker().checkMsg();
                         c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.yellowChat("<新實習生>" + c.getPlayer().getName() + ": " + text));
                         c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
-			chr.getMap().broadcastGMMessage(chr, MaplePacketCreator.getChatText(chr.getId(), text, c.getPlayer().isGM(), unk), true);
+			//chr.getMap().broadcastGMMessage(chr, MaplePacketCreator.getChatText(chr.getId(), text, c.getPlayer().isGM(), unk), true);
                     } else if (c.getPlayer().gmLevel() == 0 && !chr.isHidden()){      
                         chr.getCheatTracker().checkMsg();
                         chr.getMap().broadcastMessage(MaplePacketCreator.getChatText(chr.getId(), text, c.getPlayer().isGM(), unk), c.getPlayer().getPosition());
@@ -71,7 +71,7 @@ public class ChatHandler {
                  chr.finishAchievement(11);
                  }*/
             } else {
-                c.getSession().write(MaplePacketCreator.serverNotice(6, "You have been muted and are therefore unable to talk."));
+                c.getSession().write(MaplePacketCreator.serverNotice(6, "在這個地方不能說話。"));
             }
         }
     }
@@ -86,7 +86,7 @@ public class ChatHandler {
         }
         final String chattext = slea.readMapleAsciiString();
         if (chr == null || !chr.getCanTalk()) {
-            c.getSession().write(MaplePacketCreator.serverNotice(6, "You have been muted and are therefore unable to talk."));
+            c.getSession().write(MaplePacketCreator.serverNotice(6, "在這個地方不能說話。"));
             return;
         }
         if (CommandProcessor.processCommand(c, chattext, CommandType.NORMAL)) {
@@ -243,7 +243,7 @@ public class ChatHandler {
             }
             case 6: { // Whisper
                 if (!c.getPlayer().getCanTalk()) {
-                    c.getSession().write(MaplePacketCreator.serverNotice(6, "You have been muted and are therefore unable to talk."));
+                    c.getSession().write(MaplePacketCreator.serverNotice(6, "在這個地方不能說話。"));
                     return;
                 }
                 c.getPlayer().getCheatTracker().checkMsg();
