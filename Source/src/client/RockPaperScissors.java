@@ -20,6 +20,7 @@
  */
 package client;
 
+import handling.world.World;
 import server.MapleInventoryManipulator;
 import server.Randomizer;
 import tools.MaplePacketCreator;
@@ -82,8 +83,10 @@ public class RockPaperScissors {
     }
 
     public final void reward(final MapleClient c) {
+        int fuck = round + 1;
         if (win) {
             MapleInventoryManipulator.addById(c, 4031332 + round, (short) 1, "", null, 0);
+            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0, c.getPlayer().getName() + "從猜拳王贏得了" + fuck + "場勝利！").getBytes());
         } else if (round == 0) {
             c.getPlayer().gainMeso(500, true, true, true);
         }

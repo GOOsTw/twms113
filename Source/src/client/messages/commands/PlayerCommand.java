@@ -35,7 +35,8 @@ public class PlayerCommand {
             9010017,
             9000001,
             9000058,
-            9330082};
+            9330082,
+            9209002};
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
@@ -81,10 +82,30 @@ public class PlayerCommand {
         }
     }
 
+    public static class npc extends 萬能 {
+    }
+
+    public static class 萬能 extends OpenNPCCommand {
+
+        public 萬能() {
+            npc = 2;
+        }
+    }
+
     public static class bspq extends OpenNPCCommand {
 
         public bspq() {
             npc = 3;
+        }
+    }
+
+    public static class pk extends 猜拳 {
+    }
+
+    public static class 猜拳 extends OpenNPCCommand {
+
+        public 猜拳() {
+            npc = 4;
         }
     }
 
@@ -155,16 +176,6 @@ public class PlayerCommand {
         }
     }
 
-    public static class npc extends 萬能 {
-    }
-
-    public static class 萬能 extends OpenNPCCommand {
-
-        public 萬能() {
-            npc = 2;
-        }
-    }
-
     public static class fm extends 自由 {
     }
 
@@ -227,6 +238,7 @@ public class PlayerCommand {
             if (!c.getPlayer().getCheatTracker().GMSpam(100000, 1)) { // 5 minutes.
                 World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "頻道 " + c.getPlayer().getClient().getChannel() + " 玩家 [" + c.getPlayer().getName() + "] : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
                 c.getPlayer().dropMessage(6, "訊息已經寄送給GM了!");
+                System.out.println("[管理員幫幫忙] " + c.getPlayer().getName() + " : " + splitted);
             } else {
                 c.getPlayer().dropMessage(6, "為了防止對GM刷屏所以每1分鐘只能發一次.");
             }
@@ -241,18 +253,7 @@ public class PlayerCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-            c.getPlayer().dropMessage(5, "SyncMs 玩家指令");
-            c.getPlayer().dropMessage(5, "@查看/@ea <解除異常+查看當前狀態>");
-            c.getPlayer().dropMessage(5, "@丟裝/@DropCash <丟棄點裝>");
-            c.getPlayer().dropMessage(5, "@怪物/@mob <查看身邊怪物訊息>");
-            c.getPlayer().dropMessage(5, "@萬能/@npc <工具箱>");
-            c.getPlayer().dropMessage(5, "@存檔/@save <存檔>");
-            c.getPlayer().dropMessage(5, "@自由/@fm <回自由-需要1張回家卷軸>");
-            c.getPlayer().dropMessage(5, "@卡圖/@car <卡圖修復>");
-            c.getPlayer().dropMessage(5, "@event <參加活動>");
-            c.getPlayer().dropMessage(5, "@CGM 訊息 <傳送訊息給GM>");
-            c.getPlayer().dropMessage(5, "@bspq <BOSSPQ兌換NPC>");
-            c.getPlayer().dropMessage(5, "@expfix <修復經驗假死");
+            c.getPlayer().dropNPC("\t\t#i3994014##i3994018##i3994070##i3994061##i3994005##i3991038##i3991004#\r\t\t\t\t\t\t#i3994078##i3991040#\t\t\r\n\t\t\t #i3991018##i3994083##i3994072##i3994061##i4001126#\r\n\t\t#fMob/0100101.img/move/1##b 親愛的： #h \r\n #fMob/0100101.img/move/1##k\r\n\t\t#fMob/0130101.img/move/1##g[以下是SyncMs 玩家指令]#k#fMob/0130101.img/move/1#\r\n\t  #r▇▇▆▅▄▃▂#d萬用指令區#r▂▃▄▅▆▇▇\r\n\t\t#b@查看/@ea#k - #r<解除異常+查看當前狀態>#k\r\n\t\t#b@怪物/@mob#k - #r<查看身邊怪物訊息>#k\r\n\t\t#b@存檔/@save#k - #r<存檔>#k\r\n\t\t#b@自由/@fm#k - #r<回自由-需要1張回家卷軸>#k\r\n\t\t#b@卡圖/@car#k - #r<卡圖修復>#k\r\n\t\t#b@CGM <訊息>#k - #r<傳送訊息給GM>#k\r\n\t\t#b@expfix#k - #r<修復經驗假死>#k\r\n\t  #g▇▇▆▅▄▃▂#dNPＣ指令區#g▂▃▄▅▆▇▇\r\n\t\t#b@丟裝/@DropCash#k - #r<丟棄點裝>#k\r\n\t\t#b@萬能/@npc#k - #r<工具箱>#k\r\n\t\t#b@猜拳/@pk#k - #r<小遊戲>#k\r\n\t\t#b@event#k - #r<參加活動>#k\r\n\t\t#b@bspq#k - #r<BOSSPQ兌換NPC>#k");
             return 1;
         }
     }

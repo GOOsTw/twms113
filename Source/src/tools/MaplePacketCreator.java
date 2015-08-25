@@ -4589,7 +4589,7 @@ public class MaplePacketCreator {
                 break;
             }
             case 8: { //open (npc)
-                mplew.writeInt(9000019);
+                mplew.writeInt(9209002);
                 break;
             }
             case 11: { //selection vs answer
