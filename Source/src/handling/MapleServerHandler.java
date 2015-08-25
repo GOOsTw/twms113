@@ -85,6 +85,10 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         RecvPacketOpcode[] block = new RecvPacketOpcode[]{RecvPacketOpcode.NPC_ACTION, RecvPacketOpcode.MOVE_PLAYER, RecvPacketOpcode.MOVE_PET, RecvPacketOpcode.MOVE_SUMMON, RecvPacketOpcode.MOVE_LIFE, RecvPacketOpcode.HEAL_OVER_TIME, RecvPacketOpcode.STRANGE_DATA};
         blocked.addAll(Arrays.asList(block));
     }
+    
+    public static boolean isDebugMode() {
+        return debugMode;
+    }
 
     //Return the Filewriter if the IP is logged. Null otherwise.
     private static FileWriter isLoggedIP(IoSession sess) {

@@ -37,7 +37,7 @@ import java.util.LinkedList;
 import java.util.EnumMap;
 
 public class MobSkill {
-    
+
     /**
      *
      * @param skillId, skillLevel 技能ID 技能等級
@@ -48,11 +48,10 @@ public class MobSkill {
      * @param prop 支撐
      * @param limit 限制
      * @param toSummon 召喚
-     * @param x  y  座標
+     * @param x y 座標
      * @param lt rb 座標
-     * 
+     *
      */
-    
     private int skillId, skillLevel, mpCon, spawnEffect, hp, x, y;
     private long duration, cooltime;
     private float prop;
@@ -66,12 +65,12 @@ public class MobSkill {
         this.skillId = skillId;
         this.skillLevel = level;
     }
-    
+
     //設置可用的MP
     public void setMpCon(int mpCon) {
         this.mpCon = mpCon;
     }
-    
+
     //增加召喚
     public void addSummons(List<Integer> toSummon) {
         this.toSummon = toSummon;
@@ -84,7 +83,7 @@ public class MobSkill {
     public void setSpawnEffect(int spawnEffect) {
         this.spawnEffect = spawnEffect;
     }
-    
+
     //設置HP
     public void setHp(int hp) {
         this.hp = hp;
@@ -94,22 +93,22 @@ public class MobSkill {
     public void setX(int x) {
         this.x = x;
     }
-    
+
     //設置Y軸
     public void setY(int y) {
         this.y = y;
     }
-    
+
     //設置長短
     public void setDuration(long duration) {
         this.duration = duration;
     }
-    
+
     //設置冷卻時間
     public void setCoolTime(long cooltime) {
         this.cooltime = cooltime;
     }
-    
+
     //設置支撐
     public void setProp(float prop) {
         this.prop = prop;
@@ -120,12 +119,12 @@ public class MobSkill {
         this.lt = lt;
         this.rb = rb;
     }
-    
+
     //設置限制
     public void setLimit(short limit) {
         this.limit = limit;
     }
-    
+
     //確定當前BUFF
     public boolean checkCurrentBuff(MapleCharacter player, MapleMonster monster) {
         boolean stop = false;
@@ -165,7 +164,7 @@ public class MobSkill {
         }
         return stop;
     }
-    
+
     //套用效果
     public void applyEffect(MapleCharacter player, MapleMonster monster, boolean skill) {
         MapleDisease disease = null;
@@ -352,19 +351,15 @@ public class MobSkill {
                 break;
         }
 
-        if (stats.size() > 0) {
+        if (stats.size() > 0 && monster != null) {
             if (lt != null && rb != null && skill) {
                 for (MapleMapObject mons : getObjectsInRange(monster, MapleMapObjectType.MONSTER)) {
-                    for (MonsterStatus s : stats.keySet()) {
-                        ((MapleMonster) mons).applyMonsterBuff(s, getX(), getSkillId(), getDuration(), this, reflection);
-
-                    }
+                    ((MapleMonster) mons).applyMonsterBuff(stats, getX(), getSkillId(), getDuration(), this, reflection);
                 }
             } else {
-                for (MonsterStatus s : stats.keySet()) {
-                    monster.applyMonsterBuff(s, getX(), getSkillId(), getDuration(), this, reflection);
-                }
+                monster.applyMonsterBuff(stats, getX(), getSkillId(), getDuration(), this, reflection);
             }
+
         }
         if (disease != null && player != null) {
             if (lt != null && rb != null && skill && monster != null) {
@@ -379,22 +374,22 @@ public class MobSkill {
             monster.setMp(monster.getMp() - getMpCon());
         }
     }
-    
+
     //得到技能ID 傳回當前技能ID
     public int getSkillId() {
         return skillId;
     }
-    
+
     //得到技能等級 傳回當前技能等級
     public int getSkillLevel() {
         return skillLevel;
     }
-    
+
     //得到可用MP 傳回當前可用MP
     public int getMpCon() {
         return mpCon;
     }
-    
+
     //得到限制 傳回集合名單限制
     public List<Integer> getSummons() {
         return Collections.unmodifiableList(toSummon);
@@ -403,7 +398,6 @@ public class MobSkill {
     /*    public short getEffectDelay() {
      return effect_delay;
      }*/
-    
     //得到召喚效果 傳回當前召喚效果
     public int getSpawnEffect() {
         return spawnEffect;
@@ -467,7 +461,7 @@ public class MobSkill {
         final Rectangle bounds = new Rectangle(mylt.x, mylt.y, myrb.x - mylt.x, myrb.y - mylt.y);
         return bounds;
     }
-    
+
     //得到玩家在的範圍
     private List<MapleCharacter> getPlayersInRange(MapleMonster monster, MapleCharacter player) {
         final Rectangle bounds = calculateBoundingBox(monster.getPosition(), monster.isFacingLeft());
@@ -475,7 +469,7 @@ public class MobSkill {
         players.add(player);
         return monster.getMap().getPlayersInRectAndInList(bounds, players);
     }
-    
+
     //得到物件在地範圍
     private List<MapleMapObject> getObjectsInRange(MapleMonster monster, MapleMapObjectType objectType) {
         final Rectangle bounds = calculateBoundingBox(monster.getPosition(), monster.isFacingLeft());

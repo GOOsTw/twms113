@@ -4160,7 +4160,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             boolean first = debuff.isFirst();
             client.getSession().write(MaplePacketCreator.cancelDebuff(mask, first));
             map.broadcastMessage(this, MaplePacketCreator.cancelForeignDebuff(id, mask, first), false);
-
             diseases.remove(debuff);
         }
     }
@@ -4533,6 +4532,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             client.getSession().write(MaplePacketCreator.serverNotice(type, message));
         }
     }
+    
 
     public IMaplePlayerShop getPlayerShop() {
         return playerShop;

@@ -160,7 +160,7 @@ public class SummonHandler {
             if (toDamage > 0 && summonEffect.getMonsterStati().size() > 0) {
                 if (summonEffect.makeChanceResult()) {
                     for (Map.Entry<MonsterStatus, Integer> z : summonEffect.getMonsterStati().entrySet()) {
-                        mob.applyStatus(chr, new MonsterStatusEffect(z.getKey(), z.getValue(), summonSkill.getId(), null, false), summonEffect.isPoison(), 4000, false);
+                        mob.applyStatus(chr, new MonsterStatusEffect(z.getKey(), z.getValue(), summonSkill.getId(), null, false), summonEffect.isPoison(), 4000, true, summonEffect);
                     }
                 }
             }

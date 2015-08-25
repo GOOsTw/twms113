@@ -20,65 +20,172 @@
  */
 package client.status;
 
+import client.MapleDisease;
 import java.io.Serializable;
 
 public enum MonsterStatus implements Serializable {
 
-    NEUTRALISE(0x02), // first int on v.87 or else it won't work.
-
-    WATK(0x100000000L),
-    WDEF(0x200000000L),
-    MATK(0x400000000L),
-    MDEF(0x800000000L),
-    ACC(0x1000000000L),
-    AVOID(0x2000000000L),
-    SPEED(0x4000000000L),
-    STUN  (0x8000000000L),
-    FREEZE(0x10000000000L),
-    POISON(0x20000000000L),
-    SEAL(0x40000000000L),
-    SHOWDOWN(0x80000000000L),
-    WEAPON_ATTACK_UP(0x100000000000L),
-    WEAPON_DEFENSE_UP(0x200000000000L),
-    MAGIC_ATTACK_UP(0x400000000000L),
-    MAGIC_DEFENSE_UP(0x800000000000L),
-    DOOM(0x1000000000000L),
-    SHADOW_WEB(0x2000000000000L),
-    WEAPON_IMMUNITY(0x4000000000000L),
-    MAGIC_IMMUNITY(0x8000000000000L),
-    DAMAGE_IMMUNITY(0x20000000000000L),
-    NINJA_AMBUSH(0x40000000000000L),
-    VENOMOUS_WEAPON(0x100000000000000L),
-    DARKNESS(0x200000000000000L),
-    EMPTY(0x800000000000000L),
-    HYPNOTIZE(0x1000000000000000L),
-    WEAPON_DAMAGE_REFLECT(0x2000000000000000L),
-    MAGIC_DAMAGE_REFLECT(0x4000000000000000L),
-    SUMMON(0x8000000000000000L) //all summon bag mobs have.
+    //物攻
+//物攻
+    WATK(0),
+    //物防
+    WDEF(1),
+    //魔攻
+    MATK(2),
+    //魔防
+    MDEF(3),
+    //命中
+    ACC(4),
+    //迴避
+    AVOID(5),
+    //速度
+    SPEED(6),
+    //暈眩
+    STUN(7),
+    //結冰
+    FREEZE(8),
+    //中毒
+    POISON(9),
+    //封印、沉默
+    SEAL(10),
+    //黑暗
+    DARKNESS(11),
+    //物理攻擊提昇
+    WEAPON_ATTACK_UP(12),
+    //物理防禦提昇
+    WEAPON_DEFENSE_UP(13),
+    //魔法攻擊提昇
+    MAGIC_ATTACK_UP(14),
+    //魔法防禦提昇
+    MAGIC_DEFENSE_UP(15),
+    //死亡
+    DOOM(16),
+    //影網
+    SHADOW_WEB(17),
+    //物攻免疫
+    WEAPON_IMMUNITY(18),
+    //魔攻免疫
+    MAGIC_IMMUNITY(19),
+    //挑釁
+    SHOWDOWN(20),
+    //免疫傷害
+    DAMAGE_IMMUNITY(21),
+    //忍者伏擊
+    NINJA_AMBUSH(22),
+    //
+    DANAGED_ELEM_ATTR(23),
+    //武器荼毒
+    VENOMOUS_WEAPON(24),
+    //致盲
+    BLIND(25),
+    //技能封印
+    SEAL_SKILL(0x26),
+    //
+    EMPTY(27),
+    //心靈控制
+    HYPNOTIZE(28),
+    //反勝物攻
+    WEAPON_DAMAGE_REFLECT(29),
+    //反射魔攻
+    MAGIC_DAMAGE_REFLECT(30),
+    SUMMON(31),
+    
+    RISE_TOSS(32),
+    //抵銷
+    NEUTRALISE(33, true),
+    //弱點
+    IMPRINT(34, true),
+    //怪物炸彈
+    MONSTER_BOMB(35),
+    //魔法無效
+    MAGIC_CRASH(36),
+    //恢復攻擊
+    HEAL_DAMAGE(37),
+    MBS38(38),
+    MBS39(39),
+    MBS40(40),
+    MBS41(41),
+    MBS42(42),
+    MBS43(43),
+    MBS44(44),
+    //另一個咬擊[178-完成]
+    ANOTHER_BITE(45),
+    MBS46(46),
+    
+    //三角進攻
+    TRIANGULATION(47),
+    //減益爆炸
+    STING_EXPLOSION(48),
+    
+    MBS49(49),
+    MBS50(50),
+    MBS51(51),
+    MBS52(52),
+    MBS53(53),
+    MBS54(54),
+    MBS55(55),
+    MBS56(56),
+    MBS57(57),
+    MBS58(58, true),
+    MBS59(59),
+    MBS60(60, true),
+    MBS61(61),
+    
+    //持續扣血 - 破滅之輪[178-完成]
+    BLEED(62, true),    
+    MBS63(63, true),
+    
     ;
     static final long serialVersionUID = 0L;
-    private final long i;
-    private final boolean first;
+    private final int i;
+    private final int position;
+    private final boolean end;
+    private final int bitNumber;
 
-    private MonsterStatus(long i) {
-        this.i = i;
-        first = false;
+    private MonsterStatus(int i) {
+        this.i = 1 << (i % 32); // 如果要變舊的，就把減31去掉，詳細請參考頂端說明
+        this.position = (int) Math.floor(i / 32);
+        this.end = false;
+        this.bitNumber = i;
     }
 
-    private MonsterStatus(int i, boolean first) {
-        this.i = i;
-        this.first = first;
+    private MonsterStatus(int i, boolean end) {
+        this.i = 1 << (i % 32); // 如果要變舊的，就把減31去掉，詳細請參考頂端說明
+        this.position = (int) Math.floor(i / 32);
+        this.end = end;
+        this.bitNumber = i;
     }
 
-    public boolean isFirst() {
-        return first;
+    public int getPosition() {
+        return 3 - position;
     }
 
-    public boolean isEmpty() {
-        return this == SUMMON || this == EMPTY;
+     public boolean isEmpty() {
+        return end;
     }
+    
 
     public long getValue() {
         return i;
+    }
+
+    public static final MapleDisease getLinkedDisease(final MonsterStatus skill) {
+        switch (skill) {
+            case STUN:
+            case SHADOW_WEB:
+                return MapleDisease.STUN;
+            case POISON:
+            case VENOMOUS_WEAPON:
+                return MapleDisease.POISON;
+            case SEAL:
+                return MapleDisease.SEAL;
+            case FREEZE:
+                return MapleDisease.FREEZE;
+            case DARKNESS:
+                return MapleDisease.DARKNESS;
+            case SPEED:
+                return MapleDisease.SLOW;
+        }
+        return null;
     }
 }

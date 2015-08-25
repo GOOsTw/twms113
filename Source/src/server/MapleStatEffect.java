@@ -979,19 +979,26 @@ public class MapleStatEffect implements Serializable {
 //            }
 //        }
 //    }
-    private void applyMonsterBuff(final MapleCharacter applyfrom) {
-        final Rectangle bounds = calculateBoundingBox(applyfrom.getPosition(), applyfrom.isFacingLeft());
-        final List<MapleMapObject> affected = applyfrom.getMap().getMapObjectsInRect(bounds, Arrays.asList(MapleMapObjectType.MONSTER));
+    public final void applyMonsterBuff(final MapleCharacter applyfrom) {
+        final Rectangle bounds = calculateBoundingBox(applyfrom.getTruePosition(), applyfrom.isFacingLeft());
+        final MapleMapObjectType objType = MapleMapObjectType.MONSTER;
+        final List<MapleMapObject> affected = sourceid == 35111005 ? applyfrom.getMap().getMapObjectsInRange(applyfrom.getTruePosition(), Double.POSITIVE_INFINITY, Arrays.asList(objType)) : applyfrom.getMap().getMapObjectsInRect(bounds, Arrays.asList(objType));
         int i = 0;
 
         for (final MapleMapObject mo : affected) {
             if (makeChanceResult()) {
                 for (Map.Entry<MonsterStatus, Integer> stat : getMonsterStati().entrySet()) {
-                    ((MapleMonster) mo).applyStatus(applyfrom, new MonsterStatusEffect(stat.getKey(), stat.getValue(), sourceid, null, false), isPoison(), getDuration(), false);
+                    MapleMonster mons = (MapleMonster) mo;
+                    if (sourceid == 35111005 && mons.getStats().isBoss()) {
+                        break;
+                    }
+                    mons.applyStatus(applyfrom, new MonsterStatusEffect(stat.getKey(), stat.getValue(), sourceid, null, false), isPoison(), getDuration(), true, this);
+
                 }
+
             }
             i++;
-            if (i >= mobCount) {
+            if (i >= mobCount && sourceid != 35111005) {
                 break;
             }
         }

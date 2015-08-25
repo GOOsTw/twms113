@@ -33,6 +33,8 @@ public interface MapleMapObject {
     public MapleMapObjectType getType();
 
     public Point getPosition();
+    
+    public Point getTruePosition();
 
     public void setPosition(final Point position);
 

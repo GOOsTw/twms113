@@ -32,7 +32,176 @@ import server.Randomizer;
 import server.maps.MapleMapObjectType;
 
 public class GameConstants {
+public static boolean isLinkedAttackSkill(final int id) {
+        return getLinkedAttackSkill(id) != id;
+    }
 
+    public static int getLinkedAttackSkill(final int id) {
+        switch (id) {
+            case 11101220: // 皇家衝擊
+                return 11101120; // 潛行突襲
+            case 11101221: // 焚影
+                return 11101121; // 殘像追擊
+            case 11111120: // 月影
+                return 11111220; // 光芒四射
+            case 11111121: // 月光十字架
+                return 11111221; // 日光十字架
+            case 11121201: // 疾速黃昏
+            case 11121102: // 月光之舞（空中）
+            case 11121202: // 疾速黃昏（空中
+                return 11121101; // 月光之舞
+            case 11121103: // 新月分裂
+                return 11121203; // 太陽穿刺
+            case 21110007:
+            case 21110008:
+                return 21110002;
+            case 21120009:
+            case 21120010:
+                return 21120002;
+            case 4321001:
+                return 4321000;
+            case 32120055: // 鬥王杖擊(2擊)
+                return 32120052; // 鬥王杖擊
+            case 33101006:
+            case 33101007:
+                return 33101005;
+            case 33101008:
+                return 33101004;
+            case 35101009:
+            case 35101010:
+                return 35100008;
+            case 35111009:
+            case 35111010:
+                return 35111001;
+            case 35121013:
+                return 35111004;
+            case 35121011:
+                return 35121009;
+            case 32001007:
+            case 32001008:
+            case 32001009:
+            case 32001010:
+            case 32001011:
+                return 32001001;
+            case 5300007:
+                return 5301001;
+            case 5320011:
+                return 5321004;
+            case 23101007:
+                return 23101001;
+            case 23111010:
+            case 23111009:
+                return 23111008;
+            case 31001006:
+            case 31001007:
+            case 31001008:
+                return 31000004;
+            case 30010183:
+            case 30010184:
+            case 30010186:
+                return 30010110;
+            case 31010004:
+            case 31010005:
+            case 31010006:
+            case 31010007:
+                return 31011000; //超越 : 十文字斬
+            case 31201007:
+            case 31201008:
+            case 31201009:
+            case 31201010:
+                return 31201000; //超越：惡魔風暴
+            case 31211007:
+            case 31211008:
+            case 31211009:
+            case 31211010:
+                return 31211000; //超越：月光斬
+            case 31221009:
+            case 31221010:
+            case 31221011:
+            case 31221012:
+                return 31221000; //超越 : 逆十文字斬
+            case 5710012:
+                return 5711002;
+            case 5701012:
+            case 5710020:
+                return 5701011;
+            case 31121010:
+                return 31121000;
+            case 5211015:
+            case 5211016:
+                return 5211011;
+            case 24111008:
+                return 24111006;
+            case 24121010:
+                return 24121003;
+            case 5001008:
+                return 5200010;
+            case 5001009:
+                return 5101004;
+            case 41001005:
+            case 41001004:
+                return 41001000;
+            case 41001006:
+            case 41001007:
+            case 41001008:
+                return 41001002;
+            case 41101009:
+            case 41101008:
+                return 41101000;
+            case 41111012:
+            case 41111011:
+                return 41111000;
+            case 41120013:
+            case 41120012:
+            case 41120011:
+                return 41121000;
+            case 42001006:
+            case 42001005:
+                return 42001000;
+            case 42001007:
+                return 42001002;
+            case 42100010:
+                return 42101001;
+            //Zero:
+            case 101000102:
+                return 101000101;
+            case 101000202:
+                return 101000201;
+            case 101100202:
+                return 101100201;
+            case 101110201:
+                return 101110200;
+            case 101110204:
+                return 101110203;
+            case 101120101:
+                return 101120100;
+            case 101120103:
+                return 101120102;
+            case 101120105:
+            case 101120106:
+                return 101120104;
+            case 101120203:
+                return 101120202;
+            case 101120205:
+            case 101120206:
+                return 101120204;
+            case 101120200:
+                return 101121200;
+            case 112000001:
+            case 112000002:
+                return 112000000;
+            case 112120001:
+            case 112120002:
+            case 112120003:
+                return 112120000;
+            case 131001001:
+            case 131001002:
+            case 131001003:
+            case 131001013:
+                return 131001000;
+        }
+        return id;
+    }
     public static final List<MapleMapObjectType> rangedMapobjectTypes = Collections.unmodifiableList(Arrays.asList(
             MapleMapObjectType.ITEM,
             MapleMapObjectType.MONSTER,
@@ -83,6 +252,11 @@ public class GameConstants {
         return ExpTable[level];
     }
 
+    
+    public static boolean isNoDelaySkill(int skillId) {
+        return skillId == 5110001 || skillId == 21101003 || skillId == 15100004 || skillId == 33101004 || skillId == 32111010 || skillId == 2111007 || skillId == 2211007 || skillId == 2311007 || skillId == 32121003 || skillId == 35121005 || skillId == 35111004 || skillId == 35121013 || skillId == 35121003 || skillId == 22150004 || skillId == 22181004 || skillId == 11101002 || skillId == 51100002 || skillId == 13101002 || skillId == 24121000 || skillId == 112001008 || skillId == 22161005 || skillId == 22161005;
+    }
+    
     public static boolean isMarrigeRing(int itemid) {
             switch (itemid) {
                 case 1112300:
@@ -567,6 +741,7 @@ public class GameConstants {
         return 0;
     }
 
+    
     public static short getAttackDelay(final int id) {
         switch (id) { // Assume it's faster(2)
             case 4321001: //tornado spin
