@@ -112,20 +112,44 @@ public class InternCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
+            if (splitted.length < 2) {
+                c.getPlayer().dropMessage(splitted[0] + "[使用規則] !fuck <玩家名字>");
+                return 0;
+            }
             Connection con = DatabaseConnection.getConnection();
             MapleCharacter victim;
             try {
-                try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE id = " + +MapleCharacter.getIdByName(splitted[1]))) {
+                try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE id = " + MapleCharacter.getIdByName(splitted[1]))) {
                     victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
                     victim.getClient().getSession().close();
                     ps.executeUpdate();
                     ps.close();
                 }
             } catch (Exception e) {
-                c.getPlayer().dropMessage(6, "解除異常成功 " + splitted[1]);
+                c.getPlayer().dropMessage(6, "解除異常失敗 " + splitted[1]);
                 return 0;
             }
             c.getPlayer().dropMessage(6, "解除異常成功 " + splitted[1]);
+            return 1;
+        }
+
+    }
+
+    public static class CC extends CommandExecute {
+
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            if (splitted.length < 2) {
+                c.getPlayer().dropMessage(6, "[使用規則] !cc <想要切換的頻道>");
+                return 0;
+            }
+            int cc = Integer.parseInt(splitted[1]);
+            if (c.getChannel() != cc) {
+                c.getPlayer().changeChannel(cc);
+            } else {
+                c.getPlayer().dropMessage(5, "請輸入正確的頻道。");
+                return 0;
+            }
             return 1;
         }
     }
@@ -179,6 +203,7 @@ public class InternCommand {
                     //victim.dropMessage(5, c.getPlayer().getName() + " GM在觀察您..");
                 } else {
                     c.getPlayer().dropMessage(5, "找不到此玩家.");
+                    return 0;
                 }
             }
             return 1;
@@ -283,7 +308,7 @@ public class InternCommand {
         public int execute(MapleClient c, String[] splitted) {
             SkillFactory.getSkill(9001004).getEffect(1).applyTo(c.getPlayer());
             c.getPlayer().dropMessage(6, "管理員隱藏 = 開啟 \r\n 解除請輸入!unhide");
-            return 0;
+            return 1;
         }
     }
 
