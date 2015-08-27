@@ -40,33 +40,33 @@ public class ChatHandler {
             }
             if (chr.getCanTalk() || chr.isStaff()) {
                 //Note: This patch is needed to prevent chat packet from being broadcast to people who might be packet sniffing.
-                    if (c.getPlayer().gmLevel() == 5 && !chr.isHidden()) {
-			chr.getCheatTracker().checkMsg();
-                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.yellowChat("<超級管理員> " + c.getPlayer().getName() + ": " + text));
-                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
-                    } else if (c.getPlayer().gmLevel() == 4 && !chr.isHidden()){
-			chr.getCheatTracker().checkMsg();
-                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.yellowChat("<領導者>" + c.getPlayer().getName() + ": " + text));
-                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
-                    } else if (c.getPlayer().gmLevel() == 3 && !chr.isHidden()){
-			chr.getCheatTracker().checkMsg();
-                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.yellowChat("<巡邏者>" + c.getPlayer().getName() + ": " + text));
-                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
-                    } else if (c.getPlayer().gmLevel() == 2 && !chr.isHidden()){
-			chr.getCheatTracker().checkMsg();
-                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.yellowChat("<老實習生>" + c.getPlayer().getName() + ": " + text));
-                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
-                    } else if (c.getPlayer().gmLevel() == 1 && !chr.isHidden()){
-			chr.getCheatTracker().checkMsg();
-                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.yellowChat("<新實習生>" + c.getPlayer().getName() + ": " + text));
-                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
-			//chr.getMap().broadcastGMMessage(chr, MaplePacketCreator.getChatText(chr.getId(), text, c.getPlayer().isGM(), unk), true);
-                    } else if (c.getPlayer().gmLevel() == 0 && !chr.isHidden()){      
-                        chr.getCheatTracker().checkMsg();
-                        chr.getMap().broadcastMessage(MaplePacketCreator.getChatText(chr.getId(), text, c.getPlayer().isGM(), unk), c.getPlayer().getPosition());
-                    } else {
-			chr.getMap().broadcastGMMessage(chr, MaplePacketCreator.getChatText(chr.getId(), text, c.getPlayer().isGM(), unk), true);
-                    }
+                if (c.getPlayer().gmLevel() == 5 && !chr.isHidden()) {
+                    chr.getCheatTracker().checkMsg();
+                    c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.yellowChat("<超級管理員> " + c.getPlayer().getName() + ": " + text));
+                    c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
+                } else if (c.getPlayer().gmLevel() == 4 && !chr.isHidden()) {
+                    chr.getCheatTracker().checkMsg();
+                    c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.yellowChat("<領導者>" + c.getPlayer().getName() + ": " + text));
+                    c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
+                } else if (c.getPlayer().gmLevel() == 3 && !chr.isHidden()) {
+                    chr.getCheatTracker().checkMsg();
+                    c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.yellowChat("<巡邏者>" + c.getPlayer().getName() + ": " + text));
+                    c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
+                } else if (c.getPlayer().gmLevel() == 2 && !chr.isHidden()) {
+                    chr.getCheatTracker().checkMsg();
+                    c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.yellowChat("<老實習生>" + c.getPlayer().getName() + ": " + text));
+                    c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
+                } else if (c.getPlayer().gmLevel() == 1 && !chr.isHidden()) {
+                    chr.getCheatTracker().checkMsg();
+                    c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.yellowChat("<新實習生>" + c.getPlayer().getName() + ": " + text));
+                    c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
+                    //chr.getMap().broadcastGMMessage(chr, MaplePacketCreator.getChatText(chr.getId(), text, c.getPlayer().isGM(), unk), true);
+                } else if (c.getPlayer().gmLevel() == 0 && !chr.isHidden()) {
+                    chr.getCheatTracker().checkMsg();
+                    chr.getMap().broadcastMessage(MaplePacketCreator.getChatText(chr.getId(), text, c.getPlayer().isGM(), unk), c.getPlayer().getPosition());
+                } else {
+                    chr.getMap().broadcastGMMessage(chr, MaplePacketCreator.getChatText(chr.getId(), text, c.getPlayer().isGM(), unk), true);
+                }
                 /*if (text.equalsIgnoreCase(c.getChannelServer().getServerName() + " rocks")) {
                  chr.finishAchievement(11);
                  }*/
@@ -222,14 +222,14 @@ public class ChatHandler {
                         if (player == null) {
                             break;
                         }
-                        if (player != null) {
-                            if (!player.isGM() || (c.getPlayer().isGM() && player.isGM())) {
-                                c.getSession().write(MaplePacketCreator.getFindReply(recipient, (byte) ch, mode == 68));
-                            } else {
-                                c.getSession().write(MaplePacketCreator.getWhisperReply(recipient, (byte) 0));
-                            }
-                            return;
+
+                        if (!player.isGM() || (c.getPlayer().isGM() && player.isGM())) {
+                            c.getSession().write(MaplePacketCreator.getFindReply(recipient, (byte) ch, mode == 68));
+                        } else {
+                            c.getSession().write(MaplePacketCreator.getWhisperReply(recipient, (byte) 0));
                         }
+                        return;
+
                     }
                     if (ch == -10) {
                         c.getSession().write(MaplePacketCreator.getFindReplyWithCS(recipient, mode == 68));

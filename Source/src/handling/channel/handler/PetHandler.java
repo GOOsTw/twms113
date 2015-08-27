@@ -196,7 +196,7 @@ public class PetHandler {
         slea.skip(8);
         final List<LifeMovementFragment> res = MovementParse.parseMovement(slea, 3);
 
-        if (res != null && chr != null && res.size() != 0) { // map crash hack
+        if (res != null && chr != null && !res.isEmpty()) { // map crash hack
             final byte slot = chr.getPetIndex(petId);
             if (slot == -1) {
                 return;
@@ -226,7 +226,7 @@ public class PetHandler {
                         }
                         if (mapitem.getMeso() > 0 && chr.getStat().hasMeso) {
                             if (chr.getParty() != null && mapitem.getOwner() != chr.getId()) {
-                                final List<MapleCharacter> toGive = new LinkedList<MapleCharacter>();
+                                final List<MapleCharacter> toGive = new LinkedList<>();
 
                                 for (MaplePartyCharacter mem : chr.getParty().getMembers()) {
                                     MapleCharacter m = chr.getMap().getCharacterById(mem.getId());

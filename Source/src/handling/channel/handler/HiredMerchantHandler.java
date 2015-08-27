@@ -20,7 +20,6 @@
  */
 package handling.channel.handler;
 
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.Connection;
@@ -39,9 +38,7 @@ import handling.world.World;
 import java.util.Map;
 import server.MapleInventoryManipulator;
 import server.MerchItemPackage;
-import server.MapleItemInformationProvider;
 import tools.Pair;
-import tools.StringUtil;
 import tools.packet.PlayerShopPacket;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -79,18 +76,17 @@ public class HiredMerchantHandler {
     private static byte checkExistance(final int accid, final int charid) {
         Connection con = DatabaseConnection.getConnection();
         try {
-            PreparedStatement ps = con.prepareStatement("SELECT * from hiredmerch where accountid = ? OR characterid = ?");
-            ps.setInt(1, accid);
-            ps.setInt(2, charid);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                ps.close();
-                rs.close();
-                return 1;
+            try (PreparedStatement ps = con.prepareStatement("SELECT * from hiredmerch where accountid = ? OR characterid = ?")) {
+                ps.setInt(1, accid);
+                ps.setInt(2, charid);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        ps.close();
+                        rs.close();
+                        return 1;
+                    }
+                }
             }
-            rs.close();
-            ps.close();
             return 0;
         } catch (SQLException se) {
             return -1;
@@ -174,7 +170,7 @@ public class HiredMerchantHandler {
         }
     }
 
-    private static final boolean check(final MapleCharacter chr, final MerchItemPackage pack) {
+    private static boolean check(final MapleCharacter chr, final MerchItemPackage pack) {
         if (chr.getMeso() + pack.getMesos() < 0) {
             return false;
         }
@@ -196,29 +192,23 @@ public class HiredMerchantHandler {
              return false;
              }*/
         }
-        /* if (chr.getInventory(MapleInventoryType.EQUIP).getNumFreeSlot() < eq || chr.getInventory(MapleInventoryType.USE).getNumFreeSlot() < use || chr.getInventory(MapleInventoryType.SETUP).getNumFreeSlot() < setup || chr.getInventory(MapleInventoryType.ETC).getNumFreeSlot() < etc || chr.getInventory(MapleInventoryType.CASH).getNumFreeSlot() < cash) {
-         return false;
-         }*/
-        if (chr.getInventory(MapleInventoryType.EQUIP).getNumFreeSlot() <= eq
+        return !(chr.getInventory(MapleInventoryType.EQUIP).getNumFreeSlot() <= eq
                 || chr.getInventory(MapleInventoryType.USE).getNumFreeSlot() <= use
                 || chr.getInventory(MapleInventoryType.SETUP).getNumFreeSlot() <= setup
                 || chr.getInventory(MapleInventoryType.ETC).getNumFreeSlot() <= etc
-                || chr.getInventory(MapleInventoryType.CASH).getNumFreeSlot() <= cash) {
-            return false;
-        }
-        return true;
+                || chr.getInventory(MapleInventoryType.CASH).getNumFreeSlot() <= cash);
     }
 
-    private static final boolean deletePackage(final int charid, final int accid, final int packageid) {
+    private static boolean deletePackage(final int charid, final int accid, final int packageid) {
         final Connection con = DatabaseConnection.getConnection();
 
         try {
-            PreparedStatement ps = con.prepareStatement("DELETE from hiredmerch where characterid = ? OR accountid = ? OR packageid = ?");
-            ps.setInt(1, charid);
-            ps.setInt(2, accid);
-            ps.setInt(3, packageid);
-            ps.execute();
-            ps.close();
+            try (PreparedStatement ps = con.prepareStatement("DELETE from hiredmerch where characterid = ? OR accountid = ? OR packageid = ?")) {
+                ps.setInt(1, charid);
+                ps.setInt(2, accid);
+                ps.setInt(3, packageid);
+                ps.execute();
+            }
             ItemLoader.HIRED_MERCHANT.saveItems(null, packageid, accid, charid);
             return true;
         } catch (SQLException e) {
@@ -226,34 +216,32 @@ public class HiredMerchantHandler {
         }
     }
 
-    private static final MerchItemPackage loadItemFrom_Database(final int charid, final int accountid) {
+    private static MerchItemPackage loadItemFrom_Database(final int charid, final int accountid) {
         final Connection con = DatabaseConnection.getConnection();
 
         try {
-            PreparedStatement ps = con.prepareStatement("SELECT * from hiredmerch where characterid = ? OR accountid = ?");
-            ps.setInt(1, charid);
-            ps.setInt(2, accountid);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (!rs.next()) {
-                ps.close();
-                rs.close();
-                return null;
+            ResultSet rs;
+            final int packageid;
+            final MerchItemPackage pack;
+            try (PreparedStatement ps = con.prepareStatement("SELECT * from hiredmerch where characterid = ? OR accountid = ?")) {
+                ps.setInt(1, charid);
+                ps.setInt(2, accountid);
+                rs = ps.executeQuery();
+                if (!rs.next()) {
+                    ps.close();
+                    rs.close();
+                    return null;
+                }   packageid = rs.getInt("PackageId");
+                pack = new MerchItemPackage();
+                pack.setPackageid(packageid);
+                pack.setMesos(rs.getInt("Mesos"));
+                pack.setSentTime(rs.getLong("time"));
             }
-            final int packageid = rs.getInt("PackageId");
-
-            final MerchItemPackage pack = new MerchItemPackage();
-            pack.setPackageid(packageid);
-            pack.setMesos(rs.getInt("Mesos"));
-            pack.setSentTime(rs.getLong("time"));
-
-            ps.close();
             rs.close();
 
             Map<Integer, Pair<IItem, MapleInventoryType>> items = ItemLoader.HIRED_MERCHANT.loadItems(false, packageid, accountid, charid);
             if (items != null) {
-                List<IItem> iters = new ArrayList<IItem>();
+                List<IItem> iters = new ArrayList<>();
                 for (Pair<IItem, MapleInventoryType> z : items.values()) {
                     iters.add(z.left);
                 }
@@ -262,7 +250,7 @@ public class HiredMerchantHandler {
 
             return pack;
         } catch (SQLException e) {
-            e.printStackTrace();
+            
             return null;
         }
     }

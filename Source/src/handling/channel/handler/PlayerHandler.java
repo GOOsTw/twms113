@@ -23,7 +23,6 @@ package handling.channel.handler;
 import java.awt.Point;
 import java.util.List;
 
-import scripting.AbstractPlayerInteraction;
 import client.inventory.IItem;
 import client.ISkill;
 import client.SkillFactory;
@@ -215,7 +214,7 @@ public class PlayerHandler {
         boolean is_pg = false;
         boolean isDeadlyAttack = false;
         MapleMonster attacker = null;
-        if (chr == null || chr.isHidden() || chr.getMap() == null) {
+        if ( chr.isHidden() || chr.getMap() == null){
             return;
         }
 
@@ -583,7 +582,7 @@ public class PlayerHandler {
 
             if (isFinisher(attack.skill)) { // finisher
                 if (comboBuff != null) {
-                    numFinisherOrbs = comboBuff.intValue() - 1;
+                    numFinisherOrbs = comboBuff - 1;
                 }
                 chr.handleOrbconsume();
 
@@ -638,7 +637,7 @@ public class PlayerHandler {
                     combo = SkillFactory.getSkill(1111002);
                 }
                 if (c.getPlayer().getSkillLevel(combo) > 0) {
-                    maxdamage *= 1.0 + (combo.getEffect(c.getPlayer().getSkillLevel(combo)).getDamage() / 100.0 - 1.0) * (comboBuff.intValue() - 1);
+                    maxdamage *= 1.0 + (combo.getEffect(c.getPlayer().getSkillLevel(combo)).getDamage() / 100.0 - 1.0) * (comboBuff - 1);
                 }
             }
 
@@ -664,6 +663,7 @@ public class PlayerHandler {
                 final AttackInfo attack2 = DamageParse.DivideAttack(attack, chr.isGM() ? 1 : 4);
                 CloneTimer.getInstance().schedule(new Runnable() {
 
+                    @Override
                     public void run() {
                         clone.getMap().broadcastMessage(MaplePacketCreator.closeRangeAttack(clone.getId(), attack2.tbyte, attack2.skill, skillLevel2, attack2.display, attack2.animation, attack2.speed, attack2.allDamage, energy, clone.getLevel(), clone.getStat().passive_mastery(), attack2.unk, attack2.charge));
                         DamageParse.applyAttack(attack2, skil2, chr, attackCount2, maxdamage2, eff2, mirror ? AttackType.NON_RANGED_WITH_MIRROR : AttackType.NON_RANGED);
@@ -771,7 +771,8 @@ public class PlayerHandler {
                 }
                 switch (attack.skill) {
                     case 3101005: // arrowbomb is hardcore like that
-                        basedamage *= effect.getX() / 100.0;
+                        if(effect != null)
+                            basedamage *= effect.getX() / 100.0;
                         break;
                 }
                 break;
@@ -804,6 +805,7 @@ public class PlayerHandler {
                 final AttackInfo attack2 = DamageParse.DivideAttack(attack, chr.isGM() ? 1 : 4);
                 CloneTimer.getInstance().schedule(new Runnable() {
 
+                    @Override
                     public void run() {
                         clone.getMap().broadcastMessage(MaplePacketCreator.rangedAttack(clone.getId(), attack2.tbyte, attack2.skill, skillLevel2, attack2.display, attack2.animation, attack2.speed, visProjectile2, attack2.allDamage, attack2.position, clone.getLevel(), clone.getStat().passive_mastery(), attack2.unk));
                         DamageParse.applyAttack(attack2, skil2, chr, bulletCount2, basedamage2, eff2, AttackType.RANGED);
@@ -849,6 +851,7 @@ public class PlayerHandler {
                 final AttackInfo attack2 = DamageParse.DivideAttack(attack, chr.isGM() ? 1 : 4);
                 CloneTimer.getInstance().schedule(new Runnable() {
 
+                    @Override
                     public void run() {
                         //if (attack.skill != 22121000 && attack.skill != 22151001) {
                         clone.getMap().broadcastMessage(MaplePacketCreator.magicAttack(clone.getId(), attack2.tbyte, attack2.skill, skillLevel2, attack2.display, attack2.animation, attack2.speed, attack2.allDamage, attack2.charge, clone.getLevel(), attack2.unk));
@@ -887,6 +890,7 @@ public class PlayerHandler {
                     final MapleCharacter clone = clones[i].get();
                     CloneTimer.getInstance().schedule(new Runnable() {
 
+                        @Override
                         public void run() {
                             clone.getMap().broadcastMessage(MaplePacketCreator.facialExpression(clone, emote));
                         }
@@ -955,7 +959,7 @@ Now: D7 00 44 01 00 00 00 00 06 1E 00 00 EA FE D7 00 84 00 00 00 71 00 04 78 00 
                 System.out.println("slea.available != 13-26 (movement parsing error)\n" + slea.toString(true));
                 return;
             }
-            final List<LifeMovementFragment> res2 = new ArrayList<LifeMovementFragment>(res);
+            final List<LifeMovementFragment> res2 = new ArrayList<>(res);
             final MapleMap map = c.getPlayer().getMap();
 
             if (chr.isHidden()) {
@@ -988,9 +992,10 @@ Now: D7 00 44 01 00 00 00 00 06 1E 00 00 EA FE D7 00 84 00 00 00 71 00 04 78 00 
             for (int i = 0; i < clones.length; i++) {
                 if (clones[i].get() != null) {
                     final MapleCharacter clone = clones[i].get();
-                    final List<LifeMovementFragment> res3 = new ArrayList<LifeMovementFragment>(res2);
+                    final List<LifeMovementFragment> res3 = new ArrayList<>(res2);
                     CloneTimer.getInstance().schedule(new Runnable() {
 
+                        @Override
                         public void run() {
                             try {
                                 if (clone.getMap() == map) {
@@ -1035,7 +1040,6 @@ Now: D7 00 44 01 00 00 00 00 06 1E 00 00 EA FE D7 00 84 00 00 00 71 00 04 78 00 
 
     public static final void ChangeMap(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         if (chr == null) {
-            chr.dropMessage(-1, "你現在不能攻擊或不能跟npc對話,請在對話框打 @解卡/@ea 來解除異常狀態");
             return;
         }
         if (slea.available() != 0) {

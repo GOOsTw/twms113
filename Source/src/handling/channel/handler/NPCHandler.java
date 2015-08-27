@@ -220,7 +220,6 @@ public class NPCHandler {
                     storage.sendTakenOut(c, GameConstants.getInventoryType(item.getItemId()));
                 } else {
                     //AutobanManager.getInstance().autoban(c, "Trying to take out item from storage which does not exist.");
-                    return;
                 }
                 break;
             }
@@ -373,7 +372,7 @@ public class NPCHandler {
         int price = 0;
         Map<String, Integer> eqStats;
         final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-        final Map<Equip, Integer> eqs = new ArrayMap<Equip, Integer>();
+        final Map<Equip, Integer> eqs = new ArrayMap<>();
         final MapleInventoryType[] types = {MapleInventoryType.EQUIP, MapleInventoryType.EQUIPPED};
         for (MapleInventoryType type : types) {
             for (IItem item : c.getPlayer().getInventory(type)) {
@@ -446,7 +445,7 @@ public class NPCHandler {
         slea.readShort();
         final MapleQuest quest = MapleQuest.getInstance(qid);
         final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-        Pair<Integer, List<Integer>> questItemInfo = null;
+        Pair<Integer, List<Integer>> questItemInfo;
         boolean found = false;
         for (IItem i : c.getPlayer().getInventory(MapleInventoryType.ETC)) {
             if (i.getItemId() / 10000 == 422) {

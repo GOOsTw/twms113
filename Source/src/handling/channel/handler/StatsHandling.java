@@ -46,13 +46,13 @@ public class StatsHandling {
         final PlayerStats stat = chr.getStat();
         final int job = chr.getJob();
         final int statValue = slea.readInt();
-        
+
         final MapleStat state = MapleStat.getByValue(statValue);
-        
+
         if (chr.getRemainingAp() > 0) {
-            
+
             switch (state) {
-                case STR : // Str
+                case STR: // Str
                     if (stat.getStr() >= 999) {
                         return;
                     }
@@ -129,7 +129,7 @@ public class StatsHandling {
                     maxhp = (short) Math.min(30000, Math.abs(maxhp));
                     chr.setHpMpApUsed((short) (chr.getHpMpApUsed() + 1));
                     stat.setMaxHp(maxhp);
-                    statupdate.add(new Pair<MapleStat, Integer>(MapleStat.MAXHP, (int) maxhp));
+                    statupdate.add(new Pair<>(MapleStat.MAXHP, (int) maxhp));
                     break;
                 case MP: // MP
                     short maxmp = stat.getMaxMp();
@@ -166,14 +166,14 @@ public class StatsHandling {
                     maxmp = (short) Math.min(30000, Math.abs(maxmp));
                     chr.setHpMpApUsed((short) (chr.getHpMpApUsed() + 1));
                     stat.setMaxMp(maxmp);
-                    statupdate.add(new Pair<MapleStat, Integer>(MapleStat.MAXMP, (int) maxmp));
+                    statupdate.add(new Pair<>(MapleStat.MAXMP, (int) maxmp));
                     break;
                 default:
                     c.getSession().write(MaplePacketCreator.updatePlayerStats(MaplePacketCreator.EMPTY_STATUPDATE, true, chr.getJob()));
                     return;
             }
             chr.setRemainingAp((short) (chr.getRemainingAp() - 1));
-            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.AVAILABLEAP, (int) chr.getRemainingAp()));
+            statupdate.add(new Pair<>(MapleStat.AVAILABLEAP, (int) chr.getRemainingAp()));
             c.sendPacket(MaplePacketCreator.updatePlayerStats(statupdate, true, chr.getJob()));
         }
     }
@@ -272,18 +272,18 @@ public class StatsHandling {
             chr.changeSkillLevel(skill, (byte) (curLevel + 1), chr.getMasterLevel(skill));
         } else if (!skill.canBeLearnedBy(chr.getJob())) {
 //            AutobanManager.getInstance().addPoints(c, 1000, 0, "Trying to learn a skill for a different job (" + skillid + ")");
-            return;
+
         }
     }
 
     public static final void AutoAssignAP(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         chr.updateTick(slea.readInt());
         slea.skip(4);
-        
+
         if (chr.getRemainingAp() < 1) {
             return;
         }
-        
+
         if (slea.available() < 16) {
             System.out.println("AutoAssignAP UnHandled : \n" + slea.toString(true));
             FilePrinter.printError(FilePrinter.PacketLogsExcpt, "slea.toString(true)");
@@ -305,34 +305,34 @@ public class StatsHandling {
         chr.updateSingleStat(MapleStat.AVAILABLEAP, remainingAp);
         c.sendPacket(MaplePacketCreator.enableActions());
     }
-    
-     static int gainStatByType(MapleCharacter chr, MapleStat type, int gain) {
+
+    static int gainStatByType(MapleCharacter chr, MapleStat type, int gain) {
         short newVal = 0;
         if (type.equals(MapleStat.STR)) {
             newVal = (short) (chr.getStat().getStr() + gain);
             if (newVal > 999) {
-                chr.getStat().setStr((short)999);
+                chr.getStat().setStr((short) 999);
             } else {
                 chr.getStat().setStr((short) newVal);
             }
         } else if (type.equals(MapleStat.INT)) {
             newVal = (short) (chr.getStat().getInt() + gain);
             if (newVal > 999) {
-                chr.getStat().setInt((short)999);
+                chr.getStat().setInt((short) 999);
             } else {
                 chr.getStat().setInt(newVal);
             }
         } else if (type.equals(MapleStat.LUK)) {
             newVal = (short) (chr.getStat().getLuk() + gain);
             if (newVal > 999) {
-                chr.getStat().setLuk((short)999);
+                chr.getStat().setLuk((short) 999);
             } else {
                 chr.getStat().setLuk(newVal);
             }
         } else if (type.equals(MapleStat.DEX)) {
             newVal = (short) (chr.getStat().getDex() + gain);
             if (newVal > 999) {
-                chr.getStat().setDex((short)999);
+                chr.getStat().setDex((short) 999);
             } else {
                 chr.getStat().setDex(newVal);
             }

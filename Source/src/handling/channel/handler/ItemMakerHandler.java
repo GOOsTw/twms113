@@ -188,7 +188,7 @@ public class ItemMakerHandler {
         }
     }
 
-    private static final int getCreateCrystal(final int etc) {
+    private static int getCreateCrystal(final int etc) {
         int itemid;
         final short level = MapleItemInformationProvider.getInstance().getItemMakeLevel(etc);
 
@@ -216,7 +216,7 @@ public class ItemMakerHandler {
         return itemid;
     }
 
-    private static final int[] getCrystal(final int itemid, final int level) {
+    private static int[] getCrystal(final int itemid, final int level) {
         int[] all = new int[2];
         all[0] = -1;
         if (level >= 31 && level <= 50) {
@@ -248,7 +248,7 @@ public class ItemMakerHandler {
         return all;
     }
 
-    private static final void addEnchantStats(final Map<String, Byte> stats, final Equip item) {
+    private static void addEnchantStats(final Map<String, Byte> stats, final Equip item) {
         short s = stats.get("incPAD");
         if (s != 0) {
             item.setWatk((short) (item.getWatk() + s));
@@ -327,9 +327,9 @@ public class ItemMakerHandler {
         }
     }
 
-    private static final int getRandomGem(final List<Pair<Integer, Integer>> rewards) {
+    private static int getRandomGem(final List<Pair<Integer, Integer>> rewards) {
         int itemid;
-        final List<Integer> items = new ArrayList<Integer>();
+        final List<Integer> items = new ArrayList<>();
 
         for (final Pair p : rewards) {
             itemid = (Integer) p.getLeft();
@@ -340,7 +340,7 @@ public class ItemMakerHandler {
         return items.get(Randomizer.nextInt(items.size()));
     }
 
-    private static final int checkRequiredNRemove(final MapleClient c, final List<Pair<Integer, Integer>> recipe) {
+    private static int checkRequiredNRemove(final MapleClient c, final List<Pair<Integer, Integer>> recipe) {
         int itemid = 0;
         for (final Pair<Integer, Integer> p : recipe) {
             if (!c.getPlayer().haveItem(p.getLeft(), p.getRight(), false, true)) {
@@ -354,7 +354,7 @@ public class ItemMakerHandler {
         return itemid;
     }
 
-    private static final boolean hasSkill(final MapleClient c, final int reqlvl) {
+    private static boolean hasSkill(final MapleClient c, final int reqlvl) {
         if (GameConstants.isKOC(c.getPlayer().getJob())) { // KoC Maker skill.
             return c.getPlayer().getSkillLevel(SkillFactory.getSkill(10001007)) >= reqlvl;
         } else if (GameConstants.isAran(c.getPlayer().getJob())) { // KoC Maker skill.

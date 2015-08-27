@@ -30,7 +30,7 @@ import tools.data.input.SeekableLittleEndianAccessor;
 
 public class UserInterfaceHandler {
 
-    public static final void CygnusSummon_NPCRequest(final MapleClient c) {
+    public static final void CygnusSummonNPCRequest(final MapleClient c) {
         if (c.getPlayer().getJob() == 2000) {
             NPCScriptManager.getInstance().start(c, 1202000);
         } else if (c.getPlayer().getJob() == 1000) {
@@ -38,7 +38,7 @@ public class UserInterfaceHandler {
         }
     }
 
-    public static final void InGame_Poll(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void InGamePoll(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         if (ServerConstants.PollEnabled) {
             c.getPlayer().updateTick(slea.readInt());
             final int selection = slea.readInt();

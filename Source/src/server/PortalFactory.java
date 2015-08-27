@@ -12,7 +12,7 @@ public class PortalFactory {
     private int nextDoorPortal = 0x80;
 
     public MaplePortal makePortal(int type, MapleData portal) {
-        MapleGenericPortal ret = null;
+        MapleGenericPortal ret;
         if (type == MaplePortal.MAP_PORTAL) {
             ret = new MapleMapPortal();
         } else {

@@ -24,53 +24,53 @@ public class RandomRewards {
     protected RandomRewards() {
         System.out.println("RandomRewards 讀取中:::");
         // Gold Box
-        List<Integer> returnArray = new ArrayList<Integer>();
+        List<Integer> returnArray = new ArrayList<>();
 
         processRewards(returnArray, GameConstants.goldrewards);
 
         compiledGold = returnArray;
 
         // Silver Box
-        returnArray = new ArrayList<Integer>();
+        returnArray = new ArrayList<>();
 
         processRewards(returnArray, GameConstants.silverrewards);
 
         compiledSilver = returnArray;
 
         // Fishing Rewards
-        returnArray = new ArrayList<Integer>();
+        returnArray = new ArrayList<>();
 
         processRewards(returnArray, GameConstants.fishingReward);
 
         compiledFishing = returnArray;
 
         // Event Rewards
-        returnArray = new ArrayList<Integer>();
+        returnArray = new ArrayList<>();
 
         processRewards(returnArray, GameConstants.eventCommonReward);
 
         compiledEventC = returnArray;
 
-        returnArray = new ArrayList<Integer>();
+        returnArray = new ArrayList<>();
 
         processRewards(returnArray, GameConstants.eventUncommonReward);
 
         compiledEventB = returnArray;
 
-        returnArray = new ArrayList<Integer>();
+        returnArray = new ArrayList<>();
 
         processRewards(returnArray, GameConstants.eventRareReward);
 
         compiledEventA = returnArray;
 
-        returnArray = new ArrayList<Integer>();
+        returnArray = new ArrayList<>();
 
         processRewards(returnArray, GameConstants.eventSuperReward);
 
         compiledEvent = returnArray;
     }
 
-    private final void processRewards(final List<Integer> returnArray, final int[] list) {
+    private void processRewards(final List<Integer> returnArray, final int[] list) {
         int lastitem = 0;
         for (int i = 0; i < list.length; i++) {
             if (i % 2 == 0) { // Even

@@ -59,7 +59,7 @@ public class PlayersHandler {
                     chr.sendNote(name, msg, fame ? 1 : 0);
                     chr.getCashInventory().sendedNote(itemz.getUniqueId());
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    
                 }
                 break;
             case 1:

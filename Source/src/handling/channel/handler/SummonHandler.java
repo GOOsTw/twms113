@@ -34,11 +34,9 @@ import client.SummonSkillEntry;
 import client.status.MonsterStatusEffect;
 import client.anticheat.CheatingOffense;
 import client.status.MonsterStatus;
-import java.lang.ref.WeakReference;
 import java.util.Map;
 import server.MapleStatEffect;
 import server.AutobanManager;
-import server.Timer.CloneTimer;
 import server.movement.LifeMovementFragment;
 import server.life.MapleMonster;
 import server.life.SummonAttackEntry;
@@ -128,7 +126,7 @@ public class SummonHandler {
             return;
         }
         slea.skip(8); //some pos stuff
-        final List<SummonAttackEntry> allDamage = new ArrayList<SummonAttackEntry>();
+        final List<SummonAttackEntry> allDamage = new ArrayList<>();
         chr.getCheatTracker().checkSummonAttack();
 
         for (int i = 0; i < numAttacked; i++) {

@@ -103,7 +103,7 @@ public class PlayerInteractionHandler {
                         c.getSession().write(MaplePacketCreator.enableActions());
                         return;
                     }
-                    if (chr.getMap().getMapObjectsInRange(chr.getPosition(), 20000, Arrays.asList(MapleMapObjectType.SHOP, MapleMapObjectType.HIRED_MERCHANT)).size() != 0) {
+                    if (!chr.getMap().getMapObjectsInRange(chr.getPosition(), 20000, Arrays.asList(MapleMapObjectType.SHOP, MapleMapObjectType.HIRED_MERCHANT)).isEmpty()) {
                         chr.dropMessage(1, "You may not establish a store here.");
                         c.getSession().write(MaplePacketCreator.enableActions());
                         return;
@@ -201,7 +201,6 @@ public class PlayerInteractionHandler {
                         } else {
                             if (ips instanceof MaplePlayerShop && ((MaplePlayerShop) ips).isBanned(chr.getName())) {
                                 chr.dropMessage(1, "被加入黑名單了，所以不能進入。");
-                                return;
                             } else {
                                 if (ips.getFreeSlot() < 0 || ips.getVisitorSlot(chr) > -1 || !ips.isOpen() || !ips.isAvailable()) {
                                     c.getSession().write(PlayerShopPacket.getMiniGameFull());

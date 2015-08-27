@@ -37,8 +37,6 @@ import client.BuddyList.BuddyOperation;
 import database.DatabaseConnection;
 import handling.channel.ChannelServer;
 import handling.world.World;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -58,13 +56,13 @@ public class BuddyListHandler {
         try (PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) as buddyCount FROM buddies WHERE characterid = ? AND pending = ?")) {
             ps.setInt(1, chrId);
             ps.setInt(2, pending);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                throw new RuntimeException("BuddyListHandler: getBuudyCount From DB is Error.");
-            } else {
-                count = rs.getInt("buddyCount");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    throw new RuntimeException("BuddyListHandler: getBuudyCount From DB is Error.");
+                } else {
+                    count = rs.getInt("buddyCount");
+                }
             }
-            rs.close();
 
         } catch (SQLException ex) {
             FilePrinter.printError("BuddyListHandler.txt", ex);
@@ -110,12 +108,12 @@ public class BuddyListHandler {
     private static void addBuddyToDB(MapleCharacter player, BuddyEntry buddy) {
         try {
             Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("INSERT INTO buddies (`characterid`, `buddyid`, `groupname`, `pending`) VALUES (?, ?, ?, 1)");
-            ps.setInt(1, buddy.getCharacterId());
-            ps.setInt(2, player.getId());
-            ps.setString(3, buddy.getGroup());
-            ps.executeUpdate();
-            ps.close();
+            try (PreparedStatement ps = con.prepareStatement("INSERT INTO buddies (`characterid`, `buddyid`, `groupname`, `pending`) VALUES (?, ?, ?, 1)")) {
+                ps.setInt(1, buddy.getCharacterId());
+                ps.setInt(2, player.getId());
+                ps.setString(3, buddy.getGroup());
+                ps.executeUpdate();
+            }
         } catch (SQLException ex) {
             FilePrinter.printError("BuddyListModifyHandler.txt", ex);
         }
@@ -165,7 +163,7 @@ public class BuddyListHandler {
                 }
                 /* 從整個遊戲找這個名字的角色所在的頻道 */
                 int buddyChannel = World.Find.findChannel(buddyName);
-                MapleCharacter buddyChar = null;
+                MapleCharacter buddyChar;
                 BuddyEntry buddy = null;
                 BuddyAddResult reqRes = null;
 
@@ -251,7 +249,7 @@ public class BuddyListHandler {
                 }
 
                 final int buddyChannel = World.Find.findChannel(buddyCharId);
-                BuddyEntry buddy = null;
+                BuddyEntry buddy;
 
                 if (buddyChannel < 0) {
                     buddy = BuddyEntry.getByIdfFromDB(buddyCharId);

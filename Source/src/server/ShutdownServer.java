@@ -8,7 +8,7 @@ import handling.world.World;
 import java.util.Set;
 import server.Timer.*;
 
-public class ShutdownServer implements Runnable {
+public class ShutdownServer implements Runnable , ShutdownServerMBean{
 
     private static final ShutdownServer instance = new ShutdownServer();
     public static boolean running = false;
@@ -88,5 +88,10 @@ public class ShutdownServer implements Runnable {
         } catch (Exception e) {
 
         }
+    }
+
+    @Override
+    public void shutdown() {
+        this.run();
     }
 }

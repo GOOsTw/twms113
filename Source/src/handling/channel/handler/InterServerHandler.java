@@ -51,7 +51,7 @@ public class InterServerHandler {
 
     private static final boolean isCSOpen = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.cashshop.enable", "false"));
 
-    public static final void EnterCS(final MapleClient c, final MapleCharacter chr, final boolean mts) {
+    public static final void EnterCashShop(final MapleClient c, final MapleCharacter chr, final boolean mts) {
 
         if (!isCSOpen && chr.isGM() == false) {
             c.sendPacket(MaplePacketCreator.serverBlocked(2));
@@ -85,7 +85,7 @@ public class InterServerHandler {
         c.setReceiving(false);
     }
 
-    public static final void Loggedin(final int playerid, final MapleClient c) {
+    public static final void LoggedIn(final int playerid, final MapleClient c) {
 //        if (c.getIdleTask() != null) {
 //        c.getIdleTask().cancel(true);
 //        }

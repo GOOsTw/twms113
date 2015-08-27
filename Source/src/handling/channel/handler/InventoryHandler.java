@@ -36,9 +36,7 @@ import client.inventory.MaplePet;
 import client.inventory.MaplePet.PetFlag;
 import client.inventory.MapleMount;
 import client.MapleCharacter;
-import client.MapleCharacterUtil;
 import client.MapleClient;
-import client.MapleDisease;
 import client.inventory.MapleInventoryType;
 import client.inventory.MapleInventory;
 import client.MapleStat;
@@ -74,14 +72,11 @@ import server.StructPotentialItem;
 import server.maps.MapleMist;
 import server.shops.HiredMerchant;
 import server.shops.IMaplePlayerShop;
-import tools.HexTool;
 import tools.Pair;
 import tools.packet.MTSCSPacket;
 import tools.packet.PetPacket;
 import tools.data.input.SeekableLittleEndianAccessor;
 import tools.MaplePacketCreator;
-import tools.data.input.ByteArrayByteStream;
-import tools.data.input.GenericSeekableLittleEndianAccessor;
 import tools.packet.PlayerShopPacket;
 
 public class InventoryHandler {
@@ -201,22 +196,22 @@ public class InventoryHandler {
                     boolean rewarded = false;
                     while (!rewarded) {
                         for (StructRewardItem reward : rewards.getRight()) {
-                            if (reward.prob > 0 && Randomizer.nextInt(rewards.getLeft()) < reward.prob) { // Total prob
-                                if (GameConstants.getInventoryType(reward.itemid) == MapleInventoryType.EQUIP) {
-                                    final IItem item = ii.getEquipById(reward.itemid);
-                                    if (reward.period > 0) {
-                                        item.setExpiration(System.currentTimeMillis() + (reward.period * 60 * 60 * 10));
+                            if (reward.getProb() > 0 && Randomizer.nextInt(rewards.getLeft()) < reward.getProb()) { // Total prob
+                                if (GameConstants.getInventoryType(reward.getItemid()) == MapleInventoryType.EQUIP) {
+                                    final IItem item = ii.getEquipById(reward.getItemid());
+                                    if (reward.getPeriod() > 0) {
+                                        item.setExpiration(System.currentTimeMillis() + (reward.getPeriod() * 60 * 60 * 10));
                                     }
                                     MapleInventoryManipulator.addbyItem(c, item);
                                 } else {
-                                    MapleInventoryManipulator.addById(c, reward.itemid, reward.quantity);
+                                    MapleInventoryManipulator.addById(c, reward.getItemid(), reward.getQuantity());
                                 }
                                 MapleInventoryManipulator.removeById(c, GameConstants.getInventoryType(itemId), itemId, 1, false, false);
 
-                                c.getSession().write(MaplePacketCreator.showRewardItemAnimation(reward.itemid, reward.effect));
-                                chr.getMap().broadcastMessage(chr, MaplePacketCreator.showRewardItemAnimation(reward.itemid, reward.effect, chr.getId()), false);
+                                c.getSession().write(MaplePacketCreator.showRewardItemAnimation(reward.getItemid(), reward.getEffect()));
+                                chr.getMap().broadcastMessage(chr, MaplePacketCreator.showRewardItemAnimation(reward.getItemid(), reward.getEffect(), chr.getId()), false);
                                 rewarded = true;
-                                return true;
+                                return rewarded;
                             }
                         }
                     }
@@ -300,7 +295,7 @@ public class InventoryHandler {
         final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
         final int reqLevel = ii.getReqLevel(eqq.getItemId()) / 10;
         if (eqq.getState() == 1 && (magnify.getItemId() == 2460003 || (magnify.getItemId() == 2460002 && reqLevel <= 12) || (magnify.getItemId() == 2460001 && reqLevel <= 7) || (magnify.getItemId() == 2460000 && reqLevel <= 3))) {
-            final List<List<StructPotentialItem>> pots = new LinkedList<List<StructPotentialItem>>(ii.getAllPotentialInfo().values());
+            final List<List<StructPotentialItem>> pots = new LinkedList<>(ii.getAllPotentialInfo().values());
             int new_state = Math.abs(eqq.getPotential1());
             if (new_state > 7 || new_state < 5) { //luls
                 new_state = 5;
@@ -332,7 +327,6 @@ public class InventoryHandler {
             MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, magnify.getPosition(), (short) 1, false);
         } else {
             c.getSession().write(MaplePacketCreator.getInventoryFull());
-            return;
         }
     }
 
@@ -479,7 +473,7 @@ public class InventoryHandler {
         // Update
         MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, scroll.getPosition(), (short) 1, false, false);
 
-        if (whiteScroll) {
+        if (whiteScroll && wscroll != null) {
             MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, wscroll.getPosition(), (short) 1, false, false);
         }
         final List<ModifyInventory> mods = new ArrayList<>();
@@ -844,9 +838,9 @@ public class InventoryHandler {
                 MapleMonster ht;
                 int type = 0;
 
-                for (int i = 0; i < toSpawn.size(); i++) {
-                    if (Randomizer.nextInt(99) <= toSpawn.get(i).getRight()) {
-                        ht = MapleLifeFactory.getMonster(toSpawn.get(i).getLeft());
+                for (Pair<Integer, Integer> toSpawn1 : toSpawn) {
+                    if (Randomizer.nextInt(99) <= toSpawn1.getRight()) {
+                        ht = MapleLifeFactory.getMonster(toSpawn1.getLeft());
                         chr.getMap().spawnMonster_sSack(ht, chr.getPosition(), type);
                     }
                 }
@@ -865,7 +859,7 @@ public class InventoryHandler {
             return;
         }
         int reward;
-        int keyIDforRemoval = 0;
+        int keyIDforRemoval;
         String box;
 
         switch (toUse.getItemId()) {
@@ -974,7 +968,7 @@ public class InventoryHandler {
                 break;
             }
             case 5050000: { // AP Reset
-                List<Pair<MapleStat, Integer>> statupdate = new ArrayList<Pair<MapleStat, Integer>>(2);
+                List<Pair<MapleStat, Integer>> statupdate = new ArrayList<>(2);
                 final MapleStat apto = MapleStat.getByValue(slea.readInt());
                 final MapleStat apfrom = MapleStat.getByValue(slea.readInt());
 
@@ -1059,25 +1053,25 @@ public class InventoryHandler {
                         case STR: { // str
                             final int toSet = playerst.getStr() + 1;
                             playerst.setStr((short) toSet);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.STR, toSet));
+                            statupdate.add(new Pair<>(MapleStat.STR, toSet));
                             break;
                         }
                         case DEX: { // dex
                             final int toSet = playerst.getDex() + 1;
                             playerst.setDex((short) toSet);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.DEX, toSet));
+                            statupdate.add(new Pair<>(MapleStat.DEX, toSet));
                             break;
                         }
                         case INT: { // int
                             final int toSet = playerst.getInt() + 1;
                             playerst.setInt((short) toSet);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.INT, toSet));
+                            statupdate.add(new Pair<>(MapleStat.INT, toSet));
                             break;
                         }
                         case LUK: { // luk
                             final int toSet = playerst.getLuk() + 1;
                             playerst.setLuk((short) toSet);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.LUK, toSet));
+                            statupdate.add(new Pair<>(MapleStat.LUK, toSet));
                             break;
                         }
                         case HP: // hp
@@ -1127,7 +1121,7 @@ public class InventoryHandler {
                             maxhp = (short) Math.min(30000, Math.abs(maxhp));
                             c.getPlayer().setHpMpApUsed((short) (c.getPlayer().getHpMpApUsed() + 1));
                             playerst.setMaxHp(maxhp);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.MAXHP, (int) maxhp));
+                            statupdate.add(new Pair<>(MapleStat.MAXHP, (int) maxhp));
                             break;
 
                         case MP: // mp
@@ -1163,32 +1157,32 @@ public class InventoryHandler {
                             maxmp = (short) Math.min(30000, Math.abs(maxmp));
                             c.getPlayer().setHpMpApUsed((short) (c.getPlayer().getHpMpApUsed() + 1));
                             playerst.setMaxMp(maxmp);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.MAXMP, (int) maxmp));
+                            statupdate.add(new Pair<>(MapleStat.MAXMP, (int) maxmp));
                             break;
                     }
                     switch (apfrom) { // AP from
                         case STR: { // str
                             final int toSet = playerst.getStr() - 1;
                             playerst.setStr((short) toSet);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.STR, toSet));
+                            statupdate.add(new Pair<>(MapleStat.STR, toSet));
                             break;
                         }
                         case DEX: { // dex
                             final int toSet = playerst.getDex() - 1;
                             playerst.setDex((short) toSet);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.DEX, toSet));
+                            statupdate.add(new Pair<>(MapleStat.DEX, toSet));
                             break;
                         }
                         case INT: { // int
                             final int toSet = playerst.getInt() - 1;
                             playerst.setInt((short) toSet);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.INT, toSet));
+                            statupdate.add(new Pair<>(MapleStat.INT, toSet));
                             break;
                         }
                         case LUK: { // luk
                             final int toSet = playerst.getLuk() - 1;
                             playerst.setLuk((short) toSet);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.LUK, toSet));
+                            statupdate.add(new Pair<>(MapleStat.LUK, toSet));
                             break;
                         }
                         case HP: // HP
@@ -1237,7 +1231,7 @@ public class InventoryHandler {
                             c.getPlayer().setHpMpApUsed((short) (c.getPlayer().getHpMpApUsed() - 1));
                             playerst.setHp(maxhp);
                             playerst.setMaxHp(maxhp);
-                            statupdate.add(new Pair<MapleStat, Integer>(MapleStat.MAXHP, (int) maxhp));
+                            statupdate.add(new Pair<>(MapleStat.MAXHP, (int) maxhp));
                             break;
                         case MP: // MP
                             short maxmp = playerst.getMaxMp();
@@ -1516,7 +1510,15 @@ public class InventoryHandler {
                         break;
                     }
                     final boolean ear = slea.readByte() != 0;
-                    if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1) {
+                    if (c.getPlayer().isPlayer() && message.contains("幹")
+                            || message.contains("豬")
+                            || message.contains("笨")
+                            || message.contains("靠")
+                            || message.contains("腦包")
+                            || message.contains("腦")
+                            || message.contains("智障")
+                            || message.contains("白目")
+                            || message.contains("白吃")) {
                         c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
                         c.getSession().write(MaplePacketCreator.enableActions());
                         return;
@@ -1557,7 +1559,7 @@ public class InventoryHandler {
                     final StringBuilder sb = new StringBuilder();
                     addMedalString(c.getPlayer(), sb);
 
-                    final List<String> messages = new LinkedList<String>();
+                    final List<String> messages = new LinkedList<>();
                     String message;
                     for (int i = 0; i < numLines; i++) {
                         message = slea.readMapleAsciiString();
@@ -1601,10 +1603,18 @@ public class InventoryHandler {
                     }
                     final StringBuilder sb = new StringBuilder();
                     addMedalString(c.getPlayer(), sb);
-                    final List<String> messages = new LinkedList<String>();
+                    final List<String> messages = new LinkedList<>();
                     messages.add(sb + c.getPlayer().getName() + " : " + message);
                     final boolean ear = slea.readByte() != 0;
-                    if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1) {
+                    if (c.getPlayer().isPlayer() && message.contains("幹")
+                            || message.contains("豬")
+                            || message.contains("笨")
+                            || message.contains("靠")
+                            || message.contains("腦包")
+                            || message.contains("腦")
+                            || message.contains("智障")
+                            || message.contains("白目")
+                            || message.contains("白吃")) {
                         c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
                         c.getSession().write(MaplePacketCreator.enableActions());
                         return;
@@ -1638,10 +1648,18 @@ public class InventoryHandler {
                     }
                     final StringBuilder sb = new StringBuilder();
                     addMedalString(c.getPlayer(), sb);
-                    final List<String> messages = new LinkedList<String>();
+                    final List<String> messages = new LinkedList<>();
                     messages.add(sb + c.getPlayer().getName() + " : " + message);
                     final boolean ear = slea.readByte() != 0;
-                    if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1) {
+                    if (c.getPlayer().isPlayer() && message.contains("幹")
+                            || message.contains("豬")
+                            || message.contains("笨")
+                            || message.contains("靠")
+                            || message.contains("腦包")
+                            || message.contains("腦")
+                            || message.contains("智障")
+                            || message.contains("白目")
+                            || message.contains("白吃")) {
                         c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
                         c.getSession().write(MaplePacketCreator.enableActions());
                         return;
@@ -1681,8 +1699,16 @@ public class InventoryHandler {
                     sb.append(message);
 
                     final boolean ear = slea.readByte() != 0;
-                    if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1) {
-                        c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
+                   if (c.getPlayer().isPlayer() && message.contains("幹") 
+                            || message.contains("豬") 
+                            || message.contains("笨") 
+                            || message.contains("靠") 
+                            || message.contains("腦包") 
+                            || message.contains("腦") 
+                            || message.contains("智障") 
+                            || message.contains("白目") 
+                            || message.contains("白吃"))  {
+                       c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
                         c.getSession().write(MaplePacketCreator.enableActions());
                         return;
                     }
@@ -1728,7 +1754,15 @@ public class InventoryHandler {
                         byte pos = (byte) slea.readInt();
                         item = c.getPlayer().getInventory(MapleInventoryType.getByType(invType)).getItem(pos);
                     }
-                    if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1) {
+                    if (c.getPlayer().isPlayer() && message.contains("幹") 
+                            || message.contains("豬") 
+                            || message.contains("笨") 
+                            || message.contains("靠") 
+                            || message.contains("腦包") 
+                            || message.contains("腦") 
+                            || message.contains("智障") 
+                            || message.contains("白目") 
+                            || message.contains("白吃"))  {
                         c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
                         c.getSession().write(MaplePacketCreator.enableActions());
                         return;
@@ -2038,8 +2072,16 @@ public class InventoryHandler {
                     }
                     final boolean ear = slea.readByte() != 0;
 
-                    if (c.getPlayer().isPlayer() && text.indexOf("幹") != -1 || text.indexOf("豬") != -1 || text.indexOf("笨") != -1 || text.indexOf("靠") != -1 || text.indexOf("腦包") != -1 || text.indexOf("腦") != -1 || text.indexOf("智障") != -1 || text.indexOf("白目") != -1 || text.indexOf("白吃") != -1) {
-                        c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
+                    if (c.getPlayer().isPlayer() 
+                            && text.contains("幹") 
+                            || text.contains("豬") 
+                            || text.contains("笨") 
+                            || text.contains("靠") 
+                            || text.contains("腦包") 
+                            || text.contains("腦") 
+                            || text.contains("智障") 
+                            || text.contains("白目") 
+                            || text.contains("白吃"))  {c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
                         c.getSession().write(MaplePacketCreator.enableActions());
                         return;
                     }
@@ -2251,7 +2293,7 @@ public class InventoryHandler {
 
             if (mapitem.getMeso() > 0) {
                 if (chr.getParty() != null && mapitem.getOwner() != chr.getId()) {
-                    final List<MapleCharacter> toGive = new LinkedList<MapleCharacter>();
+                    final List<MapleCharacter> toGive = new LinkedList<>();
                     final int splitMeso = mapitem.getMeso() * 40 / 100;
                     for (MaplePartyCharacter z : chr.getParty().getMembers()) {
                         MapleCharacter m = chr.getMap().getCharacterById(z.getId());
@@ -2321,7 +2363,7 @@ public class InventoryHandler {
         }
     }
 
-    private static final void removeItem(final MapleCharacter chr, final MapleMapItem mapitem, final MapleMapObject ob) {
+    private static void removeItem(final MapleCharacter chr, final MapleMapItem mapitem, final MapleMapObject ob) {
         mapitem.setPickedUp(true);
         chr.getMap().broadcastMessage(MaplePacketCreator.removeItemFromMap(mapitem.getObjectId(), 2, chr.getId()), mapitem.getPosition());
         chr.getMap().removeMapObject(ob);

@@ -12,10 +12,10 @@ public class BeanGame {
     public static final void BeanGame1(SeekableLittleEndianAccessor slea, MapleClient c) {
         //System.out.println("豆�?�出?��???" +slea.toString());
         MapleCharacter chr = c.getPlayer();
-        List<Beans> beansInfo = new ArrayList<Beans>();
+        List<Beans> beansInfo = new ArrayList<>();
         int type = slea.readByte();
-        int 力度 = 0;
-        int 豆豆序號 = 0;
+        int 力度;
+        int 豆豆序號;
         if (type == 1) { //?��开始�?�时?�? 确认??��?��?��?��?�度
             //01 E8 03
             力度 = slea.readShort();

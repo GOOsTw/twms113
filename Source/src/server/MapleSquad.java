@@ -23,20 +23,37 @@ public class MapleSquad {
 
     public static enum MapleSquadType {
 
-        bossbalrog(2), zak(2), chaoszak(3), horntail(2), chaosht(3), pinkbean(3), nmm_squad(2), vergamot(2), dunas(2), nibergen_squad(2), dunas2(2), core_blaze(2), aufheben(2), cwkpq(10), tokyo_2095(2), vonleon(3), scartar(2), cygnus(3);
+        bossbalrog(2), 
+        zak(2), 
+        chaoszak(3), 
+        horntail(2), 
+        chaosht(3), 
+        pinkbean(3), 
+        nmm_squad(2), 
+        vergamot(2), 
+        dunas(2), 
+        nibergen_squad(2), 
+        dunas2(2), 
+        core_blaze(2), 
+        aufheben(2), 
+        cwkpq(10), 
+        tokyo_2095(2), 
+        vonleon(3), 
+        scartar(2),
+        cygnus(3);
 
         private MapleSquadType(int i) {
             this.i = i;
         }
         public int i;
-        public HashMap<Integer, ArrayList<Pair<String, String>>> queuedPlayers = new HashMap<Integer, ArrayList<Pair<String, String>>>();
-        public HashMap<Integer, ArrayList<Pair<String, Long>>> queue = new HashMap<Integer, ArrayList<Pair<String, Long>>>();
+        public HashMap<Integer, ArrayList<Pair<String, String>>> queuedPlayers = new HashMap<>();
+        public HashMap<Integer, ArrayList<Pair<String, Long>>> queue = new HashMap<>();
     }
 
     private WeakReference<MapleCharacter> leader;
     private final String leaderName, toSay;
-    private final Map<String, String> members = new LinkedHashMap<String, String>();
-    private final Map<String, String> bannedMembers = new LinkedHashMap<String, String>();
+    private final Map<String, String> members = new LinkedHashMap<>();
+    private final Map<String, String> bannedMembers = new LinkedHashMap<>();
     private final int ch;
     private final long startTime;
     private final int expiration;
@@ -47,7 +64,7 @@ public class MapleSquad {
     private MapleClient c;
 
     public MapleSquad(final int ch, final String type, final MapleCharacter leader, final int expiration, final String toSay) {
-        this.leader = new WeakReference<MapleCharacter>(leader);
+        this.leader = new WeakReference<>(leader);
         this.members.put(leader.getName(), MapleCarnivalChallenge.getJobBasicNameById(leader.getJob()));
         this.leaderName = leader.getName();
         this.ch = ch;
@@ -83,10 +100,10 @@ public class MapleSquad {
                     if (ChannelServer.getInstance(ch).addMapleSquad(squad, type.name())) {
                         getBeginMap().broadcastMessage(MaplePacketCreator.getClock(expiration / 1000));
                         getBeginMap().broadcastMessage(MaplePacketCreator.serverNotice(6, nextPlayerId + toSay));
-                        type.queuedPlayers.get(ch).add(new Pair<String, String>(nextPlayerId, "Success"));
+                        type.queuedPlayers.get(ch).add(new Pair<>(nextPlayerId, "Success"));
                     } else {
                         squad.clear();
-                        type.queuedPlayers.get(ch).add(new Pair<String, String>(nextPlayerId, "Skipped"));
+                        type.queuedPlayers.get(ch).add(new Pair<>(nextPlayerId, "Skipped"));
                     }
                     break;
                 } else {

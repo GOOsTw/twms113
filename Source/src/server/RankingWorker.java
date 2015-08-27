@@ -33,8 +33,8 @@ import java.util.Map;
 
 public class RankingWorker {
 
-    private final Map<Integer, List<RankingInformation>> rankings = new HashMap<Integer, List<RankingInformation>>();
-    private final Map<String, Integer> jobCommands = new HashMap<String, Integer>();
+    private final Map<Integer, List<RankingInformation>> rankings = new HashMap<>();
+    private final Map<String, Integer> jobCommands = new HashMap<>();
     private static RankingWorker instance;
     private Connection con;
 
@@ -64,7 +64,6 @@ public class RankingWorker {
             con = DatabaseConnection.getConnection();
             updateRanking();
         } catch (Exception ex) {
-            ex.printStackTrace();
             System.err.println("Could not update rankings");
         }
         //System.out.println("排行啟動完成 :::"); //keep
@@ -75,35 +74,32 @@ public class RankingWorker {
         sb.append(", a.lastlogin AS lastlogin, a.loggedin FROM characters AS c LEFT JOIN accounts AS a ON c.accountid = a.id WHERE c.gm = 0 AND a.banned = 0 ");
         sb.append("ORDER BY c.level DESC , c.exp DESC , c.fame DESC , c.meso DESC , c.rank ASC");
 
-        PreparedStatement charSelect = con.prepareStatement(sb.toString());
-        ResultSet rs = charSelect.executeQuery();
-        PreparedStatement ps = con.prepareStatement("UPDATE characters SET jobRank = ?, jobRankMove = ?, rank = ?, rankMove = ? WHERE id = ?");
-        int rank = 0; //for "all"
-        final Map<Integer, Integer> rankMap = new LinkedHashMap<Integer, Integer>();
-        for (int i : jobCommands.values()) {
-            rankMap.put(i, 0); //job to rank
-            rankings.put(i, new ArrayList<RankingInformation>());
+        PreparedStatement ps;
+        try (PreparedStatement charSelect = con.prepareStatement(sb.toString()); ResultSet rs = charSelect.executeQuery()) {
+            ps = con.prepareStatement("UPDATE characters SET jobRank = ?, jobRankMove = ?, rank = ?, rankMove = ? WHERE id = ?");
+            int rank = 0; //for "all"
+            final Map<Integer, Integer> rankMap = new LinkedHashMap<>();
+            for (int i : jobCommands.values()) {
+                rankMap.put(i, 0); //job to rank
+                rankings.put(i, new ArrayList<RankingInformation>());
+            }   while (rs.next()) {
+                int job = rs.getInt("job");
+                if (!rankMap.containsKey(job / 100)) { //not supported.
+                    continue;
+                }
+                int jobRank = rankMap.get(job / 100) + 1;
+                rankMap.put(job / 100, jobRank);
+                rank++;
+                rankings.get(-1).add(new RankingInformation(rs.getString("name"), job, rs.getInt("level"), rs.getInt("exp"), rank));
+                rankings.get(job / 100).add(new RankingInformation(rs.getString("name"), job, rs.getInt("level"), rs.getInt("exp"), jobRank));
+                ps.setInt(1, jobRank);
+                ps.setInt(2, rs.getInt("jobRank") - jobRank);
+                ps.setInt(3, rank);
+                ps.setInt(4, rs.getInt("rank") - rank);
+                ps.setInt(5, rs.getInt("id"));
+                ps.addBatch();
+            }   ps.executeBatch(); //Batch update should be faster.
         }
-        while (rs.next()) {
-            int job = rs.getInt("job");
-            if (!rankMap.containsKey(job / 100)) { //not supported.
-                continue;
-            }
-            int jobRank = rankMap.get(job / 100) + 1;
-            rankMap.put(job / 100, jobRank);
-            rank++;
-            rankings.get(-1).add(new RankingInformation(rs.getString("name"), job, rs.getInt("level"), rs.getInt("exp"), rank));
-            rankings.get(job / 100).add(new RankingInformation(rs.getString("name"), job, rs.getInt("level"), rs.getInt("exp"), jobRank));
-            ps.setInt(1, jobRank);
-            ps.setInt(2, rs.getInt("jobRank") - jobRank);
-            ps.setInt(3, rank);
-            ps.setInt(4, rs.getInt("rank") - rank);
-            ps.setInt(5, rs.getInt("id"));
-            ps.addBatch();
-        }
-        ps.executeBatch(); //Batch update should be faster.
-        rs.close();
-        charSelect.close();
         ps.close();
     }
 
@@ -142,7 +138,7 @@ public class RankingWorker {
             loadToString();
         }
 
-        public void loadToString() {
+        public final void loadToString() {
             final StringBuilder builder = new StringBuilder("Rank ");
             builder.append(rank);
             builder.append(" : ");

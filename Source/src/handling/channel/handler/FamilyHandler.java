@@ -58,7 +58,7 @@ public class FamilyHandler {
         if (!success) {
             return;
         }
-        MapleCharacter victim = null;
+        MapleCharacter victim;
         switch (type) {
             case 0: //teleport: need add check for if not a safe place
                 victim = c.getChannelServer().getPlayerStorage().getCharacterByName(slea.readMapleAsciiString());

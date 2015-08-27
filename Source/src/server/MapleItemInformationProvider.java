@@ -1,6 +1,5 @@
 package server;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -14,12 +13,8 @@ import client.inventory.ItemFlag;
 import constants.GameConstants;
 import client.MapleCharacter;
 import client.MapleClient;
-import client.inventory.Item;
-import client.inventory.MapleInventory;
 import client.inventory.MapleInventoryType;
 import client.inventory.MapleWeaponType;
-import java.util.Collection;
-import java.util.LinkedList;
 import provider.MapleData;
 import provider.MapleDataDirectoryEntry;
 import provider.MapleDataFileEntry;
@@ -44,49 +39,49 @@ public class MapleItemInformationProvider {
     protected final MapleData insStringData = stringData.getData("Ins.img");
     protected final MapleData petStringData = stringData.getData("Pet.img");
     protected Map<Integer, Boolean> onEquipUntradableCache = new HashMap<>();
-    protected final Map<Integer, List<Integer>> scrollReqCache = new HashMap<Integer, List<Integer>>();
-    protected final Map<Integer, Short> slotMaxCache = new HashMap<Integer, Short>();
-    protected final Map<Integer, List<StructPotentialItem>> potentialCache = new HashMap<Integer, List<StructPotentialItem>>();
-    protected final Map<Integer, MapleStatEffect> itemEffects = new HashMap<Integer, MapleStatEffect>();
-    protected final Map<Integer, Map<String, Integer>> equipStatsCache = new HashMap<Integer, Map<String, Integer>>();
-    protected final Map<Integer, Map<String, Byte>> itemMakeStatsCache = new HashMap<Integer, Map<String, Byte>>();
-    protected final Map<Integer, Short> itemMakeLevel = new HashMap<Integer, Short>();
-    protected final Map<Integer, Equip> equipCache = new HashMap<Integer, Equip>();
-    protected final Map<Integer, Double> priceCache = new HashMap<Integer, Double>();
-    protected final Map<Integer, Integer> wholePriceCache = new HashMap<Integer, Integer>();
-    protected final Map<Integer, Integer> projectileWatkCache = new HashMap<Integer, Integer>();
-    protected final Map<Integer, Integer> monsterBookID = new HashMap<Integer, Integer>();
-    protected final Map<Integer, String> nameCache = new HashMap<Integer, String>();
-    protected final Map<Integer, String> descCache = new HashMap<Integer, String>();
-    protected final Map<Integer, String> msgCache = new HashMap<Integer, String>();
-    protected final Map<Integer, Map<String, Integer>> SkillStatsCache = new HashMap<Integer, Map<String, Integer>>();
-    protected final Map<Integer, Byte> consumeOnPickupCache = new HashMap<Integer, Byte>();
-    protected final Map<Integer, Boolean> dropRestrictionCache = new HashMap<Integer, Boolean>();
-    protected final Map<Integer, Boolean> accCache = new HashMap<Integer, Boolean>();
-    protected final Map<Integer, Boolean> pickupRestrictionCache = new HashMap<Integer, Boolean>();
-    protected final Map<Integer, Integer> stateChangeCache = new HashMap<Integer, Integer>();
-    protected final Map<Integer, Integer> mesoCache = new HashMap<Integer, Integer>();
-    protected final Map<Integer, Boolean> notSaleCache = new HashMap<Integer, Boolean>();
-    protected final Map<Integer, Integer> karmaEnabledCache = new HashMap<Integer, Integer>();
-    protected final Map<Integer, Boolean> isQuestItemCache = new HashMap<Integer, Boolean>();
-    protected final Map<Integer, Boolean> blockPickupCache = new HashMap<Integer, Boolean>();
-    protected final Map<Integer, List<Integer>> petsCanConsumeCache = new HashMap<Integer, List<Integer>>();
-    protected final Map<Integer, Boolean> logoutExpireCache = new HashMap<Integer, Boolean>();
-    protected final Map<Integer, List<Pair<Integer, Integer>>> summonMobCache = new HashMap<Integer, List<Pair<Integer, Integer>>>();
-    protected final List<Pair<Integer, String>> itemNameCache = new ArrayList<Pair<Integer, String>>();
-    protected final Map<Integer, Map<Integer, Map<String, Integer>>> equipIncsCache = new HashMap<Integer, Map<Integer, Map<String, Integer>>>();
-    protected final Map<Integer, Map<Integer, List<Integer>>> equipSkillsCache = new HashMap<Integer, Map<Integer, List<Integer>>>();
-    protected final Map<Integer, Pair<Integer, List<StructRewardItem>>> RewardItem = new HashMap<Integer, Pair<Integer, List<StructRewardItem>>>();
-    protected final Map<Byte, StructSetItem> setItems = new HashMap<Byte, StructSetItem>();
-    protected final Map<Integer, Pair<Integer, List<Integer>>> questItems = new HashMap<Integer, Pair<Integer, List<Integer>>>();
-    protected final Map<Integer, String> faceList = new HashMap<Integer, String>();
+    protected final Map<Integer, List<Integer>> scrollReqCache = new HashMap<>();
+    protected final Map<Integer, Short> slotMaxCache = new HashMap<>();
+    protected final Map<Integer, List<StructPotentialItem>> potentialCache = new HashMap<>();
+    protected final Map<Integer, MapleStatEffect> itemEffects = new HashMap<>();
+    protected final Map<Integer, Map<String, Integer>> equipStatsCache = new HashMap<>();
+    protected final Map<Integer, Map<String, Byte>> itemMakeStatsCache = new HashMap<>();
+    protected final Map<Integer, Short> itemMakeLevel = new HashMap<>();
+    protected final Map<Integer, Equip> equipCache = new HashMap<>();
+    protected final Map<Integer, Double> priceCache = new HashMap<>();
+    protected final Map<Integer, Integer> wholePriceCache = new HashMap<>();
+    protected final Map<Integer, Integer> projectileWatkCache = new HashMap<>();
+    protected final Map<Integer, Integer> monsterBookID = new HashMap<>();
+    protected final Map<Integer, String> nameCache = new HashMap<>();
+    protected final Map<Integer, String> descCache = new HashMap<>();
+    protected final Map<Integer, String> msgCache = new HashMap<>();
+    protected final Map<Integer, Map<String, Integer>> SkillStatsCache = new HashMap<>();
+    protected final Map<Integer, Byte> consumeOnPickupCache = new HashMap<>();
+    protected final Map<Integer, Boolean> dropRestrictionCache = new HashMap<>();
+    protected final Map<Integer, Boolean> accCache = new HashMap<>();
+    protected final Map<Integer, Boolean> pickupRestrictionCache = new HashMap<>();
+    protected final Map<Integer, Integer> stateChangeCache = new HashMap<>();
+    protected final Map<Integer, Integer> mesoCache = new HashMap<>();
+    protected final Map<Integer, Boolean> notSaleCache = new HashMap<>();
+    protected final Map<Integer, Integer> karmaEnabledCache = new HashMap<>();
+    protected final Map<Integer, Boolean> isQuestItemCache = new HashMap<>();
+    protected final Map<Integer, Boolean> blockPickupCache = new HashMap<>();
+    protected final Map<Integer, List<Integer>> petsCanConsumeCache = new HashMap<>();
+    protected final Map<Integer, Boolean> logoutExpireCache = new HashMap<>();
+    protected final Map<Integer, List<Pair<Integer, Integer>>> summonMobCache = new HashMap<>();
+    protected final List<Pair<Integer, String>> itemNameCache = new ArrayList<>();
+    protected final Map<Integer, Map<Integer, Map<String, Integer>>> equipIncsCache = new HashMap<>();
+    protected final Map<Integer, Map<Integer, List<Integer>>> equipSkillsCache = new HashMap<>();
+    protected final Map<Integer, Pair<Integer, List<StructRewardItem>>> RewardItem = new HashMap<>();
+    protected final Map<Byte, StructSetItem> setItems = new HashMap<>();
+    protected final Map<Integer, Pair<Integer, List<Integer>>> questItems = new HashMap<>();
+    protected final Map<Integer, String> faceList = new HashMap<>();
 
     protected MapleItemInformationProvider() {
         System.out.println("MapleItemInformationProvider 讀取中:::");
     }
 
     public final void load() {
-        if (setItems.size() != 0 || potentialCache.size() != 0) {
+        if (!setItems.isEmpty() || !potentialCache.isEmpty()) {
             return;
         }
         getAllItems();
@@ -207,42 +202,42 @@ public class MapleItemInformationProvider {
     }
 
     public final List<Pair<Integer, String>> getAllItems() {
-        if (itemNameCache.size() != 0) {
+        if (!itemNameCache.isEmpty()) {
             return itemNameCache;
         }
-        final List<Pair<Integer, String>> itemPairs = new ArrayList<Pair<Integer, String>>();
+        final List<Pair<Integer, String>> itemPairs = new ArrayList<>();
         MapleData itemsData;
 
         itemsData = stringData.getData("Cash.img");
         for (final MapleData itemFolder : itemsData.getChildren()) {
-            itemPairs.add(new Pair<Integer, String>(Integer.parseInt(itemFolder.getName()), MapleDataTool.getString("name", itemFolder, "NO-NAME")));
+            itemPairs.add(new Pair<>(Integer.parseInt(itemFolder.getName()), MapleDataTool.getString("name", itemFolder, "NO-NAME")));
         }
 
         itemsData = stringData.getData("Consume.img");
         for (final MapleData itemFolder : itemsData.getChildren()) {
-            itemPairs.add(new Pair<Integer, String>(Integer.parseInt(itemFolder.getName()), MapleDataTool.getString("name", itemFolder, "NO-NAME")));
+            itemPairs.add(new Pair<>(Integer.parseInt(itemFolder.getName()), MapleDataTool.getString("name", itemFolder, "NO-NAME")));
         }
 
         itemsData = stringData.getData("Eqp.img").getChildByPath("Eqp");
         for (final MapleData eqpType : itemsData.getChildren()) {
             for (final MapleData itemFolder : eqpType.getChildren()) {
-                itemPairs.add(new Pair<Integer, String>(Integer.parseInt(itemFolder.getName()), MapleDataTool.getString("name", itemFolder, "NO-NAME")));
+                itemPairs.add(new Pair<>(Integer.parseInt(itemFolder.getName()), MapleDataTool.getString("name", itemFolder, "NO-NAME")));
             }
         }
 
         itemsData = stringData.getData("Etc.img").getChildByPath("Etc");
         for (final MapleData itemFolder : itemsData.getChildren()) {
-            itemPairs.add(new Pair<Integer, String>(Integer.parseInt(itemFolder.getName()), MapleDataTool.getString("name", itemFolder, "NO-NAME")));
+            itemPairs.add(new Pair<>(Integer.parseInt(itemFolder.getName()), MapleDataTool.getString("name", itemFolder, "NO-NAME")));
         }
 
         itemsData = stringData.getData("Ins.img");
         for (final MapleData itemFolder : itemsData.getChildren()) {
-            itemPairs.add(new Pair<Integer, String>(Integer.parseInt(itemFolder.getName()), MapleDataTool.getString("name", itemFolder, "NO-NAME")));
+            itemPairs.add(new Pair<>(Integer.parseInt(itemFolder.getName()), MapleDataTool.getString("name", itemFolder, "NO-NAME")));
         }
 
         itemsData = stringData.getData("Pet.img");
         for (final MapleData itemFolder : itemsData.getChildren()) {
-            itemPairs.add(new Pair<Integer, String>(Integer.parseInt(itemFolder.getName()), MapleDataTool.getString("name", itemFolder, "NO-NAME")));
+            itemPairs.add(new Pair<>(Integer.parseInt(itemFolder.getName()), MapleDataTool.getString("name", itemFolder, "NO-NAME")));
         }
         return itemPairs;
     }
@@ -390,6 +385,7 @@ public class MapleItemInformationProvider {
 
     /**
      * returns the maximum of items in one slot
+     * @param c
      */
     public final short getSlotMax(final MapleClient c, final int itemId) {
         if (slotMaxCache.containsKey(itemId)) {
@@ -421,7 +417,7 @@ public class MapleItemInformationProvider {
         if (item == null) {
             return -1;
         }
-        int pEntry = 0;
+        int pEntry;
         final MapleData pData = item.getChildByPath("info/price");
         if (pData == null) {
             return -1;
@@ -440,7 +436,7 @@ public class MapleItemInformationProvider {
         if (item == null) {
             return -1;
         }
-        double pEntry = 0.0;
+        double pEntry;
         MapleData pData = item.getChildByPath("info/unitPrice");
         if (pData != null) {
             try {
@@ -469,7 +465,7 @@ public class MapleItemInformationProvider {
         if (itemId / 10000 != 425) {
             return null;
         }
-        final Map<String, Byte> ret = new LinkedHashMap<String, Byte>();
+        final Map<String, Byte> ret = new LinkedHashMap<>();
         final MapleData item = getItemData(itemId);
         if (item == null) {
             return null;
@@ -507,43 +503,59 @@ public class MapleItemInformationProvider {
         //is this all the stats?
         try {
             for (Entry<String, Integer> stat : sta.entrySet()) {
-                if (stat.getKey().equals("STRMin")) {
-                    nEquip.setStr((short) (nEquip.getStr() + rand(stat.getValue().intValue(), sta.get("STRMax").intValue())));
-                } else if (stat.getKey().equals("DEXMin")) {
-                    nEquip.setDex((short) (nEquip.getDex() + rand(stat.getValue().intValue(), sta.get("DEXMax").intValue())));
-                } else if (stat.getKey().equals("INTMin")) {
-                    nEquip.setInt((short) (nEquip.getInt() + rand(stat.getValue().intValue(), sta.get("INTMax").intValue())));
-                } else if (stat.getKey().equals("LUKMin")) {
-                    nEquip.setLuk((short) (nEquip.getLuk() + rand(stat.getValue().intValue(), sta.get("LUKMax").intValue())));
-                } else if (stat.getKey().equals("PADMin")) {
-                    nEquip.setWatk((short) (nEquip.getWatk() + rand(stat.getValue().intValue(), sta.get("PADMax").intValue())));
-                } else if (stat.getKey().equals("PDDMin")) {
-                    nEquip.setWdef((short) (nEquip.getWdef() + rand(stat.getValue().intValue(), sta.get("PDDMax").intValue())));
-                } else if (stat.getKey().equals("MADMin")) {
-                    nEquip.setMatk((short) (nEquip.getMatk() + rand(stat.getValue().intValue(), sta.get("MADMax").intValue())));
-                } else if (stat.getKey().equals("MDDMin")) {
-                    nEquip.setMdef((short) (nEquip.getMdef() + rand(stat.getValue().intValue(), sta.get("MDDMax").intValue())));
-                } else if (stat.getKey().equals("ACCMin")) {
-                    nEquip.setAcc((short) (nEquip.getAcc() + rand(stat.getValue().intValue(), sta.get("ACCMax").intValue())));
-                } else if (stat.getKey().equals("EVAMin")) {
-                    nEquip.setAvoid((short) (nEquip.getAvoid() + rand(stat.getValue().intValue(), sta.get("EVAMax").intValue())));
-                } else if (stat.getKey().equals("SpeedMin")) {
-                    nEquip.setSpeed((short) (nEquip.getSpeed() + rand(stat.getValue().intValue(), sta.get("SpeedMax").intValue())));
-                } else if (stat.getKey().equals("JumpMin")) {
-                    nEquip.setJump((short) (nEquip.getJump() + rand(stat.getValue().intValue(), sta.get("JumpMax").intValue())));
-                } else if (stat.getKey().equals("MHPMin")) {
-                    nEquip.setHp((short) (nEquip.getHp() + rand(stat.getValue().intValue(), sta.get("MHPMax").intValue())));
-                } else if (stat.getKey().equals("MMPMin")) {
-                    nEquip.setMp((short) (nEquip.getMp() + rand(stat.getValue().intValue(), sta.get("MMPMax").intValue())));
-                } else if (stat.getKey().equals("MaxHPMin")) {
-                    nEquip.setHp((short) (nEquip.getHp() + rand(stat.getValue().intValue(), sta.get("MaxHPMax").intValue())));
-                } else if (stat.getKey().equals("MaxMPMin")) {
-                    nEquip.setMp((short) (nEquip.getMp() + rand(stat.getValue().intValue(), sta.get("MaxMPMax").intValue())));
+                switch (stat.getKey()) {
+                    case "STRMin":
+                        nEquip.setStr((short) (nEquip.getStr() + rand(stat.getValue(), sta.get("STRMax"))));
+                        break;
+                    case "DEXMin":
+                        nEquip.setDex((short) (nEquip.getDex() + rand(stat.getValue(), sta.get("DEXMax"))));
+                        break;
+                    case "INTMin":
+                        nEquip.setInt((short) (nEquip.getInt() + rand(stat.getValue(), sta.get("INTMax"))));
+                        break;
+                    case "LUKMin":
+                        nEquip.setLuk((short) (nEquip.getLuk() + rand(stat.getValue(), sta.get("LUKMax"))));
+                        break;
+                    case "PADMin":
+                        nEquip.setWatk((short) (nEquip.getWatk() + rand(stat.getValue(), sta.get("PADMax"))));
+                        break;
+                    case "PDDMin":
+                        nEquip.setWdef((short) (nEquip.getWdef() + rand(stat.getValue(), sta.get("PDDMax"))));
+                        break;
+                    case "MADMin":
+                        nEquip.setMatk((short) (nEquip.getMatk() + rand(stat.getValue(), sta.get("MADMax"))));
+                        break;
+                    case "MDDMin":
+                        nEquip.setMdef((short) (nEquip.getMdef() + rand(stat.getValue(), sta.get("MDDMax"))));
+                        break;
+                    case "ACCMin":
+                        nEquip.setAcc((short) (nEquip.getAcc() + rand(stat.getValue(), sta.get("ACCMax"))));
+                        break;
+                    case "EVAMin":
+                        nEquip.setAvoid((short) (nEquip.getAvoid() + rand(stat.getValue(), sta.get("EVAMax"))));
+                        break;
+                    case "SpeedMin":
+                        nEquip.setSpeed((short) (nEquip.getSpeed() + rand(stat.getValue(), sta.get("SpeedMax"))));
+                        break;
+                    case "JumpMin":
+                        nEquip.setJump((short) (nEquip.getJump() + rand(stat.getValue(), sta.get("JumpMax"))));
+                        break;
+                    case "MHPMin":
+                        nEquip.setHp((short) (nEquip.getHp() + rand(stat.getValue(), sta.get("MHPMax"))));
+                        break;
+                    case "MMPMin":
+                        nEquip.setMp((short) (nEquip.getMp() + rand(stat.getValue(), sta.get("MMPMax"))));
+                        break;
+                    case "MaxHPMin":
+                        nEquip.setHp((short) (nEquip.getHp() + rand(stat.getValue(), sta.get("MaxHPMax"))));
+                        break;
+                    case "MaxMPMin":
+                        nEquip.setMp((short) (nEquip.getMp() + rand(stat.getValue(), sta.get("MaxMPMax"))));
+                        break;
                 }
             }
         } catch (NullPointerException e) {
-            //catch npe because obviously the wz have some error XD
-            e.printStackTrace();
+            
         }
         return nEquip;
     }
@@ -552,7 +564,7 @@ public class MapleItemInformationProvider {
         if (equipIncsCache.containsKey(itemId)) {
             return equipIncsCache.get(itemId);
         }
-        final Map<Integer, Map<String, Integer>> ret = new LinkedHashMap<Integer, Map<String, Integer>>();
+        final Map<Integer, Map<String, Integer>> ret = new LinkedHashMap<>();
         final MapleData item = getItemData(itemId);
         if (item == null) {
             return null;
@@ -562,7 +574,7 @@ public class MapleItemInformationProvider {
             return null;
         }
         for (MapleData dat : info.getChildren()) {
-            Map<String, Integer> incs = new HashMap<String, Integer>();
+            Map<String, Integer> incs = new HashMap<>();
             for (MapleData data : dat.getChildren()) { //why we have to do this? check if number has skills or not
                 if (data.getName().length() > 3) {
                     incs.put(data.getName().substring(3), MapleDataTool.getIntConvert(data.getName(), dat, 0));
@@ -578,7 +590,7 @@ public class MapleItemInformationProvider {
         if (equipSkillsCache.containsKey(itemId)) {
             return equipSkillsCache.get(itemId);
         }
-        final Map<Integer, List<Integer>> ret = new LinkedHashMap<Integer, List<Integer>>();
+        final Map<Integer, List<Integer>> ret = new LinkedHashMap<>();
         final MapleData item = getItemData(itemId);
         if (item == null) {
             return null;
@@ -590,7 +602,7 @@ public class MapleItemInformationProvider {
         for (MapleData dat : info.getChildren()) {
             for (MapleData data : dat.getChildren()) { //why we have to do this? check if number has skills or not
                 if (data.getName().length() == 1) { //the numbers all them are one digit. everything else isnt so we're lucky here..
-                    List<Integer> adds = new ArrayList<Integer>();
+                    List<Integer> adds = new ArrayList<>();
                     for (MapleData skil : data.getChildByPath("Skill").getChildren()) {
                         adds.add(MapleDataTool.getIntConvert("id", skil, 0));
                     }
@@ -606,7 +618,7 @@ public class MapleItemInformationProvider {
         if (equipStatsCache.containsKey(itemId)) {
             return equipStatsCache.get(itemId);
         }
-        final Map<String, Integer> ret = new LinkedHashMap<String, Integer>();
+        final Map<String, Integer> ret = new LinkedHashMap<>();
         final MapleData item = getItemData(itemId);
         if (item == null) {
             return null;
@@ -651,10 +663,7 @@ public class MapleItemInformationProvider {
     public final boolean canEquip(final Map<String, Integer> stats, final int itemid, final int level, final int job, final int fame, final int str, final int dex, final int luk, final int int_, final int supremacy) {
         if ((level + supremacy) >= stats.get("reqLevel") && str >= stats.get("reqSTR") && dex >= stats.get("reqDEX") && luk >= stats.get("reqLUK") && int_ >= stats.get("reqINT")) {
             final int fameReq = stats.get("reqPOP");
-            if (fameReq != 0 && fame < fameReq) {
-                return false;
-            }
-            return true;
+            return !(fameReq != 0 && fame < fameReq);
         }
         return false;
     }
@@ -688,7 +697,7 @@ public class MapleItemInformationProvider {
         if (scrollReqCache.containsKey(itemId)) {
             return scrollReqCache.get(itemId);
         }
-        final List<Integer> ret = new ArrayList<Integer>();
+        final List<Integer> ret = new ArrayList<>();
         final MapleData data = getItemData(itemId).getChildByPath("req");
 
         if (data == null) {
@@ -852,38 +861,55 @@ public class MapleItemInformationProvider {
                             for (Entry<String, Integer> stat : stats.entrySet()) {
                                 final String key = stat.getKey();
 
-                                if (key.equals("STR")) {
-                                    nEquip.setStr((short) (nEquip.getStr() + stat.getValue().intValue()));
-                                } else if (key.equals("DEX")) {
-                                    nEquip.setDex((short) (nEquip.getDex() + stat.getValue().intValue()));
-                                } else if (key.equals("INT")) {
-                                    nEquip.setInt((short) (nEquip.getInt() + stat.getValue().intValue()));
-                                } else if (key.equals("LUK")) {
-                                    nEquip.setLuk((short) (nEquip.getLuk() + stat.getValue().intValue()));
-                                } else if (key.equals("PAD")) {
-                                    nEquip.setWatk((short) (nEquip.getWatk() + stat.getValue().intValue()));
-                                } else if (key.equals("PDD")) {
-                                    nEquip.setWdef((short) (nEquip.getWdef() + stat.getValue().intValue()));
-                                } else if (key.equals("MAD")) {
-                                    nEquip.setMatk((short) (nEquip.getMatk() + stat.getValue().intValue()));
-                                } else if (key.equals("MDD")) {
-                                    nEquip.setMdef((short) (nEquip.getMdef() + stat.getValue().intValue()));
-                                } else if (key.equals("ACC")) {
-                                    nEquip.setAcc((short) (nEquip.getAcc() + stat.getValue().intValue()));
-                                } else if (key.equals("EVA")) {
-                                    nEquip.setAvoid((short) (nEquip.getAvoid() + stat.getValue().intValue()));
-                                } else if (key.equals("Speed")) {
-                                    nEquip.setSpeed((short) (nEquip.getSpeed() + stat.getValue().intValue()));
-                                } else if (key.equals("Jump")) {
-                                    nEquip.setJump((short) (nEquip.getJump() + stat.getValue().intValue()));
-                                } else if (key.equals("MHP")) {
-                                    nEquip.setHp((short) (nEquip.getHp() + stat.getValue().intValue()));
-                                } else if (key.equals("MMP")) {
-                                    nEquip.setMp((short) (nEquip.getMp() + stat.getValue().intValue()));
-                                } else if (key.equals("MHPr")) {
-                                    nEquip.setHpR((short) (nEquip.getHpR() + stat.getValue().intValue()));
-                                } else if (key.equals("MMPr")) {
-                                    nEquip.setMpR((short) (nEquip.getMpR() + stat.getValue().intValue()));
+                                switch (key) {
+                                    case "STR":
+                                        nEquip.setStr((short) (nEquip.getStr() + stat.getValue()));
+                                        break;
+                                    case "DEX":
+                                        nEquip.setDex((short) (nEquip.getDex() + stat.getValue()));
+                                        break;
+                                    case "INT":
+                                        nEquip.setInt((short) (nEquip.getInt() + stat.getValue()));
+                                        break;
+                                    case "LUK":
+                                        nEquip.setLuk((short) (nEquip.getLuk() + stat.getValue()));
+                                        break;
+                                    case "PAD":
+                                        nEquip.setWatk((short) (nEquip.getWatk() + stat.getValue()));
+                                        break;
+                                    case "PDD":
+                                        nEquip.setWdef((short) (nEquip.getWdef() + stat.getValue()));
+                                        break;
+                                    case "MAD":
+                                        nEquip.setMatk((short) (nEquip.getMatk() + stat.getValue()));
+                                        break;
+                                    case "MDD":
+                                        nEquip.setMdef((short) (nEquip.getMdef() + stat.getValue()));
+                                        break;
+                                    case "ACC":
+                                        nEquip.setAcc((short) (nEquip.getAcc() + stat.getValue()));
+                                        break;
+                                    case "EVA":
+                                        nEquip.setAvoid((short) (nEquip.getAvoid() + stat.getValue()));
+                                        break;
+                                    case "Speed":
+                                        nEquip.setSpeed((short) (nEquip.getSpeed() + stat.getValue()));
+                                        break;
+                                    case "Jump":
+                                        nEquip.setJump((short) (nEquip.getJump() + stat.getValue()));
+                                        break;
+                                    case "MHP":
+                                        nEquip.setHp((short) (nEquip.getHp() + stat.getValue()));
+                                        break;
+                                    case "MMP":
+                                        nEquip.setMp((short) (nEquip.getMp() + stat.getValue()));
+                                        break;
+                                    case "MHPr":
+                                        nEquip.setHpR((short) (nEquip.getHpR() + stat.getValue()));
+                                        break;
+                                    case "MMPr":
+                                        nEquip.setMpR((short) (nEquip.getMpR() + stat.getValue()));
+                                        break;
                                 }
                             }
                             break;
@@ -918,45 +944,65 @@ public class MapleItemInformationProvider {
             for (Entry<String, Integer> stat : stats.entrySet()) {
                 final String key = stat.getKey();
 
-                if (key.equals("STR")) {
-                    nEquip.setStr((short) stat.getValue().intValue());
-                } else if (key.equals("DEX")) {
-                    nEquip.setDex((short) stat.getValue().intValue());
-                } else if (key.equals("INT")) {
-                    nEquip.setInt((short) stat.getValue().intValue());
-                } else if (key.equals("LUK")) {
-                    nEquip.setLuk((short) stat.getValue().intValue());
-                } else if (key.equals("PAD")) {
-                    nEquip.setWatk((short) stat.getValue().intValue());
-                } else if (key.equals("PDD")) {
-                    nEquip.setWdef((short) stat.getValue().intValue());
-                } else if (key.equals("MAD")) {
-                    nEquip.setMatk((short) stat.getValue().intValue());
-                } else if (key.equals("MDD")) {
-                    nEquip.setMdef((short) stat.getValue().intValue());
-                } else if (key.equals("ACC")) {
-                    nEquip.setAcc((short) stat.getValue().intValue());
-                } else if (key.equals("EVA")) {
-                    nEquip.setAvoid((short) stat.getValue().intValue());
-                } else if (key.equals("Speed")) {
-                    nEquip.setSpeed((short) stat.getValue().intValue());
-                } else if (key.equals("Jump")) {
-                    nEquip.setJump((short) stat.getValue().intValue());
-                } else if (key.equals("MHP")) {
-                    nEquip.setHp((short) stat.getValue().intValue());
-                } else if (key.equals("MMP")) {
-                    nEquip.setMp((short) stat.getValue().intValue());
-                } else if (key.equals("MHPr")) {
-                    nEquip.setHpR((short) stat.getValue().intValue());
-                } else if (key.equals("MMPr")) {
-                    nEquip.setMpR((short) stat.getValue().intValue());
-                } else if (key.equals("tuc")) {
-                    nEquip.setUpgradeSlots(stat.getValue().byteValue());
-                } else if (key.equals("Craft")) {
-                    nEquip.setHands(stat.getValue().shortValue());
-                } else if (key.equals("durability")) {
-                    nEquip.setDurability(stat.getValue().intValue());
+                switch (key) {
+                    case "STR":
+                        nEquip.setStr(stat.getValue().shortValue());
+                        break;
+                    case "DEX":
+                        nEquip.setDex(stat.getValue().shortValue());
+                        break;
+                    case "INT":
+                        nEquip.setInt(stat.getValue().shortValue());
+                        break;
+                    case "LUK":
+                        nEquip.setLuk(stat.getValue().shortValue());
+                        break;
+                    case "PAD":
+                        nEquip.setWatk(stat.getValue().shortValue());
+                        break;
+                    case "PDD":
+                        nEquip.setWdef(stat.getValue().shortValue());
+                        break;
+                    case "MAD":
+                        nEquip.setMatk(stat.getValue().shortValue());
+                        break;
+                    case "MDD":
+                        nEquip.setMdef(stat.getValue().shortValue());
+                        break;
+                    case "ACC":
+                        nEquip.setAcc(stat.getValue().shortValue());
+                        break;
+                    case "EVA":
+                        nEquip.setAvoid(stat.getValue().shortValue());
+                        break;
+                    case "Speed":
+                        nEquip.setSpeed(stat.getValue().shortValue());
+                        break;
+                    case "Jump":
+                        nEquip.setJump(stat.getValue().shortValue());
+                        break;
+                    case "MHP":
+                        nEquip.setHp(stat.getValue().shortValue());
+                        break;
+                    case "MMP":
+                        nEquip.setMp(stat.getValue().shortValue());
+                        break;
+                    case "MHPr":
+                        nEquip.setHpR(stat.getValue().shortValue());
+                        break;
+                    case "MMPr":
+                        nEquip.setMpR(stat.getValue().shortValue());
+                        break;
+                    case "tuc":
+                        nEquip.setUpgradeSlots(stat.getValue().byteValue());
+                        break;
+                    case "Craft":
+                        nEquip.setHands(stat.getValue().shortValue());
+                        break;
+                    case "durability":
+                        nEquip.setDurability(stat.getValue());
 //                } else if (key.equals("afterImage")) {
+                        break;
                 }
             }
         }
@@ -964,7 +1010,7 @@ public class MapleItemInformationProvider {
         return nEquip.copy();
     }
 
-    private final short getRandStat(final short defaultValue, final int maxRange) {
+    private short getRandStat(final short defaultValue, final int maxRange) {
         if (defaultValue == 0) {
             return 0;
         }
@@ -1001,13 +1047,13 @@ public class MapleItemInformationProvider {
                 return null;
             }
             ret = MapleStatEffect.loadItemEffectFromData(item.getChildByPath("spec"), itemId);
-            itemEffects.put(Integer.valueOf(itemId), ret);
+            itemEffects.put(itemId, ret);
         }
         return ret;
     }
 
     public final List<Pair<Integer, Integer>> getSummonMobs(final int itemId) {
-        if (summonMobCache.containsKey(Integer.valueOf(itemId))) {
+        if (summonMobCache.containsKey(itemId)) {
             return summonMobCache.get(itemId);
         }
         if (!GameConstants.isSummonSack(itemId)) {
@@ -1017,10 +1063,10 @@ public class MapleItemInformationProvider {
         if (data == null) {
             return null;
         }
-        final List<Pair<Integer, Integer>> mobPairs = new ArrayList<Pair<Integer, Integer>>();
+        final List<Pair<Integer, Integer>> mobPairs = new ArrayList<>();
 
         for (final MapleData child : data.getChildren()) {
-            mobPairs.add(new Pair<Integer, Integer>(
+            mobPairs.add(new Pair<>(
                     MapleDataTool.getIntConvert("id", child),
                     MapleDataTool.getIntConvert("prob", child)));
         }
@@ -1048,12 +1094,12 @@ public class MapleItemInformationProvider {
     public final int getWatkForProjectile(final int itemId) {
         Integer atk = projectileWatkCache.get(itemId);
         if (atk != null) {
-            return atk.intValue();
+            return atk;
         }
         final MapleData data = getItemData(itemId);
-        atk = Integer.valueOf(MapleDataTool.getInt("info/incPAD", data, 0));
+        atk = MapleDataTool.getInt("info/incPAD", data, 0);
         projectileWatkCache.put(itemId, atk);
-        return atk.intValue();
+        return atk;
     }
 
     public final boolean canScroll(final int scrollid, final int itemid) {
@@ -1258,7 +1304,7 @@ public class MapleItemInformationProvider {
     }
 
     public final Map<Integer, String> getFaceList() {
-        Map<Integer, String> list = new HashMap<Integer, String>();
+        Map<Integer, String> list = new HashMap<>();
         list.putAll(faceList);
         return list;
     }
@@ -1276,23 +1322,23 @@ public class MapleItemInformationProvider {
             return null;
         }
         int totalprob = 0; // As there are some rewards with prob above 2000, we can't assume it's always 100
-        List<StructRewardItem> all = new ArrayList<StructRewardItem>();
+        List<StructRewardItem> all = new ArrayList<>();
 
         for (final MapleData reward : rewards) {
             StructRewardItem struct = new StructRewardItem();
 
-            struct.itemid = MapleDataTool.getInt("item", reward, 0);
-            struct.prob = (byte) MapleDataTool.getInt("prob", reward, 0);
-            struct.quantity = (short) MapleDataTool.getInt("count", reward, 0);
-            struct.effect = MapleDataTool.getString("Effect", reward, "");
-            struct.worldmsg = MapleDataTool.getString("worldMsg", reward, null);
-            struct.period = MapleDataTool.getInt("period", reward, -1);
+            struct.setItemid(MapleDataTool.getInt("item", reward, 0));
+            struct.setProb((short) MapleDataTool.getInt("prob", reward, 0));
+            struct.setQuantity((short) MapleDataTool.getInt("count", reward, 0));
+            struct.setEffect(MapleDataTool.getString("Effect", reward, ""));
+            struct.setWorldmsg(MapleDataTool.getString("worldMsg", reward, null));
+            struct.setPeriod(MapleDataTool.getInt("period", reward, -1));
 
-            totalprob += struct.prob;
+            totalprob += struct.getProb();
 
             all.add(struct);
         }
-        Pair<Integer, List<StructRewardItem>> toreturn = new Pair<Integer, List<StructRewardItem>>(totalprob, all);
+        Pair<Integer, List<StructRewardItem>> toreturn = new Pair<>(totalprob, all);
         RewardItem.put(itemid, toreturn);
         return toreturn;
     }
@@ -1312,7 +1358,7 @@ public class MapleItemInformationProvider {
         if (info == null) {
             return null;
         }
-        final Map<String, Integer> ret = new LinkedHashMap<String, Integer>();
+        final Map<String, Integer> ret = new LinkedHashMap<>();
         for (final MapleData data : info.getChildren()) {
             if (data.getName().startsWith("inc")) {
                 ret.put(data.getName().substring(3), MapleDataTool.getIntConvert(data));
@@ -1335,12 +1381,12 @@ public class MapleItemInformationProvider {
         if (petsCanConsumeCache.get(itemId) != null) {
             return petsCanConsumeCache.get(itemId);
         }
-        final List<Integer> ret = new ArrayList<Integer>();
+        final List<Integer> ret = new ArrayList<>();
         final MapleData data = getItemData(itemId);
         if (data == null || data.getChildByPath("spec") == null) {
             return ret;
         }
-        int curPetId = 0;
+        int curPetId;
         for (MapleData c : data.getChildByPath("spec")) {
             try {
                 Integer.parseInt(c.getName());
@@ -1351,7 +1397,7 @@ public class MapleItemInformationProvider {
             if (curPetId == 0) {
                 break;
             }
-            ret.add(Integer.valueOf(curPetId));
+            ret.add(curPetId);
         }
         petsCanConsumeCache.put(itemId, ret);
         return ret;
@@ -1377,11 +1423,11 @@ public class MapleItemInformationProvider {
         if (itemD == null || itemD.getChildByPath("consumeItem") == null) {
             return null;
         }
-        final List<Integer> consumeItems = new ArrayList<Integer>();
+        final List<Integer> consumeItems = new ArrayList<>();
         for (MapleData consume : itemD.getChildByPath("consumeItem")) {
             consumeItems.add(MapleDataTool.getInt(consume, 0));
         }
-        final Pair<Integer, List<Integer>> questItem = new Pair<Integer, List<Integer>>(MapleDataTool.getIntConvert("questId", itemD, 0), consumeItems);
+        final Pair<Integer, List<Integer>> questItem = new Pair<>(MapleDataTool.getIntConvert("questId", itemD, 0), consumeItems);
         questItems.put(itemId, questItem);
         return questItem;
     }

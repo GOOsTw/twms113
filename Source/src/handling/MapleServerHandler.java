@@ -454,14 +454,14 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 if (cs) {
                     CashShopOperation.EnterCashShop(playerid, c);
                 } else {
-                    InterServerHandler.Loggedin(playerid, c);
+                    InterServerHandler.LoggedIn(playerid, c);
                 }
                 break;
             case ENTER_CASH_SHOP:
-                InterServerHandler.EnterCS(c, c.getPlayer(), false);
+                InterServerHandler.EnterCashShop(c, c.getPlayer(), false);
                 break;
             case ENTER_MTS:
-                InterServerHandler.EnterCS(c, c.getPlayer(), true);
+                InterServerHandler.EnterCashShop(c, c.getPlayer(), true);
                 break;
             case MOVE_PLAYER:
                 PlayerHandler.MovePlayer(slea, c, c.getPlayer());
@@ -726,7 +726,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 BuddyListHandler.BuddyOperationHandler(slea, c);
                 break;
             case CYGNUS_SUMMON:
-                UserInterfaceHandler.CygnusSummon_NPCRequest(c);
+                UserInterfaceHandler.CygnusSummonNPCRequest(c);
                 break;
             case SHIP_OBJECT:
                 UserInterfaceHandler.ShipObjectRequest(slea.readInt(), c);
@@ -812,7 +812,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 NPCHandler.repairAll(c);
                 break;
             case GAME_POLL:
-                UserInterfaceHandler.InGame_Poll(slea, c);
+                UserInterfaceHandler.InGamePoll(slea, c);
                 break;
             case OWL:
                 InventoryHandler.Owl(slea, c);

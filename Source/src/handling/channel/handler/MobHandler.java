@@ -146,11 +146,11 @@ public class MobHandler {
                 return;
             }
         }
-        if (res != null && chr != null) {
+        if (res != null ) {
             if (slea.available() < 9 || slea.available() > 17) { //9.. 0 -> endPos? -> endPos again? -> 0 -> 0
                 System.out.println("slea.available != 17 (movement parsing error)");
                 System.out.println(slea.toString(true));
-                c.getSession().close();
+                c.getSession().close(true);
                 return;
             }
             final MapleMap map = chr.getMap();
