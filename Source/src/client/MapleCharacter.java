@@ -4045,6 +4045,14 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public void dropNPC(String message) {
+        client.getSession().write(MaplePacketCreator.getNPCTalk(9010000, (byte) 0, message, "00 00", (byte) 0));
+    }
+
+    public void dropNPC(int npc, String message) {
+        client.getSession().write(MaplePacketCreator.getNPCTalk(npc, (byte) 0, message, "00 00", (byte) 0));
+    }
+
     public static enum FameStatus {
 
         OK, NOT_TODAY, NOT_THIS_MONTH

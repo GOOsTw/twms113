@@ -3,6 +3,9 @@ package client.messages.commands;
 import client.MapleCharacter;
 import client.MapleClient;
 import client.SkillFactory;
+import client.inventory.IItem;
+import client.inventory.Item;
+import client.inventory.MapleInventoryType;
 import constants.ServerConstants;
 import database.DatabaseConnection;
 import handling.channel.ChannelServer;
@@ -61,6 +64,74 @@ public class InternCommand {
             }
         }
     }
+
+    /*public static class copy extends CommandExecute {
+
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            MapleCharacter player = c.getPlayer();
+            MapleCharacter victim;
+            int type = 1;
+            if (splitted.length < 2) {
+                c.getPlayer().dropMessage("指令使用方法為 " + splitted[0] + " 玩家名稱 裝備欄位(0 = 裝備中 1=裝備欄 2=消耗欄 3=其他欄 4=裝飾欄 5=點數欄)(預設裝備欄) - 複製玩家道具");
+                return 0;
+            }
+
+            victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
+            if (victim == null) {
+                player.dropMessage("找不到該玩家");
+                return 0;
+            }
+
+            try {
+                type = Integer.parseInt(splitted[2]);
+            } catch (Exception ex) {
+            }
+            if (type == 0) {
+                for (IItem ii : victim.getInventory(MapleInventoryType.EQUIPPED).list()) {
+                    IItem n = ii.copy();
+                    player.getInventory(MapleInventoryType.EQUIP).addItem(n);
+                    c.sendPacket(MaplePacketCreator.addInventorySlot(MapleInventoryType.EQUIP, n));
+                }
+
+            } else if (type == 1) {
+                for (IItem ii : victim.getInventory(MapleInventoryType.EQUIP).list()) {
+                    IItem n = ii.copy();
+                    player.getInventory(MapleInventoryType.EQUIP).addItem(n);
+                   c.sendPacket(MaplePacketCreator.addInventorySlot(MapleInventoryType.EQUIP, n));
+                }
+            } else if (type == 2) {
+                for (IItem ii : victim.getInventory(MapleInventoryType.USE).list()) {
+                    IItem n = ii.copy();
+                    player.getInventory(MapleInventoryType.USE).addItem(n);
+                   c.sendPacket(MaplePacketCreator.addInventorySlot(MapleInventoryType.USE, n));
+                }
+
+            } else if (type == 3) {
+                for (IItem ii : victim.getInventory(MapleInventoryType.ETC).list()) {
+                    IItem n = ii.copy();
+                    player.getInventory(MapleInventoryType.ETC).addItem(n);
+                  c.sendPacket(MaplePacketCreator.addInventorySlot(MapleInventoryType.ETC, n));
+                }
+            } else if (type == 4) {
+                for (IItem ii : victim.getInventory(MapleInventoryType.SETUP).list()) {
+                    IItem n = ii.copy();
+                    player.getInventory(MapleInventoryType.SETUP).addItem(n);
+                    c.sendPacket(MaplePacketCreator.addInventorySlot(MapleInventoryType.SETUP, n));
+                }
+
+            } else if (type == 5) {
+                for (IItem ii : victim.getInventory(MapleInventoryType.CASH).list()) {
+                    IItem n = ii.copy();
+                    player.getInventory(MapleInventoryType.CASH).addItem(n);
+                    c.sendPacket(MaplePacketCreator.addInventorySlot(MapleInventoryType.CASH, n));
+                }
+            }
+
+            return 1;
+        }
+
+    }*/
 
     public static class UnBan extends CommandExecute {
 
