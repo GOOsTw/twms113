@@ -227,9 +227,10 @@ public class MobPacket {
 
     public static void addMonsterStatus(MaplePacketLittleEndianWriter mplew, MapleMonster life) {
 
-        if (life.getStati().size() <= 0) {
+        /*if (life.getStati().size() <= 0) {
             life.addEmpty(); //not done yet lulz ok so we add it now for the lulz
-        }
+        }*/
+        
         writeMaskFromList(mplew, life.getStati().values());
         boolean ignore_imm = false;
         for (MonsterStatusEffect buff : life.getStati().values()) {
@@ -450,14 +451,16 @@ public class MobPacket {
 
         mplew.writeShort(SendPacketOpcode.APPLY_MONSTER_STATUS.getValue());
         mplew.writeInt(mons.getObjectId());
-        writeMaskFromList(mplew, Collections.singletonList(ms));
+        /*writeMaskFromList(mplew, Collections.singletonList(ms));
         mplew.writeShort(ms.getX());
         mplew.writeShort(ms.getMobSkill().getSkillId());
         mplew.writeShort(ms.getMobSkill().getSkillLevel());
         mplew.writeShort(ms.getStati().isEmpty() ? 1 : 0); // might actually be the buffTime but it's not displayed anywhere
         mplew.writeShort(0); // delay in ms
         mplew.write(1); // size
-//        mplew.write(1); // ? v97
+//        mplew.write(1); // ? v97*/
+        SingleProcessStatSet(mplew, ms);
+         
 
         return mplew.getPacket();
     }
@@ -543,7 +546,7 @@ public class MobPacket {
         mplew.writeShort(SendPacketOpcode.CANCEL_MONSTER_STATUS.getValue());
         mplew.writeInt(mons.getObjectId());
         writeMaskFromList(mplew, mse);
-        boolean cond = true;
+        boolean cond = false;
         if (cond) {
             int v6 = 0;
             mplew.writeInt(v6);
@@ -551,9 +554,7 @@ public class MobPacket {
                 mplew.writeInt(0);
             }
         }
-
-//     
-//        mplew.write(2); // ? v97
+        mplew.writeInt(0);
         return mplew.getPacket();
     }
 

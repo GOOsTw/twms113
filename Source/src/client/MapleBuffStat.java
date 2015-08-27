@@ -94,6 +94,7 @@ public enum MapleBuffStat implements Serializable {
     PUPPET(28), // HACK - shares buffmask with pickpocket - odin special ^.-
     //楓幣護盾
     MESOGUARD(29),
+    //
     HP_LOSS_GUARD(30),
     //虛弱 
     WEAKEN(30),

@@ -430,28 +430,16 @@ public class DamageParse {
     }
 
     public static final void applyAttackMagic(final AttackInfo attack, final ISkill theSkill, final MapleCharacter player, final MapleStatEffect effect) {
-        if (!player.isAlive()) {
+         if (!player.isAlive()) {
             player.getCheatTracker().registerOffense(CheatingOffense.ATTACKING_WHILE_DEAD);
             return;
         }
-
-        if ((attack.real) && (GameConstants.getAttackDelay(attack.skill) >= 100)) {
+        if (attack.real) {
             player.getCheatTracker().checkAttack(attack.skill, attack.lastAttackTickCount);
         }
-
-        if (effect.getBulletCount() > 1) {
-            if ((attack.hits > effect.getBulletCount()) || (attack.targets > effect.getMobCount())) {
-                player.getCheatTracker().registerOffense(CheatingOffense.MISMATCHING_BULLETCOUNT);
-                System.out.println("Return 9");
-                return;
-            }
-
-        } else if (((attack.hits > effect.getAttackCount()) && (effect.getAttackCount() != 0)) || (attack.targets > effect.getMobCount())) {
-            player.getCheatTracker().registerOffense(CheatingOffense.MISMATCHING_BULLETCOUNT);
-            System.out.println("Return 10");
-            return;
-        }
-
+//	if (attack.skill != 2301002) { // heal is both an attack and a special move (healing) so we'll let the whole applying magic live in the special move part
+//	    effect.applyTo(player);
+//	}
         if (attack.hits > effect.getAttackCount() || attack.targets > effect.getMobCount()) {
             player.getCheatTracker().registerOffense(CheatingOffense.MISMATCHING_BULLETCOUNT);
             return;
@@ -480,95 +468,135 @@ public class DamageParse {
                 }
             }
         }
-
         final PlayerStats stats = player.getStat();
-        Element element = player.getBuffedValue(MapleBuffStat.ELEMENT_RESET) != null ? Element.NEUTRAL : theSkill.getElement();
+//	double minDamagePerHit;
+        double maxDamagePerHit;
+        if (attack.skill == 2301002) {
+            maxDamagePerHit = 30000;
+        } else if (attack.skill == 1000 || attack.skill == 10001000 || attack.skill == 20001000 || attack.skill == 20011000 || attack.skill == 30001000) {
+            maxDamagePerHit = 40;
+        } else if (GameConstants.isPyramidSkill(attack.skill)) {
+            maxDamagePerHit = 1;
+        } else {
+            final double v75 = (effect.getMatk() * 0.058);
+//	    minDamagePerHit = stats.getTotalMagic() * (stats.getInt() * 0.5 + (v75 * v75) + (effect.getMastery() * 0.9 * effect.getMatk()) * 3.3) / 100;
+            maxDamagePerHit = stats.getTotalMagic() * (stats.getInt() * 0.5 + (v75 * v75) + effect.getMatk() * 3.3) / 100;
+        }
+        maxDamagePerHit *= 1.04; // Avoid any errors for now
 
-        double maxDamagePerHit = 0.0D;
-        int totDamage = 0;
+        final Element element = player.getBuffedValue(MapleBuffStat.ELEMENT_RESET) != null ? Element.NEUTRAL : theSkill.getElement();
 
+        double MaxDamagePerHit = 0;
+        int totDamageToOneMonster, totDamage = 0, fixeddmg;
+        byte overallAttackCount;
+        boolean Tempest;
+        MapleMonsterStats monsterstats;
         int CriticalDamage = stats.passive_sharpeye_percent();
-        ISkill eaterSkill = SkillFactory.getSkill(GameConstants.getMPEaterForJob(player.getJob()));
-        int eaterLevel = player.getSkillLevel(eaterSkill);
+        final ISkill eaterSkill = SkillFactory.getSkill(GameConstants.getMPEaterForJob(player.getJob()));
+        final int eaterLevel = player.getSkillLevel(eaterSkill);
 
-        MapleMap map = player.getMap();
-        for (AttackPair oned : attack.allDamage) {
-            MapleMonster monster = map.getMonsterByOid(oned.objectid);
+        final MapleMap map = player.getMap();
 
-            if ((monster != null) && (monster.getLinkOid() <= 0)) {
-                boolean Tempest = (monster.getStatusSourceID(MonsterStatus.FREEZE) == 21120006) && (!monster.getStats().isBoss());
-                int totDamageToOneMonster = 0;
-                MapleMonsterStats monsterstats = monster.getStats();
-                int fixeddmg = monsterstats.getFixedDamage();
-                if ((!Tempest) && (!player.isGM())) {
-                    if ((!monster.isBuffed(MonsterStatus.MAGIC_IMMUNITY)) && (!monster.isBuffed(MonsterStatus.MAGIC_DAMAGE_REFLECT))) {
-                        maxDamagePerHit = CalculateMaxMagicDamagePerHit(player, theSkill, monster, monsterstats, stats, element, CriticalDamage, maxDamagePerHit);
+        for (final AttackPair oned : attack.allDamage) {
+            final MapleMonster monster = map.getMonsterByOid(oned.objectid);
+
+            if (monster != null) {
+                Tempest = monster.getStatusSourceID(MonsterStatus.FREEZE) == 21120006 && !monster.getStats().isBoss();
+                totDamageToOneMonster = 0;
+                monsterstats = monster.getStats();
+                fixeddmg = monsterstats.getFixedDamage();
+                if (!Tempest && !player.isGM()) {
+                    if (!monster.isBuffed(MonsterStatus.DAMAGE_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_DAMAGE_REFLECT)) {
+                        MaxDamagePerHit = CalculateMaxMagicDamagePerHit(player, theSkill, monster, monsterstats, stats, element, CriticalDamage, maxDamagePerHit);
                     } else {
-                        maxDamagePerHit = 1.0D;
+                        MaxDamagePerHit = 1;
                     }
                 }
-                byte overallAttackCount = 0;
-
-                for (Pair eachde : oned.attack) {
-                    Integer eachd = (Integer) eachde.left;
-                    overallAttackCount = (byte) (overallAttackCount + 1);
+                overallAttackCount = 0;
+                Integer eachd;
+                for (Pair<Integer, Boolean> eachde : oned.attack) {
+                    eachd = eachde.left;
+                    overallAttackCount++;
                     if (fixeddmg != -1) {
-                        eachd = monsterstats.getOnlyNoramlAttack() ? 0 : fixeddmg;
-                    } else if (monsterstats.getOnlyNoramlAttack()) {
-                        eachd = 0;
-                    } else if (!player.isGM()) {
-                        if (Tempest) {
-                            if (eachd > monster.getMobMaxHp()) {
-                                eachd = (int) Math.min(monster.getMobMaxHp(), 2147483647L);
-                                player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC);
-                            }
-                        } else if ((!monster.isBuffed(MonsterStatus.MAGIC_IMMUNITY)) && (!monster.isBuffed(MonsterStatus.MAGIC_DAMAGE_REFLECT))) {
-                            if (eachd > maxDamagePerHit) {
-                                player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC, new StringBuilder().append("[Damage: ").append(eachd).append(", Expected: ").append(maxDamagePerHit).append(", Mob: ").append(monster.getId()).append("] [Job: ").append(player.getJob()).append(", Level: ").append(player.getLevel()).append(", Skill: ").append(attack.skill).append("]").toString());
-                                if (attack.real) {
-                                    player.getCheatTracker().checkSameDamage(eachd);
-                                }
-                                if (eachd > maxDamagePerHit * 2.0D) {
-                                    player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC_2, new StringBuilder().append("[Damage: ").append(eachd).append(", Expected: ").append(maxDamagePerHit).append(", Mob: ").append(monster.getId()).append("] [Job: ").append(player.getJob()).append(", Level: ").append(player.getLevel()).append(", Skill: ").append(attack.skill).append("]").toString());
-                                    eachd = (int) (maxDamagePerHit * 2.0D);
+                        eachd = monsterstats.getOnlyNoramlAttack() ? 0 : fixeddmg; // Magic is always not a normal attack
+                    } else {
+                        if (monsterstats.getOnlyNoramlAttack()) {
+                            eachd = 0; // Magic is always not a normal attack
+                        } else if (!player.isGM()) {
+//			    System.out.println("Client damage : " + eachd + " Server : " + MaxDamagePerHit);
 
-                                    if (eachd >= 2499999) {
-                                        player.getClient().getSession().close(true);
+                            if (Tempest) { // Buffed with Tempest
+                                // In special case such as Chain lightning, the damage will be reduced from the maxMP.
+                                if (eachd > monster.getMobMaxHp()) {
+                                    eachd = (int) Math.min(monster.getMobMaxHp(), Integer.MAX_VALUE);
+                                    player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC);
+                                }
+                            } else if (!monster.isBuffed(MonsterStatus.DAMAGE_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_DAMAGE_REFLECT)) {
+                                if (eachd > maxDamagePerHit) {
+                                    player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC);
+                                    if (eachd > MaxDamagePerHit * 2) {
+//				    System.out.println("EXCEED!!! Client damage : " + eachd + " Server : " + MaxDamagePerHit);
+                                        eachd = (int) (MaxDamagePerHit * 2); // Convert to server calculated damage
+                                        player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC_2);
                                     }
                                 }
+                            } else {
+                                if (eachd > maxDamagePerHit) {
+                                    eachd = (int) (maxDamagePerHit);
+                                }
                             }
-
-                        } else if (eachd > maxDamagePerHit) {
-                            eachd = (int) maxDamagePerHit;
                         }
-
                     }
-
                     totDamageToOneMonster += eachd;
                 }
-
                 totDamage += totDamageToOneMonster;
                 player.checkMonsterAggro(monster);
 
-                if ((attack.skill == 2301002) && (!monsterstats.getUndead())) {
+                if (player.getPosition().distanceSq(monster.getPosition()) > 700000.0) { // 600^2, 550 is approximatly the range of ultis
+                    player.getCheatTracker().registerOffense(CheatingOffense.ATTACK_FARAWAY_MONSTER);
+                }
+                if (attack.skill == 2301002 && !monsterstats.getUndead()) {
                     player.getCheatTracker().registerOffense(CheatingOffense.HEAL_ATTACKING_UNDEAD);
                     return;
                 }
 
-                monster.damage(player, totDamage, true, attack.skill);
-            }
-
-            if (attack.skill != 2301002) {
-                effect.applyTo(player);
-            }
-
-            if ((totDamage > 1) && (GameConstants.getAttackDelay(attack.skill) >= 100)) {
-                CheatTracker tracker = player.getCheatTracker();
-                tracker.setAttacksWithoutHit(true);
-
-                if (tracker.getAttacksWithoutHit() > 1000) {
-                    tracker.registerOffense(CheatingOffense.ATTACK_WITHOUT_GETTING_HIT, Integer.toString(tracker.getAttacksWithoutHit()));
+                if (totDamageToOneMonster > 0) {
+                    monster.damage(player, totDamageToOneMonster, true, attack.skill);
+                    if (monster.isBuffed(MonsterStatus.MAGIC_DAMAGE_REFLECT)) { //test
+                        player.addHP(-(7000 + Randomizer.nextInt(8000))); //this is what it seems to be?
+                    }
+                    // effects
+                    switch (attack.skill) {
+                        case 2221003:
+                            monster.setTempEffectiveness(Element.FIRE, theSkill.getEffect(player.getSkillLevel(theSkill)).getDuration());
+                            break;
+                        case 2121003:
+                            monster.setTempEffectiveness(Element.ICE, theSkill.getEffect(player.getSkillLevel(theSkill)).getDuration());
+                            break;
+                    }
+                    if (effect.getMonsterStati().size() >= 0) {
+                        if (effect.makeChanceResult()) {
+                            for (Map.Entry<MonsterStatus, Integer> z : effect.getMonsterStati().entrySet()) {
+                                monster.applyStatus(player, new MonsterStatusEffect(z.getKey(), z.getValue(), theSkill.getId(), null, false), effect.isPoison(), effect.getDuration(), false, effect);
+                            }
+                        }
+                    }
+                    if (eaterLevel > 0) {
+                        eaterSkill.getEffect(eaterLevel).applyPassive(player, monster);
+                    }
                 }
+            }
+        }
+        if (attack.skill != 2301002) {
+            effect.applyTo(player);
+        }
+
+        if (totDamage > 1) {
+            final CheatTracker tracker = player.getCheatTracker();
+            tracker.setAttacksWithoutHit(true);
+
+            if (tracker.getAttacksWithoutHit() > 1000) {
+                tracker.registerOffense(CheatingOffense.ATTACK_WITHOUT_GETTING_HIT, Integer.toString(tracker.getAttacksWithoutHit()));
             }
         }
     }

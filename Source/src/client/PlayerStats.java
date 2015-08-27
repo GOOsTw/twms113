@@ -72,6 +72,7 @@ public class PlayerStats implements Serializable {
     public transient int def, element_ice, element_fire, element_light, element_psn;
     public final static short maxStr = 999;
     public ReentrantLock lock = new ReentrantLock(); //we're getting concurrentmodificationexceptions, but would this slow things down?
+    private short pickRate;
 
     public PlayerStats(final MapleCharacter chr) {
         // TODO, move str/dex/int etc here -_-
@@ -559,18 +560,18 @@ public class PlayerStats implements Serializable {
         }
         buff = chra.getBuffedValue(MapleBuffStat.ARAN_COMBO);
         if (buff != null) {
-            watk += buff.intValue() / 10;
+            watk += buff / 10;
         }
         buff = chra.getBuffedValue(MapleBuffStat.MAXHP);
         if (buff != null) {
             localmaxhp_ += (buff.doubleValue() / 100.0) * localmaxhp_;
         }
-      
+
         buff = chra.getBuffedValue(MapleBuffStat.MAXMP);
         if (buff != null) {
             localmaxmp_ += (buff.doubleValue() / 100.0) * localmaxmp_;
         }
-       
+
         switch (chra.getJob()) {
             case 322: { // Crossbowman
                 final ISkill expert = SkillFactory.getSkill(3220004);
@@ -668,35 +669,41 @@ public class PlayerStats implements Serializable {
         }
         buff = chra.getBuffedValue(MapleBuffStat.ACC);
         if (buff != null) {
-            accuracy += buff.intValue();
+            accuracy += buff;
         }
         buff = chra.getBuffedValue(MapleBuffStat.WATK);
         if (buff != null) {
-            watk += buff.intValue();
+            watk += buff;
         }
-       
+
         buff = chra.getBuffedValue(MapleBuffStat.MATK);
         if (buff != null) {
-            magic += buff.intValue();
+            magic += buff;
         }
         buff = chra.getBuffedValue(MapleBuffStat.SPEED);
         if (buff != null) {
-            speed += buff.intValue();
+            speed += buff;
         }
         buff = chra.getBuffedValue(MapleBuffStat.JUMP);
         if (buff != null) {
-            jump += buff.intValue();
+            jump += buff;
         }
         buff = chra.getBuffedValue(MapleBuffStat.DASH_SPEED);
         if (buff != null) {
-            speed += buff.intValue();
+            speed += buff;
         }
         buff = chra.getBuffedValue(MapleBuffStat.DASH_JUMP);
         if (buff != null) {
-            jump += buff.intValue();
+            jump += buff;
         }
 
-      
+        buff = chra.getBuffedValue(MapleBuffStat.WIND_WALK);
+        if (buff != null) {
+            final MapleStatEffect eff = chra.getStatForBuff(MapleBuffStat.WIND_WALK);
+            dam_r *= eff.getDamage()/ 100.0;
+            bossdam_r *= eff.getDamage() / 100.0;
+        }
+
         buff = chra.getBuffedSkill_Y(MapleBuffStat.OWL_SPIRIT);
         if (buff != null) {
             dam_r *= buff.doubleValue() / 100.0;
@@ -719,22 +726,29 @@ public class PlayerStats implements Serializable {
             dam_r *= eff.getDamage() / 100.0;
             bossdam_r *= eff.getDamage() / 100.0;
         }
+
+        buff = chra.getBuffedValue(MapleBuffStat.MONSTER_RIDING);
+        if (buff != null) {
+            final MapleStatEffect eff = chra.getStatForBuff(MapleBuffStat.MONSTER_RIDING);
+            pickRate = eff.getProb();
+        }
+
         buff = chra.getBuffedValue(MapleBuffStat.LIGHTNING_CHARGE);
         if (buff != null) {
             final MapleStatEffect eff = chra.getStatForBuff(MapleBuffStat.LIGHTNING_CHARGE);
             dam_r *= eff.getDamage() / 100.0;
             bossdam_r *= eff.getDamage() / 100.0;
         }
-       
+
         buff = chra.getBuffedSkill_X(MapleBuffStat.SHARP_EYES);
         if (buff != null) {
-            added_sharpeye_rate += buff.intValue();
+            added_sharpeye_rate += buff;
         }
         buff = chra.getBuffedSkill_Y(MapleBuffStat.SHARP_EYES);
         if (buff != null) {
-            added_sharpeye_dmg += buff.intValue() - 100;
+            added_sharpeye_dmg += buff - 100;
         }
-        
+
         if (speed > 140) {
             speed = 140;
         }
@@ -746,7 +760,7 @@ public class PlayerStats implements Serializable {
         Integer mount = chra.getBuffedValue(MapleBuffStat.MONSTER_RIDING);
         if (mount != null) {
             jumpMod = 1.23f;
-            switch (mount.intValue()) {
+            switch (mount) {
                 case 1:
                     speedMod = 1.5f;
                     break;
@@ -806,7 +820,7 @@ public class PlayerStats implements Serializable {
                         if (ins != null && ins.containsKey(lvlz + i)) {
                             for (Integer z : ins.get(lvlz + i)) {
                                 if (Math.random() < 0.1) { //10% chance dood
-                                    final ISkill skil = SkillFactory.getSkill(z.intValue());
+                                    final ISkill skil = SkillFactory.getSkill(z);
                                     if (skil != null && skil.canBeLearnedBy(chr.getJob()) && chr.getSkillLevel(skil) < chr.getMasterLevel(skil)) { //dont go over masterlevel :D
                                         chr.changeSkillLevel(skil, (byte) (chr.getSkillLevel(skil) + 1), chr.getMasterLevel(skil));
                                     }
@@ -845,7 +859,7 @@ public class PlayerStats implements Serializable {
                 durabilityHandling.remove(eqq);
                 final short pos = chr.getInventory(MapleInventoryType.EQUIP).getNextFreeSlot();
                 MapleInventoryManipulator.unequip(chr.getClient(), eqq.getPosition(), pos);
-                chr.getClient().sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.UPDATE,eqq, pos)));
+                chr.getClient().sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.UPDATE, eqq, pos)));
                 //chr.getClient().getSession().write(MaplePacketCreator.updateSpecialItemUse(eqq, (byte) 1, pos));
             } else {
                 chr.forceReAddItem(eqq.copy(), MapleInventoryType.EQUIPPED);
@@ -1180,7 +1194,7 @@ public class PlayerStats implements Serializable {
             return skillID + 10000000;
         } else if (GameConstants.isAran(job)) {
             return skillID + 20000000;
-        } 
+        }
         return skillID;
     }
 

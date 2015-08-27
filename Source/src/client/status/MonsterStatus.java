@@ -81,20 +81,21 @@ public enum MonsterStatus implements Serializable {
     //技能封印
     SEAL_SKILL(0x26),
     //
-    EMPTY(27),
+    EMPTY(27, true),
     //心靈控制
     HYPNOTIZE(28),
     //反勝物攻
     WEAPON_DAMAGE_REFLECT(29),
     //反射魔攻
     MAGIC_DAMAGE_REFLECT(30),
-    SUMMON(31),
+    //
+    SUMMON(31, true),
     
     RISE_TOSS(32),
     //抵銷
-    NEUTRALISE(33, true),
+    NEUTRALISE(33, false),
     //弱點
-    IMPRINT(34, true),
+    IMPRINT(34, false),
     //怪物炸彈
     MONSTER_BOMB(35),
     //魔法無效
@@ -126,14 +127,14 @@ public enum MonsterStatus implements Serializable {
     MBS55(55),
     MBS56(56),
     MBS57(57),
-    MBS58(58, true),
+    MBS58(58, false),
     MBS59(59),
-    MBS60(60, true),
+    MBS60(60, false),
     MBS61(61),
     
     //持續扣血 - 破滅之輪[178-完成]
-    BLEED(62, true),    
-    MBS63(63, true),
+    BLEED(62, false),    
+    MBS63(63, false),
     
     ;
     static final long serialVersionUID = 0L;
@@ -144,20 +145,20 @@ public enum MonsterStatus implements Serializable {
 
     private MonsterStatus(int i) {
         this.i = 1 << (i % 32); // 如果要變舊的，就把減31去掉，詳細請參考頂端說明
-        this.position = (int) Math.floor(i / 32);
+        this.position = 3 - (int) Math.floor(i / 32);
         this.end = false;
         this.bitNumber = i;
     }
 
     private MonsterStatus(int i, boolean end) {
         this.i = 1 << (i % 32); // 如果要變舊的，就把減31去掉，詳細請參考頂端說明
-        this.position = (int) Math.floor(i / 32);
+        this.position = 3 - (int) Math.floor(i / 32);
         this.end = end;
         this.bitNumber = i;
     }
 
     public int getPosition() {
-        return 3 - position;
+        return  position;
     }
 
      public boolean isEmpty() {
