@@ -27,6 +27,7 @@ import client.inventory.Equip;
 import client.inventory.IEquip;
 import client.inventory.MapleWeaponType;
 import client.inventory.ModifyInventory;
+import constants.SkillType.*;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.List;
@@ -1126,14 +1127,14 @@ public class PlayerStats implements Serializable {
             shouldHealMP += ((float) ((float) chra.getSkillLevel(SkillFactory.getSkill(2000000)) / 10) * chra.getLevel());
 
         } else if (GameConstants.isJobFamily(111, playerjob)) {
-            final ISkill effect = SkillFactory.getSkill(1110000); // Improving MP Recovery
+            final ISkill effect = SkillFactory.getSkill(十字軍.魔力恢復); // Improving MP Recovery
             final int lvl = chra.getSkillLevel(effect);
             if (lvl > 0) {
                 shouldHealMP += effect.getEffect(lvl).getMp();
             }
 
         } else if (GameConstants.isJobFamily(121, playerjob)) {
-            final ISkill effect = SkillFactory.getSkill(1210000); // Improving MP Recovery
+            final ISkill effect = SkillFactory.getSkill(騎士.魔力恢復); // Improving MP Recovery
             final int lvl = chra.getSkillLevel(effect);
             if (lvl > 0) {
                 shouldHealMP += effect.getEffect(lvl).getMp();

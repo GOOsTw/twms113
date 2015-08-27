@@ -35,6 +35,8 @@ import client.MapleCharacter;
 import client.PlayerStats;
 import client.anticheat.CheatingOffense;
 import constants.MapConstants;
+import constants.SkillType;
+import constants.SkillType.*;
 import handling.channel.ChannelServer;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -214,7 +216,7 @@ public class PlayerHandler {
         boolean is_pg = false;
         boolean isDeadlyAttack = false;
         MapleMonster attacker = null;
-        if ( chr.isHidden() || chr.getMap() == null){
+        if (chr.isHidden() || chr.getMap() == null) {
             return;
         }
 
@@ -286,14 +288,14 @@ public class PlayerHandler {
             if (type != -1 && type != -2 && type != -3 && type != -4) {
                 switch (chr.getJob()) {
                     case 112: {
-                        final ISkill skill = SkillFactory.getSkill(1120004);
+                        final ISkill skill = SkillFactory.getSkill(英雄.武神防禦);
                         if (chr.getSkillLevel(skill) > 0) {
                             damage = (int) ((skill.getEffect(chr.getSkillLevel(skill)).getX() / 1000.0) * damage);
                         }
                         break;
                     }
                     case 122: {
-                        final ISkill skill = SkillFactory.getSkill(1220005);
+                        final ISkill skill = SkillFactory.getSkill(黑騎士.武神防禦);
                         if (chr.getSkillLevel(skill) > 0) {
                             damage = (int) ((skill.getEffect(chr.getSkillLevel(skill)).getX() / 1000.0) * damage);
                         }
@@ -522,7 +524,7 @@ public class PlayerHandler {
                     } else {
                         c.getSession().write(MaplePacketCreator.enableActions());
                     }
-                    
+
                 } else {
                     final int mountid = MapleStatEffect.parseMountInfo(c.getPlayer(), skill.getId());
                     if (mountid != 0 && mountid != GameConstants.getMountItem(skill.getId()) && !c.getPlayer().isGM() && c.getPlayer().getBuffedValue(MapleBuffStat.MONSTER_RIDING) == null && c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -118) == null) {
@@ -771,8 +773,9 @@ public class PlayerHandler {
                 }
                 switch (attack.skill) {
                     case 3101005: // arrowbomb is hardcore like that
-                        if(effect != null)
+                        if (effect != null) {
                             basedamage *= effect.getX() / 100.0;
+                        }
                         break;
                 }
                 break;
@@ -938,13 +941,22 @@ public class PlayerHandler {
         }
         final Point Original_Pos = chr.getPosition(); // 4 bytes Added on v.80 MSEA
         slea.skip(33);
-        
-        /**
-         * 
-         * FF FF 01 FF FF FF FF FF FF FF FF 2A 8E 66 CB 8E 7D 17 FC 4A BF D5 CE B4 FE D7 00 0B 00 B4 FE D7 00 00 00 00 00 71 00 04 96 00 00 B7 FE D7 00 54 00 00 00 71 00 02 3C 00 00 BB FE D7 00 0C 00 00 00 71 00 04 5A 00 14 0C 00 00 00 04 00 00 00 BB FE D6 00 0C 00 00 00 71 00 04 00 00 02 8A 02 00 00 06 00 00 00 CE FE D7 00 44 01 00 00 00 00 06 1E 00 00 EA FE D7 00 84 00 00 00 71 00 04 78 00 00 EA FE D6 00 84 00 00 00 71 00 08 00 00 02 77 FF F2 FE 06 00 00 00 E1 FE C9 00 77 FF 6A FF 00 00 06 3C 00 11 00 00 40 04 00 00 00 00 00 B4 FE C9 00 EA FE D7 00
-Now: D7 00 44 01 00 00 00 00 06 1E 00 00 EA FE D7 00 84 00 00 00 71 00 04 78 00 00 EA FE D6 00 84 00 00 00 71 00 08 00 00 02 77 FF F2 FE 06 00 00 00 E1 FE C9 00 77 FF 6A FF 00 00 06 3C 00 11 00 00 40 04 00 00 00 00 00 B4 FE C9 00 EA FE D7 00
-         */
 
+        /**
+         *
+         * FF FF 01 FF FF FF FF FF FF FF FF 2A 8E 66 CB 8E 7D 17 FC 4A BF D5 CE
+         * B4 FE D7 00 0B 00 B4 FE D7 00 00 00 00 00 71 00 04 96 00 00 B7 FE D7
+         * 00 54 00 00 00 71 00 02 3C 00 00 BB FE D7 00 0C 00 00 00 71 00 04 5A
+         * 00 14 0C 00 00 00 04 00 00 00 BB FE D6 00 0C 00 00 00 71 00 04 00 00
+         * 02 8A 02 00 00 06 00 00 00 CE FE D7 00 44 01 00 00 00 00 06 1E 00 00
+         * EA FE D7 00 84 00 00 00 71 00 04 78 00 00 EA FE D6 00 84 00 00 00 71
+         * 00 08 00 00 02 77 FF F2 FE 06 00 00 00 E1 FE C9 00 77 FF 6A FF 00 00
+         * 06 3C 00 11 00 00 40 04 00 00 00 00 00 B4 FE C9 00 EA FE D7 00 Now:
+         * D7 00 44 01 00 00 00 00 06 1E 00 00 EA FE D7 00 84 00 00 00 71 00 04
+         * 78 00 00 EA FE D6 00 84 00 00 00 71 00 08 00 00 02 77 FF F2 FE 06 00
+         * 00 00 E1 FE C9 00 77 FF 6A FF 00 00 06 3C 00 11 00 00 40 04 00 00 00
+         * 00 00 B4 FE C9 00 EA FE D7 00
+         */
         // log.trace("Movement command received: unk1 {} unk2 {}", new Object[] { unk1, unk2 });
         List<LifeMovementFragment> res;
         try {
