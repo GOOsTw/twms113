@@ -1685,7 +1685,7 @@ public static boolean isLinkedAttackSkill(final int id) {
             case 35120000:
                 return 1932016;
             case 1013:
-            case 10001013:
+            case 10000013:
             case 20001013:
             case 20011013:
             case 30001013:

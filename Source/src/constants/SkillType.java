@@ -35,7 +35,6 @@ public class SkillType {
         public final static int 肥肥的弱點攻擊 = 9000;
         public final static int 木妖的弱點攻擊 = 9001;
         public final static int 綠水零的弱點攻擊 = 9002;
-
     }
 
     public static class 劍士 {
@@ -75,11 +74,11 @@ public class SkillType {
 
     public static class 英雄 {
 
+        public final static int 楓葉祝福 = 1121000;
+        public final static int 絕對引力 = 1121001;
         public final static int 進階鬥氣 = 1120003;
         public final static int 武神防禦 = 1120004;
         public final static int 究極神盾 = 1120005;
-        public final static int 楓葉祝福 = 1121000;
-        public final static int 絕對引力 = 1121001;
         public final static int 究極突刺 = 1121006;
         public final static int 無雙劍舞 = 1121008;
         public final static int 鬥氣爆發 = 1121010;
@@ -114,16 +113,16 @@ public class SkillType {
 
     public static class 聖騎士 {
 
-        public final static int 武神防禦 = 1220005;
-        public final static int 究極神盾 = 1220006;
-        public final static int 屬性強化 = 1220010;
         public final static int 楓葉祝福 = 1221000;
         public final static int 絕對引力 = 1221001;
         public final static int 格擋 = 1221002;
         public final static int 聖靈之劍 = 1221003;
         public final static int 聖靈之棍 = 1221004;
+        public final static int 武神防禦 = 1220005;
+        public final static int 究極神盾 = 1220006;
         public final static int 究極突刺 = 1221007;
         public final static int 騎士衝擊波 = 1221009;
+        public final static int 屬性強化 = 1220010;
         public final static int 鬼神之擊 = 1221011;
         public final static int 楓葉淨化 = 1221012;
     }
@@ -155,16 +154,16 @@ public class SkillType {
 
     public static class 黑騎士 {
 
-        public final static int 武神防禦 = 1220005;
-        public final static int 究極神盾 = 1220006;
-        public final static int 屬性強化 = 1220010;
         public final static int 楓葉祝福 = 1221000;
         public final static int 絕對引力 = 1221001;
         public final static int 格擋 = 1221002;
         public final static int 聖靈之劍 = 1221003;
         public final static int 聖靈之棍 = 1221004;
+        public final static int 武神防禦 = 1220005;
+        public final static int 究極神盾 = 1220006;
         public final static int 究極突刺 = 1221007;
         public final static int 騎士衝擊波 = 1221009;
+        public final static int 屬性強化 = 1220010;
         public final static int 鬼神之擊 = 1221011;
         public final static int 楓葉淨化 = 1221012;
     }
@@ -336,11 +335,11 @@ public class SkillType {
 
     public static class 箭神 {
 
-        public final static int 弓術精通 = 3120005;
         public final static int 楓葉祝福 = 3121000;
         public final static int 會心之眼 = 3121002;
         public final static int 龍魂之箭 = 3121003;
         public final static int 暴風神射 = 3121004;
+        public final static int 弓術精通 = 3120005;
         public final static int 召喚鳳凰 = 3121006;
         public final static int 牽制射擊 = 3121007;
         public final static int 念力集中 = 3121008;
@@ -349,11 +348,11 @@ public class SkillType {
 
     public static class 神射手 {
 
-        public final static int 弩術精通 = 3220004;
         public final static int 楓葉祝福 = 3221000;
         public final static int 光速神弩 = 3221001;
         public final static int 會心之眼 = 3221002;
         public final static int 龍魂之箭 = 3221003;
+        public final static int 弩術精通 = 3220004;
         public final static int 召喚銀隼 = 3221005;
         public final static int 黑暗狙擊 = 3221006;
         public final static int 必殺狙擊 = 3221007;
@@ -414,11 +413,11 @@ public class SkillType {
 
     public static class 夜使者 {
 
-        public final static int 瞬身迴避 = 4120002;
-        public final static int 飛毒殺 = 4120005;
         public final static int 楓葉祝福 = 4121000;
+        public final static int 瞬身迴避 = 4120002;
         public final static int 挑釁 = 4121003;
         public final static int 忍影瞬殺 = 4121004;
+        public final static int 飛毒殺 = 4120005;
         public final static int 無形鏢 = 4121006;
         public final static int 三飛閃 = 4121007;
         public final static int 忍術風影 = 4121008;
@@ -427,12 +426,12 @@ public class SkillType {
 
     public static class 暗影神偷 {
 
-        public final static int 瞬身迴避 = 4220002;
-        public final static int 飛毒殺 = 4220005;
         public final static int 楓葉祝福 = 4221000;
         public final static int 致命暗殺 = 4221001;
+        public final static int 瞬身迴避 = 4220002;
         public final static int 挑釁 = 4221003;
         public final static int 忍影瞬殺 = 4221004;
+        public final static int 飛毒殺 = 4220005;
         public final static int 煙幕彈 = 4221006;
         public final static int 瞬步連擊 = 4221007;
         public final static int 楓葉淨化 = 4221008;
@@ -500,15 +499,15 @@ public class SkillType {
         public final static int 閃索命 = 5121005;
         public final static int 閃連殺 = 5121007;
         public final static int 楓葉淨化 = 5121008;
+        public final static int 最終極速 = 5121009;
         public final static int 時間置換 = 5121010;
     }
 
     public static class 槍神 {
 
+        public final static int 楓葉祝福 = 5221000;
         public final static int 瞬冰火連擊 = 5220001;
         public final static int 砲台章魚王 = 5220002;
-        public final static int 精準砲擊 = 5220011;
-        public final static int 楓葉祝福 = 5221000;
         public final static int 海鷗特戰隊 = 5221003;
         public final static int 瞬迅雷 = 5221004;
         public final static int 海盜船 = 5221006;
@@ -516,6 +515,7 @@ public class SkillType {
         public final static int 海盜魚雷 = 5221008;
         public final static int 心靈控制 = 5221009;
         public final static int 楓葉淨化 = 5221010;
+        public final static int 精準砲擊 = 5220011;
     }
 
     public static class 管理者 {
@@ -538,84 +538,261 @@ public class SkillType {
         public final static int 測謊機 = 9001009;
     }
 
-    public static class 貴族技術 {
+    public static class 貴族 {
 
+        public final static int 嫩寶丟擲術 = 10001000;
+        public final static int 恢復 = 10001001;
+        public final static int 疾風之步 = 10001002;
+        public final static int 神匠之魂 = 10001003;
+        public final static int 怪物騎乘 = 10001004;
+        public final static int 英雄的回響 = 10001005;
+        public final static int 向下跳躍 = 10001006;
+        public final static int 強化合成 = 10001007;
+        public final static int 竹竿天擊 = 10001009;
+        public final static int 金剛不壞 = 10001010;
+        public final static int 地火天爆 = 10001011;
+        public final static int 宇宙船 = 10001014;
+        public final static int 宇宙衝鋒 = 10001015;
+        public final static int 宇宙光束 = 10001016;
+        public final static int 低等級怪物騎乘 = 10001017;
+        public final static int 精靈的祝福 = 10000012;
+        public final static int 額外的幫手 = 10000013;
+        public final static int 寵物達人 = 10000018;
+        public final static int 雪吉拉騎士 = 10001019;
+        public final static int 法老的憤怒攻擊 = 10001020;
+        public final static int 肥肥的弱點攻擊 = 10009000;
+        public final static int 木妖的弱點攻擊 = 10009001;
+        public final static int 綠水靈的弱點攻擊 = 10009002;
     }
 
-    public static class 聖魂劍士1轉 {
+    public static class 聖魂劍士1 {
 
+        public final static int 生命擴展 = 11000000;
+        public final static int 自身強化 = 11001001;
+        public final static int 魔天一擊 = 11001002;
+        public final static int 劍氣縱橫 = 11001003;
+        public final static int 靈魂 = 11001004;
     }
 
-    public static class 聖魂劍士2轉 {
+    public static class 聖魂劍士2 {
 
+        public final static int 精準之劍 = 11100000;
+        public final static int 快速之劍 = 11101001;
+        public final static int 終極攻擊 = 11101002;
+        public final static int 憤怒 = 11101003;
+        public final static int 靈魂之刃 = 11101004;
+        public final static int 靈魂迅移 = 11101005;
     }
 
-    public static class 聖魂劍士3轉 {
+    public static class 聖魂劍士3 {
 
+        public final static int 魔力恢復 = 11110000;
+        public final static int 鬥氣集中 = 11111001;
+        public final static int 黑暗 = 11111002;
+        public final static int 氣絕 = 11111003;
+        public final static int 進階鬥氣 = 11110005;
+        public final static int 雙連斬 = 11111004;
+        public final static int 靈魂突刺 = 11111006;
+        public final static int 靈魂屬性 = 11111007;
     }
 
-    public static class 烈焰巫師1轉 {
+    public static class 烈焰巫師1 {
 
+        public final static int 魔力擴展 = 12000000;
+        public final static int 魔心防禦 = 12001001;
+        public final static int 魔力之盾 = 12001002;
+        public final static int 魔力爪 = 12001003;
+        public final static int 火牢術 = 12001004;
     }
 
-    public static class 烈焰巫師2轉 {
+    public static class 烈焰巫師2 {
 
+        public final static int 精神強力 = 12101000;
+        public final static int 緩速術 = 12101001;
+        public final static int 火焰箭 = 12101002;
+        public final static int 瞬間移動 = 12101003;
+        public final static int 極速詠唱 = 12101004;
+        public final static int 自然力重置 = 12101005;
+        public final static int 火柱 = 12101006;
     }
 
-    public static class 烈焰巫師3轉 {
+    public static class 烈焰巫師3 {
 
+        public final static int 魔法抵抗 = 12110000;
+        public final static int 魔力激發 = 12110001;
+        public final static int 魔法封印 = 12111002;
+        public final static int 火流星 = 12111003;
+        public final static int 召喚火炎神 = 12111004;
+        public final static int 火牢術屏障 = 12111005;
+        public final static int 火風暴 = 12111006;
     }
 
-    public static class 破風使者1轉 {
+    public static class 破風使者1 {
 
+        public final static int 霸王箭 = 13000000;
+        public final static int 百步穿楊 = 13000001;
+        public final static int 集中術 = 13001002;
+        public final static int 二連箭 = 13001003;
+        public final static int 暴風 = 13001004;
     }
 
-    public static class 破風使者2轉 {
+    public static class 破風使者2 {
 
+        public final static int 精準之弓 = 13100000;
+        public final static int 快速之箭 = 13101001;
+        public final static int 終極攻擊 = 13101002;
+        public final static int 無形之箭 = 13101003;
+        public final static int 暴風射擊 = 13101005;
+        public final static int 風影漫步 = 13101006;
     }
 
-    public static class 破風使者3轉 {
+    public static class 破風使者3 {
 
+        public final static int 箭雨 = 13111000;
+        public final static int 四連箭 = 13111001;
+        public final static int 暴風神射 = 13111002;
+        public final static int 替身術 = 13111004;
+        public final static int 阿爾法 = 13111005;
+        public final static int 疾風光速神弩 = 13111006;
+        public final static int 疾風掃射 = 13111007;
     }
 
-    public static class 暗夜行者1轉 {
+    public static class 暗夜行者1 {
 
+        public final static int 幻體功 = 14000000;
+        public final static int 鷹之眼 = 14000001;
+        public final static int 詛咒術 = 14001002;
+        public final static int 隱身術 = 14001003;
+        public final static int 雙飛斬 = 14001004;
+        public final static int 黑暗雷鳥 = 14001005;
     }
 
-    public static class 暗夜行者2轉 {
+    public static class 暗夜行者2 {
 
+        public final static int 精準暗器 = 14100000;
+        public final static int 強力投擲 = 14100001;
+        public final static int 極速暗殺 = 14101002;
+        public final static int 速度激發 = 14101003;
+        public final static int 二段跳 = 14101004;
+        public final static int 驅逐 = 14100005;
+        public final static int 吸血 = 14101006;
     }
 
     public static class 暗夜行者3轉 {
 
+        public final static int 影分身 = 14111000;
+        public final static int 影網術 = 14111001;
+        public final static int 風魔手裏劍 = 14111002;
+        public final static int 藥劑精通 = 14110003;
+        public final static int 飛毒殺 = 14110004;
+        public final static int 三飛閃 = 14111005;
+        public final static int 毒炸彈 = 14111006;
     }
 
-    public static class 閃雷悍將1轉 {
+    public static class 閃雷悍將1 {
 
+        public final static int 極限迴避 = 15000000;
+        public final static int 衝擊拳 = 15001001;
+        public final static int 旋風斬 = 15001002;
+        public final static int 衝鋒 = 15001003;
+        public final static int 閃電 = 15001004;
     }
 
-    public static class 閃雷悍將2轉 {
+    public static class 閃雷悍將2 {
 
+        public final static int 生命擴展 = 15100000;
+        public final static int 精通指虎 = 15100001;
+        public final static int 致命快打 = 15101002;
+        public final static int 狂暴衝擊 = 15101003;
+        public final static int 蓄能激發 = 15100004;
+        public final static int 能量暴擊 = 15101005;
+        public final static int 雷鳴 = 15101006;
     }
 
-    public static class 閃雷悍將3轉 {
+    public static class 閃雷悍將3 {
 
+        public final static int 衝壓暴擊 = 15110000;
+        public final static int 損人利己 = 15111001;
+        public final static int 鬥神附體 = 15111002;
+        public final static int 衝擊波 = 15111003;
+        public final static int 閃連殺 = 15111004;
+        public final static int 最終極速 = 15111005;
+        public final static int 閃光擊 = 15111006;
+        public final static int 鯨噬 = 15111007;
     }
 
-    public static class 傳說中的技術 {
+    public static class 傳說 {
 
+        public final static int 嫩寶丟擲術 = 20001000;
+        public final static int 團隊治癒 = 20001001;
+        public final static int 疾風之步 = 20001002;
+        public final static int 神匠之魂 = 20001003;
+        public final static int 怪物騎乘 = 20001004;
+        public final static int 英雄的回響 = 20001005;
+        public final static int 向下跳躍 = 20001006;
+        public final static int 強化合成 = 20001007;
+        public final static int 竹竿天擊 = 20001009;
+        public final static int 金剛不壞 = 20001010;
+        public final static int 地火天爆 = 20001011;
+        public final static int 精靈的祝福 = 20000012;
+        public final static int 助手 = 20001013;
+        public final static int 新手區技能1 = 20000014;
+        public final static int 新手區技能2 = 20000015;
+        public final static int 新手區技能3 = 20000016;
+        public final static int 新手區技能4 = 20000017;
+        public final static int 新手區技能5 = 20000018;
+        public final static int 寵物達人 = 20000024;
+        public final static int 雪吉拉騎士 = 20001019;
+        public final static int 法老的憤怒攻擊 = 20001020;
+        public final static int 肥肥的弱點攻擊 = 20009000;
+        public final static int 木妖的弱點攻擊 = 20009001;
+        public final static int 低等級怪物騎乘 = 20001041;
+        public final static int 綠水靈的弱點攻擊 = 20009002;
     }
 
-    public static class 狂狼勇士1轉 {
+    public static class 狂狼勇士1 {
 
+        public final static int 矛之鬥氣 = 21000000;
+        public final static int 戰鬥衝刺 = 21001001;
+        public final static int 雙重攻擊 = 21000002;
+        public final static int 神氣之矛 = 21001003;
     }
 
-    public static class 狂狼勇士2轉 {
+    public static class 狂狼勇士2 {
 
+        public final static int 三重攻擊 = 21100001;
+        public final static int 精準之矛 = 21100000;
+        public final static int 突刺之矛 = 21100002;
+        public final static int 強化連擊 = 21101003;
+        public final static int 猛擲之矛 = 21100004;
+        public final static int 連環吸血 = 21100005;
     }
 
-    public static class 狂狼勇士3轉 {
+    public static class 狂狼勇士3 {
 
+        public final static int 伺機攻擊 = 21110002;
+        public final static int 暴擊連擊 = 21110000;
+        public final static int 挑怪 = 21110003;
+        public final static int 寒冰屬性 = 21111005;
+        public final static int 旋風斬 = 21110006;
+        public final static int 精準擊退 = 21111001;
+        public final static int 狼魂衝擊 = 21110004;
+        public final static int 雙重攻擊 = 21110007;
+        public final static int 三重攻擊 = 21110008;
     }
 
+    public static class 狂狼勇士4 {
+
+        public final static int 楓葉祝福 = 21121000;
+        public final static int 終極攻擊 = 21120002;
+        public final static int 攻擊戰術 = 21120001;
+        public final static int 終極之矛 = 21120005;
+        public final static int 靈魂戰鬥 = 21121003;
+        public final static int 防禦戰術 = 21120004;
+        public final static int 極冰暴風 = 21120006;
+        public final static int 宙斯之盾 = 21120007;
+        public final static int 楓葉淨化 = 21121008;
+        public final static int 雙重攻擊 = 21120009;
+        public final static int 三重攻擊 = 21120010;
+    }
 }
