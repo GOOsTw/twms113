@@ -32,7 +32,7 @@ function action(mode, type, selection) {
     else
 	status--;
     if (status == 0) {
-	cm.sendNext("您好~! 勇士之村計程車. 想要往其他村莊安全又快速的移動嗎? 如果是這樣 為了優先考量滿足顧客, 請使用 #b勇士之村計程車#k 特別免費! 親切的送你到想要到達的地方");
+	cm.sendNext("您好~! 勇士之村計程車. 想要往其他村莊安全又快速的移動嗎? 如果是這樣 為了優先考量滿足顧客, 請使用 #b#p1022001##k 親切的送你到想要到達的地方！");
     } else if (status == 1) {
 	var job = cm.getJob();
 	if (job == 0 || job == 1000 || job == 2000) {

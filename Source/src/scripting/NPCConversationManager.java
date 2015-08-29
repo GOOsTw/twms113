@@ -447,16 +447,16 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
             if (item == null) {
                 return -1;
-            } 
+            }
             final byte rareness = GameConstants.gachaponRareItem(item.getItemId());
             if (rareness == 1) {
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName(), " : 被他抽到了，大家恭喜他吧！", item, rareness).getBytes()); 
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName(), " : 被他抽到了，大家恭喜他吧！", item, rareness).getBytes());
             } else if (rareness == 2) {
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName(), " : 被他成功轉到了，大家恭喜他吧！", item, rareness).getBytes()); 
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName(), " : 被他成功轉到了，大家恭喜他吧！", item, rareness).getBytes());
             } else if (rareness > 2) {
                 World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName(), " : 被他從楓葉轉蛋機轉到了，大家恭喜他吧！", item, rareness).getBytes());
             }
-            
+
             return item.getItemId();
         } catch (Exception e) {
             e.printStackTrace();
@@ -718,9 +718,11 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             squad.acceptMember(pos);
         }
     }
+
     public String getReadableMillis(long startMillis, long endMillis) {
         return StringUtil.getReadableMillis(startMillis, endMillis);
     }
+
     public int addMember(String type, boolean join) {
         final MapleSquad squad = c.getChannelServer().getMapleSquad(type);
         if (squad != null) {
@@ -776,11 +778,11 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void displayGuildRanks() {
         c.getSession().write(MaplePacketCreator.showGuildRanks(npc, MapleGuildRanking.getInstance().getGuildRank()));
     }
-    
+
     public void showlvl() {
         c.getSession().write(MaplePacketCreator.showlevelRanks(npc, MapleGuildRanking.getInstance().getLevelRank()));
     }
-    
+
     public void showmeso() {
         c.getSession().write(MaplePacketCreator.showmesoRanks(npc, MapleGuildRanking.getInstance().getMesoRank()));
     }
@@ -877,7 +879,8 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         }
         c.getPlayer().equipChanged();
     }
-        public void killAllMonsters() {
+
+    public void killAllMonsters() {
         MapleMap map = c.getPlayer().getMap();
         double range = Double.POSITIVE_INFINITY;
         MapleMonster mob;
@@ -918,12 +921,14 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         }
         c.getPlayer().gainMeso((int) mesos, true);
     }
-    public void dc () {
+
+    public void dc() {
         MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(c.getPlayer().getName().toString());
         victim.getClient().getSession().close();
         victim.getClient().disconnect(true, false);
 
     }
+
     public long getMerchantMesos() {
         long mesos = 0;
         try {
@@ -1192,7 +1197,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public boolean isCash(final int itemId) {
         return MapleItemInformationProvider.getInstance().isCash(itemId);
     }
-    
+
     public void buffGuild(final int buff, final int duration, final String msg) {
         MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
         if (ii.getItemEffect(buff) != null && getPlayer().getGuildId() > 0) {
@@ -1258,14 +1263,15 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public final void setLastMsg(final byte last) {
         this.lastMsg = last;
     }
-    
+
     public int getBossLog(String bossid) {
         return getPlayer().getBossLog(bossid);
     }
+
     public void setBossLog(String bossid) {
         getPlayer().setBossLog(bossid);
     }
-    
+
     public final void maxAllSkills() {
         for (ISkill skil : SkillFactory.getAllSkills()) {
             if (GameConstants.isApplicableSkill(skil.getId())) { //no db/additionals/resistance skills
@@ -1320,14 +1326,14 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public final void doWeddingEffect(final Object ch) {
         final MapleCharacter chr = (MapleCharacter) ch;
-        getMap().broadcastMessage(MaplePacketCreator.yellowChat(getPlayer().getName() + ", do you take " + chr.getName() + " as your wife and promise to stay beside her through all downtimes, crashes, and lags?"));
+        getMap().broadcastMessage(MaplePacketCreator.yellowChat(getPlayer().getName() + ", 你願意承認接納 " + chr.getName() + " 做你的妻子，誠實遵照上帝的誡命，和她生活在一起，無論在什麼環境，願意終生養她、愛惜她、安慰她、尊重她、保護她，以至奉召歸主？？"));
         CloneTimer.getInstance().schedule(new Runnable() {
 
             public void run() {
                 if (chr == null || getPlayer() == null) {
                     warpMap(680000500, 0);
                 } else {
-                    getMap().broadcastMessage(MaplePacketCreator.yellowChat(chr.getName() + ", do you take " + getPlayer().getName() + " as your husband and promise to stay beside him through all downtimes, crashes, and lags?"));
+                    getMap().broadcastMessage(MaplePacketCreator.yellowChat(chr.getName() + ", 妳願意承認 " + getPlayer().getName() + " 做妳的丈夫，誠實遵照上帝的誡命，和他生活在一起，無論在什麼環境願順服他、愛惜他、安慰他、尊重他保護他，以致奉召歸主？？"));
                 }
             }
         }, 10000);
@@ -1346,8 +1352,8 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
                 } else {
                     setQuestRecord(getPlayer(), 160001, "2");
                     setQuestRecord(chr, 160001, "2");
-                    sendNPCText(getPlayer().getName() + " and " + chr.getName() + ", I wish you two all the best on your AsteriaSEA journey together!", 9201002);
-                    getMap().startExtendedMapEffect("You may now kiss the bride, " + getPlayer().getName() + "!", 5120006);
+                    sendNPCText(getPlayer().getName() + " 和 " + chr.getName() + "， 我希望你們兩個能在此時此刻永遠愛著對方！", 9201002);
+                    getMap().startExtendedMapEffect("那麼現在請新郎親吻 " + getPlayer().getName() + "！", 5120006);
                     if (chr.getGuildId() > 0) {
                         World.Guild.guildPacket(chr.getGuildId(), MaplePacketCreator.sendMarriage(false, chr.getName()));
                     }
@@ -1368,9 +1374,10 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void 開啟小鋼珠(int type) {
         c.getSession().write(MaplePacketCreator.openBeans(getPlayer().getBeans(), type));
     }
+
     public void worldMessage(String text) {
-              World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, text).getBytes());
-            }
+        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, text).getBytes());
+    }
 
     public int getBeans() {
         return getClient().getPlayer().getBeans();
@@ -1380,9 +1387,9 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         getPlayer().gainBeans(s);
         c.getSession().write(MaplePacketCreator.updateBeans(c.getPlayer().getId(), s));
     }
-    
+
     public void warpBack(int mid, final int retmap, final int time) { //時間秒數
-        
+
         MapleMap warpMap = c.getChannelServer().getMapFactory().getMap(mid);
         c.getPlayer().changeMap(warpMap, warpMap.getPortal(0));
         c.sendPacket(MaplePacketCreator.getClock(time));

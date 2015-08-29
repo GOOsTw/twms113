@@ -34,21 +34,21 @@ function action(mode, type, selection) {
 	    if (data.equals("0")) {
 		marr.setCustomData("1");
 		cm.setQuestRecord(chr, 160001, "1");
-//		var num = 0;
+		var num = 0;
 		if (cm.haveItem(5251006,1)) {
 		    cm.gainItem(5251006,-1);
-//		    num = 60;
+		    num = 60;
 		} else if (cm.haveItem(5251005,1)) {
 		    cm.gainItem(5251005,-1);
-//		    num = 30;
+		    num = 30;
 		} else if (cm.haveItem(5251004,1)) {
 		    cm.gainItem(5251004,-1);
-//		    num = 10;
+		    num = 10;
 		}
 		cm.setQuestRecord(cm.getPlayer(), 160002, num + "");
 		cm.setQuestRecord(chr, 160002, num + "");
 		cm.sendNext("你現在有資格為婚禮。這裡是婚禮請柬，大家希望邀請將要求他們的客人。");
-//		cm.gainItemPeriod(4150000,num,1);
+		cm.gainItemPeriod(4150000,num,1);
 	    } else {
 		cm.sendOk("我想你已經結婚或者已經做了預約。");
 	    }
