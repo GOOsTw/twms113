@@ -222,11 +222,24 @@ public class GMCommand {
         }
     }
 
-    public static class GainMeso extends CommandExecute {
+    public static class maxmeso extends CommandExecute {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
             c.getPlayer().gainMeso(Integer.MAX_VALUE - c.getPlayer().getMeso(), true);
+            return 1;
+        }
+    }
+
+    public static class mesos extends CommandExecute {
+
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            if (splitted.length < 2) {
+                c.getPlayer().dropMessage(6, "[使用規則] !mesos <需要的數量>");
+                return 0;
+            }
+            c.getPlayer().gainMeso(Integer.parseInt(splitted[1]), true);
             return 1;
         }
     }
@@ -262,8 +275,9 @@ public class GMCommand {
 
                 } else {
                     item = new client.inventory.Item(itemId, (byte) 0, quantity, (byte) 0);
-                    if ( GameConstants.getInventoryType(itemId) != MapleInventoryType.USE)
+                    if (GameConstants.getInventoryType(itemId) != MapleInventoryType.USE) {
                         item.setFlag(flag);
+                    }
                 }
 
                 if (item.getType() != MapleInventoryType.USE.getType()) {
@@ -289,18 +303,16 @@ public class GMCommand {
             return 1;
         }
     }
-    
+
     public static class CnGM extends CommandExecute {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-
-                World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(5, "<GM聊天視窗>" + "頻道" + c.getPlayer().getClient().getChannel() + " [" + c.getPlayer().getName()+ "] : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
-            
+            World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(5, "<GM聊天視窗>" + "頻道" + c.getPlayer().getClient().getChannel() + " [" + c.getPlayer().getName() + "] : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
             return 1;
         }
     }
-    
+
     public static class ClearInv extends CommandExecute {
 
         @Override

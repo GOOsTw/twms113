@@ -612,7 +612,7 @@ public class AdminCommand {
             return 1;
         }
     }
-    
+
     public static class 關鍵時刻 extends CommandExecute {
 
         protected static ScheduledFuture<?> ts = null;
@@ -643,15 +643,6 @@ public class AdminCommand {
                 }
             }, minutesLeft * 60000);
             c.getPlayer().dropMessage(0, "關鍵時刻預定已完成。");
-            return 1;
-        }
-    }
-    
-    public static class GainMeso extends CommandExecute {
-
-        @Override
-        public int execute(MapleClient c, String[] splitted) {
-            c.getPlayer().gainMeso(Integer.MAX_VALUE - c.getPlayer().getMeso(), true);
             return 1;
         }
     }
@@ -994,8 +985,9 @@ public class AdminCommand {
             if (splitted.length > 1) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(StringUtil.joinStringFrom(splitted, 1));
-                for(ChannelServer ch : ChannelServer.getAllInstances())
+                for (ChannelServer ch : ChannelServer.getAllInstances()) {
                     ch.setServerMessage(sb.toString());
+                }
                 World.Broadcast.broadcastMessage(MaplePacketCreator.serverMessage(sb.toString()).getBytes());
             } else {
                 c.getPlayer().dropMessage(6, "指令規則: !serverMsg <message>");
@@ -1543,6 +1535,25 @@ public class AdminCommand {
                 return 0;
             }
             return 1;
+        }
+    }
+
+    public static class givemeso extends CommandExecute {
+
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            if (splitted.length < 2) {
+                c.getPlayer().dropMessage(6, "[使用規則] !gainmeso <名字> <數量>");
+                return 0;
+            }
+            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
+            if (victim == null) {
+                c.getPlayer().dropMessage(5, "找不到 '" + splitted[1]);
+                return 0;
+            } else {
+                victim.gainMeso(Integer.parseInt(splitted[2]), true);
+                return 1;
+            }
         }
     }
 
