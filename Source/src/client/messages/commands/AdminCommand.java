@@ -92,6 +92,7 @@ import com.mysql.jdbc.Connection;
 import java.util.concurrent.ScheduledFuture;
 import scripting.NPCScriptManager;
 import server.ServerProperties;
+import server.maps.MapleMapItem;
 
 /**
  *
@@ -1130,7 +1131,7 @@ public class AdminCommand {
         }
     }
 
-    public static class Vac extends CommandExecute {
+    public static class MobVac extends CommandExecute {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
@@ -1140,6 +1141,22 @@ public class AdminCommand {
                 monster.setPosition(c.getPlayer().getPosition());
             }
             return 1;
+        }
+    }
+
+    public static class ItemVac extends CommandExecute {
+
+        public int execute(MapleClient c, String[] splitted) {
+            boolean ItemVac = c.getPlayer().getItemVac();
+            if (ItemVac == false) {
+                c.getPlayer().stopItemVac();
+                c.getPlayer().startItemVac();
+            } else {
+                c.getPlayer().stopItemVac();
+            }
+            c.getPlayer().dropMessage(6, "目前自動撿物狀態:" + (ItemVac == false ? "開啟" : "關閉"));
+            return 0;
+
         }
     }
 

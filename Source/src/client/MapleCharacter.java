@@ -1669,7 +1669,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 if (addMbsvh) {
                     effectsToCancel.add(mbsvh);
                 }
-                if (stat == MapleBuffStat.SUMMON || stat == MapleBuffStat.PUPPET ) {
+                if (stat == MapleBuffStat.SUMMON || stat == MapleBuffStat.PUPPET) {
                     final int summonId = mbsvh.effect.getSourceId();
                     final MapleSummon summon = summons.get(summonId);
                     if (summon != null) {
@@ -3204,7 +3204,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             sb.append(" 達到了 200 等 是我們的英雄!");
             World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, sb.toString()).getBytes());
         }
-        
+
         maxhp = (short) Math.min(30000, Math.abs(maxhp));
         maxmp = (short) Math.min(30000, Math.abs(maxmp));
 
@@ -4053,6 +4053,26 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         client.getSession().write(MaplePacketCreator.getNPCTalk(npc, (byte) 0, message, "00 00", (byte) 0));
     }
 
+    private ItemVac ItemVac;
+    public boolean itemVacs = false;
+
+    public boolean getItemVac() {
+        return itemVacs;
+    }
+
+    public void startItemVac() {
+        this.ItemVac = new ItemVac(this);
+        this.ItemVac.start();
+        itemVacs = true;
+    }
+
+    public void stopItemVac() {
+        if (itemVacs) {
+            this.ItemVac.stop();
+            itemVacs = false;
+        }
+    }
+
     public static enum FameStatus {
 
         OK, NOT_TODAY, NOT_THIS_MONTH
@@ -4168,6 +4188,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             boolean first = debuff.isFirst();
             client.getSession().write(MaplePacketCreator.cancelDebuff(mask, first));
             map.broadcastMessage(this, MaplePacketCreator.cancelForeignDebuff(id, mask, first), false);
+
             diseases.remove(debuff);
         }
     }
@@ -4540,7 +4561,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             client.getSession().write(MaplePacketCreator.serverNotice(type, message));
         }
     }
-    
 
     public IMaplePlayerShop getPlayerShop() {
         return playerShop;
@@ -5025,7 +5045,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (ret.effects.get(MapleBuffStat.SUMMON) != null) {
             ret.effects.remove(MapleBuffStat.SUMMON);
         }
-        
+
         if (ret.effects.get(MapleBuffStat.PUPPET) != null) {
             ret.effects.remove(MapleBuffStat.PUPPET);
         }
