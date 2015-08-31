@@ -585,7 +585,7 @@ public final class MapleMap {
                 doShrine(true);
             }
         } else if (mobid == 8810122 && mapid == 240060201) { // Horntail
-           // World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "經過無數次的挑戰，" + chr.getName() + "所帶領的隊伍最終擊破了混屯闇黑龍王的遠征隊！你們才是龍之林的真正英雄~").getBytes());
+            // World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "經過無數次的挑戰，" + chr.getName() + "所帶領的隊伍最終擊破了混屯闇黑龍王的遠征隊！你們才是龍之林的真正英雄~").getBytes());
             /*for (MapleCharacter c : getCharactersThreadsafe()) {
              c.finishAchievement(24);
              }*/
@@ -1919,11 +1919,11 @@ public final class MapleMap {
                 chr.getClient().getSession().write(MaplePacketCreator.temporaryStats_Reset());
             }
         }
-        
+
         if ((mapid == 10000 && chr.getJob() == 0) || (mapid == 130030000 && chr.getJob() == 1000) || (mapid == 914000000 && chr.getJob() == 2000) || (mapid == 900010000 && chr.getJob() == 2001)) {
             chr.dropMessage(1, "歡迎來SyncMS。\r\n新手技能記得在一轉之前點完！");
         }
-        
+
         if (permanentWeather > 0) {
             chr.getClient().getSession().write(MaplePacketCreator.startMapEffect("", permanentWeather, false)); //snow, no msg
         }
@@ -1933,7 +1933,7 @@ public final class MapleMap {
         if (environment.size() > 0) {
             chr.getClient().getSession().write(MaplePacketCreator.getUpdateEnvironment(this));
         }
-       
+
     }
 
     public int getNumItems() {
@@ -2289,7 +2289,7 @@ public final class MapleMap {
             chr.cancelEffectFromBuffStat(MapleBuffStat.SUMMON);
 
         }
-        
+
     }
 
     public final void broadcastMessage(final MaplePacket packet) {
@@ -2298,6 +2298,16 @@ public final class MapleMap {
 
     public final void broadcastMessage(final MapleCharacter source, final MaplePacket packet, final boolean repeatToSource) {
         broadcastMessage(repeatToSource ? null : source, packet, Double.POSITIVE_INFINITY, source.getPosition());
+    }
+
+    public final int playerCount() {
+        List<MapleMapObject> players = getMapObjectsInRange(new Point(0, 0), Double.POSITIVE_INFINITY, Arrays.asList(MapleMapObjectType.PLAYER));
+        return players.size();
+    }
+
+    public final int mobCount() {
+        List<MapleMapObject> mobsCount = getMapObjectsInRange(new Point(0, 0), Double.POSITIVE_INFINITY, Arrays.asList(MapleMapObjectType.MONSTER));
+        return mobsCount.size();
     }
 
     /*	public void broadcastMessage(MapleCharacter source, MaplePacket packet, boolean repeatToSource, boolean ranged) {
@@ -2930,7 +2940,7 @@ public final class MapleMap {
         cancelSquadSchedule();
         resetPortals();
         environment.clear();
-        if( MulungDojoLeaveTask != null && !MulungDojoLeaveTask.isCancelled()) {
+        if (MulungDojoLeaveTask != null && !MulungDojoLeaveTask.isCancelled()) {
             MulungDojoLeaveTask.cancel(true);
             MulungDojoLeaveTask = null;
         }
@@ -2938,9 +2948,9 @@ public final class MapleMap {
             respawn(true);
         }
     }
-    
+
     public void setMulungDojoLeaveTask(ScheduledFuture<?> task) {
-        MulungDojoLeaveTask = task ;
+        MulungDojoLeaveTask = task;
     }
 
     public final void cancelSquadSchedule() {

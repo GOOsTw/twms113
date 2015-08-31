@@ -32,7 +32,7 @@ function start() {
 	if (next) {
 	    var em = cm.getEventManager("WuGongPQ");
 	    if (em == null) {
-		cm.sendOk("This PQ is not currently available.");
+		cm.sendOk("當前副本有問題，請聯絡管理員....");
 	    } else {
 		var prop = em.getProperty("state");
 		if (prop.equals("0") || prop == null) {
@@ -40,11 +40,11 @@ function start() {
 	            cm.dispose();
 		    return;
 		} else {
-		    cm.sendOk("Someone is already attempting on the quest.");
+		    cm.sendOk("裡面已經有人在挑戰...");
 		}
 	    }
 	} else {
-	    cm.sendOk("裡面已經有人了0.0");
+	    cm.sendOk("等級尚未達到 #r25#k 或者已經超過 #r200#k");
 	}
     }
     cm.dispose();

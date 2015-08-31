@@ -3201,7 +3201,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 sb.append("> ");
             }
             sb.append(getName());
-            sb.append(" 達到了 200 等 是我們的英雄!");
+            sb.append(" 達到了等級200級！請大家一起恭喜他！");
             World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, sb.toString()).getBytes());
         }
 
