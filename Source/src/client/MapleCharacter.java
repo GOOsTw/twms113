@@ -2819,6 +2819,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
     }
 
+    public void reloadC() {
+        client.getPlayer().getClient().getSession().write(MaplePacketCreator.getCharInfo(client.getPlayer()));
+        client.getPlayer().getMap().removePlayer(client.getPlayer());
+        client.getPlayer().getMap().addPlayer(client.getPlayer());
+    }
+
     public void forceReAddItem_NoUpdate(IItem item, MapleInventoryType type) {
         getInventory(type).removeSlot(item.getPosition());
         getInventory(type).addFromDB(item);

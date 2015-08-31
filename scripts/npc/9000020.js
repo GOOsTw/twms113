@@ -6,7 +6,7 @@
 
 var status = -1;
 var cost, sel;
-var togo1, togo2, togo3, togo4;
+var togo1, togo2, togo3, togo4, togo5;
 var map;
 var back = true;
 
@@ -14,6 +14,7 @@ function start() {
     switch (cm.getMapId()) {
 	case 800000000:
 	case 500000000:
+	case 501000000:
 	case 701000000:
 	case 702000000:
 	case 740000000:
@@ -70,32 +71,44 @@ function action(mode, type, selection) {
 			    togo2 = 701000000;
 			    togo3 = 500000000;
 				togo4 = 702000000;
+				togo5 = 501000000;
 			case 500000000:
 			    togo1 = 800000000;
 			    togo2 = 701000000;
 			    togo3 = 740000000;
 				togo4 = 702000000;
+				togo5 = 501000000;
 			    break;
 			case 800000000:
 			    togo1 = 701000000;
 			    togo2 = 500000000;
 			    togo3 = 740000000;
 				togo4 = 702000000;
+				togo5 = 501000000;
 			    break;
 			case 701000000:
 			    togo1 = 500000000;
 			    togo2 = 800000000;
 			    togo3 = 740000000;
 				togo4 = 702000000;
+				togo5 = 501000000;
 			    break;
 			case 702000000:
 				togo1 = 500000000;
 				togo2 = 701000000;
 			    togo3 = 740000000;
 				togo4 = 800000000;
+				togo5 = 501000000;
+			    break;
+			case 501000000:
+				togo1 = 500000000;
+				togo2 = 701000000;
+			    togo3 = 740000000;
+				togo4 = 800000000;
+				togo5 = 702000000;
 			    break;
 		    }
-		    cm.sendSimple("選擇你想要的旅行地點? \n\r #b#L0##m"+togo1+"# (3,000 楓幣)#l \n\r #L1##m"+togo2+"# (3,000 楓幣)#l \n\r #L2##m"+togo3+"# (3,000 楓幣)#l \n\r #L3##m"+togo4+"# (3,000 楓幣)#l");
+		    cm.sendSimple("選擇你想要的旅行地點? \n\r #b#L0##m"+togo1+"# (3,000 楓幣)#l \n\r #L1##m"+togo2+"# (3,000 楓幣)#l \n\r #L2##m"+togo3+"# (3,000 楓幣)#l \n\r #L3##m"+togo4+"# (3,000 楓幣)#l \r\n#L4##m"+togo5+"# (3,000 楓幣)#l");
 
 		} else if (selection == 1) {
 		    cm.warp(map == -1 ? 100000000 : map);
@@ -112,6 +125,8 @@ function action(mode, type, selection) {
 		    cm.sendNext("你想要去這個地方旅行? #b#m"+togo3+"##k? 我將帶你去只需要 #b3,000 楓幣#k. 你現在願意去?");
 		} else if (sel == 3) {
 			cm.sendNext("你想要去這個地方旅行? #b#m"+togo4+"##k? 我將帶你去只需要 #b3,000 楓幣#k. 你現在願意去?");		
+		} else if (sel == 4) {
+			cm.sendNext("你想要去這個地方旅行? #b#m"+togo5+"##k? 我將帶你去只需要 #b3,000 楓幣#k. 你現在願意去?");
 		}
 	    } else if (status == 2) {
 		if (sel == 0) {
@@ -122,6 +137,8 @@ function action(mode, type, selection) {
 		    cm.warp(togo3);
 		} else if (sel == 3) {
 			cm.warp(togo4);
+		} else if (sel == 4) {
+			cm.warp(togo5);
 		}
 		cm.dispose();
 	    }

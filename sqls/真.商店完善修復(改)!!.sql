@@ -3137,6 +3137,9 @@ INSERT INTO `shopitems` VALUES ('9702', '99', '2000001', '160', '0', '0', '0', '
 INSERT INTO `shopitems` VALUES ('9703', '99', '2000000', '50', '0', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('9704', '13', '2043700', '70000', '0', '0', '0', '0');
 INSERT INTO `shopitems` VALUES ('9705', '72', '2022001', '500', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9706', '100', '2120000', '30', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9707', '100', '2260000', '1000', '0', '0', '0', '0');
+INSERT INTO `shopitems` VALUES ('9708', '101', '4031722', '3500000', '0', '0', '0', '0');
 
 -- ----------------------------
 -- Table structure for `shops`
@@ -3249,3 +3252,5 @@ INSERT INTO `shops` VALUES ('95', '9270021');
 INSERT INTO `shops` VALUES ('97', '2040051');
 INSERT INTO `shops` VALUES ('98', '2050000');
 INSERT INTO `shops` VALUES ('99', '1081000');
+INSERT INTO `shops` VALUES ('100', '9200001');
+INSERT INTO `shops` VALUES ('101', '9250038');
