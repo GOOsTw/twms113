@@ -762,17 +762,21 @@ public class AdminCommand {
         public int execute(MapleClient c, String[] splitted) {
             java.util.Map<IItem, MapleInventoryType> eqs = new ArrayMap<IItem, MapleInventoryType>();
             boolean add = false;
-            if (splitted.length < 2 || splitted[1].equals("all")) {
+            if (splitted.length < 2 || splitted[1].equals("全部")) {
                 for (MapleInventoryType type : MapleInventoryType.values()) {
                     for (IItem item : c.getPlayer().getInventory(type)) {
                         if (ItemFlag.LOCK.check(item.getFlag())) {
                             item.setFlag((byte) (item.getFlag() - ItemFlag.LOCK.getValue()));
                             add = true;
+                            c.getPlayer().reloadC();
+                            c.getPlayer().dropMessage(5, "已經解鎖");
                             //c.getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type.getType()));
                         }
                         if (ItemFlag.UNTRADEABLE.check(item.getFlag())) {
                             item.setFlag((byte) (item.getFlag() - ItemFlag.UNTRADEABLE.getValue()));
                             add = true;
+                            c.getPlayer().reloadC();
+                            c.getPlayer().dropMessage(5, "已經解鎖");
                             //c.getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type.getType()));
                         }
                         if (add) {
@@ -781,16 +785,20 @@ public class AdminCommand {
                         add = false;
                     }
                 }
-            } else if (splitted[1].equals("eqp")) {
+            } else if (splitted[1].equals("已裝備道具")) {
                 for (IItem item : c.getPlayer().getInventory(MapleInventoryType.EQUIPPED)) {
                     if (ItemFlag.LOCK.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.LOCK.getValue()));
                         add = true;
+                        c.getPlayer().reloadC();
+                        c.getPlayer().dropMessage(5, "已經解鎖");
                         //c.getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type.getType()));
                     }
                     if (ItemFlag.UNTRADEABLE.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.UNTRADEABLE.getValue()));
                         add = true;
+                        c.getPlayer().reloadC();
+                        c.getPlayer().dropMessage(5, "已經解鎖");
                         //c.getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type.getType()));
                     }
                     if (add) {
@@ -798,16 +806,20 @@ public class AdminCommand {
                     }
                     add = false;
                 }
-            } else if (splitted[1].equals("eq")) {
+            } else if (splitted[1].equals("武器")) {
                 for (IItem item : c.getPlayer().getInventory(MapleInventoryType.EQUIP)) {
                     if (ItemFlag.LOCK.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.LOCK.getValue()));
                         add = true;
+                        c.getPlayer().reloadC();
+                        c.getPlayer().dropMessage(5, "已經解鎖");
                         //c.getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type.getType()));
                     }
                     if (ItemFlag.UNTRADEABLE.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.UNTRADEABLE.getValue()));
                         add = true;
+                        c.getPlayer().reloadC();
+                        c.getPlayer().dropMessage(5, "已經解鎖");
                         //c.getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type.getType()));
                     }
                     if (add) {
@@ -815,16 +827,20 @@ public class AdminCommand {
                     }
                     add = false;
                 }
-            } else if (splitted[1].equals("u")) {
+            } else if (splitted[1].equals("消耗")) {
                 for (IItem item : c.getPlayer().getInventory(MapleInventoryType.USE)) {
                     if (ItemFlag.LOCK.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.LOCK.getValue()));
                         add = true;
+                        c.getPlayer().reloadC();
+                        c.getPlayer().dropMessage(5, "已經解鎖");
                         //c.getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type.getType()));
                     }
                     if (ItemFlag.UNTRADEABLE.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.UNTRADEABLE.getValue()));
                         add = true;
+                        c.getPlayer().reloadC();
+                        c.getPlayer().dropMessage(5, "已經解鎖");
                         //c.getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type.getType()));
                     }
                     if (add) {
@@ -832,16 +848,20 @@ public class AdminCommand {
                     }
                     add = false;
                 }
-            } else if (splitted[1].equals("s")) {
+            } else if (splitted[1].equals("裝飾")) {
                 for (IItem item : c.getPlayer().getInventory(MapleInventoryType.SETUP)) {
                     if (ItemFlag.LOCK.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.LOCK.getValue()));
                         add = true;
+                        c.getPlayer().reloadC();
+                        c.getPlayer().dropMessage(5, "已經解鎖");
                         //c.getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type.getType()));
                     }
                     if (ItemFlag.UNTRADEABLE.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.UNTRADEABLE.getValue()));
                         add = true;
+                        c.getPlayer().reloadC();
+                        c.getPlayer().dropMessage(5, "已經解鎖");
                         //c.getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type.getType()));
                     }
                     if (add) {
@@ -849,16 +869,20 @@ public class AdminCommand {
                     }
                     add = false;
                 }
-            } else if (splitted[1].equals("e")) {
+            } else if (splitted[1].equals("其他")) {
                 for (IItem item : c.getPlayer().getInventory(MapleInventoryType.ETC)) {
                     if (ItemFlag.LOCK.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.LOCK.getValue()));
                         add = true;
+                        c.getPlayer().reloadC();
+                        c.getPlayer().dropMessage(5, "已經解鎖");
                         //c.getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type.getType()));
                     }
                     if (ItemFlag.UNTRADEABLE.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.UNTRADEABLE.getValue()));
                         add = true;
+                        c.getPlayer().reloadC();
+                        c.getPlayer().dropMessage(5, "已經解鎖");
                         //c.getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type.getType()));
                     }
                     if (add) {
@@ -866,16 +890,20 @@ public class AdminCommand {
                     }
                     add = false;
                 }
-            } else if (splitted[1].equals("c")) {
+            } else if (splitted[1].equals("特殊")) {
                 for (IItem item : c.getPlayer().getInventory(MapleInventoryType.CASH)) {
                     if (ItemFlag.LOCK.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.LOCK.getValue()));
                         add = true;
+                        c.getPlayer().reloadC();
+                        c.getPlayer().dropMessage(5, "已經解鎖");
                         //c.getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type.getType()));
                     }
                     if (ItemFlag.UNTRADEABLE.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.UNTRADEABLE.getValue()));
                         add = true;
+                        c.getPlayer().reloadC();
+                        c.getPlayer().dropMessage(5, "已經解鎖");
                         //c.getSession().write(MaplePacketCreator.updateSpecialItemUse(item, type.getType()));
                     }
                     if (add) {
@@ -884,7 +912,7 @@ public class AdminCommand {
                     add = false;
                 }
             } else {
-                c.getPlayer().dropMessage(6, "[all/eqp/eq/u/s/e/c]");
+                c.getPlayer().dropMessage(6, "[全部/已裝備道具/武器/消耗/裝飾/其他/特殊]");
             }
 
             for (Entry<IItem, MapleInventoryType> eq : eqs.entrySet()) {
@@ -2371,10 +2399,12 @@ public class AdminCommand {
                 }
             }
             MapleMonster mob;
+            List<MapleMapObject> monsters = map.getMapObjectsInRange(c.getPlayer().getPosition(), range, Arrays.asList(MapleMapObjectType.MONSTER));
             for (MapleMapObject monstermo : map.getMapObjectsInRange(c.getPlayer().getPosition(), range, Arrays.asList(MapleMapObjectType.MONSTER))) {
                 mob = (MapleMonster) monstermo;
                 map.killMonster(mob, c.getPlayer(), false, false, (byte) 1);
             }
+            c.getPlayer().dropMessage("您總共殺了 "+monsters.size()+" 怪物");
             return 1;
         }
     }

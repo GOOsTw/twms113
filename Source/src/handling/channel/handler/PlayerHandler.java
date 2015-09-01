@@ -374,7 +374,18 @@ public class PlayerHandler {
                 // Official MS timing is 3.5 seconds, so 7 seconds should be safe.
                 //chr.getCheatTracker().registerOffense(CheatingOffense.ARAN_COMBO_HACK);
                 combo = 0;
+            } else {
+                if (combo == 9) {
+                    c.getPlayer().giftMedal(1142134);
+                }
+                if (combo == 4999) {
+                    c.getPlayer().giftMedal(1142135);
+                }
+                if (combo == 14999) {
+                    c.getPlayer().giftMedal(1142136);
+                }
             }
+            
             if (combo < 30000) {
                 combo++;
             }

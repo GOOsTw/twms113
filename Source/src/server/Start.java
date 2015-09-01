@@ -44,6 +44,7 @@ public class Start {
 
         boolean adminMode = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.Admin"));
         boolean autoReg = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.AutoRegister"));
+        boolean gmitems = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.gmitems"));
 
         if (adminMode) {
             System.out.println("【管理員模式】開啟");
@@ -55,6 +56,12 @@ public class Start {
             System.out.println("【自動註冊】開啟");
         } else {
             System.out.println("【自動註冊】關閉");
+        }
+        
+        if (gmitems) {
+            System.out.println("【允許玩家使用管理員物品】開啟");
+        } else {
+            System.out.println("【允許玩家使用管理員物品】關閉");
         }
         
         resetAllLoginState();

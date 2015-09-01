@@ -44,13 +44,13 @@ public class MapleCarnivalChallenge {
             case 0:
                 return "初心者";
             case 1000:
-                return "Nobless";
+                return "貴族";
             case 2000:
-                return "Legend";
+                return "傳說";
             case 2001:
-                return "Evan";
+                return "龍魔島";
             case 3000:
-                return "Citizen";
+                return "市民";
 
             case 100:
                 return "劍士";// Warrior
@@ -124,15 +124,15 @@ public class MapleCarnivalChallenge {
             case 422:
                 return "暗影神偷";
             case 430:
-                return "Blade Recruit";
+                return "下忍";
             case 431:
-                return "Blade Acolyte";
+                return "中忍";
             case 432:
-                return "Blade Specialist";
+                return "上忍";
             case 433:
-                return "Blade Lord";
+                return "隱忍";
             case 434:
-                return "Blade Master";
+                return "影武者";
 
             case 500:
                 return "海盜";
@@ -153,37 +153,37 @@ public class MapleCarnivalChallenge {
             case 1110:
             case 1111:
             case 1112:
-                return "Soul Master";
+                return "聖魂騎士";
 
             case 1200:
             case 1210:
             case 1211:
             case 1212:
-                return "Flame Wizard";
+                return "烈焰巫師";
 
             case 1300:
             case 1310:
             case 1311:
             case 1312:
-                return "Wind Breaker";
+                return "破風使者";
 
             case 1400:
             case 1410:
             case 1411:
             case 1412:
-                return "Night Walker";
+                return "暗夜行者";
 
             case 1500:
             case 1510:
             case 1511:
             case 1512:
-                return "Striker";
+                return "閃雷悍將";
 
             case 2100:
             case 2110:
             case 2111:
             case 2112:
-                return "Aran";
+                return "狂狼勇士";
 
             case 2200:
             case 2210:
@@ -195,28 +195,28 @@ public class MapleCarnivalChallenge {
             case 2216:
             case 2217:
             case 2218:
-                return "Evan";
+                return "龍魔導士";
 
             case 3200:
             case 3210:
             case 3211:
             case 3212:
-                return "Battle Mage";
+                return "煉獄巫師";
 
             case 3300:
             case 3310:
             case 3311:
             case 3312:
-                return "Wild Hunter";
+                return "狂暴獵人";
 
             case 3500:
             case 3510:
             case 3511:
             case 3512:
-                return "Mechanic";
+                return "機甲戰神";
 
             default:
-                return "Unknown Job";
+                return "未知";
         }
     }
 
@@ -332,7 +332,7 @@ public class MapleCarnivalChallenge {
                 return "海盜";
 
             default:
-                return "Unknown Job";
+                return "未知";
         }
     }
 }

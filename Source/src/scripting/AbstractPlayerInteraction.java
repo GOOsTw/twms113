@@ -55,6 +55,7 @@ import client.inventory.MapleInventoryIdentifier;
 import handling.world.World;
 import server.events.MapleEvent;
 import server.events.MapleEventType;
+import server.maps.MapleMapFactory;
 
 public abstract class AbstractPlayerInteraction {
 
@@ -1027,5 +1028,20 @@ public abstract class AbstractPlayerInteraction {
 
     public boolean getTempFlag(final int flag) {
         return (c.getChannelServer().getTempFlag() & flag) == flag;
+    }
+
+    public void warpAllPlayer(int from, int to) {
+        final MapleMap tomap = getMapFactory().getMap(to);
+        final MapleMap frommap = getMapFactory().getMap(from);
+        List<MapleCharacter> list = frommap.getCharactersThreadsafe();
+        if (tomap != null && frommap != null && list != null && frommap.getCharactersSize() > 0) {
+            for (MapleMapObject mmo : list) {
+                ((MapleCharacter) mmo).changeMap(tomap, tomap.getPortal(0));
+            }
+        }
+    }
+
+    public MapleMapFactory getMapFactory() {
+        return getChannelServer().getMapFactory();
     }
 }

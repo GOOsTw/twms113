@@ -30,6 +30,7 @@ function start() {
     cm.sendNext("嗨 我是 #b江#k. 我在等待我的兄弟 #b保羅#k. 他應該現在在這裡...");
 }
 
+
 function action(mode, type, selection) {
     if (mode == -1) {
         cm.dispose();

@@ -1019,4 +1019,6 @@ INSERT INTO `drop_data` VALUES ('23089', '9400748', '1002859', '1', '1', '0', '1
 INSERT INTO `drop_data` VALUES ('23090', '9400748', '1002860', '1', '1', '0', '15000');
 INSERT INTO `drop_data` VALUES ('23091', '9400748', '1002861', '1', '1', '0', '15000');
 INSERT INTO `drop_data` VALUES ('23092', '9400748', '0', '200', '300', '0', '999999');
+INSERT INTO `drop_data` VALUES ('23093', '9700019', '2022613', '1', '1', '0', '600000');
+UPDATE 'drop_data' SET 'dropperid' = '8830007' WHERE 'dropperid' = '8830000';
 INSERT INTO `reactordrops` VALUES ('883', '5012000', '4031723', '1', '4415');

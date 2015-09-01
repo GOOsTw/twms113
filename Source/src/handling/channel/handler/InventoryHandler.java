@@ -1699,16 +1699,16 @@ public class InventoryHandler {
                     sb.append(message);
 
                     final boolean ear = slea.readByte() != 0;
-                   if (c.getPlayer().isPlayer() && message.contains("幹") 
-                            || message.contains("豬") 
-                            || message.contains("笨") 
-                            || message.contains("靠") 
-                            || message.contains("腦包") 
-                            || message.contains("腦") 
-                            || message.contains("智障") 
-                            || message.contains("白目") 
-                            || message.contains("白吃"))  {
-                       c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
+                    if (c.getPlayer().isPlayer() && message.contains("幹")
+                            || message.contains("豬")
+                            || message.contains("笨")
+                            || message.contains("靠")
+                            || message.contains("腦包")
+                            || message.contains("腦")
+                            || message.contains("智障")
+                            || message.contains("白目")
+                            || message.contains("白吃")) {
+                        c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
                         c.getSession().write(MaplePacketCreator.enableActions());
                         return;
                     }
@@ -1754,15 +1754,15 @@ public class InventoryHandler {
                         byte pos = (byte) slea.readInt();
                         item = c.getPlayer().getInventory(MapleInventoryType.getByType(invType)).getItem(pos);
                     }
-                    if (c.getPlayer().isPlayer() && message.contains("幹") 
-                            || message.contains("豬") 
-                            || message.contains("笨") 
-                            || message.contains("靠") 
-                            || message.contains("腦包") 
-                            || message.contains("腦") 
-                            || message.contains("智障") 
-                            || message.contains("白目") 
-                            || message.contains("白吃"))  {
+                    if (c.getPlayer().isPlayer() && message.contains("幹")
+                            || message.contains("豬")
+                            || message.contains("笨")
+                            || message.contains("靠")
+                            || message.contains("腦包")
+                            || message.contains("腦")
+                            || message.contains("智障")
+                            || message.contains("白目")
+                            || message.contains("白吃")) {
                         c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
                         c.getSession().write(MaplePacketCreator.enableActions());
                         return;
@@ -2072,16 +2072,17 @@ public class InventoryHandler {
                     }
                     final boolean ear = slea.readByte() != 0;
 
-                    if (c.getPlayer().isPlayer() 
-                            && text.contains("幹") 
-                            || text.contains("豬") 
-                            || text.contains("笨") 
-                            || text.contains("靠") 
-                            || text.contains("腦包") 
-                            || text.contains("腦") 
-                            || text.contains("智障") 
-                            || text.contains("白目") 
-                            || text.contains("白吃"))  {c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
+                    if (c.getPlayer().isPlayer()
+                            && text.contains("幹")
+                            || text.contains("豬")
+                            || text.contains("笨")
+                            || text.contains("靠")
+                            || text.contains("腦包")
+                            || text.contains("腦")
+                            || text.contains("智障")
+                            || text.contains("白目")
+                            || text.contains("白吃")) {
+                        c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
                         c.getSession().write(MaplePacketCreator.enableActions());
                         return;
                     }
@@ -2363,7 +2364,7 @@ public class InventoryHandler {
         }
     }
 
-    private static void removeItem(final MapleCharacter chr, final MapleMapItem mapitem, final MapleMapObject ob) {
+    public static void removeItem(final MapleCharacter chr, final MapleMapItem mapitem, final MapleMapObject ob) {
         mapitem.setPickedUp(true);
         chr.getMap().broadcastMessage(MaplePacketCreator.removeItemFromMap(mapitem.getObjectId(), 2, chr.getId()), mapitem.getPosition());
         chr.getMap().removeMapObject(ob);

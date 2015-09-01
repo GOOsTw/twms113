@@ -95,6 +95,7 @@ public class ChannelServer implements Serializable {
     private int eventmap = -1;
     private final Map<MapleEventType, MapleEvent> events = new EnumMap<>(MapleEventType.class);
     private final boolean debugMode = false;
+    private boolean GMItems;
 
     private ChannelServer(final String key, final int channel) {
         this.key = key;
@@ -131,13 +132,14 @@ public class ChannelServer implements Serializable {
             serverName = ServerProperties.getProperty("server.settings.serverName", "");
             flags = Integer.parseInt(ServerProperties.getProperty("server.settings.wflags", "0"));
             adminOnly = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.admin", "false"));
+            GMItems = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.gmitems", "false"));
             eventSM = new EventScriptManager(this, ServerProperties.getProperty("server.settings.events").split(","));
             port = Short.parseShort(ServerProperties.getProperty("server.settings.channel" + channel + ".port", String.valueOf(DEFAULT_PORT + channel)));
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        
+
         ip = ServerProperties.getProperty("server.settings.ip");
         socket = ip + ":" + port;
 
@@ -167,7 +169,7 @@ public class ChannelServer implements Serializable {
             return;
         }
         broadcastPacket(MaplePacketCreator.serverNotice(0, "這個頻道正在關閉中."));
-       
+
         shutdown = true;
 
         System.out.println("頻道 " + channel + ", 儲存商人資料...");
@@ -554,6 +556,10 @@ public class ChannelServer implements Serializable {
             }
         }
         System.out.println("[自動存檔] 已經將頻道 " + this.channel + " 的 " + ppl + " 個角色保存到數據中.");
+    }
+
+    public boolean CanGMItem() {
+        return GMItems;
     }
 
     public final static int getChannelCount() {

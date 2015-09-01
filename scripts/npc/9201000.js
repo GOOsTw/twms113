@@ -15,6 +15,10 @@ function action(mode, type, selection) {
 	status--;
     }
     if (status == 0) {
+	if (cm.getPlayer().getGender() != 0) {
+		cm.sendOk("很抱歉，我只能幫男性做戒指。");
+		cm.dispose();
+	}
 	if (cm.getPlayer().getMarriageId() > 0) {
 	    cm.sendNext("恭喜你結婚！！");
 	    cm.dispose();

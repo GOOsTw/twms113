@@ -554,16 +554,24 @@ public class MapleInventoryManipulator {
 
     public static void equip(final MapleClient c, final short src, short dst) {
         Equip source = (Equip) c.getPlayer().getInventory(MapleInventoryType.EQUIP).getItem(src);
-        if (source == null ) {
+        if (source == null) {
             c.sendPacket(MaplePacketCreator.enableActions());
             return;
-        } 
+        }
+
         boolean itemChanged = false;
         if (MapleItemInformationProvider.getInstance().isUntradeableOnEquip(source.getItemId())) {
             source.setFlag((byte) ItemFlag.UNTRADEABLE.getValue());
             itemChanged = true;
         }
-      
+
+        if (GameConstants.isGMEquip(source.getItemId()) && !c.getPlayer().isGM() && !c.getChannelServer().CanGMItem()) {
+            c.getPlayer().dropMessage(1, "只有管理員能裝備這件道具。");
+            c.getPlayer().removeAll(source.getItemId(), false);
+            c.getSession().write(MaplePacketCreator.enableActions());
+            return;
+        }
+
         if (dst == -6) { // unequip the overall
             IItem top = c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -5);
             if (top != null && isOverall(top.getItemId())) {
@@ -641,7 +649,7 @@ public class MapleInventoryManipulator {
         c.sendPacket(MaplePacketCreator.modifyInventory(true, mods));
         c.getPlayer().equipChanged();
     }
-    
+
     private static boolean isOverall(int itemId) {
         return itemId / 10000 == 105;
     }
@@ -649,7 +657,7 @@ public class MapleInventoryManipulator {
     private static boolean isWeapon(int itemId) {
         return itemId >= 1302000 && itemId < 1492024;
     }
-     
+
     public static void unequip(final MapleClient c, final short src, final short dst) {
         Equip source = (Equip) c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).getItem(src);
         Equip target = (Equip) c.getPlayer().getInventory(MapleInventoryType.EQUIP).getItem(dst);
@@ -663,10 +671,10 @@ public class MapleInventoryManipulator {
             c.sendPacket(MaplePacketCreator.getInventoryFull());
             return;
         }
-         if (source.getItemId() == 1122017) {
+        if (source.getItemId() == 1122017) {
             c.getPlayer().cancelFairySchedule(true);
         }
-       
+
         c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).removeSlot(src);
         if (target != null) {
             c.getPlayer().getInventory(MapleInventoryType.EQUIP).removeSlot(dst);

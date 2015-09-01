@@ -841,6 +841,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case RING_ACTION:
                 PlayersHandler.RingAction(slea, c);
                 break;
+            case ITEM_UNLOCK:
+                PlayersHandler.UnlockItem(slea, c);
+                break;
             case REQUEST_FAMILY:
                 FamilyHandler.RequestFamily(slea, c);
                 break;

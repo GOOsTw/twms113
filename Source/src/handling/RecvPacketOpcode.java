@@ -83,6 +83,7 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     USE_MOUNT_FOOD,
     USE_SCRIPTED_NPC_ITEM,
     USE_CASH_ITEM,
+    ITEM_UNLOCK,
     USE_CATCH_ITEM,
     USE_SKILL_BOOK,
     USE_RETURN_SCROLL,

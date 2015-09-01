@@ -770,11 +770,11 @@ public class MapScriptMethods {
                 break;
             }
             case iceCave: {
-                c.getPlayer().changeSkillLevel(SkillFactory.getSkill(20000014), (byte) -1, (byte) 0);
-                c.getPlayer().changeSkillLevel(SkillFactory.getSkill(20000015), (byte) -1, (byte) 0);
-                c.getPlayer().changeSkillLevel(SkillFactory.getSkill(20000016), (byte) -1, (byte) 0);
-                c.getPlayer().changeSkillLevel(SkillFactory.getSkill(20000017), (byte) -1, (byte) 0);
-                c.getPlayer().changeSkillLevel(SkillFactory.getSkill(20000018), (byte) -1, (byte) 0);
+                c.getPlayer().changeSkillLevel(SkillFactory.getSkill(20000014), (byte) -1, (byte) 0, -1);
+                c.getPlayer().changeSkillLevel(SkillFactory.getSkill(20000015), (byte) -1, (byte) 0, -1);
+                c.getPlayer().changeSkillLevel(SkillFactory.getSkill(20000016), (byte) -1, (byte) 0, -1);
+                c.getPlayer().changeSkillLevel(SkillFactory.getSkill(20000017), (byte) -1, (byte) 0, -1);
+                c.getPlayer().changeSkillLevel(SkillFactory.getSkill(20000018), (byte) -1, (byte) 0, -1);
                 c.getSession().write(UIPacket.ShowWZEffect("Effect/Direction1.img/aranTutorial/ClickLirin"));
                 c.getSession().write(UIPacket.IntroDisableUI(false));
                 c.getSession().write(UIPacket.IntroLock(false));
@@ -846,13 +846,13 @@ public class MapScriptMethods {
                 }
                 c.sendPacket(MaplePacketCreator.showEffect("pepeKing/chat/nugu"));
                 c.sendPacket(MaplePacketCreator.showEffect("pepeKing/frame/B"));
-                 break;
+                break;
             }
             case findvioleta: {
                 c.getPlayer().getMap().resetFully();
-                 break;
+                break;
             }
-            
+
             default: {
                 System.out.println("未處理的腳本 : " + scriptName + ", 型態 : onUserEnter - 地圖ID " + c.getPlayer().getMapId());
                 FilePrinter.printError("MapScriptMethods.txt", "未處理的腳本 : " + scriptName + ", 型態 : onUserEnter - 地圖ID " + c.getPlayer().getMapId());

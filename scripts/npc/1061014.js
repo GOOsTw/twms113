@@ -1,129 +1,110 @@
-/* Mu Young
+﻿/* Mu Young
 	Boss Balrog
 */
 
 
 var status = -1;
-var balrogMode; // false = easy, true = hard
 
 function action(mode, type, selection) {
     switch (status) {
 	case -1:
 	    status = 0;
 	    switch (cm.getChannelNumber()) {
-		case 5:
-		    balrogMode = true;
-		    cm.sendNext("The channel you are currently staying is available for #bNormal Balrog Expedition Squad#k. If you wish to join a different mode, please select the correct channel. \n\r #b#i3994116# 頻道.5 / Level 50 and above / 3 ~ 30 users \n#b#i3994115# The rest of the channel  / Level 50 ~ Level 120 / 3 ~ 30 users.");
-		    break;
 		default:
-		    balrogMode = false;
-		    cm.sendNext("The channel you are currently staying is available for #bEasy Balrog Expedition Squad#k. If you wish to join a different mode, please select the correct channel. \n\r #b#i3994116# 頻道.5 / Level 50 and above / 3 ~ 30 users \n#b#i3994115# The rest of the channel  / Level 50 ~ Level 120 / 3 ~ 30 users.");
+		    cm.sendNext("目前模式為 #i3994116# 如果你想加入這個模式請按下一步  條件是 等級 50 ~ 等級 120 / 遠征隊人數 1 ~ 30 個");
 		    break;
 	    }
 	    break;
 	case 0:
-	    var em = cm.getEventManager(balrogMode ? "BossBalrog_NORMAL" : "BossBalrog_EASY");
+	    var em = cm.getEventManager("BossBalrog");
 
 	    if (em == null) {
-		cm.sendOk("The event isn't started, please contact a GM.");
+		cm.sendOk("目前副本出了一點問題，請聯繫GM！");
 		cm.safeDispose();
 		return;
 	    }
 
-	    if (cm.getParty() != null) {
 	var prop = em.getProperty("state");
 	if (prop == null || prop.equals("0")) {
 		var squadAvailability = cm.getSquadAvailability("BossBalrog");
 		if (squadAvailability == -1) {
 		    status = 1;
-		    cm.sendYesNo("Would you like to become the leader of the Balrog Expedition Squad?");
+		    cm.sendYesNo("現在可以申請遠征隊，你想成為遠征隊隊長嗎？");
 
 		} else if (squadAvailability == 1) {
 		    // -1 = Cancelled, 0 = not, 1 = true
 		    var type = cm.isSquadLeader("BossBalrog");
 		    if (type == -1) {
-			cm.sendOk("The squad has ended, please re-register.");
-			cm.safeDispose();
+				cm.sendOk("已經結束了申請。");
+				cm.safeDispose();
 		    } else if (type == 0) {
 			var memberType = cm.isSquadMember("BossBalrog");
 			if (memberType == 2) {
-			    cm.sendOk("You been banned from the squad.");
+			    cm.sendOk("在遠征隊的制裁名單。");
 			    cm.safeDispose();
 			} else if (memberType == 1) {
 			    status = 5;
-			    cm.sendSimple("What do you want to do? \r\n#b#L0#Check out members#l \r\n#b#L1#Join the squad#l \r\n#b#L2#Withdraw from squad#l");
+			    cm.sendSimple("你要做什麼? \r\n#b#L0#加入遠征隊#l \r\n#b#L1#退出遠征隊#l \r\n#b#L2#查看遠征隊名單#l");
 			} else if (memberType == -1) {
-			    cm.sendOk("The squad has ended, please re-register.");
+			    cm.sendOk("遠征隊員已經達到30名，請稍後再試。");
 			    cm.safeDispose();
 			} else {
 			    status = 5;
-			    cm.sendSimple("What do you want to do? \r\n#b#L0#Check out members#l \r\n#b#L1#Join the squad#l \r\n#b#L2#Withdraw from squad#l");
+			    cm.sendSimple("你要做什麼? \r\n#b#L0#查看遠征隊名單#l \r\n#b#L1#加入遠征隊#l \r\n#b#L2#退出遠征隊#l");
 			}
 		    } else { // Is leader
 			status = 10;
-			cm.sendSimple("What do you want to do? \r\n#b#L0#Check out members#l \r\n#b#L1#Remove member#l \r\n#b#L2#Edit restricted list#l \r\n#r#L3#Enter map#l");
+			cm.sendSimple("你現在想做什麼？\r\n#b#L0#查看遠征隊成員。#l \r\n#b#L1#管理遠征隊成員。#l \r\n#b#L2#編輯限制列表。#l \r\n#r#L3#進入地圖。#l");
 		    // TODO viewing!
 		    }
 	    } else {
-			var eim = cm.getDisconnected(balrogMode ? "BossBalrog_NORMAL" : "BossBalrog_EASY");
+			var eim = cm.getDisconnected("BossBalrog");
 			if (eim == null) {
-				cm.sendOk("The squad's battle against the boss has already begun.");
+				cm.sendOk("遠征隊的挑戰已經開始.");
 				cm.safeDispose();
 			} else {
-				cm.sendYesNo("Ah, you have returned. Would you like to join your squad in the fight again?");
+				cm.sendYesNo("你要繼續進行遠征任務嗎？");
 				status = 2;
 			}
 	    }
 	} else {
-			var eim = cm.getDisconnected(balrogMode ? "BossBalrog_NORMAL" : "BossBalrog_EASY");
+			var eim = cm.getDisconnected("BossBalrog");
 			if (eim == null) {
-				cm.sendOk("The battle against the boss has already begun.");
+				cm.sendOk("遠征隊的挑戰已經開始.");
 				cm.safeDispose();
 			} else {
-				cm.sendYesNo("Ah, you have returned. Would you like to join your squad in the fight again?");
+				cm.sendYesNo("你要繼續進行遠征任務嗎？");
 				status = 2;
 			}
-	}
-	    } else {
-		cm.sendPrev("You need a party.");
-		cm.safeDispose();
-	    }
+		}
 	    break;
 	case 1:
 	    if (mode == 1) {
-		if (!balrogMode) { // Easy Mode
 		    var lvl = cm.getPlayerStat("LVL");
 		    if (lvl >= 50 && lvl <= 120) {
-			if (cm.registerSquad("BossBalrog", 5, " has been named the Leader of the squad. If you would you like to join please register for the Expedition Squad within the time period.")) {
-				cm.sendOk("You have been named the Leader of the Squad. For the next 5 minutes, you can add the members of the Expedition Squad.");
+			if (cm.registerSquad("BossBalrog", 5, " 已經成為了遠征隊隊長。如果你想加入遠征隊，請重新打開對話申請加入遠征隊。")) {
+				cm.sendOk("你已經成為了遠征隊隊長。接下來的5分鐘，請等待隊員們的申請。");
 			} else {
-				cm.sendOk("Error, try again.");
+				cm.sendOk("未知錯誤.");
 			}
 		    } else {
-			cm.sendNext("A member of the party is not within the range of Levels 50 and 120. Please set up your party so that everyone fits the level limit.");
+			cm.sendNext("有一個遠征隊成員的等級不是50到120之間。");
 		    }
-		} else { // Normal Mode
-			if (cm.registerSquad("BossBalrog", 5, " has been named the Leader of the squad. If you would you like to join please register for the Expedition Squad within the time period.")) {
-				cm.sendOk("You have been named the Leader of the Squad. For the next 5 minutes, you can add the members of the Expedition Squad.");
-			} else {
-				cm.sendOk("Error, try again.");
-			}
-		}
 	    } else {
-		cm.sendOk("Talk to me if you want to become the leader of the Expedition squad.")
+		cm.sendOk("如果你想再次申請遠征隊的話請告訴我。")
 	    }
 	    cm.safeDispose();
 	    break;
 	case 2:
-		if (!cm.reAdd(balrogMode ? "BossBalrog_NORMAL" : "BossBalrog_EASY", "BossBalrog")) {
-			cm.sendOk("Error... please try again.");
+		if (!cm.reAdd("BossBalrog", "BossBalrog")) {
+			cm.sendOk("由於未知的錯誤，操作失敗。");
 		}
 		cm.safeDispose();
 		break;
 	case 5:
 	    if (selection == 0) {
 		if (!cm.getSquadList("BossBalrog", 0)) {
-		    cm.sendOk("Due to an unknown error, the request for squad has been denied.");
+		    cm.sendOk("由於未知的錯誤，操作失敗。");
 		    cm.safeDispose();
 		} else {
 		    cm.dispose();
@@ -131,22 +112,22 @@ function action(mode, type, selection) {
 	    } else if (selection == 1) { // join
 		var ba = cm.addMember("BossBalrog", true);
 		if (ba == 2) {
-		    cm.sendOk("The squad is currently full, please try again later.");
+		    cm.sendOk("遠征隊員已經達到30名，請稍後再試。");
 		    cm.safeDispose();
 		} else if (ba == 1) {
-		    cm.sendOk("You have joined the squad successfully");
+		    cm.sendOk("申請加入遠征隊成功，請等候隊長指示。");
 		    cm.safeDispose();
 		} else {
-		    cm.sendOk("You are already part of the squad.");
+		    cm.sendOk("你已經參加了遠征隊，請等候隊長指示。");
 		    cm.safeDispose();
 		}
 	    } else {// withdraw
 		var baa = cm.addMember("BossBalrog", false);
 		if (baa == 1) {
-		    cm.sendOk("You have withdrawed from the squad successfully");
+		    cm.sendOk("成功退出遠征隊。");
 		    cm.safeDispose();
 		} else {
-		    cm.sendOk("You are not part of the squad.");
+		    cm.sendOk("你沒有參加遠征隊。");
 		    cm.safeDispose();
 		}
 	    }
@@ -154,28 +135,28 @@ function action(mode, type, selection) {
 	case 10:
 	    if (selection == 0) {
 		if (!cm.getSquadList("BossBalrog", 0)) {
-		    cm.sendOk("Due to an unknown error, the request for squad has been denied.");
+		    cm.sendOk("由於未知的錯誤，操作失敗。");
 		}
 		cm.safeDispose();
 	    } else if (selection == 1) {
 		status = 11;
 		if (!cm.getSquadList("BossBalrog", 1)) {
-		    cm.sendOk("Due to an unknown error, the request for squad has been denied.");
+		    cm.sendOk("由於未知的錯誤，操作失敗。");
 		}
 		cm.safeDispose();
 	    } else if (selection == 2) {
 		status = 12;
 		if (!cm.getSquadList("BossBalrog", 2)) {
-		    cm.sendOk("Due to an unknown error, the request for squad has been denied.");
+		    cm.sendOk("由於未知的錯誤，操作失敗。");
 		}
 		cm.safeDispose();
 	    } else if (selection == 3) { // get insode
 		if (cm.getSquad("BossBalrog") != null) {
-		    var dd = cm.getEventManager(balrogMode ? "BossBalrog_NORMAL" : "BossBalrog_EASY");
+		    var dd = cm.getEventManager("BossBalrog");
 		    dd.startInstance(cm.getSquad("BossBalrog"), cm.getMap());
 		    cm.dispose();
 		} else {
-		    cm.sendOk("Due to an unknown error, the request for squad has been denied.");
+		    cm.sendOk("由於未知的錯誤，操作失敗。");
 		    cm.safeDispose();
 		}
 	    }

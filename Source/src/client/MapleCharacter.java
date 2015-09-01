@@ -4737,12 +4737,18 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void removeAll(int id) {
+        removeAll(id, true);
+    }
+
+    public void removeAll(int id, boolean show) {
         MapleInventoryType type = GameConstants.getInventoryType(id);
         int possessed = getInventory(type).countById(id);
 
         if (possessed > 0) {
             MapleInventoryManipulator.removeById(getClient(), type, id, possessed, true, false);
-            getClient().getSession().write(MaplePacketCreator.getShowItemGain(id, (short) -possessed, true));
+            if (show) {
+                getClient().getSession().write(MaplePacketCreator.getShowItemGain(id, (short) -possessed, true));
+            }
         }
         /*if (type == MapleInventoryType.EQUIP) { //check equipped
          type = MapleInventoryType.EQUIPPED;
@@ -5831,4 +5837,14 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return prefix;
     }
 
+    public void giftMedal(int id) {
+        if (!this.getInventory(MapleInventoryType.EQUIP).isFull() && this.getInventory(MapleInventoryType.EQUIP).countById(id) == 0 && this.getInventory(MapleInventoryType.EQUIPPED).countById(id) == 0) {
+            MapleInventoryManipulator.addById(client, id, (short) 1);
+            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[恭喜]" + getName() + "剛才得到了 " + MapleItemInformationProvider.getInstance().getName(id) + "！").getBytes()); 
+        } else if (this.getInventory(MapleInventoryType.EQUIP).countById(id) == 0 && this.getInventory(MapleInventoryType.EQUIPPED).countById(id) == 0) {
+            MapleInventoryManipulator.drop(client, MapleInventoryType.EQUIP, (byte) 1, (byte) 1);
+            MapleInventoryManipulator.addById(client, id, (short) 1);
+            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[恭喜]" + getName() + "剛才得到了 " + MapleItemInformationProvider.getInstance().getName(id) + "！").getBytes());       
+        }
+    }
 }

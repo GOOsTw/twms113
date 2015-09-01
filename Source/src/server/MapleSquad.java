@@ -65,7 +65,7 @@ public class MapleSquad {
 
     public MapleSquad(final int ch, final String type, final MapleCharacter leader, final int expiration, final String toSay) {
         this.leader = new WeakReference<>(leader);
-        this.members.put(leader.getName(), MapleCarnivalChallenge.getJobBasicNameById(leader.getJob()));
+        this.members.put(leader.getName(), MapleCarnivalChallenge.getJobNameById(leader.getJob()));
         this.leaderName = leader.getName();
         this.ch = ch;
         this.toSay = toSay;
@@ -100,22 +100,22 @@ public class MapleSquad {
                     if (ChannelServer.getInstance(ch).addMapleSquad(squad, type.name())) {
                         getBeginMap().broadcastMessage(MaplePacketCreator.getClock(expiration / 1000));
                         getBeginMap().broadcastMessage(MaplePacketCreator.serverNotice(6, nextPlayerId + toSay));
-                        type.queuedPlayers.get(ch).add(new Pair<>(nextPlayerId, "Success"));
+                        type.queuedPlayers.get(ch).add(new Pair<>(nextPlayerId, "成功"));
                     } else {
                         squad.clear();
-                        type.queuedPlayers.get(ch).add(new Pair<>(nextPlayerId, "Skipped"));
+                        type.queuedPlayers.get(ch).add(new Pair<>(nextPlayerId, "跳過"));
                     }
                     break;
                 } else {
                     if (lead != null) {
-                        lead.dropMessage(6, "Your squad has been skipped due to you not being in the right channel and map.");
+                        lead.dropMessage(6, "遠征隊已經結束了，由於沒有在正確的頻道裡。");
                     }
-                    getBeginMap().broadcastMessage(MaplePacketCreator.serverNotice(6, nextPlayerId + "'s squad has been skipped due to the player not being in the right channel and map."));
-                    type.queuedPlayers.get(ch).add(new Pair<String, String>(nextPlayerId, "Not in map"));
+                    getBeginMap().broadcastMessage(MaplePacketCreator.serverNotice(6, nextPlayerId + "遠征隊已經結束了，由於有成員沒有在地圖內"));
+                    type.queuedPlayers.get(ch).add(new Pair<String, String>(nextPlayerId, "不在地圖內"));
                 }
             } else {
-                getBeginMap().broadcastMessage(MaplePacketCreator.serverNotice(6, nextPlayerId + "'s squad has been skipped due to the player not being online."));
-                type.queuedPlayers.get(ch).add(new Pair<String, String>(nextPlayerId, "Not online"));
+                getBeginMap().broadcastMessage(MaplePacketCreator.serverNotice(6, nextPlayerId + "'遠征隊已經結束了，由於有成員沒有在線上"));
+                type.queuedPlayers.get(ch).add(new Pair<String, String>(nextPlayerId, "沒有上線"));
             }
         }
     }
@@ -244,7 +244,7 @@ public class MapleSquad {
 	if (getLeader() == null) {
 	    return -1;
 	}
-        final String job = MapleCarnivalChallenge.getJobBasicNameById(member.getJob());
+        final String job = MapleCarnivalChallenge.getJobNameById(member.getJob());
         if (join) {
             if (!containsMember(member) && !getAllNextPlayer().contains(member.getName())) {
                 if (members.size() <= 30) {
@@ -281,7 +281,7 @@ public class MapleSquad {
 
     public void reAddMember(MapleCharacter chr) {
         removeMember(chr);
-        members.put(chr.getName(), MapleCarnivalChallenge.getJobBasicNameById(chr.getJob()));
+        members.put(chr.getName(), MapleCarnivalChallenge.getJobNameById(chr.getJob()));
     }
 
     public void removeMember(MapleCharacter chr) {
@@ -329,8 +329,8 @@ public class MapleSquad {
     public String getSquadMemberString(byte type) {
         switch (type) {
             case 0: {
-                StringBuilder sb = new StringBuilder("遠征隊名單 : ");
-                sb.append("#b").append(members.size()).append(" #k ").append("與成員名單 : \n\r ");
+                StringBuilder sb = new StringBuilder("目前遠征隊總人數 : ");
+                sb.append("#b").append(members.size()).append(" #k ").append("\r\n遠征隊名單 : \n\r ");
                 int i = 0;
                 for (Entry<String, String> chr : members.entrySet()) {
                     i++;
@@ -347,8 +347,8 @@ public class MapleSquad {
                 return sb.toString();
             }
             case 1: {
-                StringBuilder sb = new StringBuilder("遠征隊名單 : ");
-                sb.append("#b").append(members.size()).append(" #n ").append("與成員名單 : \n\r ");
+                StringBuilder sb = new StringBuilder("目前遠征隊總人數 : ");
+                sb.append("#b").append(members.size()).append(" #k ").append("\r\n遠征隊名單 : \n\r ");
                 int i = 0, selection = 0;
                 for (Entry<String, String> chr : members.entrySet()) {
                     i++;
@@ -367,8 +367,8 @@ public class MapleSquad {
                 return sb.toString();
             }
             case 2: {
-                StringBuilder sb = new StringBuilder("遠征隊名單 : ");
-                sb.append("#b").append(members.size()).append(" #n ").append("與成員名單 : \n\r ");
+                StringBuilder sb = new StringBuilder("目前遠征隊總人數 : ");
+                sb.append("#b").append(members.size()).append(" #k ").append("\r\n遠征隊名單 : \n\r ");
                 int i = 0, selection = 0;
                 for (Entry<String, String> chr : bannedMembers.entrySet()) {
                     i++;

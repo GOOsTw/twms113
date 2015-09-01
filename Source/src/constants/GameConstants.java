@@ -32,7 +32,8 @@ import server.Randomizer;
 import server.maps.MapleMapObjectType;
 
 public class GameConstants {
-public static boolean isLinkedAttackSkill(final int id) {
+
+    public static boolean isLinkedAttackSkill(final int id) {
         return getLinkedAttackSkill(id) != id;
     }
 
@@ -235,7 +236,7 @@ public static boolean isLinkedAttackSkill(final int id) {
         30000};
     private static final int[] MountExpTable = {0, 6, 25, 50, 105, 134, 196, 254, 263, 315, 367, 430, 543, 587, 679, 725, 897, 1146, 1394, 1701, 2247,
         2543, 2898, 3156, 3313, 3584, 3923, 4150, 4305, 4550};
-    
+
     public static final int[] itemBlock = {2340000, 2049100, 4001129, 2040037, 2040006, 2040007, 2040303, 2040403, 2040506, 2040507, 2040603, 2040709, 2040710, 2040711, 2040806, 2040903, 2041024, 2041025, 2043003, 2043103, 2043203, 2043303, 2043703, 2043803, 2044003, 2044103, 2044203, 2044303, 2044403, 2044503, 2044603, 2044908, 2044815, 2044019, 2044703, 1004001, 4007008, 1004002, 5152053, 5150040};
     public static final int[] cashBlock = {5222000, 5500001, 5500002, 5600001, 5252000, 5350003, 5401000, 5490000, 5490001, 5500000, 5252001, 5252003, 5220001, 5220002, 5200000, 5200001, 5200002, 5320000, 5440000, 5201001, 5201002};
 
@@ -252,40 +253,40 @@ public static boolean isLinkedAttackSkill(final int id) {
         return ExpTable[level];
     }
 
-    
     public static boolean isNoDelaySkill(int skillId) {
         return skillId == 5110001 || skillId == 21101003 || skillId == 15100004 || skillId == 33101004 || skillId == 32111010 || skillId == 2111007 || skillId == 2211007 || skillId == 2311007 || skillId == 32121003 || skillId == 35121005 || skillId == 35111004 || skillId == 35121013 || skillId == 35121003 || skillId == 22150004 || skillId == 22181004 || skillId == 11101002 || skillId == 51100002 || skillId == 13101002 || skillId == 24121000 || skillId == 112001008 || skillId == 22161005 || skillId == 22161005;
     }
-    
+
     public static boolean isMarrigeRing(int itemid) {
-            switch (itemid) {
-                case 1112300:
-                case 1112301:
-                case 1112302:
-                case 1112303:
-                case 1112304:
-                case 1112305:
-                case 1112306:
-                case 1112307:
-                case 1112308:
-                case 1112309:
-                case 1112310:
-                case 1112311:
-                case 1112315:
-                case 1112316:
-                case 1112317:
-                case 1112318:
-                case 1112319:
-                case 1112320:
-                case 1112803:
-                case 1112806:
-                case 1112807:
-                case 1112808:
-                case 1112809:
-                    return true;
-            }
-            return false;
+        switch (itemid) {
+            case 1112300:
+            case 1112301:
+            case 1112302:
+            case 1112303:
+            case 1112304:
+            case 1112305:
+            case 1112306:
+            case 1112307:
+            case 1112308:
+            case 1112309:
+            case 1112310:
+            case 1112311:
+            case 1112315:
+            case 1112316:
+            case 1112317:
+            case 1112318:
+            case 1112319:
+            case 1112320:
+            case 1112803:
+            case 1112806:
+            case 1112807:
+            case 1112808:
+            case 1112809:
+                return true;
         }
+        return false;
+    }
+
     public static int getClosenessNeededForLevel(final int level) {
         return ClosenessTable[level - 1];
     }
@@ -373,7 +374,7 @@ public static boolean isLinkedAttackSkill(final int id) {
             return 12;
         } else if (isKOC(job)) {
             return 10000012;
-        } 
+        }
         return 20000012;
     }
 
@@ -741,7 +742,6 @@ public static boolean isLinkedAttackSkill(final int id) {
         return 0;
     }
 
-    
     public static short getAttackDelay(final int id) {
         switch (id) { // Assume it's faster(2)
             case 4321001: //tornado spin
@@ -1229,7 +1229,7 @@ public static boolean isLinkedAttackSkill(final int id) {
         4031629, 1, // Pot
         1102041, 1, // 粉披
         1102042, 1, // 紫披
-        2101120, 1  // 魚怪召喚袋
+        2101120, 1 // 魚怪召喚袋
     };
 
     public static boolean isDragonItem(int itemId) {
@@ -1368,7 +1368,7 @@ public static boolean isLinkedAttackSkill(final int id) {
     public static boolean isEffectRing(int itemid) {
         return isFriendshipRing(itemid) || isCrushRing(itemid) || isMarriageRing(itemid);
     }
-    
+
     public static boolean isMarriageRing(int itemId) {
         switch (itemId) {
             case 1112803:
@@ -2090,7 +2090,7 @@ public static boolean isLinkedAttackSkill(final int id) {
                 if (mountid < 1902015 || mountid > 1902018) {
                     return false;
                 }
-            } 
+            }
         }
         return true;
     }
@@ -2210,6 +2210,17 @@ public static boolean isLinkedAttackSkill(final int id) {
             default:
                 return true;
         }
+    }
+
+    public static boolean isGMEquip(final int itemId) {
+        switch (itemId) {
+            case 1002140://維澤特帽
+            case 1042003://維澤特西裝
+            case 1062007://維澤特西褲
+            case 1322013://維澤特手提包
+                return true;
+        }
+        return false;
     }
 
     public static boolean isEventMap(final int mapid) {

@@ -867,13 +867,13 @@ public final class MapleMap {
     }
 
     private String MapDebug_Log() {
-        final StringBuilder sb = new StringBuilder("Defeat time : ");
+        final StringBuilder sb = new StringBuilder("擊敗時間 : ");
         sb.append(FilePrinter.getLocalDateString());
-        sb.append(" | Mapid : ").append(this.mapid);
+        sb.append(" | 地圖代碼 : ").append(this.mapid);
 
         charactersLock.readLock().lock();
         try {
-            sb.append(" Users [").append(characters.size()).append("] | ");
+            sb.append(" 玩家 [").append(characters.size()).append("] | ");
             for (MapleCharacter mc : characters) {
                 sb.append(mc.getName()).append(", ");
             }
@@ -1915,7 +1915,7 @@ public final class MapleMap {
                 chr.getClient().getSession().write(MaplePacketCreator.temporaryStats_Aran());
             } else if (mapid == 105100300 && chr.getLevel() >= 91) {
                 chr.getClient().getSession().write(MaplePacketCreator.temporaryStats_Balrog(chr));
-            } else if (mapid == 140090000 || mapid == 105100301 || mapid == 105100401 || mapid == 105100100) {
+            } else if (mapid == 140090000 || mapid == 105100301 || mapid == 105100100) {
                 chr.getClient().getSession().write(MaplePacketCreator.temporaryStats_Reset());
             }
         }
@@ -2060,7 +2060,6 @@ public final class MapleMap {
     public final MapleSquad getSquadByMap() {
         MapleSquadType zz = null;
         switch (mapid) {
-            case 105100400:
             case 105100300:
                 zz = MapleSquadType.bossbalrog;
                 break;
@@ -2133,11 +2132,8 @@ public final class MapleMap {
     public final EventManager getEMByMap() {
         String em = null;
         switch (mapid) {
-            case 105100400:
-                em = "BossBalrog_EASY";
-                break;
             case 105100300:
-                em = "BossBalrog_NORMAL";
+                em = "BossBalrog";
                 break;
             case 280030000:
                 em = "ZakumBattle";
@@ -3140,7 +3136,7 @@ public final class MapleMap {
         }
         if (speedRunStart > 0 && speedRunLeader.equalsIgnoreCase(chr)) {
             if (size > 0) {
-                broadcastMessage(MaplePacketCreator.serverNotice(5, "The leader is not in the map! Your speedrun has failed"));
+                broadcastMessage(MaplePacketCreator.serverNotice(5, "由於遠征隊隊長離開了，所以遠征隊任務失敗。"));
             }
             endSpeedRun();
         }

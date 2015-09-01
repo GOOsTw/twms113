@@ -26,6 +26,7 @@ import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import client.MapleStat;
 import client.anticheat.CheatingOffense;
+import client.inventory.ItemFlag;
 import constants.GameConstants;
 import scripting.ReactorScriptManager;
 import server.events.MapleCoconut;
@@ -37,6 +38,7 @@ import server.maps.MapleDoor;
 import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
 import server.maps.MapleReactor;
+import tools.ArrayMap;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -59,7 +61,7 @@ public class PlayersHandler {
                     chr.sendNote(name, msg, fame ? 1 : 0);
                     chr.getCashInventory().sendedNote(itemz.getUniqueId());
                 } catch (Exception e) {
-                    
+
                 }
                 break;
             case 1:
@@ -293,6 +295,12 @@ public class PlayersHandler {
         } else {
             c.getPlayer().setFollowId(0);
         }
+    }
+
+    public static void UnlockItem(final SeekableLittleEndianAccessor slea, final MapleClient c) { //封印之鎖解除鑰匙 ID:2051000
+        c.getPlayer().dropMessage(1, "要解鎖物品找GM。");
+        c.getSession().write(MaplePacketCreator.enableActions());
+        return;
     }
 
     public static void RingAction(final SeekableLittleEndianAccessor slea, final MapleClient c) {

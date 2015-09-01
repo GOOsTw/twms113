@@ -11,26 +11,26 @@ em.setProperty("state", "1");
 em.setProperty("balrogState", "0");
 	em.setProperty("leader", "true");
     // Setup the instance when invoked, EG : start PQ
-    var eim = em.newInstance("BossBalrog_NORMAL" + leaderid);
+    var eim = em.newInstance("BossBalrog" + leaderid);
 	var map = eim.setInstanceMap(105100300);
 	map.resetFully();
 	eim.setInstanceMap(105100301).resetFully();
 
     var mob = em.getMonster(8830007);
-    var mob2 = em.getMonster(8830004); //left hand is invincible at first
+    var mob2 = em.getMonster(8830001); //left hand is invincible at first
     var mob3 = em.getMonster(8830002);
     var modified = em.newMonsterStats();
-modified.setOHp(fullhp); //so they cant possibly kill this
-modified.setOMp(mob.getMobMaxMp());
-modified.setOExp(0);
+	modified.setOHp(fullhp); //so they cant possibly kill this
+	modified.setOMp(mob.getMobMaxMp());
+	modified.setOExp(0);
     var modified2 = em.newMonsterStats();
-modified2.setOHp(fullhp); //so they cant possibly kill this
-modified2.setOMp(mob2.getMobMaxMp());
-modified2.setOExp(0);
+	modified2.setOHp(fullhp); //so they cant possibly kill this
+	modified2.setOMp(mob2.getMobMaxMp());
+	modified2.setOExp(0);
     var modified3 = em.newMonsterStats();
-modified3.setOHp(fullhp); //so they cant possibly kill this
-modified3.setOMp(mob3.getMobMaxMp());
-modified3.setOExp(0);
+	modified3.setOHp(fullhp); //so they cant possibly kill this
+	modified3.setOMp(mob3.getMobMaxMp());
+	modified3.setOExp(0);
 	mob.setOverrideStats(modified);
 	mob2.setOverrideStats(modified2);
 	mob3.setOverrideStats(modified3);
@@ -47,6 +47,7 @@ modified3.setOExp(0);
 
 function playerEntry(eim, player) {
     var map = eim.getMapInstance(0);
+	map.startSpeedRun(); //loll
     player.changeMap(map, map.getPortal(0));
     eim.applyBuff(player, 2022536);
     if (player.haveItem(1302014)) {
@@ -86,6 +87,11 @@ function warpWinnersOut(eim) {
 		party.get(i).changeMap(map, map.getPortal(0));
 		party.get(i).dispelBuff(2022536);
 		party.get(i).dispelBuff(2022537);
+		party.get(i).forceCompleteQuest(2241);
+		party.get(i).forceCompleteQuest(2242);
+		party.get(i).forceCompleteQuest(2243);
+		party.get(i).forceCompleteQuest(2244);
+		party.get(i).forceCompleteQuest(2245);
 	}
 }
 
@@ -110,7 +116,7 @@ function monsterValue(eim, mobid) {
     // Invoked when a monster that's registered has been killed
     // return x amount for this player - "Saved Points"
 	if (em.getProperty("balrogState").equals("1") && eim.getMapInstance(0).getMonsterById(8830007) == null && eim.getMapInstance(0).getMonsterById(8830001) == null && eim.getMapInstance(0).getMonsterById(8830002) == null) {
-		eim.broadcastPlayerMsg(6, "Balrog has been beaten!");
+		eim.broadcastPlayerMsg(6, "恭喜打敗魔王巴洛古！");
 		eim.getMapInstance(0).changeEnvironment("balog/clear/stone", 3);
     		eim.restartEventTimer(605000); //10 mins + 5 sec
     		eim.schedule("warpWinnersOut", 5000);
@@ -160,11 +166,11 @@ function checkHP(eim) {
 		hpDone += (fullhp - mobs.get(i).getHp());
 	}
 	if (hpDone > 120000) { //advance
-    		var mob = em.getMonster(8830006);
+    		var mob = em.getMonster(8830001);
 		eim.registerMonster(mob);
 		map.spawnMonsterOnGroundBelow(mob, new java.awt.Point(416, 258));
 		map.killMonster(8830004);
-		map.killMonster(8830006);
+		map.killMonster(8830001);
 		var mob1 = em.getMonster(8830007); //purple state not used
     		var mob2 = em.getMonster(8830001);
     		var mob3 = em.getMonster(8830002);
@@ -176,9 +182,9 @@ function checkHP(eim) {
 		map.spawnMonsterOnGroundBelow(mob1, new java.awt.Point(416, 258));
 		map.spawnMonsterOnGroundBelow(mob2, new java.awt.Point(416, 258));
 		map.spawnMonsterOnGroundBelow(mob3, new java.awt.Point(416, 258));
-em.setProperty("balrogState", "1");
+		em.setProperty("balrogState", "1");
 	} else {
-		eim.broadcastPlayerMsg(6, "Balrog was too strong and has overcome you.");
+		eim.broadcastPlayerMsg(6, "魔王巴洛古太強大了。。。。");
 		end(eim);
 	}
 }
