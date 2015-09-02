@@ -190,6 +190,7 @@ public class MapleMapFactory {
                 map.setHPDec(MapleDataTool.getInt(mapData.getChildByPath("info/decHP"), 0));
                 map.setHPDecInterval(MapleDataTool.getInt(mapData.getChildByPath("info/decHPInterval"), 10000));
                 map.setHPDecProtect(MapleDataTool.getInt(mapData.getChildByPath("info/protectItem"), 0));
+                map.setBoat(mapData.getChildByPath("shipObj") != null);
                 map.setForcedReturnMap(MapleDataTool.getInt(mapData.getChildByPath("info/forcedReturn"), 999999999));
                 map.setTimeLimit(MapleDataTool.getInt(mapData.getChildByPath("info/timeLimit"), -1));
                 map.setFieldLimit(MapleDataTool.getInt(mapData.getChildByPath("info/fieldLimit"), 0));
@@ -372,7 +373,7 @@ public class MapleMapFactory {
     public Collection<MapleMap> getAllMaps() {
         return maps.values();
     }
-    
+
     public Collection<MapleMap> getAllMapThreadSafe() {
         Collection<MapleMap> ret = new ArrayList<>();
         ret.addAll(maps.values());

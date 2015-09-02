@@ -157,7 +157,6 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     LEFT_KNOCK_BACK,
     COCONUT,
     MONSTER_CARNIVAL,
-    SHIP_OBJECT,
     CS_UPDATE(0xE5),
     CASHSHOP_OPERATION(0xE6),
     COUPON_CODE(0xE7),

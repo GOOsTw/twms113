@@ -849,7 +849,7 @@ public class MaplePacketCreator {
         if (chr.getBuffedValue(MapleBuffStat.MIRROR_IMAGE) != null) {
             fbuffmask |= MapleBuffStat.MIRROR_IMAGE.getValue();
         }
-       
+
         //if (chr.getBuffedValue(MapleBuffStat.PYRAMID_PQ) != null) {
         //    fbuffmask |= MapleBuffStat.PYRAMID_PQ.getValue();
         //    buffvalue.add(new Pair<Integer, Boolean>(Integer.valueOf(chr.getBuffedValue(MapleBuffStat.PYRAMID_PQ).intValue()), false)); //idk
@@ -4050,17 +4050,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static MaplePacket boatPacket(int effect) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        // 1034: balrog boat comes, 1548: boat comes, 3: boat leaves
-        mplew.writeShort(SendPacketOpcode.BOAT_PACKET.getValue());
-        mplew.writeShort(effect); // 0A 04 balrog
-        //this packet had 3: boat leaves
-
-        return mplew.getPacket();
-    }
-
     public static MaplePacket boatEffect(int effect) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
@@ -4068,6 +4057,19 @@ public class MaplePacketCreator {
         mplew.writeShort(SendPacketOpcode.BOAT_EFFECT.getValue());
         mplew.writeShort(effect); // 0A 04 balrog
         //this packet had the other ones o.o
+
+        return mplew.getPacket();
+    }
+
+    public static MaplePacket boatPacket(boolean type) {
+
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        // 1034: balrog boat comes, 1548: boat comes, 3: boat leaves
+        mplew.writeShort(SendPacketOpcode.BOAT_PACKET.getValue());
+        mplew.write(type ? 1 : 2);
+        mplew.write(0);
+        //this packet had 3: boat leaves
 
         return mplew.getPacket();
     }

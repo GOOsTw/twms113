@@ -728,9 +728,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case CYGNUS_SUMMON:
                 UserInterfaceHandler.CygnusSummonNPCRequest(c);
                 break;
-            case SHIP_OBJECT:
-                UserInterfaceHandler.ShipObjectRequest(slea.readInt(), c);
-                break;
             case CASHSHOP_OPERATION:
                 CashShopOperation.BuyCashItem(slea, c, c.getPlayer());
                 break;

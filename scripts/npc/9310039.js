@@ -47,10 +47,10 @@ function action(mode, type, selection) {
                             next = false;
                         }
                         if (cPlayer.getMapid() == mapId) {
-                            inMap += (cPlayer.getJobId() == 900 ? 1 : 1);
+                            inMap += (cPlayer.getJobId() == 900 ? 3 : 1);
                         }
                     }
-                    if (party.size() == 6 || inMap < 1) {
+                    if (party.size() > 3 || inMap < 1) {
                         next = false;
                     }
                     if (next) {

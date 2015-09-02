@@ -118,7 +118,7 @@ public final class MapleMap {
     private int consumeItemCoolTime = 0, protectItem = 0, decHPInterval = 10000, mapid, returnMapId, timeLimit,
             fieldLimit, maxRegularSpawn = 0, fixedMob, forcedReturnMap = 999999999,
             lvForceMove = 0, lvLimit = 0, permanentWeather = 0;
-    private boolean town, clock, personalShop, everlast = false, dropsDisabled = false, gDropsDisabled = false,
+    private boolean town, personalShop, everlast = false, dropsDisabled = false, gDropsDisabled = false,
             soaring = false, squadTimer = false, isSpawns = true;
     private String mapName, streetName, onUserEnter, onFirstUserEnter, speedRunLeader = "";
     private List<Integer> dced = new ArrayList<Integer>();
@@ -128,6 +128,9 @@ public final class MapleMap {
     private MapleSquadType squad;
     private Map<String, Integer> environment = new LinkedHashMap<String, Integer>();
     private ScheduledFuture<?> MulungDojoLeaveTask = null;
+    private boolean clock;
+    private boolean boat;
+    private boolean docked;
 
     public MapleMap(final int mapid, final int channel, final int returnMapId, final float monsterRate) {
         this.mapid = mapid;
@@ -273,6 +276,18 @@ public final class MapleMap {
 
     public final void setClock(final boolean hasClock) {
         this.clock = hasClock;
+    }
+
+    private int hasBoat() {
+        return docked ? 2 : (boat ? 1 : 0);
+    }
+
+    public void setBoat(boolean hasBoat) {
+        this.boat = hasBoat;
+    }
+
+    public void setDocked(boolean isDocked) {
+        this.docked = isDocked;
     }
 
     public final boolean isTown() {
@@ -1862,6 +1877,11 @@ public final class MapleMap {
                 chr.cancelBuffStats(MapleBuffStat.MONSTER_RIDING);
             }
         }
+        if (hasBoat() == 2) {
+            chr.getClient().getSession().write((MaplePacketCreator.boatPacket(true)));
+        } else if (hasBoat() == 1 && (chr.getMapId() != 200090000 || chr.getMapId() != 200090010)) {
+            chr.getClient().getSession().write(MaplePacketCreator.boatPacket(false));
+        }
         if (!chr.isClone()) {
             if (chr.getEventInstance() != null && chr.getEventInstance().isTimerStarted() && !chr.isClone()) {
                 chr.getClient().getSession().write(MaplePacketCreator.getClock((int) (chr.getEventInstance().getTimeLeft() / 1000)));
@@ -1884,25 +1904,6 @@ public final class MapleMap {
                     doShrine(false);
                     squadTimer = true;
                 }
-            }
-            if (getNumMonsters() > 0 && (mapid == 280030001 || mapid == 240060201 || mapid == 280030000 || mapid == 240060200 || mapid == 220080001 || mapid == 541020800 || mapid == 541010100)) {
-                String music = "Bgm09/TimeAttack";
-                switch (mapid) {
-                    case 240060200:
-                    case 240060201:
-                        music = "Bgm14/HonTale";
-                        break;
-                    case 280030000:
-                    case 280030001:
-                        music = "Bgm06/FinalFight";
-                        break;
-                    case 200090000:
-                    case 200090010:
-                        music = "Bgm04/ArabPirate";
-                        break;
-                }
-                chr.getClient().getSession().write(MaplePacketCreator.musicChange(music));
-                //maybe timer too for zak/ht
             }
             for (final WeakReference<MapleCharacter> chrz : chr.getClones()) {
                 if (chrz.get() != null) {

@@ -17,6 +17,9 @@ http://puu.sh/jmoZx/158ec24af8.jpg
 //勇者掠奪術 放了打怪 有機率 斷線 彈回登入畫面  
 PICKPOCKET(27)  
 
+狂狼勇士二轉 強化連擊(21101003) 放了沒有效果  
+狂狼勇士三轉 精準擊退(21111001) 放了沒有效果  
+
 cm.removeNpc 這個removeNpc函數 使用了NPC不會消失 會卡在地圖上 正常來說NPC會消失  
 轉了任何皇家職業後 貴族技能不能點 點了會卡住  
 升到200級的時候MapleStory會整個Crash  

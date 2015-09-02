@@ -38,7 +38,7 @@ function action(mode, type, selection) {
                     cm.sendOk("請組隊再來找我....");
                 } else if (!cm.isLeader()) {
                     cm.sendOk("請叫你的隊長來找我!");
-                } else if (pt.getMembers().size() < 1) {
+                } else if (pt.getMembers().size() < 3) {
                     cm.sendOk("需要 3 人以上的組隊才能進入！!");
                     cm.dispose();
                 } else {
@@ -57,10 +57,10 @@ function action(mode, type, selection) {
                             next = false;
                         }
                         if (cPlayer.getMapid() == mapId) {
-                            inMap += (cPlayer.getJobId() == 900 ? 1 : 1);
+                            inMap += (cPlayer.getJobId() == 900 ? 3 : 1);
                         }
                     }
-                    if (party.size() == 6 || inMap < 1) {
+                    if (party.size() > 3 || inMap < 1) {
                         next = false;
                     }
                     if (next) {

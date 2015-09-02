@@ -15,7 +15,7 @@ function monsterValue(eim, mobId) {
 function setup() {
     em.setProperty("state", "1");
 
-    var eim = em.newInstance("shaoling");
+    var eim = em.newInstance("Ravana");
     
     var map = eim.setInstanceMap(501030105);
     map.resetFully();

@@ -357,15 +357,7 @@ public class EventManager {
     public MapleMonster getMonster(final int id) {
         return MapleLifeFactory.getMonster(id);
     }
-
-    public void broadcastShip(final int mapid, final int effect) {
-        getMapFactory().getMap(mapid).broadcastMessage(MaplePacketCreator.boatPacket(effect));
-    }
-
-    public void broadcastChangeMusic(final int mapid) {
-        getMapFactory().getMap(mapid).broadcastMessage(MaplePacketCreator.musicChange("Bgm04/ArabPirate"));
-    }
-
+    
     public void broadcastYellowMsg(final String msg) {
         getChannelServer().broadcastPacket(MaplePacketCreator.yellowChat(msg));
     }
