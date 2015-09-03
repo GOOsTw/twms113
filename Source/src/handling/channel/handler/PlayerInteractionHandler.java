@@ -508,7 +508,7 @@ public class PlayerInteractionHandler {
                 break;
             }
             case CLOSE_MERCHANT: {
-                /* final IMaplePlayerShop merchant = chr.getPlayerShop();
+                 final IMaplePlayerShop merchant = chr.getPlayerShop();
                  if (merchant != null && merchant.getShopType() == 1 && merchant.isOwner(chr) && merchant.isAvailable()) {
                  c.getSession().write(MaplePacketCreator.serverNotice(1, "請去找富蘭德里領取你的裝備和楓幣"));
                  c.getSession().write(MaplePacketCreator.enableActions());
@@ -516,8 +516,8 @@ public class PlayerInteractionHandler {
                  chr.setPlayerShop(null);
                  merchant.closeShop(true, true);
                  }
-                 break;*/
-                final IMaplePlayerShop merchant = chr.getPlayerShop();
+                 break;
+              /*  final IMaplePlayerShop merchant = chr.getPlayerShop();
                 if (merchant != null && merchant.getShopType() == 1 && merchant.isOwner(chr)) {
                     //c.getSession().write(MaplePacketCreator.serverNotice(1, "請去找富蘭德里領取你的裝備和楓幣"));
                     boolean save = false;
@@ -549,7 +549,7 @@ public class PlayerInteractionHandler {
                     merchant.closeShop(save, true);
                     chr.setPlayerShop(null);
                 }
-                break;
+                break;*/
             }
             case TRADE_SOMETHING:
             case ADMIN_STORE_NAMECHANGE: { // Changing store name, only Admin

@@ -58,6 +58,7 @@ import server.MapleItemInformationProvider;
 import handling.channel.ChannelServer;
 import handling.channel.MapleGuildRanking;
 import database.DatabaseConnection;
+import handling.channel.handler.HiredMerchantHandler;
 import handling.world.MapleParty;
 import handling.world.MaplePartyCharacter;
 import handling.world.World;
@@ -75,6 +76,7 @@ import server.StructPotentialItem;
 import server.Timer;
 import server.Timer.CloneTimer;
 import server.life.MapleMonster;
+import server.life.MapleMonsterInformationProvider;
 import server.life.MapleNPC;
 import server.maps.Event_PyramidSubway;
 import server.maps.MapleMapObject;
@@ -880,6 +882,10 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         c.getPlayer().equipChanged();
     }
 
+    public void cleardrops() {
+        MapleMonsterInformationProvider.getInstance().clearDrops();
+    }
+
     public void killAllMonsters() {
         MapleMap map = c.getPlayer().getMap();
         double range = Double.POSITIVE_INFINITY;
@@ -957,7 +963,8 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void openMerchantItemStore() {
         c.getPlayer().setConversation(3);
-        c.getSession().write(PlayerShopPacket.merchItemStore((byte) 0x22));
+        HiredMerchantHandler.displayMerch(c);
+        //c.getSession().write(PlayerShopPacket.merchItemStore((byte) 0x22));
     }
 
     public void sendRepairWindow() {

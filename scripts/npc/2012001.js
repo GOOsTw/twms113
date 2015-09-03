@@ -28,7 +28,7 @@ function action(mode, type, selection) {
 	    cm.sendNext("很抱歉本班船準備開走,乘坐時間表可以通過售票展台查看.");
 	    cm.dispose();
 	} else {
-	    cm.sendNext("請耐心等待幾分鐘，正在整理裡面中！");
+	    cm.sendNext("很抱歉本班船已經走了,乘坐時間表可以通過售票展台查看.");
 	    cm.dispose();
 	}
     } else if(status == 1) {

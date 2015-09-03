@@ -1,12 +1,16 @@
+/**
+	魔法森林搭船系統改寫 by:Kodan
+**/
+
 importPackage(Packages.client);
 importPackage(Packages.tools);
 importPackage(Packages.server.life);
 
-//Time Setting is in millisecond
-var closeTime = 240000; //The time to close the gate
-var beginTime = 300000; //The time to begin the ride
-var rideTime = 600000; //The time that require move to destination
-var invasionTime = 60000; //The time that spawn balrog
+//變數跟時間設定區
+var closeTime = 120000; //船關閉搭乘的時間
+var beginTime = 120000; //船啟航的時間
+var rideTime = 600000; //搭船所需要的時間
+var invasionTime = 60000; //確認地域巴洛古召喚的時間
 var Orbis_btf;
 var Boat_to_Orbis;
 var Orbis_Boat_Cabin;
@@ -93,12 +97,12 @@ function invasion() {
     var numspawn;
     var chance = Math.floor(Math.random() * 10);
     if(chance <= 4)
-        numspawn = 0;
+        numspawn = 1;
 	else if(chance == 5)
-		numspawn = 1
+		numspawn = 1;
 	else
-        numspawn = 2;
-    if(numspawn == 2) {
+        numspawn = 1;
+    if (numspawn == 2) {
         for(var i=0; i < numspawn; i++) {
             Boat_to_Orbis.spawnMonsterOnGroundBelow(MapleLifeFactory.getMonster(8150000), new java.awt.Point(485, -221));
             Boat_to_Ellinia.spawnMonsterOnGroundBelow(MapleLifeFactory.getMonster(8150000), new java.awt.Point(-590, -221));

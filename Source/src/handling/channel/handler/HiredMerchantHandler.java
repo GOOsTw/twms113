@@ -65,7 +65,7 @@ public class HiredMerchantHandler {
                     }
                     break;
                 default:
-                    c.getPlayer().dropMessage(1, "An unknown error occured.");
+                    c.getPlayer().dropMessage(1, "未知的錯誤");
                     break;
             }
         } else {
@@ -123,7 +123,7 @@ public class HiredMerchantHandler {
                             c.getPlayer().gainMeso(pack.getMesos(), false);
                             c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x1d));
                         } else {
-                            c.getPlayer().dropMessage(1, "An unknown error occured.");
+                            c.getPlayer().dropMessage(1, "未知的錯誤");
                         }
                     } else {
                         c.getSession().write(PlayerShopPacket.merchItemStore_ItemData(pack));
@@ -145,7 +145,7 @@ public class HiredMerchantHandler {
                 final MerchItemPackage pack = loadItemFrom_Database(c.getPlayer().getId(), c.getPlayer().getAccountID());
 
                 if (pack == null) {
-                    c.getPlayer().dropMessage(1, "An unknown error occured.");
+                    c.getPlayer().dropMessage(1, "未知的錯誤");
                     return;
                 }
                 if (!check(c.getPlayer(), pack)) {
@@ -159,7 +159,7 @@ public class HiredMerchantHandler {
                     }
                     c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x1d));
                 } else {
-                    c.getPlayer().dropMessage(1, "An unknown error occured.");
+                    c.getPlayer().dropMessage(1, "未知的錯誤");
                 }
                 break;
             }
@@ -216,6 +216,40 @@ public class HiredMerchantHandler {
         }
     }
 
+    public static void displayMerch(MapleClient c) {
+        final int conv = c.getPlayer().getConversation();
+        boolean merch = World.hasMerchant(c.getPlayer().getAccountID());
+        if (merch) {
+            c.getPlayer().dropMessage(1, "請關閉商店後在試一次。");
+            c.getPlayer().setConversation(0);
+        } else if (c.getChannelServer().isShutdown()) {
+            c.getPlayer().dropMessage(1, "這個伺服器已經關閉了，無法領取東西。");
+            c.getPlayer().setConversation(0);
+        } else if (conv == 3) { // Hired Merch
+            final MerchItemPackage pack = loadItemFrom_Database(c.getPlayer().getId(), c.getPlayer().getAccountID());
+
+            if (pack == null) {
+                c.getPlayer().dropMessage(1, "你沒有在這邊置放道具！");
+                c.getPlayer().setConversation(0);
+            } else if (pack.getItems().size() <= 0) { //error fix for complainers.
+                if (!check(c.getPlayer(), pack)) {
+                    c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x21));
+                    return;
+                }
+                if (deletePackage(c.getPlayer().getAccountID(), pack.getPackageid(), c.getPlayer().getId())) {
+                    c.getPlayer().gainMeso(pack.getMesos(), false);
+                    c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x1d));
+                   c.getPlayer().dropMessage(1, "你已經領回楓幣了！");
+                } else {
+                    c.getPlayer().dropMessage(1, "未知的錯誤！");
+                }
+                c.getPlayer().setConversation(0);
+            } else {
+                c.getSession().write(PlayerShopPacket.merchItemStore_ItemData(pack));
+            }
+        }
+    }
+
     private static MerchItemPackage loadItemFrom_Database(final int charid, final int accountid) {
         final Connection con = DatabaseConnection.getConnection();
 
@@ -231,7 +265,8 @@ public class HiredMerchantHandler {
                     ps.close();
                     rs.close();
                     return null;
-                }   packageid = rs.getInt("PackageId");
+                }
+                packageid = rs.getInt("PackageId");
                 pack = new MerchItemPackage();
                 pack.setPackageid(packageid);
                 pack.setMesos(rs.getInt("Mesos"));
@@ -250,7 +285,7 @@ public class HiredMerchantHandler {
 
             return pack;
         } catch (SQLException e) {
-            
+
             return null;
         }
     }

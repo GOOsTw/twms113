@@ -528,7 +528,7 @@ public class AdminCommand {
         }
     }
 
-    public static class Invincible extends CommandExecute {
+    public static class GodMode extends CommandExecute {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
@@ -2404,7 +2404,7 @@ public class AdminCommand {
                 mob = (MapleMonster) monstermo;
                 map.killMonster(mob, c.getPlayer(), false, false, (byte) 1);
             }
-            c.getPlayer().dropMessage("您總共殺了 "+monsters.size()+" 怪物");
+            c.getPlayer().dropMessage("您總共殺了 " + monsters.size() + " 怪物");
             return 1;
         }
     }
@@ -3147,6 +3147,19 @@ public class AdminCommand {
                     victim.changeMap(mapp, mapp.getPortal(0));
                 }
                 victim.changeChannel(c.getChannel());
+            }
+            return 1;
+        }
+    }
+
+    public static class WarpAllHere extends CommandExecute {
+
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            for (MapleCharacter mch : c.getChannelServer().getPlayerStorage().getAllCharacters()) {
+                if (mch.getMapId() != c.getPlayer().getMapId()) {
+                    mch.changeMap(c.getPlayer().getMap(), c.getPlayer().getPosition());
+                }
             }
             return 1;
         }
