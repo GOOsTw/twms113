@@ -88,8 +88,8 @@ function arrived() {
     while(temp4.hasNext()) {
         temp4.next().changeMap(Ellinia_docked, Ellinia_docked.getPortal(0));
     }
-    Boat_to_Orbis.killAllMonsters(true);
-    Boat_to_Ellinia.killAllMonsters(true);
+    Boat_to_Orbis.killAllMonsters(false);
+    Boat_to_Ellinia.killAllMonsters(false);
     scheduleNew();
 }
 
@@ -97,11 +97,11 @@ function invasion() {
     var numspawn;
     var chance = Math.floor(Math.random() * 10);
     if(chance <= 4)
-        numspawn = 1;
+        numspawn = 0;
 	else if(chance == 5)
 		numspawn = 1;
 	else
-        numspawn = 1;
+        numspawn = 2;
     if (numspawn == 2) {
         for(var i=0; i < numspawn; i++) {
             Boat_to_Orbis.spawnMonsterOnGroundBelow(MapleLifeFactory.getMonster(8150000), new java.awt.Point(485, -221));
