@@ -303,6 +303,29 @@ public class PlayersHandler {
         return;
     }
 
+    public static void Solomon(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+        c.getSession().write(MaplePacketCreator.enableActions());
+        c.getPlayer().updateTick(slea.readInt());
+        IItem item = c.getPlayer().getInventory(MapleInventoryType.USE).getItem(slea.readShort());
+        if (item == null || item.getItemId() != slea.readInt() || item.getQuantity() <= 0 || c.getPlayer().getGachExp() > 0 || c.getPlayer().getLevel() > 50 || MapleItemInformationProvider.getInstance().getItemEffect(item.getItemId()).getEXP() <= 0) {
+            return;
+        }
+        c.getPlayer().setGachExp(c.getPlayer().getGachExp() + MapleItemInformationProvider.getInstance().getItemEffect(item.getItemId()).getEXP());
+        MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, item.getPosition(), (short) 1, false);
+        c.getPlayer().updateSingleStat(MapleStat.GACHAPONEXP, c.getPlayer().getGachExp());
+    }
+
+    public static void GachExp(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+        c.getSession().write(MaplePacketCreator.enableActions());
+        c.getPlayer().updateTick(slea.readInt());
+        if (c.getPlayer().getGachExp() <= 0) {
+            return;
+        }
+        c.getPlayer().gainExp(c.getPlayer().getGachExp() * GameConstants.getExpRate_Quest(c.getPlayer().getLevel()), true, true, false);
+        c.getPlayer().setGachExp(0);
+        c.getPlayer().updateSingleStat(MapleStat.GACHAPONEXP, 0);
+    }
+
     public static void RingAction(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         final byte mode = slea.readByte();
         if (mode == 0) {

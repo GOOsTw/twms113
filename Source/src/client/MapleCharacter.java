@@ -139,7 +139,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             guildid = 0, fallcounter = 0, maplepoints, acash, chair, itemEffect, points, vpoints,
             rank = 1, rankMove = 0, jobRank = 1, jobRankMove = 0, marriageId, marriageItemId = 0,
             currentrep, totalrep, linkMid = 0, coconutteam = 0, followid = 0, battleshipHP = 0,
-            expression, constellation, blood, month, day, beans, beansNum, beansRange, prefix;
+            expression, constellation, blood, month, day, beans, beansNum, beansRange, prefix,
+            gachexp;
     private boolean canSetBeansNum;
     private Point old = new Point(0, 0);
     private boolean smega, hidden, hasSummon = false;
@@ -5698,6 +5699,14 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return battleshipHP;
     }
 
+    public int getGachExp() {
+        return gachexp;
+    }
+
+    public void setGachExp(int ge) {
+        this.gachexp = ge;
+    }
+
     public void sendEnglishQuiz(String msg) {
         client.getSession().write(MaplePacketCreator.englishQuizMsg(msg));
     }
@@ -5840,11 +5849,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public void giftMedal(int id) {
         if (!this.getInventory(MapleInventoryType.EQUIP).isFull() && this.getInventory(MapleInventoryType.EQUIP).countById(id) == 0 && this.getInventory(MapleInventoryType.EQUIPPED).countById(id) == 0) {
             MapleInventoryManipulator.addById(client, id, (short) 1);
-            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[恭喜]" + getName() + "剛才得到了 " + MapleItemInformationProvider.getInstance().getName(id) + "！").getBytes()); 
+            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[恭喜]" + getName() + "剛才得到了 " + MapleItemInformationProvider.getInstance().getName(id) + "！").getBytes());
         } else if (this.getInventory(MapleInventoryType.EQUIP).countById(id) == 0 && this.getInventory(MapleInventoryType.EQUIPPED).countById(id) == 0) {
             MapleInventoryManipulator.drop(client, MapleInventoryType.EQUIP, (byte) 1, (byte) 1);
             MapleInventoryManipulator.addById(client, id, (short) 1);
-            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[恭喜]" + getName() + "剛才得到了 " + MapleItemInformationProvider.getInstance().getName(id) + "！").getBytes());       
+            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[恭喜]" + getName() + "剛才得到了 " + MapleItemInformationProvider.getInstance().getName(id) + "！").getBytes());
         }
     }
 }

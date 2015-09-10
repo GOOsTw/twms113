@@ -85,7 +85,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         RecvPacketOpcode[] block = new RecvPacketOpcode[]{RecvPacketOpcode.NPC_ACTION, RecvPacketOpcode.MOVE_PLAYER, RecvPacketOpcode.MOVE_PET, RecvPacketOpcode.MOVE_SUMMON, RecvPacketOpcode.MOVE_LIFE, RecvPacketOpcode.HEAL_OVER_TIME, RecvPacketOpcode.STRANGE_DATA};
         blocked.addAll(Arrays.asList(block));
     }
-    
+
     public static boolean isDebugMode() {
         return debugMode;
     }
@@ -292,7 +292,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     public void sessionClosed(final IoSession session) throws Exception {
         final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
         if (client != null) {
-            if(client.getPlayer() != null) {
+            if (client.getPlayer() != null) {
                 client.getPlayer().saveToDB(true, cs);
             }
             if (!(client.getLoginState() == MapleClient.CASH_SHOP_TRANSITION
@@ -303,7 +303,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 ChannelServer.getInstance(ch).removePlayer(client.getPlayer());
             }
         }
-      
+
         if (client != null) {
             session.removeAttribute(MapleClient.CLIENT_KEY);
         }
@@ -840,6 +840,12 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 break;
             case ITEM_UNLOCK:
                 PlayersHandler.UnlockItem(slea, c);
+                break;
+            case SOLOMON:
+                PlayersHandler.Solomon(slea, c);
+                break;
+            case GACH_EXP:
+                PlayersHandler.GachExp(slea, c);
                 break;
             case REQUEST_FAMILY:
                 FamilyHandler.RequestFamily(slea, c);

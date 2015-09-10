@@ -48,7 +48,7 @@ public class MapleStatEffect implements Serializable {
     private byte mastery, mhpR, mmpR, mobCount, attackCount, bulletCount;
     private short hp, mp, watk, matk, wdef, mdef, acc, avoid, hands, speed, jump, mpCon, hpCon, damage, prop, ehp, emp, ewatk, ewdef, emdef;
     private double hpR, mpR;
-    private int duration, sourceid, moveTo, x, y, z, itemCon, itemConNo, bulletConsume, moneyCon, cooldown, morphId = 0, expinc;
+    private int duration, sourceid, moveTo, x, y, z, itemCon, itemConNo, bulletConsume, moneyCon, cooldown, morphId = 0, expinc, exp;
     private boolean overTime, skill, partyBuff = true;
     private List<Pair<MapleBuffStat, Integer>> statups;
     private Map<MonsterStatus, Integer> monsterStatus;
@@ -92,6 +92,7 @@ public class MapleStatEffect implements Serializable {
         ret.prop = (short) MapleDataTool.getInt("prop", source, 100);
         ret.cooldown = MapleDataTool.getInt("cooltime", source, 0);
         ret.expinc = MapleDataTool.getInt("expinc", source, 0);
+        ret.exp = MapleDataTool.getInt("exp", source, 0);
         ret.morphId = MapleDataTool.getInt("morph", source, 0);
         ret.cp = MapleDataTool.getInt("cp", source, 0);
         ret.nuffSkill = MapleDataTool.getInt("nuffSkill", source, 0);
@@ -1535,6 +1536,10 @@ public class MapleStatEffect implements Serializable {
 
     public final short getDamage() {
         return damage;
+    }
+
+    public final int getEXP() {
+        return exp;
     }
 
     public final byte getAttackCount() {
