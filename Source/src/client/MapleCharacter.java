@@ -273,6 +273,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.stats.maxmp = 50;
         ret.stats.mp = 50;
         ret.prefix = 0;
+        ret.gachexp = 0;
 
         try {
             Connection con = DatabaseConnection.getConnection();
@@ -352,6 +353,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.blood = ct.blood;
         ret.month = ct.month;
         ret.day = ct.day;
+        ret.gachexp = ct.gachexp;
         ret.makeMFC(ct.familyid, ct.seniorid, ct.junior1, ct.junior2);
         if (ret.guildid > 0) {
             ret.mgc = new MapleGuildCharacter(ret);
@@ -521,6 +523,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ret.month = rs.getInt("month");
             ret.day = rs.getInt("day");
             ret.prefix = rs.getInt("prefix");
+            ret.gachexp = rs.getInt("gachexp");
+            
             if (channelserver) {
                 MapleMapFactory mapFactory = ChannelServer.getInstance(client.getChannel()).getMapFactory();
                 ret.map = mapFactory.getMap(ret.mapid);
@@ -990,7 +994,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         try {
             con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             con.setAutoCommit(false);
-            ps = con.prepareStatement("UPDATE characters SET level = ?, fame = ?, str = ?, dex = ?, luk = ?, `int` = ?, exp = ?, hp = ?, mp = ?, maxhp = ?, maxmp = ?, sp = ?, ap = ?, gm = ?, skincolor = ?, gender = ?, job = ?, hair = ?, face = ?, map = ?, meso = ?, hpApUsed = ?, spawnpoint = ?, party = ?, buddyCapacity = ?, monsterbookcover = ?, dojo_pts = ?, dojoRecord = ?, pets = ?, subcategory = ?, marriageId = ?, currentrep = ?, totalrep = ?, charmessage = ?, expression = ?, constellation = ?, blood = ?, month = ?, day = ?, beans = ?, prefix = ?, name = ? WHERE id = ?");
+            ps = con.prepareStatement("UPDATE characters SET level = ?, fame = ?, str = ?, dex = ?, luk = ?, `int` = ?, exp = ?, hp = ?, mp = ?, maxhp = ?, maxmp = ?, sp = ?, ap = ?, gm = ?, skincolor = ?, gender = ?, job = ?, hair = ?, face = ?, map = ?, meso = ?, hpApUsed = ?, spawnpoint = ?, party = ?, buddyCapacity = ?, monsterbookcover = ?, dojo_pts = ?, dojoRecord = ?, pets = ?, subcategory = ?, marriageId = ?, currentrep = ?, totalrep = ?, charmessage = ?, expression = ?, constellation = ?, blood = ?, month = ?, day = ?, beans = ?, prefix = ?, gachexp = ?, name = ? WHERE id = ?");
             ps.setInt(1, level);
             ps.setShort(2, fame);
             ps.setShort(3, stats.getStr());
@@ -1067,8 +1071,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.setInt(39, day);
             ps.setInt(40, beans);
             ps.setInt(41, prefix);
-            ps.setString(42, name);
-            ps.setInt(43, id);
+            ps.setInt(42, gachexp);
+            ps.setString(43, name);
+            ps.setInt(44, id);
             if (ps.executeUpdate() < 1) {
 
                 ps.close();

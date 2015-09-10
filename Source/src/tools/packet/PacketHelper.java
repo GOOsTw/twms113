@@ -268,7 +268,7 @@ public class PacketHelper {
         mplew.writeShort(chr.getRemainingSp());
         mplew.writeInt(chr.getExp()); // exp
         mplew.writeShort(chr.getFame()); // fame
-        mplew.writeInt(0); // Gachapon exp
+        mplew.writeInt(chr.getGachExp()); // Gachapon exp
         mplew.writeLong(0); //0 -> 4?
         mplew.writeInt(chr.getMapId()); // current map id
         mplew.write(chr.getInitialSpawnpoint()); // spawnpoint

@@ -78,6 +78,7 @@ CREATE TABLE `characters` (
   `day` int(11) NOT NULL DEFAULT '0',
   `beans` int(11) NOT NULL DEFAULT '0',
   `prefix` int(255) DEFAULT '0',
+  `gachexp` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `accountid` (`accountid`),
   KEY `party` (`party`),
