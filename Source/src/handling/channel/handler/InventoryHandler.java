@@ -2124,8 +2124,23 @@ public class InventoryHandler {
             default:
                 if (itemId / 10000 == 512) {
                     final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-                    final String msg = ii.getMsg(itemId).replaceFirst("%s", c.getPlayer().getName()).replaceFirst("%s", slea.readMapleAsciiString());
-                    c.getPlayer().getMap().startMapEffect(msg, itemId);
+                    String msg = ii.getMsg(itemId);
+                    final String ourMsg = slea.readMapleAsciiString();
+                    if (!msg.contains("%s")) {
+                        msg = ourMsg;
+                    } else {
+                        msg = msg.replaceFirst("%s", ourMsg);
+                        if (!msg.contains("%s")) {
+                            msg = ii.getMsg(itemId).replaceFirst("%s", ourMsg);
+                        } else {
+                            try {
+                                msg = msg.replaceFirst("%s", ourMsg);
+                            } catch (Exception e) {
+                                msg = ii.getMsg(itemId).replaceFirst("%s", ourMsg);
+                            }
+                        }
+                    }
+                    c.getPlayer().getMap().startMapEffect(ourMsg, itemId);
 
                     final int buff = ii.getStateChangeItem(itemId);
                     if (buff != 0) {
