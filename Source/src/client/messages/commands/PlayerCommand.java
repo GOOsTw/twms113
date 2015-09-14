@@ -133,10 +133,10 @@ public class PlayerCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (!c.getPlayer().getCheatTracker().GMSpam(100000, 1) && (!c.getPlayer().isGM())) { // 1 minutes.
-                World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0, c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期:" + getDayOfWeek()).getBytes());
+                World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0,"『玩家』" + c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期:" + getDayOfWeek()).getBytes());
                 System.out.println("『玩家』" + c.getPlayer().getName() + " 使用了報時系統");
             } else if (c.getPlayer().isGM()) {
-                World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0, c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期:" + getDayOfWeek()).getBytes());
+                World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0,"『管理員』" + c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期:" + getDayOfWeek()).getBytes());
                 System.out.println("『管理員』" + c.getPlayer().getName() + " 使用了報時系統");
             } else {
                 c.getPlayer().dropMessage(6, "為了防止瘋狂報時引響其他玩家，所以1分鐘只能使用一次。");

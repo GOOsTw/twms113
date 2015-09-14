@@ -2550,7 +2550,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public void playerDead() {
         final MapleStatEffect statss = getStatForBuff(MapleBuffStat.SOUL_STONE);
         if (statss != null) {
-            dropMessage(5, "You have been revived by Soul Stone.");
+            dropMessage(5, "你已經通過靈魂之石復活了。");
             getStat().setHp(((getStat().getMaxHp() / 100) * statss.getX()));
             setStance(0);
             changeMap(getMap(), getMap().getPortal(0));
@@ -2598,7 +2598,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
         this.updateSingleStat(MapleStat.EXP, this.exp);
         if (!stats.checkEquipDurabilitys(this, -100)) { //i guess this is how it works ?
-            dropMessage(5, "An item has run out of durability but has no inventory room to go to.");
+            dropMessage(5, "該裝備耐久度已經使用完畢，必須修理才可以繼續使用。");
         } //lol
         if (pyramidSubway != null) {
             stats.setHp((short) 50);
@@ -2902,7 +2902,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             if (pendingSkills != null) {
                 for (Integer z : pendingSkills) {
                     client.getSession().write(MaplePacketCreator.updateSkill(z, 0, 0, -1));
-                    client.getSession().write(MaplePacketCreator.serverNotice(5, "[" + SkillFactory.getSkillName(z) + "] skill has expired and will not be available for use."));
+                    client.getSession().write(MaplePacketCreator.serverNotice(5, "[" + SkillFactory.getSkillName(z) + "] 技能已經過期，系統自動從技能欄位移除。"));
                 }
             } //not real msg
             pendingSkills = null;
