@@ -28,9 +28,10 @@ public class MapleCarnivalFactory {
     }
 
     private void initialize() {
-        if (skills.size() != 0) {
+        if (!skills.isEmpty()) {
             return;
         }
+        System.out.println("【讀取中】 MapleCarnivalFactory:::");
         for (MapleData z : dataRoot.getData("MCSkill.img")) {
             skills.put(Integer.parseInt(z.getName()), new MCSkill(MapleDataTool.getInt("spendCP", z, 0), MapleDataTool.getInt("mobSkillID", z, 0), MapleDataTool.getInt("level", z, 0), MapleDataTool.getInt("target", z, 1) > 1));
         }

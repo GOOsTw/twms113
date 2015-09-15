@@ -74,6 +74,7 @@ public class MapleLifeFactory {
         if (questCount.size() > 0) {
             return;
         }
+        System.out.println("【讀取中】 QuestCountGroup:::");
         for (MapleDataDirectoryEntry mapz : data.getRoot().getSubdirectories()) {
             if (mapz.getName().equals("QuestCountGroup")) {
                 for (MapleDataFileEntry entry : mapz.getFiles()) {

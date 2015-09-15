@@ -42,8 +42,8 @@ public class Start {
         System.out.println("【台版楓之谷模擬器】");
         System.out.println("【版本】 v113");
 
-        boolean adminMode = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.Admin"));
-        boolean autoReg = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.AutoRegister"));
+        boolean adminMode = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.admin"));
+        boolean autoReg = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.autoRegister"));
         boolean gmitems = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.gmitems"));
 
         if (adminMode) {
@@ -80,7 +80,7 @@ public class Start {
         MapleLifeFactory.loadQuestCounts();
 //        ItemMakerFactory.getInstance();
         MapleItemInformationProvider.getInstance().load();
-        RandomRewards.getInstance();
+        RandomRewards.getInstance(); 
         SkillFactory.getSkill(99999999);
         MapleOxQuizFactory.getInstance().initialize();
         MapleCarnivalFactory.getInstance();
@@ -93,9 +93,9 @@ public class Start {
         LoginServer.setup();
         ChannelServer.startAllChannels();
 
-        System.out.println("購物商城 啟動中:::");
+        System.out.println("【啟動中】 購物商城:::");
         CashShopServer.setup();
-        System.out.println("購物商城 啟動完畢:::");
+        
         CheatTimer.getInstance().register(AutobanManager.getInstance(), 60000);
         Runtime.getRuntime().addShutdownHook(new Thread(ShutdownServer.getInstance()));
         try {
@@ -105,7 +105,7 @@ public class Start {
         }
         World.registerRespawn();
         LoginServer.setOn();
-        System.out.println("伺服器開啟完畢 :::");
+        System.out.println("【伺服器開啟完畢】");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (!World.isShutDown) {
             try {

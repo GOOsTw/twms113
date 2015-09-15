@@ -20,14 +20,10 @@
  */
 package handling.login;
 
-import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
 
 import provider.MapleData;
-import provider.MapleDataDirectoryEntry;
-import provider.MapleDataFileEntry;
-import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;
 import provider.MapleDataTool;
 import server.ServerProperties;
@@ -42,7 +38,7 @@ public class LoginInformationProvider {
     }
 
     protected LoginInformationProvider() {
-        System.out.println("LoginInformationProvider 讀取中:::");
+        System.out.println("【讀取中】 LoginInformationProvider:::");
         final MapleData nameData = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/Etc.wz").getData("ForbiddenName.img");
         for (final MapleData data : nameData.getChildren()) {
             ForbiddenName.add(MapleDataTool.getString(data));

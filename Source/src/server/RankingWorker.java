@@ -58,7 +58,7 @@ public class RankingWorker {
     }
 
     public final void run() {
-        System.out.println("Ranking Server 讀取中:::");
+        System.out.println("【讀取中】 排行榜伺服器:::");
         loadJobCommands();
         try {
             con = DatabaseConnection.getConnection();
@@ -66,7 +66,6 @@ public class RankingWorker {
         } catch (Exception ex) {
             System.err.println("Could not update rankings");
         }
-        //System.out.println("排行啟動完成 :::"); //keep
     }
 
     private void updateRanking() throws Exception {

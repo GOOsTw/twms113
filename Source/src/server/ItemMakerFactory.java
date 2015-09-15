@@ -23,7 +23,7 @@ public class ItemMakerFactory {
     }
 
     protected ItemMakerFactory() {
-        System.out.println("ItemMakerFactory 讀取中:::");
+        System.out.println("【讀取中】 ItemMakerFactory:::");
         // 0 = Item upgrade crystals
         // 1 / 2/ 4/ 8 = Item creation
 

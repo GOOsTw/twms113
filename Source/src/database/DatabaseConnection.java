@@ -209,7 +209,6 @@ public class DatabaseConnection {
         } finally {
             lock.unlock();
         }
-        System.out.println("[Database] 已經關閉" + String.valueOf(i) + "/" + String.valueOf(connections.size()) + "個無用連線.");
     }
 
     public static void closeAll() {

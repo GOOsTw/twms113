@@ -66,7 +66,8 @@ public class MapleOxQuizFactory {
         if (initialized) {
             return;
         }
-        System.out.println("Loading OX Quiz :::");
+        System.out.println("【讀取中】 OX Quiz:::");
+
         try {
             Connection con = DatabaseConnection.getConnection();
             PreparedStatement ps = con.prepareStatement("SELECT * FROM wz_oxdata");

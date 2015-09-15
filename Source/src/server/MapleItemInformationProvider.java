@@ -77,7 +77,7 @@ public class MapleItemInformationProvider {
     protected final Map<Integer, String> faceList = new HashMap<>();
 
     protected MapleItemInformationProvider() {
-        System.out.println("MapleItemInformationProvider 讀取中:::");
+        System.out.println("【讀取中】 MapleItemInformationProvider:::");
     }
 
     public final void load() {
