@@ -106,8 +106,8 @@ public class ConsoleCommand {
                                 ts.cancel(false);
                                 return;
                             }
-                            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0, "本私服器將在 " + minutesLeft + "分鐘後關閉. 請盡速關閉精靈商人 並下線.").getBytes());;
-                            System.out.println("本私服器將在 " + minutesLeft + "分鐘後關閉.");
+                            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0, "本伺服器將在 " + minutesLeft + "分鐘後關閉. 請盡速關閉精靈商人 並下線.").getBytes());;
+                            System.out.println("本伺服器將在 " + minutesLeft + "分鐘後關閉.");
                             minutesLeft--;
                         }
                     }, 60000);
@@ -238,9 +238,10 @@ public class ConsoleCommand {
                 for (MapleCharacter chr : chrs) {
                     p++;
                     chr.saveToDB(false, true);
-                    System.out.println("[保存] " + p + "個玩家數據保存到數據中.");
+                 
                 }
             }
+            System.out.println("[保存] " + p + "個玩家數據保存到數據中.");
             return 1;
         }
     }
@@ -328,7 +329,7 @@ public class ConsoleCommand {
             System.out.println("mesorate 金錢倍率");
             System.out.println("cashrate 點數倍率");
             System.out.println("-------------------------");
-            System.out.println("shutdown 關閉私服");
+            System.out.println("shutdown 關閉伺服器");
             System.out.println("shotdowntime <時間> 倒數關閉服務器");
             System.out.println("reloadchannel 重新載入頻道");
             System.out.println("reloadmap 重新載入地圖");

@@ -142,7 +142,7 @@ public class AdminCommand {
 
         public int execute(MapleClient c, String[] splitted) {
             minutesLeft = Integer.parseInt(splitted[1]);
-            c.getPlayer().dropMessage(6, "本私服器將在 " + minutesLeft + "分鐘後關閉. 請盡速關閉精靈商人 並下線.");
+            c.getPlayer().dropMessage(6, "伺服器將在 " + minutesLeft + "分鐘後關閉. 請盡速關閉精靈商人 並下線.");
             if (ts == null && (t == null || !t.isAlive())) {
                 t = new Thread(ShutdownServer.getInstance());
                 ts = EventTimer.getInstance().register(new Runnable() {
@@ -155,8 +155,8 @@ public class AdminCommand {
                             ts.cancel(false);
                             return;
                         }
-                        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0, "本私服器將在 " + minutesLeft + "分鐘後關閉. 請盡速關閉精靈商人 並下線.").getBytes());
-                        System.out.println("本私服器將在 " + minutesLeft + "分鐘後關閉.");
+                        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0, "本伺服器將在 " + minutesLeft + "分鐘後關閉. 請盡速關閉精靈商人 並下線.").getBytes());
+                        System.out.println("本伺服器將在 " + minutesLeft + "分鐘後關閉.");
                         minutesLeft--;
                     }
                 }, 60000);

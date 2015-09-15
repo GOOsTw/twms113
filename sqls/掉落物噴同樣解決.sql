@@ -1,1 +1,0 @@
-DELETE n1 FROM drop_data n1, drop_data n2 WHERE n1.id < n2.id AND n1.dropperid = n2.dropperid AND n1.itemid = n2.itemid and n1.chance = n2.chance

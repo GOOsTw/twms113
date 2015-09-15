@@ -552,10 +552,10 @@ public class ChannelServer implements Serializable {
                     chr.getClient().disconnect(true, false);
                 }
             } catch (Exception e) {
-
+                
             }
         }
-        System.out.println("[自動存檔] 已經將頻道 " + this.channel + " 的 " + ppl + " 個角色保存到數據中.");
+        
     }
 
     public boolean CanGMItem() {

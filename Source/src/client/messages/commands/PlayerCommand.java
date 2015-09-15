@@ -261,7 +261,7 @@ public class PlayerCommand {
             if (!c.getPlayer().getCheatTracker().GMSpam(100000, 1)) { // 1 minutes.
                 World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "頻道 " + c.getPlayer().getClient().getChannel() + " 玩家 [" + c.getPlayer().getName() + "] : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
                 c.getPlayer().dropMessage(6, "訊息已經寄送給GM了!");
-                System.out.println("[管理員幫幫忙] " + c.getPlayer().getName() + " : " + splitted);
+                System.out.println("[管理員幫幫忙] " + c.getPlayer().getName() + " : " + StringUtil.joinStringFrom(splitted, 1));
             } else {
                 c.getPlayer().dropMessage(6, "為了防止對GM刷屏所以每1分鐘只能發一次.");
             }
