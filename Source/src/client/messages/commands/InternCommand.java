@@ -260,7 +260,7 @@ public class InternCommand {
                 MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
 
                 if (victim != null) {
-                    if (victim.getGMLevel() < 5) {
+                    if (victim.getGMLevel() > 3) {
                         c.getPlayer().dropMessage(5, "你不能查看比你高權限的人!");
                         return 0;
                     }

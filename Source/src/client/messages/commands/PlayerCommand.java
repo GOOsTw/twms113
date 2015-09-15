@@ -132,7 +132,7 @@ public class PlayerCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-            if (!c.getPlayer().getCheatTracker().GMSpam(100000, 1) && (!c.getPlayer().isGM())) { // 1 minutes.
+            if (!c.getPlayer().getCheatTracker().GMSpam(500000, 1) && (!c.getPlayer().isGM())) { // 5 minutes.
                 World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0,"『玩家』" + c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期:" + getDayOfWeek()).getBytes());
                 System.out.println("『玩家』" + c.getPlayer().getName() + " 使用了報時系統");
             } else if (c.getPlayer().isGM()) {
