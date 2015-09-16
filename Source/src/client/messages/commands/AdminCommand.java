@@ -1230,7 +1230,7 @@ public class AdminCommand {
             if (chrs == null) {
                 c.getPlayer().dropMessage(6, "請確認有在正確的頻道");
             } else {
-                c.getPlayer().dropMessage(6, chrs.getName() + " 有 " + chrs.getPoints() + " 點數.");
+                c.getPlayer().dropMessage(6, chrs.getName() + " 有 " + chrs.getCSPoints(1) + " 點數.");
             }
             return 1;
         }
@@ -1248,8 +1248,8 @@ public class AdminCommand {
             if (chrs == null) {
                 c.getPlayer().dropMessage(6, "請確認有在正確的頻道");
             } else {
-                chrs.setPoints(chrs.getPoints() + Integer.parseInt(splitted[2]));
-                c.getPlayer().dropMessage(6, "在您給了" + splitted[1] + " " + splitted[2] + "點了之後 共擁有 " + chrs.getPoints() + " 點");
+                chrs.setPoints(chrs.getCSPoints(1) + Integer.parseInt(splitted[2]));
+                c.getPlayer().dropMessage(6, "在您給了" + splitted[1] + " " + splitted[2] + "點了之後 總共擁有 " + chrs.getPoints() + " 點");
             }
             return 1;
         }
