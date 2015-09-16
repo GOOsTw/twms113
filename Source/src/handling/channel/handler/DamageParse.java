@@ -226,9 +226,7 @@ public class DamageParse {
                             }
                         }
                     }
-                    if (player == null) { // o_O
-                        return;
-                    }
+
                     if (player.getClient().getChannelServer().isAdminOnly()) {
                         player.dropMessage(-1, "Damage: " + eachd);
                     }
@@ -991,7 +989,7 @@ public class DamageParse {
         ret.lastAttackTickCount = lea.readInt(); // Ticks
 //        lea.skip(4); //0
 
-        ret.allDamage = new ArrayList<AttackPair>();
+        ret.allDamage = new ArrayList<>();
 
         if (ret.skill == 4211006) { // Meso Explosion
             return parseMesoExplosion(lea, ret);
@@ -1004,15 +1002,15 @@ public class DamageParse {
 //	    System.out.println(tools.HexTool.toString(lea.read(14)));
             lea.skip(14); // [1] Always 6?, [3] unk, [4] Pos1, [4] Pos2, [2] seems to change randomly for some attack
 
-            allDamageNumbers = new ArrayList<Pair<Integer, Boolean>>();
+            allDamageNumbers = new ArrayList<>();
 
             for (int j = 0; j < ret.hits; j++) {
                 damage = lea.readInt();
                 // System.out.println("Damage: " + damage);
-                allDamageNumbers.add(new Pair<Integer, Boolean>(Integer.valueOf(damage), false));
+                allDamageNumbers.add(new Pair<>(damage, false));
             }
             lea.skip(4); // CRC of monster [Wz Editing]
-            ret.allDamage.add(new AttackPair(Integer.valueOf(oid), allDamageNumbers));
+            ret.allDamage.add(new AttackPair(oid, allDamageNumbers));
         }
         ret.position = lea.readPos();
         return ret;
@@ -1057,17 +1055,18 @@ public class DamageParse {
 
         int damage, oid;
         List<Pair<Integer, Boolean>> allDamageNumbers;
-        ret.allDamage = new ArrayList<AttackPair>();
+        ret.allDamage = new ArrayList<>();
 
         for (int i = 0; i < ret.targets; i++) {
             oid = lea.readInt();
 //	    System.out.println(tools.HexTool.toString(lea.read(14)));
             lea.skip(14); // [1] Always 6?, [3] unk, [4] Pos1, [4] Pos2, [2] seems to change randomly for some attack
 
-            allDamageNumbers = new ArrayList<Pair<Integer, Boolean>>();
+            allDamageNumbers = new ArrayList<>();
             for (int j = 0; j < ret.hits; j++) {
                 damage = lea.readInt();
-                allDamageNumbers.add(new Pair<Integer, Boolean>(Integer.valueOf(damage), false));
+               
+                allDamageNumbers.add(new Pair<Integer, Boolean>(damage, false));
                 //System.out.println("Hit " + j + " from " + i + " to mobid " + oid + ", damage " + damage);
             }
             lea.skip(4); // CRC of monster [Wz Editing]
@@ -1088,7 +1087,7 @@ public class DamageParse {
             lea.skip(4);
             bullets = lea.readByte();
             for (int j = 0; j < bullets; j++) {
-                ret.allDamage.add(new AttackPair(Integer.valueOf(lea.readInt()), null));
+                ret.allDamage.add(new AttackPair(lea.readInt(), null));
                 lea.skip(1);
             }
             lea.skip(2); // 8F 02

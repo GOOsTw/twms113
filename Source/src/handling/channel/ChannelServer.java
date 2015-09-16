@@ -184,9 +184,6 @@ public class ChannelServer implements Serializable {
 
         try {
             if (acceptor != null) {
-                for (IoSession session : acceptor.getManagedSessions().values()) {
-                    session.close(true);
-                }
                 acceptor.unbind(new InetSocketAddress(port));
                 acceptor.dispose();
                 acceptor = null;
