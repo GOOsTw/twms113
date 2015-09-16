@@ -155,7 +155,7 @@ public class AdminCommand {
                             ts.cancel(false);
                             return;
                         }
-                        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0, "本伺服器將在 " + minutesLeft + "分鐘後關閉. 請盡速關閉精靈商人 並下線.").getBytes());
+                        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[楓之谷公告] 伺服器將在 " + minutesLeft + "分鐘後關閉. 請盡速關閉精靈商人 並下線.").getBytes());
                         System.out.println("本伺服器將在 " + minutesLeft + "分鐘後關閉.");
                         minutesLeft--;
                     }

@@ -371,6 +371,9 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 }
 
                 if (this.getHp() <= 0) {
+                    if (stats.getHPDisplayType() == 0) {
+                        map.broadcastMessage(MobPacket.showBossHP(getId(), -1, getMobMaxHp()), this.getTruePosition());
+                    }
                     this.getMap().killMonster(this, from, true, false, (byte) 1, lastSkill);
                 }
             }
@@ -1122,7 +1125,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 }
                 status.cancelPoisonSchedule(MapleMonster.this);
                 if (from.isStaff() && MapleServerHandler.isDebugMode()) {
-                   // from.dropMessage(6, "結束 => 持續傷害: 結束時間[" + System.currentTimeMillis() + "]");
+                    // from.dropMessage(6, "結束 => 持續傷害: 結束時間[" + System.currentTimeMillis() + "]");
                 }
             }
         };
