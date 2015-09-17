@@ -574,7 +574,7 @@ public final class MapleMap {
                             case 8810018:
                             case 8810122:
                             case 8820001:
-                                mc.getClient().getSession().write(MaplePacketCreator.showOwnBuffEffect(buffid, 11)); // HT nine spirit
+                                mc.getClient().sendPacket(MaplePacketCreator.showOwnBuffEffect(buffid, 11)); // HT nine spirit
                                 broadcastMessage(mc, MaplePacketCreator.showBuffeffect(mc.getId(), buffid, 11), false); // HT nine spirit
                                 break;
                         }
