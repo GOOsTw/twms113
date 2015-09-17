@@ -72,7 +72,7 @@ public class NPCScriptManager extends AbstractScriptManager {
                     iv.invokeFunction("action", (byte) 1, (byte) 0, 0);
                 }
             } else {
-                c.getPlayer().dropMessage(-1, "你現在不能攻擊或不能跟npc對話,請在對話框打 @解卡/@ea 來解除異常狀態");
+                c.getPlayer().dropMessage(5, "你現在不能攻擊或不能跟npc對話,請在對話框打 @解卡/@ea 來解除異常狀態");
             }
 
         } catch (final ScriptException | NoSuchMethodException e) {

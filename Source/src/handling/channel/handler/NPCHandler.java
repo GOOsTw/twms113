@@ -121,7 +121,7 @@ public class NPCHandler {
             return;
         }
         if (chr.getConversation() != 0) {
-            chr.dropMessage(-1, "你現在不能攻擊或不能跟npc對話,請在對話框打 @解卡/@ea 來解除異常狀態");
+            chr.dropMessage(5, "你現在不能攻擊或不能跟npc對話,請在對話框打 @解卡/@ea 來解除異常狀態");
             return;
         }
 

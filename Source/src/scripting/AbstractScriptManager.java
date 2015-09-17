@@ -72,7 +72,7 @@ public abstract class AbstractScriptManager {
                 
                 engine.eval(fr);
             } else if (c != null && npc) {
-                c.getPlayer().dropMessage(-1, "你現在不能攻擊或不能跟npc對話,請在對話框打 @解卡/@ea 來解除異常狀態");
+                c.getPlayer().dropMessage(5, "你現在不能攻擊或不能跟npc對話,請在對話框打 @解卡/@ea 來解除異常狀態");
             }
             return (Invocable) engine;
         } catch (FileNotFoundException | UnsupportedEncodingException | ScriptException e) {
