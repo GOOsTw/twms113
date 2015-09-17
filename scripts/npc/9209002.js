@@ -17,7 +17,11 @@ function start() {
     action(1, 0, 0);
 }
 function action(mode, type, selection) {
-    if (mode == -1) {
+	if (cm.getPlayer().getMapId() != 680100000 && cm.getPlayer().getMapId() != 680100001 && cm.getPlayer().getMapId() != 680100002 && cm.getPlayer().getMapId() != 680100003) {
+		cm.sendOk("請來楓葉市集找我謝謝！");
+		cm.dispose();		
+	}
+	if (mode == -1) {
         cm.dispose();
     } else {
         if (status >= 0 && mode == 0) {

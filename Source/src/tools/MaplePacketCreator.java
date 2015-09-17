@@ -4060,16 +4060,14 @@ public class MaplePacketCreator {
 
         return mplew.getPacket();
     }
-
+    
     public static MaplePacket boatPacket(boolean type) {
 
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
-        // 1034: balrog boat comes, 1548: boat comes, 3: boat leaves
         mplew.writeShort(SendPacketOpcode.BOAT_PACKET.getValue());
         mplew.write(type ? 1 : 2);
         mplew.write(0);
-        //this packet had 3: boat leaves
 
         return mplew.getPacket();
     }

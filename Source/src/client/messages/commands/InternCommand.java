@@ -287,6 +287,7 @@ public class InternCommand {
         public int execute(MapleClient c, String[] splitted) {
             int total = 0;
             int curConnected = c.getChannelServer().getConnectedClients();
+            total += curConnected;
             c.getPlayer().dropMessage(6, "上線的角色 頻道-" + c.getChannel() + ":");
             c.getPlayer().dropMessage(6, c.getChannelServer().getPlayerStorage().getOnlinePlayers(true));
             c.getPlayer().dropMessage(6, new StringBuilder().append("當前伺服器總計線上人數: ").append(total).toString());
