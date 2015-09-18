@@ -443,6 +443,7 @@ public class MapleClient implements Serializable {
                     final String salt = rs.getString("salt");
 
                     accId = rs.getInt("id");
+                    this.setAccID(accId);
                     secondPassword = rs.getString("2ndpassword");
                     gm = rs.getInt("gm") > 0;
                     greason = rs.getByte("greason");
@@ -511,6 +512,7 @@ public class MapleClient implements Serializable {
                         }
                     }
                 }
+                
                 rs.close();
             }
         } catch (SQLException e) {

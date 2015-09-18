@@ -43,8 +43,8 @@ public class PlayerStorage {
     private final Lock rL = mutex.readLock(), wL = mutex.writeLock();
     private final ReentrantReadWriteLock mutex2 = new ReentrantReadWriteLock();
     private final Lock rL2 = mutex2.readLock(), wL2 = mutex2.writeLock();
-    private final Map<String, MapleCharacter> nameToChar = new HashMap<String, MapleCharacter>();
-    private final Map<Integer, MapleCharacter> idToChar = new HashMap<Integer, MapleCharacter>();
+    //private final Map<String, MapleCharacter> nameToChar = new HashMap<String, MapleCharacter>();
+    private final Map<Integer, MapleCharacter> idToChar = new HashMap<>();
     private final Map<Integer, CharacterTransfer> PendingCharacter = new HashMap<Integer, CharacterTransfer>();
     private int channel;
 
@@ -72,7 +72,7 @@ public class PlayerStorage {
     public final void registerPlayer(final MapleCharacter chr) {
         wL.lock();
         try {
-            nameToChar.put(chr.getName().toLowerCase(), chr);
+            //nameToChar.put(chr.getName().toLowerCase(), chr);
             idToChar.put(chr.getId(), chr);
         } finally {
             wL.unlock();
@@ -92,7 +92,7 @@ public class PlayerStorage {
     public final void deregisterPlayer(final MapleCharacter chr) {
         wL.lock();
         try {
-            nameToChar.remove(chr.getName().toLowerCase());
+            //nameToChar.remove(chr.getName().toLowerCase());
             idToChar.remove(chr.getId());
         } finally {
             wL.unlock();
@@ -103,7 +103,7 @@ public class PlayerStorage {
     public final void deregisterPlayer(final int idz, final String namez) {
         wL.lock();
         try {
-            nameToChar.remove(namez.toLowerCase());
+            //nameToChar.remove(namez.toLowerCase());
             idToChar.remove(idz);
         } finally {
             wL.unlock();
@@ -137,7 +137,12 @@ public class PlayerStorage {
     public final MapleCharacter getCharacterByName(final String name) {
         rL.lock();
         try {
-            return nameToChar.get(name.toLowerCase());
+            Collection<MapleCharacter> list = this.idToChar.values();
+            for( MapleCharacter chr : list) {
+                if(chr.getName().equals(name))
+                    return chr;
+            }
+            return null;
         } finally {
             rL.unlock();
         }
@@ -166,11 +171,11 @@ public class PlayerStorage {
     }
 
     public final List<CheaterData> getCheaters() {
-        final List<CheaterData> cheaters = new ArrayList<CheaterData>();
+        final List<CheaterData> cheaters = new ArrayList<>();
 
         rL.lock();
         try {
-            final Iterator<MapleCharacter> itr = nameToChar.values().iterator();
+            final Iterator<MapleCharacter> itr = idToChar.values().iterator();
             MapleCharacter chr;
             while (itr.hasNext()) {
                 chr = itr.next();
@@ -192,7 +197,7 @@ public class PlayerStorage {
     public final void disconnectAll(final boolean checkGM) {
         wL.lock();
         try {
-            final Iterator<MapleCharacter> itr = nameToChar.values().iterator();
+            final Iterator<MapleCharacter> itr = idToChar.values().iterator();
             MapleCharacter chr;
             while (itr.hasNext()) {
                 chr = itr.next();
@@ -214,7 +219,7 @@ public class PlayerStorage {
         if (byGM) {
             rL.lock();
             try {
-                final Iterator<MapleCharacter> itr = nameToChar.values().iterator();
+                final Iterator<MapleCharacter> itr = idToChar.values().iterator();
                 while (itr.hasNext()) {
                     sb.append(MapleCharacterUtil.makeMapleReadable(itr.next().getName()));
                     sb.append(", ");
@@ -225,7 +230,7 @@ public class PlayerStorage {
         } else {
             rL.lock();
             try {
-                final Iterator<MapleCharacter> itr = nameToChar.values().iterator();
+                final Iterator<MapleCharacter> itr = idToChar.values().iterator();
                 MapleCharacter chr;
                 while (itr.hasNext()) {
                     chr = itr.next();
@@ -245,7 +250,7 @@ public class PlayerStorage {
     public final void broadcastPacket(final MaplePacket data) {
         rL.lock();
         try {
-            final Iterator<MapleCharacter> itr = nameToChar.values().iterator();
+            final Iterator<MapleCharacter> itr = idToChar.values().iterator();
             while (itr.hasNext()) {
                 itr.next().getClient().getSession().write(data);
             }
@@ -257,7 +262,7 @@ public class PlayerStorage {
     public final void broadcastSmegaPacket(final MaplePacket data) {
         rL.lock();
         try {
-            final Iterator<MapleCharacter> itr = nameToChar.values().iterator();
+            final Iterator<MapleCharacter> itr = idToChar.values().iterator();
             MapleCharacter chr;
             while (itr.hasNext()) {
                 chr = itr.next();
@@ -274,11 +279,10 @@ public class PlayerStorage {
     public final void broadcastGMPacket(final MaplePacket data) {
         rL.lock();
         try {
-            final Iterator<MapleCharacter> itr = nameToChar.values().iterator();
+            final Iterator<MapleCharacter> itr = idToChar.values().iterator();
             MapleCharacter chr;
             while (itr.hasNext()) {
                 chr = itr.next();
-
                 if (chr.getClient().isLoggedIn() && chr.isGM()) {
                     chr.getClient().getSession().write(data);
                 }

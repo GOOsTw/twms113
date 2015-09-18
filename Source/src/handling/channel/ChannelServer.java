@@ -538,13 +538,16 @@ public class ChannelServer implements Serializable {
         List<MapleCharacter> all = this.players.getAllCharactersThreadSafe();
         for (MapleCharacter chr : all) {
             try {
+                if( chr.getClient() == null || !chr.getClient().getSession().isConnected() ) {
+                    chr.getClient().disconnect(true, false);
+                    continue;
+                }
                 int res = chr.saveToDB(false, false);
                 if (res == 1) {
                     ++ppl;
                 } else {
                     System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 角色:" + chr.getName() + " 儲存失敗.");
                 }
-
                 if (chr.getClient().getLatency() < 0) {
                     chr.getClient().disconnect(true, false);
                 }
