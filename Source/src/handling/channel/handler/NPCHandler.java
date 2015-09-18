@@ -468,7 +468,7 @@ public class NPCHandler {
     }
 
     public static final void RPSGame(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-        if (slea.available() == 0 || !c.getPlayer().getMap().containsNPC(9000019)) {
+        if (slea.available() == 0 || !c.getPlayer().getMap().containsNPC(9209002)) {
             if (c.getPlayer().getRPS() != null) {
                 c.getPlayer().getRPS().dispose(c);
             }
