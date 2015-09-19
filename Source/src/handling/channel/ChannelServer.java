@@ -182,9 +182,17 @@ public class ChannelServer implements Serializable {
 
         System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 解除端口綁定中...");
 
+        try{
+            for (IoSession session : acceptor.getManagedSessions().values()) {
+                session.close(true);
+            }
+        } catch(Exception e) {
+            
+        }
+         
         try {
             if (acceptor != null) {
-                acceptor.unbind(new InetSocketAddress(port));
+                
                 acceptor.dispose();
                 acceptor = null;
                 System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 解除端口成功");
