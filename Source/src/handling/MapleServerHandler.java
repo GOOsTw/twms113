@@ -386,7 +386,11 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     @Override
     public void sessionIdle(final IoSession session, final IdleStatus status) throws Exception {
         final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
-        
+        if (client != null && client.getPlayer() != null && !client.getPlayer().isGM()) {
+            System.out.println("玩家 " + client.getPlayer().getName() + " 正在掛網");
+        } else {
+            System.out.println("管理員 " + client.getPlayer().getName() + " 正在掛網");
+        }
         if (client != null) {
             client.sendPing();
         } else {

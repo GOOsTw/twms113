@@ -350,7 +350,7 @@ public class ConsoleCommand {
         public int execute(String[] splitted) {
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                 System.out.println("線上玩家： " + String.valueOf(cserv.getChannel()) + ":");
-            System.out.println(cserv.getPlayerStorage().getOnlinePlayers(true));
+                System.out.println(cserv.getPlayerStorage().getOnlinePlayers(true));
             }
             return 1;
         }

@@ -62,7 +62,8 @@ public class SkillFactory {
         if (!skills.isEmpty()) {
             return skills.get(id);
         }
-        System.out.println("【讀取中】 SkillData:::");
+
+        System.out.println("讀取技能資料中 :::");
 
         final MapleDataProvider skillWZ = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/Skill.wz");
         final MapleDataDirectoryEntry root = skillWZ.getRoot();

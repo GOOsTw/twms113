@@ -432,7 +432,7 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `month` int(11) NOT NULL DEFAULT '0',
   `day` int(11) NOT NULL DEFAULT '0',
   `beans` int(11) NOT NULL DEFAULT '0',
-  `prefix` varchar(255) DEFAULT '',
+  `prefix` int(255) DEFAULT '0',
   `gachexp` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `accountid` (`accountid`),

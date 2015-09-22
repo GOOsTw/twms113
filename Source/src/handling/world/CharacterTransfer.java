@@ -45,10 +45,10 @@ public class CharacterTransfer implements Externalizable {
             beans, meso, hair, face, mapid, guildid,
             partyid, messengerid, mBookCover, dojo, ACash, MaplePoints,
             mount_itemid, mount_exp, points, vpoints, marriageId,
-            familyid, seniorid, junior1, junior2, currentrep, totalrep, expression, constellation, blood, month, day, battleshipHP, gachexp;
+            familyid, seniorid, junior1, junior2, currentrep, totalrep, expression, constellation, blood, month, day, battleshipHP, prefix, gachexp;
     public byte channel, dojoRecord, gender, gmLevel, guildrank, alliancerank, clonez, fairyExp, buddysize, world, initialSpawnPoint, skinColor, mount_level, mount_Fatigue, subcategory;
     public long lastfametime, TranferTime;
-    public String name, accountname, BlessOfFairy, chalkboard, charmessage,prefix;
+    public String name, accountname, BlessOfFairy, chalkboard, charmessage;
     public short level, fame, str, dex, int_, luk, maxhp, maxmp, hp, mp, remainingAp, hpApUsed, job;
     public Object inventorys, skillmacro, storage, cs;
     public int[] savedlocation, wishlist, rocks, remainingSp, regrocks;
@@ -276,7 +276,7 @@ public class CharacterTransfer implements Externalizable {
         this.month = in.readInt();
         this.day = in.readInt();
         this.battleshipHP = in.readInt();
-        this.prefix = in.readUTF();
+        this.prefix = in.readInt();
         this.gachexp = in.readInt();
         
         final int mbooksize = in.readShort();
@@ -432,7 +432,7 @@ public class CharacterTransfer implements Externalizable {
         out.writeInt(this.blood);
         out.writeInt(this.month);
         out.writeInt(this.day);
-        out.writeUTF(this.prefix);
+        out.writeInt(this.prefix);
         out.writeInt(this.gachexp);
         
         out.writeShort(this.mbook.size());

@@ -160,7 +160,7 @@ public class MapleQuest implements Serializable {
     }
 
     public static void initQuests() {
-        System.out.println("【讀取中】 MapleQuest:::");
+        System.out.println("MapleQuest 讀取中:::");
         questData = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/Quest.wz");
         actions = questData.getData("Act.img");
         requirements = questData.getData("Check.img");
@@ -183,7 +183,7 @@ public class MapleQuest implements Serializable {
                 }
                 quests.put(id, ret);
             } catch (Exception ex) {
-                FilePrinter.printError(FilePrinter.MapleQuest, ex, "Caused by questID " + Integer.toString(id));
+                FilePrinter.printError(FilePrinter.MapleQuest, ex , "Caused by questID " + Integer.toString(id));
                 System.out.println("[MapleQuest Error] Caused by questID " + id);
                 return new MapleCustomQuest(id);
             }

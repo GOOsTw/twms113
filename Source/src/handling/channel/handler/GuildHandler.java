@@ -130,9 +130,6 @@ public class GuildHandler {
 
         GuildOperation operation = GuildOperation.getByValue(slea.readByte());
 
-        if(operation == null)
-            return;
-        
         switch (operation) {
 
             case CREATE: {

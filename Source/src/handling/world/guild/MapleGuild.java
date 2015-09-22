@@ -895,7 +895,7 @@ public class MapleGuild implements java.io.Serializable {
         }
     }
 
-    public String getPrefix(MapleCharacter chr) {
+    public int getPrefix(MapleCharacter chr) {
         return chr.getPrefix();
     }
 }

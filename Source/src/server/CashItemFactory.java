@@ -47,9 +47,7 @@ public class CashItemFactory {
     }
 
     public void initialize() {
-        
-        System.out.println("【讀取中】 購物商城物品:::");
-
+        System.out.println("讀取\t商城資料中...");
         final List<Integer> itemids = new ArrayList<Integer>();
         for (MapleData field : data.getData("Commodity.img").getChildren()) {
             final int itemId = MapleDataTool.getIntConvert("ItemId", field, 0);

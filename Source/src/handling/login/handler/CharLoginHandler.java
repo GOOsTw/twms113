@@ -70,22 +70,22 @@ public class CharLoginHandler {
             c.getSession().close(true);
             return;
         }
-        final String account = slea.readMapleAsciiString();
+        final String login = slea.readMapleAsciiString();
         final String pwd = slea.readMapleAsciiString();
 
-        c.setAccountName(account);
+        c.setAccountName(login);
         final boolean ipBan = c.hasBannedIP();
         final boolean macBan = c.hasBannedMac();
 
         int loginok = 0;
         if (LoginServer.autoRegister) {
-            if (AutoRegister.autoRegister && !AutoRegister.getAccountExists(account) && (!c.hasBannedIP() || !c.hasBannedMac())) {
+            if (AutoRegister.autoRegister && !AutoRegister.getAccountExists(login) && (!c.hasBannedIP() || !c.hasBannedMac())) {
                 if (pwd.equalsIgnoreCase("disconnect") || pwd.equalsIgnoreCase("fixme")) {
                     c.getSession().write(MaplePacketCreator.serverNotice(1, "This password is invalid."));
                     c.getSession().write(LoginPacket.getLoginFailed(1)); //Shows no message, used for unstuck the login button
                     return;
                 }
-                AutoRegister.createAccount(account, pwd, c.getSession().getRemoteAddress().toString());
+                AutoRegister.createAccount(login, pwd, c.getSession().getRemoteAddress().toString());
                 if (AutoRegister.success) {
                     c.getSession().write(MaplePacketCreator.serverNotice(1, "帳號創建成功,請重新登入!"));
                     c.getSession().write(LoginPacket.getLoginFailed(1)); //Shows no message, used for unstuck the login button
@@ -94,14 +94,14 @@ public class CharLoginHandler {
             }
         }
 
-        loginok = c.login(account, pwd, ipBan || macBan);
+        loginok = c.login(login, pwd, ipBan || macBan);
         final Calendar tempbannedTill = c.getTempBanCalendar();
 
         if (loginok == 0 && (ipBan || macBan) && !c.isGm()) {
             loginok = 3;
             if (macBan) {
                 // this is only an ipban o.O" - maybe we should refactor this a bit so it's more readable
-                MapleCharacter.ban(c.getSession().getRemoteAddress().toString().split(":")[0], "Enforcing account ban, account " + account, false, 4, false);
+                MapleCharacter.ban(c.getSession().getRemoteAddress().toString().split(":")[0], "Enforcing account ban, account " + login, false, 4, false);
             }
         }
         if (loginok != 0) {
@@ -114,21 +114,6 @@ public class CharLoginHandler {
             }
         } else {
             c.loginAttempt = 0;
-            
-            /* Clear all connected client */
-            
-            
-            boolean check = false;
-            
-            for(ChannelServer ch : ChannelServer.getAllInstances()) {
-                List<MapleCharacter> list = ch.getPlayerStorage().getAllCharactersThreadSafe();
-                for ( MapleCharacter chr : list) {
-                    if( chr.getAccountID() == c.getAccID()) {
-                        ch.removePlayer(chr);
-                    }
-                }
-            }
-            
             LoginWorker.registerClient(c);
         }
     }

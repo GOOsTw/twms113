@@ -22,9 +22,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,27 +133,13 @@ public class DatabaseConnection {
             if (connection == null) {
                 ret = false;
             } else {
-                try {
-                    if (expiredConnection() || this.connection.isValid(0)) {
-                        lock.lock();
-                        try {
-                            this.connection.close();
-                            connections.remove(tid);
-                            ret = true;
-                        } catch (SQLException ex) {
-                            ret = false;
-                        } finally {
-                            lock.unlock();
-                        }
-                    }
-                } catch (SQLException ex) {
-                    ret = false;
+                if (expiredConnection()) {
                     lock.lock();
                     try {
                         this.connection.close();
                         connections.remove(tid);
                         ret = true;
-                    } catch (SQLException e) {
+                    } catch (SQLException ex) {
                         ret = false;
                     } finally {
                         lock.unlock();
@@ -190,13 +174,7 @@ public class DatabaseConnection {
     private static Connection connectToDB() {
 
         try {
-            Properties props = new Properties();
-            props.put("user", dbUser);
-            props.put("password", dbPass);
-            props.put("autoReconnect", "true");
-            props.put("characterEncoding", "UTF8");
-            props.put("connectTimeout", "120000000");
-            Connection con = DriverManager.getConnection(dbUrl, props);
+            Connection con = DriverManager.getConnection(dbUrl, dbUser, dbPass);
             return con;
         } catch (SQLException e) {
             throw new DatabaseException(e);
@@ -212,7 +190,7 @@ public class DatabaseConnection {
         dbDriver = "com.mysql.jdvc.Driver";
         String db = ServerProperties.getProperty("server.settings.db.name", "twms");
         String ip = ServerProperties.getProperty("server.settings.db.ip", "localhost");
-        dbUrl = "jdbc:mysql://" + ip + ":3306/" + db;
+        dbUrl = "jdbc:mysql://" + ip + ":3306/" + db + "?autoReconnect=true&characterEncoding=UTF8&?connectTimeout=120000000";
         dbUser = ServerProperties.getProperty("server.settings.db.user");
         dbPass = ServerProperties.getProperty("server.settings.db.password");
     }
@@ -231,6 +209,7 @@ public class DatabaseConnection {
         } finally {
             lock.unlock();
         }
+        System.out.println("[Database] 已經關閉" + String.valueOf(i) + "/" + String.valueOf(connections.size()) + "個無用連線.");
     }
 
     public static void closeAll() {

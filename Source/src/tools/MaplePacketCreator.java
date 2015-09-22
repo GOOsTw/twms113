@@ -796,7 +796,16 @@ public class MaplePacketCreator {
         mplew.writeInt(chr.getId());
         mplew.write(chr.getLevel());
         mplew.writeMapleAsciiString(chr.getName());
-        String Prefix = chr.getPrefix();
+        String Prefix = "";
+        if (chr.getPrefix() == 1) {
+            Prefix = "[技術團隊成員]";
+        }
+        if (chr.getPrefix() == 2) {
+            Prefix = "[遊戲管理成員]";
+        }
+        if (chr.getPrefix() == 3) {
+            Prefix = "[活動舉辦成員]";
+        }
 
         if (chr.getGuildId() <= 0) {
             final MapleGuild gs = World.Guild.getGuild(chr.getGuildId());
@@ -1687,11 +1696,19 @@ public class MaplePacketCreator {
         mplew.writeShort(chr.getJob());
         mplew.writeShort(chr.getFame());
         mplew.write(chr.getMarriageId() > 0 ? 1 : 0); // heart red or gray
-        String Prefix = chr.getPrefix();
+        String Prefix = "";
 
-
+        if (chr.getPrefix() == 1) {
+            Prefix = "[技術團隊成員]";
+        }
+        if (chr.getPrefix() == 2) {
+            Prefix = "[遊戲管理成員]";
+        }
+        if (chr.getPrefix() == 3) {
+            Prefix = "[活動舉辦成員]";
+        }
         if (chr.getGuildId() <= 0) {
-            if (chr.getPrefix().equals("")) {
+            if (chr.getPrefix() == 0) {
                 mplew.writeMapleAsciiString("尚未加入公會");
                 mplew.writeMapleAsciiString("尚未加入聯盟");
             } else {
@@ -1707,21 +1724,21 @@ public class MaplePacketCreator {
                     if (allianceName != null) {
                         mplew.writeMapleAsciiString(allianceName.getName());
                     } else {
-                        if (chr.getPrefix().equals("")) {
+                        if (chr.getPrefix() == 0) {
                             mplew.writeMapleAsciiString("尚未加入聯盟");
                         } else {
                             mplew.writeMapleAsciiString(Prefix);
                         }
                     }
                 } else {
-                    if (chr.getPrefix().equals("")) {
+                    if (chr.getPrefix() == 0) {
                         mplew.writeMapleAsciiString("尚未加入聯盟");
                     } else {
                         mplew.writeMapleAsciiString(Prefix);
                     }
                 }
             } else {
-                if (chr.getPrefix().equals("")) {
+                if (chr.getPrefix() == 0) {
                     mplew.writeMapleAsciiString("尚未加入公會");
                     mplew.writeMapleAsciiString("尚未加入聯盟");
                 } else {
@@ -1782,7 +1799,7 @@ public class MaplePacketCreator {
 
         IItem medal = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -21);
         mplew.writeInt(medal == null ? 0 : medal.getItemId());
-        List<Integer> medalQuests = new ArrayList<>();
+        List<Integer> medalQuests = new ArrayList<Integer>();
         List<MapleQuestStatus> completed = chr.getCompletedQuests();
         for (MapleQuestStatus q : completed) {
             if (q.getQuest().getMedalItem() > 0 && GameConstants.getInventoryType(q.getQuest().getMedalItem()) == MapleInventoryType.EQUIP) { //chair kind medal viewmedal is weird
@@ -3115,8 +3132,17 @@ public class MaplePacketCreator {
         mplew.writeShort(SendPacketOpcode.GUILD_OPERATION.getValue());
         mplew.write(0x1A); //signature for showing guild info
 
-        String Prefix = c.getPrefix();
-      
+        String Prefix = "";
+        if (c.getPrefix() == 1) {
+            Prefix = "[技術團隊成員]";
+        }
+        if (c.getPrefix() == 2) {
+            Prefix = "[遊戲管理成員]";
+        }
+        if (c.getPrefix() == 3) {
+            Prefix = "[活動辦理成員]";
+        }
+
         mplew.write(1); //bInGuild
         mplew.writeInt(0);
         mplew.writeMapleAsciiString(Prefix);
@@ -3157,7 +3183,7 @@ public class MaplePacketCreator {
             return mplew.getPacket();
         }
         mplew.write(1); //bInGuild
-        if (!c.getPrefix().equals("")) {
+        if (c.getPrefix() != 0) {
             getGuildInfo2(mplew, g, c);
         } else {
             getGuildInfo(mplew, g);
@@ -3186,8 +3212,18 @@ public class MaplePacketCreator {
 
     private static void getGuildInfo2(MaplePacketLittleEndianWriter mplew, MapleGuild guild, MapleCharacter chr) {
 
-        String Prefix = chr.getPrefix();
-        
+        String Prefix = "";
+        if (chr.getPrefix() == 1) {
+            Prefix = "[技術團隊成員]";
+        }
+        if (chr.getPrefix() == 2) {
+            Prefix = "[遊戲管理成員]";
+        }
+        if (chr.getPrefix() == 3) {
+            Prefix = "[活動辦理成員]";
+        }
+
+        //System.out.println("writegetGuildInfo2");
         mplew.writeInt(guild.getId());
         mplew.writeMapleAsciiString(Prefix + guild.getName());
         for (int i = 1; i <= 5; i++) {
@@ -4024,14 +4060,16 @@ public class MaplePacketCreator {
 
         return mplew.getPacket();
     }
-    
+
     public static MaplePacket boatPacket(boolean type) {
 
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
+        // 1034: balrog boat comes, 1548: boat comes, 3: boat leaves
         mplew.writeShort(SendPacketOpcode.BOAT_PACKET.getValue());
         mplew.write(type ? 1 : 2);
         mplew.write(0);
+        //this packet had 3: boat leaves
 
         return mplew.getPacket();
     }

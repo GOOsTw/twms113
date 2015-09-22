@@ -122,16 +122,16 @@ public class MapleFamilyBuff {
             List<Pair<MapleBuffStat, Integer>> ret = new ArrayList<Pair<MapleBuffStat, Integer>>();
             switch (type) {
                 case 2: //drop
-                    ret.add(new Pair<>(MapleBuffStat.DROP_RATE, effect));
-                    ret.add(new Pair<>(MapleBuffStat.MESO_RATE, effect));
+                    ret.add(new Pair<MapleBuffStat, Integer>(MapleBuffStat.DROP_RATE, effect));
+                    ret.add(new Pair<MapleBuffStat, Integer>(MapleBuffStat.MESO_RATE, effect));
                     break;
                 case 3: //exp
-                    ret.add(new Pair<>(MapleBuffStat.EXPRATE, effect));
+                    ret.add(new Pair<MapleBuffStat, Integer>(MapleBuffStat.EXPRATE, effect));
                     break;
                 case 4: //both
-                    ret.add(new Pair<>(MapleBuffStat.EXPRATE, effect));
-                    ret.add(new Pair<>(MapleBuffStat.DROP_RATE, effect));
-                    ret.add(new Pair<>(MapleBuffStat.MESO_RATE, effect));
+                    ret.add(new Pair<MapleBuffStat, Integer>(MapleBuffStat.EXPRATE, effect));
+                    ret.add(new Pair<MapleBuffStat, Integer>(MapleBuffStat.DROP_RATE, effect));
+                    ret.add(new Pair<MapleBuffStat, Integer>(MapleBuffStat.MESO_RATE, effect));
                     break;
             }
             return ret;
