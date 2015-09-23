@@ -21,6 +21,7 @@
 package client;
 
 import constants.GameConstants;
+import constants.SkillType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,7 +139,7 @@ public class Skill implements ISkill {
             isBuff = effect != null && hit == null && ball == null;
             isBuff |= action_ != null && MapleDataTool.getString("0", action_, "").equals("alert2");
             switch (id) {
-                case 2301002: // heal is alert2 but not overtime...
+                case SkillType.僧侶.群體治癒: // heal is alert2 but not overtime...
                 case 2111003: // poison mist
                 case 12111005: // Flame Gear
                 case 2111002: // explosion

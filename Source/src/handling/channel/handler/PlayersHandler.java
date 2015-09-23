@@ -26,7 +26,6 @@ import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import client.MapleStat;
 import client.anticheat.CheatingOffense;
-import client.inventory.ItemFlag;
 import constants.GameConstants;
 import scripting.ReactorScriptManager;
 import server.events.MapleCoconut;
@@ -38,7 +37,6 @@ import server.maps.MapleDoor;
 import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
 import server.maps.MapleReactor;
-import tools.ArrayMap;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -300,7 +298,6 @@ public class PlayersHandler {
     public static void UnlockItem(final SeekableLittleEndianAccessor slea, final MapleClient c) { //封印之鎖解除鑰匙 ID:2051000
         c.getPlayer().dropMessage(1, "要解鎖物品找GM。");
         c.getSession().write(MaplePacketCreator.enableActions());
-        return;
     }
 
     public static void Solomon(final SeekableLittleEndianAccessor slea, final MapleClient c) {
@@ -355,7 +352,8 @@ public class PlayersHandler {
                 return;
             }
             c.getPlayer().setMarriageItemId(itemid);
-            chr.getClient().getSession().write(MaplePacketCreator.sendEngagementRequest(c.getPlayer().getName(), c.getPlayer().getId()));
+            if(chr != null)
+                chr.getClient().getSession().write(MaplePacketCreator.sendEngagementRequest(c.getPlayer().getName(), c.getPlayer().getId()));
             //1112300 + (itemid - 2240004)
         } else if (mode == 1) {
             c.getPlayer().setMarriageItemId(0);

@@ -354,7 +354,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                             break;
                         case 2:
                             this.getMap().broadcastMessage(MobPacket.showMonsterHP(getObjectId(), (int) Math.ceil((hp * 100.0) / getMobMaxHp())));
-                            from.mulung_EnergyModify(true);
+                            from.mulungEnergyModify(true);
                             break;
                         case 3:
                             for (final AttackerEntry mattacker : attackers) {

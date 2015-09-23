@@ -22,7 +22,7 @@ function action(mode, type, selection) {
 	cm.dispose();
 	return;
     } else if (status >= 2 && mode == 0) {
-	cm.sendNext("有很多看到在這個鎮上了。回來找我們，當你需要去不同的鎮.");
+	cm.sendNext("這裡還有很多地方可以逛。當你想要去不同的城鎮的時候，歡迎隨時來找我吧。");
 	cm.dispose();
 	return;
     }

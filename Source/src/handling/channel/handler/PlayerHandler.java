@@ -483,7 +483,7 @@ public class PlayerHandler {
                     //AutobanManager.getInstance().autoban(c, "Using Mu Lung dojo skill out of dojo maps.");
                     return;
                 } else {
-                    chr.mulung_EnergyModify(false);
+                    chr.mulungEnergyModify(false);
                 }
             } else if (GameConstants.isPyramidSkill(skillid)) {
                 if (chr.getMapId() / 10000 != 92602) {

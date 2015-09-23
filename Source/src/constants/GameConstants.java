@@ -756,7 +756,7 @@ public class GameConstants {
             case 13101005: // Storm Break
                 return 360;
             case 5001003: // Double Fire
-            case 2301002: // Heal
+            case SkillType.僧侶.群體治癒: // Heal
                 return 390;
             case 5001001: // Straight/ Flash Fist
             case 15001001: // Straight/ Flash Fist

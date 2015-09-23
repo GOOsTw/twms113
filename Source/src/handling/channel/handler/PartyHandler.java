@@ -127,7 +127,6 @@ public class PartyHandler {
                 if (invited != null) {
                     if (invited.getParty() == null && party != null) {
                         if (party.getMembers().size() < 6) {
-                            c.getSession().write(MaplePacketCreator.partyStatusMessage(22, invited.getName()));
                             invited.getClient().getSession().write(MaplePacketCreator.partyInvite(c.getPlayer()));
                         } else {
                             c.getSession().write(MaplePacketCreator.partyStatusMessage(16));

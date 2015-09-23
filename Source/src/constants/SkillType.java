@@ -109,6 +109,8 @@ public class SkillType {
         public final static int 寒冰之棍 = 1211006;
         public final static int 雷鳴之劍 = 1211007;
         public final static int 雷鳴之棍 = 1211008;
+        public final static int 魔防消除 = 1211009 ;
+        
     }
 
     public static class 聖騎士 {
@@ -141,15 +143,16 @@ public class SkillType {
 
     public static class 龍騎士 {
 
-        public final static int 魔力恢復 = 1210000;
-        public final static int 盾防精通 = 1210001;
-        public final static int 屬性攻擊 = 1211002;
-        public final static int 烈焰之劍 = 1211003;
-        public final static int 烈焰之棍 = 1211004;
-        public final static int 寒冰之劍 = 1211005;
-        public final static int 寒冰之棍 = 1211006;
-        public final static int 雷鳴之劍 = 1211007;
-        public final static int 雷鳴之棍 = 1211008;
+        public final static int 魔法抵抗 = 1310000;
+        public final static int 槍連擊 = 1311001;
+        public final static int 矛連擊 = 1311002;
+        public final static int 無雙槍 = 1311003;
+        public final static int 無雙矛 = 1311004;
+        public final static int 龍之獻祭 = 1311005;
+        public final static int 龍咆哮 = 1311006;
+        public final static int 力量消除 = 1311007;
+        public final static int 龍之魂 = 1211008;
+        
     }
 
     public static class 黑騎士 {
@@ -678,7 +681,7 @@ public class SkillType {
         public final static int 吸血 = 14101006;
     }
 
-    public static class 暗夜行者3轉 {
+    public static class 暗夜行者3 {
 
         public final static int 影分身 = 14111000;
         public final static int 影網術 = 14111001;

@@ -1,6 +1,5 @@
 package client;
 
-import client.inventory.MapleInventoryType;
 import handling.channel.handler.InventoryHandler;
 import handling.world.MaplePartyCharacter;
 import java.util.LinkedList;
@@ -64,7 +63,7 @@ public class ItemVac extends Thread {
                     try {
                         if (this.item.getMeso() > 0) {
                             if (this.chr.getParty() != null && this.item.getOwner() != this.chr.getId()) {
-                                final List<MapleCharacter> toGive = new LinkedList<MapleCharacter>();
+                                final List<MapleCharacter> toGive = new LinkedList<>();
                                 for (MaplePartyCharacter z : this.chr.getParty().getMembers()) {
                                     MapleCharacter m = this.chr.getMap().getCharacterById(z.getId());
                                     if (m != null && m.getId() != this.chr.getId()) {

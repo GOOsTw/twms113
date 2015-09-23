@@ -199,7 +199,7 @@ public class ChatHandler {
         }
     }
 
-    public static final void Whisper_Find(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void WhisperFind(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         final byte mode = slea.readByte();
 //        slea.readInt(); //ticks
         switch (mode) {

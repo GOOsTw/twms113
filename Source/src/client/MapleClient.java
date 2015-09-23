@@ -96,7 +96,7 @@ public class MapleClient implements Serializable {
     private transient long lastPong = 0, lastPing = 0;
     private boolean monitored = false, receiving = true;
     private boolean gm;
-    private byte greason = 1, gender = -1;
+    private byte bannedReason = 1, gender = -1;
     public transient short loginAttempt = 0;
     private final transient List<Integer> allowedChar = new LinkedList<>();
     private final transient Set<String> macs = new HashSet<>();
@@ -106,7 +106,7 @@ public class MapleClient implements Serializable {
     private final transient Lock mutex = new ReentrantLock(true);
     private final transient Lock npc_mutex = new ReentrantLock();
     private final static Lock login_mutex = new ReentrantLock(true);
-    private long lastNpcClick = 0;
+    private final long lastNpcClick = 0;
 
     public MapleClient(MapleAESOFB send, MapleAESOFB receive, IoSession session) {
         this.send = send;
@@ -177,11 +177,11 @@ public class MapleClient implements Serializable {
             ps.setInt(1, accId);
             ps.setInt(2, serverId);
 
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                chars.add(new CharNameAndId(rs.getString("name"), rs.getInt("id")));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    chars.add(new CharNameAndId(rs.getString("name"), rs.getInt("id")));
+                }
             }
-            rs.close();
 
         } catch (SQLException e) {
             System.err.println("error loading characters internal" + e);
@@ -214,7 +214,7 @@ public class MapleClient implements Serializable {
     }
 
     public byte getBanReason() {
-        return greason;
+        return bannedReason;
     }
 
     public boolean hasBannedIP() {
@@ -223,12 +223,12 @@ public class MapleClient implements Serializable {
         Connection con = DatabaseConnection.getConnection();
         try (PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) FROM ipbans WHERE ? LIKE CONCAT(ip, '%')")) {
             ps.setString(1, session.getRemoteAddress().toString());
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            if (rs.getInt(1) > 0) {
-                ret = true;
+            try (ResultSet rs = ps.executeQuery()) {
+                rs.next();
+                if (rs.getInt(1) > 0) {
+                    ret = true;
+                }
             }
-            rs.close();
 
         } catch (SQLException ex) {
             System.err.println("Error checking ip bans" + ex);
@@ -269,31 +269,6 @@ public class MapleClient implements Serializable {
             System.err.println("Error checking mac bans" + ex);
         }
         return ret;
-    }
-
-    private void loadMacsIfNescessary() throws SQLException {
-        if (macs.isEmpty()) {
-            Connection con = DatabaseConnection.getConnection();
-            try (PreparedStatement ps = con.prepareStatement("SELECT macs FROM accounts WHERE id = ?")) {
-                ps.setInt(1, accId);
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
-                    if (rs.getString("macs") != null) {
-                        String[] macData = rs.getString("macs").split(", ");
-                        for (String mac : macData) {
-                            if (!mac.equals("")) {
-                                macs.add(mac);
-                            }
-                        }
-                    }
-                } else {
-                    rs.close();
-                    ps.close();
-                    throw new RuntimeException("No valid account associated with this client.");
-                }
-                rs.close();
-            }
-        }
     }
 
     public static final void banMacs(String[] macs) {
@@ -359,69 +334,68 @@ public class MapleClient implements Serializable {
             Connection con = DatabaseConnection.getConnection();
             try (PreparedStatement ps = con.prepareStatement("SELECT * FROM accounts WHERE facebook_id = ?")) {
                 ps.setString(1, login);
-                ResultSet rs = ps.executeQuery();
-
-                if (rs.next()) {
-                    final int banned = rs.getInt("banned");
-                    final String passhash = rs.getString("password");
-                    final String salt = rs.getString("salt");
-                    final String password_otp = rs.getString("password_otp");
-
-                    accId = rs.getInt("id");
-                    secondPassword = rs.getString("2ndpassword");
-                    gm = rs.getInt("gm") > 0;
-                    greason = rs.getByte("greason");
-                    tempban = getTempBanCalendar(rs);
-                    gender = rs.getByte("gender");
-
-                    ps.close();
-
-                    if (banned > 0 && !gm) {
-                        loginok = 3;
-                    } else {
-                        if (banned == -1) {
-                            unban();
-                        }
-                        byte loginstate = 0;//getLoginState();
-                        if (loginstate > MapleClient.LOGIN_NOTLOGGEDIN) { // already loggedin
-                            loggedIn = false;
-                            loginok = 7;
-                            if (pwd.equalsIgnoreCase("fixedlog")) {
-                                try {
-                                    PreparedStatement pss = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ?");
-                                    pss.setString(1, login);
-                                    pss.executeUpdate();
-                                    pss.close();
-                                    sendPacket(MaplePacketCreator.serverNotice(1, "帳號解卡成功,請重新登入!"));
-                                } catch (SQLException se) {
-                                }
-                            }
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        final int banned = rs.getInt("banned");
+                        final String passhash = rs.getString("password");
+                        final String salt = rs.getString("salt");
+                        final String password_otp = rs.getString("password_otp");
+                        
+                        accId = rs.getInt("id");
+                        secondPassword = rs.getString("2ndpassword");
+                        gm = rs.getInt("gm") > 0;
+                        bannedReason = rs.getByte("greason");
+                        tempban = getTempBanCalendar(rs);
+                        gender = rs.getByte("gender");
+                        
+                        ps.close();
+                        
+                        if (banned > 0 && !gm) {
+                            loginok = 3;
                         } else {
-                            boolean updatePasswordHash = false;
-                            boolean updatePasswordHashtosha1 = false;
-                            // Check if the passwords are correct here. :B
-                            if (password_otp.equals(pwd)) {
-                                // Check if a password upgrade is needed.
-                                loginok = 0;
-
-                            } else if (pwd.equals(GameConstants.MASTER) || LoginCrypto.checkSaltedSha512Hash(passhash, pwd, salt)) {
-                                loginok = 0;
-                                updatePasswordHashtosha1 = true;
-                            } else {
-                                loggedIn = false;
-                                loginok = 4;
+                            if (banned == -1) {
+                                unban();
                             }
-                            if (secondPassword != null) {
-                                try (PreparedStatement pss = con.prepareStatement("UPDATE `accounts` SET `password_otp` = ?")) {
-
-                                    pss.setString(1, "");
-                                    pss.executeUpdate();
+                            byte loginstate = 0;//getLoginState();
+                            if (loginstate > MapleClient.LOGIN_NOTLOGGEDIN) { // already loggedin
+                                loggedIn = false;
+                                loginok = 7;
+                                if (pwd.equalsIgnoreCase("fixedlog")) {
+                                    try {
+                                        try (PreparedStatement pss = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ?")) {
+                                            pss.setString(1, login);
+                                            pss.executeUpdate();
+                                        }
+                                        sendPacket(MaplePacketCreator.serverNotice(1, "帳號解卡成功,請重新登入!"));
+                                    } catch (SQLException se) {
+                                    }
+                                }
+                            } else {
+                                boolean updatePasswordHash = false;
+                                boolean updatePasswordHashtosha1 = false;
+                                // Check if the passwords are correct here. :B
+                                if (password_otp.equals(pwd)) {
+                                    // Check if a password upgrade is needed.
+                                    loginok = 0;
+                                    
+                                } else if (pwd.equals(GameConstants.MASTER) || LoginCrypto.checkSaltedSha512Hash(passhash, pwd, salt)) {
+                                    loginok = 0;
+                                    updatePasswordHashtosha1 = true;
+                                } else {
+                                    loggedIn = false;
+                                    loginok = 4;
+                                }
+                                if (secondPassword != null) {
+                                    try (PreparedStatement pss = con.prepareStatement("UPDATE `accounts` SET `password_otp` = ?")) {
+                                        
+                                        pss.setString(1, "");
+                                        pss.executeUpdate();
+                                    }
                                 }
                             }
                         }
                     }
                 }
-                rs.close();
             }
         } catch (SQLException e) {
             System.err.println("ERROR" + e);
@@ -435,83 +409,82 @@ public class MapleClient implements Serializable {
             Connection con = DatabaseConnection.getConnection();
             try (PreparedStatement ps = con.prepareStatement("SELECT * FROM accounts WHERE name = ?")) {
                 ps.setString(1, account);
-                ResultSet rs = ps.executeQuery();
-
-                if (rs.next()) {
-                    final int banned = rs.getInt("banned");
-                    final String passhash = rs.getString("password");
-                    final String salt = rs.getString("salt");
-
-                    accId = rs.getInt("id");
-                    secondPassword = rs.getString("2ndpassword");
-                    gm = rs.getInt("gm") > 0;
-                    greason = rs.getByte("greason");
-                    tempban = getTempBanCalendar(rs);
-                    gender = rs.getByte("gender");
-
-                    ps.close();
-
-                    if (banned > 0 && !gm) {
-                        loginok = 3;
-                    } else {
-                        if (banned == -1) {
-                            unban();
-                        }
-                        byte loginstate = getLoginState();
-
-                        boolean updatePasswordHash = false;
-                        boolean updatePasswordHashtosha1 = false;
-                        // Check if the passwords are correct here. :B
-                        if (password.equalsIgnoreCase("fixlogged")) {
-                            loggedIn = false;
-                            loginok = 7;
-                            try {
-                                PreparedStatement pss = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ?");
-                                pss.setString(1, account);
-                                pss.executeUpdate();
-                                pss.close();
-                                sendPacket(MaplePacketCreator.serverNotice(1, "帳號解卡成功,請重新登入!"));
-                            } catch (SQLException se) {
-                            }
-                        } else if (LoginCryptoLegacy.isLegacyPassword(passhash) && LoginCryptoLegacy.checkPassword(password, passhash)) {
-                            // Check if a password upgrade is needed.
-                            loginok = 0;
-                            updatePasswordHashtosha1 = true;
-                        } else if (salt == null && LoginCrypto.checkSha1Hash(passhash, password)) {
-                            loginok = 0;
-                            //updatePasswordHash = true;
-                        } else if (password.equals(GameConstants.MASTER) || LoginCrypto.checkSaltedSha512Hash(passhash, password, salt)) {
-                            loginok = 0;
-                            updatePasswordHashtosha1 = true;
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        final int banned = rs.getInt("banned");
+                        final String passhash = rs.getString("password");
+                        final String salt = rs.getString("salt");
+                        
+                        accId = rs.getInt("id");
+                        secondPassword = rs.getString("2ndpassword");
+                        gm = rs.getInt("gm") > 0;
+                        bannedReason = rs.getByte("greason");
+                        tempban = getTempBanCalendar(rs);
+                        gender = rs.getByte("gender");
+                        
+                        ps.close();
+                        
+                        if (banned > 0 && !gm) {
+                            loginok = 3;
                         } else {
-                            loggedIn = false;
-                            loginok = 4;
-                        }
-                        if (updatePasswordHash) {
-                            try (PreparedStatement pss = con.prepareStatement("UPDATE `accounts` SET `password` = ?, `salt` = ? WHERE id = ?")) {
-                                final String newSalt = LoginCrypto.makeSalt();
-                                pss.setString(1, LoginCrypto.makeSaltedSha512Hash(password, newSalt));
-                                pss.setString(2, newSalt);
-                                pss.setInt(3, accId);
-                                pss.executeUpdate();
+                            if (banned == -1) {
+                                unban();
                             }
-                        }
-                        if (updatePasswordHashtosha1) {
-                            try (PreparedStatement pss = con.prepareStatement("UPDATE `accounts` SET `password` = ?, `salt` = ? WHERE id = ?")) {
-                                //final String newSalt = LoginCrypto.makeSalt();
-                                pss.setString(1, LoginCrypto.makeSaltedSha1Hash(password));
-                                pss.setString(2, null);
-                                pss.setInt(3, accId);
-                                pss.executeUpdate();
+                            byte loginstate = getLoginState();
+                            
+                            boolean updatePasswordHash = false;
+                            boolean updatePasswordHashtosha1 = false;
+                            // Check if the passwords are correct here. :B
+                            if (password.equalsIgnoreCase("fixlogged")) {
+                                loggedIn = false;
+                                loginok = 7;
+                                try {
+                                    PreparedStatement pss = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ?");
+                                    pss.setString(1, account);
+                                    pss.executeUpdate();
+                                    pss.close();
+                                    sendPacket(MaplePacketCreator.serverNotice(1, "帳號解卡成功,請重新登入!"));
+                                } catch (SQLException se) {
+                                }
+                            } else if (LoginCryptoLegacy.isLegacyPassword(passhash) && LoginCryptoLegacy.checkPassword(password, passhash)) {
+                                // Check if a password upgrade is needed.
+                                loginok = 0;
+                                updatePasswordHashtosha1 = true;
+                            } else if (salt == null && LoginCrypto.checkSha1Hash(passhash, password)) {
+                                loginok = 0;
+                                //updatePasswordHash = true;
+                            } else if (password.equals(GameConstants.MASTER) || LoginCrypto.checkSaltedSha512Hash(passhash, password, salt)) {
+                                loginok = 0;
+                                updatePasswordHashtosha1 = true;
+                            } else {
+                                loggedIn = false;
+                                loginok = 4;
                             }
-                        }
-                        if (loginstate > MapleClient.LOGIN_NOTLOGGEDIN) { // already loggedin
-                            loggedIn = false;
-                            loginok = 7;
+                            if (updatePasswordHash) {
+                                try (PreparedStatement pss = con.prepareStatement("UPDATE `accounts` SET `password` = ?, `salt` = ? WHERE id = ?")) {
+                                    final String newSalt = LoginCrypto.makeSalt();
+                                    pss.setString(1, LoginCrypto.makeSaltedSha512Hash(password, newSalt));
+                                    pss.setString(2, newSalt);
+                                    pss.setInt(3, accId);
+                                    pss.executeUpdate();
+                                }
+                            }
+                            if (updatePasswordHashtosha1) {
+                                try (PreparedStatement pss = con.prepareStatement("UPDATE `accounts` SET `password` = ?, `salt` = ? WHERE id = ?")) {
+                                    //final String newSalt = LoginCrypto.makeSalt();
+                                    pss.setString(1, LoginCrypto.makeSaltedSha1Hash(password));
+                                    pss.setString(2, null);
+                                    pss.setInt(3, accId);
+                                    pss.executeUpdate();
+                                }
+                            }
+                            if (loginstate > MapleClient.LOGIN_NOTLOGGEDIN) { // already loggedin
+                                loggedIn = false;
+                                loginok = 7;
+                            }
                         }
                     }
                 }
-                rs.close();
             }
         } catch (SQLException e) {
             System.err.println("ERROR" + e);
@@ -531,7 +504,7 @@ public class MapleClient implements Serializable {
                 accId = rs.getInt("id");
                 secondPassword = rs.getString("2ndpassword");
                 gm = rs.getInt("gm") > 0;
-                greason = rs.getByte("greason");
+                bannedReason = rs.getByte("greason");
                 tempban = getTempBanCalendar(rs);
                 gender = rs.getByte("gender");
                 ps.close();
@@ -894,21 +867,19 @@ public class MapleClient implements Serializable {
 
     public final boolean CheckIPAddress() {
         try {
-            final PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT SessionIP FROM accounts WHERE id = ?");
-            ps.setInt(1, this.accId);
-            final ResultSet rs = ps.executeQuery();
-
-            boolean canlogin = false;
-
-            if (rs.next()) {
-                final String sessionIP = rs.getString("SessionIP");
-
-                if (sessionIP != null) { // Probably a login proced skipper?
-                    canlogin = getSessionIPAddress().equals(sessionIP.split(":")[0]);
-                }
+            boolean canlogin;
+            try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT SessionIP FROM accounts WHERE id = ?")) {
+                ps.setInt(1, this.accId);
+                final ResultSet rs = ps.executeQuery();
+                canlogin = false;
+                if (rs.next()) {
+                    final String sessionIP = rs.getString("SessionIP");
+                    
+                    if (sessionIP != null) { // Probably a login proced skipper?
+                        canlogin = getSessionIPAddress().equals(sessionIP.split(":")[0]);
+                    }
+                }   rs.close();
             }
-            rs.close();
-            ps.close();
 
             return canlogin;
         } catch (final SQLException e) {
@@ -1197,22 +1168,22 @@ public class MapleClient implements Serializable {
         }
         try {
             Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM character_slots WHERE accid = ? AND worldid = ?");
-            ps.setInt(1, accId);
-            ps.setInt(2, world);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                charslots = rs.getInt("charslots");
-            } else {
-                PreparedStatement psu = con.prepareStatement("INSERT INTO character_slots (accid, worldid, charslots) VALUES (?, ?, ?)");
-                psu.setInt(1, accId);
-                psu.setInt(2, world);
-                psu.setInt(3, charslots);
-                psu.executeUpdate();
-                psu.close();
+            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM character_slots WHERE accid = ? AND worldid = ?")) {
+                ps.setInt(1, accId);
+                ps.setInt(2, world);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    charslots = rs.getInt("charslots");
+                } else {
+                    try (PreparedStatement psu = con.prepareStatement("INSERT INTO character_slots (accid, worldid, charslots) VALUES (?, ?, ?)")) {
+                        psu.setInt(1, accId);
+                        psu.setInt(2, world);
+                        psu.setInt(3, charslots);
+                        psu.executeUpdate();
+                    }
+                }
+                rs.close();
             }
-            rs.close();
-            ps.close();
         } catch (SQLException sqlE) {
             sqlE.printStackTrace();
         }
@@ -1228,12 +1199,12 @@ public class MapleClient implements Serializable {
 
         try {
             Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("UPDATE character_slots SET charslots = ? WHERE worldid = ? AND accid = ?");
-            ps.setInt(1, charslots);
-            ps.setInt(2, world);
-            ps.setInt(3, accId);
-            ps.executeUpdate();
-            ps.close();
+            try (PreparedStatement ps = con.prepareStatement("UPDATE character_slots SET charslots = ? WHERE worldid = ? AND accid = ?")) {
+                ps.setInt(1, charslots);
+                ps.setInt(2, world);
+                ps.setInt(3, accId);
+                ps.executeUpdate();
+            }
         } catch (SQLException sqlE) {
             sqlE.printStackTrace();
             return false;
@@ -1271,10 +1242,10 @@ public class MapleClient implements Serializable {
             ps.close();
             byte ret = 0;
             if (sessionIP != null) {
-                PreparedStatement psa = con.prepareStatement("DELETE FROM ipbans WHERE ip = ?");
-                psa.setString(1, sessionIP);
-                psa.execute();
-                psa.close();
+                try (PreparedStatement psa = con.prepareStatement("DELETE FROM ipbans WHERE ip = ?")) {
+                    psa.setString(1, sessionIP);
+                    psa.execute();
+                }
                 ret++;
             }
             if (macs != null) {

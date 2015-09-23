@@ -1786,20 +1786,20 @@ public class MaplePacketCreator {
             mplew.write(0);
         }
 
-        /*        final int wishlistSize = chr.getWishlistSize();
-         mplew.write(wishlistSize);
-         if (wishlistSize > 0) {
-         final int[] wishlist = chr.getWishlist();
-         for (int x = 0; x < wishlistSize; x++) {
-         mplew.writeInt(wishlist[x]);
-         }
-         }*/
-        mplew.write(0);
+        final int wishlistSize = chr.getWishlistSize();
+        mplew.write(wishlistSize);
+        if (wishlistSize > 0) {
+            final int[] wishlist = chr.getWishlist();
+            for (int x = 0; x < wishlistSize; x++) {
+                mplew.writeInt(wishlist[x]);
+            }
+        }
+
         chr.getMonsterBook().addCharInfoPacket(chr.getMonsterBookCover(), mplew);
 
         IItem medal = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -21);
         mplew.writeInt(medal == null ? 0 : medal.getItemId());
-        List<Integer> medalQuests = new ArrayList<Integer>();
+        List<Integer> medalQuests = new ArrayList<>();
         List<MapleQuestStatus> completed = chr.getCompletedQuests();
         for (MapleQuestStatus q : completed) {
             if (q.getQuest().getMedalItem() > 0 && GameConstants.getInventoryType(q.getQuest().getMedalItem()) == MapleInventoryType.EQUIP) { //chair kind medal viewmedal is weird

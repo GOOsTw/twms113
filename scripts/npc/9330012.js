@@ -359,7 +359,8 @@ function action(mode, type, selection) {
                 cm.sendOk("很抱歉，由於您的材料不足所以無法幫您製作，假如需要的話可以再來找我談談。");
             } else {
                 if (cm.canHold(newWepId)) {
-					cm.gainItem(oldWepId, -1);
+		    if( oldWepId != undefined )
+                        cm.gainItem(oldWepId, -1);
                     cm.gainItem(4001126, -leaves);
                     cm.gainMeso(-cost);
                     cm.gainItem(newWepId, 1);

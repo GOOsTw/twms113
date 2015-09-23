@@ -677,7 +677,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 ChatHandler.Others(slea, c, c.getPlayer());
                 break;
             case WHISPER:
-                ChatHandler.Whisper_Find(slea, c);
+                ChatHandler.WhisperFind(slea, c);
                 break;
             case MESSENGER:
                 ChatHandler.Messenger(slea, c);

@@ -1992,7 +1992,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 break;
         }
 
-        MapleStatEffect ceffect = null;
+        MapleStatEffect ceffect;
         int advComboSkillLevel = getSkillLevel(advcombo);
         if (advComboSkillLevel > 0) {
             ceffect = advcombo.getEffect(advComboSkillLevel);
@@ -4080,7 +4080,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public void stopItemVac() {
         if (itemVacs) {
-            this.ItemVac.stop();
+            this.ItemVac.interrupt();
             itemVacs = false;
         }
     }
@@ -4269,7 +4269,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
     }
 
-    public void mulung_EnergyModify(boolean inc) {
+    public void mulungEnergyModify(boolean inc) {
         if (inc) {
             if (mulung_energy + 100 > 10000) {
                 mulung_energy = 10000;
@@ -5505,7 +5505,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void havePartyQuest(final int itemId) {
-        int questid = 0, index = -1;
+        int questid, index = -1;
         switch (itemId) {
             case 1002798:
                 questid = 1200; //henesys
@@ -5808,7 +5808,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
      * @param beansNum the beansNum to set
      */
     public void setBeansNum(int beansNum) {
-        beansNum = beansNum;
+        this.beansNum = beansNum;
     }
 
     /**
@@ -5822,7 +5822,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
      * @param beansRange the beansRange to set
      */
     public void setBeansRange(int beansRange) {
-        beansRange = beansRange;
+        this.beansRange = beansRange;
     }
 
     /**
@@ -5836,7 +5836,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
      * @param canSetBeansNum the canSetBeansNum to set
      */
     public void setCanSetBeansNum(boolean canSetBeansNum) {
-        canSetBeansNum = canSetBeansNum;
+        this.canSetBeansNum = canSetBeansNum;
     }
 
     public boolean haveGM() {

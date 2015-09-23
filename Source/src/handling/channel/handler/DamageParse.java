@@ -36,6 +36,7 @@ import client.anticheat.CheatTracker;
 import client.anticheat.CheatingOffense;
 import client.status.MonsterStatus;
 import client.status.MonsterStatusEffect;
+import constants.SkillType;
 import java.util.Map;
 import server.AutobanManager;
 import server.MapleStatEffect;
@@ -55,7 +56,7 @@ import tools.data.input.LittleEndianAccessor;
 
 public class DamageParse {
 
-    private final static int[] charges = {1211005, 1211006};
+    private static int[] charges = {1211005, 1211006};
 
     public static void applyAttack(final AttackInfo attack, final ISkill theSkill, final MapleCharacter player, int attackCount, final double maxDamagePerMonster, final MapleStatEffect effect, final AttackType attack_type) {
         if (!player.isAlive()) {
@@ -65,40 +66,43 @@ public class DamageParse {
         if (attack.real) {
             player.getCheatTracker().checkAttack(attack.skill, attack.lastAttackTickCount);
         }
+        
+        
         if (attack.skill != 0) {
             if (effect == null) {
                 player.getClient().getSession().write(MaplePacketCreator.enableActions());
                 return;
             }
+            /* 武陵道場技能 */
             if (GameConstants.isMulungSkill(attack.skill)) {
-                if (player.getMapId() / 10000 != 92502) {
-                    //AutobanManager.getInstance().autoban(player.getClient(), "Using Mu Lung dojo skill out of dojo maps.");
-                    return;
+                if (player.getMapId() / 10000 == 92502) {
+                    player.mulungEnergyModify(false);
                 } else {
-                    player.mulung_EnergyModify(false);
+                    return;
                 }
             }
+            /* 金字塔技能 */
             if (GameConstants.isPyramidSkill(attack.skill)) {
-                if (player.getMapId() / 1000000 != 926) {
+                if (player.getMapId() / 1000000 != 926 || 
+                        player.getPyramidSubway() == null || !player.getPyramidSubway().onSkillUse(player)) {
                     //AutobanManager.getInstance().autoban(player.getClient(), "Using Pyramid skill outside of pyramid maps.");
                     return;
-                } else {
-                    if (player.getPyramidSubway() == null || !player.getPyramidSubway().onSkillUse(player)) {
-                        return;
-                    }
-                }
+                } 
             }
+            /* 確認是否超過打怪數量*/
             if (attack.targets > effect.getMobCount()) { // Must be done here, since NPE with normal atk
                 player.getCheatTracker().registerOffense(CheatingOffense.MISMATCHING_BULLETCOUNT);
                 return;
             }
         }
+        
         if (attack.hits > attackCount) {
             if (attack.skill != 4211006) {
                 player.getCheatTracker().registerOffense(CheatingOffense.MISMATCHING_BULLETCOUNT);
                 return;
             }
         }
+        
         if (attack.hits > 0 && attack.targets > 0) {
             // Don't ever do this. it's too expensive.
             if (!player.getStat().checkEquipDurabilitys(player, -1)) { //i guess this is how it works ?
@@ -106,10 +110,11 @@ public class DamageParse {
                 return;
             } //lol
         }
+        
         int totDamage = 0;
         final MapleMap map = player.getMap();
 
-        if (attack.skill == 4211006) { // meso explosion
+        if (attack.skill == SkillType.神偷.楓幣炸彈) { // meso explosion
             for (AttackPair oned : attack.allDamage) {
                 if (oned.attack != null) {
                     continue;
@@ -140,12 +145,13 @@ public class DamageParse {
                 }
             }
         }
+        
         int fixeddmg, totDamageToOneMonster = 0;
         long hpMob = 0;
         final PlayerStats stats = player.getStat();
-
         int CriticalDamage = stats.passive_sharpeye_percent();
         byte ShdowPartnerAttackPercentage = 0;
+        
         if (attack_type == AttackType.RANGED_WITH_SHADOWPARTNER || attack_type == AttackType.NON_RANGED_WITH_MIRROR) {
             final MapleStatEffect shadowPartnerEffect;
             if (attack_type == AttackType.NON_RANGED_WITH_MIRROR) {
@@ -226,9 +232,7 @@ public class DamageParse {
                             }
                         }
                     }
-                    if (player == null) { // o_O
-                        return;
-                    }
+                  
                     if (player.getClient().getChannelServer().isAdminOnly()) {
                         player.dropMessage(-1, "Damage: " + eachd);
                     }
@@ -289,38 +293,32 @@ public class DamageParse {
                     }
                     // effects
                     switch (attack.skill) {
-                        case 4101005: //drain
-                        case 5111004: { // Energy Drain
-                            stats.setHp((stats.getHp() + ((int) Math.min(monster.getMobMaxHp(), Math.min(((int) ((double) totDamage * (double) theSkill.getEffect(player.getSkillLevel(theSkill)).getX() / 100.0)), stats.getMaxHp() / 2)))), true);
+                        case SkillType.刺客.吸血術: //drain
+                        case SkillType.格鬥家.損人利己: { // Energy Drain
+                            int getHP = ((int) Math.min(monster.getMobMaxHp(), Math.min(((int) ((double) totDamage * (double) theSkill.getEffect(player.getSkillLevel(theSkill)).getX() / 100.0)), stats.getMaxHp() / 2)));
+                            stats.setHp(stats.getHp() + getHP, true);
                             break;
                         }
-                        case 5211006:
-                        case 22151002: //killer wing
-                        case 5220011: {//homing
+                        case SkillType.神槍手.指定攻擊:
+                        case SkillType.槍神.精準砲擊: {//homing
                             player.setLinkMid(monster.getObjectId());
                             break;
                         }
-                        case 1311005: { // Sacrifice
-                            final int remainingHP = stats.getHp() - totDamage * effect.getX() / 100;
+                        case SkillType.龍騎士.龍之獻祭: { // Sacrifice
+                            final int remainingHP = stats.getHp() - totDamage * (effect != null ? effect.getX() : 0) / 100;
                             stats.setHp(remainingHP > 1 ? 1 : remainingHP);
                             break;
                         }
-                        case 4301001:
-                        case 4311002:
-                        case 4311003:
-                        case 4331000:
-                        case 4331004:
-                        case 4331005:
-                        case 4341005:
-                        case 4221007: // Boomerang Stab
-                        case 4221001: // Assasinate
-                        case 4211002: // Assulter
-                        case 4201005: // Savage Blow
-                        case 4001002: // Disorder
-                        case 4001334: // Double Stab
-                        case 4121007: // Triple Throw
-                        case 4111005: // Avenger
-                        case 4001344: {
+                        
+                        case SkillType.暗影神偷.瞬步連擊: // Boomerang Stab
+                        case SkillType.暗影神偷.致命暗殺: // Assasinate
+                        case SkillType.神偷.落葉斬: // Assulter
+                        case SkillType.俠盜.迴旋斬: // Savage Blow
+                        case SkillType.盜賊.詛咒術: // Disorder
+                        case SkillType.盜賊.劈空斬: // Double Stab
+                        case SkillType.夜使者.三飛閃: // Triple Throw
+                        case SkillType.暗殺者.風魔手裏劍: // Avenger
+                        case SkillType.盜賊.雙飛斬: {
                             if ((player.getBuffedValue(MapleBuffStat.WK_CHARGE) != null) && (!monster.getStats().isBoss())) {
                                 MapleStatEffect eff = player.getStatForBuff(MapleBuffStat.WK_CHARGE);
                                 if (eff != null) {
@@ -336,25 +334,25 @@ public class DamageParse {
                             }
                             break;
                         }
-                        case 4201004:  //steal
+                        case SkillType.俠盜.妙手術:  //steal
                             monster.handleSteal(player);
                             break;
                         //case 21101003: // body pressure
-                        case 21000002: // Double attack
-                        case 21100001: // Triple Attack
-                        case 21100002: // Pole Arm Push
-                        case 21100004: // Pole Arm Smash
-                        case 21110002: // Full Swing
-                        case 21110003: // Pole Arm Toss
-                        case 21110004: // Fenrir Phantom
-                        case 21110006: // Whirlwind
-                        case 21110007: // (hidden) Full Swing - Double Attack
-                        case 21110008: // (hidden) Full Swing - Triple Attack
-                        case 21120002: // Overswing
-                        case 21120005: // Pole Arm finale
-                        case 21120006: // Tempest
-                        case 21120009: // (hidden) Overswing - Double Attack
-                        case 21120010:
+                        case SkillType.狂狼勇士1.雙重攻擊: // Double attack
+                        case SkillType.狂狼勇士2.三重攻擊: // Triple Attack
+                        case SkillType.狂狼勇士2.突刺之矛: // Pole Arm Push
+                        case SkillType.狂狼勇士2.猛擲之矛: // Pole Arm Smash
+                        case SkillType.狂狼勇士3.伺機攻擊: // Full Swing
+                        case SkillType.狂狼勇士3.挑怪: // Pole Arm Toss
+                        case SkillType.狂狼勇士3.狼魂衝擊: // Fenrir Phantom
+                        case SkillType.狂狼勇士3.旋風斬: // Whirlwind
+                        case SkillType.狂狼勇士3.雙重攻擊: // (hidden) Full Swing - Double Attack
+                        case SkillType.狂狼勇士3.三重攻擊: // (hidden) Full Swing - Triple Attack
+                        case SkillType.狂狼勇士4.終極攻擊: // Overswing
+                        case SkillType.狂狼勇士4.終極之矛: // Pole Arm finale
+                        case SkillType.狂狼勇士4.極冰暴風: // Tempest
+                        case SkillType.狂狼勇士4.雙重攻擊: // (hidden) Overswing - Double Attack
+                        case SkillType.狂狼勇士4.三重攻擊:
                             if ((player.getBuffedValue(MapleBuffStat.WK_CHARGE) != null) && (!monster.getStats().isBoss())) {
                                 MapleStatEffect eff = player.getStatForBuff(MapleBuffStat.WK_CHARGE);
                                 if (eff != null) {
@@ -413,10 +411,8 @@ public class DamageParse {
                 }
             }
         }
-        if (attack.skill == 4331003 && totDamageToOneMonster < hpMob) {
-            return;
-        }
-        if (attack.skill != 0 && (attack.targets > 0 || (attack.skill != 4331003 && attack.skill != 4341002)) && attack.skill != 21101003 && attack.skill != 5110001 && attack.skill != 15100004 && attack.skill != 11101002 && attack.skill != 13101002) {
+      
+        if (effect != null && attack.skill != 0 && (attack.targets > 0 || (attack.skill != 4331003 && attack.skill != 4341002)) && attack.skill != 21101003 && attack.skill != 5110001 && attack.skill != 15100004 && attack.skill != 11101002 && attack.skill != 13101002) {
             effect.applyTo(player, attack.position);
         }
         if (totDamage > 1) {
@@ -437,7 +433,7 @@ public class DamageParse {
         if (attack.real) {
             player.getCheatTracker().checkAttack(attack.skill, attack.lastAttackTickCount);
         }
-//	if (attack.skill != 2301002) { // heal is both an attack and a special move (healing) so we'll let the whole applying magic live in the special move part
+//	if (attack.skill != SkillType.僧侶.群體治癒) { // heal is both an attack and a special move (healing) so we'll let the whole applying magic live in the special move part
 //	    effect.applyTo(player);
 //	}
         if (attack.hits > effect.getAttackCount() || attack.targets > effect.getMobCount()) {
@@ -455,7 +451,7 @@ public class DamageParse {
                 //AutobanManager.getInstance().autoban(player.getClient(), "Using Mu Lung dojo skill out of dojo maps.");
                 return;
             } else {
-                player.mulung_EnergyModify(false);
+                player.mulungEnergyModify(false);
             }
         }
         if (GameConstants.isPyramidSkill(attack.skill)) {
@@ -471,7 +467,7 @@ public class DamageParse {
         final PlayerStats stats = player.getStat();
 //	double minDamagePerHit;
         double maxDamagePerHit;
-        if (attack.skill == 2301002) {
+        if (attack.skill == SkillType.僧侶.群體治癒) {
             maxDamagePerHit = 30000;
         } else if (attack.skill == 1000 || attack.skill == 10001000 || attack.skill == 20001000 || attack.skill == 20011000 || attack.skill == 30001000) {
             maxDamagePerHit = 40;
@@ -507,7 +503,7 @@ public class DamageParse {
                 fixeddmg = monsterstats.getFixedDamage();
                 if (!Tempest && !player.isGM()) {
                     if (!monster.isBuffed(MonsterStatus.DAMAGE_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_DAMAGE_REFLECT)) {
-                        MaxDamagePerHit = CalculateMaxMagicDamagePerHit(player, theSkill, monster, monsterstats, stats, element, CriticalDamage, maxDamagePerHit);
+                        MaxDamagePerHit = calculateMaxMagicDamagePerHit(player, theSkill, monster, monsterstats, stats, element, CriticalDamage, maxDamagePerHit);
                     } else {
                         MaxDamagePerHit = 1;
                     }
@@ -555,7 +551,7 @@ public class DamageParse {
                 if (player.getPosition().distanceSq(monster.getPosition()) > 700000.0) { // 600^2, 550 is approximatly the range of ultis
                     player.getCheatTracker().registerOffense(CheatingOffense.ATTACK_FARAWAY_MONSTER);
                 }
-                if (attack.skill == 2301002 && !monsterstats.getUndead()) {
+                if (attack.skill == SkillType.僧侶.群體治癒 && !monsterstats.getUndead()) {
                     player.getCheatTracker().registerOffense(CheatingOffense.HEAL_ATTACKING_UNDEAD);
                     return;
                 }
@@ -567,10 +563,10 @@ public class DamageParse {
                     }
                     // effects
                     switch (attack.skill) {
-                        case 2221003:
+                        case SkillType.冰雷大魔導士.寒冰地獄:
                             monster.setTempEffectiveness(Element.FIRE, theSkill.getEffect(player.getSkillLevel(theSkill)).getDuration());
                             break;
-                        case 2121003:
+                        case SkillType.火毒大魔導士.炎靈地獄:
                             monster.setTempEffectiveness(Element.ICE, theSkill.getEffect(player.getSkillLevel(theSkill)).getDuration());
                             break;
                     }
@@ -587,7 +583,7 @@ public class DamageParse {
                 }
             }
         }
-        if (attack.skill != 2301002) {
+        if (attack.skill != SkillType.僧侶.群體治癒) {
             effect.applyTo(player);
         }
 
@@ -601,7 +597,7 @@ public class DamageParse {
         }
     }
 
-    private static final double CalculateMaxMagicDamagePerHit(final MapleCharacter chr, final ISkill skill, final MapleMonster monster, final MapleMonsterStats mobstats, final PlayerStats stats, final Element elem, final Integer sharpEye, final double maxDamagePerMonster) {
+    private static double calculateMaxMagicDamagePerHit(final MapleCharacter chr, final ISkill skill, final MapleMonster monster, final MapleMonsterStats mobstats, final PlayerStats stats, final Element elem, final Integer sharpEye, final double maxDamagePerMonster) {
         final int dLevel = Math.max(mobstats.getLevel() - chr.getLevel(), 0);
         final int Accuracy = (int) (Math.floor((stats.getTotalInt() / 10.0)) + Math.floor((stats.getTotalLuk() / 10.0)));
         final int MinAccuracy = mobstats.getEva() * (dLevel * 2 + 51) / 120;
@@ -642,18 +638,14 @@ public class DamageParse {
 //      }
         elemMaxDamagePerMob += (elemMaxDamagePerMob * (mobstats.isBoss() ? stats.bossdam_r : stats.dam_r)) / 100;
         switch (skill.getId()) {
-            case 1000:
-            case 10001000:
-            case 20001000:
-            case 20011000:
-            case 30001000:
+            case SkillType.冒險之技.嫩寶丟擲術:
+            case SkillType.貴族.嫩寶丟擲術:
+            case SkillType.傳說.嫩寶丟擲術:
                 elemMaxDamagePerMob = 40;
                 break;
-            case 1020:
-            case 10001020:
-            case 20001020:
-            case 20011020:
-            case 30001020:
+            case SkillType.冒險之技.法老的憤怒攻擊:
+            case SkillType.貴族.法老的憤怒攻擊:
+            case SkillType.傳說.法老的憤怒攻擊:
                 elemMaxDamagePerMob = 1;
                 break;
         }
@@ -681,7 +673,7 @@ public class DamageParse {
     }
 
     private static void handlePickPocket(final MapleCharacter player, final MapleMonster mob, AttackPair oned) {
-        final int maxmeso = player.getBuffedValue(MapleBuffStat.PICKPOCKET).intValue();
+        final int maxmeso = player.getBuffedValue(MapleBuffStat.PICKPOCKET);
         final ISkill skill = SkillFactory.getSkill(4211003);
         final MapleStatEffect s = skill.getEffect(player.getSkillLevel(skill));
 
@@ -710,8 +702,7 @@ public class DamageParse {
             elements.add(theSkill.getElement());
 
             switch (theSkill.getId()) {
-                case 3001004:
-                case 33101001:
+                case SkillType.弓箭手.斷魂箭:
                     defined = true; //can go past 199999
                     break;
                 case 1000:
@@ -766,26 +757,26 @@ public class DamageParse {
             int chargeSkillId = player.getBuffSource(MapleBuffStat.WK_CHARGE);
 
             switch (chargeSkillId) {
-                case 1211003:
-                case 1211004:
+                case SkillType.騎士.烈焰之劍:
+                case SkillType.騎士.烈焰之棍:
                     elements.add(Element.FIRE);
                     break;
-                case 1211005:
-                case 1211006:
-                case 21111005:
+                case SkillType.騎士.寒冰之劍:
+                case SkillType.騎士.寒冰之棍:
+                case SkillType.狂狼勇士3.寒冰屬性:
                     elements.add(Element.ICE);
                     break;
-                case 1211007:
-                case 1211008:
-                case 15101006:
+                case SkillType.騎士.雷鳴之劍:
+                case SkillType.騎士.雷鳴之棍:
+                case SkillType.閃雷悍將2.雷鳴:
                     elements.add(Element.LIGHTING);
                     break;
-                case 1221003:
-                case 1221004:
-                case 11111007:
+                case SkillType.聖騎士.聖靈之劍:
+                case SkillType.聖騎士.聖靈之棍:
+                case SkillType.聖魂劍士3.靈魂屬性:
                     elements.add(Element.HOLY);
                     break;
-                case 12101005:
+                case SkillType.烈焰巫師2.自然力重置:
                     elements.clear(); //neutral
                     break;
             }
@@ -794,12 +785,13 @@ public class DamageParse {
             elements.add(Element.LIGHTING);
         }
         double elementalMaxDamagePerMonster = maximumDamageToMonster;
+        
         if (elements.size() > 0) {
             double elementalEffect;
 
             switch (attack.skill) {
-                case 3211003:
-                case 3111003: // inferno and blizzard
+                case SkillType.狙擊手.寒冰箭:
+                case SkillType.遊俠.烈火箭: // inferno and blizzard
                     elementalEffect = attackEffect.getX() / 200.0;
                     break;
                 default:
@@ -869,26 +861,34 @@ public class DamageParse {
     }
 
     public static final AttackInfo Modify_AttackCrit(final AttackInfo attack, final MapleCharacter chr, final int type) {
-        final int CriticalRate = chr.getStat().passive_sharpeye_rate();
-        final boolean shadow = (type == 2 && chr.getBuffedValue(MapleBuffStat.SHADOWPARTNER) != null) || (type == 1 && chr.getBuffedValue(MapleBuffStat.MIRROR_IMAGE) != null);
-        if (attack.skill != 4211006 && attack.skill != 3211003 && attack.skill != 4111004 && (CriticalRate > 0 || attack.skill == 4221001 || attack.skill == 3221007)) { //blizz + shadow meso + m.e no crits
-            for (AttackPair p : attack.allDamage) {
-                if (p.attack != null) {
+       
+        final int criticalRate = chr.getStat().passive_sharpeye_rate();
+        
+        final boolean shadow = (type == 2 && chr.getBuffedValue(MapleBuffStat.SHADOWPARTNER) != null) 
+                || (type == 1 && chr.getBuffedValue(MapleBuffStat.MIRROR_IMAGE) != null);
+        
+        if (attack.skill != SkillType.神偷.楓幣炸彈
+                && attack.skill != SkillType.狙擊手.寒冰箭 
+                && attack.skill != SkillType.暗殺者.楓幣攻擊
+                && (criticalRate > 0 || attack.skill == SkillType.暗影神偷.致命暗殺 || attack.skill == SkillType.神射手.必殺狙擊)) { //blizz + shadow meso + m.e no crits
+            
+            for (AttackPair attackPair : attack.allDamage) {
+                if (attackPair.attack != null) {
                     int hit = 0;
-                    final int mid_att = p.attack.size() / 2;
-                    final List<Pair<Integer, Boolean>> eachd_copy = new ArrayList<Pair<Integer, Boolean>>(p.attack);
-                    for (Pair<Integer, Boolean> eachd : p.attack) {
+                    final int midAtt = attackPair.attack.size() / 2;
+                    final List<Pair<Integer, Boolean>> eachd_copy = new ArrayList<>(attackPair.attack);
+                    for (Pair<Integer, Boolean> eachd : attackPair.attack) {
                         hit++;
                         if (!eachd.right) {
-                            if (attack.skill == 4221001) { //assassinate never crit first 3, always crit last
+                            if (attack.skill == SkillType.暗影神偷.致命暗殺) { //assassinate never crit first 3, always crit last
                                 eachd.right = (hit == 4 && Randomizer.nextInt(100) < 90);
-                            } else if (attack.skill == 3221007 || eachd.left > 199999) { //snipe always crit
+                            } else if (attack.skill == SkillType.神射手.必殺狙擊 || eachd.left > 199999) { //snipe always crit
                                 eachd.right = true;
-                            } else if (shadow && hit > mid_att) { //shadowpartner copies second half to first half
-                                eachd.right = eachd_copy.get(hit - 1 - mid_att).right;
+                            } else if (shadow && hit > midAtt) { //shadowpartner copies second half to first half
+                                eachd.right = eachd_copy.get(hit - 1 - midAtt).right;
                             } else {
                                 //rough calculation
-                                eachd.right = (Randomizer.nextInt(100)/*chr.CRand().CRand32__Random_ForMonster() % 100*/) < CriticalRate;
+                                eachd.right = (Randomizer.nextInt(100)/*chr.CRand().CRand32__Random_ForMonster() % 100*/) < criticalRate;
                             }
                             eachd_copy.get(hit - 1).right = eachd.right;
                             //System.out.println("CRITICAL RATE: " + CriticalRate + ", passive rate: " + chr.getStat().passive_sharpeye_rate() + ", critical: " + eachd.right);
@@ -936,20 +936,20 @@ public class DamageParse {
 
         int oid, damage;
         List<Pair<Integer, Boolean>> allDamageNumbers;
-        ret.allDamage = new ArrayList<AttackPair>();
+        ret.allDamage = new ArrayList<>();
 
         for (int i = 0; i < ret.targets; i++) {
             oid = lea.readInt();
             lea.skip(14); // [1] Always 6?, [3] unk, [4] Pos1, [4] Pos2, [2] seems to change randomly for some attack
 
-            allDamageNumbers = new ArrayList<Pair<Integer, Boolean>>();
+            allDamageNumbers = new ArrayList<>();
 
             for (int j = 0; j < ret.hits; j++) {
                 damage = lea.readInt();
-                allDamageNumbers.add(new Pair<Integer, Boolean>(Integer.valueOf(damage), false));
+                allDamageNumbers.add(new Pair<>(damage, false));
             }
             lea.skip(4); // CRC of monster [Wz Editing]
-            ret.allDamage.add(new AttackPair(Integer.valueOf(oid), allDamageNumbers));
+            ret.allDamage.add(new AttackPair(oid, allDamageNumbers));
         }
         ret.position = lea.readPos();
 
@@ -963,69 +963,60 @@ public class DamageParse {
         lea.skip(1);
         lea.skip(8);
         ret.tbyte = lea.readByte();
-        //System.out.println("TBYTE: " + tbyte);
         ret.targets = (byte) ((ret.tbyte >>> 4) & 0xF);
         ret.hits = (byte) (ret.tbyte & 0xF);
         lea.skip(8);
         ret.skill = lea.readInt();
         lea.skip(12); // ORDER [4] bytes on v.79, [4] bytes on v.80, [1] byte on v.82
+        
         switch (ret.skill) {
-            case 5101004: // Corkscrew
-            case 15101003: // Cygnus corkscrew
-            case 5201002: // Gernard
-            case 14111006: // Poison bomb
-            case 4341002:
-            case 4341003:
+            case SkillType.打手.狂暴衝擊: // Corkscrew
+            case SkillType.閃雷悍將2.狂暴衝擊: // Cygnus corkscrew
+            case SkillType.槍手.炸彈投擲: // Gernard
+            case SkillType.暗夜行者3.毒炸彈: // Poison bomb
                 ret.charge = lea.readInt();
                 break;
             default:
                 ret.charge = 0;
                 break;
         }
-        lea.skip(1);
-        ret.unk = 0;
+        
+        ret.unk = lea.readByte();
         ret.display = lea.readByte(); // Always zero?
         ret.animation = lea.readByte();
         lea.skip(1); // Weapon class
         ret.speed = lea.readByte(); // Confirmed
         ret.lastAttackTickCount = lea.readInt(); // Ticks
-//        lea.skip(4); //0
+        ret.allDamage = new ArrayList<>();
 
-        ret.allDamage = new ArrayList<AttackPair>();
-
-        if (ret.skill == 4211006) { // Meso Explosion
-            return parseMesoExplosion(lea, ret);
+        if (ret.skill == SkillType.神偷.楓幣炸彈) {
+            return parseExplosionAttack(lea, ret);
         }
         int oid, damage;
         List<Pair<Integer, Boolean>> allDamageNumbers;
 
         for (int i = 0; i < ret.targets; i++) {
             oid = lea.readInt();
-//	    System.out.println(tools.HexTool.toString(lea.read(14)));
             lea.skip(14); // [1] Always 6?, [3] unk, [4] Pos1, [4] Pos2, [2] seems to change randomly for some attack
-
-            allDamageNumbers = new ArrayList<Pair<Integer, Boolean>>();
-
+            allDamageNumbers = new ArrayList<>();
             for (int j = 0; j < ret.hits; j++) {
                 damage = lea.readInt();
-                // System.out.println("Damage: " + damage);
-                allDamageNumbers.add(new Pair<Integer, Boolean>(Integer.valueOf(damage), false));
+                allDamageNumbers.add(new Pair<>(damage, false));
             }
             lea.skip(4); // CRC of monster [Wz Editing]
-            ret.allDamage.add(new AttackPair(Integer.valueOf(oid), allDamageNumbers));
+            ret.allDamage.add(new AttackPair(oid, allDamageNumbers));
         }
         ret.position = lea.readPos();
         return ret;
     }
 
     public static final AttackInfo parseDmgR(final LittleEndianAccessor lea) {
-        //System.out.println(lea.toString()); //<-- packet needs revision
+
         final AttackInfo ret = new AttackInfo();
 
         lea.skip(1);
         lea.skip(8);
         ret.tbyte = lea.readByte();
-        //System.out.println("TBYTE: " + tbyte);
         ret.targets = (byte) ((ret.tbyte >>> 4) & 0xF);
         ret.hits = (byte) (ret.tbyte & 0xF);
         lea.skip(8);
@@ -1034,90 +1025,77 @@ public class DamageParse {
         lea.skip(12); // ORDER [4] bytes on v.79, [4] bytes on v.80, [1] byte on v.82
 
         switch (ret.skill) {
-            case 3121004: // Hurricane
-            case 3221001: // Pierce
-            case 5221004: // Rapidfire
-            case 13111002: // Cygnus Hurricane
-            case 33121009:
+            case SkillType.箭神.暴風神射: // Hurricane
+            case SkillType.神射手.光速神弩: // Pierce
+            case SkillType.槍神.瞬迅雷: // Rapidfire
+            case SkillType.破風使者3.暴風神射: // Cygnus Hurricane
                 lea.skip(4); // extra 4 bytes
                 break;
         }
+        
         ret.charge = -1;
-        lea.skip(1);
-        ret.unk = 0;
+        ret.unk = lea.readByte();
         ret.display = lea.readByte(); // Always zero?
         ret.animation = lea.readByte();
         lea.skip(1); // Weapon class
         ret.speed = lea.readByte(); // Confirmed
         ret.lastAttackTickCount = lea.readInt(); // Ticks
-//        lea.skip(4); //0
         ret.slot = (byte) lea.readShort();
         ret.csstar = (byte) lea.readShort();
         ret.AOE = lea.readByte(); // is AOE or not, TT/ Avenger = 41, Showdown = 0
 
         int damage, oid;
         List<Pair<Integer, Boolean>> allDamageNumbers;
-        ret.allDamage = new ArrayList<AttackPair>();
+        ret.allDamage = new ArrayList<>();
 
         for (int i = 0; i < ret.targets; i++) {
             oid = lea.readInt();
-//	    System.out.println(tools.HexTool.toString(lea.read(14)));
             lea.skip(14); // [1] Always 6?, [3] unk, [4] Pos1, [4] Pos2, [2] seems to change randomly for some attack
-
-            allDamageNumbers = new ArrayList<Pair<Integer, Boolean>>();
+            allDamageNumbers = new ArrayList<>();
             for (int j = 0; j < ret.hits; j++) {
                 damage = lea.readInt();
-                allDamageNumbers.add(new Pair<Integer, Boolean>(Integer.valueOf(damage), false));
-                //System.out.println("Hit " + j + " from " + i + " to mobid " + oid + ", damage " + damage);
+                boolean add = allDamageNumbers.add(new Pair<>(damage, false));
             }
             lea.skip(4); // CRC of monster [Wz Editing]
-//	    System.out.println(tools.HexTool.toString(lea.read(4)));
-
-            ret.allDamage.add(new AttackPair(Integer.valueOf(oid), allDamageNumbers));
+            ret.allDamage.add(new AttackPair(oid, allDamageNumbers));
         }
         lea.skip(4);
         ret.position = lea.readPos();
-
         return ret;
     }
 
-    public static final AttackInfo parseMesoExplosion(final LittleEndianAccessor lea, final AttackInfo ret) {
-        //System.out.println(lea.toString(true));
-        byte bullets;
+    public static final AttackInfo parseExplosionAttack(final LittleEndianAccessor lea, final AttackInfo ret) {
+
         if (ret.hits == 0) {
             lea.skip(4);
-            bullets = lea.readByte();
+            byte bullets = lea.readByte();
             for (int j = 0; j < bullets; j++) {
-                ret.allDamage.add(new AttackPair(Integer.valueOf(lea.readInt()), null));
+                ret.allDamage.add(new AttackPair(lea.readInt(), null));
                 lea.skip(1);
             }
             lea.skip(2); // 8F 02
             return ret;
         }
 
-        int oid;
-        List<Pair<Integer, Boolean>> allDamageNumbers;
-
         for (int i = 0; i < ret.targets; i++) {
-            oid = lea.readInt();
+            int oid = lea.readInt();
             lea.skip(12);
-            bullets = lea.readByte();
-            allDamageNumbers = new ArrayList<Pair<Integer, Boolean>>();
+            byte bullets = lea.readByte();
+            List<Pair<Integer, Boolean>> allDamageNumbers = new ArrayList<>();
             for (int j = 0; j < bullets; j++) {
-                allDamageNumbers.add(new Pair<Integer, Boolean>(Integer.valueOf(lea.readInt()), false)); //m.e. never crits
+                allDamageNumbers.add(new Pair<>(lea.readInt(), false)); //m.e. never crits
             }
-            ret.allDamage.add(new AttackPair(Integer.valueOf(oid), allDamageNumbers));
+            ret.allDamage.add(new AttackPair(oid, allDamageNumbers));
             lea.skip(4); // C3 8F 41 94, 51 04 5B 01
         }
         lea.skip(4);
-        bullets = lea.readByte();
+        byte bullets = lea.readByte();
 
         for (int j = 0; j < bullets; j++) {
-            ret.allDamage.add(new AttackPair(Integer.valueOf(lea.readInt()), null));
+            ret.allDamage.add(new AttackPair(lea.readInt(), null));
             lea.skip(1);
         }
         lea.skip(2); // 8F 02/ 63 02
-
         return ret;
     }
 }

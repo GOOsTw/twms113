@@ -41,7 +41,7 @@ public class AllianceHandler {
             c.getSession().write(MaplePacketCreator.enableActions());
             return;
         }
-        //System.out.println("Unhandled GuildAlliance \n" + slea.toString());
+        
         byte op = slea.readByte();
         if (c.getPlayer().getGuildRank() != 1 && op != 1) { //only updating doesn't need guild leader
             return;

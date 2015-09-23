@@ -50,7 +50,7 @@ function action(mode, type, selection) {
 		cm.sendNext("您現在已經可以開始結婚了，但是在結婚之前先邀請一些貴賓前來參加您的婚禮吧，讓他們知道您與您的另一半愛情是很美的！！");
 //		cm.gainItemPeriod(4150000,num,1);
 	    } else {
-		cm.sendOk("我想您已經是結過婚，或者是個單生漢。");
+		cm.sendOk("我想您已經是結過婚，或者是個單身漢。");
 	    }
 	}
 	cm.dispose();

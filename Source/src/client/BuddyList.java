@@ -12,6 +12,7 @@ import java.util.Map;
 import java.io.Serializable;
 
 import database.DatabaseConnection;
+import tools.FilePrinter;
 import tools.MaplePacketCreator;
 
 public class BuddyList implements Serializable {
@@ -261,6 +262,76 @@ public class BuddyList implements Serializable {
             BuddyEntry newPair = new BuddyEntry(buddyName, buddyId, BuddyList.DEFAULT_GROUP, -1, false, buddyJob, buddyLevel);
             pendingReqs.push(newPair);
 
+        }
+    }
+    
+    
+    public static int getBuddyCount(int chrId, int pending) {
+        int count = 0;
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) as buddyCount FROM buddies WHERE characterid = ? AND pending = ?")) {
+            ps.setInt(1, chrId);
+            ps.setInt(2, pending);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    throw new RuntimeException("BuddyListHandler: getBuudyCount From DB is Error.");
+                } else {
+                    count = rs.getInt("buddyCount");
+                }
+            }
+
+        } catch (SQLException ex) {
+            FilePrinter.printError("BuddyListHandler.txt", ex);
+        }
+        return count;
+    }
+    
+    public static int getBuddyCapacity(int charId) {
+        int capacity = -1;
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement ps = con.prepareStatement("SELECT buddyCapacity FROM characters WHERE id = ?")) {
+            ps.setInt(1, charId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    capacity = rs.getInt("buddyCapacity");
+                }
+            }
+        } catch (SQLException ex) {
+            FilePrinter.printError("BuddyListModifyHandler.txt", ex);
+        }
+
+        return capacity;
+    }
+    
+    public static int getBuddyPending(int chrId, int buddyId) {
+        int pending = -1;
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement ps = con.prepareStatement("SELECT pending FROM buddies WHERE characterid = ? AND buddyid = ?")) {
+            ps.setInt(1, chrId);
+            ps.setInt(2, buddyId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    pending = rs.getInt("pending");
+                }
+            }
+        } catch (SQLException ex) {
+            FilePrinter.printError("BuddyListModifyHandler.txt", ex);
+        }
+
+        return pending;
+    }
+
+    public static void addBuddyToDB(MapleCharacter player, BuddyEntry buddy) {
+        try {
+            Connection con = DatabaseConnection.getConnection();
+            try (PreparedStatement ps = con.prepareStatement("INSERT INTO buddies (`characterid`, `buddyid`, `groupname`, `pending`) VALUES (?, ?, ?, 1)")) {
+                ps.setInt(1, buddy.getCharacterId());
+                ps.setInt(2, player.getId());
+                ps.setString(3, buddy.getGroup());
+                ps.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            FilePrinter.printError("BuddyListModifyHandler.txt", ex);
         }
     }
 }

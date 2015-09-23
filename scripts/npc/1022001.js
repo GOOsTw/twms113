@@ -23,7 +23,7 @@ function action(mode, type, selection) {
 	cm.dispose();
 	return;
     } else if (status >= 2 && mode == 0) {
-	cm.sendNext("有很多看到在這個鎮上了。回來找我們，當你需要去不同的鎮.");
+	cm.sendNext("這裡還有很多地方可以逛。當你想要去不同的城鎮的時候，歡迎隨時來找我吧。");
 	cm.dispose();
 	return;
     }
@@ -56,11 +56,11 @@ function action(mode, type, selection) {
 	    sCost = rCost[selection];
 	    show = cost[selection];
 	}
-	cm.sendYesNo("你在這裡沒有任何東西做，是吧? #b#m" + maps[selection] + "##k 他將花費你的 #b"+ show + " 楓幣#k.");
+	cm.sendYesNo("你在這裡沒有任何事情做，是吧? #b#m" + maps[selection] + "##k 他將花費你的 #b"+ show + " 楓幣#k.");
 	selectedMap = selection;
     } else if (status == 3) {
 	if (cm.getMeso() < sCost) {
-	    cm.sendNext("很抱歉由於你沒有足夠的楓幣 所以你將無法乘坐出租車!");
+	    cm.sendNext("很抱歉由於你沒有足夠的楓幣 所以你將無法乘坐計程車!");
 	} else {
 	    cm.gainMeso(-sCost);
 	    cm.warp(maps[selectedMap]);
