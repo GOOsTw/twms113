@@ -541,6 +541,10 @@ public class ChannelServer implements Serializable {
         List<MapleCharacter> all = this.players.getAllCharactersThreadSafe();
         for (MapleCharacter chr : all) {
             try {
+                if (chr.getClient().getLatency() < 0) {
+                    chr.getClient().disconnect(true, false);
+                    continue;
+                }
                 int res = chr.saveToDB(false, false);
                 if (res == 1) {
                     ++ppl;
@@ -551,6 +555,7 @@ public class ChannelServer implements Serializable {
                 if (chr.getClient().getLatency() < 0) {
                     chr.getClient().disconnect(true, false);
                 }
+
             } catch (Exception e) {
                 
             }
