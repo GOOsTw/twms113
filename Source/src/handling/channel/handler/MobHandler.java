@@ -144,7 +144,7 @@ public class MobHandler {
             if (monster.isAttackedBy(c.getPlayer())) {// aggro and controller change
                 monster.switchController(c.getPlayer(), true);
             } else {
-                monster.switchController(null, true);
+                return;
             }
         }
         if (res != null ) {

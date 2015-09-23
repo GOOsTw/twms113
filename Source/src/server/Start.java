@@ -42,8 +42,8 @@ public class Start {
         System.out.println("【台版楓之谷模擬器】");
         System.out.println("【版本】 v113");
 
-        boolean adminMode = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.Admin"));
-        boolean autoReg = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.AutoRegister"));
+        boolean adminMode = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.admin"));
+        boolean autoReg = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.autoRegister"));
         boolean gmitems = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.gmitems"));
 
         if (adminMode) {
