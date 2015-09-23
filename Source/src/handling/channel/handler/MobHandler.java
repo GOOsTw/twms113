@@ -139,11 +139,12 @@ public class MobHandler {
 
         c.getSession().write(MobPacket.moveMonsterResponse(monster.getObjectId(), moveid, monster.getMp(), monster.isControllerHasAggro(), realskill, level));
         
-        if (monster.getController() != c.getPlayer()) {
+
+        if ( monster.getController() != null && monster.getController().getId() != c.getPlayer().getId()) {
             if (monster.isAttackedBy(c.getPlayer())) {// aggro and controller change
                 monster.switchController(c.getPlayer(), true);
             } else {
-                return;
+                monster.switchController(null, true);
             }
         }
         if (res != null ) {
