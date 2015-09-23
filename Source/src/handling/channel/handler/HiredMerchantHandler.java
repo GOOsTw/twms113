@@ -20,6 +20,7 @@
  */
 package handling.channel.handler;
 
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.Connection;
@@ -38,7 +39,9 @@ import handling.world.World;
 import java.util.Map;
 import server.MapleInventoryManipulator;
 import server.MerchItemPackage;
+import server.MapleItemInformationProvider;
 import tools.Pair;
+import tools.StringUtil;
 import tools.packet.PlayerShopPacket;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -65,7 +68,7 @@ public class HiredMerchantHandler {
                     }
                     break;
                 default:
-                    c.getPlayer().dropMessage(1, "未知的錯誤");
+                    c.getPlayer().dropMessage(1, "An unknown error occured.");
                     break;
             }
         } else {
@@ -73,20 +76,21 @@ public class HiredMerchantHandler {
         }
     }
 
-    private static byte checkExistance(final int accid, final int charid) {
+    private static final byte checkExistance(final int accid, final int charid) {
         Connection con = DatabaseConnection.getConnection();
         try {
-            try (PreparedStatement ps = con.prepareStatement("SELECT * from hiredmerch where accountid = ? OR characterid = ?")) {
-                ps.setInt(1, accid);
-                ps.setInt(2, charid);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        ps.close();
-                        rs.close();
-                        return 1;
-                    }
-                }
+            PreparedStatement ps = con.prepareStatement("SELECT * from hiredmerch where accountid = ? OR characterid = ?");
+            ps.setInt(1, accid);
+            ps.setInt(2, charid);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                ps.close();
+                rs.close();
+                return 1;
             }
+            rs.close();
+            ps.close();
             return 0;
         } catch (SQLException se) {
             return -1;
@@ -123,7 +127,7 @@ public class HiredMerchantHandler {
                             c.getPlayer().gainMeso(pack.getMesos(), false);
                             c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x1d));
                         } else {
-                            c.getPlayer().dropMessage(1, "未知的錯誤");
+                            c.getPlayer().dropMessage(1, "An unknown error occured.");
                         }
                     } else {
                         c.getSession().write(PlayerShopPacket.merchItemStore_ItemData(pack));
@@ -145,7 +149,7 @@ public class HiredMerchantHandler {
                 final MerchItemPackage pack = loadItemFrom_Database(c.getPlayer().getId(), c.getPlayer().getAccountID());
 
                 if (pack == null) {
-                    c.getPlayer().dropMessage(1, "未知的錯誤");
+                    c.getPlayer().dropMessage(1, "An unknown error occured.");
                     return;
                 }
                 if (!check(c.getPlayer(), pack)) {
@@ -159,7 +163,7 @@ public class HiredMerchantHandler {
                     }
                     c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x1d));
                 } else {
-                    c.getPlayer().dropMessage(1, "未知的錯誤");
+                    c.getPlayer().dropMessage(1, "An unknown error occured.");
                 }
                 break;
             }
@@ -170,7 +174,7 @@ public class HiredMerchantHandler {
         }
     }
 
-    private static boolean check(final MapleCharacter chr, final MerchItemPackage pack) {
+    private static final boolean check(final MapleCharacter chr, final MerchItemPackage pack) {
         if (chr.getMeso() + pack.getMesos() < 0) {
             return false;
         }
@@ -192,23 +196,29 @@ public class HiredMerchantHandler {
              return false;
              }*/
         }
-        return !(chr.getInventory(MapleInventoryType.EQUIP).getNumFreeSlot() <= eq
+        /* if (chr.getInventory(MapleInventoryType.EQUIP).getNumFreeSlot() < eq || chr.getInventory(MapleInventoryType.USE).getNumFreeSlot() < use || chr.getInventory(MapleInventoryType.SETUP).getNumFreeSlot() < setup || chr.getInventory(MapleInventoryType.ETC).getNumFreeSlot() < etc || chr.getInventory(MapleInventoryType.CASH).getNumFreeSlot() < cash) {
+         return false;
+         }*/
+        if (chr.getInventory(MapleInventoryType.EQUIP).getNumFreeSlot() <= eq
                 || chr.getInventory(MapleInventoryType.USE).getNumFreeSlot() <= use
                 || chr.getInventory(MapleInventoryType.SETUP).getNumFreeSlot() <= setup
                 || chr.getInventory(MapleInventoryType.ETC).getNumFreeSlot() <= etc
-                || chr.getInventory(MapleInventoryType.CASH).getNumFreeSlot() <= cash);
+                || chr.getInventory(MapleInventoryType.CASH).getNumFreeSlot() <= cash) {
+            return false;
+        }
+        return true;
     }
 
-    private static boolean deletePackage(final int charid, final int accid, final int packageid) {
+    private static final boolean deletePackage(final int charid, final int accid, final int packageid) {
         final Connection con = DatabaseConnection.getConnection();
 
         try {
-            try (PreparedStatement ps = con.prepareStatement("DELETE from hiredmerch where characterid = ? OR accountid = ? OR packageid = ?")) {
-                ps.setInt(1, charid);
-                ps.setInt(2, accid);
-                ps.setInt(3, packageid);
-                ps.execute();
-            }
+            PreparedStatement ps = con.prepareStatement("DELETE from hiredmerch where characterid = ? OR accountid = ? OR packageid = ?");
+            ps.setInt(1, charid);
+            ps.setInt(2, accid);
+            ps.setInt(3, packageid);
+            ps.execute();
+            ps.close();
             ItemLoader.HIRED_MERCHANT.saveItems(null, packageid, accid, charid);
             return true;
         } catch (SQLException e) {
@@ -216,67 +226,34 @@ public class HiredMerchantHandler {
         }
     }
 
-    public static void displayMerch(MapleClient c) {
-        final int conv = c.getPlayer().getConversation();
-        boolean merch = World.hasMerchant(c.getPlayer().getAccountID());
-        if (merch) {
-            c.getPlayer().dropMessage(1, "請關閉商店後在試一次。");
-            c.getPlayer().setConversation(0);
-        } else if (c.getChannelServer().isShutdown()) {
-            c.getPlayer().dropMessage(1, "這個伺服器已經關閉了，無法領取東西。");
-            c.getPlayer().setConversation(0);
-        } else if (conv == 3) { // Hired Merch
-            final MerchItemPackage pack = loadItemFrom_Database(c.getPlayer().getId(), c.getPlayer().getAccountID());
-
-            if (pack == null) {
-                c.getPlayer().dropMessage(1, "你沒有在這邊置放道具！");
-                c.getPlayer().setConversation(0);
-            } else if (pack.getItems().size() <= 0) { //error fix for complainers.
-                if (!check(c.getPlayer(), pack)) {
-                    c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x21));
-                    return;
-                }
-                if (deletePackage(c.getPlayer().getAccountID(), pack.getPackageid(), c.getPlayer().getId())) {
-                    c.getPlayer().gainMeso(pack.getMesos(), false);
-                    c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x1d));
-                   c.getPlayer().dropMessage(1, "你已經領回楓幣了！");
-                } else {
-                    c.getPlayer().dropMessage(1, "未知的錯誤！");
-                }
-                c.getPlayer().setConversation(0);
-            } else {
-                c.getSession().write(PlayerShopPacket.merchItemStore_ItemData(pack));
-            }
-        }
-    }
-
-    private static MerchItemPackage loadItemFrom_Database(final int charid, final int accountid) {
+    private static final MerchItemPackage loadItemFrom_Database(final int charid, final int accountid) {
         final Connection con = DatabaseConnection.getConnection();
 
         try {
-            ResultSet rs;
-            final int packageid;
-            final MerchItemPackage pack;
-            try (PreparedStatement ps = con.prepareStatement("SELECT * from hiredmerch where characterid = ? OR accountid = ?")) {
-                ps.setInt(1, charid);
-                ps.setInt(2, accountid);
-                rs = ps.executeQuery();
-                if (!rs.next()) {
-                    ps.close();
-                    rs.close();
-                    return null;
-                }
-                packageid = rs.getInt("PackageId");
-                pack = new MerchItemPackage();
-                pack.setPackageid(packageid);
-                pack.setMesos(rs.getInt("Mesos"));
-                pack.setSentTime(rs.getLong("time"));
+            PreparedStatement ps = con.prepareStatement("SELECT * from hiredmerch where characterid = ? OR accountid = ?");
+            ps.setInt(1, charid);
+            ps.setInt(2, accountid);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (!rs.next()) {
+                ps.close();
+                rs.close();
+                return null;
             }
+            final int packageid = rs.getInt("PackageId");
+
+            final MerchItemPackage pack = new MerchItemPackage();
+            pack.setPackageid(packageid);
+            pack.setMesos(rs.getInt("Mesos"));
+            pack.setSentTime(rs.getLong("time"));
+
+            ps.close();
             rs.close();
 
             Map<Integer, Pair<IItem, MapleInventoryType>> items = ItemLoader.HIRED_MERCHANT.loadItems(false, packageid, accountid, charid);
             if (items != null) {
-                List<IItem> iters = new ArrayList<>();
+                List<IItem> iters = new ArrayList<IItem>();
                 for (Pair<IItem, MapleInventoryType> z : items.values()) {
                     iters.add(z.left);
                 }
@@ -285,7 +262,7 @@ public class HiredMerchantHandler {
 
             return pack;
         } catch (SQLException e) {
-
+            e.printStackTrace();
             return null;
         }
     }
