@@ -131,15 +131,16 @@ public class PlayerStorage {
     }
 
     public final MapleCharacter getCharacterByName(final String name) {
+        MapleCharacter rchr = null;
         rL.lock();
         try {
-            for ( MapleCharacter chr : this.getAllCharacters())
+            for ( MapleCharacter chr : idToChar.values())
                 if ( chr.getName().equals(name))
-                    return chr;
-            return null;
+                    rchr = chr;
         } finally {
             rL.unlock();
         }
+        return rchr;
     }
 
     /*
