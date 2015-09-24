@@ -32,8 +32,10 @@ function action(mode, type, selection) {
 	case 220000000:
 	case 200000000:
 	case 261000000:
+	case 500000000:
 	case 600000000:
 	case 680000000:
+	case 701000000:
 	case 702000000:
 	case 740000000:
 	case 741000000:
