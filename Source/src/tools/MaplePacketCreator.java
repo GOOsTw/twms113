@@ -796,16 +796,8 @@ public class MaplePacketCreator {
         mplew.writeInt(chr.getId());
         mplew.write(chr.getLevel());
         mplew.writeMapleAsciiString(chr.getName());
-        String Prefix = "";
-        if (chr.getPrefix() == 1) {
-            Prefix = "[技術團隊成員]";
-        }
-        if (chr.getPrefix() == 2) {
-            Prefix = "[遊戲管理成員]";
-        }
-        if (chr.getPrefix() == 3) {
-            Prefix = "[活動舉辦成員]";
-        }
+        String Prefix = chr.getPrefix();
+        
 
         if (chr.getGuildId() <= 0) {
             final MapleGuild gs = World.Guild.getGuild(chr.getGuildId());
@@ -1696,19 +1688,10 @@ public class MaplePacketCreator {
         mplew.writeShort(chr.getJob());
         mplew.writeShort(chr.getFame());
         mplew.write(chr.getMarriageId() > 0 ? 1 : 0); // heart red or gray
-        String Prefix = "";
-
-        if (chr.getPrefix() == 1) {
-            Prefix = "[技術團隊成員]";
-        }
-        if (chr.getPrefix() == 2) {
-            Prefix = "[遊戲管理成員]";
-        }
-        if (chr.getPrefix() == 3) {
-            Prefix = "[活動舉辦成員]";
-        }
+        String Prefix = chr.getPrefix();
+     
         if (chr.getGuildId() <= 0) {
-            if (chr.getPrefix() == 0) {
+            if (chr.getPrefix().equals("")) {
                 mplew.writeMapleAsciiString("尚未加入公會");
                 mplew.writeMapleAsciiString("尚未加入聯盟");
             } else {
@@ -1724,21 +1707,21 @@ public class MaplePacketCreator {
                     if (allianceName != null) {
                         mplew.writeMapleAsciiString(allianceName.getName());
                     } else {
-                        if (chr.getPrefix() == 0) {
+                        if (chr.getPrefix().equals("")) {
                             mplew.writeMapleAsciiString("尚未加入聯盟");
                         } else {
                             mplew.writeMapleAsciiString(Prefix);
                         }
                     }
                 } else {
-                    if (chr.getPrefix() == 0) {
+                    if (chr.getPrefix().equals("")) {
                         mplew.writeMapleAsciiString("尚未加入聯盟");
                     } else {
                         mplew.writeMapleAsciiString(Prefix);
                     }
                 }
             } else {
-                if (chr.getPrefix() == 0) {
+                if (chr.getPrefix().equals("")) {
                     mplew.writeMapleAsciiString("尚未加入公會");
                     mplew.writeMapleAsciiString("尚未加入聯盟");
                 } else {
@@ -3132,17 +3115,8 @@ public class MaplePacketCreator {
         mplew.writeShort(SendPacketOpcode.GUILD_OPERATION.getValue());
         mplew.write(0x1A); //signature for showing guild info
 
-        String Prefix = "";
-        if (c.getPrefix() == 1) {
-            Prefix = "[技術團隊成員]";
-        }
-        if (c.getPrefix() == 2) {
-            Prefix = "[遊戲管理成員]";
-        }
-        if (c.getPrefix() == 3) {
-            Prefix = "[活動辦理成員]";
-        }
-
+        String Prefix = c.getPrefix();
+       
         mplew.write(1); //bInGuild
         mplew.writeInt(0);
         mplew.writeMapleAsciiString(Prefix);
@@ -3183,7 +3157,7 @@ public class MaplePacketCreator {
             return mplew.getPacket();
         }
         mplew.write(1); //bInGuild
-        if (c.getPrefix() != 0) {
+        if (!c.getPrefix().equals("")) {
             getGuildInfo2(mplew, g, c);
         } else {
             getGuildInfo(mplew, g);
@@ -3212,16 +3186,8 @@ public class MaplePacketCreator {
 
     private static void getGuildInfo2(MaplePacketLittleEndianWriter mplew, MapleGuild guild, MapleCharacter chr) {
 
-        String Prefix = "";
-        if (chr.getPrefix() == 1) {
-            Prefix = "[技術團隊成員]";
-        }
-        if (chr.getPrefix() == 2) {
-            Prefix = "[遊戲管理成員]";
-        }
-        if (chr.getPrefix() == 3) {
-            Prefix = "[活動辦理成員]";
-        }
+        String Prefix = chr.getPrefix();
+        
 
         //System.out.println("writegetGuildInfo2");
         mplew.writeInt(guild.getId());

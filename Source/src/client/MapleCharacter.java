@@ -131,7 +131,7 @@ import tools.packet.PlayerShopPacket;
 public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Serializable {
 
     private static final long serialVersionUID = 845748950829L;
-    private String name, chalktext, BlessOfFairy_Origin, charmessage;
+    private String name, chalktext, BlessOfFairy_Origin, charmessage, prefix;
     private long lastCombo, lastfametime, keydown_skill;
     private byte dojoRecord, gmLevel, gender, initialSpawnPoint, skinColor, guildrank = 5, allianceRank = 5, world, fairyExp = 10, numClones, subcategory; // Make this a quest record, TODO : Transfer it somehow with the current data
     private short level, mulung_energy, combo, availableCP, totalCP, fame, hpmpApUsed, job, remainingAp;
@@ -139,7 +139,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             guildid = 0, fallcounter = 0, maplepoints, acash, chair, itemEffect, points, vpoints,
             rank = 1, rankMove = 0, jobRank = 1, jobRankMove = 0, marriageId, marriageItemId = 0,
             currentrep, totalrep, linkMid = 0, coconutteam = 0, followid = 0, battleshipHP = 0,
-            expression, constellation, blood, month, day, beans, beansNum, beansRange, prefix,
+            expression, constellation, blood, month, day, beans, beansNum, beansRange,
             gachexp;
     private boolean canSetBeansNum;
     private Point old = new Point(0, 0);
@@ -272,7 +272,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.stats.hp = 50;
         ret.stats.maxmp = 50;
         ret.stats.mp = 50;
-        ret.prefix = 0;
+        ret.prefix = "";
         ret.gachexp = 0;
 
         try {
@@ -522,7 +522,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ret.blood = rs.getInt("blood");
             ret.month = rs.getInt("month");
             ret.day = rs.getInt("day");
-            ret.prefix = rs.getInt("prefix");
+            ret.prefix = rs.getString("prefix");
             ret.gachexp = rs.getInt("gachexp");
             
             if (channelserver) {
@@ -865,7 +865,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.setInt(31, 0); //marriage ID
             ps.setInt(32, 0); //current reps
             ps.setInt(33, 0); //total reps
-            ps.setInt(34, chr.prefix);
+            ps.setString(34, chr.prefix);
             ps.setInt(35, chr.getAccountID());
             ps.setString(36, chr.name);
             ps.setByte(37, chr.world);
@@ -1070,7 +1070,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.setInt(38, month);
             ps.setInt(39, day);
             ps.setInt(40, beans);
-            ps.setInt(41, prefix);
+            ps.setString(41, prefix);
             ps.setInt(42, gachexp);
             ps.setString(43, name);
             ps.setInt(44, id);
@@ -5843,11 +5843,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return gmLevel >= 2 && gmLevel <= 3;
     }
 
-    public void setprefix(int prefix) {
+    public void setprefix(String prefix) {
         this.prefix = prefix;
     }
 
-    public int getPrefix() {
+    public String getPrefix() {
         return prefix;
     }
 
