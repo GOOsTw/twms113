@@ -29,8 +29,8 @@ public class MonsterGlobalDropEntry {
      * @param dropType 掉落型態
      * @param continent 大陸
      * @param questid 任務代碼
+     * @param Maximum
      * @param Minimum Maximum 最小/最大 爆擊率
-     * @param onlySelf 只有自己
      * 
      */
 

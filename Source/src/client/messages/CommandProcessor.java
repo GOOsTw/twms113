@@ -31,7 +31,6 @@ import client.messages.commands.InternCommand;
 import constants.ServerConstants.CommandType;
 import constants.ServerConstants.PlayerGMRank;
 import database.DatabaseConnection;
-import handling.world.World;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.sql.PreparedStatement;
@@ -39,7 +38,6 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import tools.FilePrinter;
-import tools.MaplePacketCreator;
 
 public class CommandProcessor {
 

@@ -66,7 +66,7 @@ public class CommandProcessorUtil {
         if (ret == null) {
             return def;
         }
-        return ret.intValue();
+        return ret;
     }
 
     public static Double getNamedDoubleArg(String splitted[], int startpos, String name) {

@@ -20,14 +20,10 @@
  */
 package handling.login;
 
-import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
 
 import provider.MapleData;
-import provider.MapleDataDirectoryEntry;
-import provider.MapleDataFileEntry;
-import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;
 import provider.MapleDataTool;
 import server.ServerProperties;
@@ -35,7 +31,7 @@ import server.ServerProperties;
 public class LoginInformationProvider {
 
     private final static LoginInformationProvider instance = new LoginInformationProvider();
-    protected final List<String> ForbiddenName = new ArrayList<String>();
+    protected final List<String> ForbiddenName = new ArrayList<>();
 
     public static LoginInformationProvider getInstance() {
         return instance;

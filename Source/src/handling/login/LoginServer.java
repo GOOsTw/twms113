@@ -77,7 +77,7 @@ public class LoginServer {
             acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 30);
             acceptor.setHandler(new MapleServerHandler(-1, false));
             acceptor.bind(new InetSocketAddress(PORT));
-            System.out.println("登入伺服器端口: " + Short.toString(PORT) + " \n\n");
+            System.out.println("\n【登入伺服器】  - 監聽端口: " + Short.toString(PORT) + " \n");
 
         } catch (IOException ex) {
             FilePrinter.printError(FilePrinter.LoginServer, ex, "IOException");
@@ -87,10 +87,10 @@ public class LoginServer {
 
     public static final void shutdown() {
         if (finishedShutdown) {
-            System.out.println("登入伺服器已經關閉了...無法執行此動作");
+            System.out.println("【登入伺服器】 已經關閉了...無法執行此動作");
             return;
         }
-        System.out.println("登入伺服器關閉中...");
+        System.out.println("【登入伺服器】 關閉中...");
 
         for (IoSession session : acceptor.getManagedSessions().values()) {
             session.close(true);
@@ -98,8 +98,7 @@ public class LoginServer {
         acceptor.unbind(new InetSocketAddress(PORT));
         acceptor.dispose();
 
-        System.out.println(
-                "登入伺服器關閉完畢...");
+        System.out.println("【登入伺服器】 關閉完畢...");
         finishedShutdown = true; //nothing. lol
     }
 
