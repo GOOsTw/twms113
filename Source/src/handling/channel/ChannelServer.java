@@ -157,10 +157,10 @@ public class ChannelServer implements Serializable {
         loadEvents();
         try {
             acceptor.bind(new InetSocketAddress(port));
-            System.out.println("頻道伺服器: " + channel + "- 監聽端口: " + port + "");
+            System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】  - 監聽端口: " + port + "");
             eventSM.init();
         } catch (IOException e) {
-            System.out.println("綁定端口: " + port + " 失敗 (頻道 " + getChannel() + ")" + e);
+            System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 綁定端口: " + port + " 失敗 (頻道 " + getChannel() + ")" + e);
         }
     }
 
@@ -168,32 +168,31 @@ public class ChannelServer implements Serializable {
         if (finishedShutdown) {
             return;
         }
-        broadcastPacket(MaplePacketCreator.serverNotice(0, "這個頻道正在關閉中."));
-
+        broadcastPacket(MaplePacketCreator.serverNotice(0, "【頻道" + String.valueOf(this.getChannel()) + "】 這個頻道正在關閉中."));
         shutdown = true;
 
-        System.out.println("頻道 " + channel + ", 儲存商人資料...");
-
+        System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 儲存商人資料...");
+        
         closeAllMerchant();
 
-        System.out.println("頻道 " + channel + ", 儲存角色資料...");
-
+        System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 儲存角色資料...");
+        
         getPlayerStorage().disconnectAll();
 
-        System.out.println("頻道 " + channel + ", 解除端口綁定中...");
-
+        System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 解除端口綁定中...");
+       
         try {
             if (acceptor != null) {
-                for (IoSession session : acceptor.getManagedSessions().values()) {
-                    session.close(true);
+                /*for (IoSession session : acceptor.getManagedSessions().values()) {
+                   session.close(true);
                 }
                 acceptor.unbind(new InetSocketAddress(port));
-                acceptor.dispose();
+                */acceptor.dispose();
                 acceptor = null;
-                System.out.println("頻道 " + channel + ", 解除端口成功");
+                System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 解除端口成功");
             }
         } catch (Exception e) {
-            System.out.println("頻道 " + channel + ", 解除端口失敗");
+            System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 解除端口失敗");
         }
 
         instances.remove(channel);
@@ -485,12 +484,12 @@ public class ChannelServer implements Serializable {
 
     public final void setPrepareShutdown() {
         this.shutdown = true;
-        System.out.println("頻道 " + channel + " 準備關閉.");
+        System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 準備關閉.");
     }
 
     public final void setFinishShutdown() {
         this.finishedShutdown = true;
-        System.out.println("頻道 " + channel + " 已經關閉完成.");
+        System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 已經關閉完成.");
     }
 
     public final boolean isAdminOnly() {
@@ -541,6 +540,10 @@ public class ChannelServer implements Serializable {
         List<MapleCharacter> all = this.players.getAllCharactersThreadSafe();
         for (MapleCharacter chr : all) {
             try {
+                if( chr.getClient() == null || !chr.getClient().getSession().isConnected() ) {
+                    chr.getClient().disconnect(true, false);
+                    continue;
+                }
                 if (chr.getClient().getLatency() < 0) {
                     chr.getClient().disconnect(true, false);
                     continue;

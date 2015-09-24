@@ -22,7 +22,7 @@ public class RandomRewards {
     }
 
     protected RandomRewards() {
-        System.out.println("RandomRewards 讀取中:::");
+        System.out.println("【讀取中】 RandomRewards :::");
         // Gold Box
         List<Integer> returnArray = new ArrayList<>();
 

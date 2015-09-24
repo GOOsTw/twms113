@@ -52,7 +52,7 @@ public class BuddyList implements Serializable {
     /**
      * 待處理的好友請求
      */
-    private Deque<BuddyEntry> pendingReqs = new LinkedList<BuddyEntry>();
+    private final Deque<BuddyEntry> pendingReqs = new LinkedList<>();
 
     /**
      * 好友清單建構子
@@ -77,7 +77,7 @@ public class BuddyList implements Serializable {
     }
 
     public boolean contains(int characterId) {
-        return buddies.containsKey(Integer.valueOf(characterId));
+        return buddies.containsKey(characterId);
     }
 
     /**

@@ -7,7 +7,10 @@ import java.sql.SQLException;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import server.maps.SpeedRunType;
+import tools.FilePrinter;
 import tools.Pair;
 import tools.StringUtil;
 
@@ -36,12 +39,16 @@ public class SpeedRunner {
         speedRunData.remove(type);
     }
 
-    public final void loadSpeedRuns() throws SQLException {
+    public final void loadSpeedRuns(){
         if (speedRunData.size() > 0) {
             return;
         }
         for (SpeedRunType type : SpeedRunType.values()) {
-            loadSpeedRunData(type);
+            try {
+                loadSpeedRunData(type);
+            } catch (SQLException ex) {
+                FilePrinter.printError("loadSpeedRuns.txt", ex);
+            }
         }
     }
 

@@ -27,7 +27,8 @@ public class MonsterDropEntry {
      * @param itemId 物品代碼
      * @param chance 機率
      * @param questid 任務代碼
-     * @param Minimum Maximum 最小/最大 爆擊率
+     * @param Maximum
+     * @param Minimum 
      * 
      */
     

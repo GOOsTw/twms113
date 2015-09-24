@@ -14,15 +14,15 @@ import server.maps.MapleMapObject;
 
 public class ItemVac extends Thread {
     
-    private ConcurrentLinkedQueue<MapleMapObject> itemVacs;
+    private final ConcurrentLinkedQueue<MapleMapObject> itemVacs;
     private MapleMapItem item;
     private MapleMapObject object;
-    private MapleCharacter chr;
-    private MapleClient c;
+    private final MapleCharacter chr;
+    private final MapleClient c;
     
     public ItemVac(MapleCharacter chr) {
         this.chr = chr;
-        this.itemVacs = new ConcurrentLinkedQueue<MapleMapObject>();
+        this.itemVacs = new ConcurrentLinkedQueue<>();
         this.c = chr.getClient();
     }
     

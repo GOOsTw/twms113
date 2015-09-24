@@ -27,13 +27,12 @@ import client.inventory.ItemFlag;
 import client.MapleCharacter;
 import client.MapleClient;
 import server.MapleInventoryManipulator;
-import server.maps.MapleMapObjectType;
 import tools.packet.PlayerShopPacket;
 
 public class MaplePlayerShop extends AbstractPlayerStore {
 
     private int boughtnumber = 0;
-    private List<String> bannedList = new ArrayList<String>();
+    private final List<String> bannedList = new ArrayList<>();
 
     public MaplePlayerShop(MapleCharacter owner, int itemId, String desc) {
         super(owner, itemId, desc, "", 3);
@@ -120,9 +119,6 @@ public class MaplePlayerShop extends AbstractPlayerStore {
     }
 
     public boolean isBanned(String name) {
-        if (bannedList.contains(name)) {
-            return true;
-        }
-        return false;
+        return bannedList.contains(name);
     }
 }

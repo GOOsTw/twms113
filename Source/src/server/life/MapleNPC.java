@@ -45,9 +45,7 @@ public class MapleNPC extends AbstractLoadedMapleLife {
 
     @Override
     public void sendSpawnData(final MapleClient client) {
-        if (getId() >= 9901000) {
-            return;
-        } else {
+        if ( getId() > 9901000) {
             client.getSession().write(MaplePacketCreator.spawnNPC(this, true));
             client.getSession().write(MaplePacketCreator.spawnNPCRequestController(this, true));
         }

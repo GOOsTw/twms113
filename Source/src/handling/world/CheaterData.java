@@ -21,12 +21,13 @@
 package handling.world;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class CheaterData implements Serializable, Comparable<CheaterData> {
 
     private static final long serialVersionUID = -8733673311051249885L;
-    private int points;
-    private String info;
+    private final int points;
+    private final String info;
 
     public CheaterData(int points, String info) {
         this.points = points;
@@ -41,6 +42,7 @@ public class CheaterData implements Serializable, Comparable<CheaterData> {
         return points;
     }
 
+    @Override
     public int compareTo(CheaterData o) {
         int thisVal = getPoints();
         int anotherVal = o.getPoints();
@@ -54,5 +56,13 @@ public class CheaterData implements Serializable, Comparable<CheaterData> {
         }
         final CheaterData obj = (CheaterData) oth;
         return obj.points == this.points && obj.info.equals(this.info);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 83 * hash + this.points;
+        hash = 83 * hash + Objects.hashCode(this.info);
+        return hash;
     }
 }

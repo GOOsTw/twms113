@@ -77,7 +77,7 @@ public class MapleItemInformationProvider {
     protected final Map<Integer, String> faceList = new HashMap<>();
 
     protected MapleItemInformationProvider() {
-        System.out.println("MapleItemInformationProvider 讀取中:::");
+        System.out.println("【讀取中】 MapleItemInformationProvider :::");
     }
 
     public final void load() {
@@ -386,6 +386,8 @@ public class MapleItemInformationProvider {
     /**
      * returns the maximum of items in one slot
      * @param c
+     * @param itemId
+     * @return 
      */
     public final short getSlotMax(final MapleClient c, final int itemId) {
         if (slotMaxCache.containsKey(itemId)) {

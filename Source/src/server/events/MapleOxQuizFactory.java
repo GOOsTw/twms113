@@ -31,16 +31,17 @@ import java.sql.SQLException;
 import database.DatabaseConnection;
 import java.util.Map.Entry;
 import server.Randomizer;
+import tools.FilePrinter;
 import tools.Pair;
 
 public class MapleOxQuizFactory {
 
     private boolean initialized = false;
-    private Map<Pair<Integer, Integer>, MapleOxQuizEntry> questionCache;
-    private static MapleOxQuizFactory instance = new MapleOxQuizFactory();
+    private final Map<Pair<Integer, Integer>, MapleOxQuizEntry> questionCache;
+    private static final MapleOxQuizFactory instance = new MapleOxQuizFactory();
 
     public MapleOxQuizFactory() {
-        questionCache = new HashMap<Pair<Integer, Integer>, MapleOxQuizEntry>();
+        questionCache = new HashMap<>();
     }
 
     public static MapleOxQuizFactory getInstance() {
@@ -66,18 +67,15 @@ public class MapleOxQuizFactory {
         if (initialized) {
             return;
         }
-        System.out.println("Loading OX Quiz :::");
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM wz_oxdata");
-            ResultSet rs = ps.executeQuery();
+        System.out.println("【讀取中】 OX Quiz :::");
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM wz_oxdata"); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                questionCache.put(new Pair<Integer, Integer>(rs.getInt("questionset"), rs.getInt("questionid")), get(rs));
+                questionCache.put(new Pair<>(rs.getInt("questionset"), rs.getInt("questionid")), get(rs));
             }
-            rs.close();
-            ps.close();
+
         } catch (Exception e) {
-            e.printStackTrace();
+            FilePrinter.printError("MapleOxQuizEntry.txt", e);
         }
         System.out.print("Done\r");
         initialized = true;
@@ -85,23 +83,19 @@ public class MapleOxQuizFactory {
 
     public MapleOxQuizEntry getFromSQL(String sql) {
         MapleOxQuizEntry ret = null;
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 ret = get(rs);
             }
-            rs.close();
-            ps.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            FilePrinter.printError("MapleOxQuizEntry.txt", e);
         }
         return ret;
     }
 
     public static MapleOxQuizEntry getOxEntry(int questionSet, int questionId) {
-        return getInstance().getOxQuizEntry(new Pair<Integer, Integer>(questionSet, questionId));
+        return getInstance().getOxQuizEntry(new Pair<>(questionSet, questionId));
     }
 
     public static MapleOxQuizEntry getOxEntry(Pair<Integer, Integer> pair) {
@@ -136,8 +130,8 @@ public class MapleOxQuizFactory {
 
     public static class MapleOxQuizEntry {
 
-        private String question, answerText;
-        private int answer, questionset, questionid;
+        private final String question, answerText;
+        private final int answer, questionset, questionid;
 
         public MapleOxQuizEntry(String question, String answerText, int answer, int questionset, int questionid) {
             this.question = question;

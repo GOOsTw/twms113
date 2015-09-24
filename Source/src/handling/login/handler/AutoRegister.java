@@ -64,7 +64,6 @@ public class AutoRegister {
             success = true;
         } catch (SQLException ex) {
             System.out.println(ex);
-            return;
         }
         /*                }
          }

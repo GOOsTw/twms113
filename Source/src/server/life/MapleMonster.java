@@ -1262,6 +1262,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         stats.setEffectiveness(e, ElementalEffectiveness.WEAK);
         MobTimer.getInstance().schedule(new Runnable() {
 
+            @Override
             public void run() {
                 stats.removeEffectiveness(e);
             }
@@ -1408,7 +1409,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
          * @param attacker 攻擊者
          * @param lastAttackTime 最後攻擊時間
          */
-        private MapleCharacter attacker;
+        private final MapleCharacter attacker;
         private long lastAttackTime;
 
         public AttackingMapleCharacter(final MapleCharacter attacker, final long lastAttackTime) {
@@ -1449,9 +1450,9 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     private final class SingleAttackerEntry implements AttackerEntry {
 
         private long damage = 0;
-        private int chrid;
+        private final int chrid;
         private long lastAttackTime;
-        private int channel;
+        private final int channel;
 
         public SingleAttackerEntry(final MapleCharacter from, final int cserv) {
             this.chrid = from.getId();
@@ -1550,9 +1551,9 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     private class PartyAttackerEntry implements AttackerEntry {
 
         private long totDamage;
-        private final Map<Integer, OnePartyAttacker> attackers = new HashMap<Integer, OnePartyAttacker>(6);
-        private int partyid;
-        private int channel;
+        private final Map<Integer, OnePartyAttacker> attackers = new HashMap<>(6);
+        private final int partyid;
+        private final int channel;
 
         public PartyAttackerEntry(final int partyid, final int cserv) {
             this.partyid = partyid;
@@ -1595,6 +1596,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
 
         //增加傷害的公式
+        @Override
         public void addDamage(final MapleCharacter from, final long damage, final boolean updateAttackTime) {
             final OnePartyAttacker oldPartyAttacker = attackers.get(from.getId());
             if (oldPartyAttacker != null) {
@@ -1622,7 +1624,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         public final void killedMob(final MapleMap map, final int baseExp, final boolean mostDamage, final int lastSkill) {
             MapleCharacter pchr, highest = null;
             long iDamage, highestDamage = 0;
-            int iexp = 0;
+            int iexp;
             MapleParty party;
             double averagePartyLevel, expWeight, levelMod, innerBaseExp, expFraction;
             List<MapleCharacter> expApplicable;
@@ -1637,7 +1639,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
                 Class_Bonus_EXP = 0;
                 Premium_Bonus_EXP = 0;
-                expApplicable = new ArrayList<MapleCharacter>();
+                expApplicable = new ArrayList<>();
                 for (final MaplePartyCharacter partychar : party.getMembers()) {
                     if (attacker.getKey().getLevel() - partychar.getLevel() <= 5 || stats.getLevel() - partychar.getLevel() <= 5) {
                         pchr = map.getCharacterById(partychar.getId());
@@ -1712,10 +1714,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 return false;
             }
             final PartyAttackerEntry other = (PartyAttackerEntry) obj;
-            if (partyid != other.partyid) {
-                return false;
-            }
-            return true;
+            return partyid == other.partyid;
         }
     }
 
@@ -1759,7 +1758,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         final int level = chr.getSkillLevel(steal);
         if (level > 0 && !getStats().isBoss() && stolen == -1 && steal.getEffect(level).makeChanceResult()) {
             final MapleMonsterInformationProvider mi = MapleMonsterInformationProvider.getInstance();
-            final List<MonsterDropEntry> dropEntry = new ArrayList<MonsterDropEntry>(mi.retrieveDrop(getId()));
+            final List<MonsterDropEntry> dropEntry = new ArrayList<>(mi.retrieveDrop(getId()));
             Collections.shuffle(dropEntry);
             IItem idrop;
             for (MonsterDropEntry d : dropEntry) {

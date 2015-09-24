@@ -93,20 +93,21 @@ public class Start {
         LoginServer.setup();
         ChannelServer.startAllChannels();
 
-        System.out.println("購物商城 啟動中:::");
+        System.out.println("【啟動中】 購物商城:::");
         CashShopServer.setup();
-        System.out.println("購物商城 啟動完畢:::");
+        
         CheatTimer.getInstance().register(AutobanManager.getInstance(), 60000);
+        
         Runtime.getRuntime().addShutdownHook(new Thread(ShutdownServer.getInstance()));
-        try {
-            SpeedRunner.getInstance().loadSpeedRuns();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        
+        SpeedRunner.getInstance().loadSpeedRuns();
+        
         World.registerRespawn();
         LoginServer.setOn();
-        System.out.println("伺服器開啟完畢 :::");
+        System.out.println("【伺服器開啟完畢】");
+        
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
         while (!World.isShutDown) {
             try {
                 System.out.print(">>");

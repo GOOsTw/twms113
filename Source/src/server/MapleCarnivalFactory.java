@@ -1,7 +1,6 @@
 package server;
 
 import client.MapleDisease;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import server.life.MobSkillFactory;
@@ -14,8 +13,8 @@ import server.life.MobSkill;
 public class MapleCarnivalFactory {
 
     private final static MapleCarnivalFactory instance = new MapleCarnivalFactory();
-    private final Map<Integer, MCSkill> skills = new HashMap<Integer, MCSkill>();
-    private final Map<Integer, MCSkill> guardians = new HashMap<Integer, MCSkill>();
+    private final Map<Integer, MCSkill> skills = new HashMap<>();
+    private final Map<Integer, MCSkill> guardians = new HashMap<>();
     private final MapleDataProvider dataRoot = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/Skill.wz");
 
     public MapleCarnivalFactory() {
@@ -28,9 +27,12 @@ public class MapleCarnivalFactory {
     }
 
     private void initialize() {
-        if (skills.size() != 0) {
+        if (!skills.isEmpty()) {
             return;
         }
+        
+        System.out.println("【讀取中】 MapleCarnivalFactory:::");
+        
         for (MapleData z : dataRoot.getData("MCSkill.img")) {
             skills.put(Integer.parseInt(z.getName()), new MCSkill(MapleDataTool.getInt("spendCP", z, 0), MapleDataTool.getInt("mobSkillID", z, 0), MapleDataTool.getInt("level", z, 0), MapleDataTool.getInt("target", z, 1) > 1));
         }
