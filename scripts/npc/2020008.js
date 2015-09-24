@@ -48,13 +48,13 @@ function action(mode, type, selection) {
         else
             status--;
         if (status == 0) {
-		if (cm.getJob() == 111 || cm.getJob() == 121 || cm.getJob() == 131 || cm.getJob() == 112 || cm.getJob() == 122 || cm.getJob() == 132) {	
+		if (cm.getJob() == 111 || cm.getJob() == 121 || cm.getJob() == 131 || cm.getJob() == 112 || cm.getJob() == 122 || cm.getJob() == 132 || cm.getJob() == 2111) {	
 	    cm.sendOk("您屬於劍士部,但是您已經成功三轉了,已經超越了教官的強度了!");
 	    cm.dispose();
 	    return;
 		}
-            if (!(cm.getJob()==110 ||cm.getJob()==120||cm.getJob()==130)) {
-		cm.sendOk("請找您的轉職教官,您不屬於劍士部的滾吧!");
+            if (!(cm.getJob()==110 || cm.getJob()==120 || cm.getJob()==130 || cm.getJob() == 2110)) {
+				cm.sendOk("請找您的轉職教官,您不屬於劍士部的滾吧!");
                 cm.dispose();
                 return;
 			} else if (cm.getPlayer().getLevel() < 70) {
@@ -100,7 +100,14 @@ function action(mode, type, selection) {
 					cm.sendOk("恭喜轉職了!");
 					cm.worldMessage("『轉職快報』：恭喜玩家."+ cm.getChar().getName() +"  成功三轉-龍騎士讓我們熱烈的祝福他/她吧！");
                     cm.dispose();
-                }
+                } else if (cm.getJob()==2110) {
+					cm.changeJob(2111);
+					cm.gainItem(4031057, -1);
+					cm.gainItem(4031058, -1);
+					cm.sendOk("恭喜轉職了!");
+					cm.worldMessage("『轉職快報』：恭喜玩家."+ cm.getChar().getName() +"  成功狂狼勇士三轉讓我們熱烈的祝福他/她吧！");
+                    cm.dispose();
+				}
             } else if (cm.haveItem(4031057, 1))
                 cm.sendAcceptDecline("你準備承擔最終測試??");
             else

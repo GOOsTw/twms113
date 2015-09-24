@@ -1,11 +1,11 @@
-var status = -1;
+﻿var status = -1;
 
 function start(mode, type, selection) {
-	qm.sendNext("Please talk to Tylus of El Nath instead.");
+	qm.sendNext("請到冰原雪域找劍士教官三轉。");
 	qm.dispose();
 }
 
 function end(mode, type, selection) {
-	qm.sendNext("Please talk to Tylus of El Nath instead.");
+	qm.sendNext("請到冰原雪域找劍士教官三轉。");
 	qm.dispose();
 }
