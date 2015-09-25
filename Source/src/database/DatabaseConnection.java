@@ -139,8 +139,8 @@ public class DatabaseConnection {
                     if (expiredConnection() || this.connection.isValid(0)) {
                         lock.lock();
                         try {
-                            this.connection.close();
                             connections.remove(tid);
+                            this.connection.close();
                             ret = true;
                         } catch (SQLException e) {
                             ret = false;

@@ -21,7 +21,6 @@
 package handling;
 
 import constants.ServerConstants;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.List;
@@ -44,7 +43,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanRegistrationException;
@@ -55,7 +53,6 @@ import javax.management.ObjectName;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
-import server.Randomizer;
 import tools.MapleAESOFB;
 import tools.packet.LoginPacket;
 import tools.data.input.ByteArrayByteStream;

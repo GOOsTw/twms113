@@ -1066,8 +1066,9 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             aniTime += skilz.getAnimationTime();
         }
         status.setCancelTask(aniTime);
+        
         if (poison && getHp() > 1) { // 中毒[POISON]
-            //status.setValue(status.getStati(), (int) ((eff.getDOT() + from.getStat().dot + from.getStat().getDamageIncrease(eff.getSourceId())) * from.getStat().getCurrentMaxBaseDamage() / 100.0));
+            final int poisonDamage = (int) Math.min(Short.MAX_VALUE, (long) (getMobMaxHp() / (70.0 - from.getSkillLevel(status.getSkill())) + 0.999));
             int dam = (int) (aniTime / 1000 * status.getX() / 2);
             status.setValue(stat, dam);
             // 設定中毒持續傷害，如果status.getX()跟這裡傷害不一樣就會有顯示跟實際不同的問題
@@ -1100,7 +1101,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                     }
                     int dam = status.getPoisonSchedule();
                     if (dam >= hp) {
-                        dam = (int) (hp - 1);
+                        dam = (int) (hp - status.getX());
                     }
                     damage(from, dam, false);
                 } else {

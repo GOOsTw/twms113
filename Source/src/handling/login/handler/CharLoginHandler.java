@@ -113,6 +113,21 @@ public class CharLoginHandler {
                 c.getSession().write(LoginPacket.getTempBan(KoreanDateUtil.getTempBanTimestamp(tempbannedTill.getTimeInMillis()), c.getBanReason()));
             }
         } else {
+            
+            /* Clear all connected client */
+            
+            boolean check = false;
+            
+            for(ChannelServer ch : ChannelServer.getAllInstances()) {
+                List<MapleCharacter> list = ch.getPlayerStorage().getAllCharactersThreadSafe();
+                for ( MapleCharacter chr : list) {
+                    if( chr.getAccountID() == c.getAccID()) {
+                        ch.removePlayer(chr);
+                        break;
+                    }
+                }
+            }
+            
             c.loginAttempt = 0;
             LoginWorker.registerClient(c);
         }

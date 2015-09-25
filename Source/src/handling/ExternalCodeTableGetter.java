@@ -37,7 +37,7 @@ public class ExternalCodeTableGetter {
         props = properties;
     }
 
-    private final static <T extends Enum<? extends WritableIntValueHolder> & WritableIntValueHolder> T valueOf(final String name, T[] values) {
+    private static <T extends Enum<? extends WritableIntValueHolder> & WritableIntValueHolder> T valueOf(final String name, T[] values) {
         for (T val : values) {
             if (val.name().equals(name)) {
                 return val;
@@ -46,7 +46,7 @@ public class ExternalCodeTableGetter {
         return null;
     }
 
-    private final <T extends Enum<? extends WritableIntValueHolder> & WritableIntValueHolder> short getValue(final String name, T[] values, final short def) {
+    private <T extends Enum<? extends WritableIntValueHolder> & WritableIntValueHolder> short getValue(final String name, T[] values, final short def) {
         String prop = props.getProperty(name);
         if (prop != null && prop.length() > 0) {
             String trimmed = prop.trim();
@@ -73,7 +73,7 @@ public class ExternalCodeTableGetter {
 
     public final static <T extends Enum<? extends WritableIntValueHolder> & WritableIntValueHolder> String getOpcodeTable(T[] enumeration) {
         StringBuilder enumVals = new StringBuilder();
-        List<T> all = new ArrayList<T>(); // need a mutable list plawks
+        List<T> all = new ArrayList<>(); // need a mutable list plawks
         all.addAll(Arrays.asList(enumeration));
         Collections.sort(all, new Comparator<WritableIntValueHolder>() {
 

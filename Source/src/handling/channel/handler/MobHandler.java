@@ -138,15 +138,18 @@ public class MobHandler {
         final List<LifeMovementFragment> res = MovementParse.parseMovement(slea, 2);
 
         c.getSession().write(MobPacket.moveMonsterResponse(monster.getObjectId(), moveid, monster.getMp(), monster.isControllerHasAggro(), realskill, level));
-        
-
-        if ( monster.getController() != null && monster.getController().getId() != c.getPlayer().getId()) {
+       
+        if (monster.getController() != c.getPlayer()) {
             if (monster.isAttackedBy(c.getPlayer())) {// aggro and controller change
                 monster.switchController(c.getPlayer(), true);
             } else {
                 return;
             }
+        } else if (skill == -1 && monster.isControllerKnowsAboutAggro() && !monster.getStats().getMobile() && !monster.isFirstAttack()) {
+            monster.setControllerHasAggro(false);
+            monster.setControllerKnowsAboutAggro(false);
         }
+        
         if (res != null ) {
             if (slea.available() < 9 || slea.available() > 17) { //9.. 0 -> endPos? -> endPos again? -> 0 -> 0
                 System.out.println("slea.available != 17 (movement parsing error)");

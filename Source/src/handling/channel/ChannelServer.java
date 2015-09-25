@@ -183,11 +183,12 @@ public class ChannelServer implements Serializable {
        
         try {
             if (acceptor != null) {
-                /*for (IoSession session : acceptor.getManagedSessions().values()) {
+                for (IoSession session : acceptor.getManagedSessions().values()) {
                    session.close(true);
                 }
-                acceptor.unbind(new InetSocketAddress(port));
-                */acceptor.dispose();
+                acceptor.getManagedSessions().clear();
+                //acceptor.unbind(new InetSocketAddress(port));
+                //acceptor.dispose();
                 acceptor = null;
                 System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 解除端口成功");
             }
@@ -540,14 +541,7 @@ public class ChannelServer implements Serializable {
         List<MapleCharacter> all = this.players.getAllCharactersThreadSafe();
         for (MapleCharacter chr : all) {
             try {
-                if( chr.getClient() == null || !chr.getClient().getSession().isConnected() ) {
-                    chr.getClient().disconnect(true, false);
-                    continue;
-                }
-                if (chr.getClient().getLatency() < 0) {
-                    chr.getClient().disconnect(true, false);
-                    continue;
-                }
+                
                 int res = chr.saveToDB(false, false);
                 if (res == 1) {
                     ++ppl;

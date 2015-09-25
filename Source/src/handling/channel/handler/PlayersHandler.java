@@ -83,7 +83,7 @@ public class PlayersHandler {
         final int famechange = mode == 0 ? -1 : 1;
         final MapleCharacter target = (MapleCharacter) chr.getMap().getMapObject(who, MapleMapObjectType.PLAYER);
 
-        if (target == chr) { // faming self
+        if (target.getId() == chr.getId()) { // faming self
             chr.getCheatTracker().registerOffense(CheatingOffense.FAMING_SELF);
             return;
         } else if (chr.getLevel() < 15) {
