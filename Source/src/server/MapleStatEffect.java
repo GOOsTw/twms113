@@ -339,7 +339,9 @@ public class MapleStatEffect implements Serializable {
                     statups.add(new Pair<>(MapleBuffStat.MAXHP, ret.x));
                     statups.add(new Pair<>(MapleBuffStat.MAXMP, ret.y));
                     break;
-                case 1001: // recovery
+                case 1001: // 團隊治癒
+                case 10001001:
+                case 20001001:
                     statups.add(new Pair<>(MapleBuffStat.RECOVERY, ret.x));
                     break;
                 case 1111002: // combo

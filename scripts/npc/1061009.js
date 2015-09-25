@@ -30,7 +30,7 @@ function start() {
 		cm.spawnMobOnMap(9001001,1,-276,-3,108010201);
 		cm.sendOk("法師3轉的試煉即將開始!!");
 		cm.dispose();
-		} else if (cm.getPlayer().getMapId() == 105070001 && cm.getJob() == 110 || cm.getJob() == 120 || cm.getJob() == 130) {
+		} else if (cm.getPlayer().getMapId() == 105070001 && cm.getJob() == 110 || cm.getJob() == 120 || cm.getJob() == 130 || cm.getJob() == 2110) {
 		cm.warp(108010300, 0);
 		cm.spawnMobOnMap(9001000,1,-276,-3,108010301);
 		cm.sendOk("劍士3轉的試煉即將開始!!");
