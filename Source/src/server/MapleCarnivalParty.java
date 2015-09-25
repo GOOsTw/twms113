@@ -16,15 +16,15 @@ import tools.MaplePacketCreator;
  */
 public class MapleCarnivalParty {
 
-    private List<Integer> members = new LinkedList<Integer>();
-    private WeakReference<MapleCharacter> leader;
-    private byte team;
-    private int channel;
+    private final List<Integer> members = new LinkedList<>();
+    private final WeakReference<MapleCharacter> leader;
+    private final byte team;
+    private final int channel;
     private short availableCP = 0, totalCP = 0;
     private boolean winner = false;
 
     public MapleCarnivalParty(final MapleCharacter owner, final List<MapleCharacter> members1, final byte team1) {
-        leader = new WeakReference<MapleCharacter>(owner);
+        leader = new WeakReference<>(owner);
         for (MapleCharacter mem : members1) {
             members.add(mem.getId());
             mem.setCarnivalParty(this);

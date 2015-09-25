@@ -2769,7 +2769,7 @@ public final class MapleMap {
             if (numShouldSpawn > 0) {
                 int spawned = 0;
 
-                final List<Spawns> randomSpawn = new ArrayList<Spawns>(monsterSpawn);
+                final List<Spawns> randomSpawn = new ArrayList<>(monsterSpawn);
                 Collections.shuffle(randomSpawn);
 
                 for (Spawns spawnPoint : randomSpawn) {
@@ -2777,7 +2777,7 @@ public final class MapleMap {
                         spawnPoint.spawnMonster(this);
                         spawned++;
                     }
-                    if (spawned >= numShouldSpawn) {
+                    if (spawned >= numShouldSpawn && !GameConstants.isForceRespawn(mapid)) {
                         break;
                     }
                 }
