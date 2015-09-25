@@ -35,7 +35,7 @@ public class MonsterStatusEffect {
     private final boolean monsterSkill;
     private WeakReference<MapleCharacter> weakChr = null;
     private Integer x;
-    private int poisonSchedule = 0;
+    private int poisonDamage = 0;
     private boolean reflect = false;
     private long cancelTime = 0;
 
@@ -89,13 +89,13 @@ public class MonsterStatusEffect {
         return this.cancelTime;
     }
 
-    public final void setPoisonSchedule(final int poisonSchedule, MapleCharacter chrr) {
-        this.poisonSchedule = poisonSchedule;
+    public final void setPoisonDamage(final int poisonDamage, MapleCharacter chrr) {
+        this.poisonDamage = poisonDamage;
         this.weakChr = new WeakReference<>(chrr);
     }
 
-    public final int getPoisonSchedule() {
-        return this.poisonSchedule;
+    public final int getPoisonDamage() {
+        return this.poisonDamage;
     }
 
     public final boolean shouldCancel(long now) {
@@ -116,7 +116,7 @@ public class MonsterStatusEffect {
 
     public final void cancelPoisonSchedule(MapleMonster mm) {
         mm.doPoison(this, weakChr);
-        this.poisonSchedule = 0;
+        this.poisonDamage = 0;
         this.weakChr = null;
     }
 

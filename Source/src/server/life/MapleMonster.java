@@ -1072,17 +1072,17 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             int dam = (int) (aniTime / 1000 * status.getX() / 2);
             status.setValue(stat, dam);
             // 設定中毒持續傷害，如果status.getX()跟這裡傷害不一樣就會有顯示跟實際不同的問題
-            status.setPoisonSchedule(status.getX(), from);
+            status.setPoisonDamage(status.getX(), from);
         } else if (statusSkill == 4111003 || statusSkill == 14111001) { // shadow web
             status.setValue(status.getStati(), (int) (getMobMaxHp() / 50.0 + 0.999));
-            status.setPoisonSchedule(status.getX(), from);
+            status.setPoisonDamage(status.getX(), from);
         } else if (statusSkill == 4341003) { // monsterbomb
-            status.setPoisonSchedule((int) (eff.getDamage() * from.getStat().getCurrentMaxBaseDamage() / 100.0), from);
+            status.setPoisonDamage((int) (eff.getDamage() * from.getStat().getCurrentMaxBaseDamage() / 100.0), from);
 
         } else if (statusSkill == 4121004 || statusSkill == 4221004) { // NINJA_AMBUSH
             status.setValue(status.getStati(), Math.min(Short.MAX_VALUE, (int) (eff.getDamage() * from.getStat().getCurrentMaxBaseDamage() / 100.0)));
             int dam = (int) (aniTime / 1000 * status.getX() / 2);
-            status.setPoisonSchedule(dam, from);
+            status.setPoisonDamage(dam, from);
             if (dam > 0) {
                 if (dam >= hp) {
                     dam = (int) (hp - 1);
@@ -1095,11 +1095,11 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         final Runnable applyEffectTask = new Runnable() {
             @Override
             public final void run() {
-                if (status.getPoisonSchedule() != 0 && isAlive() && (hp - status.getPoisonSchedule()) > 1) {
+                if (status.getPoisonDamage() != 0 && isAlive() && (hp - status.getPoisonDamage()) > 1) {
                     if (from.isStaff() && MapleServerHandler.isDebugMode()) {
                         //from.dropMessage(6, "執行 => 持續傷害: 傷害[" + status.getPoisonSchedule() + "] 執行時間[" + System.currentTimeMillis() + "]");
                     }
-                    int dam = status.getPoisonSchedule();
+                    int dam = status.getPoisonDamage();
                     if (dam >= hp) {
                         dam = (int) (hp - status.getX());
                     }
@@ -1242,7 +1242,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         if (weakChr == null) {
             return;
         }
-        int damage = status.getPoisonSchedule();
+        int damage = status.getPoisonDamage();
         final boolean shadowWeb = status.getSkill() == 4111003 || status.getSkill() == 14111001;
         final MapleCharacter chr = weakChr.get();
         boolean cancel = damage <= 0 || chr == null || chr.getMapId() != map.getId();
