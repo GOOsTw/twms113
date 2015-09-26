@@ -30,7 +30,7 @@ import server.maps.MapleDoor;
 public class MaplePartyCharacter implements Serializable {
 
     private static final long serialVersionUID = 6215463252132450750L;
-    private String name;
+    private final String name;
     private int id;
     private int level;
     private int channel;
@@ -54,7 +54,6 @@ public class MaplePartyCharacter implements Serializable {
         final List<MapleDoor> doors = maplechar.getDoors();
         if (doors.size() > 0) {
             final MapleDoor door = doors.get(0);
-
             this.doorTown = door.getTown().getId();
             this.doorTarget = door.getTarget().getId();
             this.doorSkill = door.getSkill();

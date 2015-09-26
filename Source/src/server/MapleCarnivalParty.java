@@ -27,7 +27,6 @@ public class MapleCarnivalParty {
         leader = new WeakReference<>(owner);
         for (MapleCharacter mem : members1) {
             members.add(mem.getId());
-            mem.setCarnivalParty(this);
         }
         team = team1;
         channel = owner.getClient().getChannel();

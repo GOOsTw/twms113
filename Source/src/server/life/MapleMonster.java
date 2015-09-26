@@ -299,8 +299,9 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                     this.getMap().killMonster(this, from, false, false, this.getStats().getSelfD(), lastSkill);
                 } else { // Show HP
                     for (final AttackerEntry mattacker : attackers) {
+                        
                         for (final AttackingMapleCharacter cattacker : mattacker.getAttackers()) {
-                            if (cattacker.getAttacker().getMap() == from.getMap()) { // current attacker is on the map of the monster
+                            if ( cattacker != null && cattacker.getAttacker().getMap() == from.getMap()) { // current attacker is on the map of the monster
                                 if (cattacker.getLastAttackTime() >= System.currentTimeMillis() - 4000) {
                                     cattacker.getAttacker().getClient().sendPacket(MobPacket.showMonsterHP(getObjectId(), (int) Math.ceil((hp * 100.0) / getMobMaxHp())));
                                 }
@@ -359,7 +360,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                         case 3:
                             for (final AttackerEntry mattacker : attackers) {
                                 for (final AttackingMapleCharacter cattacker : mattacker.getAttackers()) {
-                                    if (cattacker.getAttacker().getMap() == from.getMap()) { // current attacker is on the map of the monster
+                                    if (cattacker != null && cattacker.getAttacker().getMap() == from.getMap()) { // current attacker is on the map of the monster
                                         if (cattacker.getLastAttackTime() >= System.currentTimeMillis() - 4000) {
                                             cattacker.getAttacker().getClient().getSession().write(MobPacket.showMonsterHP(getObjectId(), (int) Math.ceil((hp * 100.0) / getMobMaxHp())));
                                         }
@@ -905,6 +906,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     public void applyMonsterBuff(final Map<MonsterStatus, Integer> effect, final int x, final int skillId, long duration, final MobSkill skill, final List<Integer> reflection) {
         final MapleCharacter con = getController();
         BuffTimer BuffTimer = Timer.BuffTimer.getInstance();
+        
         final Runnable cancelTask = new Runnable() {
             @Override
             public void run() {
@@ -1069,8 +1071,8 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         
         if (poison && getHp() > 1) { // 中毒[POISON]
             final int poisonDamage = (int) Math.min(Short.MAX_VALUE, (long) (getMobMaxHp() / (70.0 - from.getSkillLevel(status.getSkill())) + 0.999));
-            int dam = (int) (aniTime / 1000 * status.getX() / 2);
-            status.setValue(stat, dam);
+            status.setValue(stat, poisonDamage);
+            status.setX(poisonDamage);
             // 設定中毒持續傷害，如果status.getX()跟這裡傷害不一樣就會有顯示跟實際不同的問題
             status.setPoisonDamage(status.getX(), from);
         } else if (statusSkill == 4111003 || statusSkill == 14111001) { // shadow web
@@ -1101,7 +1103,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                     }
                     int dam = status.getPoisonDamage();
                     if (dam >= hp) {
-                        dam = (int) (hp - status.getX());
+                        dam = (int) (hp - status.getPoisonDamage());
                     }
                     damage(from, dam, false);
                 } else {
@@ -1410,12 +1412,12 @@ public class MapleMonster extends AbstractLoadedMapleLife {
          * @param attacker 攻擊者
          * @param lastAttackTime 最後攻擊時間
          */
-        private final MapleCharacter attacker;
+        private final WeakReference<MapleCharacter> attacker;
         private long lastAttackTime;
 
         public AttackingMapleCharacter(final MapleCharacter attacker, final long lastAttackTime) {
             super();
-            this.attacker = attacker;
+            this.attacker = new WeakReference<>(attacker);
             this.lastAttackTime = lastAttackTime;
         }
 
@@ -1431,7 +1433,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
         //得到現在攻擊者 傳回攻擊者
         public final MapleCharacter getAttacker() {
-            return attacker;
+            return attacker.get();
         }
     }
 

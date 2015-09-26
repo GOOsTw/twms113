@@ -59,6 +59,10 @@ public class MonsterStatusEffect {
     public final MonsterStatus getStati() {
         return stati;
     }
+    
+    public void setX(int x) {
+        this.x = x;
+    }
 
     public final Integer getX() {
         return x;

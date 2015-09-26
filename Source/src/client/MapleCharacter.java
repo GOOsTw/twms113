@@ -654,7 +654,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 ISkill skil;
                 while (rs.next()) {
                     skil = SkillFactory.getSkill(rs.getInt("skillid"));
-                    if (skil != null && GameConstants.isApplicableSkill(rs.getInt("skillid"))) {
+                    if (skil != null && GameConstants.isApplicableSkill(rs.getInt("skillid")) && rs.getByte("skilllevel") >= 0) {
                         ret.skills.put(skil, new SkillEntry(rs.getByte("skilllevel"), rs.getByte("masterlevel"), rs.getLong("expiration")));
                     } else if (skil == null) { //doesnt. exist. e.g. bb
                         ret.remainingSp[GameConstants.getSkillBookForSkill(rs.getInt("skillid"))] += rs.getByte("skilllevel");

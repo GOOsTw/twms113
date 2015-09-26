@@ -475,7 +475,7 @@ public class PlayerHandler {
 
         if (chr.getSkillLevel(skill) <= 0 || chr.getSkillLevel(skill) != skillLevel) {
             if (!GameConstants.isMulungSkill(skillid) && !GameConstants.isPyramidSkill(skillid)) {
-                c.getSession().close();
+                //c.getSession().close();
                 return;
             }
             if (GameConstants.isMulungSkill(skillid)) {

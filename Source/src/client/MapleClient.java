@@ -761,7 +761,10 @@ public class MapleClient implements Serializable {
             final String namez = player.getName();
             final boolean hidden = player.isHidden();
             final int gmLevel = player.getGMLevel();
-            final int idz = player.getId(), messengerid = player.getMessenger() == null ? 0 : player.getMessenger().getId(), gid = player.getGuildId(), fid = player.getFamilyId();
+            final int idz = player.getId(), 
+                      messengerid = player.getMessenger() == null ? 0 : player.getMessenger().getId(), 
+                      gid = player.getGuildId(), 
+                      fid = player.getFamilyId();
             final BuddyList bl = player.getBuddylist();
             final MaplePartyCharacter chrp = new MaplePartyCharacter(player);
             final MapleMessengerCharacter chrm = new MapleMessengerCharacter(player);

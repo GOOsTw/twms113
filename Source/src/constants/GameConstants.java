@@ -2185,24 +2185,17 @@ public class GameConstants {
         }
     }
 
+    public static boolean isCarnivalMaps(int mapid) {
+        return mapid / 100000 == 9800 && (mapid % 10 == 1 || mapid % 1000 == 100);
+
+    }
+
     public static boolean isForceRespawn(int mapid) {
         switch (mapid) {
             case 925100100: //crocs and stuff
                 return true;
-            case 980031100: // 擂台 2
-            case 980032100:
-            case 980033100:
-            
-            case 980000101:
-            case 980000201:    
-            case 980000301:
-            case 980000401:
-            case 980000501:
-            case 980000601:
-            
-                return true;
             default:
-                return mapid / 100000 == 9800 && (mapid % 10 == 1 || mapid % 1000 == 100);
+                return false;
         }
     }
 

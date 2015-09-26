@@ -708,7 +708,7 @@ public class EventInstanceManager {
             return;
         }
         leader.clearCarnivalRequests();
-        List<MapleCharacter> characters = new LinkedList<MapleCharacter>();
+        List<MapleCharacter> characters = new LinkedList<>();
         final MapleParty party = leader.getParty();
 
         if (party == null) {
@@ -723,6 +723,8 @@ public class EventInstanceManager {
             }
         }
         final MapleCarnivalParty carnivalParty = new MapleCarnivalParty(leader, characters, team);
+        
+        
         try {
             em.getIv().invokeFunction("registerCarnivalParty", this, carnivalParty);
         } catch (ScriptException ex) {

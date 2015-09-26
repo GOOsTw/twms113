@@ -287,17 +287,30 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
     @Override
     public void sessionClosed(final IoSession session) throws Exception {
+
         final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
+
+        if (channel == -1 && !cs) {
+            if (client != null) {
+                client.setPlayer(null);
+            }
+            // Login Server 
+        } else if (cs) {
+            // CS Server
+        } else if (channel > 0) {
+
+        }
+
         if (client != null) {
             if (client.getPlayer() != null) {
                 client.getPlayer().saveToDB(true, cs);
-            }
-            if (!(client.getLoginState() == MapleClient.CASH_SHOP_TRANSITION
-                    || client.getLoginState() == MapleClient.CHANGE_CHANNEL
-                    || client.getLoginState() == MapleClient.LOGIN_SERVER_TRANSITION) && client.getPlayer() != null) {
-                client.disconnect(true, cs);
-                int ch = World.Find.findChannel(client.getPlayer().getId());
-                ChannelServer.getInstance(ch).removePlayer(client.getPlayer());
+                if (!(client.getLoginState() == MapleClient.CASH_SHOP_TRANSITION
+                        || client.getLoginState() == MapleClient.CHANGE_CHANNEL
+                        || client.getLoginState() == MapleClient.LOGIN_SERVER_TRANSITION) && client.getPlayer() != null) {
+                    int ch = World.Find.findChannel(client.getPlayer().getId());
+                    ChannelServer.getInstance(ch).removePlayer(client.getPlayer());
+                    client.disconnect(true, cs);
+                }
             }
         }
 
@@ -383,7 +396,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     @Override
     public void sessionIdle(final IoSession session, final IdleStatus status) throws Exception {
         final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
-        
+
         if (client != null) {
             client.sendPing();
         } else {

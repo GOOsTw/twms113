@@ -122,6 +122,8 @@ public class CharLoginHandler {
                 List<MapleCharacter> list = ch.getPlayerStorage().getAllCharactersThreadSafe();
                 for ( MapleCharacter chr : list) {
                     if( chr.getAccountID() == c.getAccID()) {
+                        if( chr.getMap() != null )
+                            chr.getMap().removePlayer(chr);
                         ch.removePlayer(chr);
                         break;
                     }

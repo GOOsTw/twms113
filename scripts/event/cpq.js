@@ -41,12 +41,9 @@ function playerEntry(eim, player) {
 function registerCarnivalParty(eim, carnivalParty) {
     if (eim.getProperty("red").equals("-1")) {
         eim.setProperty("red", carnivalParty.getLeader().getId() + "");
-        // display message about recieving invites for next 3 minutes;
-	//eim.restartEventTimer(180000);
         eim.schedule("end", 3 * 60 * 1000); // 3 minutes
     } else {
         eim.setProperty("blue", carnivalParty.getLeader().getId() + "");
-	//eim.restartEventTimer(10000);
         eim.schedule("start", 10000);
     }
 }
@@ -157,16 +154,16 @@ function scheduledTimeout(eim) {
             disposeAll(eim);
 	}
     } else {
-	var blueParty = getParty(eim, "blue");
-	var redParty = getParty(eim, "red");
-    	if (blueParty.getTotalCP() > redParty.getTotalCP()) {
-        	blueParty.setWinner(true);
-    	} else if (redParty.getTotalCP() > blueParty.getTotalCP()) {
-        	redParty.setWinner(true);
-    	}
-    	blueParty.displayMatchResult();
-    	redParty.displayMatchResult();
-    	eim.schedule("warpOut", 10000);
+        var blueParty = getParty(eim, "blue");
+        var redParty = getParty(eim, "red");
+        if (blueParty.getTotalCP() > redParty.getTotalCP()) {
+            blueParty.setWinner(true);
+        } else if (redParty.getTotalCP() > blueParty.getTotalCP()) {
+            redParty.setWinner(true);
+        }
+        blueParty.displayMatchResult();
+        redParty.displayMatchResult();
+        eim.schedule("warpOut", 10000);
     }
 }
 
@@ -177,7 +174,7 @@ function playerRevive(eim, player) {
         iter.next().CPUpdate(true, player.getCarnivalParty().getAvailableCP(), player.getCarnivalParty().getTotalCP(), player.getCarnivalParty().getTeam());
     }
 	player.addHP(50);
-player.changeMap(eim.getMapInstance(reviveMap), eim.getMapInstance(reviveMap).getPortal(0));
+    player.changeMap(eim.getMapInstance(reviveMap), eim.getMapInstance(reviveMap).getPortal(0));
 	return true;
 }
 
