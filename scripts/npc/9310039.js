@@ -53,7 +53,7 @@ function action(mode, type, selection) {
                             inMap += (cPlayer.getJobId() == 900 ? 3 : 1);
                         }
                     }
-                    if (party.size() > 3 || inMap < 1) {
+                    if ( inMap < 3) {
                         next = false;
                     }
                     if (next) {
