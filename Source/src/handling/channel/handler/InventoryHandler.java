@@ -2353,7 +2353,7 @@ public class InventoryHandler {
                     if (c.getPlayer().getParty() != null) {
                         for (final MaplePartyCharacter pc : c.getPlayer().getParty().getMembers()) {
                             final MapleCharacter chr = c.getPlayer().getMap().getCharacterById(pc.getId());
-                            if (chr != null) {
+                            if (chr != null ) {
                                 ii.getItemEffect(id).applyTo(chr);
                             }
                         }

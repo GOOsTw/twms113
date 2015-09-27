@@ -5,6 +5,7 @@ import constants.ServerConstants.PlayerGMRank;
 import client.MapleClient;
 import client.MapleStat;
 import client.inventory.MapleInventoryType;
+import constants.MapConstants;
 import scripting.NPCConversationManager;
 import scripting.NPCScriptManager;
 import tools.MaplePacketCreator;
@@ -134,10 +135,8 @@ public class PlayerCommand {
         public int execute(MapleClient c, String[] splitted) {
             if (!c.getPlayer().getCheatTracker().GMSpam(500000, 1) && (!c.getPlayer().isGM())) { // 5 minutes.
                 World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6,"『玩家』" + c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期:" + getDayOfWeek()).getBytes());
-                System.out.println("『玩家』" + c.getPlayer().getName() + " 使用了報時系統");
             } else if (c.getPlayer().isGM()) {
                 World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6,"『管理員』" + c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期:" + getDayOfWeek()).getBytes());
-                System.out.println("『管理員』" + c.getPlayer().getName() + " 使用了報時系統");
             } else {
                 c.getPlayer().dropMessage(6, "為了防止瘋狂報時引響其他玩家，所以1分鐘只能使用一次。");
             }
@@ -206,7 +205,7 @@ public class PlayerCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-            if ((c.getPlayer().getMapId() >= 925020109 && c.getPlayer().getMapId() <= 925023814)) {
+            if ( MapConstants.isBlockFM(c.getPlayer().getMapId())) {
                 c.getPlayer().dropMessage(5, "你不能在這裡使用指令.");
                 return 0;
             }

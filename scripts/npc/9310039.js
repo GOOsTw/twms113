@@ -24,7 +24,10 @@ function action(mode, type, selection) {
         } else if (status == 1) {
             if (selection == 0) {
                 var pt = cm.getPlayer().getParty();
-                if (cm.getParty() == null) {
+                if ( cm.getQuestStatus(8534) != 2 ) {
+                    cm.sendOk("你似乎不夠資格挑戰武陵妖僧！");
+                    cm.dispose();
+                } else if (cm.getParty() == null) {
                     cm.sendOk("請組隊再來找我....");
                 } else if (!cm.isLeader()) {
                     cm.sendOk("請叫你的隊長來找我!");

@@ -58,7 +58,6 @@ import server.MapleItemInformationProvider;
 import handling.channel.ChannelServer;
 import handling.channel.MapleGuildRanking;
 import database.DatabaseConnection;
-import handling.channel.handler.HiredMerchantHandler;
 import handling.world.MapleParty;
 import handling.world.MaplePartyCharacter;
 import handling.world.World;
@@ -66,7 +65,6 @@ import handling.world.guild.MapleGuild;
 import server.MapleCarnivalChallenge;
 import java.util.HashMap;
 import handling.world.guild.MapleGuildAlliance;
-import java.rmi.RemoteException;
 import java.util.Arrays;
 import javax.script.Invocable;
 import server.MapleStatEffect;
@@ -77,7 +75,6 @@ import server.Timer;
 import server.Timer.CloneTimer;
 import server.life.MapleMonster;
 import server.life.MapleMonsterInformationProvider;
-import server.life.MapleNPC;
 import server.maps.Event_PyramidSubway;
 import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
@@ -85,13 +82,13 @@ import tools.StringUtil;
 
 public class NPCConversationManager extends AbstractPlayerInteraction {
 
-    private MapleClient c;
-    private int npc, questid;
+    private final MapleClient c;
+    private final int npc, questid;
     private String getText;
-    private byte type; // -1 = NPC, 0 = start quest, 1 = end quest
+    private final byte type; // -1 = NPC, 0 = start quest, 1 = end quest
     private byte lastMsg = -1;
     public boolean pendingDisposal = false;
-    private Invocable iv;
+    private final Invocable iv;
 
     public NPCConversationManager(MapleClient c, int npc, int questid, byte type, Invocable iv) {
         super(c);
@@ -212,8 +209,10 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         }
         c.getSession().write(MaplePacketCreator.getNPCTalk(npc, (byte) 0, text, "01 01", type));
         lastMsg = 0;
+        
     }
 
+    
     public void sendOk(String text) {
         if (lastMsg > -1) {
             return;
@@ -486,6 +485,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         MapleQuest.getInstance(questid).forceStart(getPlayer(), getNpc(), null);
     }
 
+    @Override
     public void forceStartQuest(int id) {
         MapleQuest.getInstance(id).forceStart(getPlayer(), getNpc(), null);
     }
@@ -498,6 +498,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         MapleQuest.getInstance(questid).forceComplete(getPlayer(), getNpc());
     }
 
+    @Override
     public void forceCompleteQuest(final int id) {
         MapleQuest.getInstance(id).forceComplete(getPlayer(), getNpc());
     }
@@ -525,7 +526,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void unequipEverything() {
         MapleInventory equipped = getPlayer().getInventory(MapleInventoryType.EQUIPPED);
         MapleInventory equip = getPlayer().getInventory(MapleInventoryType.EQUIP);
-        List<Short> ids = new LinkedList<Short>();
+        List<Short> ids = new LinkedList<>();
         for (IItem item : equipped.list()) {
             ids.add(item.getPosition());
         }
@@ -595,7 +596,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         if (getPlayer().getParty() == null) {
             return null;
         }
-        List<MapleCharacter> chars = new LinkedList<MapleCharacter>(); // creates an empty array full of shit..
+        List<MapleCharacter> chars = new LinkedList<>(); // creates an empty array full of shit..
         for (MaplePartyCharacter chr : getPlayer().getParty().getMembers()) {
             for (ChannelServer channel : ChannelServer.getAllInstances()) {
                 MapleCharacter ch = channel.getPlayerStorage().getCharacterById(chr.getId());
@@ -738,7 +739,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         if (squad == null) {
             return -1;
         } else {
-            if (squad.getMembers().contains(c.getPlayer())) {
+            if (squad.getMembers().contains(c.getPlayer().getName())) {
                 return 1;
             } else if (squad.isBanned(c.getPlayer())) {
                 return 2;
@@ -798,10 +799,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public boolean isPlayerInstance() {
-        if (c.getPlayer().getEventInstance() != null) {
-            return true;
-        }
-        return false;
+        return c.getPlayer().getEventInstance() != null;
     }
 
     public void changeStat(byte slot, int type, short amount) {
@@ -937,19 +935,18 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public long getMerchantMesos() {
         long mesos = 0;
-        try {
-            Connection con = (Connection) DatabaseConnection.getConnection();
-            PreparedStatement ps = (PreparedStatement) con.prepareStatement("SELECT * FROM hiredmerchants WHERE merchantid = ?");
+
+        Connection con = (Connection) DatabaseConnection.getConnection();
+        try (PreparedStatement ps = (PreparedStatement) con.prepareStatement("SELECT * FROM hiredmerchants WHERE merchantid = ?")) {
             ps.setInt(1, getPlayer().getId());
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                rs.close();
-                ps.close();
-            } else {
-                mesos = rs.getLong("mesos");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    rs.close();
+                    ps.close();
+                } else {
+                    mesos = rs.getLong("mesos");
+                }
             }
-            rs.close();
-            ps.close();
         } catch (SQLException ex) {
             System.err.println("Error gaining mesos in hired merchant" + ex);
         }
@@ -1048,7 +1045,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public void maxStats() {
-        List<Pair<MapleStat, Integer>> statup = new ArrayList<Pair<MapleStat, Integer>>(2);
+        List<Pair<MapleStat, Integer>> statup = new ArrayList<>(2);
         c.getPlayer().getStat().setStr((short) 32767);
         c.getPlayer().getStat().setDex((short) 32767);
         c.getPlayer().getStat().setInt((short) 32767);
@@ -1059,22 +1056,22 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         c.getPlayer().getStat().setHp((short) 30000);
         c.getPlayer().getStat().setMp((short) 30000);
 
-        statup.add(new Pair<MapleStat, Integer>(MapleStat.STR, Integer.valueOf(32767)));
-        statup.add(new Pair<MapleStat, Integer>(MapleStat.DEX, Integer.valueOf(32767)));
-        statup.add(new Pair<MapleStat, Integer>(MapleStat.LUK, Integer.valueOf(32767)));
-        statup.add(new Pair<MapleStat, Integer>(MapleStat.INT, Integer.valueOf(32767)));
-        statup.add(new Pair<MapleStat, Integer>(MapleStat.HP, Integer.valueOf(30000)));
-        statup.add(new Pair<MapleStat, Integer>(MapleStat.MAXHP, Integer.valueOf(30000)));
-        statup.add(new Pair<MapleStat, Integer>(MapleStat.MP, Integer.valueOf(30000)));
-        statup.add(new Pair<MapleStat, Integer>(MapleStat.MAXMP, Integer.valueOf(30000)));
+        statup.add(new Pair<>(MapleStat.STR, 32767));
+        statup.add(new Pair<>(MapleStat.DEX, 32767));
+        statup.add(new Pair<>(MapleStat.LUK, 32767));
+        statup.add(new Pair<>(MapleStat.INT, 32767));
+        statup.add(new Pair<>(MapleStat.HP, 30000));
+        statup.add(new Pair<>(MapleStat.MAXHP, 30000));
+        statup.add(new Pair<>(MapleStat.MP, 30000));
+        statup.add(new Pair<>(MapleStat.MAXMP, 30000));
 
         c.getSession().write(MaplePacketCreator.updatePlayerStats(statup, c.getPlayer().getJob()));
     }
 
     public Pair<String, Map<Integer, String>> getSpeedRun(String typ) {
-        final SpeedRunType type = SpeedRunType.valueOf(typ);
-        if (SpeedRunner.getInstance().getSpeedRunData(type) != null) {
-            return SpeedRunner.getInstance().getSpeedRunData(type);
+        final SpeedRunType stype = SpeedRunType.valueOf(typ);
+        if (SpeedRunner.getInstance().getSpeedRunData(stype) != null) {
+            return SpeedRunner.getInstance().getSpeedRunData(stype);
         }
         return new Pair<String, Map<Integer, String>>("", new HashMap<Integer, String>());
     }
@@ -1299,7 +1296,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public final List<Integer> getAllPotentialInfo() {
-        return new ArrayList<Integer>(MapleItemInformationProvider.getInstance().getAllPotentialInfo().keySet());
+        return new ArrayList<>(MapleItemInformationProvider.getInstance().getAllPotentialInfo().keySet());
     }
 
     public final String getPotentialInfo(final int id) {
@@ -1335,6 +1332,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         getMap().broadcastMessage(MaplePacketCreator.yellowChat(getPlayer().getName() + ", 你願意承認接納 " + chr.getName() + " 做你的妻子，誠實遵照上帝的誡命，和她生活在一起，無論在什麼環境，願意終生養她、愛惜她、安慰她、尊重她、保護她，以至奉召歸主？？"));
         CloneTimer.getInstance().schedule(new Runnable() {
 
+            @Override
             public void run() {
                 if (chr == null || getPlayer() == null) {
                     warpMap(680000500, 0);
@@ -1345,6 +1343,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         }, 10000);
         CloneTimer.getInstance().schedule(new Runnable() {
 
+            @Override
             public void run() {
                 if (chr == null || getPlayer() == null) {
                     if (getPlayer() != null) {

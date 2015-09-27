@@ -24,7 +24,6 @@ import constants.GameConstants;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.io.Serializable;
-import java.util.Map.Entry;
 
 import java.util.Map.Entry;
 import server.life.MapleLifeFactory;
@@ -33,7 +32,7 @@ import server.quest.MapleQuest;
 public class MapleQuestStatus implements Serializable {
 
     private static final long serialVersionUID = 91795419934134L;
-    private transient MapleQuest quest;
+    private final transient MapleQuest quest;
     private byte status;
     private Map<Integer, Integer> killedMobs = null;
     private int npc;
@@ -43,6 +42,8 @@ public class MapleQuestStatus implements Serializable {
 
     /**
      * Creates a new instance of MapleQuestStatus
+     * @param quest
+     * @param status
      */
     public MapleQuestStatus(final MapleQuest quest, final byte status) {
         this.quest = quest;
@@ -91,14 +92,14 @@ public class MapleQuestStatus implements Serializable {
         return GameConstants.isCustomQuest(quest.getId());
     }
 
-    private final void registerMobs() {
-        killedMobs = new LinkedHashMap<Integer, Integer>();
+    private void registerMobs() {
+        killedMobs = new LinkedHashMap<>();
         for (final int i : quest.getRelevantMobs().keySet()) {
             killedMobs.put(i, 0);
         }
     }
 
-    private final int maxMob(final int mobid) {
+    private int maxMob(final int mobid) {
         for (final Map.Entry<Integer, Integer> qs : quest.getRelevantMobs().entrySet()) {
             if (qs.getKey() == mobid) {
                 return qs.getValue();
@@ -135,7 +136,7 @@ public class MapleQuestStatus implements Serializable {
         return false;
     }
 
-    private final boolean questCount(final int mo, final int id) {
+    private boolean questCount(final int mo, final int id) {
         if (MapleLifeFactory.getQuestCount(mo) != null) {
             for (int i : MapleLifeFactory.getQuestCount(mo)) {
                 if (i == id) {

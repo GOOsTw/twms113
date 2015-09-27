@@ -1,6 +1,21 @@
 package constants;
 
 public class MapConstants {
+    
+    public static boolean isBlockFM(final int mapid) {
+        if(isEventMap(mapid))
+            return true;
+        if( mapid / 100000 == 9800 && (mapid % 10 == 1 || mapid % 1000 == 100))
+            return true;
+        if ( mapid / 10000 == 92502 )
+            return true;
+        switch(mapid) {
+            case 702060000:
+                return true;
+            default:
+                return false;
+        }
+    }
 
     public static boolean isStartingEventMap(final int mapid) {
         switch (mapid) {

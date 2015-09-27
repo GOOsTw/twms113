@@ -723,7 +723,8 @@ public class EventInstanceManager {
             }
         }
         final MapleCarnivalParty carnivalParty = new MapleCarnivalParty(leader, characters, team);
-        
+        for(MapleCharacter chr : characters)
+            chr.setCarnivalParty(carnivalParty);
         
         try {
             em.getIv().invokeFunction("registerCarnivalParty", this, carnivalParty);
