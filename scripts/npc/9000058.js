@@ -113,8 +113,10 @@ function action(mode, type, selection) {
 				cm.gainItem(1142082, 1);
 				cm.forceCompleteQuest(29507);
 			}
-				cm.forceCompleteQuest(50246);
+				cm.forceCompleteQuest(2127);
+				cm.forceCompleteQuest(3083);
 				cm.forceCompleteQuest(20527);
+				cm.forceCompleteQuest(50246);
 				cm.sendOk("完成任務。");
 				cm.dispose();
 			}

@@ -36,8 +36,8 @@ function action(mode, type, selection) {
             } else if (selection == 2) {
                 beauty = 2;
                 haircolor = Array();
-                var current = parseInt(cm.getPlayer().getHair()/10)*10;
-                for(var i = 0; i < 8; i++)
+                var current = parseInt((cm.getPlayerStat("HAIR") / 10)) * 10;
+                for(var i = 0; i < 7; i++)
                     haircolor.push(current + i);
                 cm.sendStyle("選擇一個想要的", haircolor);
             }
