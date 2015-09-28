@@ -25,6 +25,7 @@
     Description:         Event Assistant
 */
 var status = 0;
+var banMap = Array(109080000, 109080010, 109040000, 109030001, 109060000, 109010000);
 
 function start() {
     cm.sendNext("嗨 我是 #b江#k. 我在等待我的兄弟 #b保羅#k. 他應該現在在這裡...");
@@ -32,6 +33,12 @@ function start() {
 
 
 function action(mode, type, selection) {
+	for(var i = 0; i < banMap.length; i++) {
+	if (cm.getPlayer().getMapId() == banMap[i]){
+		cm.sendOk("幹！想要偷跑吃屎去吧！");
+		cm.dispose();
+		}
+	}
     if (mode == -1) {
         cm.dispose();
     } else {
