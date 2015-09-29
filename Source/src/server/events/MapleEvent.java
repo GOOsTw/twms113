@@ -66,7 +66,7 @@ public abstract class MapleEvent {
         final int reward = RandomRewards.getInstance().getEventReward();
         if (reward == 0) {
             chr.gainMeso(66666, true, false, false);
-            chr.dropMessage(5, "你獲得 166666 楓幣");
+            chr.dropMessage(5, "你獲得 66666 楓幣");
         } else if (reward == 1) {
             chr.gainMeso(399999, true, false, false);
             chr.dropMessage(5, "你獲得 399999 楓幣");
