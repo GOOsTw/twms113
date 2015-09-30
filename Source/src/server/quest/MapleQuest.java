@@ -33,6 +33,7 @@ public class MapleQuest implements Serializable {
     protected Map<Integer, Integer> relevantMobs;
     private boolean autoStart = false;
     private boolean autoPreComplete = false;
+    private boolean autoAccept = false;
     private boolean repeatable = false, customend = false;
     private int viewMedalItem = 0, selectedSkillID = 0;
     protected String name = "";
@@ -41,6 +42,7 @@ public class MapleQuest implements Serializable {
     private static MapleData requirements;
     private static MapleData info;
     private static MapleData pinfo;
+    private boolean autoComplete;
 
     protected MapleQuest(final int id) {
         relevantMobs = new LinkedHashMap<>();
@@ -126,6 +128,8 @@ public class MapleQuest implements Serializable {
             ret.name = MapleDataTool.getString("name", questInfo, "");
             ret.autoStart = MapleDataTool.getInt("autoStart", questInfo, 0) == 1;
             ret.autoPreComplete = MapleDataTool.getInt("autoPreComplete", questInfo, 0) == 1;
+            ret.autoAccept = MapleDataTool.getInt("autoAccept", questInfo, 0) > 0;
+            ret.autoComplete = MapleDataTool.getInt("autoAccept", questInfo, 0) > 0;
             ret.viewMedalItem = MapleDataTool.getInt("viewMedalItem", questInfo, 0);
             ret.selectedSkillID = MapleDataTool.getInt("selectedSkillID", questInfo, 0);
         }
@@ -134,7 +138,6 @@ public class MapleQuest implements Serializable {
         if (pquestInfo != null) {
             for (MapleData d : pquestInfo.getChildByPath("rank")) {
                 List<Pair<String, Pair<String, Integer>>> pInfo = new ArrayList<>();
-                //LinkedHashMap<String, List<Pair<String, Pair<String, Integer>>>>
                 for (MapleData c : d) {
                     for (MapleData b : c) {
                         pInfo.add(new Pair<>(c.getName(), new Pair<>(b.getName(), MapleDataTool.getInt(b, 0))));
