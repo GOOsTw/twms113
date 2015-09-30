@@ -16,7 +16,7 @@ function action(mode, type, selection) {
 		} else if (status == 1) {
 			if(cm.haveItem(4031017)){
 			cm.removeAll(4031017);
-    		cm.warp(109050001, 0);
+    		cm.warp(109050000, 0);
 			cm.dispose();
 			} else {
 			cm.sendOk("你沒有#b#t4031017##k，你來找我做什麼？？");
