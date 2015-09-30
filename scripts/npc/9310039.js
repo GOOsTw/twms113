@@ -28,7 +28,7 @@ function action(mode, type, selection) {
                 if ( cm.getQuestStatus(8534) != 2 ) {
                     cm.sendOk("你似乎不夠資格挑戰武陵妖僧！");
                     cm.dispose();
-                } else if ( cm.getPlayer.getBossLog('shaoling') == 5 ) {
+                } else if ( cm.getBossLog('shaoling') == 5 ) {
                     cm.sendOk("每天只能打5次妖僧！");
                     cm.dispose();
                 } else if (cm.getParty() == null) {
