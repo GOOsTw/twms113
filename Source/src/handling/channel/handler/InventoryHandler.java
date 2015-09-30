@@ -943,9 +943,10 @@ public class InventoryHandler {
                 break;
             }
             case 2320000: // The Teleport Rock
-            case 5041000: // VIP Teleport Rock
-            case 5040000: // The Teleport Rock
-            case 5040001: { // Teleport Coke
+            case 5041000: // 高級順移之石
+            case 5040000: // 順移之石
+            case 5040001: //可樂翅膀
+            { 
                 if (slea.readByte() == 0) { // Rocktype
                     final MapleMap target = c.getChannelServer().getMapFactory().getMap(slea.readInt());
                     if ((itemId == 5041000 && c.getPlayer().isRockMap(target.getId())) || (itemId != 5041000 && c.getPlayer().isRegRockMap(target.getId()))) {
@@ -967,7 +968,7 @@ public class InventoryHandler {
                 }
                 break;
             }
-            case 5050000: { // AP Reset
+            case 5050000: { // 能力值
                 List<Pair<MapleStat, Integer>> statupdate = new ArrayList<>(2);
                 final MapleStat apto = MapleStat.getByValue(slea.readInt());
                 final MapleStat apfrom = MapleStat.getByValue(slea.readInt());
@@ -1632,7 +1633,7 @@ public class InventoryHandler {
                 }
                 break;
             }
-            case 5074000: { // Skull Megaphone
+            case 5074000: { // 骷髏喇叭
                 if (c.getPlayer().getLevel() < 10) {
                     c.getPlayer().dropMessage(5, "必須等級10級以上才可以使用.");
                     break;
@@ -1677,7 +1678,7 @@ public class InventoryHandler {
                 }
                 break;
             }
-            case 5072000: { // Super Megaphone
+            case 5072000: { // 高效能喇叭
                 if (c.getPlayer().getLevel() < 10) {
                     c.getPlayer().dropMessage(5, "必須要10等以上才能使用.");
                     break;
@@ -1823,6 +1824,7 @@ public class InventoryHandler {
                 used = true;
                 break;
             }
+            /* 日拋隱形眼鏡 */
             case 5152100:
             case 5152101:
             case 5152102:
@@ -1830,7 +1832,7 @@ public class InventoryHandler {
             case 5152104:
             case 5152105:
             case 5152106:
-            case 5152107: { // 日拋隱形眼鏡
+            case 5152107: {
                 if (c.getPlayer().getLevel() < 30) {
                     c.getPlayer().dropMessage(5, "必須等級30級以上才可以使用.");
                     break;
@@ -1840,6 +1842,7 @@ public class InventoryHandler {
                     break;
                 }
             }
+            /* 寵物技能 */
             case 5190001:
             case 5190002:
             case 5190003:
@@ -1848,7 +1851,13 @@ public class InventoryHandler {
             case 5190006:
             case 5190007:
             case 5190008:
-            case 5190000: { // Pet Flags
+            case 5190000: 
+            case 5191001:
+            case 5191002:
+            case 5191003:
+            case 5191004:
+            case 5191000: { 
+                final boolean isAdd = ( itemId / 1000 ) % 10 == 0;
                 final int uniqueid = (int) slea.readLong();
                 MaplePet pet = c.getPlayer().getPet(0);
                 int slo = 0;
@@ -1877,7 +1886,10 @@ public class InventoryHandler {
                 }
                 PetFlag zz = PetFlag.getByAddId(itemId);
                 if (zz != null && !zz.check(pet.getFlags())) {
-                    pet.setFlags(pet.getFlags() | zz.getValue());
+                    if( isAdd )
+                        pet.setFlags(pet.getFlags() | zz.getValue());
+                    else
+                        pet.setFlags(pet.getFlags() - zz.getValue());
                     c.getSession().write(PetPacket.updatePet(pet, c.getPlayer().getInventory(MapleInventoryType.CASH).getItem((byte) pet.getInventoryPosition())));
                     c.getSession().write(MaplePacketCreator.enableActions());
                     c.getSession().write(MTSCSPacket.changePetFlag(uniqueid, true, zz.getValue()));
@@ -1885,48 +1897,8 @@ public class InventoryHandler {
                 }
                 break;
             }
-            case 5191001:
-            case 5191002:
-            case 5191003:
-            case 5191004:
-            case 5191000: { // Pet Flags
-                final int uniqueid = (int) slea.readLong();
-                MaplePet pet = c.getPlayer().getPet(0);
-                int slo = 0;
-
-                if (pet == null) {
-                    break;
-                }
-                if (pet.getUniqueId() != uniqueid) {
-                    pet = c.getPlayer().getPet(1);
-                    slo = 1;
-                    if (pet != null) {
-                        if (pet.getUniqueId() != uniqueid) {
-                            pet = c.getPlayer().getPet(2);
-                            slo = 2;
-                            if (pet != null) {
-                                if (pet.getUniqueId() != uniqueid) {
-                                    break;
-                                }
-                            } else {
-                                break;
-                            }
-                        }
-                    } else {
-                        break;
-                    }
-                }
-                PetFlag zz = PetFlag.getByDelId(itemId);
-                if (zz != null && zz.check(pet.getFlags())) {
-                    pet.setFlags(pet.getFlags() - zz.getValue());
-                    c.getSession().write(PetPacket.updatePet(pet, c.getPlayer().getInventory(MapleInventoryType.CASH).getItem((byte) pet.getInventoryPosition())));
-                    c.getSession().write(MaplePacketCreator.enableActions());
-                    c.getSession().write(MTSCSPacket.changePetFlag(uniqueid, false, zz.getValue()));
-                    used = true;
-                }
-                break;
-            }
-            case 5170000: { // Pet name change
+            /* 寵物名字 */
+            case 5170000: {
                 MaplePet pet = c.getPlayer().getPet(0);
                 int slo = 0;
                 if (pet == null) {
@@ -1940,6 +1912,7 @@ public class InventoryHandler {
                 used = true;
                 break;
             }
+            /* 寵物食品 */
             case 5240000:
             case 5240001:
             case 5240002:
@@ -2009,6 +1982,7 @@ public class InventoryHandler {
                 used = true;
                 break;
             }
+            /* 智慧貓頭鷹 */
             case 5230000: {// owl of minerva
                 final int itemSearch = slea.readInt();
                 final List<HiredMerchant> hms = c.getChannelServer().searchMerchant(itemSearch);
@@ -2020,9 +1994,11 @@ public class InventoryHandler {
                 }
                 break;
             }
-            case 5281001: //idk, but probably
+           
+            case 5281001:  /*花香*/
             case 5280001: // Gas Skill
-            case 5281000: { // Passed gas
+            case 5281000:  /*毒屁*/
+            { // Passed gas
                 Rectangle bounds = new Rectangle((int) c.getPlayer().getPosition().getX(), (int) c.getPlayer().getPosition().getY(), 1, 1);
                 MapleMist mist = new MapleMist(bounds, c.getPlayer());
                 c.getPlayer().getMap().spawnMist(mist, 10000, true);
@@ -2031,16 +2007,13 @@ public class InventoryHandler {
                 used = true;
                 break;
             }
-            case 5370000: { // Chalkboard
+            /* 黑板 */
+            case 5370000: 
+            case 5370001:
+            { 
                 if (c.getPlayer().getMapId() / 1000000 == 109) {
                     c.getPlayer().dropMessage(1, "請勿在活動地圖使用黑板");
                 } else {
-                    c.getPlayer().setChalkboard(slea.readMapleAsciiString());
-                }
-                break;
-            }
-            case 5370001: { // BlackBoard
-                if (c.getPlayer().getMapId() / 1000000 == 910) {
                     c.getPlayer().setChalkboard(slea.readMapleAsciiString());
                 }
                 break;
@@ -2087,7 +2060,7 @@ public class InventoryHandler {
                         return;
                     }
                     if (c.getPlayer().isPlayer()) {
-                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.serverNotice(2, sb.toString()));
+                        World.Broadcast.broadcastSmega(MaplePacketCreator.getAvatarMega(c.getPlayer(), c.getChannel(), itemId, text, ear));
                         System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + text);
                     } else if (c.getPlayer().isGM()) {
                         World.Broadcast.broadcastSmega(MaplePacketCreator.getAvatarMega(c.getPlayer(), c.getChannel(), itemId, text, ear).getBytes());
