@@ -234,13 +234,15 @@ public class PlayerCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-            if (c.getPlayer().Car == c.getPlayer().getMapId() && c.getPlayer().getMapId() / 1000000 != 4) {
+
+            if (MapConstants.isCar(c.getPlayer().getMapId())) {
+                c.getPlayer().clearSavedLocation(SavedLocationType.MONSTER_CARNIVAL);
                 MapleMap map = c.getChannelServer().getMapFactory().getMap(100000000);
                 c.getPlayer().changeMap(map, map.getPortal(0));
+                c.getPlayer().dropMessage(5, "卡圖解救成功！");
             } else {
                 c.getPlayer().dropMessage(1, "你並沒有卡圖啊。");
             }
-            c.getPlayer().Car = 0;
             return 1;
         }
     }

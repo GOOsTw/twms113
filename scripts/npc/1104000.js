@@ -1,4 +1,4 @@
-﻿var status = -1;
+var status = -1;
 
 function action(mode, type, selection) {
     if (mode == 1) {
