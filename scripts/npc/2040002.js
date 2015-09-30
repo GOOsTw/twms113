@@ -7,7 +7,11 @@ function start() {
     action(1, 0, 0);
 }
 
-equals    if(mode == 0 && status == 0) {
+function action(mode, type, selection) {
+    if(mode == -1) {
+        cm.dispose();
+    } else {
+        if(mode == 0 && status == 0) {
 	cm.sendNext("我明白。這是非常可以理解的，考慮到你將面臨內部一個非常危險的怪物的事實。如果你覺得心臟的改變，那麼請你跟我說話。我確信可以從別人像你使用的幫助。");
 	cm.dispose();
 	return;

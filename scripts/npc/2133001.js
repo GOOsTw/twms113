@@ -46,7 +46,7 @@ function action(mode, type, selection) {
 	        cm.removeAll(2270004);
 	        cm.warp(930000800,0);
 	} else {
-		pi.playerMessage(5, "請確認你的其他欄有沒有滿");
+		cm.getPlayer().dropMessage(5, "請確認你的其他欄有沒有滿");
 	}
 	    break;
     }
