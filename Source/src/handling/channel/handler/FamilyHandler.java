@@ -38,9 +38,9 @@ import tools.packet.FamilyPacket;
 public class FamilyHandler {
 
     public static final void RequestFamily(final SeekableLittleEndianAccessor slea, MapleClient c) {
-        MapleCharacter chr = c.getChannelServer().getPlayerStorage().getCharacterByName(slea.readMapleAsciiString());
-        if (chr != null) {
-            c.sendPacket(FamilyPacket.getFamilyPedigree(chr));
+        MapleCharacter target = c.getChannelServer().getPlayerStorage().getCharacterByName(slea.readMapleAsciiString());
+        if (target != null) {
+            c.sendPacket(FamilyPacket.getFamilyPedigree(target));
         }
     }
 
@@ -54,7 +54,9 @@ public class FamilyHandler {
         if (entry == null) {
             return;
         }
-        boolean success = c.getPlayer().getFamilyId() > 0 && c.getPlayer().canUseFamilyBuff(entry) && c.getPlayer().getCurrentRep() > entry.rep;
+        boolean success = c.getPlayer().getFamilyId() > 0 
+                && c.getPlayer().canUseFamilyBuff(entry) 
+                && c.getPlayer().getCurrentRep() > entry.rep;
         if (!success) {
             return;
         }

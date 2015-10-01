@@ -37,18 +37,22 @@ import client.inventory.MaplePet;
 import database.DatabaseConnection;
 import handling.channel.ChannelServer;
 import handling.world.World;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import server.maps.*;
 import tools.MaplePacketCreator;
 
-public class PlayerNPC extends MapleNPC {
+public final class PlayerNPC extends MapleNPC {
 
-    private Map<Byte, Integer> equips = new HashMap<Byte, Integer>();
-    private int mapid, face, hair, charId;
+    private Map<Byte, Integer> equips = new HashMap<>();
+    private final int mapid, charId;
+    private int face, hair ;
     private byte skin, gender;
-    private int[] pets = new int[3];
+    private final int[] pets = new int[3];
 
-    public PlayerNPC(ResultSet rs) throws Exception {
+    public PlayerNPC(ResultSet rs) throws SQLException  {
         super(rs.getInt("ScriptId"), rs.getString("name"));
         hair = rs.getInt("hair");
         face = rs.getInt("face");
@@ -67,14 +71,16 @@ public class PlayerNPC extends MapleNPC {
         }
 
         Connection con = DatabaseConnection.getConnection();
-        PreparedStatement ps = con.prepareStatement("SELECT * FROM playernpcs_equip WHERE NpcId = ?");
-        ps.setInt(1, getId());
-        ResultSet rs2 = ps.executeQuery();
-        while (rs2.next()) {
-            equips.put(rs2.getByte("equippos"), rs2.getInt("equipid"));
+        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM playernpcs_equip WHERE NpcId = ?")) {
+            ps.setInt(1, getId());
+            try (ResultSet rs2 = ps.executeQuery()) {
+                while (rs2.next()) {
+                    equips.put(rs2.getByte("equippos"), rs2.getInt("equipid"));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PlayerNPC.class.getName()).log(Level.SEVERE, null, ex);
         }
-        rs2.close();
-        ps.close();
     }
 
     public PlayerNPC(MapleCharacter cid, int npc, MapleMap map, MapleCharacter base) {
@@ -95,18 +101,13 @@ public class PlayerNPC extends MapleNPC {
     }
 
     public static void loadAll() {
-        List<PlayerNPC> toAdd = new ArrayList<PlayerNPC>();
+        List<PlayerNPC> toAdd = new ArrayList<>();
         Connection con = DatabaseConnection.getConnection();
-        try {
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM playernpcs");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                toAdd.add(new PlayerNPC(rs));
-            }
-            rs.close();
-            ps.close();
+            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM playernpcs"); ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    toAdd.add(new PlayerNPC(rs));
+                }
         } catch (Exception se) {
-            se.printStackTrace();
         }
         for (PlayerNPC npc : toAdd) {
             npc.addToServer();
@@ -144,7 +145,7 @@ public class PlayerNPC extends MapleNPC {
         setGender(chr.getGender());
         setPets(chr.getPets());
 
-        equips = new HashMap<Byte, Integer>();
+        equips = new HashMap<>();
         for (IItem item : chr.getInventory(MapleInventoryType.EQUIPPED).list()) {
             if (item.getPosition() < -128) {
                 continue;
@@ -174,7 +175,6 @@ public class PlayerNPC extends MapleNPC {
                 removeFromServer();
             }
         } catch (Exception se) {
-            se.printStackTrace();
         }
     }
 
@@ -220,7 +220,6 @@ public class PlayerNPC extends MapleNPC {
             }
             ps.close();
         } catch (Exception se) {
-            se.printStackTrace();
         }
     }
 

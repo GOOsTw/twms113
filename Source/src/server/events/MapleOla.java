@@ -26,13 +26,11 @@ import client.MapleCharacter;
 import server.Randomizer;
 import server.Timer.EventTimer;
 import tools.MaplePacketCreator;
-import server.maps.MapleMap;
-import server.maps.SavedLocationType;
 
 public class MapleOla extends MapleEvent {
 
     private static final long serialVersionUID = 845748150824L;
-    private long time = 600000; //reduce for less time
+    private final long time = 600000; //reduce for less time
     private long timeStarted = 0;
     private transient ScheduledFuture<?> olaSchedule;
     private int[] stages = new int[3];

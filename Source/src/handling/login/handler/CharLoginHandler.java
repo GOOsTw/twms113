@@ -25,7 +25,6 @@ import java.util.Calendar;
 
 import client.inventory.IItem;
 import client.inventory.Item;
-import client.LoginCrypto;
 import client.MapleClient;
 import client.MapleCharacter;
 import client.MapleCharacterUtil;
@@ -35,15 +34,12 @@ import handling.channel.ChannelServer;
 import handling.login.LoginInformationProvider;
 import handling.login.LoginServer;
 import handling.login.LoginWorker;
-import handling.world.World;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.MapleItemInformationProvider;
 import server.quest.MapleQuest;
-import server.ServerProperties;
 import tools.MaplePacketCreator;
 import tools.packet.LoginPacket;
 import tools.KoreanDateUtil;
@@ -51,41 +47,37 @@ import tools.data.input.SeekableLittleEndianAccessor;
 
 public class CharLoginHandler {
 
-    private static final boolean loginFailCount(final MapleClient c) {
+    private static boolean loginFailCount(final MapleClient c) {
         c.loginAttempt++;
-        if (c.loginAttempt > 5) {
-            return true;
-        }
-        return false;
+        return c.loginAttempt > 5;
     }
 
-    public static final void Welcome(final MapleClient c) {
+    public static final void handleWelcome(final MapleClient c) {
 
-        // c.sendPacket(MaplePacketCreator.serverNotice(1, "歡迎來到尻尻谷"));
     }
 
-    public static final void login(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleLogin(final SeekableLittleEndianAccessor slea, final MapleClient c) {
 
         if (slea.available() <= 4) {
             c.getSession().close(true);
             return;
         }
-        final String login = slea.readMapleAsciiString();
-        final String pwd = slea.readMapleAsciiString();
+        
+        final String account = slea.readMapleAsciiString();
+        final String password = slea.readMapleAsciiString();
 
-        c.setAccountName(login);
+        c.setAccountName(account);
         final boolean ipBan = c.hasBannedIP();
         final boolean macBan = c.hasBannedMac();
 
-        int loginok = 0;
         if (LoginServer.autoRegister) {
-            if (AutoRegister.autoRegister && !AutoRegister.getAccountExists(login) && (!c.hasBannedIP() || !c.hasBannedMac())) {
-                if (pwd.equalsIgnoreCase("disconnect") || pwd.equalsIgnoreCase("fixme")) {
+            if (AutoRegister.autoRegister && !AutoRegister.getAccountExists(account) && (!c.hasBannedIP() || !c.hasBannedMac())) {
+                if (password.equalsIgnoreCase("disconnect") || password.equalsIgnoreCase("fixme")) {
                     c.sendPacket(MaplePacketCreator.serverNotice(1, "This password is invalid."));
                     c.sendPacket(LoginPacket.getLoginFailed(1)); //Shows no message, used for unstuck the login button
                     return;
                 }
-                AutoRegister.createAccount(login, pwd, c.getSession().getRemoteAddress().toString());
+                AutoRegister.createAccount(account, password, c.getSession().getRemoteAddress().toString());
                 if (AutoRegister.success) {
                     c.sendPacket(MaplePacketCreator.serverNotice(1, "帳號創建成功,請重新登入!"));
                     c.sendPacket(LoginPacket.getLoginFailed(1)); //Shows no message, used for unstuck the login button
@@ -94,14 +86,14 @@ public class CharLoginHandler {
             }
         }
 
-        loginok = c.login(login, pwd, ipBan || macBan);
+        int loginok = c.login(account, password, ipBan || macBan);
         final Calendar tempbannedTill = c.getTempBanCalendar();
 
         if (loginok == 0 && (ipBan || macBan) && !c.isGm()) {
             loginok = 3;
             if (macBan) {
                 // this is only an ipban o.O" - maybe we should refactor this a bit so it's more readable
-                MapleCharacter.ban(c.getSession().getRemoteAddress().toString().split(":")[0], "Enforcing account ban, account " + login, false, 4, false);
+                MapleCharacter.ban(c.getSession().getRemoteAddress().toString().split(":")[0], "Enforcing account ban, account " + account, false, 4, false);
             }
         }
         if (loginok != 0) {
@@ -136,37 +128,6 @@ public class CharLoginHandler {
     }
 
 
-    /*   public static final void login(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-     final String login = slea.readMapleAsciiString();
-     final String pwd = slea.readMapleAsciiString();
-
-     c.setAccountName(login);
-     final boolean ipBan = c.hasBannedIP();
-     final boolean macBan = c.hasBannedMac();
-
-     int loginok = c.login(login, pwd, ipBan || macBan);
-     final Calendar tempbannedTill = c.getTempBanCalendar();
-
-     if (loginok == 0 && (ipBan || macBan) && !c.isGm()) {
-     loginok = 3;
-     if (macBan) {
-     // this is only an ipban o.O" - maybe we should refactor this a bit so it's more readable
-     MapleCharacter.ban(c.getSession().getRemoteAddress().toString().split(":")[0], "Enforcing account ban, account " + login, false, 4, false);
-     }
-     }
-     if (loginok != 0) {
-     if (!loginFailCount(c)) {
-     c.sendPacket(LoginPacket.getLoginFailed(loginok));
-     }
-     } else if (tempbannedTill.getTimeInMillis() != 0) {
-     if (!loginFailCount(c)) {
-     c.sendPacket(LoginPacket.getTempBan(KoreanDateUtil.getTempBanTimestamp(tempbannedTill.getTimeInMillis()), c.getBanReason()));
-     }
-     } else {
-     c.loginAttempt = 0;
-     LoginWorker.registerClient(c);
-     }
-     }*/
     public static final void SetGenderRequest(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         String username = slea.readMapleAsciiString();
         String password = slea.readMapleAsciiString();
@@ -223,12 +184,12 @@ public class CharLoginHandler {
         }
     }
 
-    public static final void CheckCharName(final String name, final MapleClient c) {
+    public static final void checkCharName(final String name, final MapleClient c) {
         c.sendPacket(LoginPacket.charNameResponse(name,
                 !MapleCharacterUtil.canCreateChar(name) || LoginInformationProvider.getInstance().isForbiddenName(name)));
     }
 
-    public static final void CreateChar(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleCreateCharacter(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         final String name = slea.readMapleAsciiString();
         final int JobType = slea.readInt(); // 1 = Adventurer, 0 = Cygnus, 2 = Aran
         if (JobType == 0) {
@@ -378,33 +339,30 @@ public class CharLoginHandler {
         }
     }
 
-    public static final void DeleteChar(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleDeleteCharacter(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         slea.readByte();
-        String Secondpw_Client = null;
-//        if (slea.readByte() > 0) { // Specific if user have second password or not
-        Secondpw_Client = slea.readMapleAsciiString();
-//        }
-//        slea.readMapleAsciiString();
+        
+        String _2ndPassword;
+        _2ndPassword = slea.readMapleAsciiString();
+        
         final int characterId = slea.readInt();
-
         if (!c.login_Auth(characterId)) {
             c.sendPacket(LoginPacket.secondPwError((byte) 0x14));
-            return; // Attempting to delete other character
+            return;
         }
         byte state = 0;
 
         if (c.getSecondPassword() != null) { // On the server, there's a second password
-            if (Secondpw_Client == null) { // Client's hacking
+            if (_2ndPassword == null) { // Client's hacking
                 c.getSession().close();
                 return;
             } else {
-                if (!c.check2ndPassword(Secondpw_Client)) { // Wrong Password
+                if (!c.check2ndPassword(_2ndPassword)) { // Wrong Password
                     //state = 12;
                     state = 16;
                 }
             }
         }
-        // TODO, implement 13 digit Asiasoft passport too.
 
         if (state == 0) {
             state = (byte) c.deleteCharacter(characterId);
@@ -413,7 +371,7 @@ public class CharLoginHandler {
         c.sendPacket(LoginPacket.deleteCharResponse(characterId, state));
     }
 
-    public static final void Character_WithoutSecondPassword(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleSecectCharacter(final SeekableLittleEndianAccessor slea, final MapleClient c) {
 
         final int charId = slea.readInt();
         if (c.getIdleTask() != null) {
@@ -431,30 +389,4 @@ public class CharLoginHandler {
         c.sendPacket(MaplePacketCreator.getServerIP(ip, port, charId));
     }
 
-    public static final void Character_WithSecondPassword(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-        final String password = slea.readMapleAsciiString();
-        final int charId = slea.readInt();
-
-        if (loginFailCount(c) || c.getSecondPassword() == null || !c.login_Auth(charId)) { // This should not happen unless player is hacking
-            c.getSession().close();
-            return;
-        }
-        if (c.check2ndPassword(password)) {
-            c.updateMacs(slea.readMapleAsciiString());
-            if (c.getIdleTask() != null) {
-                c.getIdleTask().cancel(true);
-            }
-            c.updateLoginState(MapleClient.LOGIN_SERVER_TRANSITION, c.getSessionIPAddress());
-            byte[] ip = {127, 0, 0, 1};
-            try {
-                ip = InetAddress.getByName(ChannelServer.getInstance(c.getChannel()).getSocket().split(":")[0]).getAddress();
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(CharLoginHandler.class.getName()).log(Level.SEVERE, "getIP Error", ex);
-            }
-            int port = Integer.parseInt(ChannelServer.getInstance(c.getChannel()).getSocket().split(":")[1]);
-            c.sendPacket(MaplePacketCreator.getServerIP(ip, port, charId));
-        } else {
-            c.sendPacket(LoginPacket.secondPwError((byte) 0x14));
-        }
-    }
 }

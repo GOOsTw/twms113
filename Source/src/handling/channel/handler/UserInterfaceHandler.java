@@ -24,7 +24,6 @@ import client.MapleClient;
 import client.MapleCharacterUtil;
 import constants.ServerConstants;
 import scripting.NPCScriptManager;
-import scripting.EventManager;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 

@@ -86,10 +86,7 @@ public class InterServerHandler {
     }
 
     public static final void LoggedIn(final int playerid, final MapleClient c) {
-//        if (c.getIdleTask() != null) {
-//        c.getIdleTask().cancel(true);
-//        }
-//        c.updateLoginState(MapleClient.LOGIN_LOGGEDIN, c.getSessionIPAddress());
+
         final ChannelServer channelServer = c.getChannelServer();
         MapleCharacter player;
         final CharacterTransfer transfer = channelServer.getPlayerStorage().getPendingCharacter(playerid);
@@ -128,13 +125,12 @@ public class InterServerHandler {
 
             // Start of buddylist
             final Collection<Integer> buddyIds = player.getBuddylist().getBuddiesIds();
-            //World.Buddy.loggedOn(player.getName(), player.getId(), c.getChannel(), buddyIds);
             World.Buddy.loggedOn(player.getName(), player.getId(), c.getChannel(), buddyIds, player.getGMLevel(), player.isHidden());
             if (player.getParty() != null) {
                 //channelServer.getWorldInterface().updateParty(player.getParty().getId(), PartyOperation.LOG_ONOFF, new MaplePartyCharacter(player));
                 World.Party.updateParty(player.getParty().getId(), PartyOperation.LOG_ONOFF, new MaplePartyCharacter(player));
             }
-            //final CharacterIdChannelPair[] onlineBuddies = cserv.getWorldInterface().multiBuddyFind(player.getId(), buddyIds);
+            /* 讀取好友 */
             final CharacterIdChannelPair[] onlineBuddies = World.Find.multiBuddyFind(player.getId(), buddyIds);
             for (CharacterIdChannelPair onlineBuddy : onlineBuddies) {
                 final BuddyEntry ble = player.getBuddylist().get(onlineBuddy.getCharacterId());
@@ -152,9 +148,8 @@ public class InterServerHandler {
 
             // Start of Guild and alliance
             if (player.getGuildId() <= 0) {
-                //System.out.println("writefuckguildinfo");
                 c.sendPacket(MaplePacketCreator.fuckGuildInfo(player));
-            }/* else */
+            }
 
             if (player.getGuildId() > 0) {
                 World.Guild.setGuildMemberOnline(player.getMGC(), true, c.getChannel());
@@ -169,7 +164,7 @@ public class InterServerHandler {
                             }
                         }
                     }
-                } else { //guild not found, change guild id
+                } else {
                     player.setGuildId(0);
                     player.setGuildRank((byte) 5);
                     player.setAllianceRank((byte) 5);
@@ -184,11 +179,13 @@ public class InterServerHandler {
             FilePrinter.printError(FilePrinter.LoginError, e);
         }
         c.sendPacket(FamilyPacket.getFamilyData());
+        
+        
         player.sendMacros();
         player.showNote();
         player.updatePartyMemberHP();
         player.startFairySchedule(false);
-        player.baseSkills(); //fix people who've lost skills.
+        player.baseSkills(); 
 
         c.sendPacket(MaplePacketCreator.getKeymap(player.getKeyLayout()));
 

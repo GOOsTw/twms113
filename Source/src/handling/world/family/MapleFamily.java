@@ -40,15 +40,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import tools.MaplePacketCreator;
 import tools.packet.FamilyPacket;
 
-public class MapleFamily implements java.io.Serializable {
+public final class MapleFamily implements java.io.Serializable {
 
     public static enum FCOp {
 
         NONE, DISBAND;
     }
     public static final long serialVersionUID = 6322150443228168192L;
-    //does not need to be in order :) CID -> MFC
-    private final Map<Integer, MapleFamilyCharacter> members = new ConcurrentHashMap<Integer, MapleFamilyCharacter>();
+    private final Map<Integer, MapleFamilyCharacter> members = new ConcurrentHashMap<>();
     private String leadername = null, notice;
     private int id, leaderid, generations = 0;
     private boolean proper = true, bDirty = false, changed = false;
@@ -173,23 +172,22 @@ public class MapleFamily implements java.io.Serializable {
     }
 
     public static final Collection<MapleFamily> loadAll() {
-        final Collection<MapleFamily> ret = new ArrayList<MapleFamily>();
+        final Collection<MapleFamily> ret = new ArrayList<>();
         MapleFamily g;
         try {
             Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT familyid FROM families");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                g = new MapleFamily(rs.getInt("familyid"));
-                if (g.getId() > 0) {
-                    ret.add(g);
+            try (PreparedStatement ps = con.prepareStatement("SELECT familyid FROM families")) {
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    g = new MapleFamily(rs.getInt("familyid"));
+                    if (g.getId() > 0) {
+                        ret.add(g);
+                    }
                 }
+                rs.close();
             }
-            rs.close();
-            ps.close();
         } catch (SQLException se) {
             System.err.println("unable to read family information from sql");
-            se.printStackTrace();
         }
         return ret;
     }
@@ -199,27 +197,22 @@ public class MapleFamily implements java.io.Serializable {
             Connection con = DatabaseConnection.getConnection();
             if (!bDisband) {
                 if (changed) {
-                    PreparedStatement ps = con.prepareStatement("UPDATE families SET notice = ? WHERE familyid = ?");
-                    ps.setString(1, notice);
-                    ps.setInt(2, id);
-                    ps.execute();
-                    ps.close();
+                    try (PreparedStatement ps = con.prepareStatement("UPDATE families SET notice = ? WHERE familyid = ?")) {
+                        ps.setString(1, notice);
+                        ps.setInt(2, id);
+                        ps.execute();
+                    }
                 }
                 changed = false;
             } else {
-                //members is less than 2, this shall be executed
-               /* if (leadername == null || members.size() < 2) {
-                 broadcast(null, -1, FCOp.DISBAND, null);
-                 }*/
-
-                PreparedStatement ps = con.prepareStatement("DELETE FROM families WHERE familyid = ?");
-                ps.setInt(1, id);
-                ps.execute();
-                ps.close();
+                try (
+                        PreparedStatement ps = con.prepareStatement("DELETE FROM families WHERE familyid = ?")) {
+                    ps.setInt(1, id);
+                    ps.execute();
+                }
             }
         } catch (SQLException se) {
             System.err.println("Error saving family to SQL");
-            se.printStackTrace();
         }
     }
 
@@ -549,7 +542,6 @@ public class MapleFamily implements java.io.Serializable {
             ps.close();
             return ret;
         } catch (Exception e) {
-            e.printStackTrace();
             return 0;
         }
     }

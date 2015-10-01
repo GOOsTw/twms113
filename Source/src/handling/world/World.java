@@ -49,7 +49,7 @@ public class World {
 
     public static boolean isShutDown = false;
 
-    //Touch everything...
+ 
     public static void init() {
         World.Find.findChannel(0);
         World.Guild.lock.toString();

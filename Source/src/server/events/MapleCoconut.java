@@ -25,14 +25,12 @@ import client.MapleCharacter;
 import java.util.LinkedList;
 import java.util.List;
 import server.Timer.EventTimer;
-import server.maps.MapleMap;
-import server.maps.SavedLocationType;
 import tools.MaplePacketCreator;
 
 public class MapleCoconut extends MapleEvent {
 
-    private List<MapleCoconuts> coconuts = new LinkedList<MapleCoconuts>();
-    private int[] coconutscore = new int[2];
+    private final List<MapleCoconuts> coconuts = new LinkedList<>();
+    private final int[] coconutscore = new int[2];
     private int countBombing = 0;
     private int countFalling = 0;
     private int countStopped = 0;
