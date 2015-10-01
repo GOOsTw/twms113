@@ -70,7 +70,7 @@ function action(mode, type, selection) {
                             var prop = em.getProperty("state");
                             if (prop.equals("0") || prop == null) {
                                 em.startInstance(cm.getParty(), cm.getMap());
-                                cm.setBossLog("shaoling");
+                                cm.setPartyBossLog("shaoling");
                                 cm.dispose();
                                 return;
                             } else {
