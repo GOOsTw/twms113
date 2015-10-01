@@ -4323,6 +4323,12 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
+    /**
+     * 智慧貓頭鷹
+     * @param itemSearch
+     * @param hms
+     * @return 
+     */
     public static MaplePacket getOwlSearched(final int itemSearch, final List<HiredMerchant> hms) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.SHOP_SCANNER_RESULT.getValue());

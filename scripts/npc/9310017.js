@@ -36,7 +36,7 @@ function action(mode, type, selection) {
 	    hair_Colo_new = [];
 	    beauty = 2;
 
-	    for (var i = 0; i < 8; i++) {
+	    for (var i = 0; i < 7; i++) {
 		hair_Colo_new[i] = currenthaircolo + i;
 	    }
 	    cm.sendYesNo("確定要使用 #b#t5151010##k 隨機染髮了？？");

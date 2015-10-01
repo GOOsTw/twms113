@@ -40,6 +40,7 @@ function start(mode, type, selection) {
 		qm.dispose();
 	}
 }
+
 function end(mode, type, selection) {
     status++;
 	if (mode != 1) {
@@ -57,7 +58,7 @@ function end(mode, type, selection) {
 	if(status == 2){
 		qm.forceCompleteQuest();
 		qm.gainItem(4032375, -1);
-		qm.forceStartQuest(2311);		
+		qm.forceStartQuest(2312);		
 		qm.dispose();
 	}
 }

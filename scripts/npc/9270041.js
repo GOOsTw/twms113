@@ -49,7 +49,7 @@ function action(mode, type, selection) {
 		cm.dispose();
 	    } else if (em.getProperty("entry").equals("true")) {
 		cm.sendYesNo("是否要搭飛機??");
-		} else if(em.getProperty("entry").equals("false") && em.getProperty("docked").equals("true")) {
+	    } else if(em.getProperty("entry").equals("false") && em.getProperty("docked") != null &&  em.getProperty("docked").equals("true")) {
 		cm.sendNext("這架飛機正準備起飛。我很抱歉，但你必須得在接下來的旅程。乘坐時間表可通過在迎來售票展台");
 		cm.dispose();
 	    } else {

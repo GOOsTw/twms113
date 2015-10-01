@@ -22,6 +22,15 @@ public class MapConstants {
         }
     }
 
+    public static boolean isCar(final int mapid) {
+        switch (mapid) {
+            case 980000000:
+            case 980030000:
+                return true;
+        }
+        return false;
+    }
+    
     public static boolean isStartingEventMap(final int mapid) {
         switch (mapid) {
             case 109010000:

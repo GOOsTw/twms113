@@ -8,6 +8,7 @@ function start() {
 }
 
 function action(mode, type, selection) {
+
     if (mode == -1) {
         cm.dispose();
     } else {
@@ -56,3 +57,4 @@ function action(mode, type, selection) {
             cm.dispose();
         }
     }
+}

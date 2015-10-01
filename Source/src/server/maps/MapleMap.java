@@ -859,6 +859,21 @@ public final class MapleMap {
         return ret;
     }
 
+    public final void KillFk(final boolean animate) {
+        List<MapleMapObject> monsters = getMapObjectsInRange(new Point(0, 0), Double.POSITIVE_INFINITY, Arrays.asList(MapleMapObjectType.MONSTER));
+        for (MapleMapObject monstermo : monsters) {
+            MapleMonster monster = (MapleMonster) monstermo;
+            if (monster.getId() == 3230300 || monster.getId() == 3230301) {
+                spawnedMonstersOnMap.decrementAndGet();
+                monster.setHp(0);
+                broadcastMessage(MobPacket.killMonster(monster.getObjectId(), animate ? 1 : 0));
+                removeMapObject(monster);
+                monster.killed();
+            }
+        }
+        this.broadcastMessage(MaplePacketCreator.serverNotice(6, "由於受詛咒的岩石被摧殘，然而被詛咒的蝴蝶精消失了。"));
+    }
+
     public final void killAllMonsters(final boolean animate) {
         for (final MapleMapObject monstermo : getAllMonstersThreadsafe()) {
             final MapleMonster monster = (MapleMonster) monstermo;
@@ -1786,9 +1801,10 @@ public final class MapleMap {
         mapobjectlocks.get(MapleMapObjectType.PLAYER).writeLock().lock();
         try {
             LinkedHashMap<Integer, MapleMapObject> players = mapobjects.get(MapleMapObjectType.PLAYER);
-            for(MapleMapObject c : players.values()) {
-                if(((MapleCharacter)c).getId() == chr.getId())
+            for (MapleMapObject c : players.values()) {
+                if (((MapleCharacter) c).getId() == chr.getId()) {
                     this.removeMapObject(c);
+                }
             }
             mapobjects.get(MapleMapObjectType.PLAYER).put(chr.getObjectId(), chr);
         } finally {
@@ -2771,7 +2787,7 @@ public final class MapleMap {
             }
         } else {
             final int numShouldSpawn = maxRegularSpawn - spawnedMonstersOnMap.get();
-            if (numShouldSpawn > 0 || GameConstants.isForceRespawn(mapid) ) {
+            if (numShouldSpawn > 0 || GameConstants.isForceRespawn(mapid)) {
                 int spawned = 0;
 
                 final List<Spawns> randomSpawn = new ArrayList<>(monsterSpawn);
