@@ -70,7 +70,7 @@ public class DamageParse {
         
         if (attack.skill != 0) {
             if (effect == null) {
-                player.getClient().getSession().write(MaplePacketCreator.enableActions());
+                player.getClient().sendPacket(MaplePacketCreator.enableActions());
                 return;
             }
             /* 武陵道場技能 */

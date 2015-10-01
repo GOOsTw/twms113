@@ -3,11 +3,16 @@ package constants;
 public class MapConstants {
     
     public static boolean isBlockFM(final int mapid) {
+        int header = mapid / 100000;
         if(isEventMap(mapid))
             return true;
-        if( mapid / 100000 == 9800 && (mapid % 10 == 1 || mapid % 1000 == 100))
+        if( header == 9800 && (mapid % 10 == 1 || mapid % 1000 == 100))
             return true;
         if ( mapid / 10000 == 92502 )
+            return true;
+        if( header == 7090)
+            return true;
+        if(header == 1090)
             return true;
         switch(mapid) {
             case 702060000:

@@ -418,14 +418,14 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 if (slea.available() >= 5) {
                     FilePrinter.print("38Logs.txt", slea.toString(), true);
                 }
-                CharLoginHandler.Welcome(c);
+                CharLoginHandler.handleWelcome(c);
                 // Does nothing for now, HackShield's heartbeat
                 break;
             case HELLO_CHANNEL:
-                CharLoginHandler.Welcome(c);
+                CharLoginHandler.handleWelcome(c);
                 break;
             case LOGIN_PASSWORD:
-                CharLoginHandler.login(slea, c);
+                CharLoginHandler.handleLogin(slea, c);
                 break;
             case SERVERLIST_REQUEST:
                 CharLoginHandler.ServerListRequest(c);
@@ -437,16 +437,16 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 CharLoginHandler.ServerStatusRequest(c);
                 break;
             case CHECK_CHAR_NAME:
-                CharLoginHandler.CheckCharName(slea.readMapleAsciiString(), c);
+                CharLoginHandler.checkCharName(slea.readMapleAsciiString(), c);
                 break;
             case CREATE_CHAR:
-                CharLoginHandler.CreateChar(slea, c);
+                CharLoginHandler.handleCreateCharacter(slea, c);
                 break;
             case DELETE_CHAR:
-                CharLoginHandler.DeleteChar(slea, c);
+                CharLoginHandler.handleDeleteCharacter(slea, c);
                 break;
             case CHAR_SELECT:
-                CharLoginHandler.Character_WithoutSecondPassword(slea, c);
+                CharLoginHandler.handleSecectCharacter(slea, c);
                 break;
             case SET_GENDER:
                 CharLoginHandler.SetGenderRequest(slea, c);
@@ -702,7 +702,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 PlayerInteractionHandler.PlayerInteraction(slea, c, c.getPlayer());
                 break;
             case GUILD_OPERATION:
-                GuildHandler.Guild(slea, c);
+                GuildHandler.HandleGuild(slea, c);
                 break;
             case UPDATE_CHAR_INFO:
                 //System.err.println("UPDATE_CHAR_INFO");
@@ -711,7 +711,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 break;
             case DENY_GUILD_REQUEST:
                 slea.skip(1);
-                GuildHandler.DenyGuildRequest(slea.readMapleAsciiString(), c);
+                GuildHandler.denyGuildRequest(slea.readMapleAsciiString(), c);
                 break;
             case ALLIANCE_OPERATION:
                 AllianceHandler.HandleAlliance(slea, c, false);
@@ -720,7 +720,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 AllianceHandler.HandleAlliance(slea, c, true);
                 break;
             case BBS_OPERATION:
-                BBSHandler.BBSOperatopn(slea, c);
+                BBSHandler.HandleBBS(slea, c);
                 break;
             case PARTY_OPERATION:
                 PartyHandler.PartyOperatopn(slea, c);

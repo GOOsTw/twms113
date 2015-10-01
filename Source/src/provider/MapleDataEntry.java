@@ -26,6 +26,7 @@ package provider;
  */
 public interface MapleDataEntry extends MapleDataEntity {
 
+    @Override
     public String getName();
 
     public int getSize();

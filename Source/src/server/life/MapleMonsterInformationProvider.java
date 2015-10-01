@@ -20,7 +20,6 @@
  */
 package server.life;
 
-import constants.GameConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,15 +30,13 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 
-import client.MapleCharacter;
-import client.inventory.MapleInventoryType;
 import database.DatabaseConnection;
 
 public class MapleMonsterInformationProvider {
 
     private static final MapleMonsterInformationProvider instance = new MapleMonsterInformationProvider();
-    private final Map<Integer, List<MonsterDropEntry>> drops = new HashMap<Integer, List<MonsterDropEntry>>();
-    private final List<MonsterGlobalDropEntry> globaldrops = new ArrayList<MonsterGlobalDropEntry>();
+    private final Map<Integer, List<MonsterDropEntry>> drops = new HashMap<>();
+    private final List<MonsterGlobalDropEntry> globaldrops = new ArrayList<>();
 
     protected MapleMonsterInformationProvider() {
         retrieveGlobal();
@@ -53,7 +50,7 @@ public class MapleMonsterInformationProvider {
         return globaldrops;
     }
 
-    private final void retrieveGlobal() {
+    private void retrieveGlobal() {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -94,7 +91,7 @@ public class MapleMonsterInformationProvider {
         if (drops.containsKey(monsterId)) {
             return drops.get(monsterId);
         }
-        final List<MonsterDropEntry> ret = new LinkedList<MonsterDropEntry>();
+        final List<MonsterDropEntry> ret = new LinkedList<>();
 
         PreparedStatement ps = null;
         ResultSet rs = null;

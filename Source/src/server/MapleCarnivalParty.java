@@ -5,6 +5,7 @@ import handling.channel.ChannelServer;
 import java.util.LinkedList;
 import java.util.List;
 import java.lang.ref.WeakReference;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import server.maps.MapleMap;
 import tools.MaplePacketCreator;
 
@@ -22,11 +23,17 @@ public class MapleCarnivalParty {
     private final int channel;
     private short availableCP = 0, totalCP = 0;
     private boolean winner = false;
+    private final ReentrantReadWriteLock memebersLock = new ReentrantReadWriteLock();
 
-    public MapleCarnivalParty(final MapleCharacter owner, final List<MapleCharacter> members1, final byte team1) {
+    public MapleCarnivalParty(MapleCharacter owner, final List<MapleCharacter> members1, final byte team1) {
         leader = new WeakReference<>(owner);
-        for (MapleCharacter mem : members1) {
-            members.add(mem.getId());
+        try {
+            memebersLock.writeLock().lock();
+            for (MapleCharacter mem : members1) {
+                members.add(mem.getId());
+            }
+        } finally {
+            memebersLock.writeLock().unlock();
         }
         team = team1;
         channel = owner.getClient().getChannel();
@@ -51,10 +58,11 @@ public class MapleCarnivalParty {
     }
 
     public void useCP(MapleCharacter player, int ammount) {
-        if( availableCP >= ammount )
+        if (availableCP >= ammount) {
             availableCP -= ammount;
-        else
+        } else {
             availableCP = 0;
+        }
         player.useCP(ammount);
     }
 
@@ -76,31 +84,51 @@ public class MapleCarnivalParty {
     }
 
     public void warp(final MapleMap map, final int portalid) {
-        for (int chr : members) {
-            final MapleCharacter c = ChannelServer.getInstance(channel).getPlayerStorage().getCharacterById(chr);
-            if (c != null) {
-                c.changeMap(map, map.getPortal(portalid));
+        try {
+            memebersLock.readLock().lock();
+            for (int chr : members) {
+                final MapleCharacter c = ChannelServer.getInstance(channel).getPlayerStorage().getCharacterById(chr);
+                if (c != null) {
+                    c.changeMap(map, map.getPortal(portalid));
+                }
             }
+        } finally {
+            memebersLock.readLock().unlock();
+
         }
     }
 
     public boolean allInMap(MapleMap map) {
-        for (int chr : members) {
-            if (map.getCharacterById(chr) == null) {
-                return false;
+        try {
+            memebersLock.readLock().lock();
+
+            for (int chr : members) {
+                if (map.getCharacterById(chr) == null) {
+                    return false;
+                }
             }
+        } finally {
+            memebersLock.readLock().unlock();
+
         }
         return true;
     }
 
     public void removeMember(MapleCharacter chr) {
-        for (int i = 0; i < members.size(); i++) {
-            if (members.get(i) == chr.getId()) {
-                members.remove(i);
-                chr.setCarnivalParty(null);
-            }
-        }
+        try {
+            memebersLock.writeLock().lock();
 
+            for (int i = 0; i < members.size(); i++) {
+                if (members.get(i) == chr.getId()) {
+                    members.remove(i);
+                    chr.setCarnivalParty(null);
+                }
+            }
+
+        } finally {
+            memebersLock.writeLock().unlock();
+
+        }
     }
 
     public boolean isWinner() {
@@ -118,8 +146,8 @@ public class MapleCarnivalParty {
         for (int chr : members) {
             final MapleCharacter c = ChannelServer.getInstance(channel).getPlayerStorage().getCharacterById(chr);
             if (c != null) {
-                c.getClient().getSession().write(MaplePacketCreator.showEffect(effect));
-                c.getClient().getSession().write(MaplePacketCreator.playSound(sound));
+                c.getClient().sendPacket(MaplePacketCreator.showEffect(effect));
+                c.getClient().sendPacket(MaplePacketCreator.playSound(sound));
                 if (!done) {
                     done = true;
                     c.getMap().killAllMonsters(true);

@@ -139,13 +139,13 @@ public class CashShopOperation {
                 case 3:
                     CashItemInfo itez = CashItemFactory.getInstance().getItem(item);
                     if (itez == null) {
-                        c.getSession().write(MTSCSPacket.sendCSFail(0));
+                        c.sendPacket(MTSCSPacket.sendCSFail(0));
                         RefreshCashShop(c);
                         return;
                     }
                     byte slot = MapleInventoryManipulator.addId(c, itez.getId(), (short) 1, "");
                     if (slot <= -1) {
-                        c.getSession().write(MTSCSPacket.sendCSFail(0));
+                        c.sendPacket(MTSCSPacket.sendCSFail(0));
                         RefreshCashShop(c);
                         return;
                     } else {
@@ -161,9 +161,9 @@ public class CashShopOperation {
                     mesos = item;
                     break;
             }
-            c.getSession().write(MTSCSPacket.showCouponRedeemedItem(itemz, mesos, maplePoints, c));
+            c.sendPacket(MTSCSPacket.showCouponRedeemedItem(itemz, mesos, maplePoints, c));
         } else {
-            c.getSession().write(MTSCSPacket.sendCSFail(validcode ? 0xA5 : 0xA7)); //A1, 9F
+            c.sendPacket(MTSCSPacket.sendCSFail(validcode ? 0xA5 : 0xA7)); //A1, 9F
         }
         RefreshCashShop(c);
     }
@@ -337,7 +337,7 @@ public class CashShopOperation {
                         chr.getInventory(type).addSlot((byte) 8);
                         chr.dropMessage(1, "Slots has been increased to " + chr.getInventory(type).getSlotLimit());
                     } else {
-                        c.getSession().write(MTSCSPacket.sendCSFail(0xA4));
+                        c.sendPacket(MTSCSPacket.sendCSFail(0xA4));
                     }
                 } else {
                     final MapleInventoryType type = MapleInventoryType.getByType(slea.readByte());
@@ -347,7 +347,7 @@ public class CashShopOperation {
                         chr.getInventory(type).addSlot((byte) 4);
                         chr.dropMessage(1, "Slots has been increased to " + chr.getInventory(type).getSlotLimit());
                     } else {
-                        c.getSession().write(MTSCSPacket.sendCSFail(0xA4));
+                        c.sendPacket(MTSCSPacket.sendCSFail(0xA4));
                     }
                 }
                 RefreshCashShop(c);
@@ -358,9 +358,9 @@ public class CashShopOperation {
                     chr.modifyCSPoints(1, -300, false);
                     chr.getStorage().increaseSlots((byte) 4);
                     chr.getStorage().saveToDB();
-                    c.getSession().write(MTSCSPacket.increasedStorageSlots(chr.getStorage().getSlots()));
+                    c.sendPacket(MTSCSPacket.increasedStorageSlots(chr.getStorage().getSlots()));
                 } else {
-                    c.getSession().write(MTSCSPacket.sendCSFail(0xA4));
+                    c.sendPacket(MTSCSPacket.sendCSFail(0xA4));
                 }
                 RefreshCashShop(c);
                 break;
@@ -371,15 +371,15 @@ public class CashShopOperation {
                 CashItemInfo item = CashItemFactory.getInstance().getItem(slea.readInt());
                 int slots = c.getCharacterSlots();
                 if (item == null || c.getPlayer().getCSPoints(1) < item.getPrice() || slots > 15) {
-                    c.getSession().write(MTSCSPacket.sendCSFail(0));
+                    c.sendPacket(MTSCSPacket.sendCSFail(0));
                     RefreshCashShop(c);
                     return;
                 }
                 c.getPlayer().modifyCSPoints(1, -item.getPrice(), false);
                 if (c.gainCharacterSlot()) {
-                    c.getSession().write(MTSCSPacket.increasedStorageSlots(slots + 1));
+                    c.sendPacket(MTSCSPacket.increasedStorageSlots(slots + 1));
                 } else {
-                    c.getSession().write(MTSCSPacket.sendCSFail(0));
+                    c.sendPacket(MTSCSPacket.sendCSFail(0));
                 }
                 RefreshCashShop(c);
                 break;
@@ -396,12 +396,12 @@ public class CashShopOperation {
                             c.getPlayer().addPet(item_.getPet());
                         }
                         c.getPlayer().getCashInventory().removeFromInventory(item);
-                        c.getSession().write(MTSCSPacket.confirmFromCSInventory(item_, pos));
+                        c.sendPacket(MTSCSPacket.confirmFromCSInventory(item_, pos));
                     } else {
-                        c.getSession().write(MTSCSPacket.sendCSFail(0xB1));
+                        c.sendPacket(MTSCSPacket.sendCSFail(0xB1));
                     }
                 } else {
-                    c.getSession().write(MTSCSPacket.sendCSFail(0xB1));
+                    c.sendPacket(MTSCSPacket.sendCSFail(0xB1));
                 }
                 RefreshCashShop(c);
                 break;
@@ -420,9 +420,9 @@ public class CashShopOperation {
                     item_.setPosition((byte) 0);
                     c.getPlayer().getCashInventory().addToInventory(item_);
                     //warning: this d/cs
-                    //c.getSession().write(MTSCSPacket.confirmToCSInventory(item, c.getAccID(), c.getPlayer().getCashInventory().getSNForItem(item)));
+                    //c.sendPacket(MTSCSPacket.confirmToCSInventory(item, c.getAccID(), c.getPlayer().getCashInventory().getSNForItem(item)));
                 } else {
-                    c.getSession().write(MTSCSPacket.sendCSFail(0xB1));
+                    c.sendPacket(MTSCSPacket.sendCSFail(0xB1));
                 }
                 RefreshCashShop(c);
                 break;
@@ -432,15 +432,15 @@ public class CashShopOperation {
             case 32: { //1 meso
                 final CashItemInfo item = CashItemFactory.getInstance().getItem(slea.readInt());
                 if (item == null || !MapleItemInformationProvider.getInstance().isQuestItem(item.getId())) {
-                    c.getSession().write(MTSCSPacket.sendCSFail(0));
+                    c.sendPacket(MTSCSPacket.sendCSFail(0));
                     RefreshCashShop(c);
                     return;
                 } else if (c.getPlayer().getMeso() < item.getPrice()) {
-                    c.getSession().write(MTSCSPacket.sendCSFail(0xB8));
+                    c.sendPacket(MTSCSPacket.sendCSFail(0xB8));
                     RefreshCashShop(c);
                     return;
                 } else if (c.getPlayer().getInventory(GameConstants.getInventoryType(item.getId())).getNextFreeSlot() < 0) {
-                    c.getSession().write(MTSCSPacket.sendCSFail(0xB1));
+                    c.sendPacket(MTSCSPacket.sendCSFail(0xB1));
                     RefreshCashShop(c);
                     return;
                 }
@@ -453,7 +453,7 @@ public class CashShopOperation {
                 }
                 byte pos = MapleInventoryManipulator.addId(c, item.getId(), (short) item.getCount(), null);
                 if (pos < 0) {
-                    c.getSession().write(MTSCSPacket.sendCSFail(0xB1));
+                    c.sendPacket(MTSCSPacket.sendCSFail(0xB1));
                     RefreshCashShop(c);
                     return;
                 }
@@ -565,9 +565,9 @@ public class CashShopOperation {
     }
 
     private static final void RefreshCashShop(MapleClient c) {
-        c.getSession().write(MTSCSPacket.showCashInventory(c));
-        c.getSession().write(MTSCSPacket.showNXMapleTokens(c.getPlayer()));
-        c.getSession().write(MTSCSPacket.enableCSUse());
+        c.sendPacket(MTSCSPacket.showCashInventory(c));
+        c.sendPacket(MTSCSPacket.showNXMapleTokens(c.getPlayer()));
+        c.sendPacket(MTSCSPacket.enableCSUse());
         c.getPlayer().getCashInventory().checkExpire(c);
     }
 }

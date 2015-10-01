@@ -22,7 +22,6 @@ package handling.world;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -127,10 +126,7 @@ public class MapleParty implements Serializable {
             return false;
         }
         final MapleParty other = (MapleParty) obj;
-        if (id != other.id) {
-            return false;
-        }
-        return true;
+        return id == other.id;
     }
     
     public int getAverageLevel() {

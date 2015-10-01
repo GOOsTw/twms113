@@ -27,12 +27,11 @@ import java.util.concurrent.ScheduledFuture;
 import server.Timer.EventTimer;
 import server.life.MobSkillFactory;
 import server.maps.MapleMap;
-import server.maps.SavedLocationType;
 import tools.MaplePacketCreator;
 
 public class MapleSnowball extends MapleEvent {
 
-    private MapleSnowballs[] balls = new MapleSnowballs[2];
+    private final MapleSnowballs[] balls = new MapleSnowballs[2];
 
     public MapleSnowball(final int channel, final int[] mapid) {
         super(channel, mapid);
@@ -143,7 +142,7 @@ public class MapleSnowball extends MapleEvent {
         public void broadcast(MapleMap map, int message) {
             for (MapleCharacter chr : map.getCharactersThreadsafe()) {
                 //if ((team == 0 && chr.getPosition().y > -80) || (team == 1 && chr.getPosition().y <= -80)) {
-                chr.getClient().getSession().write(MaplePacketCreator.snowballMessage(team, message));
+                chr.getClient().sendPacket(MaplePacketCreator.snowballMessage(team, message));
                 //}
             }
         }
@@ -191,8 +190,8 @@ public class MapleSnowball extends MapleEvent {
                     chr.getMap().broadcastMessage(MaplePacketCreator.hitSnowBall(team, damage, 0, 1));
                     if (damage == 0) {
                         if (Math.random() < 0.2) {
-                            chr.getClient().getSession().write(MaplePacketCreator.leftKnockBack());
-                            chr.getClient().getSession().write(MaplePacketCreator.enableActions());
+                            chr.getClient().sendPacket(MaplePacketCreator.leftKnockBack());
+                            chr.getClient().sendPacket(MaplePacketCreator.enableActions());
                         }
                     } else {
                         ball.setPositionX(ball.getPosition() + 1);

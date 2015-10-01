@@ -137,7 +137,7 @@ public class MobHandler {
         final Point startPos = slea.readPos();
         final List<LifeMovementFragment> res = MovementParse.parseMovement(slea, 2);
 
-        c.getSession().write(MobPacket.moveMonsterResponse(monster.getObjectId(), moveid, monster.getMp(), monster.isControllerHasAggro(), realskill, level));
+        c.sendPacket(MobPacket.moveMonsterResponse(monster.getObjectId(), moveid, monster.getMp(), monster.isControllerHasAggro(), realskill, level));
        
         if (monster.getController() != c.getPlayer()) {
             if (monster.isAttackedBy(c.getPlayer())) {// aggro and controller change
@@ -260,7 +260,7 @@ public class MobHandler {
     public static final void DisplayNode(final SeekableLittleEndianAccessor slea, final MapleCharacter chr) {
         final MapleMonster mob_from = chr.getMap().getMonsterByOid(slea.readInt()); // From
         if (mob_from != null) {
-            chr.getClient().getSession().write(MaplePacketCreator.getNodeProperties(mob_from, chr.getMap()));
+            chr.getClient().sendPacket(MaplePacketCreator.getNodeProperties(mob_from, chr.getMap()));
         }
     }
 

@@ -89,6 +89,7 @@ public class MapleOxQuiz extends MapleEvent {
         }
         oxSchedule2 = EventTimer.getInstance().schedule(new Runnable() {
 
+            @Override
             public void run() {
                 int number = 0;
                 for (MapleCharacter mc : toSend.getCharactersThreadsafe()) {

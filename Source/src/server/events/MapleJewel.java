@@ -24,14 +24,12 @@ package server.events;
 import java.util.concurrent.ScheduledFuture;
 import client.MapleCharacter;
 import server.Timer.EventTimer;
-import server.maps.MapleMap;
-import server.maps.SavedLocationType;
 import tools.MaplePacketCreator;
 
 public class MapleJewel extends MapleEvent {
 
     private static final long serialVersionUID = 845748950824L;
-    private long time = 600000; //change
+    private final long time = 600000; //change
     private long timeStarted = 0;
     private ScheduledFuture<?> fitnessSchedule, msgSchedule;
 
@@ -47,7 +45,7 @@ public class MapleJewel extends MapleEvent {
     @Override
     public void onMapLoad(MapleCharacter chr) {
         if (isTimerStarted()) {
-            chr.getClient().getSession().write(MaplePacketCreator.getClock((int) (getTimeLeft() / 1000)));
+            chr.getClient().sendPacket(MaplePacketCreator.getClock((int) (getTimeLeft() / 1000)));
         }
     }
 

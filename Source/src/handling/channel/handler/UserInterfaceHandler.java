@@ -24,7 +24,6 @@ import client.MapleClient;
 import client.MapleCharacterUtil;
 import constants.ServerConstants;
 import scripting.NPCScriptManager;
-import scripting.EventManager;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -45,7 +44,7 @@ public class UserInterfaceHandler {
 
             if (selection >= 0 && selection <= ServerConstants.Poll_Answers.length) {
                 if (MapleCharacterUtil.SetPoll(c.getAccID(), selection)) {
-                    c.getSession().write(MaplePacketCreator.getPollReply("Thank you."));
+                    c.sendPacket(MaplePacketCreator.getPollReply("Thank you."));
                     //idk what goes here lol
                 }
             }

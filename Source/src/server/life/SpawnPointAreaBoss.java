@@ -29,7 +29,7 @@ import tools.MaplePacketCreator;
 
 public class SpawnPointAreaBoss extends Spawns {
 
-    private final MapleMonster monster;
+    private MapleMonster monster;
     private final Point pos1;
     private final Point pos2;
     private final Point pos3;
@@ -82,11 +82,10 @@ public class SpawnPointAreaBoss extends Spawns {
 
     @Override
     public final MapleMonster spawnMonster(final MapleMap map) {
-        final MapleMonster mob = new MapleMonster(monster);
-
-        mob.setPosition(getPosition());
+        monster = new MapleMonster(monster);
+        monster.setPosition(getPosition());
         spawned.set(true);
-        mob.setListener(new MonsterListener() {
+        monster.setListener(new MonsterListener() {
 
             @Override
             public void monsterKilled() {
@@ -98,12 +97,12 @@ public class SpawnPointAreaBoss extends Spawns {
                 spawned.set(false);
             }
         });
-        map.spawnMonster(mob, -2);
+        map.spawnMonster(monster, -2);
 
         if (msg != null) {
             map.broadcastMessage(MaplePacketCreator.serverNotice(6, msg));
         }
-        return mob;
+        return monster;
     }
 
     @Override

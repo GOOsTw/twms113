@@ -32,13 +32,14 @@ import tools.MaplePacketCreator;
 public class SpawnPoint extends Spawns {
 
     private MapleMonster monster;
-    private Point pos;
+    private final Point pos;
     private long nextPossibleSpawn;
-    private int mobTime, carnival = -1;
-    private AtomicInteger spawnedMonsters = new AtomicInteger(0);
-    private boolean immobile;
-    private String msg;
-    private byte carnivalTeam;
+    private final int mobTime;
+    private int carnival = -1;
+    private final AtomicInteger spawnedMonsters = new AtomicInteger(0);
+    private final boolean immobile;
+    private final String msg;
+    private final byte carnivalTeam;
 
     public SpawnPoint(final MapleMonster monster, final Point pos, final int mobTime, final byte carnivalTeam, final String msg) {
         this.monster = monster;
@@ -79,8 +80,7 @@ public class SpawnPoint extends Spawns {
         if (mobTime < 0) {
             return false;
         }
-        // regular spawnpoints should spawn a maximum of 3 monsters; immobile spawnpoints or spawnpoints with mobtime a
-        // maximum of 1
+       
         if (((mobTime != 0 || immobile) && spawnedMonsters.get() > 0) || spawnedMonsters.get() > 1) {
             return false;
         }
@@ -89,30 +89,29 @@ public class SpawnPoint extends Spawns {
 
     @Override
     public final MapleMonster spawnMonster(final MapleMap map) {
-        final MapleMonster mob = new MapleMonster(monster);
-        mob.setPosition(pos);
-        mob.setCarnivalTeam(carnivalTeam);
+        monster = new MapleMonster(monster);
+        monster.setPosition(pos);
+        monster.setCarnivalTeam(carnivalTeam);
         spawnedMonsters.incrementAndGet();
-        mob.setListener(new MonsterListener() {
-
+        monster.setListener(new MonsterListener() {
             @Override
             public void monsterKilled() {
                 nextPossibleSpawn = System.currentTimeMillis();
-
                 if (mobTime > 0) {
                     nextPossibleSpawn += mobTime;
                 }
                 spawnedMonsters.decrementAndGet();
             }
         });
-        map.spawnMonster(mob, -2);
+        map.spawnMonster(monster, -2);
+        
         if (carnivalTeam > -1) {
             for (MapleReactor r : map.getAllReactorsThreadsafe()) { //parsing through everytime a monster is spawned? not good idea
                 if (r.getName().startsWith(String.valueOf(carnivalTeam)) && r.getReactorId() == (9980000 + carnivalTeam) && r.getState() < 5) {
                     final int num = Integer.parseInt(r.getName().substring(1, 2)); //00, 01, etc
                     final MCSkill skil = MapleCarnivalFactory.getInstance().getGuardian(num);
                     if (skil != null) {
-                        skil.getSkill().applyEffect(null, mob, false);
+                        skil.getSkill().applyEffect(null, monster, false);
                     }
                 }
             }
@@ -120,7 +119,7 @@ public class SpawnPoint extends Spawns {
         if (msg != null) {
             map.broadcastMessage(MaplePacketCreator.serverNotice(6, msg));
         }
-        return mob;
+        return monster;
     }
 
     @Override

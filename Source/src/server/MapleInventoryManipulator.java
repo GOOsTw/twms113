@@ -37,8 +37,8 @@ public class MapleInventoryManipulator {
             return;
         }
         chr.getCashInventory().addToInventory(ring);
-        //chr.getClient().getSession().write(MTSCSPacket.confirmToCSInventory(ring, chr.getClient().getAccID(), csi.getSN()));
-        chr.getClient().getSession().write(MTSCSPacket.showBoughtCashItem(ring, sn, chr.getClient().getAccID()));
+        //chr.getClient().sendPacket(MTSCSPacket.confirmToCSInventory(ring, chr.getClient().getAccID(), csi.getSN()));
+        chr.getClient().sendPacket(MTSCSPacket.showBoughtCashItem(ring, sn, chr.getClient().getAccID()));
     }
 
     public static boolean addbyItem(final MapleClient c, final IItem item) {
@@ -568,7 +568,7 @@ public class MapleInventoryManipulator {
         if (GameConstants.isGMEquip(source.getItemId()) && !c.getPlayer().isGM() && !c.getChannelServer().CanGMItem()) {
             c.getPlayer().dropMessage(1, "只有管理員能裝備這件道具。");
             c.getPlayer().removeAll(source.getItemId(), false);
-            c.getSession().write(MaplePacketCreator.enableActions());
+            c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
 
