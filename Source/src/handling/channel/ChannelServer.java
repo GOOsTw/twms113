@@ -320,7 +320,7 @@ public class ChannelServer implements Serializable {
 
     public final void reloadEvents() {
         eventSM.cancel();
-        eventSM = new EventScriptManager(this, ServerProperties.getProperty("K．").split(","));
+        eventSM = new EventScriptManager(this, ServerProperties.getProperty("server.settings.events").split(","));
         eventSM.init();
     }
 

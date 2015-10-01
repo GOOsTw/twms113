@@ -556,7 +556,7 @@ public class PacketHelper {
     }
 
     public static final void addPetItemInfo(final MaplePacketLittleEndianWriter mplew, final IItem item, final MaplePet pet) {
-        addExpirationTime(mplew, item.getExpiration());
+        addExpirationTime(mplew, item != null ? item.getExpiration() : -1);
         mplew.writeAsciiString(pet.getName(), 13);
         mplew.write(pet.getLevel());
         mplew.writeShort(pet.getCloseness());
