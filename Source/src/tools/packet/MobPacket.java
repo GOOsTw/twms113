@@ -227,9 +227,9 @@ public class MobPacket {
 
     public static void addMonsterStatus(MaplePacketLittleEndianWriter mplew, MapleMonster life) {
 
-        /*if (life.getStati().size() <= 0) {
+        if (life.getStati().size() <= 0) {
             life.addEmpty(); //not done yet lulz ok so we add it now for the lulz
-        }*/
+        }
         
         writeMaskFromList(mplew, life.getStati().values());
         boolean ignore_imm = false;
@@ -348,7 +348,7 @@ public class MobPacket {
         for (MonsterStatusEffect buff : buffs) {
             mobstat.add(buff.getStati());
             if (buff.getStati() != MonsterStatus.SUMMON) {
-                mplew.writeInt(buff.getX());
+                mplew.writeShort(buff.getX());
                 if (buff.getMobSkill() != null) {
                     mplew.writeShort(buff.getMobSkill().getSkillId());
                     mplew.writeShort(buff.getMobSkill().getSkillLevel());
@@ -554,7 +554,7 @@ public class MobPacket {
                 mplew.writeInt(0);
             }
         }
-        mplew.writeInt(0);
+        mplew.writeInt(2);
         return mplew.getPacket();
     }
 

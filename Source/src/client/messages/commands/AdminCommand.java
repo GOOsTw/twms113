@@ -18,6 +18,7 @@ import client.inventory.MapleInventoryType;
 import client.inventory.MapleRing;
 import client.inventory.ModifyInventory;
 import client.messages.CommandProcessorUtil;
+import client.status.MonsterStatus;
 import constants.GameConstants;
 import database.DatabaseConnection;
 import handling.MaplePacket;
@@ -2861,6 +2862,22 @@ public class AdminCommand {
             MapleQuest.clearQuests();
             return 1;
         }
+    }
+    
+    public static class mobstatus extends CommandExecute {
+
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            int value = 0;
+            try {
+                Integer.parseInt(splitted[0]);
+                for(MonsterStatus s : MonsterStatus.values()) {
+                    
+                }
+            } catch(Exception e ) {}
+            return 1;
+        }
+        
     }
 
     public static class Find extends CommandExecute {
