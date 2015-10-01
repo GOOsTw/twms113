@@ -159,7 +159,7 @@ public class Event_DojoAgent {
                             }
                             chr.modifyCSPoints(1, points, true);
                             chr.setDojo(chr.getDojo() + point);
-                            chr.getClient().getSession().write(MaplePacketCreator.Mulung_Pts(point, chr.getDojo()));
+                            chr.getClient().sendPacket(MaplePacketCreator.Mulung_Pts(point, chr.getDojo()));
                         }
                     }
                 } else {
@@ -170,7 +170,7 @@ public class Event_DojoAgent {
                     }
                     c.modifyCSPoints(1, cspoints, true);
                     c.setDojo(c.getDojo() + point);
-                    c.getClient().getSession().write(MaplePacketCreator.Mulung_Pts(point, c.getDojo()));
+                    c.getClient().sendPacket(MaplePacketCreator.Mulung_Pts(point, c.getDojo()));
                 }
 
             }

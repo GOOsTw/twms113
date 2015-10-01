@@ -107,7 +107,7 @@ public class InventoryHandler {
 
         final MapleInventoryType pInvType = MapleInventoryType.getByType(slea.readByte());
         if (pInvType == MapleInventoryType.UNDEFINED) {
-            c.getSession().write(MaplePacketCreator.enableActions());
+            c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
         final MapleInventory pInv = c.getPlayer().getInventory(pInvType); //Mode should correspond with MapleInventoryType
@@ -132,8 +132,8 @@ public class InventoryHandler {
                 sorted = true;
             }
         }
-        c.getSession().write(MaplePacketCreator.finishedSort(pInvType.getType()));
-        c.getSession().write(MaplePacketCreator.enableActions());
+        c.sendPacket(MaplePacketCreator.finishedSort(pInvType.getType()));
+        c.sendPacket(MaplePacketCreator.enableActions());
     }
 
     public static final void ItemGather(final SeekableLittleEndianAccessor slea, final MapleClient c) {
@@ -157,8 +157,8 @@ public class InventoryHandler {
         for (IItem item : sortedItems) {
             MapleInventoryManipulator.addFromDrop(c, item, false);
         }
-        c.getSession().write(MaplePacketCreator.finishedGather(mode));
-        c.getSession().write(MaplePacketCreator.enableActions());
+        c.sendPacket(MaplePacketCreator.finishedGather(mode));
+        c.sendPacket(MaplePacketCreator.enableActions());
         itemMap.clear();
         sortedItems.clear();
     }
@@ -186,7 +186,7 @@ public class InventoryHandler {
 
     public static final boolean UseRewardItem(final byte slot, final int itemId, final MapleClient c, final MapleCharacter chr) {
         final IItem toUse = c.getPlayer().getInventory(GameConstants.getInventoryType(itemId)).getItem(slot);
-        c.getSession().write(MaplePacketCreator.enableActions());
+        c.sendPacket(MaplePacketCreator.enableActions());
         if (toUse != null && toUse.getQuantity() >= 1 && toUse.getItemId() == itemId) {
             if (chr.getInventory(MapleInventoryType.EQUIP).getNextFreeSlot() > -1 && chr.getInventory(MapleInventoryType.USE).getNextFreeSlot() > -1 && chr.getInventory(MapleInventoryType.SETUP).getNextFreeSlot() > -1 && chr.getInventory(MapleInventoryType.ETC).getNextFreeSlot() > -1) {
                 final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
@@ -208,7 +208,7 @@ public class InventoryHandler {
                                 }
                                 MapleInventoryManipulator.removeById(c, GameConstants.getInventoryType(itemId), itemId, 1, false, false);
 
-                                c.getSession().write(MaplePacketCreator.showRewardItemAnimation(reward.getItemid(), reward.getEffect()));
+                                c.sendPacket(MaplePacketCreator.showRewardItemAnimation(reward.getItemid(), reward.getEffect()));
                                 chr.getMap().broadcastMessage(chr, MaplePacketCreator.showRewardItemAnimation(reward.getItemid(), reward.getEffect(), chr.getId()), false);
                                 rewarded = true;
                                 return rewarded;
@@ -227,13 +227,13 @@ public class InventoryHandler {
 
     public static final void UseItem(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         if (chr == null || !chr.isAlive() || chr.getMapId() == 749040100 || chr.getMap() == null/* || chr.hasDisease(MapleDisease.POTION)*/) {
-            c.getSession().write(MaplePacketCreator.enableActions());
+            c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
         final long time = System.currentTimeMillis();
         if (chr.getNextConsume() > time) {
             chr.dropMessage(5, "You may not use this item yet.");
-            c.getSession().write(MaplePacketCreator.enableActions());
+            c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
         c.getPlayer().updateTick(slea.readInt());
@@ -242,7 +242,7 @@ public class InventoryHandler {
         final IItem toUse = chr.getInventory(MapleInventoryType.USE).getItem(slot);
 
         if (toUse == null || toUse.getQuantity() < 1 || toUse.getItemId() != itemId) {
-            c.getSession().write(MaplePacketCreator.enableActions());
+            c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
         if (!FieldLimitType.PotionUse.check(chr.getMap().getFieldLimit()) || chr.getMapId() == 610030600) { //cwk quick hack
@@ -254,13 +254,13 @@ public class InventoryHandler {
             }
 
         } else {
-            c.getSession().write(MaplePacketCreator.enableActions());
+            c.sendPacket(MaplePacketCreator.enableActions());
         }
     }
 
     public static final void UseReturnScroll(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         if (!chr.isAlive() || chr.getMapId() == 749040100) {
-            c.getSession().write(MaplePacketCreator.enableActions());
+            c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
         c.getPlayer().updateTick(slea.readInt());
@@ -269,17 +269,17 @@ public class InventoryHandler {
         final IItem toUse = chr.getInventory(MapleInventoryType.USE).getItem(slot);
 
         if (toUse == null || toUse.getQuantity() < 1 || toUse.getItemId() != itemId) {
-            c.getSession().write(MaplePacketCreator.enableActions());
+            c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
         if (!FieldLimitType.PotionUse.check(chr.getMap().getFieldLimit())) {
             if (MapleItemInformationProvider.getInstance().getItemEffect(toUse.getItemId()).applyReturnScroll(chr)) {
                 MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, slot, (short) 1, false);
             } else {
-                c.getSession().write(MaplePacketCreator.enableActions());
+                c.sendPacket(MaplePacketCreator.enableActions());
             }
         } else {
-            c.getSession().write(MaplePacketCreator.enableActions());
+            c.sendPacket(MaplePacketCreator.enableActions());
         }
     }
 
@@ -288,7 +288,7 @@ public class InventoryHandler {
         final IItem magnify = c.getPlayer().getInventory(MapleInventoryType.USE).getItem((byte) slea.readShort());
         final IItem toReveal = c.getPlayer().getInventory(MapleInventoryType.EQUIP).getItem((byte) slea.readShort());
         if (magnify == null || toReveal == null) {
-            c.getSession().write(MaplePacketCreator.getInventoryFull());
+            c.sendPacket(MaplePacketCreator.getInventoryFull());
             return;
         }
         final Equip eqq = (Equip) toReveal;
@@ -322,11 +322,11 @@ public class InventoryHandler {
                 }
             }
             c.sendPacket(MaplePacketCreator.modifyInventory(true, new ModifyInventory(ModifyInventory.Types.MOVE, magnify)));
-            //c.getSession().write(MaplePacketCreator.scrolledItem(magnify, toReveal, false, true));
+            //c.sendPacket(MaplePacketCreator.scrolledItem(magnify, toReveal, false, true));
             c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getPotentialReset(c.getPlayer().getId(), eqq.getPosition()));
             MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, magnify.getPosition(), (short) 1, false);
         } else {
-            c.getSession().write(MaplePacketCreator.getInventoryFull());
+            c.sendPacket(MaplePacketCreator.getInventoryFull());
         }
     }
 
@@ -361,38 +361,38 @@ public class InventoryHandler {
 
         IItem scroll = chr.getInventory(MapleInventoryType.USE).getItem(slot);
         if (scroll == null) {
-            c.getSession().write(MaplePacketCreator.getInventoryFull());
+            c.sendPacket(MaplePacketCreator.getInventoryFull());
             return false;
         }
         if (!GameConstants.isSpecialScroll(scroll.getItemId()) && !GameConstants.isCleanSlate(scroll.getItemId()) && !GameConstants.isEquipScroll(scroll.getItemId()) && !GameConstants.isPotentialScroll(scroll.getItemId())) {
             if (toScroll.getUpgradeSlots() < 1) {
-                c.getSession().write(MaplePacketCreator.getInventoryFull());
+                c.sendPacket(MaplePacketCreator.getInventoryFull());
                 return false;
             }
         } else if (GameConstants.isEquipScroll(scroll.getItemId())) {
             if (toScroll.getUpgradeSlots() >= 1 || toScroll.getEnhance() >= 100 || vegas > 0 || ii.isCash(toScroll.getItemId())) {
-                c.getSession().write(MaplePacketCreator.getInventoryFull());
+                c.sendPacket(MaplePacketCreator.getInventoryFull());
                 return false;
             }
         } else if (GameConstants.isPotentialScroll(scroll.getItemId())) {
             if (toScroll.getState() >= 1 || (toScroll.getLevel() == 0 && toScroll.getUpgradeSlots() == 0) || vegas > 0 || ii.isCash(toScroll.getItemId())) {
-                c.getSession().write(MaplePacketCreator.getInventoryFull());
+                c.sendPacket(MaplePacketCreator.getInventoryFull());
                 return false;
             }
         }
         if (!GameConstants.canScroll(toScroll.getItemId()) && !GameConstants.isChaosScroll(toScroll.getItemId())) {
-            c.getSession().write(MaplePacketCreator.getInventoryFull());
+            c.sendPacket(MaplePacketCreator.getInventoryFull());
             return false;
         }
         if ((GameConstants.isCleanSlate(scroll.getItemId()) || GameConstants.isTablet(scroll.getItemId()) || GameConstants.isChaosScroll(scroll.getItemId())) && (vegas > 0 || ii.isCash(toScroll.getItemId()))) {
-            c.getSession().write(MaplePacketCreator.getInventoryFull());
+            c.sendPacket(MaplePacketCreator.getInventoryFull());
             return false;
         }
         if (GameConstants.isTablet(scroll.getItemId()) && toScroll.getDurability() < 0) { //not a durability item
-            c.getSession().write(MaplePacketCreator.getInventoryFull());
+            c.sendPacket(MaplePacketCreator.getInventoryFull());
             return false;
         } else if (!GameConstants.isTablet(scroll.getItemId()) && toScroll.getDurability() >= 0) {
-            c.getSession().write(MaplePacketCreator.getInventoryFull());
+            c.sendPacket(MaplePacketCreator.getInventoryFull());
             return false;
         }
 
@@ -401,7 +401,7 @@ public class InventoryHandler {
         // Anti cheat and validation
         List<Integer> scrollReqs = ii.getScrollReqs(scroll.getItemId());
         if (scrollReqs.size() > 0 && !scrollReqs.contains(toScroll.getItemId())) {
-            c.getSession().write(MaplePacketCreator.getInventoryFull());
+            c.sendPacket(MaplePacketCreator.getInventoryFull());
             return false;
         }
 
@@ -567,7 +567,7 @@ public class InventoryHandler {
                 }
             }
         }
-        c.getSession().write(MaplePacketCreator.enableActions());
+        c.sendPacket(MaplePacketCreator.enableActions());
     }
 
     public static final void UseMountFood(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
@@ -594,7 +594,7 @@ public class InventoryHandler {
             chr.getMap().broadcastMessage(MaplePacketCreator.updateMount(chr, levelup));
             MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, slot, (short) 1, false);
         }
-        c.getSession().write(MaplePacketCreator.enableActions());
+        c.sendPacket(MaplePacketCreator.enableActions());
     }
 
     public static final void UseScriptedNPCItem(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
@@ -811,12 +811,12 @@ public class InventoryHandler {
                 c.getPlayer().dropMessage(5, "The skill has been attained.");
             }
         }
-        c.getSession().write(MaplePacketCreator.enableActions());
+        c.sendPacket(MaplePacketCreator.enableActions());
     }
 
     public static final void UseSummonBag(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         if (!chr.isAlive()) {
-            c.getSession().write(MaplePacketCreator.enableActions());
+            c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
         c.getPlayer().updateTick(slea.readInt());
@@ -832,7 +832,7 @@ public class InventoryHandler {
                 final List<Pair<Integer, Integer>> toSpawn = MapleItemInformationProvider.getInstance().getSummonMobs(itemId);
 
                 if (toSpawn == null) {
-                    c.getSession().write(MaplePacketCreator.enableActions());
+                    c.sendPacket(MaplePacketCreator.enableActions());
                     return;
                 }
                 MapleMonster ht;
@@ -846,7 +846,7 @@ public class InventoryHandler {
                 }
             }
         }
-        c.getSession().write(MaplePacketCreator.enableActions());
+        c.sendPacket(MaplePacketCreator.enableActions());
     }
 
     public static final void UseTreasureChest(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
@@ -855,7 +855,7 @@ public class InventoryHandler {
 
         final IItem toUse = chr.getInventory(MapleInventoryType.ETC).getItem((byte) slot);
         if (toUse == null || toUse.getQuantity() <= 0 || toUse.getItemId() != itemid) {
-            c.getSession().write(MaplePacketCreator.enableActions());
+            c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
         int reward;
@@ -892,22 +892,23 @@ public class InventoryHandler {
 
             if (item == null) {
                 chr.dropMessage(5, "請確認是否有金鑰匙或者你身上的空間滿了.");
-                c.getSession().write(MaplePacketCreator.enableActions());
+                c.sendPacket(MaplePacketCreator.enableActions());
                 return;
             }
             MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.ETC, (byte) slot, (short) 1, true);
             MapleInventoryManipulator.removeById(c, MapleInventoryType.CASH, keyIDforRemoval, 1, true, false);
-            c.getSession().write(MaplePacketCreator.getShowItemGain(reward, (short) amount, true));
+            c.sendPacket(MaplePacketCreator.getShowItemGain(reward, (short) amount, true));
 
             if (GameConstants.gachaponRareItem(item.getItemId()) > 0) {
                 World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + box + "] " + c.getPlayer().getName(), " : 從金寶箱中獲得", item, (byte) 2).getBytes());
             }
         } else {
             chr.dropMessage(5, "請確認是否有銀鑰匙或者你身上的空間滿了.");
-            c.getSession().write(MaplePacketCreator.enableActions());
+            c.sendPacket(MaplePacketCreator.enableActions());
         }
     }
 
+    @SuppressWarnings("empty-statement")
     public static final void UseCashItem(final SeekableLittleEndianAccessor slea, final MapleClient c) {
 //        c.getPlayer().updateTick(slea.readInt());
         final byte slot = (byte) slea.readShort();
@@ -915,7 +916,7 @@ public class InventoryHandler {
 
         final IItem toUse = c.getPlayer().getInventory(MapleInventoryType.CASH).getItem(slot);
         if (toUse == null || toUse.getItemId() != itemId || toUse.getQuantity() < 1) {
-            c.getSession().write(MaplePacketCreator.enableActions());
+            c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
 
@@ -1269,7 +1270,7 @@ public class InventoryHandler {
                             statupdate.add(new Pair<>(MapleStat.MAXMP, (int) maxmp));
                             break;
                     }
-                    c.getSession().write(MaplePacketCreator.updatePlayerStats(statupdate, true, c.getPlayer().getJob()));
+                    c.sendPacket(MaplePacketCreator.updatePlayerStats(statupdate, true, c.getPlayer().getJob()));
                 }
                 break;
             }
@@ -1318,7 +1319,7 @@ public class InventoryHandler {
                     if (eq.getState() >= 5) {
                         eq.renewPotential();
                         c.sendPacket(MaplePacketCreator.modifyInventory(true, new ModifyInventory(ModifyInventory.Types.MOVE, item)));
-                        //c.getSession().write(MaplePacketCreator.scrolledItem(toUse, item, false, true));
+                        //c.sendPacket(MaplePacketCreator.scrolledItem(toUse, item, false, true));
                         //c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getPotentialEffect(c.getPlayer().getId(), eq.getItemId()));
                         c.getPlayer().forceReAddItem_NoUpdate(item, MapleInventoryType.EQUIP);
                         MapleInventoryManipulator.addById(c, 2430112, (short) 1);
@@ -1362,8 +1363,8 @@ public class InventoryHandler {
                         item.setUpgradeSlots((byte) (item.getUpgradeSlots() + 1));
 
                         c.getPlayer().forceReAddItem(item, MapleInventoryType.EQUIP);
-                        //c.getSession().write(MTSCSPacket.ViciousHammer(true, (byte) item.getViciousHammer()));
-                        //c.getSession().write(MTSCSPacket.ViciousHammer(false, (byte) 0));
+                        //c.sendPacket(MTSCSPacket.ViciousHammer(true, (byte) item.getViciousHammer()));
+                        //c.sendPacket(MTSCSPacket.ViciousHammer(false, (byte) 0));
                         used = true;
                         cc = true;
                     } else {
@@ -1477,9 +1478,9 @@ public class InventoryHandler {
                     sb.append(" : ");
                     sb.append(message);
                     final boolean ear = slea.readByte() != 0;
-                    if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.indexOf("豬") != -1 || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1) {;
+                    if (c.getPlayer().isPlayer() && message.indexOf("幹") != -1 || message.contains("豬") || message.indexOf("笨") != -1 || message.indexOf("靠") != -1 || message.indexOf("腦包") != -1 || message.indexOf("腦") != -1 || message.indexOf("智障") != -1 || message.indexOf("白目") != -1 || message.indexOf("白吃") != -1) {;
                         c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
-                        c.getSession().write(MaplePacketCreator.enableActions());
+                        c.sendPacket(MaplePacketCreator.enableActions());
                         return;
                     }
                     if (c.getPlayer().isPlayer()) {
@@ -1521,7 +1522,7 @@ public class InventoryHandler {
                             || message.contains("白目")
                             || message.contains("白吃")) {
                         c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
-                        c.getSession().write(MaplePacketCreator.enableActions());
+                        c.sendPacket(MaplePacketCreator.enableActions());
                         return;
                     }
                     final StringBuilder sb = new StringBuilder();
@@ -1553,6 +1554,7 @@ public class InventoryHandler {
                     break;
                 }
                 if (!c.getChannelServer().getMegaphoneMuteState()) {
+                    
                     final byte numLines = slea.readByte();
                     if (numLines > 3) {
                         return;
@@ -1564,17 +1566,10 @@ public class InventoryHandler {
                     String message;
                     for (int i = 0; i < numLines; i++) {
                         message = slea.readMapleAsciiString();
-                        if (message.length() > 65) {
-                            break;
-                        }
                         messages.add(sb + c.getPlayer().getName() + " : " + message);
                     }
                     final boolean ear = slea.readByte() > 0;
-                    if (c.getPlayer().isPlayer() && messages.indexOf("幹") != -1 || messages.indexOf("豬") != -1 || messages.indexOf("笨") != -1 || messages.indexOf("靠") != -1 || messages.indexOf("腦包") != -1 || messages.indexOf("腦") != -1 || messages.indexOf("智障") != -1 || messages.indexOf("白目") != -1 || messages.indexOf("白吃") != -1) {
-                        c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
-                        c.getSession().write(MaplePacketCreator.enableActions());
-                        return;
-                    }
+                    
                     if (c.getPlayer().isPlayer()) {
                         World.Broadcast.broadcastSmega(MaplePacketCreator.tripleSmega(messages, ear, c.getChannel()).getBytes());
                         System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + messages);
@@ -1607,19 +1602,7 @@ public class InventoryHandler {
                     final List<String> messages = new LinkedList<>();
                     messages.add(sb + c.getPlayer().getName() + " : " + message);
                     final boolean ear = slea.readByte() != 0;
-                    if (c.getPlayer().isPlayer() && message.contains("幹")
-                            || message.contains("豬")
-                            || message.contains("笨")
-                            || message.contains("靠")
-                            || message.contains("腦包")
-                            || message.contains("腦")
-                            || message.contains("智障")
-                            || message.contains("白目")
-                            || message.contains("白吃")) {
-                        c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
-                        c.getSession().write(MaplePacketCreator.enableActions());
-                        return;
-                    }
+                    
                     if (c.getPlayer().isPlayer()) {
                         World.Broadcast.broadcastSmega(MaplePacketCreator.HeartSmega(messages, ear, c.getChannel()).getBytes());
                         System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
@@ -1662,7 +1645,7 @@ public class InventoryHandler {
                             || message.contains("白目")
                             || message.contains("白吃")) {
                         c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
-                        c.getSession().write(MaplePacketCreator.enableActions());
+                        c.sendPacket(MaplePacketCreator.enableActions());
                         return;
                     }
                     if (c.getPlayer().isPlayer()) {
@@ -1710,7 +1693,7 @@ public class InventoryHandler {
                             || message.contains("白目")
                             || message.contains("白吃")) {
                         c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
-                        c.getSession().write(MaplePacketCreator.enableActions());
+                        c.sendPacket(MaplePacketCreator.enableActions());
                         return;
                     }
                     if (c.getPlayer().isPlayer()) {
@@ -1765,7 +1748,7 @@ public class InventoryHandler {
                             || message.contains("白目")
                             || message.contains("白吃")) {
                         c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
-                        c.getSession().write(MaplePacketCreator.enableActions());
+                        c.sendPacket(MaplePacketCreator.enableActions());
                         return;
                     }
                     if (c.getPlayer().isPlayer()) {
@@ -1890,9 +1873,9 @@ public class InventoryHandler {
                         pet.setFlags(pet.getFlags() | zz.getValue());
                     else
                         pet.setFlags(pet.getFlags() - zz.getValue());
-                    c.getSession().write(PetPacket.updatePet(pet, c.getPlayer().getInventory(MapleInventoryType.CASH).getItem((byte) pet.getInventoryPosition())));
-                    c.getSession().write(MaplePacketCreator.enableActions());
-                    c.getSession().write(MTSCSPacket.changePetFlag(uniqueid, true, zz.getValue()));
+                    c.sendPacket(PetPacket.updatePet(pet, c.getPlayer().getInventory(MapleInventoryType.CASH).getItem((byte) pet.getInventoryPosition())));
+                    c.sendPacket(MaplePacketCreator.enableActions());
+                    c.sendPacket(MTSCSPacket.changePetFlag(uniqueid, true, zz.getValue()));
                     used = true;
                 }
                 break;
@@ -1906,8 +1889,8 @@ public class InventoryHandler {
                 }
                 String nName = slea.readMapleAsciiString();
                 pet.setName(nName);
-                c.getSession().write(PetPacket.updatePet(pet, c.getPlayer().getInventory(MapleInventoryType.CASH).getItem((byte) pet.getInventoryPosition())));
-                c.getSession().write(MaplePacketCreator.enableActions());
+                c.sendPacket(PetPacket.updatePet(pet, c.getPlayer().getInventory(MapleInventoryType.CASH).getItem((byte) pet.getInventoryPosition())));
+                c.sendPacket(MaplePacketCreator.enableActions());
                 c.getPlayer().getMap().broadcastMessage(MTSCSPacket.changePetName(c.getPlayer(), nName, slo));
                 used = true;
                 break;
@@ -1973,11 +1956,11 @@ public class InventoryHandler {
                     }
                     if (pet.getCloseness() >= GameConstants.getClosenessNeededForLevel(pet.getLevel() + 1)) {
                         pet.setLevel(pet.getLevel() + 1);
-                        c.getSession().write(PetPacket.showOwnPetLevelUp(c.getPlayer().getPetIndex(pet)));
+                        c.sendPacket(PetPacket.showOwnPetLevelUp(c.getPlayer().getPetIndex(pet)));
                         c.getPlayer().getMap().broadcastMessage(PetPacket.showPetLevelUp(c.getPlayer(), petindex));
                     }
                 }
-                c.getSession().write(PetPacket.updatePet(pet, c.getPlayer().getInventory(MapleInventoryType.CASH).getItem(pet.getInventoryPosition())));
+                c.sendPacket(PetPacket.updatePet(pet, c.getPlayer().getInventory(MapleInventoryType.CASH).getItem(pet.getInventoryPosition())));
                 c.getPlayer().getMap().broadcastMessage(c.getPlayer(), PetPacket.commandResponse(c.getPlayer().getId(), (byte) 1, petindex, true, true), true);
                 used = true;
                 break;
@@ -1987,7 +1970,7 @@ public class InventoryHandler {
                 final int itemSearch = slea.readInt();
                 final List<HiredMerchant> hms = c.getChannelServer().searchMerchant(itemSearch);
                 if (hms.size() > 0) {
-                    c.getSession().write(MaplePacketCreator.getOwlSearched(itemSearch, hms));
+                    c.sendPacket(MaplePacketCreator.getOwlSearched(itemSearch, hms));
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(1, "找不到物品.");
@@ -2003,7 +1986,7 @@ public class InventoryHandler {
                 MapleMist mist = new MapleMist(bounds, c.getPlayer());
                 c.getPlayer().getMap().spawnMist(mist, 10000, true);
                 c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), "哦，不，我放屁!", false, 1));
-                c.getSession().write(MaplePacketCreator.enableActions());
+                c.sendPacket(MaplePacketCreator.enableActions());
                 used = true;
                 break;
             }
@@ -2056,11 +2039,11 @@ public class InventoryHandler {
                             || text.contains("白目")
                             || text.contains("白吃")) {
                         c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
-                        c.getSession().write(MaplePacketCreator.enableActions());
+                        c.sendPacket(MaplePacketCreator.enableActions());
                         return;
                     }
                     if (c.getPlayer().isPlayer()) {
-                        World.Broadcast.broadcastSmega(MaplePacketCreator.getAvatarMega(c.getPlayer(), c.getChannel(), itemId, text, ear));
+                        World.Broadcast.broadcastSmega(MaplePacketCreator.getAvatarMega(c.getPlayer(), c.getChannel(), itemId, text, ear).getBytes());
                         System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + text);
                     } else if (c.getPlayer().isGM()) {
                         World.Broadcast.broadcastSmega(MaplePacketCreator.getAvatarMega(c.getPlayer(), c.getChannel(), itemId, text, ear).getBytes());
@@ -2077,7 +2060,7 @@ public class InventoryHandler {
                 for (int i : GameConstants.blockedMaps) {
                     if (c.getPlayer().getMapId() == i) {
                         c.getPlayer().dropMessage(5, "你不能在這張地圖裡使用，如果卡住請使用 @ea 來解卡。");
-                        c.getSession().write(MaplePacketCreator.enableActions());
+                        c.sendPacket(MaplePacketCreator.enableActions());
                         return;
                     }
                 }
@@ -2132,9 +2115,9 @@ public class InventoryHandler {
                         if (Math.random() > 0.1) {
                             final int gainmes = Randomizer.nextInt(mesars);
                             c.getPlayer().gainMeso(gainmes, false);
-                            c.getSession().write(MTSCSPacket.sendMesobagSuccess(gainmes));
+                            c.sendPacket(MTSCSPacket.sendMesobagSuccess(gainmes));
                         } else {
-                            c.getSession().write(MTSCSPacket.sendMesobagFailed());
+                            c.sendPacket(MTSCSPacket.sendMesobagFailed());
                         }
                     }
                     /*                } else if (itemId / 10000 == 562) {
@@ -2151,7 +2134,7 @@ public class InventoryHandler {
         if (used) {
             MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.CASH, slot, (short) 1, false, true);
         }
-        c.getSession().write(MaplePacketCreator.enableActions());
+        c.sendPacket(MaplePacketCreator.enableActions());
         if (cc) {
             if (!c.getPlayer().isAlive() || c.getPlayer().getEventInstance() != null || FieldLimitType.ChannelSwitch.check(c.getPlayer().getMap().getFieldLimit())) {
                 c.getPlayer().dropMessage(1, "Auto change channel failed.");
@@ -2163,33 +2146,36 @@ public class InventoryHandler {
     }
 
     public static final void PlayerPickup(final SeekableLittleEndianAccessor slea, MapleClient c, final MapleCharacter chr) {
-        if (chr.getPlayerShop() != null || c.getPlayer().getConversation() > 0 || c.getPlayer().getTrade() != null) { //hack
+        if (chr.getPlayerShop() != null 
+                || c.getPlayer().getConversation() > 0 
+                || c.getPlayer().getTrade() != null) { 
+            c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
         chr.updateTick(slea.readInt());
         slea.skip(1); // [4] Seems to be tickcount, [1] always 0
         final Point Client_Reportedpos = slea.readPos();
-
         final MapleMapObject ob = chr.getMap().getMapObject(slea.readInt(), MapleMapObjectType.ITEM);
 
         if (ob == null) {
-            c.getSession().write(MaplePacketCreator.enableActions());
+            c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
+        
         final MapleMapItem mapitem = (MapleMapItem) ob;
         final Lock lock = mapitem.getLock();
         lock.lock();
         try {
             if (mapitem.isPickedUp()) {
-                c.getSession().write(MaplePacketCreator.enableActions());
+                c.sendPacket(MaplePacketCreator.enableActions());
                 return;
             }
             if (mapitem.getOwner() != chr.getId() && ((!mapitem.isPlayerDrop() && mapitem.getDropType() == 0) || (mapitem.isPlayerDrop() && chr.getMap().getEverlast()))) {
-                c.getSession().write(MaplePacketCreator.enableActions());
+                c.sendPacket(MaplePacketCreator.enableActions());
                 return;
             }
             if (!mapitem.isPlayerDrop() && mapitem.getDropType() == 1 && mapitem.getOwner() != chr.getId() && (chr.getParty() == null || chr.getParty().getMemberById(mapitem.getOwner()) == null)) {
-                c.getSession().write(MaplePacketCreator.enableActions());
+                c.sendPacket(MaplePacketCreator.enableActions());
                 return;
             }
             final double Distance = Client_Reportedpos.distanceSq(mapitem.getPosition());
@@ -2217,7 +2203,7 @@ public class InventoryHandler {
                 removeItem(chr, mapitem, ob);
             } else {
                 if (MapleItemInformationProvider.getInstance().isPickupBlocked(mapitem.getItem().getItemId())) {
-                    c.getSession().write(MaplePacketCreator.enableActions());
+                    c.sendPacket(MaplePacketCreator.enableActions());
                     c.getPlayer().dropMessage(5, "This item cannot be picked up.");
                 } else if (useItem(c, mapitem.getItemId())) {
                     removeItem(c.getPlayer(), mapitem, ob);
@@ -2229,9 +2215,9 @@ public class InventoryHandler {
                         removeItem(chr, mapitem, ob);
                     }
                 } else {
-                    c.getSession().write(MaplePacketCreator.getInventoryFull());
-                    c.getSession().write(MaplePacketCreator.getShowInventoryFull());
-                    c.getSession().write(MaplePacketCreator.enableActions());
+                    c.sendPacket(MaplePacketCreator.getInventoryFull());
+                    c.sendPacket(MaplePacketCreator.getShowInventoryFull());
+                    c.sendPacket(MaplePacketCreator.enableActions());
                 }
             }
         } finally {
@@ -2258,18 +2244,18 @@ public class InventoryHandler {
         lock.lock();
         try {
             if (mapitem.isPickedUp()) {
-                c.getSession().write(MaplePacketCreator.getInventoryFull());
+                c.sendPacket(MaplePacketCreator.getInventoryFull());
                 return;
             }
             if (mapitem.getOwner() != chr.getId() && mapitem.isPlayerDrop()) {
                 return;
             }
             if (mapitem.getOwner() != chr.getId() && ((!mapitem.isPlayerDrop() && mapitem.getDropType() == 0) || (mapitem.isPlayerDrop() && chr.getMap().getEverlast()))) {
-                c.getSession().write(MaplePacketCreator.enableActions());
+                c.sendPacket(MaplePacketCreator.enableActions());
                 return;
             }
             if (!mapitem.isPlayerDrop() && mapitem.getDropType() == 1 && mapitem.getOwner() != chr.getId() && (chr.getParty() == null || chr.getParty().getMemberById(mapitem.getOwner()) == null)) {
-                c.getSession().write(MaplePacketCreator.enableActions());
+                c.sendPacket(MaplePacketCreator.enableActions());
                 return;
             }
             final double Distance = Client_Reportedpos.distanceSq(mapitem.getPosition());
@@ -2297,18 +2283,18 @@ public class InventoryHandler {
                 } else {
                     chr.gainMeso(mapitem.getMeso(), true);
                 }
-                removeItem_Pet(chr, mapitem, petz);
+                removeItemPet(chr, mapitem, petz);
             } else {
                 if (MapleItemInformationProvider.getInstance().isPickupBlocked(mapitem.getItemId()) || mapitem.getItemId() / 10000 == 291) {
-                    c.getSession().write(MaplePacketCreator.enableActions());
+                    c.sendPacket(MaplePacketCreator.enableActions());
                 } else if (useItem(c, mapitem.getItemId())) {
-                    removeItem_Pet(chr, mapitem, petz);
+                    removeItemPet(chr, mapitem, petz);
                 } else if (MapleInventoryManipulator.checkSpace(c, mapitem.getItemId(), mapitem.getItem().getQuantity(), mapitem.getItem().getOwner())) {
                     if (mapitem.getItem().getQuantity() >= 50 && mapitem.getItemId() == 2340000) {
                         c.setMonitored(true); //hack check
                     }
                     MapleInventoryManipulator.addFromDrop(c, mapitem.getItem(), true, mapitem.getDropper() instanceof MapleMonster);
-                    removeItem_Pet(chr, mapitem, petz);
+                    removeItemPet(chr, mapitem, petz);
                 }
             }
         } finally {
@@ -2336,14 +2322,14 @@ public class InventoryHandler {
                 } else {
                     ii.getItemEffect(id).applyTo(c.getPlayer());
                 }
-                c.getSession().write(MaplePacketCreator.getShowItemGain(id, (byte) 1));
+                c.sendPacket(MaplePacketCreator.getShowItemGain(id, (byte) 1));
                 return true;
             }
         }
         return false;
     }
 
-    public static final void removeItem_Pet(final MapleCharacter chr, final MapleMapItem mapitem, int pet) {
+    public static final void removeItemPet(final MapleCharacter chr, final MapleMapItem mapitem, int pet) {
         mapitem.setPickedUp(true);
         chr.getMap().broadcastMessage(MaplePacketCreator.removeItemFromMap(mapitem.getObjectId(), 5, chr.getId(), pet), mapitem.getPosition());
         chr.getMap().removeMapObject(mapitem);
@@ -2410,7 +2396,7 @@ public class InventoryHandler {
         while (z_2 == z || chances[z_2] < Randomizer.nextInt(1000)) {
             z_2 = Randomizer.nextInt(ids.length);
         }
-        c.getSession().write(MaplePacketCreator.getPeanutResult(ids[z], (short) 1, ids[z_2], (short) 1));
+        c.sendPacket(MaplePacketCreator.getPeanutResult(ids[z], (short) 1, ids[z_2], (short) 1));
         return MapleInventoryManipulator.addById(c, ids[z], (short) 1) && MapleInventoryManipulator.addById(c, ids[z_2], (short) 1);
 
     }
@@ -2423,22 +2409,22 @@ public class InventoryHandler {
             final int itemSearch = slea.readInt();
             final List<HiredMerchant> hms = c.getChannelServer().searchMerchant(itemSearch);
             if (hms.size() > 0) {
-                c.getSession().write(MaplePacketCreator.getOwlSearched(itemSearch, hms));
+                c.sendPacket(MaplePacketCreator.getOwlSearched(itemSearch, hms));
                 MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, itemid, 1, true, false);
             } else {
-                c.getPlayer().dropMessage(1, "Unable to find the item.");
+                c.getPlayer().dropMessage(1, "找不到該物品");
             }
         }
-        c.getSession().write(MaplePacketCreator.enableActions());
+        c.sendPacket(MaplePacketCreator.enableActions());
     }
 
     public static final void Owl(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         if (c.getPlayer().haveItem(5230000, 1, true, false) || c.getPlayer().haveItem(2310000, 1, true, false)) {
             if (c.getPlayer().getMapId() >= 910000000 && c.getPlayer().getMapId() <= 910000022) {
-                c.getSession().write(MaplePacketCreator.getOwlOpen());
+                c.sendPacket(MaplePacketCreator.getOwlOpen());
             } else {
-                c.getPlayer().dropMessage(5, "This can only be used inside the Free Market.");
-                c.getSession().write(MaplePacketCreator.enableActions());
+                c.getPlayer().dropMessage(5, "貓頭鷹只能在自由市場內使用");
+                c.sendPacket(MaplePacketCreator.enableActions());
             }
         }
     }
@@ -2490,11 +2476,11 @@ public class InventoryHandler {
                 }
             }
         }
-        c.getSession().write(MaplePacketCreator.useSkillBook(chr, skill, maxlevel, canuse, success));
+        c.sendPacket(MaplePacketCreator.useSkillBook(chr, skill, maxlevel, canuse, success));
     }
 
     public static final void OwlWarp(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-        c.getSession().write(MaplePacketCreator.enableActions());
+        c.sendPacket(MaplePacketCreator.enableActions());
         if (c.getPlayer().getMapId() >= 910000000 && c.getPlayer().getMapId() <= 910000022 && c.getPlayer().getPlayerShop() == null) {
             final int id = slea.readInt();
             final int map = slea.readInt();
@@ -2549,7 +2535,7 @@ public class InventoryHandler {
                         merchant.setOpen(false);
                         merchant.removeAllVisitors((byte) 16, (byte) 0);
                         c.getPlayer().setPlayerShop(merchant);
-                        c.getSession().write(PlayerShopPacket.getHiredMerch(c.getPlayer(), merchant, false));
+                        c.sendPacket(PlayerShopPacket.getHiredMerch(c.getPlayer(), merchant, false));
                     } else {
                         if (!merchant.isOpen() || !merchant.isAvailable()) {
                             c.getPlayer().dropMessage(1, "This shop is in maintenance, please come by later.");
@@ -2561,12 +2547,12 @@ public class InventoryHandler {
                             } else {
                                 c.getPlayer().setPlayerShop(merchant);
                                 merchant.addVisitor(c.getPlayer());
-                                c.getSession().write(PlayerShopPacket.getHiredMerch(c.getPlayer(), merchant, false));
+                                c.sendPacket(PlayerShopPacket.getHiredMerch(c.getPlayer(), merchant, false));
                             }
                         }
                     }
                 } else {
-                    c.getPlayer().dropMessage(1, "This shop is in maintenance, please come by later.");
+                    c.getPlayer().dropMessage(1, "商店正在整理中，");
                 }
             }
         }

@@ -45,7 +45,7 @@ public class UserInterfaceHandler {
 
             if (selection >= 0 && selection <= ServerConstants.Poll_Answers.length) {
                 if (MapleCharacterUtil.SetPoll(c.getAccID(), selection)) {
-                    c.getSession().write(MaplePacketCreator.getPollReply("Thank you."));
+                    c.sendPacket(MaplePacketCreator.getPollReply("Thank you."));
                     //idk what goes here lol
                 }
             }

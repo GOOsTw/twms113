@@ -104,7 +104,7 @@ public class HiredMerchant extends AbstractPlayerStore {
          saveItems();
          } else {
          c.getPlayer().dropMessage(1, "Your inventory is full.");
-         c.getSession().write(MaplePacketCreator.enableActions());
+         c.sendPacket(MaplePacketCreator.enableActions());
          }
          }*/
         /* if (MapleInventoryManipulator.checkSpace(c, newItem.getItemId(), newItem.getQuantity(), newItem.getOwner())) {
@@ -122,11 +122,11 @@ public class HiredMerchant extends AbstractPlayerStore {
          }
          } else {
          c.getPlayer().dropMessage(1, "拍賣家有太多錢了.");
-         c.getSession().write(MaplePacketCreator.enableActions());
+         c.sendPacket(MaplePacketCreator.enableActions());
          }
          } else {
          c.getPlayer().dropMessage(1, "您的背包滿了.");
-         c.getSession().write(MaplePacketCreator.enableActions());
+         c.sendPacket(MaplePacketCreator.enableActions());
          }*/
         if (MapleInventoryManipulator.addFromDrop(c, newItem, false)) {
             pItem.bundles -= quantity; // Number remaining in the store
@@ -172,14 +172,14 @@ public class HiredMerchant extends AbstractPlayerStore {
     @Override
     public void sendDestroyData(MapleClient client) {
         if (isAvailable()) {
-            client.getSession().write(PlayerShopPacket.destroyHiredMerchant(getOwnerId()));
+            client.sendPacket(PlayerShopPacket.destroyHiredMerchant(getOwnerId()));
         }
     }
 
     @Override
     public void sendSpawnData(MapleClient client) {
         if (isAvailable()) {
-            client.getSession().write(PlayerShopPacket.spawnHiredMerchant(this));
+            client.sendPacket(PlayerShopPacket.spawnHiredMerchant(this));
         }
     }
 
@@ -196,10 +196,10 @@ public class HiredMerchant extends AbstractPlayerStore {
     }
 
     public final void sendBlackList(final MapleClient c) {
-        c.getSession().write(PlayerShopPacket.MerchantBlackListView(blacklist));
+        c.sendPacket(PlayerShopPacket.MerchantBlackListView(blacklist));
     }
 
     public final void sendVisitor(final MapleClient c) {
-        c.getSession().write(PlayerShopPacket.MerchantVisitorView(visitors));
+        c.sendPacket(PlayerShopPacket.MerchantVisitorView(visitors));
     }
 }

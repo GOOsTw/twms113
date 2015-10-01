@@ -720,7 +720,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 AllianceHandler.HandleAlliance(slea, c, true);
                 break;
             case BBS_OPERATION:
-                BBSHandler.BBSOperatopn(slea, c);
+                BBSHandler.HandleBBS(slea, c);
                 break;
             case PARTY_OPERATION:
                 PartyHandler.PartyOperatopn(slea, c);

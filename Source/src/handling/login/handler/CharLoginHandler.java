@@ -61,7 +61,7 @@ public class CharLoginHandler {
 
     public static final void Welcome(final MapleClient c) {
 
-        // c.getSession().write(MaplePacketCreator.serverNotice(1, "歡迎來到尻尻谷"));
+        // c.sendPacket(MaplePacketCreator.serverNotice(1, "歡迎來到尻尻谷"));
     }
 
     public static final void login(final SeekableLittleEndianAccessor slea, final MapleClient c) {
@@ -81,14 +81,14 @@ public class CharLoginHandler {
         if (LoginServer.autoRegister) {
             if (AutoRegister.autoRegister && !AutoRegister.getAccountExists(login) && (!c.hasBannedIP() || !c.hasBannedMac())) {
                 if (pwd.equalsIgnoreCase("disconnect") || pwd.equalsIgnoreCase("fixme")) {
-                    c.getSession().write(MaplePacketCreator.serverNotice(1, "This password is invalid."));
-                    c.getSession().write(LoginPacket.getLoginFailed(1)); //Shows no message, used for unstuck the login button
+                    c.sendPacket(MaplePacketCreator.serverNotice(1, "This password is invalid."));
+                    c.sendPacket(LoginPacket.getLoginFailed(1)); //Shows no message, used for unstuck the login button
                     return;
                 }
                 AutoRegister.createAccount(login, pwd, c.getSession().getRemoteAddress().toString());
                 if (AutoRegister.success) {
-                    c.getSession().write(MaplePacketCreator.serverNotice(1, "帳號創建成功,請重新登入!"));
-                    c.getSession().write(LoginPacket.getLoginFailed(1)); //Shows no message, used for unstuck the login button
+                    c.sendPacket(MaplePacketCreator.serverNotice(1, "帳號創建成功,請重新登入!"));
+                    c.sendPacket(LoginPacket.getLoginFailed(1)); //Shows no message, used for unstuck the login button
                     return;
                 }
             }
@@ -106,11 +106,11 @@ public class CharLoginHandler {
         }
         if (loginok != 0) {
             if (!loginFailCount(c)) {
-                c.getSession().write(LoginPacket.getLoginFailed(loginok));
+                c.sendPacket(LoginPacket.getLoginFailed(loginok));
             }
         } else if (tempbannedTill.getTimeInMillis() != 0) {
             if (!loginFailCount(c)) {
-                c.getSession().write(LoginPacket.getTempBan(KoreanDateUtil.getTempBanTimestamp(tempbannedTill.getTimeInMillis()), c.getBanReason()));
+                c.sendPacket(LoginPacket.getTempBan(KoreanDateUtil.getTempBanTimestamp(tempbannedTill.getTimeInMillis()), c.getBanReason()));
             }
         } else {
             
@@ -156,11 +156,11 @@ public class CharLoginHandler {
      }
      if (loginok != 0) {
      if (!loginFailCount(c)) {
-     c.getSession().write(LoginPacket.getLoginFailed(loginok));
+     c.sendPacket(LoginPacket.getLoginFailed(loginok));
      }
      } else if (tempbannedTill.getTimeInMillis() != 0) {
      if (!loginFailCount(c)) {
-     c.getSession().write(LoginPacket.getTempBan(KoreanDateUtil.getTempBanTimestamp(tempbannedTill.getTimeInMillis()), c.getBanReason()));
+     c.sendPacket(LoginPacket.getTempBan(KoreanDateUtil.getTempBanTimestamp(tempbannedTill.getTimeInMillis()), c.getBanReason()));
      }
      } else {
      c.loginAttempt = 0;
@@ -175,7 +175,7 @@ public class CharLoginHandler {
             c.setSecondPassword(password);
             c.update2ndPassword();
             c.updateGender();
-            c.getSession().write(LoginPacket.getGenderChanged(c));
+            c.sendPacket(LoginPacket.getGenderChanged(c));
             c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
         } else {
             c.getSession().close();
@@ -184,11 +184,11 @@ public class CharLoginHandler {
     }
 
     public static final void ServerListRequest(final MapleClient c) {
-        c.getSession().write(LoginPacket.getServerList(0, LoginServer.getServerName(), LoginServer.getLoad()));
-        //c.getSession().write(MaplePacketCreator.getServerList(1, "Scania", LoginServer.getInstance().getChannels(), 1200));
-        //c.getSession().write(MaplePacketCreator.getServerList(2, "Scania", LoginServer.getInstance().getChannels(), 1200));
-        //c.getSession().write(MaplePacketCreator.getServerList(3, "Scania", LoginServer.getInstance().getChannels(), 1200));
-        c.getSession().write(LoginPacket.getEndOfServerList());
+        c.sendPacket(LoginPacket.getServerList(0, LoginServer.getServerName(), LoginServer.getLoad()));
+        //c.sendPacket(MaplePacketCreator.getServerList(1, "Scania", LoginServer.getInstance().getChannels(), 1200));
+        //c.sendPacket(MaplePacketCreator.getServerList(2, "Scania", LoginServer.getInstance().getChannels(), 1200));
+        //c.sendPacket(MaplePacketCreator.getServerList(3, "Scania", LoginServer.getInstance().getChannels(), 1200));
+        c.sendPacket(LoginPacket.getEndOfServerList());
     }
 
     public static final void ServerStatusRequest(final MapleClient c) {
@@ -198,11 +198,11 @@ public class CharLoginHandler {
         final int numPlayer = LoginServer.getUsersOn();
         final int userLimit = LoginServer.getUserLimit();
         if (numPlayer >= userLimit) {
-            c.getSession().write(LoginPacket.getServerStatus(2));
+            c.sendPacket(LoginPacket.getServerStatus(2));
         } else if (numPlayer * 2 >= userLimit) {
-            c.getSession().write(LoginPacket.getServerStatus(1));
+            c.sendPacket(LoginPacket.getServerStatus(1));
         } else {
-            c.getSession().write(LoginPacket.getServerStatus(0));
+            c.sendPacket(LoginPacket.getServerStatus(0));
         }
     }
 
@@ -217,14 +217,14 @@ public class CharLoginHandler {
 
         final List<MapleCharacter> chars = c.loadCharacters(server);
         if (chars != null) {
-            c.getSession().write(LoginPacket.getCharList(c.getSecondPassword() != null, chars, c.getCharacterSlots()));
+            c.sendPacket(LoginPacket.getCharList(c.getSecondPassword() != null, chars, c.getCharacterSlots()));
         } else {
             c.getSession().close();
         }
     }
 
     public static final void CheckCharName(final String name, final MapleClient c) {
-        c.getSession().write(LoginPacket.charNameResponse(name,
+        c.sendPacket(LoginPacket.charNameResponse(name,
                 !MapleCharacterUtil.canCreateChar(name) || LoginInformationProvider.getInstance().isForbiddenName(name)));
     }
 
@@ -232,7 +232,7 @@ public class CharLoginHandler {
         final String name = slea.readMapleAsciiString();
         final int JobType = slea.readInt(); // 1 = Adventurer, 0 = Cygnus, 2 = Aran
         if (JobType == 0) {
-            c.getSession().write(MaplePacketCreator.serverNotice(1, "很抱歉\r\n皇家騎士團還未開放\r\n日後如果BUG差不多會開放其他職業。"));
+            c.sendPacket(MaplePacketCreator.serverNotice(1, "很抱歉\r\n皇家騎士團還未開放\r\n日後如果BUG差不多會開放其他職業。"));
             return;
         }
         final short db = 0; //whether dual blade = 1 or adventurer = 0
@@ -371,10 +371,10 @@ public class CharLoginHandler {
 
         if (MapleCharacterUtil.canCreateChar(name) && !LoginInformationProvider.getInstance().isForbiddenName(name)) {
             MapleCharacter.saveNewCharToDB(newchar, JobType, JobType == 1 && db == 0);
-            c.getSession().write(LoginPacket.addNewCharEntry(newchar, true));
+            c.sendPacket(LoginPacket.addNewCharEntry(newchar, true));
             c.createdChar(newchar.getId());
         } else {
-            c.getSession().write(LoginPacket.addNewCharEntry(newchar, false));
+            c.sendPacket(LoginPacket.addNewCharEntry(newchar, false));
         }
     }
 
@@ -388,7 +388,7 @@ public class CharLoginHandler {
         final int characterId = slea.readInt();
 
         if (!c.login_Auth(characterId)) {
-            c.getSession().write(LoginPacket.secondPwError((byte) 0x14));
+            c.sendPacket(LoginPacket.secondPwError((byte) 0x14));
             return; // Attempting to delete other character
         }
         byte state = 0;
@@ -410,7 +410,7 @@ public class CharLoginHandler {
             state = (byte) c.deleteCharacter(characterId);
         }
 
-        c.getSession().write(LoginPacket.deleteCharResponse(characterId, state));
+        c.sendPacket(LoginPacket.deleteCharResponse(characterId, state));
     }
 
     public static final void Character_WithoutSecondPassword(final SeekableLittleEndianAccessor slea, final MapleClient c) {
@@ -428,7 +428,7 @@ public class CharLoginHandler {
             Logger.getLogger(CharLoginHandler.class.getName()).log(Level.SEVERE, "getIP Error", ex);
         }
         int port = Integer.parseInt(ChannelServer.getInstance(c.getChannel()).getSocket().split(":")[1]);
-        c.getSession().write(MaplePacketCreator.getServerIP(ip, port, charId));
+        c.sendPacket(MaplePacketCreator.getServerIP(ip, port, charId));
     }
 
     public static final void Character_WithSecondPassword(final SeekableLittleEndianAccessor slea, final MapleClient c) {
@@ -452,9 +452,9 @@ public class CharLoginHandler {
                 Logger.getLogger(CharLoginHandler.class.getName()).log(Level.SEVERE, "getIP Error", ex);
             }
             int port = Integer.parseInt(ChannelServer.getInstance(c.getChannel()).getSocket().split(":")[1]);
-            c.getSession().write(MaplePacketCreator.getServerIP(ip, port, charId));
+            c.sendPacket(MaplePacketCreator.getServerIP(ip, port, charId));
         } else {
-            c.getSession().write(LoginPacket.secondPwError((byte) 0x14));
+            c.sendPacket(LoginPacket.secondPwError((byte) 0x14));
         }
     }
 }

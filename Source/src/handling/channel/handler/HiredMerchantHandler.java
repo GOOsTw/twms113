@@ -62,7 +62,7 @@ public class HiredMerchantHandler {
                     boolean merch = World.hasMerchant(c.getPlayer().getAccountID());
                     if (!merch) {
 //		    c.getPlayer().dropMessage(1, "精靈商人不開放嚕");
-                        c.getSession().write(PlayerShopPacket.sendTitleBox());
+                        c.sendPacket(PlayerShopPacket.sendTitleBox());
                     } else {
                         c.getPlayer().dropMessage(1, "請換個地方開或者是你已經有開了");
                     }
@@ -120,17 +120,17 @@ public class HiredMerchantHandler {
                         c.getPlayer().setConversation(0);
                     } else if (pack.getItems().size() <= 0) { //error fix for complainers.
                         if (!check(c.getPlayer(), pack)) {
-                            c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x21));
+                            c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x21));
                             return;
                         }
                         if (deletePackage(c.getPlayer().getId(), c.getPlayer().getAccountID(), pack.getPackageid())) {
                             c.getPlayer().gainMeso(pack.getMesos(), false);
-                            c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x1d));
+                            c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x1d));
                         } else {
                             c.getPlayer().dropMessage(1, "An unknown error occured.");
                         }
                     } else {
-                        c.getSession().write(PlayerShopPacket.merchItemStore_ItemData(pack));
+                        c.sendPacket(PlayerShopPacket.merchItemStore_ItemData(pack));
                     }
                 }
                 break;
@@ -139,7 +139,7 @@ public class HiredMerchantHandler {
                 if (c.getPlayer().getConversation() != 3) {
                     return;
                 }
-                c.getSession().write(PlayerShopPacket.merchItemStore((byte) 0x24));
+                c.sendPacket(PlayerShopPacket.merchItemStore((byte) 0x24));
                 break;
             }
             case 26: { // Take out item
@@ -153,7 +153,7 @@ public class HiredMerchantHandler {
                     return;
                 }
                 if (!check(c.getPlayer(), pack)) {
-                    c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x21));
+                    c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x21));
                     return;
                 }
                 if (deletePackage(c.getPlayer().getId(), c.getPlayer().getAccountID(), pack.getPackageid())) {
@@ -161,7 +161,7 @@ public class HiredMerchantHandler {
                     for (IItem item : pack.getItems()) {
                         MapleInventoryManipulator.addFromDrop(c, item, false);
                     }
-                    c.getSession().write(PlayerShopPacket.merchItem_Message((byte) 0x1d));
+                    c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x1d));
                 } else {
                     c.getPlayer().dropMessage(1, "An unknown error occured.");
                 }
