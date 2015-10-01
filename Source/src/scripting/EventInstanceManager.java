@@ -714,6 +714,7 @@ public class EventInstanceManager {
         if (party == null) {
             return;
         }
+        
         for (MaplePartyCharacter pc : party.getMembers()) {
             final MapleCharacter c = map.getCharacterById(pc.getId());
             if (c != null) {
@@ -722,6 +723,7 @@ public class EventInstanceManager {
                 c.resetCP();
             }
         }
+        
         final MapleCarnivalParty carnivalParty = new MapleCarnivalParty(leader, characters, team);
         for(MapleCharacter chr : characters)
             chr.setCarnivalParty(carnivalParty);
