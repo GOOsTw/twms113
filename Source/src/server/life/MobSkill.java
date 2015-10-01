@@ -468,7 +468,7 @@ public class MobSkill {
         final Rectangle bounds = calculateBoundingBox(monster.getPosition(), monster.isFacingLeft());
         List<MapleCharacter> players = new ArrayList<>();
         players.add(player);
-        return monster.getMap().getPlayersInRectAndInList(bounds, players);
+        return monster.getMap().getPlayersInRectThreadsafe(bounds, players);
     }
 
     //得到物件在地範圍

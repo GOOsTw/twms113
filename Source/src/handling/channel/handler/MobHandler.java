@@ -41,28 +41,31 @@ import tools.data.input.SeekableLittleEndianAccessor;
 
 public class MobHandler {
 
-    public static final void MoveMonster(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void MoveMonster(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+        final MapleCharacter chr = c.getPlayer();
         if (chr == null || chr.getMap() == null) {
-            return; //?
-        }
-        final int oid = slea.readInt();
-        final MapleMonster monster = chr.getMap().getMonsterByOid(oid);
-
-        if (monster == null) { // movin something which is not a monster
-            chr.addMoveMob(oid);
             return;
         }
+        final int objectId = slea.readInt();
+        final MapleMonster monster = chr.getMap().getMonsterByOid(objectId);
+
+        if (monster == null) {
+            chr.addMoveMob(objectId);
+            return;
+        }
+        
         final short moveid = slea.readShort();
         final boolean useSkill = slea.readByte() > 0;
         final byte skill = slea.readByte();
-        final int skill1 = slea.readByte() & 0xFF; // unsigned?
+        final int skill1 = slea.readByte() & 0xFF;
         final int skill2 = slea.readByte();
         final int skill3 = slea.readByte();
         final int skill4 = slea.readByte();
+        
         int realskill = 0;
         int level = 0;
 
-        if (useSkill) {// && (skill == -1 || skill == 0)) {
+        if (useSkill) {
             final byte size = monster.getNoSkills();
             boolean used = false;
 
@@ -136,13 +139,15 @@ public class MobHandler {
         slea.read(11);
         final Point startPos = slea.readPos();
         final List<LifeMovementFragment> res = MovementParse.parseMovement(slea, 2);
+        final MapleCharacter controller = monster.getController();
 
         c.sendPacket(MobPacket.moveMonsterResponse(monster.getObjectId(), moveid, monster.getMp(), monster.isControllerHasAggro(), realskill, level));
        
-        if (monster.getController() != c.getPlayer()) {
+        if (controller != c.getPlayer()) {
             if (monster.isAttackedBy(c.getPlayer())) {// aggro and controller change
                 monster.switchController(c.getPlayer(), true);
-            } else {
+            } else if ( controller != null && controller.getMapId() == monster.getMap().getId() ) {
+                monster.setController(null);
                 return;
             }
         } else if (skill == -1 && monster.isControllerKnowsAboutAggro() && !monster.getStats().getMobile() && !monster.isFirstAttack()) {
@@ -167,11 +172,10 @@ public class MobHandler {
         }
     }
 
-    public static final void FriendlyDamage(final SeekableLittleEndianAccessor slea, final MapleCharacter chr) {
+    public static final void handleFriendlyDamage(final SeekableLittleEndianAccessor slea, MapleClient c) {
+        final MapleCharacter chr = c.getPlayer();
         final MapleMap map = chr.getMap();
-        if (map == null) {
-            return;
-        }
+        
         final MapleMonster mobfrom = map.getMonsterByOid(slea.readInt());
         slea.skip(4); // Player ID
         final MapleMonster mobto = map.getMonsterByOid(slea.readInt());
@@ -206,8 +210,10 @@ public class MobHandler {
         }
     }
 
-    public static final void MonsterBomb(final int oid, final MapleCharacter chr) {
-        final MapleMonster monster = chr.getMap().getMonsterByOid(oid);
+    public static final void handleMonsterBomb(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+        
+        final MapleCharacter chr = c.getPlayer();
+        final MapleMonster monster = chr.getMap().getMonsterByOid(slea.readInt());
 
         if (monster == null || !chr.isAlive() || chr.isHidden()) {
             return;
@@ -218,11 +224,14 @@ public class MobHandler {
         }
     }
 
-    public static final void AutoAggro(final int monsteroid, final MapleCharacter chr) {
+    public static final void handleAutoAggro(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+        
+        final MapleCharacter chr = c.getPlayer();
+        final MapleMonster monster = chr.getMap().getMonsterByOid(slea.readInt());
+        
         if (chr == null || chr.getMap() == null || chr.isHidden()) { //no evidence :)
             return;
         }
-        final MapleMonster monster = chr.getMap().getMonsterByOid(monsteroid);
 
         if (monster != null && chr.getPosition().distanceSq(monster.getPosition()) < 200000) {
             if (monster.getController() != null) {
@@ -237,7 +246,8 @@ public class MobHandler {
         }
     }
 
-    public static final void HypnotizeDmg(final SeekableLittleEndianAccessor slea, final MapleCharacter chr) {
+    public static final void HypnotizeDmg(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+        final MapleCharacter chr = c.getPlayer();
         final MapleMonster mob_from = chr.getMap().getMonsterByOid(slea.readInt()); // From
         slea.skip(4); // Player ID
         final int to = slea.readInt(); // mobto
@@ -257,14 +267,16 @@ public class MobHandler {
         }
     }
 
-    public static final void DisplayNode(final SeekableLittleEndianAccessor slea, final MapleCharacter chr) {
-        final MapleMonster mob_from = chr.getMap().getMonsterByOid(slea.readInt()); // From
-        if (mob_from != null) {
-            chr.getClient().sendPacket(MaplePacketCreator.getNodeProperties(mob_from, chr.getMap()));
+    public static final void handleDisplayNode(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+        final MapleCharacter chr = c.getPlayer();
+        final MapleMonster mobFrom = chr.getMap().getMonsterByOid(slea.readInt()); // From
+        if (mobFrom != null) {
+            chr.getClient().sendPacket(MaplePacketCreator.getNodeProperties(mobFrom, chr.getMap()));
         }
     }
 
-    public static final void MobNode(final SeekableLittleEndianAccessor slea, final MapleCharacter chr) {
+    public static final void handleMobNode(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+        final MapleCharacter chr  = c.getPlayer();
         final MapleMonster mob_from = chr.getMap().getMonsterByOid(slea.readInt()); // From
         final int newNode = slea.readInt();
         final int nodeSize = chr.getMap().getNodes().size();

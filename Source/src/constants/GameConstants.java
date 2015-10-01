@@ -1,26 +1,5 @@
-/*
- This file is part of the OdinMS Maple Story Server
- Copyright (C) 2008 ~ 2010 Patrick Huy <patrick.huy@frz.cc> 
- Matthias Butz <matze@odinms.de>
- Jan Christian Meyer <vimes@odinms.de>
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU Affero General Public License version 3
- as published by the Free Software Foundation. You may not use, modify
- or distribute this program under any other version of the
- GNU Affero General Public License.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Affero General Public License for more details.
-
- You should have received a copy of the GNU Affero General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package constants;
 
-import client.MapleCharacter;
 import client.inventory.MapleInventoryType;
 import client.inventory.MapleWeaponType;
 import client.status.MonsterStatus;
@@ -254,7 +233,10 @@ public class GameConstants {
     }
 
     public static boolean isNoDelaySkill(int skillId) {
-        return skillId == 5110001 || skillId == 21101003 || skillId == 15100004 || skillId == 33101004 || skillId == 32111010 || skillId == 2111007 || skillId == 2211007 || skillId == 2311007 || skillId == 32121003 || skillId == 35121005 || skillId == 35111004 || skillId == 35121013 || skillId == 35121003 || skillId == 22150004 || skillId == 22181004 || skillId == 11101002 || skillId == 51100002 || skillId == 13101002 || skillId == 24121000 || skillId == 112001008 || skillId == 22161005 || skillId == 22161005;
+        return skillId == SkillType.格鬥家.蓄能激發 
+                || skillId == SkillType.狂狼勇士2.強化連擊 
+                || skillId == SkillType.閃雷悍將2.蓄能激發 
+                ||  skillId == 2111007 || skillId == 2211007 || skillId == 2311007 || skillId == 32121003 || skillId == 35121005 || skillId == 35111004 || skillId == 35121013 || skillId == 35121003 || skillId == 22150004 || skillId == 22181004 || skillId == 11101002 || skillId == 51100002 || skillId == 13101002 || skillId == 24121000 || skillId == 112001008 || skillId == 22161005 || skillId == 22161005;
     }
 
     public static boolean isMarrigeRing(int itemid) {
@@ -329,12 +311,12 @@ public class GameConstants {
 
     public static boolean isRecoveryIncSkill(final int id) {
         switch (id) {
-            case 1110000:
-            case 2000000:
-            case 1210000:
-            case 11110000:
-            case 4100002:
-            case 4200001:
+            case SkillType.十字軍.魔力恢復:
+            case SkillType.法師.魔力淨化:
+            case SkillType.騎士.魔力恢復:
+            case SkillType.聖魂劍士3.魔力恢復:
+            case SkillType.刺客.恢復術:
+            case SkillType.俠盜.恢復術:
                 return true;
         }
         return false;

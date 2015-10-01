@@ -25,15 +25,10 @@ public class MapleCarnivalParty {
     private boolean winner = false;
     private final ReentrantReadWriteLock memebersLock = new ReentrantReadWriteLock();
 
-    public MapleCarnivalParty(MapleCharacter owner, final List<MapleCharacter> members1, final byte team1) {
+    public MapleCarnivalParty(MapleCharacter owner, final List<MapleCharacter> members, final byte team1) {
         leader = new WeakReference<>(owner);
-        try {
-            memebersLock.writeLock().lock();
-            for (MapleCharacter mem : members1) {
-                members.add(mem.getId());
-            }
-        } finally {
-            memebersLock.writeLock().unlock();
+        for (MapleCharacter mem : members) {
+            this.addMember(mem.getId());
         }
         team = team1;
         channel = owner.getClient().getChannel();
@@ -75,17 +70,23 @@ public class MapleCarnivalParty {
     }
 
     public void warp(final MapleMap map, final String portalname) {
-        for (int chr : members) {
-            final MapleCharacter c = ChannelServer.getInstance(channel).getPlayerStorage().getCharacterById(chr);
-            if (c != null) {
-                c.changeMap(map, map.getPortal(portalname));
+        memebersLock.readLock().lock();
+        try {
+            for (int chr : members) {
+                final MapleCharacter c = ChannelServer.getInstance(channel).getPlayerStorage().getCharacterById(chr);
+                if (c != null) {
+                    c.changeMap(map, map.getPortal(portalname));
+                }
             }
+        } finally {
+            memebersLock.readLock().unlock();
+
         }
     }
 
     public void warp(final MapleMap map, final int portalid) {
+        memebersLock.readLock().lock();
         try {
-            memebersLock.readLock().lock();
             for (int chr : members) {
                 final MapleCharacter c = ChannelServer.getInstance(channel).getPlayerStorage().getCharacterById(chr);
                 if (c != null) {
@@ -117,12 +118,16 @@ public class MapleCarnivalParty {
     public void removeMember(MapleCharacter chr) {
         try {
             memebersLock.writeLock().lock();
-
+            int index = -1;
             for (int i = 0; i < members.size(); i++) {
                 if (members.get(i) == chr.getId()) {
-                    members.remove(i);
-                    chr.setCarnivalParty(null);
+                    index = i;
                 }
+            }
+
+            if (index != -1) {
+                chr.setCarnivalParty(null);
+                members.remove(index);
             }
 
         } finally {
@@ -156,5 +161,14 @@ public class MapleCarnivalParty {
             }
         }
 
+    }
+
+    private void addMember(int charId) {
+        try {
+            memebersLock.writeLock().lock();
+            members.add(charId);
+        } finally {
+            memebersLock.writeLock().unlock();
+        }
     }
 }

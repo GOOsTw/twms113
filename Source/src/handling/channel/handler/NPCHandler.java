@@ -1,23 +1,3 @@
-/*
- This file is part of the OdinMS Maple Story Server
- Copyright (C) 2008 ~ 2010 Patrick Huy <patrick.huy@frz.cc> 
- Matthias Butz <matze@odinms.de>
- Jan Christian Meyer <vimes@odinms.de>
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU Affero General Public License version 3
- as published by the Free Software Foundation. You may not use, modify
- or distribute this program under any other version of the
- GNU Affero General Public License.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Affero General Public License for more details.
-
- You should have received a copy of the GNU Affero General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package handling.channel.handler;
 
 import client.inventory.Equip;
@@ -50,7 +30,8 @@ import tools.data.output.MaplePacketLittleEndianWriter;
 
 public class NPCHandler {
 
-    public static final void NPCAnimation(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleNPCAnimation(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+        
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.NPC_ACTION.getValue());
         final int length = (int) slea.available();
@@ -67,15 +48,15 @@ public class NPCHandler {
         c.sendPacket(mplew.getPacket());
     }
 
-    public static final void NPCShop(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void handleNPCShop(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+        MapleCharacter player = c.getPlayer();
         final byte bmode = slea.readByte();
-        if (chr == null) {
+        if (player == null) {
             return;
         }
-
         switch (bmode) {
             case 0: {
-                final MapleShop shop = chr.getShop();
+                final MapleShop shop = player.getShop();
                 if (shop == null) {
                     return;
                 }
@@ -86,7 +67,7 @@ public class NPCHandler {
                 break;
             }
             case 1: {
-                final MapleShop shop = chr.getShop();
+                final MapleShop shop = player.getShop();
                 if (shop == null) {
                     return;
                 }
@@ -97,7 +78,7 @@ public class NPCHandler {
                 break;
             }
             case 2: {
-                final MapleShop shop = chr.getShop();
+                final MapleShop shop = player.getShop();
                 if (shop == null) {
                     return;
                 }
@@ -106,12 +87,12 @@ public class NPCHandler {
                 break;
             }
             default:
-                chr.setConversation(0);
+                player.setConversation(0);
                 break;
         }
     }
 
-    public static final void NPCTalk(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void handleNPCTalk(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         if (chr == null || chr.getMap() == null) {
             return;
         }

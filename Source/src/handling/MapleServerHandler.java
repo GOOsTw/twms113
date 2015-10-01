@@ -37,12 +37,8 @@ import handling.login.LoginServer;
 import handling.login.handler.*;
 import handling.world.World;
 import java.io.File;
-import java.io.FileWriter;
 import java.lang.management.ManagementFactory;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.MBeanRegistrationException;
@@ -68,12 +64,12 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
     public static final boolean isLogPackets = true;
     private int channel = -1;
-    private boolean cs;
+    private boolean isCashShop;
     private final List<String> BlockedIP = new ArrayList<>();
     private final Map<String, Pair<Long, Byte>> tracker = new ConcurrentHashMap<>();
     private static final String nl = System.getProperty("line.separator");
     private static final File loggedIPs = new File("iplogs/logIps.txt");
-    private static final HashMap<String, FileWriter> logIPMap = new HashMap<>();
+
     private static boolean debugMode = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.debug", "false"));
     private static final EnumSet<RecvPacketOpcode> blocked = EnumSet.noneOf(RecvPacketOpcode.class);
 
@@ -87,13 +83,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         return debugMode;
     }
 
-    //Return the Filewriter if the IP is logged. Null otherwise.
-    private static FileWriter isLoggedIP(IoSession sess) {
-        String a = sess.getRemoteAddress().toString();
-        String realIP = a.substring(a.indexOf('/') + 1, a.indexOf(':'));
-        return logIPMap.get(realIP);
-    }
-// <editor-fold defaultstate="collapsed" desc="Packet Log Implementation">
     private static final int packetLogMaxSize = 10000;
     private static final ArrayList<LoggedPacket> packetLog = new ArrayList<>(packetLogMaxSize);
     private static final ReentrantReadWriteLock packetLogLock = new ReentrantReadWriteLock();
@@ -187,9 +176,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         //ONLY FOR THE MBEAN
     }
 
-    public MapleServerHandler(final int channel, final boolean cs) {
+    public MapleServerHandler(final int channel, final boolean isCashShop) {
         this.channel = channel;
-        this.cs = cs;
+        this.isCashShop = isCashShop;
     }
 
     @Override
@@ -206,7 +195,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
 
         if (client != null) {
-            client.disconnect(false, cs);
+            client.disconnect(false, isCashShop);
         }
     }
 
@@ -248,7 +237,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 session.close(true);
                 return;
             }
-        } else if (cs) {
+        } else if (isCashShop) {
             if (CashShopServer.isShutdown()) {
                 session.close(true);
                 return;
@@ -290,26 +279,17 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
         final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
 
-        if (channel == -1 && !cs) {
-            if (client != null) {
-                client.setPlayer(null);
-            }
-            // Login Server 
-        } else if (cs) {
-            // CS Server
-        } else if (channel > 0) {
-
-        }
+    
 
         if (client != null) {
             if (client.getPlayer() != null) {
-                client.getPlayer().saveToDB(true, cs);
+                client.getPlayer().saveToDB(true, isCashShop);
                 if (!(client.getLoginState() == MapleClient.CASH_SHOP_TRANSITION
                         || client.getLoginState() == MapleClient.CHANGE_CHANNEL
                         || client.getLoginState() == MapleClient.LOGIN_SERVER_TRANSITION) && client.getPlayer() != null) {
                     int ch = World.Find.findChannel(client.getPlayer().getId());
                     ChannelServer.getInstance(ch).removePlayer(client.getPlayer());
-                    client.disconnect(true, cs);
+                    client.disconnect(true, isCashShop);
                 }
             }
         }
@@ -318,7 +298,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             session.removeAttribute(MapleClient.CLIENT_KEY);
         }
 
-        if (client != null && channel == -1 && !cs && client.getLoginState() != MapleClient.LOGIN_SERVER_TRANSITION) {
+        if (client != null && channel == -1 && !isCashShop && client.getLoginState() != MapleClient.LOGIN_SERVER_TRANSITION) {
             client.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, client.getSessionIPAddress());
         }
         DatabaseConnection.close();
@@ -360,25 +340,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                     if (isLogPackets) {
                         log(slea, recv, c, session);
                     }
-                    handlePacket(recv, slea, c, cs);
-
-                    //Log after the packet is handle. You'll see why =]
-                    FileWriter fw = isLoggedIP(session);
-                    if (fw != null && !blocked.contains(recv)) {
-                        if (recv == RecvPacketOpcode.PLAYER_LOGGEDIN) { // << This is why. Win.
-                            fw.write(">> [AccountName: "
-                                    + (c.getAccountName() == null ? "null" : c.getAccountName())
-                                    + "] | [IGN: "
-                                    + (c.getPlayer() == null || c.getPlayer().getName() == null ? "null" : c.getPlayer().getName())
-                                    + "] | [Time: "
-                                    + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date())
-                                    + "]");
-                            fw.write(nl);
-                        }
-                        fw.write("[" + recv.toString() + "]" + slea.toString(true));
-                        fw.write(nl);
-                        fw.flush();
-                    }
+                    handlePacket(recv, slea, c, isCashShop);
                     return;
                 }
             }
@@ -637,37 +599,37 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 InventoryHandler.UseRewardItem((byte) slea.readShort(), slea.readInt(), c, c.getPlayer());
                 break;
             case HYPNOTIZE_DMG:
-                MobHandler.HypnotizeDmg(slea, c.getPlayer());
+                MobHandler.HypnotizeDmg(slea, c);
                 break;
             case MOB_NODE:
-                MobHandler.MobNode(slea, c.getPlayer());
+                MobHandler.handleMobNode(slea, c);
                 break;
             case DISPLAY_NODE:
-                MobHandler.DisplayNode(slea, c.getPlayer());
+                MobHandler.handleDisplayNode(slea, c);
                 break;
             case MOVE_LIFE:
-                MobHandler.MoveMonster(slea, c, c.getPlayer());
+                MobHandler.MoveMonster(slea, c);
                 break;
             case AUTO_AGGRO:
-                MobHandler.AutoAggro(slea.readInt(), c.getPlayer());
+                MobHandler.handleAutoAggro(slea, c);
                 break;
             case FRIENDLY_DAMAGE:
-                MobHandler.FriendlyDamage(slea, c.getPlayer());
+                MobHandler.handleFriendlyDamage(slea, c);
                 break;
             case MONSTER_BOMB:
-                MobHandler.MonsterBomb(slea.readInt(), c.getPlayer());
+                MobHandler.handleMonsterBomb(slea, c);
                 break;
             case NPC_SHOP:
-                NPCHandler.NPCShop(slea, c, c.getPlayer());
+                NPCHandler.handleNPCShop(slea, c);
                 break;
             case NPC_TALK:
-                NPCHandler.NPCTalk(slea, c, c.getPlayer());
+                NPCHandler.handleNPCTalk(slea, c, c.getPlayer());
                 break;
             case NPC_TALK_MORE:
                 NPCHandler.NPCMoreTalk(slea, c);
                 break;
             case NPC_ACTION:
-                NPCHandler.NPCAnimation(slea, c);
+                NPCHandler.handleNPCAnimation(slea, c);
                 break;
             case QUEST_ACTION:
                 NPCHandler.QuestAction(slea, c, c.getPlayer());
@@ -676,7 +638,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 NPCHandler.Storage(slea, c, c.getPlayer());
                 break;
             case GENERAL_CHAT:
-//                c.getPlayer().updateTick(slea.readInt());
                 ChatHandler.GeneralChat(slea.readMapleAsciiString(), slea.readByte(), c, c.getPlayer());
                 break;
             case PARTYCHAT:
@@ -705,8 +666,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 GuildHandler.HandleGuild(slea, c);
                 break;
             case UPDATE_CHAR_INFO:
-                //System.err.println("UPDATE_CHAR_INFO");
-                //PlayersHandler.UpdateCharInfo(slea.readAsciiString(), c);
                 PlayersHandler.UpdateCharInfo(slea, c, c.getPlayer());
                 break;
             case DENY_GUILD_REQUEST:
