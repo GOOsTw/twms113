@@ -1349,6 +1349,6 @@ public class MapleClient implements Serializable {
     }
 
     public void sendPacket(MaplePacket packet) {
-        this.sendPacket(packet);
+        this.getSession().write(packet);
     }
 }

@@ -1274,6 +1274,15 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void setBossLog(String bossid) {
         getPlayer().setBossLog(bossid);
     }
+    
+    public void setPartyBossLog(String bossid) {
+        MapleParty party =  getPlayer().getParty();
+        for( MaplePartyCharacter pc : party.getMembers()) {
+            MapleCharacter chr = World.getStorage(this.getChannelNumber()).getCharacterById(pc.getId());
+            if( chr != null )
+                chr.setBossLog(bossid);
+        }
+    }
 
     public final void maxAllSkills() {
         for (ISkill skil : SkillFactory.getAllSkills()) {
