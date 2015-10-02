@@ -172,19 +172,19 @@ public class ChannelServer implements Serializable {
         shutdown = true;
 
         System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 儲存商人資料...");
-        
+
         closeAllMerchant();
 
         System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 儲存角色資料...");
-        
+
         getPlayerStorage().disconnectAll();
 
         System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 解除端口綁定中...");
-       
+
         try {
             if (acceptor != null) {
                 for (IoSession session : acceptor.getManagedSessions().values()) {
-                   session.close(true);
+                    session.close(true);
                 }
                 acceptor.getManagedSessions().clear();
                 //acceptor.unbind(new InetSocketAddress(port));
@@ -541,7 +541,7 @@ public class ChannelServer implements Serializable {
         List<MapleCharacter> all = this.players.getAllCharactersThreadSafe();
         for (MapleCharacter chr : all) {
             try {
-                
+
                 int res = chr.saveToDB(false, false);
                 if (res == 1) {
                     ++ppl;
@@ -550,10 +550,10 @@ public class ChannelServer implements Serializable {
                 }
 
             } catch (Exception e) {
-                
+
             }
         }
-        
+
     }
 
     public boolean CanGMItem() {

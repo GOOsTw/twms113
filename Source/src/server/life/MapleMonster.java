@@ -1154,7 +1154,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 map.broadcastMessage(MobPacket.applyMonsterStatus(this, status), getTruePosition());
             }
         }
-        BuffTimer.schedule(cancelTask, aniTime + (int) (Math.random() * this.getStati().size() * 1500));
+        BuffTimer.schedule(cancelTask, aniTime + (int) (Math.random() * this.getStati().size() * 1500) + this.getStati().size() * 400);
         if (from.isStaff() && MapleServerHandler.isDebugMode()) {
             ///from.dropMessage(6, "開始 => 給予怪物狀態: 持續時間[" + aniTime + "] 狀態效果[" + status.getStati().name() + "] 開始時間[" + System.currentTimeMillis() + "]");
         }

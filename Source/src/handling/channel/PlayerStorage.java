@@ -90,6 +90,9 @@ public class PlayerStorage {
     public final void deregisterPlayer(final MapleCharacter chr) {
         wL.lock();
         try {
+            if (chr.getMap() != null) {
+                idToChar.get(chr.getId()).getMap().removePlayer(chr);
+            }
             idToChar.remove(chr.getId());
         } finally {
             wL.unlock();
@@ -134,9 +137,11 @@ public class PlayerStorage {
         MapleCharacter rchr = null;
         rL.lock();
         try {
-            for ( MapleCharacter chr : idToChar.values())
-                if ( chr.getName().equals(name))
+            for (MapleCharacter chr : idToChar.values()) {
+                if (chr.getName().equals(name)) {
                     rchr = chr;
+                }
+            }
         } finally {
             rL.unlock();
         }

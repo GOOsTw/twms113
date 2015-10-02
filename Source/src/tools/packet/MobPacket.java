@@ -355,7 +355,8 @@ public class MobPacket {
                 } else {
                     mplew.writeInt(buff.getSkill() > 0 ? buff.getSkill() : 0);
                 }
-                mplew.writeShort((short) ((buff.getCancelTask() - System.currentTimeMillis()) / 1000));
+                 mplew.writeShort(-1);
+               // mplew.writeShort((short) ((buff.getCancelTask() - System.currentTimeMillis()) / 1000));
             }
         }
         if (mobstat.contains(MonsterStatus.WDEF)) {
@@ -554,7 +555,7 @@ public class MobPacket {
                 mplew.writeInt(0);
             }
         }
-        mplew.writeInt(2);
+        mplew.writeInt(0);
         return mplew.getPacket();
     }
 

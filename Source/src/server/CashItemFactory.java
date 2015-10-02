@@ -149,7 +149,7 @@ public class CashItemFactory {
         return ret;
     }
 
-    private final void refreshAllModInfo() {
+    private void refreshAllModInfo() {
         itemMods.clear();
         try {
             Connection con = DatabaseConnection.getConnection();
@@ -170,7 +170,8 @@ public class CashItemFactory {
     }
 
     public final Collection<CashModInfo> getAllModInfo() {
-        refreshAllModInfo();
+        if(itemMods.isEmpty())
+            refreshAllModInfo();
         return itemMods.values();
     }
 

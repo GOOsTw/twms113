@@ -402,7 +402,7 @@ import server.ServerProperties;
                     /*     */ case 1002972:
                         /* 413 */ return 300000;
                     /*     */                }
-                /* 415 */ return 1500;
+                /* 415 */ return 900;
             /*     */ case 103:
                 /* 417 */ switch (id) {
                     /*     */ case 1032062:

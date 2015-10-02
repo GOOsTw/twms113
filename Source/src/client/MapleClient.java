@@ -822,6 +822,7 @@ public class MapleClient implements Serializable {
 
                 } finally {
                     if (RemoveInChannelServer && ch != null) {
+                        
                         ch.removePlayer(idz, namez);
                     }
                     player = null;

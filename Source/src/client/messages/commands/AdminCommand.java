@@ -432,7 +432,7 @@ public class AdminCommand {
                 victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             }
             if (level < 2 && victim != null) {
-                victim.getClient().getSession().close();
+                victim.getMap().removePlayer(victim);
                 if (level >= 1) {
                     victim.getClient().disconnect(true, false);
                 }

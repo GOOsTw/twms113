@@ -49,7 +49,6 @@ public class World {
 
     public static boolean isShutDown = false;
 
- 
     public static void init() {
         World.Find.findChannel(0);
         World.Guild.lock.toString();
@@ -882,13 +881,13 @@ public class World {
 
         private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
         private static final HashMap<Integer, Integer> idToChannel = new HashMap<>();
-        private static final HashMap<String, Integer> nameToChannel = new HashMap<>();
+        //private static final HashMap<String, Integer> nameToChannel = new HashMap<>();
 
         public static void register(int id, String name, int channel) {
             lock.writeLock().lock();
             try {
                 idToChannel.put(id, channel);
-                nameToChannel.put(name.toLowerCase(), channel);
+                //nameToChannel.put(name.toLowerCase(), channel);
             } finally {
                 lock.writeLock().unlock();
             }
@@ -906,7 +905,7 @@ public class World {
         public static void forceDeregister(String id) {
             lock.writeLock().lock();
             try {
-                nameToChannel.remove(id.toLowerCase());
+                //nameToChannel.remove(id.toLowerCase());
             } finally {
                 lock.writeLock().unlock();
             }
@@ -916,7 +915,7 @@ public class World {
             lock.writeLock().lock();
             try {
                 idToChannel.remove(id);
-                nameToChannel.remove(name.toLowerCase());
+                //nameToChannel.remove(name.toLowerCase());
             } finally {
                 lock.writeLock().unlock();
             }
@@ -941,10 +940,18 @@ public class World {
         }
 
         public static int findChannel(String st) {
-            Integer ret;
+
+            Integer ret = null;
             lock.readLock().lock();
             try {
-                ret = nameToChannel.get(st.toLowerCase());
+                MapleCharacter target = null;
+                for (ChannelServer ch : ChannelServer.getAllInstances()) {
+                    target = ch.getPlayerStorage().getCharacterByName(st);
+                    if (target != null) {
+                        ret = ch.getChannel();
+                    }
+                }
+                //ret = nameToChannel.get(st.toLowerCase());
             } finally {
                 lock.readLock().unlock();
             }
