@@ -33,7 +33,7 @@ function enter(pi) {
                 return true;
             }
         }
-        pi.playerMessage(5, "All of the Mini-Dungeons are in use right now, please try again later.");
+        pi.playerMessage(5, "所有的地下城都在使用中，請稍後再嘗試。");
     } else {
         pi.warp(baseid, "MD00");
     }
