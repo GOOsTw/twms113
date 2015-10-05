@@ -1,32 +1,25 @@
--- phpMyAdmin SQL Dump
--- version 4.1.14
--- http://www.phpmyadmin.net
---
--- 主機: 127.0.0.1
--- 產生時間： 2015 �?09 ??15 ??07:34
--- 伺服器版本: 5.6.17
--- PHP 版本： 5.5.12
+/*
+Navicat MySQL Data Transfer
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
+Source Server         : localhost
+Source Server Version : 50534
+Source Host           : localhost:3306
+Source Database       : zzms
 
+Target Server Type    : MYSQL
+Target Server Version : 50534
+File Encoding         : 65001
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+Date: 2015-10-05 17:49:06
+*/
 
---
--- 資料庫： `wwwww`
---
+SET FOREIGN_KEY_CHECKS=0;
 
--- --------------------------------------------------------
-
---
--- 資料表結構 `wz_oxdata`
---
-
-CREATE TABLE IF NOT EXISTS `wz_oxdata` (
+-- ----------------------------
+-- Table structure for `wz_oxdata`
+-- ----------------------------
+DROP TABLE IF EXISTS `wz_oxdata`;
+CREATE TABLE `wz_oxdata` (
   `questionset` smallint(6) NOT NULL DEFAULT '0',
   `questionid` smallint(6) NOT NULL DEFAULT '0',
   `question` varchar(200) NOT NULL DEFAULT '',
@@ -35,565 +28,340 @@ CREATE TABLE IF NOT EXISTS `wz_oxdata` (
   PRIMARY KEY (`questionset`,`questionid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- 資料表的匯出資料 `wz_oxdata`
---
-
-INSERT INTO `wz_oxdata` (`questionset`, `questionid`, `question`, `display`, `answer`) VALUES
-(1, 1, 'The weakest monster in MapleStory is the BLUE SNAIL.', 'The weakest monster is the GREEN SNAIL. (LV. 1)', 'x'),
-(1, 2, 'The most powerful monster in MapleStory is the JR. BALROG.', 'Currently the most powerful monster is the CRIMSON BALROG.', 'x'),
-(1, 3, 'RED SNAILS can only be found at the Maple Island, where the beginners play.', 'There''s quite a lot of them at Victoria Island, too.', 'x'),
-(1, 4, 'You''ll occasionaly obtain [Pig Tail] after defeating the PIG.', 'You''ll occasionally obtain [Pig Head].', 'x'),
-(1, 5, 'You''ll obtain [Blue Ribbon] by defeating the RIBBONED PIG.', 'You''ll obtain [Red Ribbon].', 'x'),
-(1, 6, 'The weakest among the mushrooms is the ORANGE MUSHROOM.', 'The weakest among the mushrooms is the SPORE. (LV. 2)', 'x'),
-(1, 7, 'You''ll obtain [Lupin''s Doll] by defeating the cute monkey monster called LUPIN.', 'You''ll obtain Lupin''s Doll, banana, and others.', 'o'),
-(1, 8, 'DRAKE is a monster that lives deep in the Dungeon. You''ll occasionally obtain [Drake''s Toenail] by defeating it.', 'You''ll obtain [Drake''s Skin].', 'x'),
-(1, 9, 'When you defeat the PIG, WILD BOAR, or the HORNED MUSHROOM, you''ll obtain [leather].', 'HORNED MUSHROOM does not provide [leather].', 'x'),
-(1, 10, 'The slimes you''ll see often at the beginner''s map or around Ellinia are the BLUE SLIMES.', 'At the beginner''s map, you''ll see the GREEN SLIMES.', 'x'),
-(1, 11, 'The GREEN MUSHROOM that you''ll see often around the field, forrest, or the construction site has a grey horn on its cap.', 'GREEN MUSHROOMS do not have horns.', 'x'),
-(1, 12, 'The WILD CARGO that lives deep in the Dungeon is very adept at attacking both up-close and long-range.', 'WILD CARGO only attacks up-close.', 'x'),
-(1, 13, 'EVIL EYE, CURSE EYE, and COLD EYE all look similar, but only EVIL EYE has two eyes.', 'They all have one eye.', 'x'),
-(1, 14, 'The LIGATORS that live around the swamps look a lot like spiders.', 'They resemble alligators.', 'x'),
-(1, 15, 'The WILD CARGO that live deep in the Dungeon is the mutant version of a cat with a single horn at the center of its head.', 'WILD CARGO has 2 huge horns.', 'x'),
-(1, 16, 'The JR. BALROG that lives in the cursed altar is a LV. 80 monster.', 'JR. BALROG is a LV. 80 monster.', 'o'),
-(1, 17, 'The fastest monster in MapleStory is the STONE GOLLEM.', 'STONE GOLLEM and DARK STONE GOLLEM is considered the slowest monsters in the game.', 'x'),
-(1, 18, 'The nasty ZOMBIE LUPIN''s are made of black magic and the cursed doll through Grendel the Really Old. ', 'It''s a monster made out of Grendel the Really Old''s black magic.', 'o'),
-(1, 19, 'MUSHMOM, a humongous mushroom monster, is basically a giant version of the ORANGE MUSHROOM.', 'MUSHMOM is a giant version of the ORANGE MUSHROOM.', 'o'),
-(1, 20, 'BUBBLINGS that reside in subways attack by firing bubbles from long range.', 'BUBBLINGS only attack up-close.', 'x'),
-(1, 21, 'STIRGE, a flying monster, usually flies around for a long time, and then takes a break by hanging on the ceiling.', 'They never stop flying.', 'x'),
-(1, 22, 'You''ll obtain [Jr. Necki''s Skin] by defeating the JR. NECKI, and when eaten, you''ll recover some of your MP.', '[Jr. Necki''s Skin] is not edible.', 'x'),
-(1, 23, 'JR. WRAITH, a monster that resembles ghost, occasionally offers a [Blue Tablecloth].', 'They only offer [White Tablecloth].', 'x'),
-(1, 24, 'LORANG, a crab-resembling monster around Florina Beach, occasionally attacks while jumping.', 'They do resemble crabs, but they do attack while jumping, too.', 'o'),
-(1, 25, 'LORANG, a crab-resembling monster, digs the sand and hides in there if they are near death.', 'They''ll fight til they die. (Bravo...)', 'x'),
-(1, 26, 'UMTI, the monster that resembles a sea turtle, usually attacks long-range with force.', 'UMTI''s attack long-range.', 'o'),
-(1, 27, '[Iron Hog''s Metal Hoof] is obtainable through IRON HOG, a metal armor-dressed monster that resembles a horse.', 'IRON HOG is a pig.', 'x'),
-(1, 28, '[Medicine with Weird Vibes], an item given by Wraith, will make you really feel weird if consumed.', '[Medicine with Weird Vibes] cannot be consumed.', 'x'),
-(1, 29, 'MALADY, a monster that flies around with the broom, fires away laser beams from far out.', 'MALADY only attacks up-close.', 'x'),
-(1, 100, 'RED DRAKE is the only Drake that attacks long-range.', 'RED DRAKE attacks long-range with force.', 'o'),
-(1, 101, 'CROKO, which lives around swamps, is higher leveled than COPPER DRAKE.', 'CROKO is LV. 52, and COPPER DRAKE is LV. 45.', 'o'),
-(1, 102, 'COPPER DRAKE can be found near Perion, and is known for attacking from long-range.', 'It only attacks from up-close.', 'x'),
-(1, 103, 'Every monster from El Nath is weak against fire-based attacks.', 'DARK YETI and DARK PEPE are weak against religious attacks.', 'x'),
-(1, 104, 'JR. YETI and the Transforming JR. YETI have the same level and HP.', 'They are both LV. 50 with HP 3700.', 'o'),
-(1, 105, 'CRIMSON BALROG, LV 100, does not get poisoned from posion-based attacks.', 'It cancels out poison-based attacks, but is vulnerable against religious attacks.', 'o'),
-(1, 106, 'MALADY, the monster flying around in broom, is an undead monster.', 'It''s weak against religious attacks, but is NOT an undead monster.', 'x'),
-(1, 107, 'The monsters that offer [Stiff Feather] are HECTOR, DARK YETI, and LYCANTHROPE.', 'HECTOR, DARK YETI, and LYCANTHROPE offer [Stiff Feather].', 'x'),
-(1, 108, 'The monsters that offer [Soft Feather] are YETI, JR. YETI, WHITE FANG, LYCANTHROPE, AND LUPIN.', 'LUPIN offers [Stiff Feather].', 'x'),
-(1, 109, 'AXE STUMP is a monster borne of rage towards a lumberjack that forgot to take off the axe from the tree.', 'There''s a legend where AXE STUMP is a monster borne of rage towards a lumberjack that forgot to take off the axe from the tree.', 'o'),
-(1, 110, 'WEREWOLF summons its other self to attack.', 'WEREWOLF does not have its other self.', 'x'),
-(1, 111, 'NEPENDEATH and DARK NEPENDEATH are the only monsters that do not move around.', 'NEPENDEATH does not move around and attack.', 'o'),
-(1, 112, '', '', 'x'),
-(1, 113, '', '', 'x'),
-(1, 114, '', '', 'x'),
-(1, 115, '', '', 'o'),
-(1, 116, '', '', 'x'),
-(1, 117, '', '', 'o'),
-(1, 118, '', '', 'o'),
-(1, 119, '', '', 'x'),
-(1, 120, '', '', 'x'),
-(2, 1, 'You''ll need 15 tree branches to make 1 Processed Wood. ', '10 tree branches is enough.', 'x'),
-(2, 2, 'You''ll make a set of screws, 15 screws in total, with a Bronze Plate and a Steel Plate.', 'Screws are useful for making or upgrading items.', 'o'),
-(2, 3, 'Fusion Mace, a one-handed blunt weapon, is only available to Warriors and Magicians.', 'It''s only available to Warriors and Magicians.', 'o'),
-(2, 4, 'Mace, a one-handed blunt weapon, is only available to Warriors and Magicians.', 'Mace is only available to Warriors and Magicians.', 'o'),
-(2, 5, 'Long Sword, a one-handed sword, is available to everyone BUT the beginners.', 'Beginners can use it, too.', 'x'),
-(2, 6, 'Balanche, a weapon for Bowman sold at Henesys, has an item option of STR + 2 attached to it.', 'Balanche has an item option of STR + 1 attached to it.', 'x'),
-(2, 7, 'The One-side Only Earring is available through stores, but NOT the Amethyst Earring.', 'Amethyst Earring can be purchased at the Henesys Department Store.', 'x'),
-(2, 8, 'The Blue Whitebottom Shoes that can be worn from LV. 26 on, is available to everyone, including the beginners.', 'It is available to everyone.', 'o'),
-(2, 9, 'The Armor Scroll consists of two types - the one for DEF, and the one for HP.', 'You can check through the Perion Department Store.', 'o'),
-(2, 10, 'When purchasing a 100% scroll at the store, the scroll for two-handed weapon is more expensive than the one for one-handed weapon.', 'The price for the scrolls for both the two-handed or one-handed weapon are the same.', 'x'),
-(2, 11, 'The weapon store at Ellinia only sells scrolls for Staff and Wand.', 'The scrolls for earrings are also available.', 'x'),
-(2, 12, 'The weapon store at Lith Harbor is the only place without the Subi Throwing-Star.', 'The Subi Throwing-Star is also available at Lith Harbor.', 'x'),
-(2, 13, 'The Stolen Fence is only available at Lith Harbor.', 'The Square Wooden Shield is available at Lith Harbor.', 'o'),
-(2, 14, 'The item options for the White & Black Korean Rubber Shoes are diferent.', 'The colors are different, but the options are the same.', 'x'),
-(2, 15, 'If you use the 100% Scroll for Claw for ATT, then the ATT will be +1, as will be the accuracy.', 'Only the ATT goes up by 1. The accuracy stays the same.', 'x'),
-(2, 16, 'A single item slot can hold upto 100 ores of same kind at once.', 'The ores can be stored up to 100 per slot.', 'o'),
-(2, 17, 'The item that''s dropped onto the field will not disappear, even after a long period of time.', 'It disappears after a certain amount of time.', 'x'),
-(2, 100, 'To make the Mithril Tower Shield, you''ll need Steel Tower Shield, 10 Mithril Plates, and 50,000 mesos.', 'Not 50,000 mesos, but 100,000 mesos.', 'x'),
-(2, 101, 'To make the Moon Rock, you''ll need to take the a Plate of Mithril, Steel, Bronze, Adamantium, Silver, Orihalcon, and Gold each at Arwen the Fairy.', 'You also need 10,000 mesos along with the items.', 'x'),
-(2, 102, 'To make the Mithril Brist, you''ll need Steel Brist, 5 Mithril Plates, and 55,000 mesos.', 'Mr. Smith of Perion makes it.', 'o'),
-(2, 103, 'Steel Pride, a hat for Magicians, has the item option of INT + 1 and LUK + 1', 'Only INT + 1 is available.', 'x'),
-(2, 104, 'To make Steel Trigger, which can be worn at LV. 30 for Warriors, you''ll need 30 pieces of Drake''s Skin.', 'It''ll take 30 leathers and 20 pieces of Drake''s Skin.', 'x'),
-(2, 105, 'Green Jack Boots, which is available for Bowman over LV. 25, has the item option of DEX + 2', 'An option of DEX + 1 is attached to it.', 'x'),
-(2, 106, 'Blue White-Lined Boots, which is available for thieves over LV. 35, has the item option of LUK + 1 and DEX + 1.', 'It''s available through Chrishrama of Sleepywood.', 'o'),
-(2, 107, 'To make Metal Koif, a helmet for Warriors, you''ll need a Bronze Koif, a Steel Plate, and 500 mesos.', 'Mr. Thunder of Perion makes it.', 'o'),
-(2, 108, 'To make Green Diros, a glove for Bowman, you''ll need Red Diros as one of the materials.', 'Not Red Diros, but Blue Diros.', 'x'),
-(2, 109, 'To make the Basic Archer Glove, you''ll need 20 leathers.', 'To make the Basic Archer Glove, you''ll need 15 leathers.', 'x'),
-(2, 110, 'To make Work Glove, a glove for thieves, you''ll need 20 leathers and 1,000 mesos.', 'You need 15 leathers and 1,000 mesos.', 'x'),
-(2, 111, 'To make Dark Wolfskin, a Thief glove, you''ll need Steel Wolfskin as one of the materials.', 'Not Steel Wolfskin, but Bronze Wolfskin.', 'x'),
-(2, 112, 'To make Steel Titans, a claw for thieves, you''ll need 5 screws as one of the materials. ', 'JM from tha Streetz of Kerning City makes it.', 'o'),
-(2, 113, 'To make Steel Igor, a claw for thieves, you''ll need Bronze Igor, 2 Steel Plates, and 3,000 mesos. ', 'JM from tha Streetz of Kerning City makes it.', 'o'),
-(2, 114, 'To make Red Lutia, a glove for Magicians, you''ll need 60 leathers.', 'Francois of Ellinia makes it.', 'o'),
-(2, 115, 'Dark Arten, a glove for Magicians, has the item option of INT + 2 and LUK + 1.', 'The only option attached to it is INT + 3.', 'x'),
-(2, 116, 'The level limit for Juno, a glove for Warriors, is 15.', 'The level limit is 10.', 'x'),
-(2, 117, 'To make Yellow Briggon, a glove for Warriors, you''ll need 2 Topaz''s.', 'Not 2, but 3 Topaz''s', 'x'),
-(2, 118, 'All weapons that can be used by everyone are only limited by levels, not stats.', 'There are weapons that are affected by the stats.', 'x'),
-(2, 119, 'To make Bronze Husk, a glove for Warriors, you''ll need 2 Power Crystals as one of the materials.', 'An option of STR + 2 is attached to it.', 'o'),
-(2, 120, 'Snowshoes, which enables you not to slip through snow, is available to everyone with the level limit of 30.', 'The boots differ from different jobs.', 'x'),
-(2, 121, 'To make a crossbow called Rower, you''ll need 45 screws.', 'You need 40 screws.', 'x'),
-(2, 122, 'The most expensive one to refine is the Star Rock.', 'The most expensive one to refine is Dark Crystal, which will cost you 50,000 mesos.', 'x'),
-(2, 123, 'At the Repair Shop, you''ll be able to acquire a Steel Plate with 100 pieces of Iron Hog''s Metal Hoof and 1,000 mesos.', 'The Repair Shop is at Kerning City.', 'o'),
-(2, 124, 'The Bronze Arrows and Steel Arrows are available through Vicious of Henesys.', 'Vicious only makes Bronze Arrows.', 'x'),
-(3, 1, 'You get 5 mesos for selling one Mushroom Spore.', 'You get 3 mesos for selling one Mushroom Spore.', 'x'),
-(3, 2, 'Slime Bubble costs more than the Squishy Liquid.', 'Slime Bubble DOES cost more than the Squishy Liquid.', 'o'),
-(3, 3, 'You get 100 mesos for selling 1 ore of Bronze.', 'You get 100 mesos for selling 1 ore of Bronze.', 'o'),
-(3, 4, 'Drake''s Skull from Red Drake costs more than the Drake''s Skull of other Drakes.', 'They all cost the same.', 'x'),
-(3, 5, 'To refine one Black Crystal, it''ll cost you 3,000 mesos.', 'It costs 3,000 mesos to refine a black crystal.', 'o'),
-(3, 6, 'You get 8 mesos for selling one Orange Mushroom Cap.', 'You get 4 mesos for selling one Orange Mushroom Cap.', 'x'),
-(3, 7, 'You get 50 mesos for selling 10 tree branches.', 'You get 4 mesos for selling 1 tree branch.', 'x'),
-(3, 8, 'You get 300 mesos for selling 3 leathers.', 'You get 100 mesos for selling 1 leather.', 'o'),
-(3, 9, 'The price of 10 ores of Gold and one Gold Plate is of same price.', 'You''ll get 3,000 mesos for selling 10 ores of Gold, 1,200 mesos for a Gold Plate.', 'x'),
-(3, 10, 'The most expensive Return Scroll is the one to Sleepywood.', 'The Return Scroll : Sleepywood costs 600 mesos.', 'o'),
-(3, 11, 'Sell 5 of Malady''s Experiemental Frogs, buy Arrows for Bow, sell them back to the store, and you''ll get 300 mesos.', 'You don''t get anything for selling arrows at the store. Doesn''t that blow?', 'x'),
-(3, 12, 'To purchase [Old Wisconsin], you''ll need 3,000 mesos.', '[Old Wisconsin] is available through the weapon store at Henesys.', 'o'),
-(3, 13, 'If you purchase Arrow for Bow at the store, it''ll cost you 1 meso per arrow, but you won''t be able to sell the arrows for any money.', 'Arrow for Bow and Crossbow will not get you any money for selling them at the store.', 'o'),
-(3, 14, 'The Watermelon at MapleStory costs 3,100 mesos.', 'It costs 3,200 mesos.', 'x'),
-(3, 15, 'The Red Bean Sundae at MapleStory costs 4,000 mesos.', 'You can buy it from an NPC for 4,000 mesos.', 'o'),
-(3, 16, 'The Ice Cream Suckers at MapleStory costs 2,100 mesos.', 'It costs 2,300 mesos.', 'x'),
-(3, 17, 'The price of 150 Huge Bubbles of Bubbling is LOWER than 200 Slime Bubbles.', '200 Slime Bubbles : 10,000 mesos. 150 Huge Bubbles of Bubbling : 1,500 mesos.', 'o'),
-(3, 18, '', '', 'x'),
-(3, 19, '', '', 'o'),
-(3, 20, '', '', 'x'),
-(3, 21, '', '', 'x'),
-(3, 22, '', '', 'x'),
-(3, 23, '', '', 'x'),
-(3, 100, 'The price of Jr. Neck Skin and Stirge Wing is the same.', 'They both go for 12 mesos.', 'o'),
-(3, 101, 'The price of 2 Jr. Necki skins is LOWER than 1 Ligator skin.', '2 Jr. Neck Skins = 24 mesos. 1 Ligator Skin = 25 mesos.', 'o'),
-(3, 102, 'Sell 10 Tablecloths from Jr. Wraith, and you''ll be able to buy a Lemon with it.', 'Lemon costs 305 mesos, so you''ll be short of 5 mesos.', 'x'),
-(3, 103, '1 Lorang Claw has the same price as 1 Cold Eye Tail.', 'Lorang Claw = 32 mesos. Cold Eye Tail = 35 mesos.', 'x'),
-(3, 104, '1 Clang Claw has the same price as the price of 5 Blue Mushroom Caps.', 'Clang Claw = 60 mesos. Blue Mushroom Cap = 12.', 'o'),
-(3, 105, 'The price of Umti Shell and Slime Bubble is the same.', 'They both go for 50 mesos.', 'o'),
-(3, 106, 'If you sell 100 pieces of Iron Hog''s Metal Hoof, you''ll be able to buy a Dark Moon Conehat.', '100 pieces of Iron Hog''s Metal Hoof = 3,800 mesos. Yes, you can buy Dark Moon Conehat with that.', 'o'),
-(3, 107, 'The Medicine with Weird Vibes from Wraith will go for the same price as 1 Processed Wood.', 'Medicine with Weird Vibes = 50 mesos. Processed Wood = 20 mesos.', 'x'),
-(3, 108, 'The price of 128 pieces of Croko Skin is 6,500 mesos.', '128 x 50 = 6,400, not 6,500.', 'x'),
-(3, 109, 'If you sell 10 Pig Ribbons to the store, you can buy a Red Potion with those mesos.', '10 Pig Ribbons = 50 mesos.', 'o'),
-(3, 110, 'A Mushmom Spore has the same price as a Tauromacis Horn.', 'They both go for 100 mesos.', 'o'),
-(3, 111, 'If you sell the Star Rock at the store, you''ll get 10,000 mesos per.', 'You''ll get 10,000 mesos per Star Rock.', 'o'),
-(3, 112, 'If you sell 2 Red Snail Shells, 2 Pig Heads, and 1 Slime Bubble at the store, you''ll get 140 mesos.', 'You''ll get 30+60+50=140 mesos.', 'o'),
-(3, 113, 'Both the Yellow Umbrella and the Sky-Blue Umbrella will get you 1 meso if you sell them at the stores.', '1 meso for Sky-Blue Umbrella, but 50,000 mesos for Yellow Umbrella. ', 'x'),
-(3, 114, 'It costs the same whereever in MapleStory to refine the ores.', 'It''s a little bit cheaper at Kerning City.', 'x'),
-(3, 115, 'If you sell your screws at the store, it''ll fetch you 100 mesos per screw.', 'It goes fo 50 mesos.', 'x'),
-(3, 116, '', '', 'x'),
-(3, 117, '', '', 'x'),
-(3, 118, '', '', 'x'),
-(3, 119, '', '', 'x'),
-(3, 120, '', '', 'x'),
-(3, 121, '', '', 'x'),
-(3, 122, '', '', 'x'),
-(3, 123, '', '', 'x'),
-(3, 124, '', '', 'x'),
-(3, 125, '', '', 'x'),
-(3, 126, '', '', 'x'),
-(3, 127, '', '', 'x'),
-(3, 128, '', '', 'x'),
-(3, 129, '', '', 'o'),
-(3, 130, '', '', 'x'),
-(3, 131, '', '', 'x'),
-(3, 132, '', '', 'o'),
-(3, 133, '', '', 'o'),
-(3, 134, '', '', 'o'),
-(3, 135, '', '', 'o'),
-(3, 136, '', '', 'o'),
-(3, 137, '', '', 'o'),
-(3, 138, '', '', 'o'),
-(3, 139, '', '', 'o'),
-(3, 140, '', '', 'o'),
-(3, 141, '', '', 'o'),
-(3, 142, '', '', 'o'),
-(3, 143, '', '', 'o'),
-(3, 144, '', '', 'o'),
-(3, 145, '', '', 'o'),
-(3, 146, '', '', 'x'),
-(3, 147, '', '', 'x'),
-(3, 148, '', '', 'x'),
-(3, 149, '', '', 'x'),
-(3, 150, '', '', 'x'),
-(3, 151, '', '', 'x'),
-(3, 152, '', '', 'x'),
-(3, 153, '', '', 'x'),
-(3, 154, '', '', 'x'),
-(3, 155, '', '', 'x'),
-(3, 156, '', '', 'x'),
-(3, 157, '', '', 'x'),
-(3, 158, '', '', 'x'),
-(3, 159, '', '', 'x'),
-(3, 160, '', '', 'x'),
-(3, 161, '', '', 'o'),
-(3, 162, '', '', 'o'),
-(3, 163, '', '', 'x'),
-(3, 164, '', '', 'x'),
-(3, 165, '', '', 'x'),
-(3, 166, '', '', 'x'),
-(3, 167, '', '', 'o'),
-(3, 168, '', '', 'o'),
-(3, 169, '', '', 'x'),
-(3, 170, '', '', 'x'),
-(3, 171, '', '', 'x'),
-(3, 172, '', '', 'o'),
-(3, 173, '', '', 'x'),
-(3, 174, '', '', 'o'),
-(3, 175, '', '', 'x'),
-(3, 176, '', '', 'x'),
-(3, 177, '', '', 'x'),
-(3, 178, '', '', 'o'),
-(3, 179, '', '', 'x'),
-(3, 180, '', '', 'o'),
-(3, 181, '', '', 'x'),
-(3, 182, '', '', 'o'),
-(3, 183, '', '', 'o'),
-(4, 1, 'Red Potion increases the HP by 100.', 'Increases the HP by 50.', 'x'),
-(4, 2, 'Lemon increases the MP by 150.', 'Increases the MP by 150.', 'o'),
-(4, 3, 'The Warrior Potion increases the Weapon ATT by 10 for 3 min.', 'Increases the Weapon ATT by 5 for 3 min.', 'x'),
-(4, 4, 'Blue Potion is 8 mesos cheaper at the Ellinia Department Store than other places.', 'The Blue Potion is cheaper in Ellinia Department Store.', 'o'),
-(4, 5, 'If you take the Orange Potion, it''ll improve your HP by 150, and it costs 150 mesos at stores.', 'It costs 160 mesos.', 'x'),
-(4, 6, 'The Speed Potion will increase your speed for 5 min.', 'Increases the speed for 3 min.', 'x'),
-(4, 7, 'The Wizard Potion will increase your Magic ATT by 10 for 5 min.', 'Increases the Magic ATT by 5 for 3 min.', 'x'),
-(4, 8, 'The Sap of an Ancient Tree will increase your Magic ATT by 10 for 5 min.', 'Increases the Magic ATT by 10 for 5 min.', 'o'),
-(4, 9, 'The Drake''s Meat will increase your Weapon DEF by 10 for 3 min.', 'Increases the Weapon DEF by 10 for 3 min.', 'o'),
-(4, 10, 'Drake''s Blood will increase your Weapon ATT by 10 for 5 min.', 'Increases the Weapon ATT by 8 for 5 min.', 'x'),
-(4, 11, 'Take one Power Elixir, and it''ll restore your HP and MP back to 100%.', 'Power Elixir recovers all HP and MP.', 'o'),
-(4, 12, 'Meat can be bought at stores for 106 mesos, and it recovers HP 100.', 'Increases the HP by 100.', 'o'),
-(4, 100, 'Sniper Potion will increase your accuracy by 5 for 5 min.', 'Increases accuracy by 5 for 5 min.', 'o'),
-(4, 101, 'Pizza costs 420 mesos, and one slice will recover HP 400.', 'Pizza costs 450 mesos.', 'x'),
-(4, 102, 'Cake costs 320 mesos, and one piece will recover HP 100 and MP 100.', 'Check the 24 Hr Mobile Store', 'o'),
-(4, 103, 'The Pure Water that can be purchased at 24 Hr Mobile Store costs 1600 mesos and recovers MP 800.', 'The Pure Water that can be purchased at 24 Hr Mobile Store costs 1650 mesos', 'x'),
-(4, 104, 'Hot Dog costs 320 mesos and one will recover HP 300.', 'Check the 24 Hr Mobile Store', 'o'),
-(4, 105, 'Hamburger costs 430 mesos and one will recover HP 400.', 'Hamburger costs 450 mesos.', 'x'),
-(4, 106, 'You''ll get 2,750 mesos from the stores if you sell your Power Elixir.', 'It fetches 2,500 mesos.', 'x'),
-(4, 107, 'DEX Potion increases your avoidability by 5 for 3 min.', 'Increases the avoidability by 5 for 3 min.', 'o'),
-(4, 108, 'Sunset Dew recovers MP 5000', 'It recovers MP 5,000.', 'o'),
-(4, 109, 'Sunrise Dew recovers HP 4000.', 'It recovers MP 4,000.', 'x'),
-(4, 110, 'Sunrise Dew can be sold to the stores for 4,050 mesos.', 'It''s sold for 4,050 mesos.', 'o'),
-(4, 111, 'Sunset Dew can be sold to the stores for 5,050 mesos.', 'It''s sold for 5,100 mesos.', 'x'),
-(4, 112, 'Pure Water can be bought through 24 Hr Mobile Store, Jane, Valen, Hana, or Mr. Sweatbottom.', 'Hana of El Nath does NOT sell pure water.', 'x'),
-(5, 1, 'Once you complete the quest of "Sera and Her Mirror" at the Maple Island, you''ll gain a little bit of EXP and mesos.', 'Only EXP, not mesos.', 'x'),
-(5, 2, 'During the quest of "Nina & Sen''s Dinner" at the Maple Island, Sen asks for the Mushroom Soup.', 'Sen wants the Mushroom Soup.', 'o'),
-(5, 3, 'Once you complete the quest of "Roger and the Apple" at the Maple Island, you''ll get a watermelon from him.', 'Gives away an apple.', 'x'),
-(5, 4, 'Once you complete the quest of "Deliver the Letter to the Chief" at the Maple Island, you''ll gain Wooden Shield.', 'Gives away a bandana.', 'x'),
-(5, 5, 'Once you complete the quest of "Biggs'' Collection of Items" at the Maple Island, you''ll gain a Wooden Sword.', 'You''ll get either a Fruit Knife or a Razor.', 'x'),
-(5, 6, 'The quest of "Fixing Blackbull''s House" at Perion can only be cleared by the ones that have gone through the 1st job adv.', 'The quest can be completed even without a job adv.', 'x'),
-(5, 7, 'To clear the quest of "Pia and the Blue Mushroom" at Henesys, you''ll need 60 Horned Mushroom Caps and 60 Blue Mushroom Caps.', 'Not Horned Mushroom Caps, but Green Mushroom Caps.', 'x'),
-(5, 8, 'Once you complete the quest of "Jane and the Wild Boar" at Lith Harbor, you''ll gain a Scroll for Armor DEF.', 'Not the scroll for armor, but the scroll for weapon.', 'x'),
-(5, 9, 'To clear the quest of "Alex the Runaway Kid" at Kerning City, you''ll need to get a gold watch from Chief Stan and deliver it back to Alex.', 'Chief Stan is at Henesys, Alex at Kerning City.', 'o'),
-(5, 10, 'The quest of "Arwen and the Glass Shoes" at Ellinia can only be completed once.', 'The "Glass Shoes" quest can be repeated over and over again.', 'x'),
-(5, 11, 'To clear the quest of "Fixing Blackbull''s House," you''ll need 50 tree branches and 30 firewoods.', 'You need 30 tree branches and 50 firewoods.', 'x'),
-(5, 12, 'The time limit for Party Quest at Kerning City is 30 min.', 'Has to be cleared within the 30 min. time limit.', 'o'),
-(5, 13, 'If you''re over LV. 40, even without the 2nd job adv., you''ll be able to take on the quest of "Jane the Alchemist"', 'You need to have 2nd job adv. in order to take on the quest.', 'x'),
-(5, 14, 'You won''t be able to enter the Party Quest at Kerning City if some other party is already in there.', 'Only one party can enter the map to take on the Party Quest at a time.', 'o'),
-(5, 15, 'Alex the runaway kid from Kerning City''s father is Mr. Wetbottom of the VIP sauna at Sleepywood.', 'Alex''s father is Chief Stan of Henesys.', 'x'),
-(5, 16, 'Once you clear the quest of "John''s Pink Flower Basket," you''ll receive 30 screws from him as a reward.', 'You''ll receive 30 screws from John.', 'o'),
-(5, 17, 'Mr. Wetbottom''s Secret Book is blue.', 'It''s in red.', 'x'),
-(5, 18, 'The ticket sold at the subway construction site for B1, B2, and B3 all cost 2,000 mesos.', 'B1 - 500 mesos. B2 - 1,200 mesos. B3 - 2,000 mesos.', 'x'),
-(5, 19, 'The level limit for Party Quest at Kerning City is between 20 and 30.', 'The level limit is between 21 and 30.', 'x'),
-(5, 20, 'To take on the quest of "Building a New House for Blackbull," your fame level needs to be at least 5.', 'The fame level has to be at least 10.', 'x'),
-(5, 21, 'Every time you clear Shumi''s quest, your fame level will increase by 1, all 3 times.', 'You''ll earn a total of +3 on fame level through her quests.', 'o'),
-(5, 22, 'Once the quest of "Sabirtrama and the Anti-Aging Medicine" is cleared, you''ll be able to gain either a Star Rock or a Moon Rock.', 'If the items are NOT of the ones Sabitrama requested, you''ll get a Moon Rock instead.', 'o'),
-(5, 23, 'For the quest of "Sabitrama and the Diet Medicine," the color of the flowers he asks for are the same throughout.', 'The color of flowers differ everytime you ask him.', 'x'),
-(5, 24, 'The Party Quest of Kerning City consists of 5 stages.', 'You need to clear 5 stages. There''s also a bonus stage available.', 'o'),
-(5, 25, 'The quest of "Jane the Alchemist" asks for materials 3 different times.', 'You need to gather up the materials 3 times to clear the quest.', 'o'),
-(5, 26, 'For the quest of "Sabitrama and the Diet Medicine," if you clear it without delivering the right herb, you''ll just receive EXP 500.', 'You''ll receive EXP 500 while clearing it.', 'o'),
-(5, 100, 'Once you clear the quest of "Jane and the Wild Boar," you''ll receive a random weapon attack scroll of either 100%, 60%, or 10%.', 'You''ll receive EXP 500 and a 60% Scroll for Weapon Att.', 'x'),
-(5, 101, 'The Forest of Patience consists of 5 levels.', 'Diet Medicine (LV 1, 2). Anti-Aging Medicine (LV 3, 4, 5)', 'o'),
-(5, 102, 'Shumi''s quest goes from <Lost Coin - Lots of Money - Sack of Money> ', 'The 2nd quest is "Shumi and the Lost Bundle of Money"', 'x'),
-(5, 103, 'The Unagi Special you''ll need for Mr. Wetbottom''s quests consists of Lupin Banana, Curse Eye Tail, and Pig Head.', 'Lupin Banana does NOT go in the Unagi Special.', 'x'),
-(5, 104, 'The Deep Forest of Patience consists of 7 levels.', 'Deep Forest of Patience consists of 7 levels.', 'o'),
-(5, 105, 'To clear the quest of "Luke the Security Guy," you''ll need 100 pieces of Jr. Necki Skin, 10 Stirge Wings, and 1 Pure Water. ', '1 Bowl of Salad, not Pure Water.', 'x'),
-(5, 106, 'To clear the quest of "Rowen and the Cursed Dolls," you''ll need a total of 2,300 cursed dolls.', 'You''ll need 100. 200, 400, 600, and 1,000 cursed dolls per quest.', 'o'),
-(5, 107, 'To reawaken the Ragged Gladius from the quest of "Manji''s Ragged Gladius," you''ll need the Moon Rock for it.', 'You need the Star Rock.', 'x'),
-(5, 108, 'Once you clear the quest of "Building a New House for Blackbull," you''ll randomly receive a 10% Scroll for Weapon Att. ', 'The scrolls can be chosen according to your occupation.', 'x'),
-(5, 109, 'The Deed to the Land you need to clear the quest of "Building a New House for Blackbull" can be obtained through Cold Eye.', 'The Deed can be obtained through Curse Eye.', 'x'),
-(5, 110, 'Once you clear the quest of "Ronnie & the Fairies Building a New House," you''ll receive EXP 4,000.', 'You''ll receive EXP 3,900.', 'x'),
-(5, 111, 'Once you clear the quest of "Sabitrama and the Anti-Aging  Medicine," your fame level will increase by 2.', 'Your fame level will increase, along with gaining some EXP and items.', 'o'),
-(5, 112, 'Once you clear the quest of "Pia''s Present for a Friend," you''ll receive an overall armor for Thief with the level limit of 60.', 'You''ll receive a set of LV. 60 top and bottom.', 'x'),
-(5, 113, 'The quest of "Trade with Sergeant Charlie" can be done regardless of the level.', 'The quest is available even to the beginners.', 'o'),
-(5, 114, 'The NPC''s that you need to see for the quest of "Alpha Platoon''s Network of Communication" are Master Sergeant Fox, Staff Sergeant Bravo, Sergeant Charlie, and Corporal Easy.', 'They are Master Sergeant Fox, Staff Sergeant Bravo, Sergeant Charlie, and Corporal Easy.', 'x'),
-(5, 115, 'For the quest of "Looking For a Book of Ancient," all users over LV. 50, regardless of the job, can take part in it.', 'All users LV. 55 and over, minus the beginners, can take part in it.', 'x'),
-(5, 116, '', '', 'x'),
-(5, 117, '', '', 'o'),
-(5, 118, '', '', 'x'),
-(5, 119, '', '', 'x'),
-(5, 120, '', '', 'x'),
-(5, 121, '', '', 'x'),
-(5, 122, '', '', 'x'),
-(5, 123, '', '', 'x'),
-(5, 124, '', '', 'x'),
-(5, 125, '', '', 'x'),
-(5, 126, '', '', 'x'),
-(5, 127, '', '', 'o'),
-(5, 128, '', '', 'x'),
-(5, 129, '', '', 'x'),
-(6, 1, 'In order to become a Bowman, beginners need to head over to Bowman Training School.', 'The beginners can become bowmen at the Bowman Instructional School.', 'x'),
-(6, 2, 'In order to become a Warrior, beginners need to head over to the Warrior Sanctuary.', 'The beginners can become Warriors at the Warrior Sanctuary.', 'o'),
-(6, 3, 'In order to become a Magician, beginners need to head over to the Magic Library.', 'The beginners can become Magicians at the Magic Library.', 'o'),
-(6, 4, 'The item you need to collect to make the 2nd job adv., all 30 of them, is called the Brown Crystal.', 'You need to collect 30 BLACK Crystals.', 'x'),
-(6, 5, 'Once you have collected 30 Black Crystals for the 2nd job adv., you''ll be awarded the "Proof of a Hero."', 'Once you have collected 30 Black Crystals for the 2nd job adv., you''ll be awarded the "Proof of a Hero."', 'o'),
-(6, 6, 'For the 2nd job adv., a Warrior can choose between becoming a Fighter, Page, or an Axeman.', 'You can choose between Fighter, Page, or Spearman as your 2nd job adv. as a Warrior. ', 'x'),
-(6, 7, 'For the 2nd job adv., a Bowman can choose between becoming a Hunter or a Sniper.', 'Hunter for the Bowman, Sniper for the crossBowman.', 'o'),
-(6, 8, 'For the 2nd job adv., a Thief can choose between becoming an Assassin or a Bandit.', 'Assassin for the Thief with throwing stars, Bandit for the Thief with daggers.', 'o'),
-(6, 9, 'For the 2nd job adv., a Magician can choose between becoming a Wizard or a Priest.', 'You''ll be choosing either Wizard or Cleric.', 'x'),
-(6, 10, 'When the beginner is at level 10, he/she can choose to become a Warrior, Magician, Thief, or a Bowman.', 'You can become a Magician at LV. 8', 'x'),
-(6, 11, 'For a beginner to become a Thief, one needs to have at least LUK of 25 or over.', 'You need DEX of 25 or over.', 'x'),
-(6, 12, 'To make the 3rd job adv., the user needs be at least at LV. 70 or above.', 'The 3rd job adv. will be available to users at LV 70 or over.', 'o'),
-(6, 13, 'When a beginner makes the first job adv., 1 skill point is awarded.', 'When a beginner makes the job adv., 1 skill point will be awarded.', 'o'),
-(6, 14, '', 'Can''t change your job into something totally different.', 'x'),
-(6, 15, 'To make the 4th job advancement, you''ll need to be at least at LV. 120, with a 3rd job adv. under your belt.', 'The 4th job adv. will be available to the ones over LV. 120.', 'o'),
-(6, 16, 'A 1st-level Magician skill, "Improving MP Recovery," goes up to level 15.', 'The skill goes up to level 16.', 'x'),
-(6, 100, 'When the Spearman''s skill, "Hyper Body," is fully mastered, your MaxHP and MaxMP increases by 60%.', 'If you have mastered the skill, your MaxHP & MaxMP increases 60%.', 'o'),
-(6, 101, 'When the Sniper''s skill, "Iron Arrow," is fully mastered, the damage will increase by 180%.', 'Once you have mastered the Iron Arrow, the damage will increase by 180%.', 'o'),
-(6, 102, 'The Thief has a skill called "Lucky Seven," which enables you to throw stars in mid-air.', 'Thieves can use skills while in mid-air.', 'o'),
-(6, 103, 'All 2nd-level skills, regardless of the occupation, has a total of 6 sets of skills.', 'There are 8 different sets of skills for Warriors.', 'x'),
-(6, 104, 'In order to become a Bowman, beginners need to head over to Bowman Training School.', 'The beginners can become thieves at the Thieves'' Hideout.', 'x'),
-(6, 105, 'Magicians have 3 different types of jobs available for the 4th job adv.', 'Only Warriors have the jobs split 3 ways for the 4th job adv.', 'x'),
-(6, 106, '', '', 'x'),
-(6, 107, '', '', 'x'),
-(6, 108, '', '', 'o'),
-(6, 109, 'Add up all the occupations for the 4th job adv., and it adds up to 9.', '3 for Warriors + 2 for Magicians + 2 for bowmen + 2 for thieves = 9', 'o'),
-(6, 110, '', '', 'x'),
-(6, 111, '', '', 'o'),
-(6, 112, '', '', 'o'),
-(6, 113, '', '', 'x'),
-(6, 114, '', '', 'x'),
-(6, 115, '', '', 'x'),
-(7, 1, 'After making your new character, the first place you head over to is the [Maple Island].', '[Maple Island] is the very first place you end up in MapleStory.', 'o'),
-(7, 2, 'When creating a character, you''ll be rolling a dice for the character stats. When you add up the stats for STR, DEX, INT, LUK, it''ll add up to 24.', 'It''s a total of 25 points.', 'x'),
-(7, 3, 'The first NPC you run into in MapleStory is "Rina."', 'The first NPC you run into in MapleStory is "Heena."', 'x'),
-(7, 4, 'Beginners need to pay only 100 mesos, a major discount, to use the cabs that are placed on every town on the island.', 'Beginners only need to pay 50 mesos to use the cab.', 'x'),
-(7, 5, 'To purchase potions and scrolls at Kerning City, head over to "Famous Pharmacy."', 'To purchase potions at Kerning City, head over to "Famous Pharmacy."', 'o'),
-(7, 6, 'In a safe town, you won''t die even if your HP runs out by dropping from a high place.', 'Even in a safe town, if the HP runs out, the character will die.', 'x'),
-(7, 7, 'To enter the Hidden Street, your character needs to be at least at LV. 10, with the job adv. under its belt.', 'Anyone can enter the Hidden Street.', 'x'),
-(7, 8, 'The VIP Sauna at the Sleepywood Hotel costs 999 mesos to enter.', 'The VIP Sauna costs 999 mesos to enter.', 'o'),
-(7, 9, 'To contact the MapleStory Hotline, dial 1588-7703', 'To contact the MapleStory Hotline, dial 1588-7703', 'o'),
-(7, 10, 'The EXP points needed to level up differ from different jobs.', 'All EXP points needed for the level-up is equal to that of other jobs.', 'x'),
-(7, 11, 'The EXP points awarded from the same monster differ from each time out.', 'The EXP points awarded will be the same, if it''s from the same monster.', 'x'),
-(7, 12, 'The NPC that sells potions at Florina Beach is named "Valen."', 'The NPC that sells potions there is "Valen."', 'o'),
-(7, 13, 'You''ll need EXP 15 to go from LV. 1 to LV. 2.', 'You''ll need 15 points of EXP to go from LV 1 to LV 2.', 'o'),
-(7, 14, 'You''ll need EXP 34 to go from LV. 2 to LV. 3.', 'You''ll need 34 points of EXP for that.', 'o'),
-(7, 15, 'You''ll need EXP 67 to go from LV. 3 to LV. 4.', 'You''ll need 57 points of EXP for that.', 'x'),
-(7, 16, 'Any act of dealing/trading cash points will result in heavy punishment.', 'It''s against the Terms of Agreement.', 'o'),
-(7, 100, 'You''ll need EXP 92 to go from LV. 4 to LV. 5.', 'You''ll need 92 points of EXP for that.', 'o'),
-(7, 101, 'You''ll need EXP 250 to go from LV. 5 to LV. 6.', 'You''ll need 135 points of EXP for that.', 'x'),
-(7, 102, 'You can only recharge your NexonCash through the MapleStory website or through the Cash Shop in the game.', 'It''s impossible to recharge cash points at the website.', 'x'),
-(7, 103, 'If you delete a cash item, you''ll receive 35% of it back through MaplePoints.', 'You only receive 30% of it back.', 'x'),
-(7, 104, 'All presents received through Cash Item cannot be deleted.', 'The only item that''s undeletable is that of a "use" cash item.', 'x'),
-(7, 105, 'You can put upto 8 items of your liking at the wish list of the Cash Shop.', 'You can put upto 10 items on wish list.', 'x'),
-(7, 106, 'If you make the 2nd job adv. either at LV. 31 or beyond, you won''t be able to receive the bonus SP + 1 that comes with the job adv.', 'You''ll receive a bonus SP after every job adv. ', 'x'),
-(7, 107, 'You can buy presents for your friends using MaplePoints.', 'You can''t buy presents for others with the MaplePoints.', 'x'),
-(7, 108, 'The Regular Sauna at Sleepywood Hotel costs 490 mesos.', 'The Regular Sauna costs 499 mesos to enter.', 'x'),
-(7, 109, 'You''ll be able to choose either a sword, a bat, or an axe as your weapon when you first make the character. Out of those weapons, the axe is considered the strongest, and the slowest of the three.', 'The basic set of weapons you choose from when first creating the character may all look different, but they all consist of the same characteristics.', 'x'),
-(7, 110, 'MapleStory is a 2D side-scrolling online adventure game from Nexon.', 'MapleStory is a 2D side-scrolling online adventure game from Wizet.', 'x'),
-(7, 111, '', '', 'x'),
-(7, 112, '', '', 'o'),
-(7, 113, '', '', 'x'),
-(7, 114, '', '', 'o'),
-(7, 115, '', '', 'o'),
-(7, 116, '', '', 'x'),
-(7, 117, '', '', 'x'),
-(7, 118, '', '', 'o'),
-(7, 119, '', '', 'x'),
-(7, 120, '', '', 'x'),
-(7, 121, '', '', 'o'),
-(7, 122, '', '', 'o'),
-(7, 123, '', '', 'x'),
-(7, 124, '', '', 'x'),
-(7, 125, '', '', 'o'),
-(7, 126, '', '', 'x'),
-(7, 127, '', '', 'x'),
-(7, 128, '', '', 'x'),
-(7, 129, '', '', 'o'),
-(7, 130, '', '', 'x'),
-(7, 131, '', '', 'x'),
-(7, 132, '', '', 'x'),
-(7, 133, '', '', 'o'),
-(7, 134, '', '', 'o'),
-(7, 135, '', '', 'x'),
-(7, 136, '', '', 'x'),
-(7, 137, '', '', 'x'),
-(7, 138, '', '', 'x'),
-(7, 139, '', '', 'x'),
-(7, 140, '', '', 'x'),
-(7, 141, '', '', 'x'),
-(7, 142, '', '', 'x'),
-(7, 143, '', '', 'o'),
-(7, 144, '', '', 'x'),
-(7, 145, '', '', 'x'),
-(7, 146, '', '', 'o'),
-(7, 147, '', '', 'x'),
-(7, 148, '', '', 'x'),
-(7, 149, '', '', 'x'),
-(7, 150, '', '', 'o'),
-(7, 151, '', '', 'o'),
-(7, 152, '', '', 'x'),
-(7, 153, '', '', 'o'),
-(7, 154, '', '', 'o'),
-(7, 155, '', '', 'o'),
-(7, 156, '', '', 'x'),
-(7, 157, '', '', 'x'),
-(7, 158, '', '', 'o'),
-(7, 159, '', '', 'o'),
-(7, 160, '', '', 'o'),
-(7, 161, '', '', 'o'),
-(7, 162, '', '', 'o'),
-(7, 163, '', '', 'o'),
-(7, 164, '', '', 'o'),
-(7, 165, '', '', 'o'),
-(7, 166, '', '', 'x'),
-(8, 1, '', '', 'x'),
-(8, 2, '', '', 'x'),
-(8, 3, '', '', 'x'),
-(8, 4, '', '', 'x'),
-(8, 5, '', '', 'o'),
-(8, 6, '', '', 'o'),
-(8, 7, '', '', 'o'),
-(8, 8, '', '', 'x'),
-(8, 9, '', '', 'o'),
-(8, 10, '', '', 'x'),
-(8, 11, '', '', 'o'),
-(8, 12, '', '', 'x'),
-(8, 100, '', '', 'o'),
-(8, 101, '', '', 'o'),
-(8, 102, '', '', 'o'),
-(8, 103, '', '', 'x'),
-(8, 104, '', '', 'x'),
-(8, 105, '', '', 'o'),
-(8, 106, '', '', 'o'),
-(8, 107, '', '', 'o'),
-(8, 108, '', '', 'x'),
-(8, 109, '', '', 'o'),
-(8, 110, '', '', 'x'),
-(8, 111, '', '', 'x'),
-(8, 112, '', '', 'o'),
-(8, 113, '', '', 'x'),
-(8, 114, '', '', 'o'),
-(8, 115, '', '', 'x'),
-(9, 1, '', '', 'o'),
-(9, 2, '', '', 'o'),
-(9, 3, '', '', 'o'),
-(9, 4, '', '', 'o'),
-(9, 5, '', '', 'o'),
-(9, 6, '', '', 'o'),
-(9, 7, '', '', 'o'),
-(9, 8, '', '', 'o'),
-(9, 9, '', '', 'o'),
-(9, 10, '', '', 'o'),
-(9, 11, '', '', 'x'),
-(9, 12, '', '', 'x'),
-(9, 13, '', '', 'o'),
-(9, 14, '', '', 'o'),
-(9, 15, '', '', 'o'),
-(9, 16, '', '', 'o'),
-(9, 17, '', '', 'o'),
-(9, 18, '', '', 'o'),
-(9, 19, '', '', 'o'),
-(9, 20, '', '', 'o'),
-(9, 21, '', '', 'o'),
-(9, 22, '', '', 'x'),
-(9, 23, '', '', 'x'),
-(9, 24, '', '', 'x'),
-(9, 25, '', '', 'x'),
-(9, 26, '', '', 'x'),
-(9, 27, '', '', 'o'),
-(9, 28, '', '', 'x'),
-(9, 29, '', '', 'x'),
-(9, 30, '', '', 'x'),
-(9, 31, '', '', 'x'),
-(9, 32, '', '', 'x'),
-(9, 33, '', '', 'x'),
-(9, 34, '', '', 'x'),
-(9, 35, '', '', 'x'),
-(9, 36, '', '', 'x'),
-(9, 37, '', '', 'x'),
-(9, 38, '', '', 'x'),
-(9, 39, '', '', 'x'),
-(9, 40, '', '', 'o'),
-(9, 41, '', '', 'o'),
-(9, 42, '', '', 'o'),
-(9, 43, '', '', 'x'),
-(9, 44, '', '', 'o'),
-(9, 100, '', '', 'o'),
-(9, 101, '', '', 'x'),
-(9, 102, '', '', 'x'),
-(9, 103, '', '', 'o'),
-(9, 104, '', '', 'o'),
-(9, 105, '', '', 'o'),
-(9, 106, '', '', 'o'),
-(9, 107, '', '', 'o'),
-(9, 108, '', '', 'o'),
-(9, 109, '', '', 'o'),
-(9, 110, '', '', 'o'),
-(9, 111, '', '', 'o'),
-(9, 112, '', '', 'o'),
-(9, 113, '', '', 'o'),
-(9, 114, '', '', 'o'),
-(9, 115, '', '', 'o'),
-(9, 116, '', '', 'o'),
-(9, 117, '', '', 'o'),
-(9, 118, '', '', 'o'),
-(9, 119, '', '', 'o'),
-(9, 120, '', '', 'o'),
-(9, 121, '', '', 'o'),
-(9, 122, '', '', 'o'),
-(9, 123, '', '', 'x'),
-(9, 124, '', '', 'x'),
-(9, 125, '', '', 'x'),
-(9, 126, '', '', 'x'),
-(9, 127, '', '', 'x'),
-(9, 128, '', '', 'x'),
-(9, 129, '', '', 'x'),
-(9, 130, '', '', 'x'),
-(9, 131, '', '', 'x'),
-(9, 132, '', '', 'x'),
-(9, 133, '', '', 'x'),
-(9, 134, '', '', 'x'),
-(9, 135, '', '', 'x'),
-(9, 136, '', '', 'o'),
-(9, 137, '', '', 'x'),
-(9, 138, '', '', 'x'),
-(9, 139, '', '', 'x'),
-(9, 140, '', '', 'x'),
-(9, 141, '', '', 'x'),
-(9, 142, '', '', 'x'),
-(9, 143, '', '', 'x'),
-(9, 144, '', '', 'x'),
-(9, 145, '', '', 'x'),
-(9, 146, '', '', 'x'),
-(9, 147, '', '', 'o'),
-(9, 148, '', '', 'x'),
-(9, 149, '', '', 'x'),
-(9, 150, '', '', 'o'),
-(9, 151, '', '', 'o'),
-(9, 152, '', '', 'o'),
-(9, 153, '', '', 'o'),
-(9, 154, '', '', 'o'),
-(9, 155, '', '', 'o'),
-(9, 156, '', '', 'o'),
-(9, 157, '', '', 'o'),
-(9, 158, '', '', 'o'),
-(9, 159, '', '', 'o'),
-(9, 160, '', '', 'o'),
-(9, 161, '', '', 'o'),
-(9, 162, '', '', 'o'),
-(9, 163, '', '', 'o'),
-(9, 164, '', '', 'o'),
-(9, 165, '', '', 'o'),
-(9, 166, '', '', 'o'),
-(9, 167, '', '', 'o'),
-(9, 168, '', '', 'o'),
-(9, 169, '', '', 'o'),
-(9, 170, '', '', 'x'),
-(9, 171, '', '', 'x'),
-(9, 172, '', '', 'x'),
-(9, 173, '', '', 'x'),
-(9, 174, '', '', 'x'),
-(9, 175, '', '', 'x'),
-(9, 176, '', '', 'x'),
-(9, 177, '', '', 'x'),
-(9, 178, '', '', 'x'),
-(9, 179, '', '', 'x'),
-(9, 180, '', '', 'x'),
-(9, 181, '', '', 'x'),
-(9, 182, '', '', 'x'),
-(9, 183, '', '', 'x'),
-(9, 184, '', '', 'x'),
-(9, 185, '', '', 'x');
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+-- ----------------------------
+-- Records of wz_oxdata
+-- ----------------------------
+INSERT INTO `wz_oxdata` VALUES ('1', '1', '在副本地勢高的地方棲息的魔龍，是遠距離與近距離攻擊的怪物.', '魔龍只有近距離攻擊.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '2', '火獨眼獸, 風獨眼獸, 冰獨眼獸是長相類似的怪物，這之中只有火獨眼獸有2個眼睛.', '全部都只有 1個眼睛.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '3', '乘著掃把飛行的巫婆可以向遠處的角色射出強力的魔法光線.', '巫婆是近距離攻擊的怪物.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '4', '乘著掃把飛行的巫婆對於神聖屬性魔法的抵抗力很弱.', '巫婆對於神聖屬性魔法很弱.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('1', '5', '礦山殭屍與殭屍比的話，殭屍的等級比較高', '兩個的等級皆為 57', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '6', '飛行的蝙蝠就像飛鼠般的掛在天花板上.', '不休息繼續飛行.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '7', '就像在黃金海灘或熱帶沙灘可以看見的花蟹一樣，紅螃蟹偶爾會跳躍攻擊.', '雖然長得像花蟹一樣但也會跳躍攻擊.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('1', '8', '藍獨角獅是會冰凍攻擊的怪物.', '為冰凍屬性攻擊，弱點為不死屬性的怪物.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('1', '9', '長得像可愛的海龜一樣的烏龜有著強力的遠距離攻擊.', '烏龜為遠距離攻擊型的怪物.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('1', '100', '赤龍為龍類怪物中唯一會遠距離攻擊的.', '赤龍與冰龍皆會遠距離攻擊.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '101', '主要棲息在沼地的黑鱷魚是比土龍等級還高的怪物.', '黑鱷魚(等級 52), 土龍(等級 45).', 'o');
+INSERT INTO `wz_oxdata` VALUES ('1', '102', '在勇士之村周圍可以看到土龍，他是龍的進化種，特徵為遠距離攻擊.', '只能近距離攻擊無法遠距離攻擊.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '103', '在冰原雪域登場的所有怪獸，對於火屬性魔法的抵抗力都很弱.', '黑吉拉卡,黑企鵝對於神聖屬性很弱', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '104', '怪物短牙海豹若遭受攻擊的話會與頭上的小海豹分離，然後一起攻擊.', '小海豹無法分離.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '105', '等級 100的地獄巴洛古不會中毒魔法的毒.', '特徵是會使毒魔法變得無效，但對神聖魔法很弱.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('1', '106', '乘著掃把飛行的巫婆是不死怪物.', '巫婆雖然對神聖屬性魔法很弱，但是不是不死怪物', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '107', '吃了炸蝦道具後，狩獵活跳蝦會更容易抓到.', '與炸蝦無關.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '108', '斧木妖是樵夫沒有將斧頭拔出，所以含著恨而誕生的怪物.', '傳說為樵夫把斧頭釘在上面後離開，所以含著恨而重新出生', 'o');
+INSERT INTO `wz_oxdata` VALUES ('1', '109', '哈利波特和妙麗是男女朋友.', '哈利波特和妙麗只是朋友.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '110', '狼人若遭到攻擊會召喚自己的分身並攻擊.', '狼人沒有分身', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '111', '在童話村登場的鬼怪中，綠色鬼怪可使用蕎麥蒟蒻來召喚.', '綠色鬼怪 - 蕎麥蒟蒻', 'o');
+INSERT INTO `wz_oxdata` VALUES ('1', '112', '在童話村登場的鬼怪中，藍色鬼怪可使用豬肉串來召喚.', '藍色鬼怪 - 穀茶', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '113', '在童話村登場的鬼怪中，黃色鬼怪可使用穀茶來召喚.', '黃色鬼怪 - 豬肉串', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '114', '楓之谷內最弱的怪物為 \'菇菇仔\'.', '最弱的不是菇菇仔而是蝸牛.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '115', '在動物森林中的狐狸與浣熊額頭貼著樹葉.', '兩隻怪物皆在額頭貼著樹葉.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('1', '116', '抓住上海郊外的鴨子的話可獲得潛水鞋.', '不是潛水鞋而是可獲得鴨蛋.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '117', '英文APPLE的意思是柳丁.', 'APPLE的意思是蘋果.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '118', '2014年世界杯冠軍是巴西隊.', '巴西隊已經被淘汰囉.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '119', '機器貓小叮噹最愛的食物是銅鑼燒. ', '抓到山羊的話可獲得白羊角.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '120', '人類的五官包括手.', '五官是眉眼耳鼻口.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('2', '1', '村莊商店雖然有賣單邊銀色耳環但沒有賣紫水晶耳環.', '紫水晶耳環可在弓箭手村商店中購買.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('2', '2', '在商店購買 100%卷軸時雙手武器卷軸比單手武器卷軸還貴.', '雙手武器卷軸與單手武器卷軸的價錢一樣.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('2', '3', '魔法森林武器商店中只有販售長杖卷軸與短杖卷軸.', '也有販售耳環用卷軸.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('2', '100', '炸蝦道具只能向水世界的雜貨商人安納斯購買.', '其他地方沒有販售', 'o');
+INSERT INTO `wz_oxdata` VALUES ('2', '101', '青銅弓箭與鋼鐵弓箭可透過弓箭手村的比休斯來製作.', '比休斯只能製作青銅弓箭.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('2', '102', '製作提煉石的時候最花錢的提煉石就是星石.', '黑暗水晶要50000楓幣，最貴', 'x');
+INSERT INTO `wz_oxdata` VALUES ('2', '103', '為了在未裝備的道具上使用卷軸必須要習得 \'神匠之魂\' 技能才行.', '必須要習得神匠之魂技能才能在為裝備的道具上使用卷軸 .', 'o');
+INSERT INTO `wz_oxdata` VALUES ('2', '104', '怪物卡在物品欄一格中最多可重疊至100個.', '可重疊至1,000個.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('2', '105', '攻擊速度快的木精靈槍可向特產販售員百鳥警官購買.', '可向特產販售員百鳥警官購買木精靈槍.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('2', '106', '製作魔法師手套紅守護手套時需要的動物皮革總共有 60張.', '需要動物皮革 60張，魔法森林的艾德郎會幫忙製作.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '1', '暖爐是為了能在寒冷的冬天讓房裡變暖和，而在裡面放入火來使用.', '暖爐也可以用來烤地瓜或熱食物.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '2', '植物的莖是根部吸收水份移動的通路.', '植物從根部吸收的水分藉由莖來移動.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '3', '發光的物體稱作 \'光源\'.', '火, 陽光, 螢光等都屬於光源.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '4', '太陽是從東邊升起的.', '答對了!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '5', '物體上發出光芒時出現亮與暗的階段稱做 \'明暗\'.', '好好表現明暗的話可以感受到該對象的立體感, 量感.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '6', '國家的 3元素為國民, 主權, 國防', '不是國防而是領土.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '7', '花花公子是指喜歡花錢的人.', '是指用情不專一的人.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '8', '夏季因為冷氣而得的病為冷房病.', '室內外的溫差為 5°C為最洽當.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '9', '漫畫海賊王的魯夫是吃了神奇膠囊才有了特殊能力.', '漫畫海賊王的魯夫是吃了惡魔果實才有了特殊能力.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '10', '狗是人類最忠實的好朋友.', '答對了!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '11', '汗有能將體內的廢物向外排出、調節體溫及保護皮膚的作用.', '適當的流汗是好的.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '12', '夏季家中室內外溫差約5度是最適當的.', '溫差5度以上的話很容易會得冷房病.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '13', '夏季吃太多冰冷食物的話有可能會使消化能力下降.', '若吃冰冷食物，體內的熱氣容易不足.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '14', '緊張時手裡出汗的原因為血壓上升、體溫升高.', '身體在發燒時流汗的話可以退燒.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '15', '綠巨人浩克生氣時會變得巨大.', '綠巨人浩克變得巨大力量會更強.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '16', '西瓜是水份很多的水果.', '西瓜內還有90%以上的水份.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '17', '夏天的夜晚比冬天長.', '夏天的夜晚比冬天短.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '18', '新楓之谷是很多小朋友喜愛的遊戲.', '是很多小朋友共同的回憶.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '19', '新楓之谷目前最新的職業是隱月.', '答對囉!就是隱月.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '20', '衣食住是指人類活著必要的衣服, 飲食, 玩樂.', '衣食住是指衣服, 飲食, 家.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '21', '加熱空氣的話空氣的體積會縮小.', '加入空氣的話空氣的體積會增加. 空氣的體積會根據溫度而不同.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '22', '顏色的 3要素中  \'明度\'是指顏色明亮與混濁.', '顏色明亮與黑暗稱作明度，清澈與混濁稱為彩度.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '23', '吸血的蚊子為雄性.', '吸血的蚊子為雌性, 雄性蚊子一般是吃植物的脂液(樹液).', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '100', 'NBA是世界職業籃球最高殿堂.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '101', '青銅器時代為櫛紋陶器, 新石器時代為無紋陶器.', '櫛紋陶器為新石器, 無紋陶器為青銅器.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '102', '我國的新石器時代始於 B.C 8000年間.', '部落族長代表部落，開始了農耕與畜牧.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '103', '五月天團員一共有5個人.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '104', '寫出名偵探福爾摩斯與他的朋友華生的故事的作者為阿瑟·柯南·道爾.', '1891年以短篇開始發表福爾摩斯系列.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '105', '狼人在月圓之夜會變身.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '107', '蜘蛛人可以發射蜘蛛絲飛簷走壁.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '108', '在海邊生長的海星因為長得像星星所以英文為 \'Starfish\'.', 'Starfish為海星的意思.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '109', '在太陽系裡，土星與海王星中間的行星為天王星.', '太陽-水星-金星-地球-火星-木星-土星-天王星-海王星-冥王星', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '110', '夏天下雨後變涼爽的原因是因為 固體→液體→氣體(吸熱反應) .', '是因為 固體→液體→氣體:吸熱反應.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '112', '颱風的名字是由各國家分別提出10個，總140個；共分為5組。每組28個.', '颱風名字是由各國家分別提出後命名.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '113', '蚊子吸人或動物血的原因是為了獲得動物性蛋白質.', '因為面臨即將到來的產卵期的雌性為了獲得動物性蛋白質.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '114', '中暑時喝綠豆湯很好.', '中暑時若喝綠豆湯可以降低身體的熱.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '115', '酒後絕對不能開車.', '喝酒不開車.開車不喝酒.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '116', '英文字母共有26個.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '117', '山上因為氣壓低的緣故，要比在平地用更高溫度才能煮開開水.', '在山頂上以低溫煮水來煮飯的話，容易煮不熟.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '118', '周星馳演過上海灘賭聖.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '119', '籃球之神Michael Jordan的Michael是姓，Jordan是名', 'Jordan是姓，Michael是名', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '120', '中秋節與端午節, 春節被稱為我國三大佳節.', '三大佳節為端午節,春節,中秋節.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '121', '新楓之谷遊戲中的熱鍵是預設好的不能變動.', '熱鍵可以重新設定.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '122', '本土綜藝天王是LOCALKING吳宗憲.', 'LOCALKING就是吳宗憲.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '123', '卜派吃番茄也能變身.', '卜派吃菠菜才能變身.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '124', '在海裡生活的蝦子與其他的魚貝類不同，腦是在尾巴上的.', '蝦子的腦是在頭上.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '125', '紅茶種類中有種 \'錫蘭紅茶\'. 這裡的錫蘭是一個盛產紅茶的印度村莊名字.', '錫蘭是斯里蘭卡的地名', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '126', '攀登至珠穆朗瑪峰最高峰的日本人田部井淳子，是靠著吃壽司一邊克服酷寒一邊征服山頂的.', '流傳是吃泡菜鍋克服嚴寒的.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '127', '幻獸師能使用大象的能力.', '幻獸師能使用豹熊鷹貓四種動物的能力.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '128', '2014年金曲獎最佳男歌手是周杰倫.', '2014年金曲獎最佳男歌手是林俊傑.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '129', '河馬的汗是紅色的', '河馬的汗為紅色是因為河馬會分泌出一種黏膩的紅色分泌物', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '130', '汗比眼淚更鹹.', '眼淚更鹹.汗中有 99%是水，眼淚成分有 98%是水', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '131', '撲克牌共有3種花色.', '撲克牌共有黑桃紅心方塊梅花4種花色.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '132', '使用白棋子與黑棋子來決勝的圍棋是在圍棋盤上進行的遊戲. 那麼圍棋盤上交點的個數為 361個.', '19 x 19 = 361.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '133', '打麻將相公的時候不能胡牌.', '麻將規定：相公的時候不能胡牌.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '134', '餵食狗狗太鹹的食物，狗狗會容易生病.', '寵物吃太鹹的食物容易得皮膚病，和內臟方面的疾病.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '135', '冬天比夏天更容易發生高血壓.', '因為天氣冷血管收縮壓力變高.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '136', '美國的代表股票價格指數為 \'道瓊指數\'.', '在道˙瓊斯指數中共同發表每日發表的4種股票價格平均指數', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '137', '英國因鴉片戰爭勝利而佔領的香港在1997年回歸中國.', '1997年 7月 1日結束 155年的殖民統治回歸中國.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '138', '冰淇淋最早是由中國製作的.', '最早是在5世界時作為中國皇帝甜點的冰果.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '139', '印刷術發明後最早使用印刷發行的報紙為德國的 \'Flug-blatt\'.', '德國新聞Flug-blatt是最早的印刷報紙.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '140', '小叮噹的耳朵是被老鼠咬掉的.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '141', '被譽為世界大師的梵谷, 保羅˙高更等皆為後期印象派畫家.', '梵谷, 保羅˙高更等皆為後期印象派代表畫家.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '142', '德國魏格納所主張的大陸飄移說中，所提出的有一個大陸出現指的是 \'聯合古陸\'.', '聯合古陸意思是一個很大的大陸.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '143', '世界最早的電腦是美國賓夕法尼亞大學所製作的Eniac.', 'Eniac是在1946年最早被製作出的電腦.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '144', '小叮噹的妹妹叫做技安妹.', '小叮噹的妹妹叫做小叮鈴.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '145', 'animation有活著的意思，他的語源是Anima.', '可以看見感覺各個圖片連續的移動.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '146', '江南大叔PSY紅遍全球的舞蹈叫做霹靂舞.', '江南大叔PSY紅遍全球的舞蹈叫做騎馬舞.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '147', '桃園三結義是指劉禪.關羽.張飛義結金蘭的故事.', '桃園三結義是劉備.關羽.張飛三人.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '148', '同花順打的贏Full House.', '撲克牌牌型中，同花順比Full House大.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '149', '母蟬有著特別的發聲器所以可以發出很高的聲音.', '公蟬有特殊的發聲器所以可以發出很高的聲音.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '150', '紫禁城在上海.', '紫禁城在北京是知名古蹟.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '151', '忍者龜的師傅是一隻老鼠.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '152', '企鵝不會冬眠.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '153', '韓文(訊民正音)是在1446年被創造出來的.', '創造完成的時間是1443年，並於1446年出版.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '154', '朝鮮末年與韓國最早簽訂通商條款的是美國.', '最早簽訂的江華島條約是因為日本而強制簽訂的.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '155', '地球公轉一圈需要365天.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '156', '日本最高的山是富士山.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '157', '世界第7大不可思議中的其中一個是法老王的金字塔側面與底面全部都是正三角形.', '側面是三角形，底面是四角形.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '158', '恐龍的名字經常會加上sauros， sauros的拉丁語有 \'恐怖\',\'可怕\'的意思.', 'sauros的拉丁語有大蜥蜴的意思.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '159', '以巨大白鯨與亞哈故事為背景描繪的是法國小說白鯨記', '白鯨是美國小說家 H.Melville的作品.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '160', '法國的象徵動物是公雞.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '161', '法國的著名小說小王子的作者是安托萬·德·聖-埃克絮佩里.', '本名 : Antoine Marie Roger De Saint Exupery', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '162', '1993年在法國出現繪有小王子的鈔票.', '正面是安托萬·德·聖-埃克絮佩里的肖像, 背面畫有\'小王子\'的可愛角色', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '163', '製作dos,window等的 MS(micro soft)的創辦人為 史蒂芬˙霍金博士.', 'micro soft公司的創辦人是比爾蓋茲.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '164', '聖經中帶領大家渡過紅海的人叫做宙斯.', '聖經中帶領大家渡過紅海的人叫做摩西.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '165', '台灣最高的山是阿里山.', '台灣最高的山是玉山.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '166', '選舉時根據心情或狀況的變化更換政黨或候選人的不透明投票稱為不投票.', '稱為浮動票.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '167', '媽祖是保護漁民的神明.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '168', '馬是站著睡覺的其中一種動物，長頸鹿也和馬一樣站著睡覺.', '長頸鹿跟馬都是站著睡覺.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '169', '2014年是馬年.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '170', '太陽系中最大的行星是金星.', '最大的行星是木星.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '171', '變色龍如果戴上眼罩身體就無法變換顏色', '變色龍是用眼睛看周邊的顏色來改變顏色的.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '172', '鯊魚的牙齒不論怎麼掉了或斷裂還是會繼續長出來', '鯊魚會繼續長出牙齒.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '173', '貓咪沒有眉毛,也沒有睫毛', '眉毛與睫毛都有.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '174', '人的一生中就算掌紋改變了，指紋是不會變的', '指紋不會變.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '175', '郵票的周圍的鋸齒狀是為了方便撕開郵票.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '176', '蝸牛沒有牙齒', '蝸牛也有牙齒.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '177', '金魚可以向後游.', '鰭在構造上無法向後游.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '178', '公雞可以下蛋.', '因賀爾蒙異常而變中性化的公雞是有可能會產下未成熟的蛋.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '179', '蜉蝣有嘴巴.', '因為生命短，消化器官退化，所以沒有嘴巴.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '180', '有測量辣味的單位.', '關於辣椒的辣味，南韓國際性的基準稱為 SHU(Scoville Heat Unit).', 'o');
+INSERT INTO `wz_oxdata` VALUES ('3', '181', '感受到恐怖的話體溫會下降.', '感受到恐怖時因為交感神經體溫會上升.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '182', '按照大多數國家和地區的風俗，結婚戒指一般應該戴在左手中指上.', '按照大多數國家和地區的風俗，結婚戒指一般應該戴在左手無名指上.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('3', '183', '長頸鹿跟人的頸骨數一樣.', '兩個的頸骨都是7個.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('4', '1', '攻擊藥水在3分鐘內可以提升物理攻擊力10.', '物理攻擊力3分鐘內上升5.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('4', '2', '在魔法森林雜貨店購買藍色藥水的話，比起其他村莊便宜，用8楓幣就可購買1個藥水.', '在魔法森林雜貨店中可以便宜購買藍色藥水.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('4', '3', '喝下速度藥水的話5分鐘內會增加移動速度.', '3分鐘內會增加移動速度.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('4', '4', '喝下魔力藥水的話 5分鐘內會增加魔力 10.', '魔力在3分鐘內會增加 5.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('4', '5', '喝下枯木樹液的話5分鐘內魔法攻擊力增加 10.', '魔法攻擊力在5分鐘內增加 10.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('4', '6', '吃下暴龍之肉的話 5分鐘內會增加物理防禦力100.', '物理防禦力在 5分鐘內增加 100.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('4', '7', '喝下暴龍之血的話 5分鐘內會增加物理攻擊力 10.', '物理攻擊力在 5分鐘內會增加 5.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('4', '8', '只要喝下1個超級藥水就能100%恢復 HP與 MP.', '超級藥水可恢復全部的 HP,MP', 'o');
+INSERT INTO `wz_oxdata` VALUES ('4', '9', '玩具城裡販售的藥丸比起其他藥水來說，可以持有更多.', '一格可持有 100個藥水，但因藥丸體積較小所以可持有150個.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('4', '10', '楓之谷世界中有可以治療所有狀態異常的藥.', '有可治療所有狀態異常的萬能療傷藥.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('4', '100', '喝下命中藥水的話 5分鐘內命中率會增加 100.', '命中率在 5分鐘內增加 100.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('4', '101', '喝下敏捷藥水的話3分鐘內迴避會增加 100.', '迴避在 3分鐘內會增加 100.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('4', '102', '黃昏之露可使 MP恢復 5000 ', '使MP恢復 5000 ', 'o');
+INSERT INTO `wz_oxdata` VALUES ('4', '103', '清晨之露可使 HP恢復 4000 ', '使MP恢復 4000 ', 'x');
+INSERT INTO `wz_oxdata` VALUES ('4', '104', '24小時路邊攤, 珍, 拜倫, 哈娜, 豪素夫, 米斯級等都有販售礦泉水.', '維多利亞港的珍沒有販售礦泉水.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('4', '105', '疼痛舒緩劑只可從地球防衛本部特派所中購買.', '疼痛舒緩劑只有在開發的特派所有販賣.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('4', '106', 'NPC妖精克莉爾在天空之城武器商店裡.', '妖精克莉爾在天空之城雜貨商店裡.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('4', '107', '好吃的黑輪與各種蔬菜串成的黑輪竹串可以提升 MP 500.', '黑輪(竹串)可以恢復 MP250.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('4', '108', '日式炒麵(雙份)比起日式炒麵可多提升魔法攻擊力 10 .', '雙份日式炒麵比起日式炒麵5分鐘可提升更多的魔法攻擊力.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('4', '109', '比起章魚燒在5分鐘可提升更多攻擊力的加量章魚燒價格貴 2倍.', '章魚燒:2000楓幣 , 加量章魚燒: 4200楓幣', 'x');
+INSERT INTO `wz_oxdata` VALUES ('4', '110', '中華拉麵,豚骨拉麵,海鮮粥可恢復所有 HP.', '可恢復所有 HP.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('4', '111', '販賣拉麵,中華拉麵的廚師 NPC的名字為元泰 .', '拉麵廚師元泰販售各種拉麵.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '1', '勇士村 \'與安卓思共舞\'任務只有 1轉過的角色才能完成.', '沒有轉職也能執行任務.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '2', '完成維多利亞港 \'珍與黑肥肥\' 任務的話可從珍那裡得到頭盔防禦卷軸.', '不是頭盔防禦卷軸而是可獲得武器卷軸 1個.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '3', '墮落城市組隊任務在有其他隊伍進行任務時無法入場.', '其他組隊在進行任務時無法入場.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '4', '墮落城市的離家少年阿勒斯的父親是奇幻村一般桑拿房的泰實夫.', '阿勒斯的父親是弓箭手村的長老斯坦.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '5', '完成約翰的粉紅花籃任務的話可從約翰那獲得螺絲 30個.', '從約翰那獲得螺絲30個.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '6', '地鐵站 服務員販賣的工地 B1,B2,B3 入場費全部為 2000楓幣.', 'B1-500楓幣,B2-1200楓幣,B3-2000楓幣', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '7', '墮落城市組隊任務的等級限制為 Lev20~Lev30 .', '等級限制為 21~30 .', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '8', '與安卓斯共舞\'的蓋新家任務要有人氣度 5以上才能進行.', '只有人氣度 10 以上的角色才可進行.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '9', '製作薩比特拉瑪的返老還童藥任務可獲得星石與月石.', '非薩比特拉瑪要求道具的情況可獲得月石.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '10', '墮落城市組隊任務總共有5個階段.', '總共 5個階段都要完成才行. 也有bonus舞台.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '11', '野外地圖也可能會有NPC存在', '野外地圖也可能會有NPC存在', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '12', '完成拿錯的藥草的任務時獲得 EXP 500.', '獲得500經驗值後完成.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '13', '\"菇菇寶貝\"伺服器創的角色，也可以在\"雪吉拉伺服器\"玩', '角色無法跨伺服器玩', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '14', '捉到培利堤安可獲得任務材料記憶的碎片', '可從馬堤安那獲得', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '15', '組隊任務的任務總共有 9個階段，必須要由 6位組成隊伍才行.', '等級限制為 35~50.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '16', '完成弓箭手村中 \'瑪亞與奇怪的藥\'任務的話可從瑪亞那獲得 \'褐色斗笠\'.', '可從瑪亞那獲得褐色斗笠.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '100', '楓之谷遊戲畫面左上角小地圖，不能關掉.', '左上角小地圖可以關掉.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '101', '任務地圖忍耐森林總共由 5個階段組成.', '製作減肥藥 製作返老還童藥 ', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '102', '雜貨店購買的道具\"雞蛋\"作用是送NPC增加友好度.', '\"雞蛋\"作用是拿來恢復HP.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '103', '泰實夫任務所需的特製烤鰻魚材料為猴子的香蕉,風獨眼獸之尾巴,肥肥頭.', '特製烤鰻魚中沒有猴子的香蕉', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '104', '任務地圖沉睡森林總共由 7個階段組成.', '沉睡森林總共由 7個階段組成', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '105', '為了完全完成妖精羅雯和詛咒的娃娃任務，需要的詛咒的娃娃個數為 2千3百個.', '各需要100個,200個,400個,600個,1000個', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '106', '完成與安卓斯共舞\'的蓋新家任務時會隨機獲得武器強化卷軸(10%).', '與安卓斯共舞\'的蓋新家任務的獎勵可選擇職業別.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '107', '完成與安卓斯共舞\'的蓋新家任務需要的材料中的\'地契\'可從冰獨眼獸那獲得.', '地契可從風獨眼獸那獲得 ', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '108', '神術士不是楓之谷的職業.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '109', '小地圖中顯示為\"紅色圈圈\"代表的是其他玩家', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '110', '玩家可以在自由市場PK', '自由市場無法PK', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '111', '等級 50以上可執行的任務為新手外全職業皆可執行的任務.', '從等級 55開始新手外的全職業皆可進行', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '112', '為了提煉黑暗水晶，必須要完成部分任務才行.', '任務中必須要完成亞凱斯特和黑暗水晶任務才行', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '113', '皮奧資源回收任務的獎勵為休閒椅.', '坐在休閒椅上的話每 10秒恢復 HP 50.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '114', '[伊卡路斯的滑翔翼] 任務中完成 [好無聊] 任務只有等級 32以上的角色可執行.', '必須完成先行任務\'好無聊\'任務才行.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '115', '必須要完成妖精維英給的 [幫忙寫作業]任務中的 [伊卡路斯的熱氣球]任務才可執行.', '只有等級10以上的角色才可進行[伊卡路斯的滑翔翼]任務.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '116', '抓到魔女怪物[巫婆]的話就可獲得任務戰利品中其中的一個魔女草葉子.', '攻擊魔女的話可獲得魔女草葉子.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '118', '[封印住神秘危險之力的儀式 1]任務所需道具為冰獨眼獸給的涼爽的氣息 33個.', '冰獨眼獸給的道具為冷漠的氣息.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '119', '為了進行[大海的遇難者]任務必須要擁有 SES請求救援信才行.', '必須要擁有怪物掉寶的 SOS請求救援信才行.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '120', '[有關轉職的指導]任務中坤出的問題共 5題.', '總共猜對 3題的話可以進行至下一階段.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '121', '自由女神像是英國送給美國的禮物.', '自由女神像是法國送給美國的禮物.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '122', '著名畫家徐悲鴻以擅長畫龍而聞名.', '著名畫家徐悲鴻以擅長畫馬而聞名.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '123', '中秋節的時候大家都愛吃粽子.', '端午節的時候大家都愛吃粽子.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '124', '人體最大的解毒器官是肝臟.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '125', '完成秀茲的興趣任務的話可以獲得獎勵氧氣筒.', '秀茲的興趣任務的獎勵為經驗值與氣泡.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '126', '狗狗熱的時候用舌頭散熱.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '127', '組隊任務 \'月妙的年糕\'\'要等級 10以上才可參加.', '月妙的年糕任務限制等級為 10以上.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '128', '古希臘古羅馬神話中的諸神裡面，被稱為愛神的是邱比特.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '129', '組隊任務 \'月妙的年糕\'若與弓箭手村公園的 NPC 托尼對話的話可入場.', 'NPC 達爾利.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '130', '魔王巴洛古困難模式遠征隊員最多可至6名.', '魔王巴洛古困難模式遠征隊員可 6名 ~ 15名一起.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '131', '菇菇王國的公主名字為 \'菲歐拉\'.', '菇菇王國的公主名字為 \'菲歐娜\' .', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '132', '怪物生存戰:未開放地區可使用等級為 25 ~ 35.', '怪物生存戰:未開放地區可使用等級為 25 ~ 30.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '133', '想成為名譽地鐵站服務員話必須消滅堆積灰塵的站台的怪物 5,000隻.', '消滅堆積灰塵的站台的怪物 10,000隻以上的話可獲得名譽地鐵站服務員勳章.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('5', '134', '墮落廣場的 \'赫一\'說想成為歌手.', '墮落廣場的 \'赫一\'的夢想是成為歌手.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('5', '135', '在奈特的金字塔中消滅怪物 50,000隻以上可成為法老的守護者.', '與模式無關在奈特的金字塔消滅怪物 50,000隻以上的話可獲得法老的守護者勳章.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('6', '1', '為了2次轉職收集來黑珠子 30個的話可獲得 \'英雄證書\'道具.', '英雄證書是 2次轉職的所需道具.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('6', '2', '新手等級10時可選擇戰士, 魔法師, 弓箭手, 盜賊, 海盜中其中一個職業.', '魔法師在等級8時可轉職.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('6', '4', '新手初次轉職的話可獲得技能點數 1點.', '新手轉職的話可獲得技能點數 1點.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('6', '5', '為了4次轉職， 已3次轉職的角色等級須達到 120以上才行.', '從120以上考 4次轉職.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('6', '6', '魔法師可使用可瞬間移動的 \'瞬間移動\'技能.', '魔法師可使用瞬間移動.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('6', '7', '隱身術為盜賊的技術，可隱藏自己的樣子並攻擊怪物.', '以隱藏的樣子無法攻擊怪物.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('6', '100', '槍騎兵的 \'武神招來\' 技能全部學系使用的話最多可增加 HP, MP各 60%.', '精通大師的情況各增加 60%.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('6', '101', '使用弓箭的射手技能中 \'穿透之箭\'全精通的話會增加 180% 傷害.', '穿透之箭全部精通的話會增加 180%的傷害.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('6', '102', '盜賊在跳躍的狀態可使用發射飛鏢的技能 \'lucky seven\'.', '盜賊在跳躍的狀態可使用 \'lucky seven\'技能.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('6', '103', '新手為了轉職為盜賊而去的地方為 \'盜賊基地\' .', '為了轉職而去的地方為 \'盜賊基地\' .', 'x');
+INSERT INTO `wz_oxdata` VALUES ('6', '104', '使用弓箭的射手的轉職順序為 [弓箭手 →獵人→ 遊俠→神射手] .', '以 [獵人→遊俠→箭神] 順序轉職.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('6', '105', '使用短劍的盜賊的轉職順序為 [盜賊→俠盜→神偷→夜使者] .', '以 [盜賊→俠盜→神偷→夜使者]  順序轉職.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('6', '106', '楓幣炸彈是可使掉落在地上的錢爆發並攻擊附近敵人的技能.', '使掉落在地上的錢爆發並施以傷害.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('6', '108', '使用神偷的 \'落葉斬\'技能的話一定機率可使怪物死亡.', '一定機率可使怪物暈眩.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('6', '109', '想學習龍騎士的 \'龍咆哮\' 技能的話 \'龍之獻祭\'技能等級需5 以上.', '龍之獻祭\' 技能需3以上.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('6', '110', '想學習遊俠的 \'箭雨\' 技能的話 \'龍神閃\' 技能等級需3 以上.', '致命箭\' 技能等級需5 以上.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('6', '111', '普利斯特的 \'聖光\' 技能可攻擊多數敵人.', '最多可攻擊 6隻怪物.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('6', '112', '就算普利斯特的 \'喚化術\' 技能成功，怪物的基本能力值也不會有變化.', '基本能力值不會有變化.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('6', '113', '想使用遊俠的 \'替身術\' 技能的話需1個召喚石.', '沒有召喚石也可使用.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('6', '114', '受到巫師的 \'冰風暴\' 技能攻擊的話一定時間內會結冰.', '命中時冰雷屬性外的怪物結凍的話，一次無法攻擊6隻以上.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('6', '115', '新手技能 \'恢復\'的再次使用等待時間為 15分鐘.', '經過10分鐘後可再次使用.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('6', '116', '武打動作英雄狂狼勇士登場日為 2009年 7月 9日', '狂狼勇士在 2009年 7月 9日初次登場.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('6', '117', '狂狼勇士為了發動連環吸血技能須累積 50連環以上才行.', '累積30連環時可發動.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('6', '118', '新手技能疾風之步的再次使用等待時間為 60秒.', '使用疾風之步後為了再次使用需等待 1分鐘才行.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('6', '119', '狂狼勇士的騎寵名字為 \'提提阿那\'.', '狂狼勇士的騎寵為狼 \'柳虎\'.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('6', '120', '戰鬥衝刺技能存在使用命令.', '戰鬥衝刺的存在命令為 \'-> ->\' .', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '1', '初次創角連線後會從 [楓之島]開始.', '楓之谷第一次開始的地方是 [楓之島].', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '2', '初次創角時會擲骰子. 此時合計 STR,DEX,INT,LUK的所有分數為 24分.', '合計為 25分.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '3', '新楓之谷中見到的第一個 NPC為 \'莉納亞\'.', '新楓之谷中見到的第一個 NPC為 \'希娜\'.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '4', '使用各村莊的計程車時尚未轉職的新手優惠價格只需支付 100楓幣就能搭乘.', '新手只需支付 50楓幣就能使用計程車.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '5', '在墮落城市中可買到藥水與卷軸的藥局名字為 \'明藥局\' .', '在墮落城市中可購入藥水等物品的場所為 \'明藥局\'.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '6', '在村莊內幾乎沒有 HP時從高處掉落也不會死.', '在村莊內若消耗全部的 HP時也會死.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '7', '為了入場隱密之地需要等級10以上轉職過的角色.', '無等級限制、任誰都可進入.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '8', '青蛙是兩棲動物.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '9', '海邊地圖黃金海灘中賣藥水的小姐名字為 \'拜倫\'', '藥水商人 NPC的名字為 \'拜倫\'.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '100', '人類的性別是由Y染色體決定的.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '101', '鯊魚是屬於淡水魚類.', '鯊魚是屬於海水魚類.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '102', '2次轉職等級過 31以上時轉職的情況無法獲得bonus  SP+1.', '轉職時都可獲得bonus SP.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '103', '老虎，獅子，貓在動物分類上都屬於貓科.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '104', '在水世界的動物園中總共有 4隻怪物.', '巴洛古, 雪吉拉, 白狼, 緞帶肥肥, 肥肥總共有5隻怪物.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '105', '鯨魚島的 NPC納努克帶著 4隻哈士奇.', '帶著褐色, 黑色, 灰色哈士奇.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '106', '椰子樹林地圖鯨魚島地圖中的鯨魚額頭貼著OK蹦.', '兩隻全部都在額頭貼OK蹦.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '107', '太公的渡船地圖中太公的魚竿上黏著 1片葉子.', '雖然總共黏有 3片但魚竿上只黏有1片.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '108', '愛奧斯塔 93樓的不倒翁能手 2拿著錘子.', '其他不倒翁能手拿著其他的工具.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '109', '往水世界的愛奧斯塔地下去的話會出現水中地圖.', '水世界是與愛奧斯塔連接在一起的地圖.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '110', '為了創設公會需要有 100萬楓幣.', '一定要有150萬楓幣才能創設公會.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '111', '公會的人員數最多可至 30名.', '公會人數最多可至 100名.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '112', '為了使公會人員從 10名增加至 15名需要 50萬楓幣.', '公會人員從 10名增加至 15名需要 50萬楓幣.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '113', '公會公告只有會長可使用.', '會長與副會長皆可使用公會公告功能.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '114', '解除公會的情況需要消耗 20萬楓幣.', '只有會長可解除公會，需20萬楓幣.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '115', '為了創造公會標誌需 500萬楓幣.', '透過NPC 蕾雅可創造公會標誌.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '116', '創造公會與公會標誌的負責 NPC為海拉格.', '公會標誌的負責NPC為蕾雅.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '117', '在村莊裡的 \'榮譽殿堂\'可確認公會排行.', '在榮耀之石\' 可確認公會排行.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '118', '任務提醒中最多可登錄 5個任務.', '最多登錄5個任務可即時確認.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '119', '公會對抗戰加上獎勵階段總共有 6個階段.', '總共有 7個階段.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '120', '公會對抗戰的背景的舊王國名字為 \'魯碧安\'.', '是威廉的古堡城.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '121', '水世界是與天空之塔地下連接在一起的水中地圖.', '透過艾納斯 → 天空之塔 → 天空之塔 B2可前往.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '122', '在水世界中每10秒會減少 HP.', '沒有氧氣筒或空氣瓶道具的話每 10秒會減少 HP.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '123', '水世界的大海的遇難者 NPC名字為 \"魯賓遜克魯斯\".', '是魯賓遜.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '124', '童話村的七南七誠兄弟的哥哥為七南.', '七誠是哥哥，七南是弟弟.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '125', '使用外掛時可能會在第1次被永久限制.', '只要使用一次外掛就可能成為永久限制.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '126', '透過NPC \'篤伊\'可向其他玩家寄送包裹. 使用費為 50,000楓幣.', 'NPC篤伊, 使用費為 5,000楓幣.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '127', '弓箭手村裡的世界之旅導遊名字為 \'秀匹奈爾\' .', '世界之旅導遊為 \'史匹奈爾\'.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '128', '弓箭手村副本入口的警衛 \'魯克\'右手拿著槍.', '魯克是左手拿著槍.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '129', '勇士村的 NPC \'義安\'的父親是 \'布魯斯\'.', 'NPC 義安的父親是布魯斯沒錯.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '131', '海怒斯出現的地圖名字為 \'海怒斯的深海洞穴\'.', '為\'海怒斯洞穴\'.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '132', '在地球防衛總部的羅威草原的葛雷元老拿著魔杖.', '不是羅威草原而是克嵐草原.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '133', '雙色染髮只可在夜市的美容室進行.', '雙色染髮只可在夜市的美容室進行.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '134', 'NPC妙斯在水世界動物園裡 .', 'NPC妙斯在水世界動物園裡 .', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '135', '寄送包裹後過 24小時對方就會收到.', '12小時候對方就會收到.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '136', '娃娃魚的叫聲和嬰兒哭聲很像.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '137', '色澤鮮豔度高的野生蘑菇最好不要採食，有毒的可能性很大.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '138', '鳥類中壽命最長的是鸚鵡.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '139', '海豚是屬於哺乳類動物.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '140', '荷蘭又稱為風車之國.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '141', '《白雪公主》的作者是格林兄弟.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '142', '台灣最南的縣是屏東縣.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '143', '燕窩主要是由燕子的口水做成的.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '144', '馬鈴薯發芽後是有毒不能食用的.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '145', '大發明家愛迪生小時後砍了爸爸的櫻桃樹.', '小時後砍了爸爸的櫻桃樹的人是華盛頓.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '146', '蠟筆小新的妹妹叫做小葵.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '147', '世界三大宗教不包括道教.', '世界三大宗教是基督教、回教以及佛教.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '148', '粽子是韓國人發明的.', '粽子是中國人發明的.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '149', '瑪迦提亞村莊的人形機器人的名字為休曼諾伊德B.', '瑪迦提亞村莊的人形機器人的名字為休曼諾伊德A.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '150', '結婚小鎮的文月花右手拿著手機.', '平常是拿著拐杖, 有時候會拿出手機來看.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '151', '西遊記中孫悟空的武器是金箍棒.', '答對囉!', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '152', '商城中販賣的裝備道具可使能力值上升.', '現金裝備道具不會使能力值上升.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '153', '蒙特鳩協會長為卡森, 卡帕萊特協會長為麥德.', '卡森與麥德各自擔任蒙特鳩與卡帕萊特協會長.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '154', '楓之谷訊息中最多可邀請 2位朋友進行對話.', '楓之谷訊息包含本人總共可有 3位進行對話.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '155', '封印道具1週限使用1次，可解除.', '透過詢問顧客中心1週可使用1次.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '156', '沒找到快遞道具的話會在 10天後消失.', '快遞道具的保管期限為 30天.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '157', '卡蜜拉說他很怕猶塔的肥肥農場的肥肥盔甲.', '卡蜜拉怕的是緞帶肥肥.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('7', '158', '童話村的燕子從小就被道公餵食仙桃與仙湯所以變得很聰明.', '因為仙桃與仙湯所以童話村的燕子變得很聰明.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '159', '瑪迦提亞城的琪妮是妖精與人類的混血.', '瑪迦提亞城的琪妮是妖精與人類的混血.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '160', '瑪迦提亞城的雜貨商人哲利也有販售寵物飼料.', '可向瑪迦提亞城的雜貨商人哲利購買寵物飼料.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '161', '墮落城市所有的懸賞海報都有被撕過毀損的樣子.', '盜賊的村莊墮落城市沒有一張完整的懸賞海報.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '162', '童話村的樂夫穿著可看見肚臍的衣服.', '可向童話村的樂夫確認美麗的肚臍.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '163', '快遞員篤伊鞋子的顏色為褐色.', '快遞員篤伊穿著美麗褐色的鞋子.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '164', '勇士村的倉庫王老闆是獨眼.', '去勇士村的話可以看到獨眼王老闆.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '165', '在弓箭手村瑪亞的家前面有一個紅色郵筒.', '瑪亞的家前面有一個可愛的紅色郵筒.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('7', '166', 'NPC 羅亞拿著的 3個氣球中最大的是紅色的.', '羅亞拿著的 3個氣球中最大的是藍色的.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('8', '1', '世界盃第1屆比賽在義大利舉行.', '第1屆比賽在烏拉圭，義大利是第 2回比賽.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('8', '2', '世界盃每 2年就舉辦一次.', '每4年舉辦一次.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('8', '3', '南極不會出現北極熊.', '北極熊生活在北極.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('8', '4', '2002年 韓,日世界盃為第 17屆世界盃.', '韓,日 世界盃為第17次比賽.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('8', '5', '足球為 11名選手的比賽，籃球為 6名選手的比賽', '籃球為 5名選手的比賽.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('8', '6', '奧林匹克的五環旗中亞洲代表亞洲的顏色為黃色.', '五環旗中黃色象徵亞洲.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('8', '100', '台灣也是位於赤道上的國家', '台灣沒有位於赤道上，台灣位於北回歸線上.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('8', '101', '網球中的大滿貫是指 美國公開賽法國公開賽,澳洲公開賽,溫布頓全部包攬的意思.', '包攬4大國際比賽稱為大滿貫.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('8', '103', '童話故事三隻小豬，最後小豬都被大野狼吃掉了.', '三隻小豬把大野狼趕跑了.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('8', '104', '在一場比賽進了3球的選手在足球裡稱作hat trick ，在冰上曲棍中稱作 triple.', '冰上曲棍也稱作hat trick.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('8', '105', '世界著名的死海位於埃及.', '死海位於約旦和巴勒斯坦交界.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('8', '106', '跨欄比賽中無論男女皆為 110m.', '女子為 100m 男子為 110m.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('8', '107', '在足球中進行自由球時至少要距離對方踢球選手最少 9.15m 以上才行.', '進入9.15m內的話會被警告.', 'o');
+INSERT INTO `wz_oxdata` VALUES ('8', '108', '游泳被指定為奧運正式項目是在 1896年 第1屆奧運.', '從1900年 第2屆奧運起被指定為正式項目.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('8', '109', '88首爾奧運中南韓獲得全體第 5名.', '88首爾奧運中南韓獲得全體第 4名.', 'x');

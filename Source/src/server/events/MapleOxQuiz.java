@@ -144,10 +144,10 @@ public class MapleOxQuiz extends MapleEvent {
         double x = chr.getPosition().getX();
         double y = chr.getPosition().getY();
         if ((x > -234 && y > -26 && answer == 0) || (x < -234 && y > -26 && answer == 1)) {
-            chr.dropMessage(6, "[是非題大考驗] 正確！"); //i think this is its own packet
+            chr.dropMessage(6, "恭喜回答正確！"); //i think this is its own packet
             return true;
         }
-        chr.dropMessage(6, "[是非題大考驗] 錯誤！");
+        chr.dropMessage(6, "很抱歉答錯了！");
         return false;
     }
 }
