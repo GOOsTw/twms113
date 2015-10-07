@@ -232,7 +232,7 @@ public class InventoryHandler {
         }
         final long time = System.currentTimeMillis();
         if (chr.getNextConsume() > time) {
-            chr.dropMessage(5, "You may not use this item yet.");
+            chr.dropMessage(5, "你不可以使用這個道具。");
             c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
@@ -520,7 +520,7 @@ public class InventoryHandler {
                         MapleInventoryManipulator.addById(c, 4001169, (short) 1);
                     } else {
                         map.broadcastMessage(MaplePacketCreator.catchMonster(mob.getId(), itemid, (byte) 0));
-                        chr.dropMessage(5, "因對手怪物的生命值過高，所以無法捕捉！");
+                        chr.dropMessage(5, "因怪物的生命值過高，所以無法捕捉！");
                     }
                     break;
                 }
@@ -533,7 +533,7 @@ public class InventoryHandler {
                         MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, itemid, 1, false, false);
                     } else {
                         map.broadcastMessage(MaplePacketCreator.catchMonster(mob.getId(), itemid, (byte) 0));
-                        chr.dropMessage(5, "因對手怪物的生命值過高，所以無法捕捉！");
+                        chr.dropMessage(5, "因怪物的生命值過高，所以無法捕捉！");
                     }
                     break;
                 }
@@ -561,7 +561,7 @@ public class InventoryHandler {
                         MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, itemid, 1, false, false);
                     } else {
                         map.broadcastMessage(MaplePacketCreator.catchMonster(mob.getId(), itemid, (byte) 0));
-                        chr.dropMessage(5, "因對手怪物的生命值過高，所以無法捕捉！");
+                        chr.dropMessage(5, "因怪物的生命值過高，所以無法捕捉！");
                     }
                     break;
                 }
@@ -645,7 +645,7 @@ public class InventoryHandler {
                     if (warped) { // Removal of gold compass
                         MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, 2430008, 1, false, false);
                     } else { // Or mabe some other message.
-                        c.getPlayer().dropMessage(5, "All maps are currently in use, please try again later.");
+                        c.getPlayer().dropMessage(5, "全部地都在使用中，請稍後再嘗試一次。");
                     }
                     break;
                 }
@@ -655,19 +655,19 @@ public class InventoryHandler {
                             if (MapleInventoryManipulator.checkSpace(c, 2049400, 1, "") && MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, 2430112, 25, true, false)) {
                                 MapleInventoryManipulator.addById(c, 2049400, (short) 1);
                             } else {
-                                c.getPlayer().dropMessage(5, "Please make some space.");
+                                c.getPlayer().dropMessage(5, "請空出一些欄位。");
                             }
                         } else if (c.getPlayer().getInventory(MapleInventoryType.USE).countById(2430112) >= 10) {
                             if (MapleInventoryManipulator.checkSpace(c, 2049400, 1, "") && MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, 2430112, 10, true, false)) {
                                 MapleInventoryManipulator.addById(c, 2049401, (short) 1);
                             } else {
-                                c.getPlayer().dropMessage(5, "Please make some space.");
+                                c.getPlayer().dropMessage(5, "請空出一些欄位。.");
                             }
                         } else {
                             c.getPlayer().dropMessage(5, "There needs to be 10 Fragments for a Potential Scroll, 25 for Advanced Potential Scroll.");
                         }
                     } else {
-                        c.getPlayer().dropMessage(5, "Please make some space.");
+                        c.getPlayer().dropMessage(5, "請空出一些欄位。");
                     }
                     break;
                 case 2430036: //croco 1 day
@@ -804,11 +804,11 @@ public class InventoryHandler {
         if (mountid > 0) {
             mountid += (GameConstants.isAran(c.getPlayer().getJob()) ? 20000000 : 0);
             if (c.getPlayer().getSkillLevel(mountid) > 0) {
-                c.getPlayer().dropMessage(5, "You already have this skill.");
+                c.getPlayer().dropMessage(5, "已經有了這個技能了。");
             } else if (expiration_days > 0) {
                 MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, slot, (byte) 1, false);
                 c.getPlayer().changeSkillLevel(SkillFactory.getSkill(mountid), (byte) 1, (byte) 1, System.currentTimeMillis() + (long) (expiration_days * 24 * 60 * 60 * 1000));
-                c.getPlayer().dropMessage(5, "The skill has been attained.");
+                c.getPlayer().dropMessage(5, "已經學會了這個技能了。");
             }
         }
         c.sendPacket(MaplePacketCreator.enableActions());
@@ -938,7 +938,7 @@ public class InventoryHandler {
                         }
                         used = true;
                     } else {
-                        c.getPlayer().dropMessage(1, "Unknown error has occurred.");
+                        c.getPlayer().dropMessage(1, "出現未知錯誤。");
                     }
                 }
                 break;
@@ -1325,10 +1325,10 @@ public class InventoryHandler {
                         MapleInventoryManipulator.addById(c, 2430112, (short) 1);
                         used = true;
                     } else {
-                        c.getPlayer().dropMessage(5, "Make sure your equipment has a potential.");
+                        c.getPlayer().dropMessage(5, "請確定你的裝備有淺能。");
                     }
                 } else {
-                    c.getPlayer().dropMessage(5, "Make sure you have room for a Fragment.");
+                    c.getPlayer().dropMessage(5, "請確定有空位得到奇幻方塊碎片。");
                 }
                 break;
             }
@@ -1368,7 +1368,7 @@ public class InventoryHandler {
                         used = true;
                         cc = true;
                     } else {
-                        c.getPlayer().dropMessage(5, "You may not use it on this item.");
+                        c.getPlayer().dropMessage(5, "可能不能使用在這個道具上。");
                         cc = true;
                     }
                 }
@@ -1980,8 +1980,8 @@ public class InventoryHandler {
            
             case 5281001:  /*花香*/
             case 5280001: // Gas Skill
-            case 5281000:  /*毒屁*/
-            { // Passed gas
+            /*毒屁*/
+            case 5281000: {
                 Rectangle bounds = new Rectangle((int) c.getPlayer().getPosition().getX(), (int) c.getPlayer().getPosition().getY(), 1, 1);
                 MapleMist mist = new MapleMist(bounds, c.getPlayer());
                 c.getPlayer().getMap().spawnMist(mist, 10000, true);
@@ -1992,8 +1992,7 @@ public class InventoryHandler {
             }
             /* 黑板 */
             case 5370000: 
-            case 5370001:
-            { 
+            case 5370001: { 
                 if (c.getPlayer().getMapId() / 1000000 == 109) {
                     c.getPlayer().dropMessage(1, "請勿在活動地圖使用黑板");
                 } else {
@@ -2538,12 +2537,12 @@ public class InventoryHandler {
                         c.sendPacket(PlayerShopPacket.getHiredMerch(c.getPlayer(), merchant, false));
                     } else {
                         if (!merchant.isOpen() || !merchant.isAvailable()) {
-                            c.getPlayer().dropMessage(1, "This shop is in maintenance, please come by later.");
+                            c.getPlayer().dropMessage(1, "這個商店在整理或者是沒再販賣東西。");
                         } else {
                             if (merchant.getFreeSlot() == -1) {
-                                c.getPlayer().dropMessage(1, "This shop has reached it's maximum capacity, please come by later.");
+                                c.getPlayer().dropMessage(1, "商店人數已經滿了，請稍後再進入。");
                             } else if (merchant.isInBlackList(c.getPlayer().getName())) {
-                                c.getPlayer().dropMessage(1, "You have been banned from this store.");
+                                c.getPlayer().dropMessage(1, "被加入黑名單了，所以不能進入。");
                             } else {
                                 c.getPlayer().setPlayerShop(merchant);
                                 merchant.addVisitor(c.getPlayer());
