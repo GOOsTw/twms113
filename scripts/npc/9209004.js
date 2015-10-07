@@ -32,7 +32,7 @@ function action(mode, type, selection) {
                 if (current == 20025 || current == 20027 || current == 20029 || current == 20031 || current == 20032) {
                     colors = Array(current, current + 100, current + 200, current + 300, current + 400, current + 500, current + 600, current + 700);
                 } else {
-                    colors = Array(current, current + 100, current + 200, current + 300, current + 400, current + 500, current + 600, current + 700, current + 800);
+                    colors = Array(current, current + 100, current + 200, current + 300, current + 400, current + 500, current + 600, current + 700);
                 }
                 cm.sendStyle("選一個喜歡的", colors);
             }
@@ -44,7 +44,7 @@ function action(mode, type, selection) {
                 if (current == 21027 || current == 21029 || current == 21030 || current == 21002) {
                     colors = Array(current, current + 100, current + 200, current + 300, current + 400, current + 500, current + 600, current + 700);
                 } else {
-                    colors = Array(current, current + 100, current + 200, current + 300, current + 400, current + 500, current + 600, current + 700, current + 800);
+                    colors = Array(current, current + 100, current + 200, current + 300, current + 400, current + 500, current + 600, current + 700);
                 }
                 cm.sendStyle("選一個喜歡的", colors);
             }
