@@ -1757,15 +1757,26 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
     //處理盜賊2轉俠盜-妙手術
     public final void handleSteal(MapleCharacter chr) {
+        double showdown = 100.0;
+        final MonsterStatusEffect mse = getBuff(MonsterStatus.SHOWDOWN);
+        if (mse != null) {
+            showdown += mse.getX();
+        }
+
         ISkill steal = SkillFactory.getSkill(4201004);
-        final int level = chr.getSkillLevel(steal);
+        final int level = chr.getSkillLevel(steal), chServerrate = ChannelServer.getInstance(chr.getClient().getChannel()).getDropRate();
         if (level > 0 && !getStats().isBoss() && stolen == -1 && steal.getEffect(level).makeChanceResult()) {
             final MapleMonsterInformationProvider mi = MapleMonsterInformationProvider.getInstance();
-            final List<MonsterDropEntry> dropEntry = new ArrayList<>(mi.retrieveDrop(getId()));
+            final List<MonsterDropEntry> de = mi.retrieveDrop(getId());
+            if (de == null) {
+                stolen = 0;
+                return;
+            }
+            final List<MonsterDropEntry> dropEntry = new ArrayList<>(de);
             Collections.shuffle(dropEntry);
             IItem idrop;
             for (MonsterDropEntry d : dropEntry) {
-                if (d.itemId > 0 && d.questid == 0 && steal.getEffect(level).makeChanceResult()) { //kinda op
+                if (d.itemId > 0 && d.questid == 0 && d.itemId / 10000 != 238 && Randomizer.nextInt(999999) < (int) (10 * d.chance * chServerrate * chr.getDropMod() * (chr.getStat().dropBuff / 100.0) * (showdown / 100.0))) { //kinda op
                     if (GameConstants.getInventoryType(d.itemId) == MapleInventoryType.EQUIP) {
                         Equip eq = (Equip) MapleItemInformationProvider.getInstance().getEquipById(d.itemId);
                         idrop = MapleItemInformationProvider.getInstance().randomizeStats(eq);
@@ -1773,7 +1784,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                         idrop = new Item(d.itemId, (byte) 0, (short) (d.Maximum != 1 ? Randomizer.nextInt(d.Maximum - d.Minimum) + d.Minimum : 1), (byte) 0);
                     }
                     stolen = d.itemId;
-                    map.spawnMobDrop(idrop, map.calcDropPos(new Point(getPosition()), getPosition()), this, chr, (byte) 0, (short) 0);
+                    map.spawnMobDrop(idrop, map.calcDropPos(getPosition(), getTruePosition()), this, chr, (byte) 0, (short) 0);
                     break;
                 }
             }
