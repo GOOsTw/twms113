@@ -11,8 +11,7 @@ function action(mode, type, selection) {
 	if (cm.getPlayer().getMarriageId() > 0) {
 	    cm.sendSimple("怎麼了，看起來很傷心....\r\n#b#L0#我想要離婚。#l\r\n#L1#我想要從我裝備欄刪除我的戒指。#l#k");
 	} else  {
-	    cm.sendNext("嗨，我可以為您做什麼？？");
-	    cm.dispose();
+	    cm.sendSimple("嗨，我可以為您做什麼？？ \r\n#L1#我想要從我裝備欄刪除我的戒指。#l#k");
 	}
     } else if (status == 1) {
 	if (selection == 0) {
@@ -24,21 +23,20 @@ function action(mode, type, selection) {
 		if (cm.haveItem(i)) {
 		    found = true;
 		    selStr += "\r\n#L" + i + "##v" + i + "##t" + i + "##l";
-		}
+			}
 	    }
 	    for (var i = 2240004; i < 2240016; i++) {
 		if (cm.haveItem(i)) {
 		    found = true;
 		    selStr += "\r\n#L" + i + "##v" + i + "##t" + i + "##l";
-		}
+			}
 	    }
 	    if (!found) {
-		cm.sendOk("你沒有任何戒指。");
+		cm.sendOk("身上沒有任何戒指。");
 		cm.dispose();
 	    } else {
 		cm.sendSimple(selStr);
 	    }
-	    
 	}
     } else if (status == 2) {
 	if (selection == -1) {

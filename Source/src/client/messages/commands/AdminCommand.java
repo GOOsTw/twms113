@@ -1198,7 +1198,7 @@ public class AdminCommand {
         }
     }
 
-    public static class StartAutoEvent extends CommandExecute {
+    public static class 開啟自動活動 extends CommandExecute {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
@@ -1210,11 +1210,47 @@ public class AdminCommand {
         }
     }
 
-    public static class SetEvent extends CommandExecute {
+    public static class 活動開始 extends CommandExecute {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
             MapleEvent.onStartEvent(c.getPlayer());
+            return 1;
+        }
+    }
+
+    public static class 關閉活動入口 extends CommandExecute {
+
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            if (c.getChannelServer().getEvent() == c.getPlayer().getMapId()) {
+                MapleEvent.setEvent(c.getChannelServer(), false);
+                c.getPlayer().dropMessage(5, "已經關閉活動入口，可以使用 !活動開始 來啟動。");
+                return 1;
+            } else {
+                c.getPlayer().dropMessage(5, "您必須先使用 !選擇活動,設定當前頻道的活動。");
+                return 0;
+            }
+        }
+    }
+
+    public static class 選擇活動 extends CommandExecute {
+
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            final MapleEventType type = MapleEventType.getByString(splitted[1]);
+            if (type == null) {
+                final StringBuilder sb = new StringBuilder("目前開放的活動有: ");
+                for (MapleEventType t : MapleEventType.values()) {
+                    sb.append(t.name()).append(",");
+                }
+                c.getPlayer().dropMessage(5, sb.toString().substring(0, sb.toString().length() - 1));
+            }
+            final String msg = MapleEvent.scheduleEvent(type, c.getChannelServer());
+            if (msg.length() > 0) {
+                c.getPlayer().dropMessage(5, msg);
+                return 0;
+            }
             return 1;
         }
     }
@@ -1292,42 +1328,6 @@ public class AdminCommand {
             } else {
                 chrs.setVPoints(chrs.getVPoints() + Integer.parseInt(splitted[2]));
                 c.getPlayer().dropMessage(6, splitted[1] + " has " + chrs.getVPoints() + " vpoints, after giving " + splitted[2] + ".");
-            }
-            return 1;
-        }
-    }
-
-    public static class StartEvent extends CommandExecute {
-
-        @Override
-        public int execute(MapleClient c, String[] splitted) {
-            if (c.getChannelServer().getEvent() == c.getPlayer().getMapId()) {
-                MapleEvent.setEvent(c.getChannelServer(), false);
-                c.getPlayer().dropMessage(5, "Started the event and closed off");
-                return 1;
-            } else {
-                c.getPlayer().dropMessage(5, "!scheduleevent must've been done first, and you must be in the event map.");
-                return 0;
-            }
-        }
-    }
-
-    public static class ScheduleEvent extends CommandExecute {
-
-        @Override
-        public int execute(MapleClient c, String[] splitted) {
-            final MapleEventType type = MapleEventType.getByString(splitted[1]);
-            if (type == null) {
-                final StringBuilder sb = new StringBuilder("Wrong 指令規則: ");
-                for (MapleEventType t : MapleEventType.values()) {
-                    sb.append(t.name()).append(",");
-                }
-                c.getPlayer().dropMessage(5, sb.toString().substring(0, sb.toString().length() - 1));
-            }
-            final String msg = MapleEvent.scheduleEvent(type, c.getChannelServer());
-            if (msg.length() > 0) {
-                c.getPlayer().dropMessage(5, msg);
-                return 0;
             }
             return 1;
         }
@@ -2867,7 +2867,7 @@ public class AdminCommand {
             return 1;
         }
     }
-    
+
     public static class mobstatus extends CommandExecute {
 
         @Override
@@ -2875,13 +2875,14 @@ public class AdminCommand {
             int value = 0;
             try {
                 Integer.parseInt(splitted[0]);
-                for(MonsterStatus s : MonsterStatus.values()) {
-                    
+                for (MonsterStatus s : MonsterStatus.values()) {
+
                 }
-            } catch(Exception e ) {}
+            } catch (Exception e) {
+            }
             return 1;
         }
-        
+
     }
 
     public static class Find extends CommandExecute {

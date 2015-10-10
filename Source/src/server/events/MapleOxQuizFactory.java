@@ -77,7 +77,7 @@ public class MapleOxQuizFactory {
         } catch (Exception e) {
             FilePrinter.printError("MapleOxQuizEntry.txt", e);
         }
-        System.out.print("Done\r");
+        System.out.print("完成\r");
         initialized = true;
     }
 
