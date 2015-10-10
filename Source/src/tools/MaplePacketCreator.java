@@ -835,21 +835,10 @@ public class MaplePacketCreator {
             }
         }
         //mplew.writeInt(3); after aftershock
-        List<Pair<Integer, Boolean>> buffvalue = new ArrayList<>();
+        /*List<Pair<Integer, Boolean>> buffvalue = new ArrayList<>();
         Map<MapleBuffStat, Object[]> statups = new LinkedHashMap<>();
         //long fbuffmask = 0xFFFC0000000000L; //becomes F8000000 after bb?
 
-        /*
-         SOARING(82),
-         FREEZE(83),
-         LIGHTNING_CHARGE(84),
-         MIRROR_IMAGE(85),
-         OWL_SPIRIT(86),
-         ARAN_COMBO(92),
-         COMBO_DRAIN(93),
-         COMBO_BARRIER(94),
-         BODY_PRESSURE(95),
-         */
         if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
             statups.put(MapleBuffStat.SOARING, null);
         }
@@ -909,64 +898,7 @@ public class MaplePacketCreator {
                     new Object[]{
                         chr.getBuffedValue(MapleBuffStat.MORPH).shortValue()});
         }
-        /*Map<MapleBuffStat, Object[]> statups = new LinkedHashMap();
-
-         // 鬥氣集中
-         if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
-         statups.put(MapleBuffStat.COMBO,
-         new Object[]{
-         chr.getBuffedValue(MapleBuffStat.COMBO).byteValue()
-         });
-         }
-
-         if (chr.getBuffedValue(MapleBuffStat.DARKSIGHT) != null && !chr.isHidden()) {
-         statups.put(MapleBuffStat.DARKSIGHT, null);
-         }
-
-         if (chr.getBuffedValue(MapleBuffStat.BERSERK_FURY) != null) {
-         statups.put(MapleBuffStat.BERSERK_FURY, null);
-         }
-
-         // 預設Buff
-         statups.put(MapleBuffStat.MORPH, null);
-         // 預設Buff
-         statups.put(MapleBuffStat.DIVINE_BODY, null);
-         // 預設Buff
-         statups.put(MapleBuffStat.SOULARROW, null);
-         // 預設Buff
-         statups.put(MapleBuffStat.SHADOWPARTNER, null);
-         // 預設Buff
-         statups.put(MapleBuffStat.ENERGY_CHARGE, null);
-         // 預設Buff
-         statups.put(MapleBuffStat.MIRROR_IMAGE, null);
-         // 預設Buff
-         statups.put(MapleBuffStat.DASH_SPEED, null);
-         // 預設Buff
-         statups.put(MapleBuffStat.DASH_JUMP, null);
-         // 預設Buff
-         statups.put(MapleBuffStat.MONSTER_RIDING, null);
-         // 預設Buff
-         statups.put(MapleBuffStat.SPEED_INFUSION, null);
-         // 預設Buff
-         statups.put(MapleBuffStat.HOMING_BEACON, null);
-
-         // 飛天騎乘
-         if (chr.getBuffedValue(MapleBuffStat.SOARING) != null) {
-         statups.put(MapleBuffStat.SOARING,
-         new Object[]{
-         chr.getBuffedValue(MapleBuffStat.SOARING).shortValue(),
-         chr.getBuffSource(MapleBuffStat.SOARING)
-         });
-         }
-
-         // ---------寫入玩家身上剩餘未處理的的Buff
-         //        chr.getAllBuffs().forEach((mbsvh) -> {
-         //            for (MapleBuffStat mb : mbsvh.statup.keySet()) {
-         //                if (!statups.containsKey(mb)) {
-         //                    statups.put(mb, null);
-         //                }
-         //            }
-         //        });*/
+       
         writeBuffMask(mplew, statups.keySet());
 
         for (Object[] ary : statups.values()) {
@@ -984,8 +916,48 @@ public class MaplePacketCreator {
                     mplew.writeLong((Long) i);
                 }
             }
+        }*/
+
+        
+        List<Pair<Integer, Boolean>> buffvalue = new ArrayList<>();
+        Long fbuffmask = 0xFFFC0000000000L; //becomes F8000000 after bb?
+        mplew.writeLong(fbuffmask);
+      
+        Long buffmask = 0L;
+
+        if (chr.getBuffedValue(MapleBuffStat.DARKSIGHT) != null && !chr.isHidden()) {
+            buffmask |= MapleBuffStat.DARKSIGHT.getOldValue();
+        }
+        if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
+            buffmask |= MapleBuffStat.COMBO.getOldValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.COMBO), false));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.SHADOWPARTNER) != null) {
+            buffmask |= MapleBuffStat.SHADOWPARTNER.getOldValue();
+        }
+        if (chr.getBuffedValue(MapleBuffStat.SOULARROW) != null) {
+            buffmask |= MapleBuffStat.SOULARROW.getOldValue();
+        }
+        if (chr.getBuffedValue(MapleBuffStat.DIVINE_BODY) != null) {
+            buffmask |= MapleBuffStat.DIVINE_BODY.getOldValue();
+        }
+        if (chr.getBuffedValue(MapleBuffStat.BERSERK_FURY) != null) {
+            buffmask |= MapleBuffStat.BERSERK_FURY.getOldValue();
+        }
+        if (chr.getBuffedValue(MapleBuffStat.MORPH) != null) {
+            buffmask |= MapleBuffStat.MORPH.getOldValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.MORPH), true));
         }
 
+        mplew.writeLong(buffmask);
+        for (Pair<Integer, Boolean> i : buffvalue) {
+            if (i.right) {
+                mplew.writeShort(i.left.shortValue());
+            } else {
+                mplew.write(i.left.byteValue());
+            }
+        }
+        
         final int CHAR_MAGIC_SPAWN = Randomizer.nextInt();
         //CHAR_MAGIC_SPAWN is really just tickCount
         //this is here as it explains the 7 "dummy" buffstats which are placed into every character

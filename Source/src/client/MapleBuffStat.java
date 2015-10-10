@@ -199,19 +199,25 @@ public enum MapleBuffStat implements Serializable {
     private static final long serialVersionUID = 0L;
     private final int buffstat;
     private final int first;
+    private final long oldvalue = 0;
 
     private MapleBuffStat(int buffstat) {
         this.buffstat = 1 << (buffstat % 32);
-        this.first = (int) Math.floor(buffstat / 32);
+        this.first = 3 - (int) Math.floor(buffstat / 32);
+        this.oldvalue = buffstat << ( 32 * ( first % 2))
     }
 
     private MapleBuffStat(int buffstat, boolean stacked) {
         this.buffstat = 1 << ((buffstat % 32));
         this.first = (int) Math.floor(buffstat / 32);
     }
+    
+    public final getOldValue() {
+        return this.oldvalue;
+    }
 
     public final int getPosition() {
-        return 3 - first;
+        return first;
     }
 
     public final int getValue() {
