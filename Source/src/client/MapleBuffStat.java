@@ -202,13 +202,13 @@ public enum MapleBuffStat implements Serializable {
     private MapleBuffStat(int buffstat) {
         this.buffstat = 1 << (buffstat % 32);
         this.first = 3 - (int) Math.floor(buffstat / 32);
-        this.oldvalue = this.buffstat << (32 * (first % 2));
+        this.oldvalue = this.buffstat << ((32 * ( 1 - (first % 2))));
     }
 
     private MapleBuffStat(int buffstat, boolean stacked) {
         this.buffstat = 1 << ((buffstat % 32));
         this.first = (int) Math.floor(buffstat / 32);
-        this.oldvalue = this.buffstat << ((32 * (first % 2)));
+        this.oldvalue = this.buffstat << ((32 * ( 1 - (first % 2))));
     }
 
     public final long getOldValue() {
