@@ -957,8 +957,9 @@ public class MaplePacketCreator {
         writeBuffMask(mplew, statups.keySet());
 
         for (Object[] ary : statups.values()) {
+            if (ary == null) 
+                continue;
             for (Object i : ary) {
-                if( i == null ) continue;
                 if (i instanceof Byte) {
                     mplew.write((Byte) i);
                 } else if (i instanceof Short) {
@@ -972,7 +973,7 @@ public class MaplePacketCreator {
         }
 
         final int CHAR_MAGIC_SPAWN = Randomizer.nextInt();
-         //CHAR_MAGIC_SPAWN is really just tickCount
+        //CHAR_MAGIC_SPAWN is really just tickCount
         //this is here as it explains the 7 "dummy" buffstats which are placed into every character
         //these 7 buffstats are placed because they have irregular packet structure.
         //they ALL have writeShort(0); first, then a long as their variables, then server tick count
@@ -1027,7 +1028,7 @@ public class MaplePacketCreator {
         mplew.writeInt(CHAR_MAGIC_SPAWN); // 台版自己加的
         mplew.writeShort(chr.getJob());
         PacketHelper.addCharLook(mplew, chr, false);
-         //        mplew.writeInt(0);//this is CHARID to follow
+        //        mplew.writeInt(0);//this is CHARID to follow
         //        mplew.writeInt(0); //probably charid following
         //        mplew.writeLong(Math.min(250, chr.getInventory(MapleInventoryType.CASH).countById(5110000))); //max is like 100. but w/e
         mplew.writeInt(Math.min(250, chr.getInventory(MapleInventoryType.CASH).countById(5110000))); //max is like 100. but w/e
@@ -1180,7 +1181,7 @@ public class MaplePacketCreator {
                     for (Pair<Integer, Boolean> eachd : oned.attack) {
                         // highest bit set = crit
                         if (eachd.right) {
-                            mplew.writeInt(eachd.left.intValue() + 0x80000000);
+                            mplew.writeInt(eachd.left + 0x80000000);
                         } else {
                             mplew.writeInt(eachd.left.intValue());
                         }
