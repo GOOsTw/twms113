@@ -930,7 +930,7 @@ public class MaplePacketCreator {
         }
         if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
             buffmask |= MapleBuffStat.COMBO.getOldValue();
-            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.COMBO), 1));
+            //buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.COMBO), 1));
         }
         if (chr.getBuffedValue(MapleBuffStat.SHADOWPARTNER) != null) {
             buffmask |= MapleBuffStat.SHADOWPARTNER.getOldValue();
