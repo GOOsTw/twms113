@@ -849,15 +849,33 @@ public class MaplePacketCreator {
          COMBO_BARRIER(94),
          BODY_PRESSURE(95),
          */
-        statups.put(MapleBuffStat.SOARING, null);
-        statups.put(MapleBuffStat.FREEZE, null);
-        statups.put(MapleBuffStat.LIGHTNING_CHARGE, null);
-        statups.put(MapleBuffStat.MIRROR_IMAGE, null);
-        statups.put(MapleBuffStat.OWL_SPIRIT, null);
-        statups.put(MapleBuffStat.ARAN_COMBO, null);
-        statups.put(MapleBuffStat.COMBO_DRAIN, null);
-        statups.put(MapleBuffStat.COMBO_BARRIER, null);
-        statups.put(MapleBuffStat.BODY_PRESSURE, null);
+        if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
+            statups.put(MapleBuffStat.SOARING, null);
+        }
+        if (chr.getBuffedValue(MapleBuffStat.FREEZE) != null) {
+            statups.put(MapleBuffStat.FREEZE, null);
+        }
+        if (chr.getBuffedValue(MapleBuffStat.LIGHTNING_CHARGE) != null) {
+            statups.put(MapleBuffStat.LIGHTNING_CHARGE, null);
+        }
+        if (chr.getBuffedValue(MapleBuffStat.MIRROR_IMAGE) != null) {
+            statups.put(MapleBuffStat.MIRROR_IMAGE, null);
+        }
+        if (chr.getBuffedValue(MapleBuffStat.OWL_SPIRIT) != null) {
+            statups.put(MapleBuffStat.OWL_SPIRIT, null);
+        }
+        if (chr.getBuffedValue(MapleBuffStat.ARAN_COMBO) != null) {
+            statups.put(MapleBuffStat.ARAN_COMBO, null);
+        }
+        if (chr.getBuffedValue(MapleBuffStat.COMBO_DRAIN) != null) {
+            statups.put(MapleBuffStat.COMBO_DRAIN, null);
+        }
+        if (chr.getBuffedValue(MapleBuffStat.COMBO_BARRIER) != null) {
+            statups.put(MapleBuffStat.COMBO_BARRIER, null);
+        }
+        if (chr.getBuffedValue(MapleBuffStat.BODY_PRESSURE) != null) {
+            statups.put(MapleBuffStat.BODY_PRESSURE, null);
+        }
 
         //mplew.writeLong(fbuffmask);
         if (chr.getBuffedValue(MapleBuffStat.DARKSIGHT) != null && !chr.isHidden()) {
