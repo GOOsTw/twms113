@@ -930,7 +930,7 @@ public class MaplePacketCreator {
         }
         if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
             buffmask |= MapleBuffStat.COMBO.getOldValue();
-            //buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.COMBO), 1));
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.COMBO), 2));
         }
         if (chr.getBuffedValue(MapleBuffStat.SHADOWPARTNER) != null) {
             buffmask |= MapleBuffStat.SHADOWPARTNER.getOldValue();
@@ -1212,9 +1212,9 @@ public class MaplePacketCreator {
                 for (Pair<Integer, Boolean> eachd : oned.attack) {
                     // highest bit set = crit
                     if (eachd.right) {
-                        mplew.writeInt(eachd.left.intValue() + 0x80000000);
+                        mplew.writeInt(eachd.left + 0x80000000);
                     } else {
-                        mplew.writeInt(eachd.left.intValue());
+                        mplew.writeInt(eachd.left);
                     }
                 }
             }
@@ -1248,9 +1248,9 @@ public class MaplePacketCreator {
                 for (Pair<Integer, Boolean> eachd : oned.attack) {
                     // highest bit set = crit
                     if (eachd.right) {
-                        mplew.writeInt(eachd.left.intValue() + 0x80000000);
+                        mplew.writeInt(eachd.left + 0x80000000);
                     } else {
-                        mplew.writeInt(eachd.left.intValue());
+                        mplew.writeInt(eachd.left);
                     }
                 }
             }
