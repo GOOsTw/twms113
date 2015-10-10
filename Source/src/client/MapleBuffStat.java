@@ -151,7 +151,6 @@ public enum MapleBuffStat implements Serializable {
     ELEMENT_RESET(65),
     //(CMS_风影漫步)
     WIND_WALK(66),
-    
     SOUL_STONE(73), //same as pyramid_pq
     ENERGY_CHARGE(75),
     DASH_SPEED(76),
@@ -167,8 +166,7 @@ public enum MapleBuffStat implements Serializable {
     ARAN_COMBO(92),
     COMBO_DRAIN(93),
     COMBO_BARRIER(94),
-    BODY_PRESSURE(95),
-    //POST BB
+    BODY_PRESSURE(95), //POST BB
     //DUMMY_STAT0     (0x8000000L, true), //appears on login
     //DUMMY_STAT1     (0x10000000L, true),
     //DUMMY_STAT2     (0x20000000L, true),
@@ -176,43 +174,45 @@ public enum MapleBuffStat implements Serializable {
     //DUMMY_STAT4     (0x80000000L, true),
     //db stuff
     /*FINAL_CUT(88),
-    THORNS(89),
-    ENHANCED_MAXHP(93),
-    ENHANCED_MAXMP(94),
-    ENHANCED_WATK(95),
-    ENHANCED_WDEF(96),
-    ENHANCED_MDEF(97),
-    PERFECT_ARMOR(98),
-    SATELLITESAFE_PROC(99),
-    SATELLITESAFE_ABSORB(100),
-    CRITICAL_RATE_BUFF(102),
-    MP_BUFF(103),
-    DAMAGE_TAKEN_BUFF(104),
-    DODGE_CHANGE_BUFF(105),
-    CONVERSION(106),
-    REAPER(107),
-    MECH_CHANGE(109), //determined in packet by [skillLevel or something] [skillid] 1E E0 58 52???
-    DARK_AURA(111),
-    BLUE_AURA(112),
-    YELLOW_AURA(113),*/;
+     THORNS(89),
+     ENHANCED_MAXHP(93),
+     ENHANCED_MAXMP(94),
+     ENHANCED_WATK(95),
+     ENHANCED_WDEF(96),
+     ENHANCED_MDEF(97),
+     PERFECT_ARMOR(98),
+     SATELLITESAFE_PROC(99),
+     SATELLITESAFE_ABSORB(100),
+     CRITICAL_RATE_BUFF(102),
+     MP_BUFF(103),
+     DAMAGE_TAKEN_BUFF(104),
+     DODGE_CHANGE_BUFF(105),
+     CONVERSION(106),
+     REAPER(107),
+     MECH_CHANGE(109), //determined in packet by [skillLevel or something] [skillid] 1E E0 58 52???
+     DARK_AURA(111),
+     BLUE_AURA(112),
+     YELLOW_AURA(113),*/;
 
     private static final long serialVersionUID = 0L;
     private final int buffstat;
     private final int first;
-    private final long oldvalue = 0;
+    private final long oldvalue;
 
     private MapleBuffStat(int buffstat) {
         this.buffstat = 1 << (buffstat % 32);
         this.first = 3 - (int) Math.floor(buffstat / 32);
-        this.oldvalue = buffstat << ( 32 * ( first % 2))
+        this.oldvalue = buffstat << (32 * (first % 2));
     }
 
     private MapleBuffStat(int buffstat, boolean stacked) {
         this.buffstat = 1 << ((buffstat % 32));
         this.first = (int) Math.floor(buffstat / 32);
+        this.oldvalue = buffstat << (32 * (first % 2));
+
     }
-    
-    public final getOldValue() {
+
+    public final long getOldValue() {
         return this.oldvalue;
     }
 
