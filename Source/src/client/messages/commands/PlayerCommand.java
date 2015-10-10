@@ -213,6 +213,10 @@ public class PlayerCommand {
                 c.getPlayer().dropMessage("你必須超過 10 等來使用此指令.");
                 return 0;
             }
+            if (! c.getPlayer().isAlive()){
+                c.getPlayer().dropMessage("死亡後無法使用.");
+                return 0;
+            }
             if (c.getPlayer().haveItem(2030000)) { //是否有回家卷軸
                 MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, 2030000, 1, true, false);
                 c.getPlayer().saveLocation(SavedLocationType.FREE_MARKET);

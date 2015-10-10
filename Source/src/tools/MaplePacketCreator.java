@@ -896,7 +896,6 @@ public class MaplePacketCreator {
             statups.put(MapleBuffStat.DARKSIGHT, null);
 
         }
-                        
 
         // 預設Buff
         statups.put(MapleBuffStat.BERSERK_FURY, null);
@@ -942,15 +941,17 @@ public class MaplePacketCreator {
 //        });
         writeBuffMask(mplew, statups.keySet());
 
-        for (Object i : statups.values()) {
-            if (i instanceof Byte) {
-                mplew.write((Byte) i);
-            } else if (i instanceof Short) {
-                mplew.writeShort((Short) i);
-            } else if (i instanceof Integer) {
-                mplew.writeInt((Integer) i);
-            } else if (i instanceof Long) {
-                mplew.writeLong((Long) i);
+        for (Object[] ary : statups.values()) {
+            for (Object i : ary) {
+                if (i instanceof Byte) {
+                    mplew.write((Byte) i);
+                } else if (i instanceof Short) {
+                    mplew.writeShort((Short) i);
+                } else if (i instanceof Integer) {
+                    mplew.writeInt((Integer) i);
+                } else if (i instanceof Long) {
+                    mplew.writeLong((Long) i);
+                }
             }
         }
 
