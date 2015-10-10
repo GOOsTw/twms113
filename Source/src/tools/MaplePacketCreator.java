@@ -791,6 +791,7 @@ public class MaplePacketCreator {
 
     public static void writeBuffMask(MaplePacketLittleEndianWriter mplew, Collection<MapleBuffStat> statups) {
         int[] mask = new int[4];
+        mask[2] = 0xFFFC0000;
         for (MapleBuffStat buf : statups) {
             mask[buf.getPosition()] |= ((MapleBuffStat) buf).getValue();
         }
