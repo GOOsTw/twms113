@@ -946,7 +946,7 @@ public class MaplePacketCreator {
         }
         if (chr.getBuffedValue(MapleBuffStat.MORPH) != null) {
             buffmask |= 0x2;//MapleBuffStat.MORPH.getOldValue();
-            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.MORPH), 2));
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.MORPH), 1));
         }
 
         mplew.writeLong(buffmask);
