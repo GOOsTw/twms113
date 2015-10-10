@@ -836,7 +836,7 @@ public class MaplePacketCreator {
         //mplew.writeInt(3); after aftershock
         List<Pair<Integer, Boolean>> buffvalue = new ArrayList<>();
         Map<MapleBuffStat, Object[]> statups = new LinkedHashMap<>();
-        long fbuffmask = 0xFFFC0000000000L; //becomes F8000000 after bb?
+        //long fbuffmask = 0xFFFC0000000000L; //becomes F8000000 after bb?
 
         /*
          SOARING(82),
@@ -849,13 +849,7 @@ public class MaplePacketCreator {
          COMBO_BARRIER(94),
          BODY_PRESSURE(95),
          */
-        if (chr.getBuffedValue(MapleBuffStat.SOARING) != null) {
-            statups.put(MapleBuffStat.SOARING,
-                    new Object[]{
-                        chr.getBuffedValue(MapleBuffStat.SOARING).shortValue(),
-                        chr.getBuffSource(MapleBuffStat.SOARING)
-                    });
-        }
+        statups.put(MapleBuffStat.SOARING, null);
         statups.put(MapleBuffStat.FREEZE, null);
         statups.put(MapleBuffStat.LIGHTNING_CHARGE, null);
         statups.put(MapleBuffStat.MIRROR_IMAGE, null);
@@ -894,7 +888,7 @@ public class MaplePacketCreator {
         if (chr.getBuffedValue(MapleBuffStat.MORPH) != null) {
             statups.put(MapleBuffStat.MORPH,
                     new Object[]{
-                        chr.getBuffedValue(MapleBuffStat.MORPH)});
+                        chr.getBuffedValue(MapleBuffStat.MORPH).shortValue()});
         }
         /*Map<MapleBuffStat, Object[]> statups = new LinkedHashMap();
 
@@ -957,8 +951,9 @@ public class MaplePacketCreator {
         writeBuffMask(mplew, statups.keySet());
 
         for (Object[] ary : statups.values()) {
-            if (ary == null) 
+            if (ary == null) {
                 continue;
+            }
             for (Object i : ary) {
                 if (i instanceof Byte) {
                     mplew.write((Byte) i);
@@ -1026,11 +1021,9 @@ public class MaplePacketCreator {
         mplew.writeLong(0); // 台版自己加的
         mplew.write(1); // 台版自己加的
         mplew.writeInt(CHAR_MAGIC_SPAWN); // 台版自己加的
+
         mplew.writeShort(chr.getJob());
         PacketHelper.addCharLook(mplew, chr, false);
-        //        mplew.writeInt(0);//this is CHARID to follow
-        //        mplew.writeInt(0); //probably charid following
-        //        mplew.writeLong(Math.min(250, chr.getInventory(MapleInventoryType.CASH).countById(5110000))); //max is like 100. but w/e
         mplew.writeInt(Math.min(250, chr.getInventory(MapleInventoryType.CASH).countById(5110000))); //max is like 100. but w/e
         mplew.writeInt(chr.getItemEffect());
         mplew.writeInt(0); // 台版自己加的
