@@ -919,7 +919,7 @@ public class MaplePacketCreator {
         }*/
 
         
-        List<Pair<Integer, Boolean>> buffvalue = new ArrayList<>();
+        List<Pair<Integer, Integer>> buffvalue = new ArrayList<>();
         Long fbuffmask = 0xFFFC0000000000L; //becomes F8000000 after bb?
         mplew.writeLong(fbuffmask);
       
@@ -930,7 +930,7 @@ public class MaplePacketCreator {
         }
         if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
             buffmask |= MapleBuffStat.COMBO.getOldValue();
-            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.COMBO), false));
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.COMBO), 1));
         }
         if (chr.getBuffedValue(MapleBuffStat.SHADOWPARTNER) != null) {
             buffmask |= MapleBuffStat.SHADOWPARTNER.getOldValue();
@@ -946,15 +946,21 @@ public class MaplePacketCreator {
         }
         if (chr.getBuffedValue(MapleBuffStat.MORPH) != null) {
             buffmask |= MapleBuffStat.MORPH.getOldValue();
-            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.MORPH), true));
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.MORPH), 2));
         }
 
         mplew.writeLong(buffmask);
-        for (Pair<Integer, Boolean> i : buffvalue) {
-            if (i.right) {
-                mplew.writeShort(i.left.shortValue());
-            } else {
-                mplew.write(i.left.byteValue());
+        for (Pair<Integer, Integer> i : buffvalue) {
+            switch(i.right) {
+                case 0:
+                    mplew.write(i.left);
+                    break;
+                case 1:
+                    mplew.writeShort(i.left);
+                    break;
+                case 2:
+                    mplew.writeInt(i.left);
+                    break;
             }
         }
         
