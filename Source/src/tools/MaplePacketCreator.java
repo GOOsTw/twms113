@@ -958,6 +958,7 @@ public class MaplePacketCreator {
 
         for (Object[] ary : statups.values()) {
             for (Object i : ary) {
+                if( i == null ) continue;
                 if (i instanceof Byte) {
                     mplew.write((Byte) i);
                 } else if (i instanceof Short) {
