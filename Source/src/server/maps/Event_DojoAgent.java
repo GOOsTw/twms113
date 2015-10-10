@@ -45,7 +45,7 @@ public class Event_DojoAgent {
         final int mapid = baseAgentMapId + (stage * 100);
 
         final ChannelServer ch = c.getClient().getChannelServer();
-        for (int i = mapid; i < mapid + 15; i++) {
+        for (int i = mapid; i < mapid + 10; i++) {
             final MapleMap map = ch.getMapFactory().getMap(i);
             if (map.getCharactersSize() == 0) {
                 clearMap(map, false);
@@ -95,10 +95,12 @@ public class Event_DojoAgent {
         int mapid = 925020000 + (stage * 100);
         boolean canenter = false;
         final ChannelServer ch = c.getClient().getChannelServer();
-        for (int x = 0; x < 15; x++) { //15 maps each stage
+        for (int x = 0; x < 10; x++) { //15 maps each stage
             boolean canenterr = true;
             for (int i = 1; i < 39; i++) { //only 32 stages, but 38 maps
+                
                 MapleMap map = ch.getMapFactory().getMap(925020000 + 100 * i + x);
+                
                 if (map.getCharactersSize() > 0) {
                     canenterr = false;
                     break;

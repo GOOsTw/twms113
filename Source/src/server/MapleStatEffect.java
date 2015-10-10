@@ -1053,8 +1053,8 @@ public class MapleStatEffect implements Serializable {
         applyto.getClient().sendPacket(MaplePacketCreator.giveBuff(sourceid, 99999, stat, this)); // Hackish timing, todo find out
 
         final long starttime = System.currentTimeMillis();
-//	final CancelEffectAction cancelAction = new CancelEffectAction(applyto, this, starttime);
-//	final ScheduledFuture<?> schedule = TimerManager.getInstance().schedule(cancelAction, ((starttime + 99999) - System.currentTimeMillis()));
+	final CancelEffectAction cancelAction = new CancelEffectAction(applyto, this, starttime);
+	final ScheduledFuture<?> schedule = Timer.BuffTimer.getInstance().schedule(cancelAction, ((starttime + 99999) - System.currentTimeMillis()));
         applyto.registerEffect(this, starttime, null);
     }
 

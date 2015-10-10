@@ -4199,7 +4199,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             boolean first = debuff.isFirst();
             client.sendPacket(MaplePacketCreator.cancelDebuff(mask, first));
             map.broadcastMessage(this, MaplePacketCreator.cancelForeignDebuff(id, mask, first), false);
-
             diseases.remove(debuff);
         }
     }

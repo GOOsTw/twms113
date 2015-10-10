@@ -59,9 +59,8 @@ public class MTSCSPacket {
         mplew.writeInt(0); // some info , it'size , decodeBuffer(4*size)
 
         mplew.writeShort(cmi.size());
-        for (int i = 0; i < cmi.size() ; i++) {
-            addModCashItemInfo(mplew, cmi.get(i));
-
+        for (CashModInfo cmi1 : cmi) {
+            addModCashItemInfo(mplew, cmi1);
         }
         mplew.write(HexTool.getByteArrayFromHexString("00 00 0A 00 50 10 27 00 00 00 5A 00 00 00 00 00 00 00 00 00 00 00 00 FF 00 00 00 00 00 00 00 00 00 "));
         mplew.write(HexTool.getByteArrayFromHexString("06 00 00 00 31 00 30 00 31 00 00 00 00 00 00 00 05 00 0E 00 05 00 08 06 A0 01 14 00 C8 FE 8D 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 03 00 13 00 0A 01 0C 06 06 00 00 00 31 00 30 00 31 00 00 00 00 00 00 00 03 00 16 00 0D 00 0C 06 90 01 14 00 F8 36 8C 06 31 00 00 00 00 00 00 00 03 00 19 00 10 01 0C 06 06 00 00 00 31 00 30 00"));

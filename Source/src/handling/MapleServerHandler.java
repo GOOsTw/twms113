@@ -374,7 +374,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 c.pongReceived();
                 break;
             case STRANGE_DATA:
-                // Does nothing for now, HackShield's heartbeat
+                if (slea.available() >= 5) {
+                    FilePrinter.print("38Logs.txt", slea.toString(), true);
+                }// Does nothing for now, HackShield's heartbeat
                 break;
             case HELLO_LOGIN:
                 if (slea.available() >= 5) {

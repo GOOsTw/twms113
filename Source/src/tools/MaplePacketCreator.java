@@ -789,6 +789,16 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
+    public static void writeBuffMask(MaplePacketLittleEndianWriter mplew, Collection<MapleBuffStat> statups) {
+        int[] mask = new int[4];
+        for (MapleBuffStat buf : statups) {
+            mask[buf.getPosition()] |= ((MapleBuffStat) buf).getValue();
+        }
+        for (int i = 0; i < mask.length; i++) {
+            mplew.writeInt(mask[i]);
+        }
+    }
+
     public static MaplePacket spawnPlayerMapobject(MapleCharacter chr) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
@@ -797,7 +807,6 @@ public class MaplePacketCreator {
         mplew.write(chr.getLevel());
         mplew.writeMapleAsciiString(chr.getName());
         String Prefix = chr.getPrefix();
-        
 
         if (chr.getGuildId() <= 0) {
             final MapleGuild gs = World.Guild.getGuild(chr.getGuildId());
@@ -825,71 +834,126 @@ public class MaplePacketCreator {
             }
         }
         //mplew.writeInt(3); after aftershock
-        List<Pair<Integer, Boolean>> buffvalue = new ArrayList<Pair<Integer, Boolean>>();
-        long fbuffmask = 0xFFFC0000000000L; //becomes F8000000 after bb?
-        //if (chr.getBuffedValue(MapleBuffStat.FINAL_CUT) != null) {
-        //    fbuffmask |= MapleBuffStat.FINAL_CUT.getValue();
-        //    buffvalue.add(new Pair<Integer, Boolean>(Integer.valueOf(chr.getBuffedValue(MapleBuffStat.FINAL_CUT).intValue()), false));
-        //}
-        //if (chr.getBuffedValue(MapleBuffStat.OWL_SPIRIT) != null) {
-        //    fbuffmask |= MapleBuffStat.OWL_SPIRIT.getValue();
-        //    buffvalue.add(new Pair<Integer, Boolean>(Integer.valueOf(chr.getBuffedValue(MapleBuffStat.OWL_SPIRIT).intValue()), false));
-        //}
-        if (chr.getBuffedValue(MapleBuffStat.SOARING) != null) {
-            fbuffmask |= MapleBuffStat.SOARING.getValue();
-        }
-        if (chr.getBuffedValue(MapleBuffStat.MIRROR_IMAGE) != null) {
-            fbuffmask |= MapleBuffStat.MIRROR_IMAGE.getValue();
-        }
+        /*List<Pair<Integer, Boolean>> buffvalue = new ArrayList<>();
+         long fbuffmask = 0xFFFC0000000000L; //becomes F8000000 after bb?
 
-        //if (chr.getBuffedValue(MapleBuffStat.PYRAMID_PQ) != null) {
-        //    fbuffmask |= MapleBuffStat.PYRAMID_PQ.getValue();
-        //    buffvalue.add(new Pair<Integer, Boolean>(Integer.valueOf(chr.getBuffedValue(MapleBuffStat.PYRAMID_PQ).intValue()), false)); //idk
-        //}
-        //if (chr.getBuffedValue(MapleBuffStat.MAGIC_SHIELD) != null) {
-        //    fbuffmask |= MapleBuffStat.MAGIC_SHIELD.getValue();
-        //    buffvalue.add(new Pair<Integer, Boolean>(Integer.valueOf(chr.getBuffedValue(MapleBuffStat.MAGIC_SHIELD).intValue()), false)); //idk
-        //}
-        mplew.writeLong(fbuffmask);
-        /*	mplew.writeInt(0);
-         mplew.write(0);
-         mplew.write(-4); // SEA V82 	mplew.write(-2);
-         mplew.write(-1); // SEA V82 	mplew.write(0);
-         mplew.write(0); // SEA V82 	mplew.write(0);*/
-        long buffmask = 0;
+         if (chr.getBuffedValue(MapleBuffStat.SOARING) != null) {
+         fbuffmask |= MapleBuffStat.SOARING.getValue();
+         }
+         if (chr.getBuffedValue(MapleBuffStat.MIRROR_IMAGE) != null) {
+         fbuffmask |= MapleBuffStat.MIRROR_IMAGE.getValue();
+         }
+
+    
+         mplew.writeLong(fbuffmask);
+        
+         long buffmask = 0;
+
+         if (chr.getBuffedValue(MapleBuffStat.DARKSIGHT) != null && !chr.isHidden()) {
+         buffmask |= MapleBuffStat.DARKSIGHT.getValue();
+         }
+         if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
+         buffmask |= MapleBuffStat.COMBO.getValue();
+         buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.COMBO), false));
+         }
+         if (chr.getBuffedValue(MapleBuffStat.SHADOWPARTNER) != null) {
+         buffmask |= MapleBuffStat.SHADOWPARTNER.getValue();
+         }
+         if (chr.getBuffedValue(MapleBuffStat.SOULARROW) != null) {
+         buffmask |= MapleBuffStat.SOULARROW.getValue();
+         }
+         if (chr.getBuffedValue(MapleBuffStat.DIVINE_BODY) != null) {
+         buffmask |= MapleBuffStat.DIVINE_BODY.getValue();
+         }
+         if (chr.getBuffedValue(MapleBuffStat.BERSERK_FURY) != null) {
+         buffmask |= MapleBuffStat.BERSERK_FURY.getValue();
+         }
+         if (chr.getBuffedValue(MapleBuffStat.MORPH) != null) {
+         buffmask |= MapleBuffStat.MORPH.getValue();
+         boolean add = buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.MORPH), true));
+         }
+
+         mplew.writeLong(buffmask);
+         for (Pair<Integer, Boolean> i : buffvalue) {
+         if (i.right) {
+         mplew.writeShort(i.left.shortValue());
+         } else {
+         mplew.write(i.left.byteValue());
+         }
+         }*/
+
+        Map<MapleBuffStat, Object[]> statups = new LinkedHashMap();
+
+        // 鬥氣集中
+        if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
+            statups.put(MapleBuffStat.COMBO,
+                    new Object[]{
+                        chr.getBuffedValue(MapleBuffStat.COMBO).byteValue()
+                    });
+        }
 
         if (chr.getBuffedValue(MapleBuffStat.DARKSIGHT) != null && !chr.isHidden()) {
-            buffmask |= MapleBuffStat.DARKSIGHT.getValue();
+            statups.put(MapleBuffStat.DARKSIGHT, null);
+
         }
-        if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
-            buffmask |= MapleBuffStat.COMBO.getValue();
-            buffvalue.add(new Pair<Integer, Boolean>(Integer.valueOf(chr.getBuffedValue(MapleBuffStat.COMBO).intValue()), false));
-        }
-        if (chr.getBuffedValue(MapleBuffStat.SHADOWPARTNER) != null) {
-            buffmask |= MapleBuffStat.SHADOWPARTNER.getValue();
-        }
-        if (chr.getBuffedValue(MapleBuffStat.SOULARROW) != null) {
-            buffmask |= MapleBuffStat.SOULARROW.getValue();
-        }
-        if (chr.getBuffedValue(MapleBuffStat.DIVINE_BODY) != null) {
-            buffmask |= MapleBuffStat.DIVINE_BODY.getValue();
-        }
-        if (chr.getBuffedValue(MapleBuffStat.BERSERK_FURY) != null) {
-            buffmask |= MapleBuffStat.BERSERK_FURY.getValue();
-        }
-        if (chr.getBuffedValue(MapleBuffStat.MORPH) != null) {
-            buffmask |= MapleBuffStat.MORPH.getValue();
-            buffvalue.add(new Pair<Integer, Boolean>(Integer.valueOf(chr.getBuffedValue(MapleBuffStat.MORPH).intValue()), true));
+                        
+
+        // 預設Buff
+        statups.put(MapleBuffStat.BERSERK_FURY, null);
+        // 預設Buff
+        statups.put(MapleBuffStat.MORPH, null);
+        // 預設Buff
+        statups.put(MapleBuffStat.DIVINE_BODY, null);
+        // 預設Buff
+        statups.put(MapleBuffStat.SOULARROW, null);
+        // 預設Buff
+        statups.put(MapleBuffStat.SHADOWPARTNER, null);
+        // 預設Buff
+        statups.put(MapleBuffStat.ENERGY_CHARGE, null);
+        // 預設Buff
+        statups.put(MapleBuffStat.MIRROR_IMAGE, null);
+        // 預設Buff
+        statups.put(MapleBuffStat.DASH_SPEED, null);
+        // 預設Buff
+        statups.put(MapleBuffStat.DASH_JUMP, null);
+        // 預設Buff
+        statups.put(MapleBuffStat.MONSTER_RIDING, null);
+        // 預設Buff
+        statups.put(MapleBuffStat.SPEED_INFUSION, null);
+        // 預設Buff
+        statups.put(MapleBuffStat.HOMING_BEACON, null);
+
+        // 飛天騎乘
+        if (chr.getBuffedValue(MapleBuffStat.SOARING) != null) {
+            statups.put(MapleBuffStat.SOARING,
+                    new Object[]{
+                        chr.getBuffedValue(MapleBuffStat.SOARING).shortValue(),
+                        chr.getBuffSource(MapleBuffStat.SOARING)
+                    });
         }
 
-        mplew.writeLong(buffmask);
-        for (Pair<Integer, Boolean> i : buffvalue) {
-            if (i.right) {
-                mplew.writeShort(i.left.shortValue());
-            } else {
-                mplew.write(i.left.byteValue());
+        // ---------寫入玩家身上剩餘未處理的的Buff
+//        chr.getAllBuffs().forEach((mbsvh) -> {
+//            for (MapleBuffStat mb : mbsvh.statup.keySet()) {
+//                if (!statups.containsKey(mb)) {
+//                    statups.put(mb, null);
+//                }
+//            }
+//        });
+        writeBuffMask(mplew, statups.keySet());
+
+        for (Object i : statups.values()) {
+            if (i instanceof Byte) {
+                mplew.write((Byte) i);
+            } else if (i instanceof Short) {
+                mplew.writeShort((Short) i);
+            } else if (i instanceof Integer) {
+                mplew.writeInt((Integer) i);
+            } else if (i instanceof Long) {
+                mplew.writeLong((Long) i);
             }
         }
+
         final int CHAR_MAGIC_SPAWN = Randomizer.nextInt();
         //CHAR_MAGIC_SPAWN is really just tickCount
         //this is here as it explains the 7 "dummy" buffstats which are placed into every character
@@ -1505,7 +1569,7 @@ public class MaplePacketCreator {
         mplew.writeShort(chr.getFame());
         mplew.write(chr.getMarriageId() > 0 ? 1 : 0); // heart red or gray
         String Prefix = chr.getPrefix();
-     
+
         if (chr.getGuildId() <= 0) {
             if (chr.getPrefix().equals("")) {
                 mplew.writeMapleAsciiString("尚未加入公會");
@@ -1745,7 +1809,7 @@ public class MaplePacketCreator {
 
         mplew.writeShort(SendPacketOpcode.GIVE_FOREIGN_BUFF.getValue());
         mplew.writeInt(cid);
-        
+
         List<MapleBuffStat> st = new ArrayList<>();
         st.add(MapleBuffStat.ENERGY_CHARGE);
         writeBuffState(mplew, st);
@@ -2937,7 +3001,7 @@ public class MaplePacketCreator {
         mplew.write(0x1A); //signature for showing guild info
 
         String Prefix = c.getPrefix();
-       
+
         mplew.write(1); //bInGuild
         mplew.writeInt(0);
         mplew.writeMapleAsciiString(Prefix);
@@ -3008,7 +3072,6 @@ public class MaplePacketCreator {
     private static void getGuildInfo2(MaplePacketLittleEndianWriter mplew, MapleGuild guild, MapleCharacter chr) {
 
         String Prefix = chr.getPrefix();
-        
 
         //System.out.println("writegetGuildInfo2");
         mplew.writeInt(guild.getId());
@@ -4325,9 +4388,10 @@ public class MaplePacketCreator {
 
     /**
      * 智慧貓頭鷹
+     *
      * @param itemSearch
      * @param hms
-     * @return 
+     * @return
      */
     public static MaplePacket getOwlSearched(final int itemSearch, final List<HiredMerchant> hms) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
