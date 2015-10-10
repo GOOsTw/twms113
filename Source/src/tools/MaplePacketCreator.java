@@ -834,95 +834,21 @@ public class MaplePacketCreator {
             }
         }
         //mplew.writeInt(3); after aftershock
-        /*List<Pair<Integer, Boolean>> buffvalue = new ArrayList<>();
-         long fbuffmask = 0xFFFC0000000000L; //becomes F8000000 after bb?
+        List<Pair<Integer, Boolean>> buffvalue = new ArrayList<>();
+        Map<MapleBuffStat, Object[]> statups = new LinkedHashMap<>();
+        long fbuffmask = 0xFFFC0000000000L; //becomes F8000000 after bb?
 
-         if (chr.getBuffedValue(MapleBuffStat.SOARING) != null) {
-         fbuffmask |= MapleBuffStat.SOARING.getValue();
-         }
-         if (chr.getBuffedValue(MapleBuffStat.MIRROR_IMAGE) != null) {
-         fbuffmask |= MapleBuffStat.MIRROR_IMAGE.getValue();
-         }
-
-    
-         mplew.writeLong(fbuffmask);
-        
-         long buffmask = 0;
-
-         if (chr.getBuffedValue(MapleBuffStat.DARKSIGHT) != null && !chr.isHidden()) {
-         buffmask |= MapleBuffStat.DARKSIGHT.getValue();
-         }
-         if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
-         buffmask |= MapleBuffStat.COMBO.getValue();
-         buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.COMBO), false));
-         }
-         if (chr.getBuffedValue(MapleBuffStat.SHADOWPARTNER) != null) {
-         buffmask |= MapleBuffStat.SHADOWPARTNER.getValue();
-         }
-         if (chr.getBuffedValue(MapleBuffStat.SOULARROW) != null) {
-         buffmask |= MapleBuffStat.SOULARROW.getValue();
-         }
-         if (chr.getBuffedValue(MapleBuffStat.DIVINE_BODY) != null) {
-         buffmask |= MapleBuffStat.DIVINE_BODY.getValue();
-         }
-         if (chr.getBuffedValue(MapleBuffStat.BERSERK_FURY) != null) {
-         buffmask |= MapleBuffStat.BERSERK_FURY.getValue();
-         }
-         if (chr.getBuffedValue(MapleBuffStat.MORPH) != null) {
-         buffmask |= MapleBuffStat.MORPH.getValue();
-         boolean add = buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.MORPH), true));
-         }
-
-         mplew.writeLong(buffmask);
-         for (Pair<Integer, Boolean> i : buffvalue) {
-         if (i.right) {
-         mplew.writeShort(i.left.shortValue());
-         } else {
-         mplew.write(i.left.byteValue());
-         }
-         }*/
-
-        Map<MapleBuffStat, Object[]> statups = new LinkedHashMap();
-
-        // 鬥氣集中
-        if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
-            statups.put(MapleBuffStat.COMBO,
-                    new Object[]{
-                        chr.getBuffedValue(MapleBuffStat.COMBO).byteValue()
-                    });
-        }
-
-        if (chr.getBuffedValue(MapleBuffStat.DARKSIGHT) != null && !chr.isHidden()) {
-            statups.put(MapleBuffStat.DARKSIGHT, null);
-
-        }
-
-        // 預設Buff
-        statups.put(MapleBuffStat.BERSERK_FURY, null);
-        // 預設Buff
-        statups.put(MapleBuffStat.MORPH, null);
-        // 預設Buff
-        statups.put(MapleBuffStat.DIVINE_BODY, null);
-        // 預設Buff
-        statups.put(MapleBuffStat.SOULARROW, null);
-        // 預設Buff
-        statups.put(MapleBuffStat.SHADOWPARTNER, null);
-        // 預設Buff
-        statups.put(MapleBuffStat.ENERGY_CHARGE, null);
-        // 預設Buff
-        statups.put(MapleBuffStat.MIRROR_IMAGE, null);
-        // 預設Buff
-        statups.put(MapleBuffStat.DASH_SPEED, null);
-        // 預設Buff
-        statups.put(MapleBuffStat.DASH_JUMP, null);
-        // 預設Buff
-        statups.put(MapleBuffStat.MONSTER_RIDING, null);
-        // 預設Buff
-        statups.put(MapleBuffStat.SPEED_INFUSION, null);
-        // 預設Buff
-        statups.put(MapleBuffStat.HOMING_BEACON, null);
-
-        // 飛天騎乘
+        /*
+         SOARING(82),
+         FREEZE(83),
+         LIGHTNING_CHARGE(84),
+         MIRROR_IMAGE(85),
+         OWL_SPIRIT(86),
+         ARAN_COMBO(92),
+         COMBO_DRAIN(93),
+         COMBO_BARRIER(94),
+         BODY_PRESSURE(95),
+         */
         if (chr.getBuffedValue(MapleBuffStat.SOARING) != null) {
             statups.put(MapleBuffStat.SOARING,
                     new Object[]{
@@ -930,15 +856,104 @@ public class MaplePacketCreator {
                         chr.getBuffSource(MapleBuffStat.SOARING)
                     });
         }
+        statups.put(MapleBuffStat.FREEZE, null);
+        statups.put(MapleBuffStat.LIGHTNING_CHARGE, null);
+        statups.put(MapleBuffStat.MIRROR_IMAGE, null);
+        statups.put(MapleBuffStat.OWL_SPIRIT, null);
+        statups.put(MapleBuffStat.ARAN_COMBO, null);
+        statups.put(MapleBuffStat.COMBO_DRAIN, null);
+        statups.put(MapleBuffStat.COMBO_BARRIER, null);
+        statups.put(MapleBuffStat.BODY_PRESSURE, null);
 
-        // ---------寫入玩家身上剩餘未處理的的Buff
-//        chr.getAllBuffs().forEach((mbsvh) -> {
-//            for (MapleBuffStat mb : mbsvh.statup.keySet()) {
-//                if (!statups.containsKey(mb)) {
-//                    statups.put(mb, null);
-//                }
-//            }
-//        });
+        //mplew.writeLong(fbuffmask);
+        if (chr.getBuffedValue(MapleBuffStat.DARKSIGHT) != null && !chr.isHidden()) {
+            statups.put(MapleBuffStat.DARKSIGHT, null);
+        }
+        if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
+            statups.put(MapleBuffStat.COMBO,
+                    new Object[]{
+                        (Byte) chr.getBuffedValue(MapleBuffStat.COMBO).byteValue()
+                    });
+        }
+        if (chr.getBuffedValue(MapleBuffStat.SHADOWPARTNER) != null) {
+            statups.put(MapleBuffStat.SHADOWPARTNER,
+                    null);
+        }
+        if (chr.getBuffedValue(MapleBuffStat.SOULARROW) != null) {
+            statups.put(MapleBuffStat.SOULARROW,
+                    null);
+        }
+        if (chr.getBuffedValue(MapleBuffStat.DIVINE_BODY) != null) {
+            statups.put(MapleBuffStat.DIVINE_BODY,
+                    null);
+        }
+        if (chr.getBuffedValue(MapleBuffStat.BERSERK_FURY) != null) {
+            statups.put(MapleBuffStat.BERSERK_FURY,
+                    null);
+        }
+        if (chr.getBuffedValue(MapleBuffStat.MORPH) != null) {
+            statups.put(MapleBuffStat.MORPH,
+                    new Object[]{
+                        chr.getBuffedValue(MapleBuffStat.MORPH)});
+        }
+        /*Map<MapleBuffStat, Object[]> statups = new LinkedHashMap();
+
+         // 鬥氣集中
+         if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
+         statups.put(MapleBuffStat.COMBO,
+         new Object[]{
+         chr.getBuffedValue(MapleBuffStat.COMBO).byteValue()
+         });
+         }
+
+         if (chr.getBuffedValue(MapleBuffStat.DARKSIGHT) != null && !chr.isHidden()) {
+         statups.put(MapleBuffStat.DARKSIGHT, null);
+         }
+
+         if (chr.getBuffedValue(MapleBuffStat.BERSERK_FURY) != null) {
+         statups.put(MapleBuffStat.BERSERK_FURY, null);
+         }
+
+         // 預設Buff
+         statups.put(MapleBuffStat.MORPH, null);
+         // 預設Buff
+         statups.put(MapleBuffStat.DIVINE_BODY, null);
+         // 預設Buff
+         statups.put(MapleBuffStat.SOULARROW, null);
+         // 預設Buff
+         statups.put(MapleBuffStat.SHADOWPARTNER, null);
+         // 預設Buff
+         statups.put(MapleBuffStat.ENERGY_CHARGE, null);
+         // 預設Buff
+         statups.put(MapleBuffStat.MIRROR_IMAGE, null);
+         // 預設Buff
+         statups.put(MapleBuffStat.DASH_SPEED, null);
+         // 預設Buff
+         statups.put(MapleBuffStat.DASH_JUMP, null);
+         // 預設Buff
+         statups.put(MapleBuffStat.MONSTER_RIDING, null);
+         // 預設Buff
+         statups.put(MapleBuffStat.SPEED_INFUSION, null);
+         // 預設Buff
+         statups.put(MapleBuffStat.HOMING_BEACON, null);
+
+         // 飛天騎乘
+         if (chr.getBuffedValue(MapleBuffStat.SOARING) != null) {
+         statups.put(MapleBuffStat.SOARING,
+         new Object[]{
+         chr.getBuffedValue(MapleBuffStat.SOARING).shortValue(),
+         chr.getBuffSource(MapleBuffStat.SOARING)
+         });
+         }
+
+         // ---------寫入玩家身上剩餘未處理的的Buff
+         //        chr.getAllBuffs().forEach((mbsvh) -> {
+         //            for (MapleBuffStat mb : mbsvh.statup.keySet()) {
+         //                if (!statups.containsKey(mb)) {
+         //                    statups.put(mb, null);
+         //                }
+         //            }
+         //        });*/
         writeBuffMask(mplew, statups.keySet());
 
         for (Object[] ary : statups.values()) {
@@ -956,7 +971,7 @@ public class MaplePacketCreator {
         }
 
         final int CHAR_MAGIC_SPAWN = Randomizer.nextInt();
-        //CHAR_MAGIC_SPAWN is really just tickCount
+         //CHAR_MAGIC_SPAWN is really just tickCount
         //this is here as it explains the 7 "dummy" buffstats which are placed into every character
         //these 7 buffstats are placed because they have irregular packet structure.
         //they ALL have writeShort(0); first, then a long as their variables, then server tick count
@@ -1011,9 +1026,9 @@ public class MaplePacketCreator {
         mplew.writeInt(CHAR_MAGIC_SPAWN); // 台版自己加的
         mplew.writeShort(chr.getJob());
         PacketHelper.addCharLook(mplew, chr, false);
-//        mplew.writeInt(0);//this is CHARID to follow
-//        mplew.writeInt(0); //probably charid following
-//        mplew.writeLong(Math.min(250, chr.getInventory(MapleInventoryType.CASH).countById(5110000))); //max is like 100. but w/e
+         //        mplew.writeInt(0);//this is CHARID to follow
+        //        mplew.writeInt(0); //probably charid following
+        //        mplew.writeLong(Math.min(250, chr.getInventory(MapleInventoryType.CASH).countById(5110000))); //max is like 100. but w/e
         mplew.writeInt(Math.min(250, chr.getInventory(MapleInventoryType.CASH).countById(5110000))); //max is like 100. but w/e
         mplew.writeInt(chr.getItemEffect());
         mplew.writeInt(0); // 台版自己加的
@@ -1046,6 +1061,7 @@ public class MaplePacketCreator {
         } else if (chr.getMapId() == 109080000 || chr.getMapId() == 109080010) {
             mplew.write(1/*chr.getCoconutTeam()*/); //is it 0/1 or is it 1/2?
         }
+
         return mplew.getPacket();
     }
 
