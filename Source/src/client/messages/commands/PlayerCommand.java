@@ -134,17 +134,42 @@ public class PlayerCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (!c.getPlayer().getCheatTracker().GMSpam(500000, 1) && (!c.getPlayer().isGM())) { // 5 minutes.
-                World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6,"『玩家』" + c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期:" + getDayOfWeek()).getBytes());
+                World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "『玩家』" + c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期" + getDayOfWeek()).getBytes());
             } else if (c.getPlayer().isGM()) {
-                World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6,"『管理員』" + c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期:" + getDayOfWeek()).getBytes());
+                World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "『管理員』" + c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期" + getDayOfWeek()).getBytes());
             } else {
-                c.getPlayer().dropMessage(6, "為了防止瘋狂報時引響其他玩家，所以1分鐘只能使用一次。");
+                c.getPlayer().dropMessage(6, "為了防止瘋狂報時引響其他玩家，所以5分鐘只能使用一次。");
             }
             return 1;
         }
 
-        private int getDayOfWeek() {
-            return Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        public static String getDayOfWeek() {
+            int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
+            String dd = String.valueOf(dayOfWeek);
+            switch (dayOfWeek) {
+                case 0:
+                    dd = "日";
+                    break;
+                case 1:
+                    dd = "一";
+                    break;
+                case 2:
+                    dd = "二";
+                    break;
+                case 3:
+                    dd = "三";
+                    break;
+                case 4:
+                    dd = "四";
+                    break;
+                case 5:
+                    dd = "五";
+                    break;
+                case 6:
+                    dd = "六";
+                    break;
+            }
+            return dd;
         }
     }
 
@@ -205,7 +230,7 @@ public class PlayerCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-            if ( MapConstants.isBlockFM(c.getPlayer().getMapId())) {
+            if (MapConstants.isBlockFM(c.getPlayer().getMapId())) {
                 c.getPlayer().dropMessage(5, "你不能在這裡使用指令.");
                 return 0;
             }
@@ -213,7 +238,7 @@ public class PlayerCommand {
                 c.getPlayer().dropMessage("你必須超過 10 等來使用此指令.");
                 return 0;
             }
-            if (! c.getPlayer().isAlive()){
+            if (!c.getPlayer().isAlive()) {
                 c.getPlayer().dropMessage("死亡後無法使用.");
                 return 0;
             }
