@@ -58,6 +58,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
+import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import server.MapleItemInformationProvider;
@@ -578,7 +579,7 @@ public final class MapleMap {
         if (monster.getId() == 8820014) { //pb sponge, kills pb(w) first before dying
             killMonster(8820000);
         } else if (monster.getId() == 9300166) { //ariant pq bomb
-            animation = 4; //or is it 3?
+            animation = 2; //or is it 3?
         }
         spawnedMonstersOnMap.decrementAndGet();
         removeMapObject(monster);
@@ -1395,6 +1396,7 @@ public final class MapleMap {
     public final void spawnRevives(final MapleMonster monster, final int oid) {
         monster.setMap(this);
         checkRemoveAfter(monster);
+
         monster.setLinkOid(oid);
         spawnAndAddRangedMapObject(monster, new DelayedPacketCreation() {
 
@@ -1411,7 +1413,14 @@ public final class MapleMap {
     public final void spawnMonster(final MapleMonster monster, final int spawnType) {
         monster.setMap(this);
         checkRemoveAfter(monster);
-
+        if (monster.getId() == 9300166) { //競技場沙漠炸彈修復 可用來辦活動!
+            MapTimer.getInstance().schedule(new Runnable() {
+                @Override
+                public void run() {
+                    broadcastMessage(MobPacket.killMonster(monster.getObjectId(), 2));
+                }
+            }, new Random().nextInt(4500 + 500));
+        }
         spawnAndAddRangedMapObject(monster, new DelayedPacketCreation() {
 
             public final void sendPackets(MapleClient c) {
