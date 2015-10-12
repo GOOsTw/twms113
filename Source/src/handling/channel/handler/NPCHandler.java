@@ -31,7 +31,7 @@ import tools.data.output.MaplePacketLittleEndianWriter;
 public class NPCHandler {
 
     public static final void handleNPCAnimation(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-        
+
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.NPC_ACTION.getValue());
         final int length = (int) slea.available();
@@ -133,8 +133,12 @@ public class NPCHandler {
             }
             case 1: { // Start Quest
                 final int npc = slea.readInt();
-                q.start(chr, npc);
-                break;
+                if (slea.available() >= 4) {
+                    q.forceStart(chr, npc, null);
+                } else {
+                    q.start(chr, npc);
+                    break;
+                }
             }
             case 2: { // Complete Quest
                 final int npc = slea.readInt();

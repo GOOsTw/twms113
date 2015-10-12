@@ -115,52 +115,10 @@ function action(mode, type, selection) {
 				cm.forceCompleteQuest(29507);
 				cm.sendOk("完成任務。");
 			}
-			if (cm.getQuestStatus(2000) == 2 && cm.getQuestStatus(2001) == 0) {
-				if(cm.haveItem(4000022, 100) && cm.haveItem(4003000,30) && cm.haveItem(4003001,30) && cm.haveItem(4001004,1)) {
-				cm.sendNext("感謝您完成此任務這是給你的獎勵。");
-				var rand = Math.floor(Math.random() * 6);
-				if (rand == 0) {
-					item = 2043002;
-				} else if (rand == 1) {
-					item = 2043102;
-				} else if (rand == 2) {
-					item = 2043202;
-				} else if (rand == 3) {
-					item = 2044002;
-				} else if (rand == 4) {
-					item = 2044102;
-				} else if (rand == 5) {
-					item = 2044202;
-				} else if (rand == 6) {
-					item = 2044402;
-				}
-				cm.removeAll(4000022);
-				cm.removeAll(4003000);
-				cm.removeAll(4003001);
-				cm.removeAll(4001004);
-				cm.gainItem(item, 1);
-				cm.gainExp(10000);
-				cm.getPlayer().addFame(2);
-				cm.gainMeso(15000);
-				cm.forceCompleteQuest(2001);
-			} else {
-				cm.sendOk("貌似沒有需要的材料，我不能幫您完成酋長蓋房子任務");
-				cm.dispose();
-				}
-			}
 			if (cm.getQuestStatus(3083) == 0) {
 				cm.forceCompleteQuest(3083);
-				cm.sendOk("完成任務。");
-				cm.dispose();
-			} else if (cm.getQuestStatus(8510) == 0) {
 				cm.forceCompleteQuest(8510);
-				cm.sendOk("完成任務。");
-				cm.dispose();
-			} else if (cm.getQuestStatus(20527) == 0) {
 				cm.forceCompleteQuest(20527);
-				cm.sendOk("完成任務。");
-				cm.dispose();
-			} else if (cm.getQuestStatus(50246) == 0) {	
 				cm.forceCompleteQuest(50246);
 				cm.sendOk("完成任務。");
 				cm.dispose();
