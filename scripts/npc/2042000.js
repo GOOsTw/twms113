@@ -24,6 +24,15 @@ function action(mode, type, selection) {
             cm.sendSimple("請組隊再來找我。\r\n#L100#楓葉黃金標誌兌換#l");
         } else {
             if (cm.isLeader()) {
+                if ((cm.getParty() != null && 1 < cm.getParty().getMembers().size() && cm.getParty().getMembers().size() < (selection == 4 || selection == 5 || selection == 8 ? 4 : 3)) || cm.getPlayer().isGM()) {
+                    if (checkLevelsAndMap(30, 50) == 1) {
+                        cm.sendOk("隊伍裡有人等級不符合。");
+                        cm.dispose();
+                    } else if (checkLevelsAndMap(30, 50) == 2) {
+                        cm.sendOk("在地圖上找不到您的隊友。");
+                        cm.dispose();
+                    }
+				}
 		if (found) {
                     cm.sendSimple(selStr);
 		} else {

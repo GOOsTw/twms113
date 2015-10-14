@@ -1,4 +1,4 @@
-/* 	Kelvin
+﻿/* 	Kelvin
 	SingaPore VIP Face changer
 */
 var status = -1;
@@ -15,7 +15,7 @@ function action(mode, type, selection) {
     }
 
     if (status == 0) {
-	cm.sendSimple("Let's see...I can totally transform your face into something new. Don't you want to try it? For #b#t5152038##k, you can get the face of your liking. Take your time in choosing the face of your preference...\r\n\#L2#Let me get my dream face!#l");
+	cm.sendSimple("使用#b#t5152038##k的話，你就能指定更換臉型喔...你想要使用 #b#t5152038##k來整形嘛？ \r\n\#L2#來吧！！#l");
     } else if (selection == 2) {
 	facenew = Array();
 	if (cm.getChar().getGender() == 0) {
@@ -28,13 +28,13 @@ function action(mode, type, selection) {
 		facenew.push(fface[i] + cm.getChar().getFace() % 1000 - (cm.getChar().getFace() % 100));
 	    }
 	}
-	cm.sendStyle("Let's see... I can totally transform your face into something new. Don't you want to try it? For #b#t5152038##k, you can get the face of your liking. Take your time in choosing the face of your preference...", facenew);
+	cm.sendStyle("選擇一個喜歡的", facenew);
 
     } else if (status == 2){
 	    if (cm.setAvatar(5152038, facenew[selection]) == 1){
-	    cm.sendOk("Enjoy your new and improved face!");
+	    cm.sendOk("享受你新的造型吧！");
 	} else {
-	    cm.sendOk("Hmm ... it looks like you don't have the coupon specifically for this place. Sorry to say this, but without the coupon, there's no plastic surgery for you...");
+	    cm.sendOk("由於沒有#b#t5152038##k 所以我不能幫忙。");
 	}
 	cm.safeDispose();
     }

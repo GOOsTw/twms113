@@ -5,7 +5,7 @@
 */
 
 function start() {
-    if(cm.isQuestActive(2166)) {
+    if(cm.getQuestStatus(2166) == 1) {
         cm.sendNext("這是一個美麗的，閃亮的岩石。我能感覺到它周圍的神秘力量。");
 		cm.forceCompleteQuest(2166);
     } else

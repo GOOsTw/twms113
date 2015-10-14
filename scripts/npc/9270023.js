@@ -24,9 +24,7 @@ function action(mode, type, selection) {
     else
 	status--;
     if (status == 0) {
-	cm.sendSimple("使用一般的整形會員卡的話，你只能隨機更換臉型喔...你想要使用 #b#t5152037##k來整形嘛？ 不過別忘記喔，這是是隨機的\r\n\#L2#可以嘛!#l");
-    } else if (status == 1) {
-	cm.dispose();
+	cm.sendSimple("使用#b#t5152037##k的話，你只能隨機更換臉型喔...你想要使用 #b#t5152037##k來整形嘛？ 不過別忘記喔，這是是隨機的\r\n\#L2#來吧！！#l");
     } else if (selection == 2) {
 	facenew = Array();
 	if (cm.getChar().getGender() == 0) {
@@ -44,7 +42,7 @@ function action(mode, type, selection) {
 	if (cm.setAvatar(5152037, facenew[Math.floor(Math.random() * facenew.length)]) == 1){
 	    cm.sendOk("享受你新的造型吧！");
 	} else {
-	    cm.sendOk("嗯 ... 你好像沒有這裡的整形會員卡欸？很抱歉，如果你沒有會員卡，我不能夠為你服務喔～");
+	    cm.sendOk("嗯 ... 你好像沒有這裡的整形會員卡欸？很抱歉，如果你沒有會員卡，我不能夠為你服務喔！");
 	}
     }
 }	
