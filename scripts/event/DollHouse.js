@@ -47,7 +47,7 @@ function playerDisconnected(eim, player) {
 }
 
 function clear(eim) {
-    var map = cm.getMap(221024400);
+    var map = eim.getChannelServer().getMapFactory().getMap(221024400);
     em.setProperty("state", "0");
     var player = eim.getPlayers().get(0);
     player.changeMap(map, map.getPortal(0));
