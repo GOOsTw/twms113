@@ -106,10 +106,10 @@ function start(eim) {
     eim.startEventTimer(10 * 60 * 1000);
     var blueP = getParty(eim, "blue");
     if ( blueP != null )
-        warp(eim.getMapInstance(fieldMap), "blue00");
+        blueP.warp(eim.getMapInstance(fieldMap), "blue00");
     var redP = getParty(eim, "red");
     if( redP != null )
-        warp(eim.getMapInstance(fieldMap), "red00");
+        redP.warp(eim.getMapInstance(fieldMap), "red00");
 }
 
 function monsterKilled(eim, chr, cp) {
