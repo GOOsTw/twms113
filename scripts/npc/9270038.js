@@ -47,7 +47,7 @@ function action(mode, type, selection) {
 	  } else if(!cm.haveItem(4031732)) {
 		cm.sendNext("請先購買飛機票謝謝~");
 		cm.dispose();
-	} else if (em.getProperty("entry").equals("true")) {
+	} else if (em.getProperty("entry") != null && em.getProperty("entry").equals("true")) {
 		cm.sendYesNo("是否要搭飛機??");
 		} else if(em.getProperty("entry").equals("false") && em.getProperty("docked").equals("true")) {
 		cm.sendNext("這架飛機正準備起飛。我很抱歉，但你必須得在接下來的旅程。乘坐時間表可通過在迎來售票展台");
