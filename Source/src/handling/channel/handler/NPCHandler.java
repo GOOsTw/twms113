@@ -133,12 +133,11 @@ public class NPCHandler {
             }
             case 1: { // Start Quest
                 final int npc = slea.readInt();
+                    q.start(chr, npc);
                 if (slea.available() >= 4) {
                     q.forceStart(chr, npc, null);
-                } else {
-                    q.start(chr, npc);
-                    break;
                 }
+                break;
             }
             case 2: { // Complete Quest
                 final int npc = slea.readInt();
@@ -163,7 +162,7 @@ public class NPCHandler {
                 if (GameConstants.canForfeit(q.getId())) {
                     q.forfeit(chr);
                 } else {
-                    chr.dropMessage(1, "You may not forfeit this quest.");
+                    chr.dropMessage(1, "你不能放棄這個任務。");
                 }
                 break;
             }

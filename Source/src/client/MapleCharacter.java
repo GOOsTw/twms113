@@ -133,7 +133,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private static final long serialVersionUID = 845748950829L;
     private String name, chalktext, BlessOfFairy_Origin, charmessage, prefix;
     private long lastCombo, lastfametime, keydown_skill;
-    private byte dojoRecord, gmLevel, gender, initialSpawnPoint, skinColor, guildrank = 5, allianceRank = 5, world, fairyExp = 10, numClones, subcategory; // Make this a quest record, TODO : Transfer it somehow with the current data
+    private byte dojoRecord, gmLevel, gender, initialSpawnPoint, skinColor, guildrank = 5, allianceRank = 5, world, fairyExp = 10, numClones, subcategory, fairyHour = 1; // Make this a quest record, TODO : Transfer it somehow with the current data
     private short level, mulung_energy, combo, availableCP, totalCP, fame, hpmpApUsed, job, remainingAp;
     private int accountid, id, meso, exp, hair, face, mapid, bookCover, dojo,
             guildid = 0, fallcounter = 0, maplepoints, acash, chair, itemEffect, points, vpoints,
@@ -4864,7 +4864,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         cancelFairySchedule(exp);
         if (fairyExp < 30 && stats.equippedFairy) {
             if (equipped) {
-                dropMessage(5, "The Fairy Pendant's experience points will increase to " + (fairyExp + 10) + "% after one hour.");
+                dropMessage(5, "您裝備了精靈吊墜在1小時後經驗獲取將增加到 " + (fairyExp + 10) + "%");
             }
             fairySchedule = EtcTimer.getInstance().schedule(new Runnable() {
 
@@ -4872,7 +4872,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 public void run() {
                     if (fairyExp < 30 && stats.equippedFairy) {
                         fairyExp += 10;
-                        dropMessage(5, "The Fairy Pendant's EXP was boosted to " + fairyExp + "%.");
+                        fairyHour += 1;
+                        dropMessage(5, "因裝備精靈墜飾經過了"+ fairyHour +"小時，打怪時可以額外獲得紅利經驗值" + fairyExp + "%.");
                         startFairySchedule(false, true);
                     } else {
                         cancelFairySchedule(!stats.equippedFairy);
@@ -4891,6 +4892,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
         if (exp) {
             this.fairyExp = 10;
+            this.fairyHour = 1;
         }
     }
 
