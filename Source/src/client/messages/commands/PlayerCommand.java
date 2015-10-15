@@ -133,12 +133,12 @@ public class PlayerCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-            if (!c.getPlayer().getCheatTracker().GMSpam(500000, 1) && (!c.getPlayer().isGM())) { // 5 minutes.
+            if (!c.getPlayer().getCheatTracker().GMSpam(100000, 15) && (!c.getPlayer().isGM())) { // 5 minutes.
                 World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "『玩家』" + c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期" + getDayOfWeek()).getBytes());
             } else if (c.getPlayer().isGM()) {
                 World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "『管理員』" + c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期" + getDayOfWeek()).getBytes());
             } else {
-                c.getPlayer().dropMessage(6, "為了防止瘋狂報時引響其他玩家，所以5分鐘只能使用一次。");
+                c.getPlayer().dropMessage(6, "為了防止瘋狂報時引響其他玩家，所以15分鐘只能使用一次。");
             }
             return 1;
         }
