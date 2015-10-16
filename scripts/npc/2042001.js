@@ -15,19 +15,23 @@ function action(mode, type, selection) {
     if (status == 0) {
         request = cm.getNextCarnivalRequest();
         if (request != null) {
-            cm.sendYesNo(request.getChallengeInfo() + "\r\n你要不要和他們對戰?");
+            cm.sendYesNo(request.getChallengeInfo() + "\r\n是否想跟他們挑戰??");
         } else {
             cm.dispose();
         }
     } else if (status == 1) {
+		var pt = cm.getPlayer().getParty();
+		if (pt.getMembers().size() < 2) {
+			cm.sendOk("需要 2 人以上才可以擂台！！");
+			cm.dispose();
+		} else {
         try {
             cm.getChar().getEventInstance().registerCarnivalParty(request.getChallenger(), request.getChallenger().getMap(), 1);
             cm.dispose();
         } catch (e) {
-            cm.sendOk("The challenge is no longer valid.");
+            cm.sendOk("目前挑戰不再是有效的。");
         }
         status = -1;
     }
 }
-
-
+}

@@ -219,6 +219,23 @@ public class EventInstanceManager {
         return false;
     }
 
+    public boolean check() {
+        for (MapleCharacter chr : getPlayers()) {
+            if (!(chr.getLevel() >= 30 && chr.getLevel() <= 50)) {
+                return false;
+            }
+        }
+        return true;
+    }
+      public boolean check1() {
+        for (MapleCharacter chr : getPlayers()) {
+            if (!(chr.getLevel() >= 51 && chr.getLevel() <= 120)) {
+                return false;
+            }
+        }
+        return true;
+    }  
+
     public final boolean disposeIfPlayerBelow(final byte size, final int towarp) {
         if (disposed) {
             return true;
@@ -261,7 +278,7 @@ public class EventInstanceManager {
             }
         }
     }
-    
+
     public final void saveNX(final int points) {
         if (disposed) {
             return;
@@ -270,7 +287,7 @@ public class EventInstanceManager {
             chr.modifyCSPoints(1, points, true);
         }
     }
-    
+
     public List<MapleCharacter> getPlayers() {
         if (disposed) {
             return Collections.emptyList();
@@ -714,7 +731,7 @@ public class EventInstanceManager {
         if (party == null) {
             return;
         }
-        
+
         for (MaplePartyCharacter pc : party.getMembers()) {
             final MapleCharacter c = map.getCharacterById(pc.getId());
             if (c != null) {
@@ -723,11 +740,12 @@ public class EventInstanceManager {
                 c.resetCP();
             }
         }
-        
+
         final MapleCarnivalParty carnivalParty = new MapleCarnivalParty(leader, characters, team);
-        for(MapleCharacter chr : characters)
+        for (MapleCharacter chr : characters) {
             chr.setCarnivalParty(carnivalParty);
-        
+        }
+
         try {
             em.getIv().invokeFunction("registerCarnivalParty", this, carnivalParty);
         } catch (ScriptException ex) {

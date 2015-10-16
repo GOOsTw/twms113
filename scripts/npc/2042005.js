@@ -24,14 +24,17 @@ function action(mode, type, selection) {
             cm.sendSimple("請組隊再來找我。\r\n#L100#楓葉黃金標誌兌換#l");
         } else {
             if (cm.isLeader()) {
+				var pt = cm.getPlayer().getParty();
+				if (pt.getMembers().size() < 2) {
                 if ((cm.getParty() != null && 1 < cm.getParty().getMembers().size() && cm.getParty().getMembers().size() < (selection == 4 || selection == 5 || selection == 8 ? 4 : 3)) || cm.getPlayer().isGM()) {
-                    if (checkLevelsAndMap(50, 200) == 1) {
+                    if (checkLevelsAndMap(51, 120) == 1) {
                         cm.sendOk("隊伍裡有人等級不符合。");
                         cm.dispose();
-                    } else if (checkLevelsAndMap(50, 200) == 2) {
+                    } else if (checkLevelsAndMap(51, 120) == 2) {
                         cm.sendOk("在地圖上找不到您的隊友。");
                         cm.dispose();
                     }
+				}
 				}
 		if (found) {
                     cm.sendSimple(selStr);
@@ -50,10 +53,10 @@ function action(mode, type, selection) {
             if (cm.getEventManager("cpq2").getInstance("cpq"+mapid) == null) {
                 var party = cm.getParty().getMembers();
                 if (cm.getParty() != null && party.size() == 1) {
-                    if (checkLevelsAndMap(50, 200) == 3) {
+                    if (checkLevelsAndMap(51, 120) == 3) {
                         cm.sendOk("隊伍裡有人等級不符合。");
                         cm.dispose();
-                    } else if (checkLevelsAndMap(50, 200) == 2) {
+                    } else if (checkLevelsAndMap(51, 120) == 2) {
                         cm.sendOk("在地圖上找不到您的隊友。");
                         cm.dispose();
                     } else {
@@ -64,13 +67,18 @@ function action(mode, type, selection) {
                     cm.sendOk("隊伍裡人數只能3個人。");
                 }
             } else if (cm.getParty() != null && cm.getEventManager("cpq2").getInstance("cpq"+mapid).getPlayerCount() == cm.getParty().getMembers().size()) {
-                if (checkLevelsAndMap(50, 200) == 1) {
+                if (checkLevelsAndMap(51, 120) == 1) {
                     cm.sendOk("隊伍裡有人等級不符合。");
                     cm.dispose();
-                } else if (checkLevelsAndMap(50, 200) == 2) {
+                } else if (checkLevelsAndMap(51, 120) == 2) {
                     cm.sendOk("在地圖上找不到您的隊友。");
                     cm.dispose();
                 } else {
+					var pt = cm.getPlayer().getParty();
+					if (pt.getMembers().size() < 2) {
+						cm.sendOk("需要 2 人以上才可以擂台！！");
+						cm.dispose();
+					} else {
                     //Send challenge packet here
                     var owner = cm.getChannelServer().getPlayerStorage().getCharacterByName(cm.getEventManager("cpq2").getInstance("cpq"+mapid).getPlayers().get(0).getParty().getLeader().getName());
                     owner.addCarnivalRequest(cm.getCarnivalChallenge(cm.getChar()));
@@ -80,8 +88,9 @@ function action(mode, type, selection) {
                     cm.sendOk("您的挑戰已經發送。");
                     cm.dispose();
                 }
+				}
             } else {
-                cm.sendOk("怪物擂台2必須是雙方隊伍等級相符合。");
+                cm.sendOk("隊伍人數不相符。");
                 cm.dispose();
             }
 	} else {

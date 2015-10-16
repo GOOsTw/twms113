@@ -20,6 +20,11 @@ function action(mode, type, selection) {
             cm.dispose();
         }
     } else if (status == 1) {
+		var pt = cm.getPlayer().getParty();
+		if (pt.getMembers().size() < 2) {
+			cm.sendOk("需要 2 人以上才可以擂台！！");
+			cm.dispose();
+		} else {
         try {
             cm.getChar().getEventInstance().registerCarnivalParty(request.getChallenger(), request.getChallenger().getMap(), 1);
             cm.dispose();
@@ -29,5 +34,5 @@ function action(mode, type, selection) {
         status = -1;
     }
 }
-
+}
 

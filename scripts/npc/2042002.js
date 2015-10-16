@@ -5,6 +5,7 @@
 var status = -1;
 var rank = "D";
 var exp = 0;
+var select = 0;
 
 function start() {
     if (cm.getCarnivalParty() != null) {
@@ -29,17 +30,16 @@ function action(mode, type, selection) {
         switch (selection) {
             case 0: {
                 var level = cm.getPlayerStat("LVL");
-                if (level <= 30 || level <= 50) {
-		    cm.saveLocation("MONSTER_CARNIVAL");
-                    cm.warp(980000000, "st00");
-		    cm.dispose();
-                } else if (level >= 50 || level <= 120) {
-		    cm.saveLocation("MONSTER_CARNIVAL");
+                if (level >= 30 && level <= 50) {
+					cm.saveLocation("MONSTER_CARNIVAL");
+					cm.warp(980000000, "st00");
+                } else if (level >= 51 && level <= 120) {
+					cm.saveLocation("MONSTER_CARNIVAL");
                     cm.warp(980030000, "st00");
-		    cm.dispose();
+					cm.dispose();
                 } else {
-		    cm.sendOk("你的等級不夠或是超過");
-		    cm.dispose();
+					cm.sendOk("你的等級是:"+ level +" 目前沒有任何擂台可以參加。");
+					cm.dispose();
                 }
                 cm.dispose();
             }

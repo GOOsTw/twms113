@@ -43,10 +43,12 @@ function registerCarnivalParty(eim, carnivalParty) {
         // display message about recieving invites for next 3 minutes;
 	//eim.restartEventTimer(180000);
         eim.schedule("end", 3 * 60 * 1000); // 3 minutes
+		eim.broadcastPlayerMsg(5, "接下來的三分鐘您的隊伍可以找尋其他人挑戰。");
     } else {
         eim.setProperty("blue", carnivalParty.getLeader().getId() + "");
 	//eim.restartEventTimer(10000);
-        eim.schedule("start", 10000);
+		eim.schedule("check", 1000);
+		eim.broadcastPlayerMsg(5, "正在檢測是否有偷渡者...");
     }
 }
 
@@ -110,6 +112,18 @@ function start(eim) {
     eim.startEventTimer(10 * 60 * 1000);
     getParty(eim, "blue").warp(eim.getMapInstance(fieldMap), "blue00");
     getParty(eim, "red").warp(eim.getMapInstance(fieldMap), "red00");
+}
+
+function check(eim) {
+	var ck = eim.check1();
+	if(ck) {
+		eim.broadcastPlayerMsg(5, "檢測..目前無異常....!");
+		eim.schedule("start", 10000);
+		eim.broadcastPlayerMsg(5, "10秒後將開戰！！");
+	} else {
+		eim.broadcastPlayerMsg(5, "檢測..發現異常!! 即將傳回去");
+		disposeAll(eim);
+	}
 }
 
 function monsterKilled(eim, chr, cp) {
