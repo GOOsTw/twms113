@@ -21,7 +21,13 @@ function action(mode, type, selection) {
         }
     } else if (status == 1) {
 		var pt = cm.getPlayer().getParty();
-		if (pt.getMembers().size() < 2) {
+		if (checkLevelsAndMap(51, 120) == 1) {
+           cm.sendOk("隊伍裡有人等級不符合。");
+           cm.dispose();
+        } else if (checkLevelsAndMap(51, 120) == 2) {
+           cm.sendOk("在地圖上找不到您的隊友。");
+           cm.dispose();
+		} else if (pt.getMembers().size() < 2) {
 			cm.sendOk("需要 2 人以上才可以擂台！！");
 			cm.dispose();
 		} else {
@@ -36,3 +42,21 @@ function action(mode, type, selection) {
 }
 }
 
+function checkLevelsAndMap(lowestlevel, highestlevel) {
+    var party = cm.getParty().getMembers();
+    var mapId = cm.getMapId();
+    var valid = 0;
+    var inMap = 0;
+
+    var it = party.iterator();
+    while (it.hasNext()) {
+        var cPlayer = it.next();
+        if (!(cPlayer.getLevel() >= lowestlevel && cPlayer.getLevel() <= highestlevel) && cPlayer.getJobId() != 900) {
+            valid = 1;
+        }
+        if (cPlayer.getMapid() != mapId) {
+            valid = 2;
+        }
+    }
+    return valid;
+}
