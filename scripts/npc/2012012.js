@@ -5,4 +5,6 @@
     } else {
         cm.sendNext("請問有什麼事情嗎??");
 		cm.dispose();
+    }   
 }
+
