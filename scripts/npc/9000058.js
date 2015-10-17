@@ -117,6 +117,8 @@ function action(mode, type, selection) {
 			}
 			if (cm.getQuestStatus(3083) == 0) {
 				cm.forceCompleteQuest(3083);
+				cm.forceCompleteQuest(8248);
+				cm.forceCompleteQuest(8249);
 				cm.forceCompleteQuest(8510);
 				cm.forceCompleteQuest(20527);
 				cm.forceCompleteQuest(50246);
