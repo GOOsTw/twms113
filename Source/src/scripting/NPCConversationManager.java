@@ -209,10 +209,9 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         }
         c.sendPacket(MaplePacketCreator.getNPCTalk(npc, (byte) 0, text, "01 01", type));
         lastMsg = 0;
-        
+
     }
 
-    
     public void sendOk(String text) {
         if (lastMsg > -1) {
             return;
@@ -1274,13 +1273,14 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void setBossLog(String bossid) {
         getPlayer().setBossLog(bossid);
     }
-    
+
     public void setPartyBossLog(String bossid) {
-        MapleParty party =  getPlayer().getParty();
-        for( MaplePartyCharacter pc : party.getMembers()) {
+        MapleParty party = getPlayer().getParty();
+        for (MaplePartyCharacter pc : party.getMembers()) {
             MapleCharacter chr = World.getStorage(this.getChannelNumber()).getCharacterById(pc.getId());
-            if( chr != null )
+            if (chr != null) {
                 chr.setBossLog(bossid);
+            }
         }
     }
 
@@ -1367,7 +1367,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
                     setQuestRecord(getPlayer(), 160001, "2");
                     setQuestRecord(chr, 160001, "2");
                     sendNPCText(getPlayer().getName() + " 和 " + chr.getName() + "， 我希望你們兩個能在此時此刻永遠愛著對方！", 9201002);
-                    getMap().startExtendedMapEffect("那麼現在請新郎親吻 " + getPlayer().getName() + "！", 5120006);
+                    getMap().startExtendedMapEffect("那麼現在請新娘親吻 " + getPlayer().getName() + "！", 5120006);
                     if (chr.getGuildId() > 0) {
                         World.Guild.guildPacket(chr.getGuildId(), MaplePacketCreator.sendMarriage(false, chr.getName()));
                     }
