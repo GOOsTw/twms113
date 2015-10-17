@@ -115,7 +115,6 @@ function action(mode, type, selection) {
 				cm.forceCompleteQuest(29507);
 				cm.sendOk("完成任務。");
 			}
-			if (cm.getQuestStatus(3083) == 0) {
 				cm.forceCompleteQuest(3083);
 				cm.forceCompleteQuest(8248);
 				cm.forceCompleteQuest(8249);
@@ -124,10 +123,6 @@ function action(mode, type, selection) {
 				cm.forceCompleteQuest(50246);
 				cm.sendOk("完成任務。");
 				cm.dispose();
-			} else {
-				cm.sendOk("貌似沒有可以完成的任務....");
-				cm.dispose();
 				}
 			}
         }
-    }
