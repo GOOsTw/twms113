@@ -1,4 +1,6 @@
-﻿function start() {
+﻿var status = -1;
+
+function action(mode, type, selection) {
 	if (cm.getQuestStatus(3004) == 1) {
         cm.sendNext("完成任務。");
 		cm.forceCompleteQuest(3004);
