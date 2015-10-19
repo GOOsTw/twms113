@@ -31,11 +31,18 @@ import javax.script.ScriptException;
 
 import client.MapleCharacter;
 import client.MapleQuestStatus;
+import database.DatabaseConnection;
 import handling.channel.ChannelServer;
 import handling.world.MapleParty;
 import handling.world.MaplePartyCharacter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import server.MapleCarnivalParty;
 import server.MapleItemInformationProvider;
 import server.MapleSquad;
@@ -227,14 +234,15 @@ public class EventInstanceManager {
         }
         return true;
     }
-      public boolean check1() {
+
+    public boolean check1() {
         for (MapleCharacter chr : getPlayers()) {
             if (!(chr.getLevel() >= 51 && chr.getLevel() <= 120)) {
                 return false;
             }
         }
         return true;
-    }  
+    }
 
     public final boolean disposeIfPlayerBelow(final byte size, final int towarp) {
         if (disposed) {

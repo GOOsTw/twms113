@@ -6,6 +6,7 @@ import client.MapleClient;
 import client.MapleStat;
 import client.inventory.MapleInventoryType;
 import constants.MapConstants;
+import handling.channel.ChannelServer;
 import scripting.NPCConversationManager;
 import scripting.NPCScriptManager;
 import tools.MaplePacketCreator;
@@ -184,6 +185,18 @@ public class PlayerCommand {
         }
     }
 
+    public static class 在線人數 extends CommandExecute {
+
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            int total = 0;
+            int curConnected = c.getChannelServer().getConnectedClients();
+            total += curConnected;
+            c.getPlayer().dropMessage(6, new StringBuilder().append("當前伺服器總計線上人數: ").append(total).toString());
+            return 1;
+        }
+    }
+
     public static class ea extends 查看 {
     }
 
@@ -223,39 +236,38 @@ public class PlayerCommand {
         }
     }
 
-   /* public static class fm extends 自由 {
-    }
+    /* public static class fm extends 自由 {
+     }
 
-    public static class 自由 extends CommandExecute {
+     public static class 自由 extends CommandExecute {
 
-        @Override
-        public int execute(MapleClient c, String[] splitted) {
-            if (MapConstants.isBlockFM(c.getPlayer().getMapId())) {
-                c.getPlayer().dropMessage(5, "你不能在這裡使用指令.");
-                return 0;
-            }
-            if (c.getPlayer().getLevel() < 10 && c.getPlayer().getJob() != 200) {
-                c.getPlayer().dropMessage("你必須超過 10 等來使用此指令.");
-                return 0;
-            }
-            if (!c.getPlayer().isAlive()) {
-                c.getPlayer().dropMessage("死亡後無法使用.");
-                return 0;
-            }
-            if (c.getPlayer().haveItem(2030000)) { //是否有回家卷軸
-                MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, 2030000, 1, true, false);
-                c.getPlayer().saveLocation(SavedLocationType.FREE_MARKET);
-                MapleMap map = c.getChannelServer().getMapFactory().getMap(910000000);
-                c.getPlayer().changeMap(map, map.getPortal(0));
-                c.getPlayer().dropMessage(5, "回到自由了");
-                return 1;
-            } else {
-                c.getPlayer().dropMessage(5, "沒有回家卷軸,所以不能使用回自由指令!");
-                return 0;
-            }
-        }
-    }*/
-
+     @Override
+     public int execute(MapleClient c, String[] splitted) {
+     if (MapConstants.isBlockFM(c.getPlayer().getMapId())) {
+     c.getPlayer().dropMessage(5, "你不能在這裡使用指令.");
+     return 0;
+     }
+     if (c.getPlayer().getLevel() < 10 && c.getPlayer().getJob() != 200) {
+     c.getPlayer().dropMessage("你必須超過 10 等來使用此指令.");
+     return 0;
+     }
+     if (!c.getPlayer().isAlive()) {
+     c.getPlayer().dropMessage("死亡後無法使用.");
+     return 0;
+     }
+     if (c.getPlayer().haveItem(2030000)) { //是否有回家卷軸
+     MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, 2030000, 1, true, false);
+     c.getPlayer().saveLocation(SavedLocationType.FREE_MARKET);
+     MapleMap map = c.getChannelServer().getMapFactory().getMap(910000000);
+     c.getPlayer().changeMap(map, map.getPortal(0));
+     c.getPlayer().dropMessage(5, "回到自由了");
+     return 1;
+     } else {
+     c.getPlayer().dropMessage(5, "沒有回家卷軸,所以不能使用回自由指令!");
+     return 0;
+     }
+     }
+     }*/
     public static class car extends 卡圖 {
     }
 
@@ -306,7 +318,7 @@ public class PlayerCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
-            c.getPlayer().dropNPC("\t\t #i3994014##i3994018##i3994070##i3994061##i3994005##i3991038##i3991004#\r\t\t\t\t\t\t #i3994078##i3991040#\t\t\r\n\t\t\t #i3991018##i3994083##i3994072##i3994061##i4001126#\r\n\t\t#fMob/0100101.img/move/1##b 親愛的： #h \r\n #fMob/0100101.img/move/1##k\r\r\n\t\t#fMob/0130101.img/move/1##g[以下是SyncMs 玩家指令]#k#fMob/0130101.img/move/1#\r\n\t  #r▇▇▆▅▄▃▂#d萬用指令區#r▂▃▄▅▆▇▇\r\n\t\t#b@查看/@ea#k - #r<解除異常+查看當前狀態>#k\r\n\t\t#b@怪物/@mob#k - #r<查看身邊怪物訊息>#k\r\n\t\t#b@存檔/@save#k - #r<存檔>#k\r\n\t\t#b@卡圖/@car#k - #r<卡圖修復>#k\r\n\t\t#b@CGM <訊息>#k - #r<傳送訊息給GM>#k\r\n\t\t#b@expfix#k - #r<修復經驗假死>#k\r\n\t\t#b@time#k - #r<報時系統>#k\r\n\t  #g▇▇▆▅▄▃▂#dNPＣ指令區#g▂▃▄▅▆▇▇\r\n\t\t#b@丟裝/@DropCash#k - #r<丟棄點裝>#k\r\n\t\t#b@萬能/@npc#k - #r<工具箱>#k\r\n\t\t#b@猜拳/@pk#k - #r<小遊戲>#k\r\n\t\t#b@event#k - #r<參加活動>#k\r\n\t\t#b@bspq#k - #r<BOSSPQ兌換NPC>#k");
+            c.getPlayer().dropNPC("\t\t #i3994014##i3994018##i3994070##i3994061##i3994005##i3991038##i3991004#\r\t\t\t\t\t\t #i3994078##i3991040#\t\t\r\n\t\t\t #i3991018##i3994083##i3994072##i3994061##i4001126#\r\n\t\t#fMob/0100101.img/move/1##b 親愛的： #h \r\n #fMob/0100101.img/move/1##k\r\r\n\t\t#fMob/0130101.img/move/1##g[以下是SyncMs 玩家指令]#k#fMob/0130101.img/move/1#\r\n\t  #r▇▇▆▅▄▃▂#d萬用指令區#r▂▃▄▅▆▇▇\r\n\t\t#b@查看/@ea#k - #r<解除異常+查看當前狀態>#k\r\n\t\t#b@怪物/@mob#k - #r<查看身邊怪物訊息>#k\r\n\t\t#b@存檔/@save#k - #r<存檔>#k\r\n\t\t#b@卡圖/@car#k - #r<卡圖修復>#k\r\n\t\t#b@CGM <訊息>#k - #r<傳送訊息給GM>#k\r\n\t\t#b@expfix#k - #r<修復經驗假死>#k\r\n\t\t#b@time#k - #r<報時系統>#k\r\n\t\t#b@在線人數#k - #r<查詢當前伺服器人數>#k\r\n\t  #g▇▇▆▅▄▃▂#dNPＣ指令區#g▂▃▄▅▆▇▇\r\n\t\t#b@丟裝/@DropCash#k - #r<丟棄點裝>#k\r\n\t\t#b@萬能/@npc#k - #r<工具箱>#k\r\n\t\t#b@猜拳/@pk#k - #r<小遊戲>#k\r\n\t\t#b@event#k - #r<參加活動>#k\r\n\t\t#b@bspq#k - #r<BOSSPQ兌換NPC>#k");
             return 1;
         }
     }
