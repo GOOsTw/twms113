@@ -943,11 +943,24 @@ public class InventoryHandler {
                 }
                 break;
             }
+            case 5560000: //任意門一般券
+            case 5561000: { //任意門高級券
+                if (slea.readByte() == 0) {
+                    final MapleMap target = c.getChannelServer().getMapFactory().getMap(slea.readInt());
+                    if (itemId == 5560000 || itemId == 5561000 || (itemId != 5560000 || itemId != 5561000 && c.getPlayer().isRegRockMap(target.getId()))) {
+                        if (!FieldLimitType.VipRock.check(c.getPlayer().getMap().getFieldLimit()) && !FieldLimitType.VipRock.check(target.getFieldLimit()) && c.getPlayer().getEventInstance() == null) { //Makes sure this map doesn't have a forced return map
+                            c.getPlayer().changeMap(target, target.getPortal(0));
+                            used = true;
+                        }
+                    }
+                }
+                break;
+            }
             case 2320000: // The Teleport Rock
             case 5041000: // 高級順移之石
             case 5040000: // 順移之石
             case 5040001: //可樂翅膀
-            { 
+            {
                 if (slea.readByte() == 0) { // Rocktype
                     final MapleMap target = c.getChannelServer().getMapFactory().getMap(slea.readInt());
                     if ((itemId == 5041000 && c.getPlayer().isRockMap(target.getId())) || (itemId != 5041000 && c.getPlayer().isRegRockMap(target.getId()))) {
@@ -1554,7 +1567,7 @@ public class InventoryHandler {
                     break;
                 }
                 if (!c.getChannelServer().getMegaphoneMuteState()) {
-                    
+
                     final byte numLines = slea.readByte();
                     if (numLines > 3) {
                         return;
@@ -1569,7 +1582,7 @@ public class InventoryHandler {
                         messages.add(sb + c.getPlayer().getName() + " : " + message);
                     }
                     final boolean ear = slea.readByte() > 0;
-                    
+
                     if (c.getPlayer().isPlayer()) {
                         World.Broadcast.broadcastSmega(MaplePacketCreator.tripleSmega(messages, ear, c.getChannel()).getBytes());
                         System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + messages);
@@ -1602,7 +1615,7 @@ public class InventoryHandler {
                     final List<String> messages = new LinkedList<>();
                     messages.add(sb + c.getPlayer().getName() + " : " + message);
                     final boolean ear = slea.readByte() != 0;
-                    
+
                     if (c.getPlayer().isPlayer()) {
                         World.Broadcast.broadcastSmega(MaplePacketCreator.HeartSmega(messages, ear, c.getChannel()).getBytes());
                         System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
@@ -1834,13 +1847,13 @@ public class InventoryHandler {
             case 5190006:
             case 5190007:
             case 5190008:
-            case 5190000: 
+            case 5190000:
             case 5191001:
             case 5191002:
             case 5191003:
             case 5191004:
-            case 5191000: { 
-                final boolean isAdd = ( itemId / 1000 ) % 10 == 0;
+            case 5191000: {
+                final boolean isAdd = (itemId / 1000) % 10 == 0;
                 final int uniqueid = (int) slea.readLong();
                 MaplePet pet = c.getPlayer().getPet(0);
                 int slo = 0;
@@ -1869,10 +1882,11 @@ public class InventoryHandler {
                 }
                 PetFlag zz = PetFlag.getByAddId(itemId);
                 if (zz != null && !zz.check(pet.getFlags())) {
-                    if( isAdd )
+                    if (isAdd) {
                         pet.setFlags(pet.getFlags() | zz.getValue());
-                    else
+                    } else {
                         pet.setFlags(pet.getFlags() - zz.getValue());
+                    }
                     c.sendPacket(PetPacket.updatePet(pet, c.getPlayer().getInventory(MapleInventoryType.CASH).getItem((byte) pet.getInventoryPosition())));
                     c.sendPacket(MaplePacketCreator.enableActions());
                     c.sendPacket(MTSCSPacket.changePetFlag(uniqueid, true, zz.getValue()));
@@ -1977,8 +1991,9 @@ public class InventoryHandler {
                 }
                 break;
             }
-           
+
             case 5281001:  /*花香*/
+
             case 5280001: // Gas Skill
             /*毒屁*/
             case 5281000: {
@@ -1991,8 +2006,8 @@ public class InventoryHandler {
                 break;
             }
             /* 黑板 */
-            case 5370000: 
-            case 5370001: { 
+            case 5370000:
+            case 5370001: {
                 if (c.getPlayer().getMapId() / 1000000 == 109) {
                     c.getPlayer().dropMessage(1, "請勿在活動地圖使用黑板");
                 } else {
@@ -2145,9 +2160,9 @@ public class InventoryHandler {
     }
 
     public static final void PlayerPickup(final SeekableLittleEndianAccessor slea, MapleClient c, final MapleCharacter chr) {
-        if (chr.getPlayerShop() != null 
-                || c.getPlayer().getConversation() > 0 
-                || c.getPlayer().getTrade() != null) { 
+        if (chr.getPlayerShop() != null
+                || c.getPlayer().getConversation() > 0
+                || c.getPlayer().getTrade() != null) {
             c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
@@ -2160,7 +2175,7 @@ public class InventoryHandler {
             c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
-        
+
         final MapleMapItem mapitem = (MapleMapItem) ob;
         final Lock lock = mapitem.getLock();
         lock.lock();
@@ -2311,7 +2326,7 @@ public class InventoryHandler {
                     if (c.getPlayer().getParty() != null) {
                         for (final MaplePartyCharacter pc : c.getPlayer().getParty().getMembers()) {
                             final MapleCharacter chr = c.getPlayer().getMap().getCharacterById(pc.getId());
-                            if (chr != null ) {
+                            if (chr != null) {
                                 ii.getItemEffect(id).applyTo(chr);
                             }
                         }
