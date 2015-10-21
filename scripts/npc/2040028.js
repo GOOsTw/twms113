@@ -62,7 +62,8 @@ function action(mode, type, selection) {
 		cm.sendYesNo("Are you sure you want to give up now? Alright then... but please remember that the next time you visit this place, the dollhouses will switch places, and you'll have to look through each and every one of them carefully again. What do you think? Would you still like to leave this place?");
 	    }
 	} else if(status == 2) {
-	    cm.getPlayer().getEventInstance().removePlayer(cm.getChar());
+	    if( cm.getPlayer().getEventInstance() != null)
+	        cm.getPlayer().getEventInstance().removePlayer(cm.getChar());
 	    cm.dispose();
 	}
     } else {
