@@ -56,6 +56,7 @@ import server.life.MobSkillFactory;
 import server.maps.MapleMap;
 import server.maps.FieldLimitType;
 import server.movement.LifeMovementFragment;
+import server.quest.MapleQuest;
 import tools.MaplePacketCreator;
 import tools.packet.MobPacket;
 import tools.packet.MTSCSPacket;
@@ -375,17 +376,32 @@ public class PlayerHandler {
                 //chr.getCheatTracker().registerOffense(CheatingOffense.ARAN_COMBO_HACK);
                 combo = 0;
             } else {
-                if (combo == 9) {
+                if (combo == 9 && c.getPlayer().getQuestStatus(10370) == 0) {
                     c.getPlayer().giftMedal(1142134);
+                    MapleQuest.getInstance(10370).forceComplete(c.getPlayer(), 0);
+                    c.getPlayer().dropMessage(5, "完成連續技成就，接下來只會給予勳章並不會恭喜。");
+                } else if (combo == 9 && c.getPlayer().getQuestStatus(10370) == 2) {
+                    c.getPlayer().gainItem(1142134, 1);
+                    c.getPlayer().dropMessage(5, "您剛才拿到了連續技高手勳章。");
                 }
-                if (combo == 4999) {
+                if (combo == 4999 && c.getPlayer().getQuestStatus(10370) == 0) {
                     c.getPlayer().giftMedal(1142135);
+                    MapleQuest.getInstance(10370).forceComplete(c.getPlayer(), 0);
+                    c.getPlayer().dropMessage(5, "完成連續技成就，接下來只會給予勳章並不會恭喜。");
+                } else if (combo == 4999 && c.getPlayer().getQuestStatus(10370) == 2) {
+                    c.getPlayer().gainItem(1142135, 1);
+                    c.getPlayer().dropMessage(5, "您剛才拿到了連續技達人勳章。");
                 }
-                if (combo == 14999) {
+                if (combo == 14999 && c.getPlayer().getQuestStatus(10370) == 0) {
                     c.getPlayer().giftMedal(1142136);
+                    MapleQuest.getInstance(10370).forceComplete(c.getPlayer(), 0);
+                    c.getPlayer().dropMessage(5, "完成連續技成就，接下來只會給予勳章並不會恭喜。");
+                } else if (combo == 14999 && c.getPlayer().getQuestStatus(10370) == 2) {
+                    c.getPlayer().gainItem(1142136, 1);
+                    c.getPlayer().dropMessage(5, "您剛才拿到了連續技之王勳章。");
                 }
             }
-            
+
             if (combo < 30000) {
                 combo++;
             }

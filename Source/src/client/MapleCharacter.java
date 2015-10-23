@@ -523,7 +523,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ret.day = rs.getInt("day");
             ret.prefix = rs.getString("prefix");
             ret.gachexp = rs.getInt("gachexp");
-            
+
             if (channelserver) {
                 MapleMapFactory mapFactory = ChannelServer.getInstance(client.getChannel()).getMapFactory();
                 ret.map = mapFactory.getMap(ret.mapid);
@@ -4873,7 +4873,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     if (fairyExp < 30 && stats.equippedFairy) {
                         fairyExp += 10;
                         fairyHour += 1;
-                        dropMessage(5, "因裝備精靈墜飾經過了"+ fairyHour +"小時，打怪時可以額外獲得紅利經驗值" + fairyExp + "%.");
+                        dropMessage(5, "因裝備精靈墜飾經過了" + fairyHour + "小時，打怪時可以額外獲得紅利經驗值" + fairyExp + "%.");
                         startFairySchedule(false, true);
                     } else {
                         cancelFairySchedule(!stats.equippedFairy);
@@ -5849,6 +5849,14 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public String getPrefix() {
         return prefix;
+    }
+
+    public void gainItem(int code, int amount) {
+        MapleInventoryManipulator.addById(client, code, (short) amount, null);
+    }
+
+    public void gainItem(int code) {
+        MapleInventoryManipulator.addById(client, code, (short) 1, null);
     }
 
     public void giftMedal(int id) {
