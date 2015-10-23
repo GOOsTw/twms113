@@ -1,5 +1,6 @@
 package client.messages.commands;
 
+import client.MapleCharacter;
 import constants.GameConstants;
 import constants.ServerConstants.PlayerGMRank;
 import client.MapleClient;
@@ -189,10 +190,21 @@ public class PlayerCommand {
 
         @Override
         public int execute(MapleClient c, String[] splitted) {
+            /*頻道總人數*/
+            int nowtotal = 0;
             int total = 0;
             int curConnected = c.getChannelServer().getConnectedClients();
-            total += curConnected;
-            c.getPlayer().dropMessage(6, new StringBuilder().append("當前伺服器總計線上人數: ").append(total).toString());
+            nowtotal += curConnected;
+            /*伺服器總人數*/
+            for (ChannelServer cserv : ChannelServer.getAllInstances()) {
+                int curConnected1 = cserv.getConnectedClients();
+                total += curConnected1;
+                for (MapleCharacter chr : cserv.getPlayerStorage().getAllCharacters()) {
+                    if (chr != null) {
+                    }
+                }
+            }
+            c.getPlayer().dropMessage(6, new StringBuilder().append("當前"+c.getChannel()+"頻道: ").append(nowtotal).append("人   ").append("當前伺服器總計線上人數: ").append(total).append("個").toString());
             return 1;
         }
     }
