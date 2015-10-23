@@ -62,7 +62,7 @@ public class CharLoginHandler {
             c.getSession().close(true);
             return;
         }
-        
+
         final String account = slea.readMapleAsciiString();
         final String password = slea.readMapleAsciiString();
 
@@ -72,15 +72,26 @@ public class CharLoginHandler {
 
         if (LoginServer.autoRegister) {
             if (AutoRegister.autoRegister && !AutoRegister.getAccountExists(account) && (!c.hasBannedIP() || !c.hasBannedMac())) {
-                if (password.equalsIgnoreCase("disconnect") || password.equalsIgnoreCase("fixme")) {
-                    c.sendPacket(MaplePacketCreator.serverNotice(1, "This password is invalid."));
+                if (password.equalsIgnoreCase("fixlogged")) {
+                    c.sendPacket(MaplePacketCreator.serverNotice(1, "這個密碼是解卡密碼，請換其他密碼。"));
                     c.sendPacket(LoginPacket.getLoginFailed(1)); //Shows no message, used for unstuck the login button
                     return;
                 }
+                if (account.length() >= 12) {
+                    c.sendPacket(MaplePacketCreator.serverNotice(1, "您的帳號長度太長了唷!\r\n請重新輸入."));
+                    c.getSession().write(LoginPacket.getLoginFailed(1)); //Shows no message, used for unstuck the login button
+                    return;
+                }
                 AutoRegister.createAccount(account, password, c.getSession().getRemoteAddress().toString());
-                if (AutoRegister.success) {
+                if (AutoRegister.success && AutoRegister.ip) {
                     c.sendPacket(MaplePacketCreator.serverNotice(1, "帳號創建成功,請重新登入!"));
                     c.sendPacket(LoginPacket.getLoginFailed(1)); //Shows no message, used for unstuck the login button
+                    return;
+                } else if (!AutoRegister.ip) {
+                    c.sendPacket(MaplePacketCreator.serverNotice(1, "無法註冊過多的帳號密碼唷!"));
+                    c.sendPacket(LoginPacket.getLoginFailed(1)); //Shows no message, used for unstuck the login button
+                    AutoRegister.success = false;
+                    AutoRegister.ip = true;
                     return;
                 }
             }
@@ -105,28 +116,27 @@ public class CharLoginHandler {
                 c.sendPacket(LoginPacket.getTempBan(KoreanDateUtil.getTempBanTimestamp(tempbannedTill.getTimeInMillis()), c.getBanReason()));
             }
         } else {
-            
+
             /* Clear all connected client */
-            
             boolean check = false;
-            
-            for(ChannelServer ch : ChannelServer.getAllInstances()) {
+
+            for (ChannelServer ch : ChannelServer.getAllInstances()) {
                 List<MapleCharacter> list = ch.getPlayerStorage().getAllCharactersThreadSafe();
-                for ( MapleCharacter chr : list) {
-                    if( chr.getAccountID() == c.getAccID()) {
-                        if( chr.getMap() != null )
+                for (MapleCharacter chr : list) {
+                    if (chr.getAccountID() == c.getAccID()) {
+                        if (chr.getMap() != null) {
                             chr.getMap().removePlayer(chr);
+                        }
                         ch.removePlayer(chr);
                         break;
                     }
                 }
             }
-            
+
             c.loginAttempt = 0;
             LoginWorker.registerClient(c);
         }
     }
-
 
     public static final void SetGenderRequest(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         String username = slea.readMapleAsciiString();
@@ -341,10 +351,10 @@ public class CharLoginHandler {
 
     public static final void handleDeleteCharacter(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         slea.readByte();
-        
+
         String _2ndPassword;
         _2ndPassword = slea.readMapleAsciiString();
-        
+
         final int characterId = slea.readInt();
         if (!c.login_Auth(characterId)) {
             c.sendPacket(LoginPacket.secondPwError((byte) 0x14));

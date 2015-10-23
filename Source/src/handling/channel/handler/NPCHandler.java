@@ -133,8 +133,8 @@ public class NPCHandler {
             }
             case 1: { // Start Quest
                 final int npc = slea.readInt();
-                    q.start(chr, npc);
-                if (slea.available() >= 4) {
+                q.start(chr, npc);
+                if (slea.available() > 4) {
                     q.forceStart(chr, npc, null);
                 }
                 break;

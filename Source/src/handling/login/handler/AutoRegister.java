@@ -12,6 +12,7 @@ public class AutoRegister {
     private static final int ACCOUNTS_PER_IP = 1;
     public static boolean autoRegister = true;
     public static boolean success = false;
+    public static boolean ip = true;
 
     public static boolean getAccountExists(String login) {
         boolean accountExists = false;
@@ -42,34 +43,35 @@ public class AutoRegister {
 
         try {
             ResultSet rs;
-            /*            try (*/
-            PreparedStatement ipc = con.prepareStatement("SELECT SessionIP FROM accounts WHERE SessionIP = ?");/*) {*/
-
-            ipc.setString(1, sockAddr.substring(1, sockAddr.lastIndexOf(':')));
-            rs = ipc.executeQuery();
-            if (rs.first() == false || rs.last() == true && rs.getRow() < ACCOUNTS_PER_IP) {
-//                    try {
-/*                        try (*/
-                PreparedStatement ps = con.prepareStatement("INSERT INTO accounts (name, password, email, birthday, macs, SessionIP) VALUES (?, ?, ?, ?, ?, ?)");/*) {*/
-
-                ps.setString(1, login);
-                ps.setString(2, LoginCrypto.hexSha1(pwd));
-                ps.setString(3, "autoregister@mail.com");
-                ps.setString(4, "2008-04-07");
-                ps.setString(5, "00-00-00-00-00-00");
-                ps.setString(6, sockAddr.substring(1, sockAddr.lastIndexOf(':')));
-                ps.executeUpdate();
+            try (PreparedStatement ipc = con.prepareStatement("SELECT SessionIP FROM accounts WHERE SessionIP = ?")) {
+                ipc.setString(1, "/" + sockAddr.substring(1, sockAddr.lastIndexOf(':')));
+                rs = ipc.executeQuery();
+                if (rs.first() == false || rs.last() == true && rs.getRow() < ACCOUNTS_PER_IP) {
+                    try {
+                        try (PreparedStatement ps = con.prepareStatement("INSERT INTO accounts (name, password, email, birthday, macs, SessionIP) VALUES (?, ?, ?, ?, ?, ?)")) {
+                            ps.setString(1, login);
+                            ps.setString(2, LoginCrypto.hexSha1(pwd));
+                            ps.setString(3, "autoregister@mail.com");
+                            ps.setString(4, "2008-04-07");
+                            ps.setString(5, "00-00-00-00-00-00");
+                            ps.setString(6, sockAddr.substring(1, sockAddr.lastIndexOf(':')));
+                            ps.executeUpdate();
+                        }
+                        success = true;
+                    } catch (SQLException ex) {
+                        System.out.println(ex);
+                        return;
+                    }
+                }
+                if (rs.getRow() >= ACCOUNTS_PER_IP) {
+                    ip = false;
+                } else {
+                    ip = true;
+                }
             }
-
-            success = true;
+            rs.close();
         } catch (SQLException ex) {
             System.out.println(ex);
         }
-        /*                }
-         }
-         rs.close();
-         } catch (SQLException ex) {
-         System.out.println(ex);
-         }*/
     }
 }

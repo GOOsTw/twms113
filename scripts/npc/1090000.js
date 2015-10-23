@@ -59,6 +59,9 @@ function action(mode, type, selection) {
 		    cm.startQuest(100101);
 		}
 		cm.dispose();
+		} else if (cm.isQuestActive(6370)) {
+		cm.forceCompleteQuest(6370);
+		cm.dispose();
 	    } else {
 		cm.sendOk("你好,我是卡伊琳-海盜轉職官.");
 		cm.dispose();

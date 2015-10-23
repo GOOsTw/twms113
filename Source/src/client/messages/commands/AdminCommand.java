@@ -1279,15 +1279,15 @@ public class AdminCommand {
         @Override
         public int execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
-                c.getPlayer().dropMessage(6, "!givepoint <player> <amount>.");
+                c.getPlayer().dropMessage(6, "!GivePoint <名字> <數量>.");
                 return 0;
             }
             MapleCharacter chrs = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             if (chrs == null) {
-                c.getPlayer().dropMessage(6, "請確認有在正確的頻道");
+                c.getPlayer().dropMessage(6, "請確認是否有這個角色。");
             } else {
-                chrs.setPoints(chrs.getCSPoints(1) + Integer.parseInt(splitted[2]));
-                c.getPlayer().dropMessage(6, "在您給了" + splitted[1] + " " + splitted[2] + "點了之後 總共擁有 " + chrs.getPoints() + " 點");
+                chrs.modifyCSPoints(chrs.getCSPoints(1), Integer.parseInt(splitted[2]), true);
+                c.getPlayer().dropMessage(6, "在您給了" + splitted[1] + " " + splitted[2] + "點了之後 總共擁有 " + chrs.getCSPoints(1) + " 點");
             }
             return 1;
         }

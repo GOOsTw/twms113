@@ -2139,7 +2139,7 @@ public class InventoryHandler {
                 } else if (itemId / 10000 == 553) {
                     UseRewardItem(slot, itemId, c, c.getPlayer());// this too
                 } else {
-                    System.out.println("Unhandled CS item : " + itemId);
+                    System.out.println("未處理的商城道具ID : " + itemId);
                     System.out.println(slea.toString(true));
                 }
                 break;

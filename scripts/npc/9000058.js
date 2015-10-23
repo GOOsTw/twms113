@@ -19,34 +19,12 @@ function action(mode, type, selection) {
     }
 
     if (status == 0) {
-        cm.sendSimple("開店可以擺飛鏢或彈丸哦~\r\n#b#L0#我要領取黑色小豬#l\r\n#b#L1#我要領取禮包#l\r\n#b#L2#我要打開藍色小箱子#l\r\n#b#L3#當鋪裡的大蟾蜍錢包(100等以上才能領)解未來東京任務用#l\r\n#b#L4#我要騎銀色豬豬!!#l\r\n#b#L5#我要進行忍影瞬殺的任務(四轉盜賊限定)#l\r\n#b#L6#我要刪除銀或金寶箱空白道具(並且補償一次道具)#l\r\n#b#L7#我要完成燈泡不能接的任務#k");
+		if (!cm.isQuestFinished(29933)) {
+            NewPlayer();
+        }
+        cm.sendSimple("開店可以擺飛鏢或彈丸哦~\r\n#b#L2#我要打開藍色小箱子#l\r\n#b#L3#當鋪裡的大蟾蜍錢包(100等以上才能領)解未來東京任務用#l\r\n#b#L4#我要騎銀色豬豬!!#l\r\n#b#L5#我要進行忍影瞬殺的任務(四轉盜賊限定)#l\r\n#b#L6#我要刪除銀或金寶箱空白道具(並且補償一次道具)#l\r\n#b#L7#我要完成燈泡不能接的任務#k");
     } else if (status == 1) {
-        if (selection == 0) {
-            	if (!cm.haveItem(5000007, 1, true, true) && cm.canHold(5000007,1)) {
-                    cm.gainPet(5000007, "黑色小豬", 1, 0, 100, 0);
-		}
-            cm.dispose();
-        } else if (selection == 1) {
-            	if (!cm.haveItem(5030000, 1, true, true) && cm.canHold(5030000,1)) {
-                    cm.gainItem(5030000, 1);
-                }
-            	if (!cm.haveItem(5100000, 1, true, true) && cm.canHold(5100000,1)) {
-                    cm.gainItem(5100000, 1);
-		}
-            	if (!cm.haveItem(5370000, 1, true, true) && cm.canHold(5370000,1)) {
-                    cm.gainItem(5370000, 1);
-		}
-            	if (!cm.haveItem(5520000, 1, true, true) && cm.canHold(5520000,1)) {
-                    cm.gainItem(5520000, 1);
-                }
-            	if (!cm.haveItem(5180000, 1, true, true) && cm.canHold(5180000,1)) {
-                    cm.gainItem(5180000, 1);
-                }
-            	if (!cm.haveItem(5170000, 1, true, true) && cm.canHold(5170000,1)) {
-                    cm.gainItem(5170000, 1);
-		}
-            cm.dispose();
-		} else if (selection == 2) {
+		if (selection == 2) {
                 if (cm.haveItem(4031307, 1) == true)
                     {
                     cm.gainItem(4031307 ,-1);
@@ -62,7 +40,7 @@ function action(mode, type, selection) {
                 if (level >= 100) {
                     cm.gainItem(5252002, 1);
                 } else {
-                    cm.sendOk("你的等級還不夠 菜逼巴");
+                    cm.sendOk("你的等級還不夠。");
 		}
             cm.dispose();
         } else if (selection == 4) {
@@ -94,21 +72,21 @@ function action(mode, type, selection) {
                 }
         } else if (selection == 6) {
                  if (cm.haveItem(2070018)) {
-                 cm.removeAll(2070018);
-                 cm.gainItem(5490000, 1);
-                 cm.gainItem(4280000, 1);
-                 cm.sendOk("恭喜你刪除完畢並補償了金寶箱");
+					cm.removeAll(2070018);
+					cm.gainItem(5490000, 1);
+					cm.gainItem(4280000, 1);
+					cm.sendOk("恭喜你刪除完畢並補償了金寶箱");
+					cm.dispose();
+				} else if (cm.haveItem(1432036)) {
+					cm.removeAll(1432036);
+					cm.gainItem(5490001, 1);
+					cm.gainItem(4280001, 1);
+					cm.sendOk("恭喜你刪除完畢並補償了銀寶箱");
                     cm.dispose();
-        } else if (cm.haveItem(1432036)) {
-                 cm.removeAll(1432036);
-                 cm.gainItem(5490001, 1);
-                 cm.gainItem(4280001, 1);
-                 cm.sendOk("恭喜你刪除完畢並補償了銀寶箱");
-                    cm.dispose();
-                    } else {
+                } else {
                     cm.sendOk("抱歉你沒有空白道具...");
                     cm.dispose();
-            }
+				}
 		} else if (selection == 7) {
 			if (cm.getQuestStatus(29507) == 1) {
 				cm.gainItem(1142082, 1);
@@ -116,6 +94,8 @@ function action(mode, type, selection) {
 				cm.sendOk("完成任務。");
 			}
 				cm.forceCompleteQuest(3083);
+				cm.forceCompleteQuest(8248);
+				cm.forceCompleteQuest(8249);
 				cm.forceCompleteQuest(8510);
 				cm.forceCompleteQuest(20527);
 				cm.forceCompleteQuest(50246);
@@ -124,3 +104,34 @@ function action(mode, type, selection) {
 				}
 			}
         }
+
+function NewPlayer() {
+		if (!cm.haveItem(5000007, 1, true, true) && cm.canHold(5000007, 1)) {
+			cm.gainPet(5000007, "黑色小豬", 1, 0, 100, 0);
+		}
+		if (!cm.haveItem(1002419, 1, true, true) && cm.canHold(1002419,1)) {
+			cm.gainItemPeriod(1002419, 1, 30);
+		}
+		if (!cm.haveItem(5030000, 1, true, true) && cm.canHold(5030000,1)) {
+			cm.gainItemPeriod(5030000, 1, 30);
+		}
+		if (!cm.haveItem(5100000, 1, true, true) && cm.canHold(5100000,1)) {
+			cm.gainItem(5100000, 1);
+		}
+		if (!cm.haveItem(5370000, 1, true, true) && cm.canHold(5370000,1)) {
+			cm.gainItemPeriod(5370000, 1, 7);
+		}
+		if (!cm.haveItem(5520000, 1, true, true) && cm.canHold(5520000,1)) {
+			cm.gainItem(5520000, 1);
+		}
+		if (!cm.haveItem(5180000, 1, true, true) && cm.canHold(5180000,1)) {
+			cm.gainItemPeriod(5180000, 1, 28);
+		}
+		if (!cm.haveItem(5170000, 1, true, true) && cm.canHold(5170000,1)) {
+			cm.gainItemPeriod(5170000, 1, 30);
+		}
+		cm.forceCompleteQuest(29933); //完成新手獎勵
+		cm.sendOk("歡迎來到 SyncMS 請使用 @help/@幫助 了解各式指令\r\n\r\n\r\n遊戲愉快^^");
+		cm.dispose();
+		return;
+}
