@@ -66,8 +66,7 @@ public class DamageParse {
         if (attack.real) {
             player.getCheatTracker().checkAttack(attack.skill, attack.lastAttackTickCount);
         }
-        
-        
+
         if (attack.skill != 0) {
             if (effect == null) {
                 player.getClient().sendPacket(MaplePacketCreator.enableActions());
@@ -83,11 +82,11 @@ public class DamageParse {
             }
             /* 金字塔技能 */
             if (GameConstants.isPyramidSkill(attack.skill)) {
-                if (player.getMapId() / 1000000 != 926 || 
-                        player.getPyramidSubway() == null || !player.getPyramidSubway().onSkillUse(player)) {
+                if (player.getMapId() / 1000000 != 926
+                        || player.getPyramidSubway() == null || !player.getPyramidSubway().onSkillUse(player)) {
                     //AutobanManager.getInstance().autoban(player.getClient(), "Using Pyramid skill outside of pyramid maps.");
                     return;
-                } 
+                }
             }
             /* 確認是否超過打怪數量*/
             if (attack.targets > effect.getMobCount()) { // Must be done here, since NPE with normal atk
@@ -95,14 +94,14 @@ public class DamageParse {
                 return;
             }
         }
-        
+
         if (attack.hits > attackCount) {
             if (attack.skill != 4211006) {
                 player.getCheatTracker().registerOffense(CheatingOffense.MISMATCHING_BULLETCOUNT);
                 return;
             }
         }
-        
+
         if (attack.hits > 0 && attack.targets > 0) {
             // Don't ever do this. it's too expensive.
             if (!player.getStat().checkEquipDurabilitys(player, -1)) { //i guess this is how it works ?
@@ -110,7 +109,7 @@ public class DamageParse {
                 return;
             } //lol
         }
-        
+
         int totDamage = 0;
         final MapleMap map = player.getMap();
 
@@ -145,13 +144,13 @@ public class DamageParse {
                 }
             }
         }
-        
+
         int fixeddmg, totDamageToOneMonster = 0;
         long hpMob = 0;
         final PlayerStats stats = player.getStat();
         int CriticalDamage = stats.passive_sharpeye_percent();
         byte ShdowPartnerAttackPercentage = 0;
-        
+
         if (attack_type == AttackType.RANGED_WITH_SHADOWPARTNER || attack_type == AttackType.NON_RANGED_WITH_MIRROR) {
             final MapleStatEffect shadowPartnerEffect;
             if (attack_type == AttackType.NON_RANGED_WITH_MIRROR) {
@@ -219,10 +218,13 @@ public class DamageParse {
                                 }
                             } else if (!monster.isBuffed(MonsterStatus.DAMAGE_IMMUNITY) && !monster.isBuffed(MonsterStatus.WEAPON_IMMUNITY) && !monster.isBuffed(MonsterStatus.WEAPON_DAMAGE_REFLECT)) {
                                 if (eachd > maxDamagePerHit) {
-                                    player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE);
+                                    player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
                                     if (eachd > maxDamagePerHit * 2) {
                                         eachd = (int) (maxDamagePerHit * 2); // Convert to server calculated damage
-                                        player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_2);
+                                        player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
+                                        if (eachd >= 2000000) {
+                                            player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
+                                        }
                                     }
                                 }
                             } else {
@@ -232,9 +234,9 @@ public class DamageParse {
                             }
                         }
                     }
-                  
+
                     if (player.getClient().getChannelServer().isAdminOnly()) {
-                        player.dropMessage(-1, "Damage: " + eachd);
+                        player.dropMessage(1, "傷害: " + eachd);
                     }
                     totDamageToOneMonster += eachd;
                     //force the miss even if they dont miss. popular wz edit
@@ -309,7 +311,7 @@ public class DamageParse {
                             stats.setHp(remainingHP > 1 ? 1 : remainingHP);
                             break;
                         }
-                        
+
                         case SkillType.暗影神偷.瞬步連擊: // Boomerang Stab
                         case SkillType.暗影神偷.致命暗殺: // Assasinate
                         case SkillType.神偷.落葉斬: // Assulter
@@ -411,7 +413,7 @@ public class DamageParse {
                 }
             }
         }
-      
+
         if (effect != null && attack.skill != 0 && (attack.targets > 0 || (attack.skill != 4331003 && attack.skill != 4341002)) && attack.skill != 21101003 && attack.skill != 5110001 && attack.skill != 15100004 && attack.skill != 11101002 && attack.skill != 13101002) {
             effect.applyTo(player, attack.position);
         }
@@ -426,7 +428,7 @@ public class DamageParse {
     }
 
     public static final void applyAttackMagic(final AttackInfo attack, final ISkill theSkill, final MapleCharacter player, final MapleStatEffect effect) {
-         if (!player.isAlive()) {
+        if (!player.isAlive()) {
             player.getCheatTracker().registerOffense(CheatingOffense.ATTACKING_WHILE_DEAD);
             return;
         }
@@ -519,21 +521,22 @@ public class DamageParse {
                         if (monsterstats.getOnlyNoramlAttack()) {
                             eachd = 0; // Magic is always not a normal attack
                         } else if (!player.isGM()) {
-//			    System.out.println("Client damage : " + eachd + " Server : " + MaxDamagePerHit);
-
                             if (Tempest) { // Buffed with Tempest
-                                // In special case such as Chain lightning, the damage will be reduced from the maxMP.
                                 if (eachd > monster.getMobMaxHp()) {
                                     eachd = (int) Math.min(monster.getMobMaxHp(), Integer.MAX_VALUE);
                                     player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC);
                                 }
                             } else if (!monster.isBuffed(MonsterStatus.DAMAGE_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_DAMAGE_REFLECT)) {
                                 if (eachd > maxDamagePerHit) {
-                                    player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC);
+                                    player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
+                                    if (attack.real) {
+                                        player.getCheatTracker().checkSameDamage(eachd, maxDamagePerHit);
+                                    }
+                                    player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
                                     if (eachd > MaxDamagePerHit * 2) {
 //				    System.out.println("EXCEED!!! Client damage : " + eachd + " Server : " + MaxDamagePerHit);
                                         eachd = (int) (MaxDamagePerHit * 2); // Convert to server calculated damage
-                                        player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC_2);
+                                        player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
                                     }
                                 }
                             } else {
@@ -734,7 +737,7 @@ public class DamageParse {
                     defined = true;
                     break;
                 case 4211006: // Meso Explosion
-                    maximumDamageToMonster = 750000;
+                    maximumDamageToMonster = (monster.getStats().isBoss() ? 199999 : monster.getMobMaxHp());
                     defined = true;
                     break;
                 case 1009: // Bamboo Trust
@@ -785,7 +788,7 @@ public class DamageParse {
             elements.add(Element.LIGHTING);
         }
         double elementalMaxDamagePerMonster = maximumDamageToMonster;
-        
+
         if (elements.size() > 0) {
             double elementalEffect;
 
@@ -861,17 +864,17 @@ public class DamageParse {
     }
 
     public static final AttackInfo Modify_AttackCrit(final AttackInfo attack, final MapleCharacter chr, final int type) {
-       
+
         final int criticalRate = chr.getStat().passive_sharpeye_rate();
-        
-        final boolean shadow = (type == 2 && chr.getBuffedValue(MapleBuffStat.SHADOWPARTNER) != null) 
+
+        final boolean shadow = (type == 2 && chr.getBuffedValue(MapleBuffStat.SHADOWPARTNER) != null)
                 || (type == 1 && chr.getBuffedValue(MapleBuffStat.MIRROR_IMAGE) != null);
-        
+
         if (attack.skill != SkillType.神偷.楓幣炸彈
-                && attack.skill != SkillType.狙擊手.寒冰箭 
+                && attack.skill != SkillType.狙擊手.寒冰箭
                 && attack.skill != SkillType.暗殺者.楓幣攻擊
                 && (criticalRate > 0 || attack.skill == SkillType.暗影神偷.致命暗殺 || attack.skill == SkillType.神射手.必殺狙擊)) { //blizz + shadow meso + m.e no crits
-            
+
             for (AttackPair attackPair : attack.allDamage) {
                 if (attackPair.attack != null) {
                     int hit = 0;
@@ -968,7 +971,7 @@ public class DamageParse {
         lea.skip(8);
         ret.skill = lea.readInt();
         lea.skip(12); // ORDER [4] bytes on v.79, [4] bytes on v.80, [1] byte on v.82
-        
+
         switch (ret.skill) {
             case SkillType.打手.狂暴衝擊: // Corkscrew
             case SkillType.閃雷悍將2.狂暴衝擊: // Cygnus corkscrew
@@ -980,7 +983,7 @@ public class DamageParse {
                 ret.charge = 0;
                 break;
         }
-        
+
         ret.unk = lea.readByte();
         ret.display = lea.readByte(); // Always zero?
         ret.animation = lea.readByte();
@@ -1032,7 +1035,7 @@ public class DamageParse {
                 lea.skip(4); // extra 4 bytes
                 break;
         }
-        
+
         ret.charge = -1;
         ret.unk = lea.readByte();
         ret.display = lea.readByte(); // Always zero?
