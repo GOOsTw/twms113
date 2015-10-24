@@ -532,11 +532,14 @@ public class DamageParse {
                                     if (attack.real) {
                                         player.getCheatTracker().checkSameDamage(eachd, maxDamagePerHit);
                                     }
-                                    player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
                                     if (eachd > MaxDamagePerHit * 2) {
 //				    System.out.println("EXCEED!!! Client damage : " + eachd + " Server : " + MaxDamagePerHit);
                                         eachd = (int) (MaxDamagePerHit * 2); // Convert to server calculated damage
                                         player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
+                                        if (eachd >= 2000000) {
+                                            player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
+                                            return;
+                                        }
                                     }
                                 }
                             } else {

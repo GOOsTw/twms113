@@ -1403,7 +1403,7 @@ public class World {
                 chr.dispelDebuff(m.disease);
             }
         }
-        if (numTimes % 20 == 0) { //we're parsing through the characters anyway (:
+        if (numTimes % 100 == 0) { //we're parsing through the characters anyway (:
             for (MaplePet pet : chr.getPets()) {
                 if (pet.getSummoned()) {
                     if (pet.getPetItemId() == 5000054 && pet.getSecondsLeft() > 0) {
