@@ -9,6 +9,7 @@ import client.MapleCharacter;
 import client.MapleClient;
 import database.DatabaseConnection;
 import handling.channel.ChannelServer;
+import handling.login.LoginServer;
 import handling.world.World;
 import java.sql.SQLException;
 import java.text.NumberFormat;
@@ -238,10 +239,20 @@ public class ConsoleCommand {
                 for (MapleCharacter chr : chrs) {
                     p++;
                     chr.saveToDB(false, true);
-                 
+
                 }
             }
             System.out.println("[保存] " + p + "個玩家數據保存到數據中.");
+            return 1;
+        }
+    }
+
+    public static class AutoReg extends ConsoleCommandExecute {
+
+        @Override
+        public int execute(String[] splitted) {
+            LoginServer.autoRegister = !LoginServer.autoRegister;
+            System.out.println("自動註冊狀態: " + (LoginServer.autoRegister ? "開啟" : "關閉"));
             return 1;
         }
     }
@@ -253,8 +264,9 @@ public class ConsoleCommand {
             if (splitted.length > 1) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(StringUtil.joinStringFrom(splitted, 1));
-                for(ChannelServer ch : ChannelServer.getAllInstances())
+                for (ChannelServer ch : ChannelServer.getAllInstances()) {
                     ch.setServerMessage(sb.toString());
+                }
                 World.Broadcast.broadcastMessage(MaplePacketCreator.serverMessage(sb.toString()).getBytes());
             } else {
                 System.out.println("指令規則: !serverMsg <message>");
@@ -333,6 +345,8 @@ public class ConsoleCommand {
             System.out.println("shotdowntime <時間> 倒數關閉服務器");
             System.out.println("reloadchannel 重新載入頻道");
             System.out.println("reloadmap 重新載入地圖");
+            System.out.println("Info 查看伺服器狀況");
+            System.out.println("AutoReg 自動註冊開關");
             System.out.println("-------------------------");
             System.out.println("online 線上玩家");
             System.out.println("say 伺服器說話");

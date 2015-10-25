@@ -94,6 +94,7 @@ import java.util.concurrent.ScheduledFuture;
 import scripting.NPCScriptManager;
 import server.ServerProperties;
 import server.maps.MapleMapItem;
+import handling.login.LoginServer;
 
 /**
  *
@@ -189,7 +190,7 @@ public class AdminCommand {
         }
     }
 
-    public static class 鮪魚ban你 extends CommandExecute {
+    public static class AdminBan extends CommandExecute {
 
         protected boolean hellban = false;
 
@@ -509,6 +510,17 @@ public class AdminCommand {
                 //victim.addFame(fame);
                 victim.updateSingleStat(MapleStat.FAME, victim.getFame());
             }
+            return 1;
+        }
+    }
+
+    public static class 自動註冊 extends CommandExecute {
+
+        @Override
+        public int execute(MapleClient c, String[] splitted) {
+            LoginServer.autoRegister = !LoginServer.autoRegister;
+            c.getPlayer().dropMessage(0, "自動註冊狀態: " + (LoginServer.autoRegister ? "開啟" : "關閉"));
+            System.out.println("自動註冊狀態: " + (LoginServer.autoRegister ? "開啟" : "關閉"));
             return 1;
         }
     }
@@ -1310,10 +1322,6 @@ public class AdminCommand {
             return 1;
         }
     }
-    
-    
-    
-   
 
     public static class GiveVPoint extends CommandExecute {
 
