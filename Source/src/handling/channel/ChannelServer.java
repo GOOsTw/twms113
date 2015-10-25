@@ -564,6 +564,46 @@ public class ChannelServer implements Serializable {
         return instances.size();
     }
 
+    public static void forceRemovePlayerByAccId(int accid) {
+        for (ChannelServer ch : ChannelServer.getAllInstances()) {
+            Collection<MapleCharacter> chrs = ch.getPlayerStorage().getAllCharactersThreadSafe();
+            for (MapleCharacter c : chrs) {
+                if (c.getAccountID() == accid) {
+                    try {
+                        if (c.getClient() != null) {
+                            c.getClient().disconnect(true, false, false);
+                        }
+                    } catch (Exception ex) {
+                    }
+                    chrs = ch.getPlayerStorage().getAllCharactersThreadSafe();
+                    if(chrs.contains(c)) {
+                        ch.removePlayer(c);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void forceRemovePlayerByCharId(int charId) {
+        for (ChannelServer ch : ChannelServer.getAllInstances()) {
+            Collection<MapleCharacter> chrs = ch.getPlayerStorage().getAllCharactersThreadSafe();
+            for (MapleCharacter c : chrs) {
+                if (c.getId() == charId) {
+                    try {
+                        if (c.getClient() != null) {
+                            c.getClient().disconnect(true, false, false);
+                        }
+                    } catch (Exception ex) {
+                    }
+                    chrs = ch.getPlayerStorage().getAllCharactersThreadSafe();
+                    if(chrs.contains(c)) {
+                        ch.removePlayer(c);
+                    }
+                }
+            }
+        }
+    }
+
     public static final Set<Integer> getChannels() {
         return new HashSet<>(instances.keySet());
     }
