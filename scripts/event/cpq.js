@@ -176,13 +176,15 @@ function scheduledTimeout(eim) {
     } else {
         var blueParty = getParty(eim, "blue");
         var redParty = getParty(eim, "red");
-        if (blueParty.getTotalCP() > redParty.getTotalCP()) {
-            blueParty.setWinner(true);
-        } else if (redParty.getTotalCP() > blueParty.getTotalCP()) {
-            redParty.setWinner(true);
+        if( blueParty != null && redParty != null ) {
+            if (blueParty.getTotalCP() > redParty.getTotalCP()) {
+                blueParty.setWinner(true);
+            } else if (redParty.getTotalCP() > blueParty.getTotalCP()) {
+                redParty.setWinner(true);
+            }
+            blueParty.displayMatchResult();
+            redParty.displayMatchResult();
         }
-        blueParty.displayMatchResult();
-        redParty.displayMatchResult();
         eim.schedule("warpOut", 10000);
     }
 }
