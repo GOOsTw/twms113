@@ -112,13 +112,13 @@ public class CheatTracker {
         }
     }
 
-    public final void checkSameDamage(final int dmg) {
-        if (dmg > 2000 && lastDamage == dmg) {
+    public final void checkSameDamage(final int dmg, final double expected) {
+        if (dmg > 2000 && lastDamage == dmg && chr.get() != null && (chr.get().getLevel() < 175 || dmg > expected * 2)) {
             numSameDamage++;
 
             if (numSameDamage > 5) {
                 numSameDamage = 0;
-                registerOffense(CheatingOffense.SAME_DAMAGE, numSameDamage + " times: " + dmg);
+                registerOffense(CheatingOffense.SAME_DAMAGE, numSameDamage + " 次, 攻擊傷害: " + dmg + ", 預計傷害: " + expected + " [等級: " + chr.get().getLevel() + ", 職業: " + chr.get().getJob() + "]");
             }
         } else {
             lastDamage = dmg;
@@ -127,15 +127,15 @@ public class CheatTracker {
     }
 
     public final void checkMoveMonster(final Point pos) {
-        
+
         double dis = Math.abs(pos.distance(lastMonsterMove));
-        
+
         if (pos == lastMonsterMove) {
             monsterMoveCount++;
             if (monsterMoveCount > 15) {
                 registerOffense(CheatingOffense.MOVE_MONSTERS);
             }
-        } else if ( dis > 1500 ) {
+        } else if (dis > 1500) {
             monsterMoveCount++;
             if (monsterMoveCount > 15) {
                 registerOffense(CheatingOffense.MOVE_MONSTERS);
@@ -181,14 +181,16 @@ public class CheatTracker {
         }
         lastDropTime = System.currentTimeMillis();
     }
+
     public boolean canAvatarSmega2() {
-	if (lastASmegaTime + 10000 > System.currentTimeMillis() && chr.get() != null && !chr.get().isGM()) {
-	    return false;
-	}
-	lastASmegaTime = System.currentTimeMillis();
-	return true;
+        if (lastASmegaTime + 10000 > System.currentTimeMillis() && chr.get() != null && !chr.get().isGM()) {
+            return false;
+        }
+        lastASmegaTime = System.currentTimeMillis();
+        return true;
     }
-        public synchronized boolean GMSpam(int limit, int type) {
+
+    public synchronized boolean GMSpam(int limit, int type) {
         if (type < 0 || lastTime.length < type) {
             type = 1; // default xD
         }
@@ -198,6 +200,7 @@ public class CheatTracker {
         lastTime[type] = System.currentTimeMillis();
         return false;
     }
+
     public final void checkMsg() { //ALL types of msg. caution with number of  msgsPerSecond
         if ((System.currentTimeMillis() - lastMsgTime) < 1000) { //luckily maplestory has auto-check for too much msging
             msgsPerSecond++;
@@ -276,7 +279,7 @@ public class CheatTracker {
                 gm_message--;
                 if (gm_message == 0) {
                     System.out.println(MapleCharacterUtil.makeMapleReadable(chrhardref.getName()) + "疑似使用外掛");
-                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[管理員訊息] " + MapleCharacterUtil.makeMapleReadable(chrhardref.getName()) + " suspected of hacking! " + StringUtil.makeEnumHumanReadable(offense.name()) + (param == null ? "" : (" - " + param))).getBytes());
+                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[封號系統] " + MapleCharacterUtil.makeMapleReadable(chrhardref.getName()) + " 疑似使用外掛! " + StringUtil.makeEnumHumanReadable(offense.name()) + (param == null ? "" : (" - " + param))).getBytes());
                     AutobanManager.getInstance().autoban(chrhardref.getClient(), StringUtil.makeEnumHumanReadable(offense.name()));
                     gm_message = 100;
                 }

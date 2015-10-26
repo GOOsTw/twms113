@@ -530,7 +530,7 @@ public class DamageParse {
                                 if (eachd > maxDamagePerHit) {
                                     player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
                                     if (attack.real) {
-                                        player.getCheatTracker().checkSameDamage(eachd);
+                                        player.getCheatTracker().checkSameDamage(eachd.intValue(), maxDamagePerHit);
                                     }
                                     if (eachd > MaxDamagePerHit * 2) {
 //				    System.out.println("EXCEED!!! Client damage : " + eachd + " Server : " + MaxDamagePerHit);
