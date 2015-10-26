@@ -37,7 +37,7 @@ function action(mode, type, selection) {
 	    } else if (sel == 3) {
 		cm.sendYesNo("你是真的要重置！？ \r\n別怪我沒警告你。");
 	    } else if (sel == 2) {
-		cm.sendSimple("現在你的道場點數有 #b"+cm.getDojoPoints()+"#k. 我們的主人喜歡有才華的人，所以如果你有了足夠的道場點數，你就可以根據你的道場點數換取腰帶...\n\r #L0##i1132000:# #t1132000#(200)#l \n\r #L1##i1132001:# #t1132001#(1800)#l \n\r #L2##i1132002:# #t1132002#(4000)#l \n\r #L3##i1132003:# #t1132003#(9200)#l \n\r #L4##i1132004:# #t1132004#(17000)#l");
+		cm.sendSimple("現在你的道場點數有 #b"+cm.getDojoPoints()+"#k. 我們的主人喜歡有才華的人，所以如果你有了足夠的道場點數，你就可以根據你的道場點數依序換取腰帶...\n\r #L0##i1132000:# #t1132000#(200)#l \n\r #L1##i1132001:# #t1132001#(1800)#l \n\r #L2##i1132002:# #t1132002#(4000)#l \n\r #L3##i1132003:# #t1132003#(9200)#l \n\r #L4##i1132004:# #t1132004#(17000)#l");
 	    } else if (sel == 1) {
 		if (cm.getParty() != null) {
 		    if (cm.isLeader()) {
@@ -103,7 +103,10 @@ function action(mode, type, selection) {
 		    } else {
 			cm.sendOk("請確認一下你的背包是否滿了.");
 		    }
-		} else {
+		} else if ( record != selection ) {
+                    cm.sendOk("請依照順序兌換腰帶！謝謝");
+                } 
+                else {
 		    cm.sendOk("你好像沒有足夠的道場點數可以換....");
 		}
 		cm.dispose();
