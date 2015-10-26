@@ -79,6 +79,14 @@ function action(mode, type, selection) {
 		    cm.teachSkill(1321007, 0, 10);
 			cm.gainItem(4031348, -1);
 		    cm.sendNext("恭喜你轉職為 #b黑騎士#k.我送你一些神秘小禮物^^");
+		} else if (cm.getJob() == 2111) {
+            cm.gainItem(4031348, -1);
+            cm.changeJob(2112);
+            if (cm.canHold(1142132, 1)) {
+                cm.forceCompleteQuest(29927);
+                cm.gainItem(1142132, 1);
+            }
+		    cm.sendNext("恭喜你狂狼勇士又更上一層樓了！ 另外我送你一些神秘小禮物^^");
 	    } else {
 		cm.sendOk("你沒有多的欄位請清空再來嘗試一次!");
 		cm.dispose();
