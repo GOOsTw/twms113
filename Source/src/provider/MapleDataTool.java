@@ -35,6 +35,12 @@ public class MapleDataTool {
         if (data == null || data.getData() == null) {
             return def;
         } else {
+            try {
+              String  d = (String)data.getData();
+            }  catch(Exception e) {
+                              System.out.println(data.getParent().getName());
+
+            }
             return ((String) data.getData());
         }
     }
@@ -48,7 +54,7 @@ public class MapleDataTool {
     }
 
     public static double getDouble(MapleData data) {
-        return ((Double) data.getData()).doubleValue();
+        return ((Double) data.getData());
     }
 
     public static float getFloat(MapleData data) {

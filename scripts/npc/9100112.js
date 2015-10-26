@@ -7,9 +7,10 @@ var status = -1;
 
 function action(mode, type, selection) {
     if (mode == 1) {
-	status++;
+		status++;
     } else {
-	status--;
+	    cm.dispose();
+		return;
     }
     if (status == 0) {
 	if (cm.getPlayer().getLevel() >= 51) {

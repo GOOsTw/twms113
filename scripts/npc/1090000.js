@@ -27,6 +27,20 @@ function action(mode, type, selection) {
     else
         status--;
     if (status == 0) {
+	if (cm.getMapId() == 912010200 || cm.haveItem(4031059, 1)) {
+        if (cm.getQuestStatus(6370) == 1) {
+			cm.removeAll(4031059);
+            cm.teachSkill(5221006, 0, 10);
+            cm.forceCompleteQuest(6370);
+        } else if (cm.getQuestStatus(6330) == 1) {
+			cm.removeAll(4031059);
+            cm.teachSkill(5121003, 0, 10);
+            cm.forceCompleteQuest(6330);
+        }
+        cm.warp(120000101, 0);
+		cm.sendOk("恭喜完成任務！！");
+        cm.dispose();
+	}
 	if (cm.getJob() == 0) {
 		if (cm.getPlayer().getLevel() >= 10) {
 		cm.sendNext("你要轉職成為一位 #r海盜#k ?");
@@ -53,18 +67,25 @@ function action(mode, type, selection) {
 			cm.gainItem(4031057,1);
 			cm.gainItem(4031059, -1);
 			cm.warp(211000001, 0);
-		    cm.sendOk("你完成了一個考驗，現在去找 #b佩特勞#k.");
 		} else {
 		    cm.sendOk("嗨, #b#h0##k! 我需要一個 #b黑符#k. 快去找異次元空間拿給我");
 		    cm.startQuest(100101);
 		}
 		cm.dispose();
 		} else if (cm.isQuestActive(6370)) {
-			cm.forceCompleteQuest(6370);
-			cm.dispose();
+			var dd = cm.getEventManager("KyrinTrainingGroundC");
+            if (dd != null) {
+                dd.startInstance(cm.getPlayer());
+            } else {
+                cm.sendOk("未知的錯誤請稍後在嘗試。");
+            }
 		} else if (cm.isQuestActive(6330)) {
-			cm.forceCompleteQuest(6330);
-			cm.dispose();		
+            var dd = cm.getEventManager("KyrinTrainingGroundV");
+            if (dd != null) {
+                dd.startInstance(cm.getPlayer());
+            } else {
+                cm.sendOk("未知的錯誤請稍後在嘗試。");
+			}				
 	    } else {
 		cm.sendOk("你好,我是卡伊琳-海盜轉職官.");
 		cm.dispose();
@@ -130,12 +151,12 @@ function action(mode, type, selection) {
 	cm.gainItem(4031012, -1);
 	cm.sendOk("轉職成功 ! 請去開創天下吧.");
 	cm.dispose();
-	}else {
+	} else {
 	cm.removeAll(4031857);
 	cm.removeAll(4031856);
 	cm.removeAll(4031012);
 	cm.sendOk("轉職成功 ! 請去開創天下吧.");
 	cm.dispose();
     }
-}	
+}
 }

@@ -438,6 +438,7 @@ public class MapleClient implements Serializable {
                             if (password.equalsIgnoreCase("fixlogged")) {
                                 loggedIn = false;
                                 loginok = 7;
+                                ChannelServer.forceRemovePlayerByAccId(accId);
                                 try {
                                     PreparedStatement pss = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ?");
                                     pss.setString(1, account);
