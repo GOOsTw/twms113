@@ -35,7 +35,9 @@ function action(mode, type, selection) {
 		    cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為聖騎士.#l\r\n#b#L1#像我想一下...#l");
 		}else if(cm.getJob() == 131){
 		    cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為黑騎士.#l\r\n#b#L1#像我想一下...#l");
-	    } else {
+		}else if(cm.getJob() == 2111){
+		    cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想變強！！#l\r\n#b#L1#像我想一下...#l");    
+		} else {
 		cm.sendOk("好吧假如你想要4轉麻煩再來找我");
 		cm.dispose();
 		return;
