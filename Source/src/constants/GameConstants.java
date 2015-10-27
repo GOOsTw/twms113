@@ -3,6 +3,7 @@ package constants;
 import client.inventory.MapleInventoryType;
 import client.inventory.MapleWeaponType;
 import client.status.MonsterStatus;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -233,10 +234,10 @@ public class GameConstants {
     }
 
     public static boolean isNoDelaySkill(int skillId) {
-        return skillId == SkillType.格鬥家.蓄能激發 
-                || skillId == SkillType.狂狼勇士2.強化連擊 
-                || skillId == SkillType.閃雷悍將2.蓄能激發 
-                ||  skillId == 2111007 || skillId == 2211007 || skillId == 2311007 || skillId == 32121003 || skillId == 35121005 || skillId == 35111004 || skillId == 35121013 || skillId == 35121003 || skillId == 22150004 || skillId == 22181004 || skillId == 11101002 || skillId == 51100002 || skillId == 13101002 || skillId == 24121000 || skillId == 112001008 || skillId == 22161005 || skillId == 22161005;
+        return skillId == SkillType.格鬥家.蓄能激發
+                || skillId == SkillType.狂狼勇士2.強化連擊
+                || skillId == SkillType.閃雷悍將2.蓄能激發
+                || skillId == 2111007 || skillId == 2211007 || skillId == 2311007 || skillId == 32121003 || skillId == 35121005 || skillId == 35111004 || skillId == 35121013 || skillId == 35121003 || skillId == 22150004 || skillId == 22181004 || skillId == 11101002 || skillId == 51100002 || skillId == 13101002 || skillId == 24121000 || skillId == 112001008 || skillId == 22161005 || skillId == 22161005;
     }
 
     public static boolean isMarrigeRing(int itemid) {
@@ -2154,6 +2155,15 @@ public class GameConstants {
         } else {
             return iid == original;
         }
+    }
+// Custom Balloon Tips on the Login Screen
+    private static final List<Balloon> lBalloon = Arrays.asList(
+            new Balloon("歡迎來到SyncMS", 236, 122),
+            new Balloon("禁止開外掛", 0, 276),
+            new Balloon("遊戲愉快", 196, 263));
+
+    public static List<Balloon> getBalloons() {
+        return lBalloon;
     }
 
     public static int getJobNumber(int jobz) {
