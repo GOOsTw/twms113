@@ -29,12 +29,15 @@ function action(mode, type, selection) {
 	var dat = parseInt(cm.getQuestRecord(160002).getCustomData());
         var chr = cm.getMap().getCharacterById(cm.getPlayer().getMarriageId());
 	var map = cm.getMap(680000401);
-	if (cm.getPlayer().getMarriageId() > 0) {
+	if (cm.getPlayer().getMarriageId() > 0 && chr != null) {
             cm.getPlayer().changeMap(map, map.getPortal(0));
-            chr.changeMap(map, map.getPortal(0));
+            chr.getPlayer().changeMap(map, map.getPortal(0));
 	    cm.dispose();
 	    return;
-               } else {
+        } else if ( chr == null ) {
+            cm.sendOk("你的另一半跑哪去了?");
+        } 
+        else {
 	    cm.dispose();
 	}
     }
