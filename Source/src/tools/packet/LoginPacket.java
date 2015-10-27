@@ -26,6 +26,8 @@ import java.util.Set;
 
 import client.MapleClient;
 import client.MapleCharacter;
+import constants.Balloon;
+import constants.GameConstants;
 import constants.ServerConstants;
 import handling.MaplePacket;
 import handling.SendPacketOpcode;
@@ -212,8 +214,13 @@ public class LoginPacket {
             mplew.write(serverId);
             mplew.writeShort(i - 1);
         }
-        mplew.writeShort(0);
-
+        //mplew.writeShort(0);
+        mplew.writeShort(GameConstants.getBalloons().size());
+        for (Balloon balloon : GameConstants.getBalloons()) {
+            mplew.writeShort(balloon.nX);
+            mplew.writeShort(balloon.nY);
+            mplew.writeMapleAsciiString(balloon.sMessage);
+        }
         return mplew.getPacket();
     }
 
