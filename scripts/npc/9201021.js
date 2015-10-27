@@ -31,7 +31,7 @@ function action(mode, type, selection) {
 	var map = cm.getMap(680000401);
 	if (cm.getPlayer().getMarriageId() > 0 && chr != null) {
             cm.getPlayer().changeMap(map, map.getPortal(0));
-            chr.getPlayer().changeMap(map, map.getPortal(0));
+            chr.changeMap(map, map.getPortal(0));
 	    cm.dispose();
 	    return;
         } else if ( chr == null ) {
