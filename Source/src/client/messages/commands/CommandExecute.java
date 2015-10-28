@@ -2,6 +2,7 @@ package client.messages.commands;
 
 import client.MapleClient;
 import constants.ServerConstants.CommandType;
+import java.util.List;
 
 /**
  * Interface for the executable part of a {@link CommandObject}.
@@ -16,15 +17,12 @@ public abstract class CommandExecute {
      * @param c the client executing this command
      * @param splitted the command and any arguments attached
      *
-     * @return 1 if you want to log the command, 0 if not. TODO: USE
+     * @return true if you want to log the command, false if not. TODO: USE
      * {@link #ReturnValue}
      */
-    public abstract int execute(MapleClient c, String[] splitted);
-    //1 = Success
-    //0 = Something Went Wrong
+    public abstract boolean execute(MapleClient c, List<String> splitted);
 
     enum ReturnValue {
-
         DONT_LOG,
         LOG;
     }
@@ -40,4 +38,6 @@ public abstract class CommandExecute {
             return CommandType.TRADE;
         }
     }
+    
+    public abstract String getMessage();
 }

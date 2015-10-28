@@ -35,8 +35,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import tools.FilePrinter;
 
 public class CommandProcessor {
@@ -108,7 +110,8 @@ public class CommandProcessor {
                 return true;
             }
             try {
-                int ret = co.execute(c, splitted); //Don't really care about the return value. ;D
+                boolean ret = co.execute(c, Arrays.asList(splitted));
+                return ret;
             } catch (Exception e) {
                 sendDisplayMessage(c, "有錯誤.", type);
                 if (c.getPlayer().isGM()) {
@@ -122,7 +125,6 @@ public class CommandProcessor {
             if (line.charAt(0) == PlayerGMRank.GM.getCommandPrefix() || line.charAt(0) == PlayerGMRank.ADMIN.getCommandPrefix() || line.charAt(0) == PlayerGMRank.INTERN.getCommandPrefix()) { //Redundant for now, but in case we change symbols later. This will become extensible.
                 String[] splitted = line.split(" ");
                 splitted[0] = splitted[0].toLowerCase();
-
                 if (line.charAt(0) == '!') { //GM Commands
                     CommandObject co = commands.get(splitted[0]);
                     if (co == null || co.getType() != type) {
@@ -130,8 +132,8 @@ public class CommandProcessor {
                         return true;
                     }
                     if (c.getPlayer().getGMLevel() >= co.getReqGMLevel()) {
-                        int ret = co.execute(c, splitted);
-                        if (ret > 0 && c.getPlayer() != null) { //incase d/c after command or something
+                        boolean ret = co.execute(c, Arrays.asList(splitted));
+                        if (ret && c.getPlayer() != null) { //incase d/c after command or something
                             logGMCommandToDB(c.getPlayer(), line);
                             if (c.getPlayer().getGMLevel() == 5) {
                                 System.out.println("＜超級管理員＞ " + c.getPlayer().getName() + " 使用了指令: " + line);
