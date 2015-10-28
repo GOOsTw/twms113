@@ -169,6 +169,7 @@ public class NPCHandler {
             case 4: { // Scripted Start Quest
                 final int npc = slea.readInt();
                 NPCScriptManager.getInstance().startQuest(c, npc, quest);
+                slea.readInt();
                 break;
             }
             case 5: { // Scripted End Quest
