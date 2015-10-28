@@ -109,7 +109,7 @@ public class AdminCommand {
     public static class SavePlayerShops extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             for (handling.channel.ChannelServer cserv : handling.channel.ChannelServer.getAllInstances()) {
                 cserv.closeAllMerchant();
             }
@@ -128,7 +128,7 @@ public class AdminCommand {
         private static Thread t = null;
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().dropMessage(6, "關閉伺服器中...");
             if (t == null || !t.isAlive()) {
                 t = new Thread(server.ShutdownServer.getInstance());
@@ -151,12 +151,12 @@ public class AdminCommand {
         private int minutesLeft = 0;
         private static Thread t = null;
 
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
 
-            if (splitted.size() < 2) {
+            if (splitted.length < 2) {
                 return false;
             }
-            minutesLeft = Integer.parseInt(splitted.get(1));
+            minutesLeft = Integer.parseInt(splitted[1]);
             c.getPlayer().dropMessage(6, "伺服器將在 " + minutesLeft + "分鐘後關閉. 請盡速關閉精靈商人 並下線.");
             if (ts == null && (t == null || !t.isAlive())) {
                 t = new Thread(ShutdownServer.getInstance());
@@ -197,7 +197,7 @@ public class AdminCommand {
         private int p = 0;
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                 List<MapleCharacter> chrs = cserv.getPlayerStorage().getAllCharactersThreadSafe();
                 for (MapleCharacter chr : chrs) {
@@ -219,7 +219,7 @@ public class AdminCommand {
     public static class LowHP extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().getStat().setHp((short) 1);
             c.getPlayer().getStat().setMp((short) 1);
             c.getPlayer().updateSingleStat(MapleStat.HP, 1);
@@ -236,7 +236,7 @@ public class AdminCommand {
     public static class Heal extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().getStat().setHp(c.getPlayer().getStat().getCurrentMaxHp());
             c.getPlayer().getStat().setMp(c.getPlayer().getStat().getCurrentMaxMp());
             c.getPlayer().updateSingleStat(MapleStat.HP, c.getPlayer().getStat().getCurrentMaxHp());
@@ -275,18 +275,18 @@ public class AdminCommand {
         }
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 3) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 3) {
                 return false;
             }
             StringBuilder sb = new StringBuilder(c.getPlayer().getName());
-            sb.append(" 鎖定原因 ").append(splitted.get(1)).append(": ").append(StringUtil.joinStringFrom(splitted.toArray(new String[splitted.size()]), 2));
-            MapleCharacter target = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1));
+            sb.append(" 鎖定原因 ").append(splitted[1]).append(": ").append(StringUtil.joinStringFrom(splitted, 2));
+            MapleCharacter target = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             if (target != null) {
                 if (c.getPlayer().getGMLevel() > target.getGMLevel() || c.getPlayer().isAdmin()) {
                     sb.append(" (IP: ").append(target.getClient().getSessionIPAddress()).append(")");
                     if (target.ban(sb.toString(), c.getPlayer().isAdmin(), false, hellban)) {
-                        c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功鎖定了 " + splitted.get(1) + ".");
+                        c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功鎖定了 " + splitted[1] + ".");
                     } else {
                         c.getPlayer().dropMessage(6, "[" + getCommand() + "] 封鎖失敗.");
                     }
@@ -295,10 +295,10 @@ public class AdminCommand {
 
                 }
             } else {
-                if (MapleCharacter.ban(splitted.get(1), sb.toString(), false, c.getPlayer().isAdmin() ? 250 : c.getPlayer().getGMLevel(), splitted.get(0).equals("!hellban"))) {
-                    c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功離線鎖定 " + splitted.get(1) + ".");
+                if (MapleCharacter.ban(splitted[1], sb.toString(), false, c.getPlayer().isAdmin() ? 250 : c.getPlayer().getGMLevel(), splitted[0].equals("!hellban"))) {
+                    c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功離線鎖定 " + splitted[1] + ".");
                 } else {
-                    c.getPlayer().dropMessage(6, "[" + getCommand() + "] Failed to ban " + splitted.get(1));
+                    c.getPlayer().dropMessage(6, "[" + getCommand() + "] Failed to ban " + splitted[1]);
                 }
             }
             return true;
@@ -330,15 +330,15 @@ public class AdminCommand {
         }
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 2) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
                 return false;
             }
             byte ret;
             if (hellban) {
-                ret = MapleClient.unHellban(splitted.get(1));
+                ret = MapleClient.unHellban(splitted[1]);
             } else {
-                ret = MapleClient.unban(splitted.get(1));
+                ret = MapleClient.unban(splitted[1]);
             }
             if (ret == -2) {
                 c.getPlayer().dropMessage(6, "[" + getCommand() + "] SQL 錯誤");
@@ -347,7 +347,7 @@ public class AdminCommand {
             } else {
                 c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功解除鎖定");
             }
-            byte ret_ = MapleClient.unbanIPMacs(splitted.get(1));
+            byte ret_ = MapleClient.unbanIPMacs(splitted[1]);
             if (ret_ == -2) {
                 c.getPlayer().dropMessage(6, "[" + getCommand() + "] SQL 錯誤.");
             } else if (ret_ == -1) {
@@ -371,11 +371,11 @@ public class AdminCommand {
     public static class UnbanIP extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 2) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
                 return false;
             }
-            byte ret_ = MapleClient.unbanIPMacs(splitted.get(1));
+            byte ret_ = MapleClient.unbanIPMacs(splitted[1]);
             if (ret_ == -2) {
                 c.getPlayer().dropMessage(6, "[unbanip] SQL 錯誤.");
             } else if (ret_ == -1) {
@@ -399,10 +399,10 @@ public class AdminCommand {
     public static class TempBan extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            final MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1));
-            final int reason = Integer.parseInt(splitted.get(2));
-            final int numDay = Integer.parseInt(splitted.get(3));
+        public boolean execute(MapleClient c, String splitted[]) {
+            final MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
+            final int reason = Integer.parseInt(splitted[2]);
+            final int numDay = Integer.parseInt(splitted[3]);
 
             final Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DATE, numDay);
@@ -413,7 +413,7 @@ public class AdminCommand {
 
             } else {
                 victim.tempban("由" + c.getPlayer().getName() + "暫時鎖定了", cal, reason, true);
-                c.getPlayer().dropMessage(6, "[tempban] " + splitted.get(1) + " 已成功被暫時鎖定至 " + df.format(cal.getTime()));
+                c.getPlayer().dropMessage(6, "[tempban] " + splitted[1] + " 已成功被暫時鎖定至 " + df.format(cal.getTime()));
             }
             return true;
         }
@@ -424,49 +424,19 @@ public class AdminCommand {
         }
     }
 
-    public static class DC extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            int level = 0;
-            MapleCharacter victim;
-            if (splitted.get(1).charAt(0) == '-') {
-                level = StringUtil.countCharacters(splitted.get(1), 'f');
-                victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(2));
-            } else {
-                victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1));
-            }
-            if (level < 2 && victim != null) {
-                victim.getMap().removePlayer(victim);
-                if (level >= 1) {
-                    victim.getClient().disconnect(true, false);
-                }
-
-            } else {
-                c.getPlayer().dropMessage(6, "[dc] 請使用 !dc -f 或是此玩家根本不存在.");
-            }
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!dc [-f] <玩家名稱> - 斷線玩家").toString();
-        }
-    }
-
     public static class Kill extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleCharacter player = c.getPlayer();
-            if (splitted.size() < 2) {
+            if (splitted.length < 2) {
                 return false;
             }
             MapleCharacter victim;
-            for (int i = 1; i < splitted.size(); i++) {
-                victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(i));
+            for (int i = 1; i < splitted.length; i++) {
+                victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[i]);
                 if (victim == null) {
-                    c.getPlayer().dropMessage(6, "[kill] 玩家 " + splitted.get(i) + " 不存在.");
+                    c.getPlayer().dropMessage(6, "[kill] 玩家 " + splitted[i] + " 不存在.");
                 } else {
                     if (player.allowedToTarget(victim)) {
                         victim.getStat().setHp((short) 0);
@@ -488,13 +458,13 @@ public class AdminCommand {
     public static class Skill extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 2) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
                 return false;
             }
-            ISkill skill = SkillFactory.getSkill(Integer.parseInt(splitted.get(1)));
-            byte level = (byte) CommandProcessorUtil.getOptionalIntArg(splitted.toArray(new String[splitted.size()]), 2, 1);
-            byte masterlevel = (byte) CommandProcessorUtil.getOptionalIntArg(splitted.toArray(new String[splitted.size()]), 3, 1);
+            ISkill skill = SkillFactory.getSkill(Integer.parseInt(splitted[1]));
+            byte level = (byte) CommandProcessorUtil.getOptionalIntArg(splitted, 2, 1);
+            byte masterlevel = (byte) CommandProcessorUtil.getOptionalIntArg(splitted, 3, 1);
             if (level > skill.getMaxLevel()) {
                 level = skill.getMaxLevel();
             }
@@ -511,15 +481,15 @@ public class AdminCommand {
     public static class Fame extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleCharacter player = c.getPlayer();
-            if (splitted.size() < 2) {
+            if (splitted.length < 2) {
                 return false;
             }
-            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1));
+            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             short fame = 0;
             try {
-                fame = Short.parseShort(splitted.get(2));
+                fame = Short.parseShort(splitted[2]);
             } catch (NumberFormatException nfe) {
                 c.getPlayer().dropMessage(6, "不合法的數字");
                 return false;
@@ -541,7 +511,7 @@ public class AdminCommand {
     public static class autoreg extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             LoginServer.autoRegister = !LoginServer.autoRegister;
             c.getPlayer().dropMessage(0, "[autoreg] " + (LoginServer.autoRegister ? "開啟" : "關閉"));
             System.out.println("[autoreg] " + (LoginServer.autoRegister ? "開啟" : "關閉"));
@@ -556,7 +526,7 @@ public class AdminCommand {
     public static class HealMap extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleCharacter player = c.getPlayer();
             for (MapleCharacter mch : player.getMap().getCharacters()) {
                 if (mch != null) {
@@ -578,7 +548,7 @@ public class AdminCommand {
     public static class GodMode extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleCharacter player = c.getPlayer();
             if (player.isInvincible()) {
                 player.setInvincible(false);
@@ -599,14 +569,14 @@ public class AdminCommand {
     public static class GiveSkill extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 3) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 3) {
                 return false;
             }
-            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1));
-            ISkill skill = SkillFactory.getSkill(Integer.parseInt(splitted.get(2)));
-            byte level = (byte) CommandProcessorUtil.getOptionalIntArg(splitted.toArray(new String[splitted.size()]), 3, 1);
-            byte masterlevel = (byte) CommandProcessorUtil.getOptionalIntArg(splitted.toArray(new String[splitted.size()]), 4, 1);
+            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
+            ISkill skill = SkillFactory.getSkill(Integer.parseInt(splitted[2]));
+            byte level = (byte) CommandProcessorUtil.getOptionalIntArg(splitted, 3, 1);
+            byte masterlevel = (byte) CommandProcessorUtil.getOptionalIntArg(splitted, 4, 1);
 
             if (level > skill.getMaxLevel()) {
                 level = skill.getMaxLevel();
@@ -624,8 +594,8 @@ public class AdminCommand {
     public static class SP extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            c.getPlayer().setRemainingSp(CommandProcessorUtil.getOptionalIntArg(splitted.toArray(new String[splitted.size()]), 1, 1));
+        public boolean execute(MapleClient c, String splitted[]) {
+            c.getPlayer().setRemainingSp(CommandProcessorUtil.getOptionalIntArg(splitted, 1, 1));
             c.sendPacket(MaplePacketCreator.updateSp(c.getPlayer(), false));
             return true;
         }
@@ -639,8 +609,8 @@ public class AdminCommand {
     public static class AP extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            c.getPlayer().setRemainingAp((short) CommandProcessorUtil.getOptionalIntArg(splitted.toArray(new String[splitted.size()]), 1, 1));
+        public boolean execute(MapleClient c, String splitted[]) {
+            c.getPlayer().setRemainingAp((short) CommandProcessorUtil.getOptionalIntArg(splitted, 1, 1));
             final List<Pair<MapleStat, Integer>> statupdate = new ArrayList<>();
             c.sendPacket(MaplePacketCreator.updateAp(c.getPlayer(), false));
             return true;
@@ -652,42 +622,16 @@ public class AdminCommand {
         }
     }
 
-    public static class Job extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            c.getPlayer().changeJob(Integer.parseInt(splitted.get(1)));
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!job <職業代碼> - 更換職業").toString();
-        }
-    }
-
-    public static class WhereAmI extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            c.getPlayer().dropMessage(5, "目前地圖 " + c.getPlayer().getMap().getId() + "座標 (" + String.valueOf(c.getPlayer().getPosition().x) + " , " + String.valueOf(c.getPlayer().getPosition().y) + ")");
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!whereami - 目前地圖").toString();
-        }
-    }
+   
 
     public static class Shop extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleShopFactory shop = MapleShopFactory.getInstance();
             int shopId = 0;
             try {
-                shopId = Integer.parseInt(splitted.get(1));
+                shopId = Integer.parseInt(splitted[1]);
             } catch (NumberFormatException ex) {
                 return false;
             }
@@ -710,8 +654,8 @@ public class AdminCommand {
         protected static ScheduledFuture<?> ts = null;
 
         @Override
-        public boolean execute(final MapleClient c, List<String> splitted) {
-            if (splitted.size() < 1) {
+        public boolean execute(final MapleClient c, String splitted[]) {
+            if (splitted.length < 1) {
                 return false;
             }
             if (ts != null) {
@@ -720,7 +664,7 @@ public class AdminCommand {
             }
             int minutesLeft = 0;
             try {
-                minutesLeft = Integer.parseInt(splitted.get(1));
+                minutesLeft = Integer.parseInt(splitted[1]);
             } catch (NumberFormatException ex) {
                 return false;
             }
@@ -755,11 +699,11 @@ public class AdminCommand {
     public static class GainCash extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 2) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
                 return false;
             }
-            c.getPlayer().modifyCSPoints(1, Integer.parseInt(splitted.get(1)), true);
+            c.getPlayer().modifyCSPoints(1, Integer.parseInt(splitted[1]), true);
             return true;
         }
 
@@ -772,11 +716,11 @@ public class AdminCommand {
     public static class GainMaplePoint extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 2) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
                 return false;
             }
-            c.getPlayer().modifyCSPoints(2, Integer.parseInt(splitted.get(1)), true);
+            c.getPlayer().modifyCSPoints(2, Integer.parseInt(splitted[1]), true);
             return true;
         }
 
@@ -789,11 +733,11 @@ public class AdminCommand {
     public static class GainPoint extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 2) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
                 return false;
             }
-            c.getPlayer().setPoints(c.getPlayer().getPoints() + Integer.parseInt(splitted.get(1)));
+            c.getPlayer().setPoints(c.getPlayer().getPoints() + Integer.parseInt(splitted[1]));
             return true;
         }
 
@@ -806,11 +750,11 @@ public class AdminCommand {
     public static class GainVP extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 2) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
                 return false;
             }
-            c.getPlayer().setVPoints(c.getPlayer().getVPoints() + Integer.parseInt(splitted.get(1)));
+            c.getPlayer().setVPoints(c.getPlayer().getVPoints() + Integer.parseInt(splitted[1]));
             return true;
         }
 
@@ -823,7 +767,7 @@ public class AdminCommand {
     public static class LevelUp extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             if (c.getPlayer().getLevel() < 200) {
                 c.getPlayer().gainExp(GameConstants.getExpNeededForLevel(c.getPlayer().getLevel()) + 1, true, false, true);
             }
@@ -836,71 +780,13 @@ public class AdminCommand {
         }
     }
 
-    public static class ClearInv extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            java.util.Map<Pair<Short, Short>, MapleInventoryType> eqs = new ArrayMap<>();
-            switch (splitted.get(1)) {
-                case "all":
-                    for (MapleInventoryType type : MapleInventoryType.values()) {
-                        for (IItem item : c.getPlayer().getInventory(type)) {
-                            eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), type);
-                        }
-                    }
-                    break;
-                case "eqped":
-                    for (IItem item : c.getPlayer().getInventory(MapleInventoryType.EQUIPPED)) {
-                        eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.EQUIPPED);
-                    }
-                    break;
-                case "eqp":
-                    for (IItem item : c.getPlayer().getInventory(MapleInventoryType.EQUIP)) {
-                        eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.EQUIP);
-                    }
-                    break;
-                case "use":
-                    for (IItem item : c.getPlayer().getInventory(MapleInventoryType.USE)) {
-                        eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.USE);
-                    }
-                    break;
-                case "setup":
-                    for (IItem item : c.getPlayer().getInventory(MapleInventoryType.SETUP)) {
-                        MapleInventoryType put = eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.SETUP);
-                    }
-                    break;
-                case "etc":
-                    for (IItem item : c.getPlayer().getInventory(MapleInventoryType.ETC)) {
-                        eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.ETC);
-                    }
-                    break;
-                case "cash":
-                    for (IItem item : c.getPlayer().getInventory(MapleInventoryType.CASH)) {
-                        eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.CASH);
-                    }
-                    break;
-                default:
-                    return false;
-            }
-            for (Entry<Pair<Short, Short>, MapleInventoryType> eq : eqs.entrySet()) {
-                MapleInventoryManipulator.removeFromSlot(c, eq.getValue(), eq.getKey().left, eq.getKey().right, false, false);
-            }
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!clearinv <all/eqped/eqp/use/setup/etc/cash> - 清理道具欄").toString();
-        }
-    }
-
     public static class UnlockInv extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             java.util.Map<IItem, MapleInventoryType> eqs = new ArrayMap<>();
             boolean add = false;
-            if (splitted.size() < 2 || splitted.get(1).equals("全部")) {
+            if (splitted.length < 2 || splitted[1].equals("全部")) {
                 for (MapleInventoryType type : MapleInventoryType.values()) {
                     for (IItem item : c.getPlayer().getInventory(type)) {
                         if (ItemFlag.LOCK.check(item.getFlag())) {
@@ -923,7 +809,7 @@ public class AdminCommand {
                         add = false;
                     }
                 }
-            } else if (splitted.get(1).equals("已裝備道具")) {
+            } else if (splitted[1].equals("已裝備道具")) {
                 for (IItem item : c.getPlayer().getInventory(MapleInventoryType.EQUIPPED)) {
                     if (ItemFlag.LOCK.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.LOCK.getValue()));
@@ -944,7 +830,7 @@ public class AdminCommand {
                     }
                     add = false;
                 }
-            } else if (splitted.get(1).equals("武器")) {
+            } else if (splitted[1].equals("武器")) {
                 for (IItem item : c.getPlayer().getInventory(MapleInventoryType.EQUIP)) {
                     if (ItemFlag.LOCK.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.LOCK.getValue()));
@@ -965,7 +851,7 @@ public class AdminCommand {
                     }
                     add = false;
                 }
-            } else if (splitted.get(1).equals("消耗")) {
+            } else if (splitted[1].equals("消耗")) {
                 for (IItem item : c.getPlayer().getInventory(MapleInventoryType.USE)) {
                     if (ItemFlag.LOCK.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.LOCK.getValue()));
@@ -986,7 +872,7 @@ public class AdminCommand {
                     }
                     add = false;
                 }
-            } else if (splitted.get(1).equals("裝飾")) {
+            } else if (splitted[1].equals("裝飾")) {
                 for (IItem item : c.getPlayer().getInventory(MapleInventoryType.SETUP)) {
                     if (ItemFlag.LOCK.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.LOCK.getValue()));
@@ -1007,7 +893,7 @@ public class AdminCommand {
                     }
                     add = false;
                 }
-            } else if (splitted.get(1).equals("其他")) {
+            } else if (splitted[1].equals("其他")) {
                 for (IItem item : c.getPlayer().getInventory(MapleInventoryType.ETC)) {
                     if (ItemFlag.LOCK.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.LOCK.getValue()));
@@ -1028,7 +914,7 @@ public class AdminCommand {
                     }
                     add = false;
                 }
-            } else if (splitted.get(1).equals("特殊")) {
+            } else if (splitted[1].equals("特殊")) {
                 for (IItem item : c.getPlayer().getInventory(MapleInventoryType.CASH)) {
                     if (ItemFlag.LOCK.check(item.getFlag())) {
                         item.setFlag((byte) (item.getFlag() - ItemFlag.LOCK.getValue()));
@@ -1068,9 +954,9 @@ public class AdminCommand {
     public static class Item extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            final int itemId = Integer.parseInt(splitted.get(1));
-            final short quantity = (short) CommandProcessorUtil.getOptionalIntArg(splitted.toArray(new String[splitted.size()]), 2, 1);
+        public boolean execute(MapleClient c, String splitted[]) {
+            final int itemId = Integer.parseInt(splitted[1]);
+            final short quantity = (short) CommandProcessorUtil.getOptionalIntArg(splitted, 2, 1);
 
             if (!c.getPlayer().isAdmin()) {
                 for (int i : GameConstants.itemBlock) {
@@ -1118,9 +1004,9 @@ public class AdminCommand {
     public static class Drop extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            final int itemId = Integer.parseInt(splitted.get(1));
-            final short quantity = (short) CommandProcessorUtil.getOptionalIntArg(splitted.toArray(new String[splitted.size()]), 2, 1);
+        public boolean execute(MapleClient c, String splitted[]) {
+            final int itemId = Integer.parseInt(splitted[1]);
+            final short quantity = (short) CommandProcessorUtil.getOptionalIntArg(splitted, 2, 1);
             MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
             if (GameConstants.isPet(itemId)) {
                 c.getPlayer().dropMessage(5, "寵物請到購物商城購買.");
@@ -1148,31 +1034,14 @@ public class AdminCommand {
         }
     }
 
-    public static class Level extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            c.getPlayer().setLevel(Short.parseShort(splitted.get(1)));
-            c.getPlayer().levelUp();
-            if (c.getPlayer().getExp() < 0) {
-                c.getPlayer().gainExp(-c.getPlayer().getExp(), false, false, true);
-            }
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!level [等級] - 更改等級").toString();
-        }
-    }
 
     public static class serverMsg extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() > 1) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length > 1) {
                 StringBuilder sb = new StringBuilder();
-                sb.append(StringUtil.joinStringFrom(splitted.toArray(new String[splitted.size()]), 1));
+                sb.append(StringUtil.joinStringFrom(splitted, 1));
                 for (ChannelServer ch : ChannelServer.getAllInstances()) {
                     ch.setServerMessage(sb.toString());
                 }
@@ -1192,13 +1061,13 @@ public class AdminCommand {
     public static class Say extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() > 1) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length > 1) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("[");
                 sb.append(c.getPlayer().getName());
                 sb.append("] ");
-                sb.append(StringUtil.joinStringFrom(splitted.toArray(new String[splitted.size()]), 1));
+                sb.append(StringUtil.joinStringFrom(splitted, 1));
                 World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, sb.toString()).getBytes());
             } else {
                 return false;
@@ -1215,23 +1084,23 @@ public class AdminCommand {
     public static class Letter extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 3) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 3) {
                 c.getPlayer().dropMessage(6, "指令規則: ");
                 return false;
             }
             int start, nstart;
-            if (splitted.get(1).equalsIgnoreCase("green")) {
+            if (splitted[1].equalsIgnoreCase("green")) {
                 start = 3991026;
                 nstart = 3990019;
-            } else if (splitted.get(1).equalsIgnoreCase("red")) {
+            } else if (splitted[1].equalsIgnoreCase("red")) {
                 start = 3991000;
                 nstart = 3990009;
             } else {
                 c.getPlayer().dropMessage(6, "未知的顏色!");
                 return true;
             }
-            String splitString = StringUtil.joinStringFrom(splitted.toArray(new String[splitted.size()]), 2);
+            String splitString = StringUtil.joinStringFrom(splitted, 2);
             List<Integer> chars = new ArrayList<Integer>();
             splitString = splitString.toUpperCase();
             // System.out.println(splitString);
@@ -1275,15 +1144,15 @@ public class AdminCommand {
     public static class Marry extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 3) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 3) {
                 return false;
             }
-            int itemId = Integer.parseInt(splitted.get(2));
+            int itemId = Integer.parseInt(splitted[2]);
             if (!GameConstants.isEffectRing(itemId)) {
                 c.getPlayer().dropMessage(6, "錯誤的戒指ID.");
             } else {
-                MapleCharacter fff = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1));
+                MapleCharacter fff = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
                 if (fff == null) {
                     c.getPlayer().dropMessage(6, "玩家必須上線");
                 } else {
@@ -1319,12 +1188,12 @@ public class AdminCommand {
     public static class ItemCheck extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 3 || splitted.get(1) == null || splitted.get(1).equals("") || splitted.get(2) == null || splitted.get(2).equals("")) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 3 || splitted[1] == null || splitted[1].equals("") || splitted[2] == null || splitted[2].equals("")) {
                 return false;
             } else {
-                int item = Integer.parseInt(splitted.get(2));
-                MapleCharacter chr = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1));
+                int item = Integer.parseInt(splitted[2]);
+                MapleCharacter chr = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
                 int itemamount = chr.getItemQuantity(item, true);
                 if (itemamount > 0) {
                     c.getPlayer().dropMessage(6, chr.getName() + " has " + itemamount + " (" + item + ").");
@@ -1344,7 +1213,7 @@ public class AdminCommand {
     public static class MobVac extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             for (final MapleMapObject mmo : c.getPlayer().getMap().getAllMonstersThreadsafe()) {
                 final MapleMonster monster = (MapleMonster) mmo;
                 c.getPlayer().getMap().broadcastMessage(MobPacket.moveMonster(false, -1, 0, 0, 0, 0, monster.getObjectId(), monster.getPosition(), c.getPlayer().getPosition(), c.getPlayer().getLastRes()));
@@ -1361,7 +1230,7 @@ public class AdminCommand {
 
     public static class ItemVac extends CommandExecute {
 
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             boolean ItemVac = c.getPlayer().getItemVac();
             if (ItemVac == false) {
                 c.getPlayer().stopItemVac();
@@ -1383,11 +1252,11 @@ public class AdminCommand {
     public static class Song extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 2) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
                 return false;
             }
-            c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.musicChange(splitted.get(1)));
+            c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.musicChange(splitted[1]));
             return true;
         }
 
@@ -1400,7 +1269,7 @@ public class AdminCommand {
     public static class 開啟自動活動 extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             final EventManager em = c.getChannelServer().getEventSM().getEventManager("AutomatedEvent");
             if (em != null) {
                 em.scheduleRandomEvent();
@@ -1417,7 +1286,7 @@ public class AdminCommand {
     public static class 活動開始 extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleEvent.onStartEvent(c.getPlayer());
             return true;
         }
@@ -1431,7 +1300,7 @@ public class AdminCommand {
     public static class 關閉活動入口 extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             if (c.getChannelServer().getEvent() == c.getPlayer().getMapId()) {
                 MapleEvent.setEvent(c.getChannelServer(), false);
                 c.getPlayer().dropMessage(5, "已經關閉活動入口，可以使用 !活動開始 來啟動。");
@@ -1451,8 +1320,8 @@ public class AdminCommand {
     public static class 選擇活動 extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            final MapleEventType type = MapleEventType.getByString(splitted.get(1));
+        public boolean execute(MapleClient c, String splitted[]) {
+            final MapleEventType type = MapleEventType.getByString(splitted[1]);
             if (type == null) {
                 final StringBuilder sb = new StringBuilder("目前開放的活動有: ");
                 for (MapleEventType t : MapleEventType.values()) {
@@ -1476,11 +1345,11 @@ public class AdminCommand {
     public static class CheckGash extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 2) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
                 return false;
             }
-            MapleCharacter chrs = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1));
+            MapleCharacter chrs = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             if (chrs == null) {
                 c.getPlayer().dropMessage(5, "找不到該角色");
             } else {
@@ -1498,16 +1367,16 @@ public class AdminCommand {
     public static class RemoveItem extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 3) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 3) {
                 return false;
             }
-            MapleCharacter chr = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1));
+            MapleCharacter chr = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             if (chr == null) {
                 c.getPlayer().dropMessage(6, "此玩家並不存在");
             } else {
-                chr.removeAll(Integer.parseInt(splitted.get(2)));
-                c.getPlayer().dropMessage(6, "所有ID為 " + splitted.get(2) + " 的道具已經從 " + splitted.get(1) + " 身上被移除了");
+                chr.removeAll(Integer.parseInt(splitted[2]));
+                c.getPlayer().dropMessage(6, "所有ID為 " + splitted[2] + " 的道具已經從 " + splitted[1] + " 身上被移除了");
             }
             return true;
 
@@ -1522,15 +1391,15 @@ public class AdminCommand {
     public static class LockItem extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 3) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 3) {
                 return false;
             }
-            MapleCharacter chr = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1));
+            MapleCharacter chr = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             if (chr == null) {
                 c.getPlayer().dropMessage(6, "此玩家並不存在");
             } else {
-                int itemid = Integer.parseInt(splitted.get(2));
+                int itemid = Integer.parseInt(splitted[2]);
                 MapleInventoryType type = GameConstants.getInventoryType(itemid);
                 for (IItem item : chr.getInventory(type).listById(itemid)) {
                     item.setFlag((byte) (item.getFlag() | ItemFlag.LOCK.getValue()));
@@ -1543,7 +1412,7 @@ public class AdminCommand {
                         chr.getClient().sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.UPDATE, item)));
                     }
                 }
-                c.getPlayer().dropMessage(6, "玩家 " + splitted.get(1) + "身上所有ID為 " + splitted.get(2) + " 的道具已經從鎖定了");
+                c.getPlayer().dropMessage(6, "玩家 " + splitted[1] + "身上所有ID為 " + splitted[2] + " 的道具已經從鎖定了");
             }
             return true;
         }
@@ -1557,7 +1426,7 @@ public class AdminCommand {
     public static class KillMap extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             for (MapleCharacter map : c.getPlayer().getMap().getCharactersThreadsafe()) {
                 if (map != null && !map.isGM()) {
                     map.getStat().setHp((short) 0);
@@ -1578,13 +1447,13 @@ public class AdminCommand {
     public static class SpeakMega extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleCharacter victim = null;
-            if (splitted.size() >= 2) {
-                victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1));
+            if (splitted.length >= 2) {
+                victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             }
             try {
-                World.Broadcast.broadcastSmega(MaplePacketCreator.serverNotice(3, victim == null ? c.getChannel() : victim.getClient().getChannel(), victim == null ? splitted.get(1) : victim.getName() + " : " + StringUtil.joinStringFrom(splitted.toArray(new String[splitted.size()]), 2), true).getBytes());
+                World.Broadcast.broadcastSmega(MaplePacketCreator.serverNotice(3, victim == null ? c.getChannel() : victim.getClient().getChannel(), victim == null ? splitted[1] : victim.getName() + " : " + StringUtil.joinStringFrom(splitted, 2), true).getBytes());
             } catch (Exception e) {
                 return false;
             }
@@ -1600,13 +1469,13 @@ public class AdminCommand {
     public static class Speak extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1));
+        public boolean execute(MapleClient c, String splitted[]) {
+            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             if (victim == null) {
-                c.getPlayer().dropMessage(5, "找不到 '" + splitted.get(1));
+                c.getPlayer().dropMessage(5, "找不到 '" + splitted[1]);
                 return false;
             } else {
-                victim.getMap().broadcastMessage(MaplePacketCreator.getChatText(victim.getId(), StringUtil.joinStringFrom(splitted.toArray(new String[splitted.size()]), 2), victim.isGM(), 0));
+                victim.getMap().broadcastMessage(MaplePacketCreator.getChatText(victim.getId(), StringUtil.joinStringFrom(splitted, 2), victim.isGM(), 0));
             }
             return true;
         }
@@ -1620,10 +1489,10 @@ public class AdminCommand {
     public static class SpeakMap extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             for (MapleCharacter victim : c.getPlayer().getMap().getCharactersThreadsafe()) {
                 if (victim.getId() != c.getPlayer().getId()) {
-                    victim.getMap().broadcastMessage(MaplePacketCreator.getChatText(victim.getId(), StringUtil.joinStringFrom(splitted.toArray(new String[splitted.size()]), 1), victim.isGM(), 0));
+                    victim.getMap().broadcastMessage(MaplePacketCreator.getChatText(victim.getId(), StringUtil.joinStringFrom(splitted, 1), victim.isGM(), 0));
                 }
             }
             return true;
@@ -1639,10 +1508,10 @@ public class AdminCommand {
     public static class SpeakChannel extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             for (MapleCharacter victim : c.getChannelServer().getPlayerStorage().getAllCharacters()) {
                 if (victim.getId() != c.getPlayer().getId()) {
-                    victim.getMap().broadcastMessage(MaplePacketCreator.getChatText(victim.getId(), StringUtil.joinStringFrom(splitted.toArray(new String[splitted.size()]), 1), victim.isGM(), 0));
+                    victim.getMap().broadcastMessage(MaplePacketCreator.getChatText(victim.getId(), StringUtil.joinStringFrom(splitted, 1), victim.isGM(), 0));
                 }
             }
             return true;
@@ -1658,11 +1527,11 @@ public class AdminCommand {
     public static class SpeakWorld extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                 for (MapleCharacter victim : cserv.getPlayerStorage().getAllCharacters()) {
                     if (victim.getId() != c.getPlayer().getId()) {
-                        victim.getMap().broadcastMessage(MaplePacketCreator.getChatText(victim.getId(), StringUtil.joinStringFrom(splitted.toArray(new String[splitted.size()]), 1), victim.isGM(), 0));
+                        victim.getMap().broadcastMessage(MaplePacketCreator.getChatText(victim.getId(), StringUtil.joinStringFrom(splitted, 1), victim.isGM(), 0));
                     }
                 }
             }
@@ -1678,61 +1547,61 @@ public class AdminCommand {
     public static class Disease extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 3) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 3) {
                 c.getPlayer().dropMessage(6, "");
                 return false;
             }
             int type = 0;
             MapleDisease dis = null;
-            if (splitted.get(1).equalsIgnoreCase("SEAL")) {
+            if (splitted[1].equalsIgnoreCase("SEAL")) {
                 type = 120;
-            } else if (splitted.get(1).equalsIgnoreCase("DARKNESS")) {
+            } else if (splitted[1].equalsIgnoreCase("DARKNESS")) {
                 type = 121;
-            } else if (splitted.get(1).equalsIgnoreCase("WEAKEN")) {
+            } else if (splitted[1].equalsIgnoreCase("WEAKEN")) {
                 type = 122;
-            } else if (splitted.get(1).equalsIgnoreCase("STUN")) {
+            } else if (splitted[1].equalsIgnoreCase("STUN")) {
                 type = 123;
-            } else if (splitted.get(1).equalsIgnoreCase("CURSE")) {
+            } else if (splitted[1].equalsIgnoreCase("CURSE")) {
                 type = 124;
-            } else if (splitted.get(1).equalsIgnoreCase("POISON")) {
+            } else if (splitted[1].equalsIgnoreCase("POISON")) {
                 type = 125;
-            } else if (splitted.get(1).equalsIgnoreCase("SLOW")) {
+            } else if (splitted[1].equalsIgnoreCase("SLOW")) {
                 type = 126;
-            } else if (splitted.get(1).equalsIgnoreCase("SEDUCE")) {
+            } else if (splitted[1].equalsIgnoreCase("SEDUCE")) {
                 type = 128;
-            } else if (splitted.get(1).equalsIgnoreCase("REVERSE")) {
+            } else if (splitted[1].equalsIgnoreCase("REVERSE")) {
                 type = 132;
-            } else if (splitted.get(1).equalsIgnoreCase("ZOMBIFY")) {
+            } else if (splitted[1].equalsIgnoreCase("ZOMBIFY")) {
                 type = 133;
-            } else if (splitted.get(1).equalsIgnoreCase("POTION")) {
+            } else if (splitted[1].equalsIgnoreCase("POTION")) {
                 type = 134;
-            } else if (splitted.get(1).equalsIgnoreCase("SHADOW")) {
+            } else if (splitted[1].equalsIgnoreCase("SHADOW")) {
                 type = 135;
-            } else if (splitted.get(1).equalsIgnoreCase("BLIND")) {
+            } else if (splitted[1].equalsIgnoreCase("BLIND")) {
                 type = 136;
-            } else if (splitted.get(1).equalsIgnoreCase("FREEZE")) {
+            } else if (splitted[1].equalsIgnoreCase("FREEZE")) {
                 type = 137;
             } else {
                 return false;
             }
             dis = MapleDisease.getBySkill(type);
-            if (splitted.size() == 4) {
-                MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(2));
+            if (splitted.length == 4) {
+                MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[2]);
                 if (victim == null) {
                     c.getPlayer().dropMessage(5, "找不到此玩家");
                 } else {
                     victim.setChair(0);
                     victim.getClient().sendPacket(MaplePacketCreator.cancelChair(-1));
                     victim.getMap().broadcastMessage(victim, MaplePacketCreator.showChair(c.getPlayer().getId(), 0), false);
-                    victim.giveDebuff(dis, MobSkillFactory.getMobSkill(type, CommandProcessorUtil.getOptionalIntArg(splitted.toArray(new String[splitted.size()]), 3, 1)));
+                    victim.giveDebuff(dis, MobSkillFactory.getMobSkill(type, CommandProcessorUtil.getOptionalIntArg(splitted, 3, 1)));
                 }
             } else {
                 for (MapleCharacter victim : c.getPlayer().getMap().getCharactersThreadsafe()) {
                     victim.setChair(0);
                     victim.getClient().sendPacket(MaplePacketCreator.cancelChair(-1));
                     victim.getMap().broadcastMessage(victim, MaplePacketCreator.showChair(c.getPlayer().getId(), 0), false);
-                    victim.giveDebuff(dis, MobSkillFactory.getMobSkill(type, CommandProcessorUtil.getOptionalIntArg(splitted.toArray(new String[splitted.size()]), 2, 1)));
+                    victim.giveDebuff(dis, MobSkillFactory.getMobSkill(type, CommandProcessorUtil.getOptionalIntArg(splitted, 2, 1)));
                 }
             }
             return true;
@@ -1748,10 +1617,10 @@ public class AdminCommand {
     public static class SendAllNote extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
 
-            if (splitted.size() >= 1) {
-                String text = StringUtil.joinStringFrom(splitted.toArray(new String[splitted.size()]), 1);
+            if (splitted.length >= 1) {
+                String text = StringUtil.joinStringFrom(splitted, 1);
                 for (MapleCharacter mch : c.getChannelServer().getPlayerStorage().getAllCharacters()) {
                     c.getPlayer().sendNote(mch.getName(), text);
                 }
@@ -1770,17 +1639,17 @@ public class AdminCommand {
     public static class giveMeso extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 2) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
                 return false;
             }
-            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1));
+            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             if (victim == null) {
-                c.getPlayer().dropMessage(5, "找不到 '" + splitted.get(1));
+                c.getPlayer().dropMessage(5, "找不到 '" + splitted[1]);
             } else {
-                victim.gainMeso(Integer.parseInt(splitted.get(2)), true);
-                return true;
+                victim.gainMeso(Integer.parseInt(splitted[2]), true);
             }
+            return true;
         }
 
         @Override
@@ -1792,13 +1661,13 @@ public class AdminCommand {
     public static class MesoEveryone extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 2) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
                 return false;
             }
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                 for (MapleCharacter mch : cserv.getPlayerStorage().getAllCharacters()) {
-                    mch.gainMeso(Integer.parseInt(splitted.get(1)), true);
+                    mch.gainMeso(Integer.parseInt(splitted[1]), true);
                 }
             }
             return true;
@@ -1813,7 +1682,7 @@ public class AdminCommand {
     public static class CloneMe extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().cloneLook();
             return true;
         }
@@ -1827,12 +1696,12 @@ public class AdminCommand {
     public static class DisposeClones extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().dropMessage(6, c.getPlayer().getCloneSize() + "個克龍體消失了.");
             c.getPlayer().disposeClones();
             return true;
         }
-        
+
         @Override
         public String getMessage() {
             return new StringBuilder().append("!disposeclones - 摧毀克龍體").toString();
@@ -1842,11 +1711,11 @@ public class AdminCommand {
     public static class Monitor extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if(splitted.size() < 2) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
                 return false;
             }
-            MapleCharacter target = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1));
+            MapleCharacter target = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             if (target != null) {
                 if (target.getClient().isMonitored()) {
                     target.getClient().setMonitored(false);
@@ -1860,7 +1729,7 @@ public class AdminCommand {
             }
             return true;
         }
-        
+
         @Override
         public String getMessage() {
             return new StringBuilder().append("!monitor <玩家> - 記錄玩家資訊").toString();
@@ -1870,7 +1739,7 @@ public class AdminCommand {
     public static class PermWeather extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             if (c.getPlayer().getMap().getPermanentWeather() > 0) {
                 c.getPlayer().getMap().setPermanentWeather(0);
                 c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.removeMapEffect());
@@ -1887,92 +1756,108 @@ public class AdminCommand {
             }
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!permweather - 設定天氣").toString();
+
+        }
     }
 
     public static class CharInfo extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
+
+            if (splitted.length < 2) {
+                return false;
+            }
             final StringBuilder builder = new StringBuilder();
-            final MapleCharacter other = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1));
+            final MapleCharacter other = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             if (other == null) {
-                builder.append("...不存在");
+                builder.append("角色不存在");
                 c.getPlayer().dropMessage(6, builder.toString());
-                return 0;
+            } else {
+                if (other.getClient().getLastPing() <= 0) {
+                    other.getClient().sendPing();
+                }
+                builder.append(MapleClient.getLogMessage(other, ""));
+                builder.append(" 在 ").append(other.getPosition().x);
+                builder.append(" /").append(other.getPosition().y);
+
+                builder.append(" || 血量 : ");
+                builder.append(other.getStat().getHp());
+                builder.append(" /");
+                builder.append(other.getStat().getCurrentMaxHp());
+
+                builder.append(" || 魔量 : ");
+                builder.append(other.getStat().getMp());
+                builder.append(" /");
+                builder.append(other.getStat().getCurrentMaxMp());
+
+                builder.append(" || 物理攻擊力 : ");
+                builder.append(other.getStat().getTotalWatk());
+                builder.append(" || 魔法攻擊力 : ");
+                builder.append(other.getStat().getTotalMagic());
+                builder.append(" || 最高攻擊 : ");
+                builder.append(other.getStat().getCurrentMaxBaseDamage());
+                builder.append(" || 攻擊%數 : ");
+                builder.append(other.getStat().dam_r);
+                builder.append(" || BOSS攻擊%數 : ");
+                builder.append(other.getStat().bossdam_r);
+
+                builder.append(" || 力量 : ");
+                builder.append(other.getStat().getStr());
+                builder.append(" || 敏捷 : ");
+                builder.append(other.getStat().getDex());
+                builder.append(" || 智力 : ");
+                builder.append(other.getStat().getInt());
+                builder.append(" || 幸運 : ");
+                builder.append(other.getStat().getLuk());
+
+                builder.append(" || 全部力量 : ");
+                builder.append(other.getStat().getTotalStr());
+                builder.append(" || 全部敏捷 : ");
+                builder.append(other.getStat().getTotalDex());
+                builder.append(" || 全部智力 : ");
+                builder.append(other.getStat().getTotalInt());
+                builder.append(" || 全部幸運 : ");
+                builder.append(other.getStat().getTotalLuk());
+
+                builder.append(" || 經驗值 : ");
+                builder.append(other.getExp());
+
+                builder.append(" || 組隊狀態 : ");
+                builder.append(other.getParty() != null);
+
+                builder.append(" || 交易狀態: ");
+                builder.append(other.getTrade() != null);
+                builder.append(" || Latency: ");
+                builder.append(other.getClient().getLatency());
+                builder.append(" || 最後PING: ");
+                builder.append(other.getClient().getLastPing());
+                builder.append(" || 最後PONG: ");
+                builder.append(other.getClient().getLastPong());
+                builder.append(" || IP: ");
+                builder.append(other.getClient().getSessionIPAddress());
+                other.getClient().DebugMessage(builder);
+
+                c.getPlayer().dropMessage(6, builder.toString());
             }
-            if (other.getClient().getLastPing() <= 0) {
-                other.getClient().sendPing();
-            }
-            builder.append(MapleClient.getLogMessage(other, ""));
-            builder.append(" 在 ").append(other.getPosition().x);
-            builder.append(" /").append(other.getPosition().y);
-
-            builder.append(" || 血量 : ");
-            builder.append(other.getStat().getHp());
-            builder.append(" /");
-            builder.append(other.getStat().getCurrentMaxHp());
-
-            builder.append(" || 魔量 : ");
-            builder.append(other.getStat().getMp());
-            builder.append(" /");
-            builder.append(other.getStat().getCurrentMaxMp());
-
-            builder.append(" || 物理攻擊力 : ");
-            builder.append(other.getStat().getTotalWatk());
-            builder.append(" || 魔法攻擊力 : ");
-            builder.append(other.getStat().getTotalMagic());
-            builder.append(" || 最高攻擊 : ");
-            builder.append(other.getStat().getCurrentMaxBaseDamage());
-            builder.append(" || 攻擊%數 : ");
-            builder.append(other.getStat().dam_r);
-            builder.append(" || BOSS攻擊%數 : ");
-            builder.append(other.getStat().bossdam_r);
-
-            builder.append(" || 力量 : ");
-            builder.append(other.getStat().getStr());
-            builder.append(" || 敏捷 : ");
-            builder.append(other.getStat().getDex());
-            builder.append(" || 智力 : ");
-            builder.append(other.getStat().getInt());
-            builder.append(" || 幸運 : ");
-            builder.append(other.getStat().getLuk());
-
-            builder.append(" || 全部力量 : ");
-            builder.append(other.getStat().getTotalStr());
-            builder.append(" || 全部敏捷 : ");
-            builder.append(other.getStat().getTotalDex());
-            builder.append(" || 全部智力 : ");
-            builder.append(other.getStat().getTotalInt());
-            builder.append(" || 全部幸運 : ");
-            builder.append(other.getStat().getTotalLuk());
-
-            builder.append(" || 經驗值 : ");
-            builder.append(other.getExp());
-
-            builder.append(" || 組隊狀態 : ");
-            builder.append(other.getParty() != null);
-
-            builder.append(" || 交易狀態: ");
-            builder.append(other.getTrade() != null);
-            builder.append(" || Latency: ");
-            builder.append(other.getClient().getLatency());
-            builder.append(" || 最後PING: ");
-            builder.append(other.getClient().getLastPing());
-            builder.append(" || 最後PONG: ");
-            builder.append(other.getClient().getLastPong());
-            builder.append(" || IP: ");
-            builder.append(other.getClient().getSessionIPAddress());
-            other.getClient().DebugMessage(builder);
-
-            c.getPlayer().dropMessage(6, builder.toString());
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!charinfo <角色名稱> - 查看角色狀態").toString();
+
         }
     }
 
-    public static class WhosThere extends CommandExecute {
+    public static class whoishere extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             StringBuilder builder = new StringBuilder("在此地圖的玩家: ");
             for (MapleCharacter chr : c.getPlayer().getMap().getCharactersThreadsafe()) {
                 if (builder.length() > 150) { // wild guess :o
@@ -1987,12 +1872,18 @@ public class AdminCommand {
             c.getPlayer().dropMessage(6, builder.toString());
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!whoishere - 查看目前地圖上的玩家").toString();
+
+        }
     }
 
     public static class Cheaters extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             List<CheaterData> cheaters = World.getCheaters();
             for (int x = cheaters.size() - 1; x >= 0; x--) {
                 CheaterData cheater = cheaters.get(x);
@@ -2005,7 +1896,7 @@ public class AdminCommand {
     public static class Connected extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             java.util.Map<Integer, Integer> connected = World.getConnected();
             StringBuilder conStr = new StringBuilder("已連接的客戶端: ");
             boolean first = true;
@@ -2033,8 +1924,8 @@ public class AdminCommand {
     public static class ResetQuest extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            MapleQuest.getInstance(Integer.parseInt(splitted.get(1))).forfeit(c.getPlayer());
+        public boolean execute(MapleClient c, String splitted[]) {
+            MapleQuest.getInstance(Integer.parseInt(splitted[1])).forfeit(c.getPlayer());
             return true;
         }
     }
@@ -2042,8 +1933,8 @@ public class AdminCommand {
     public static class StartQuest extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            MapleQuest.getInstance(Integer.parseInt(splitted.get(1))).start(c.getPlayer(), Integer.parseInt(splitted.get(2)));
+        public boolean execute(MapleClient c, String splitted[]) {
+            MapleQuest.getInstance(Integer.parseInt(splitted[1])).start(c.getPlayer(), Integer.parseInt(splitted[2]));
             return true;
         }
     }
@@ -2051,8 +1942,8 @@ public class AdminCommand {
     public static class CompleteQuest extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            MapleQuest.getInstance(Integer.parseInt(splitted.get(1))).complete(c.getPlayer(), Integer.parseInt(splitted.get(2)), Integer.parseInt(splitted[3]));
+        public boolean execute(MapleClient c, String splitted[]) {
+            MapleQuest.getInstance(Integer.parseInt(splitted[1])).complete(c.getPlayer(), Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
             return true;
         }
     }
@@ -2060,8 +1951,8 @@ public class AdminCommand {
     public static class FStartQuest extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            MapleQuest.getInstance(Integer.parseInt(splitted.get(1))).forceStart(c.getPlayer(), Integer.parseInt(splitted.get(2)), splitted.size() >= 4 ? splitted[3] : null);
+        public boolean execute(MapleClient c, String splitted[]) {
+            MapleQuest.getInstance(Integer.parseInt(splitted[1])).forceStart(c.getPlayer(), Integer.parseInt(splitted[2]), splitted.length >= 4 ? splitted[3] : null);
             return true;
         }
     }
@@ -2069,8 +1960,8 @@ public class AdminCommand {
     public static class FCompleteQuest extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            MapleQuest.getInstance(Integer.parseInt(splitted.get(1))).forceComplete(c.getPlayer(), Integer.parseInt(splitted.get(2)));
+        public boolean execute(MapleClient c, String splitted[]) {
+            MapleQuest.getInstance(Integer.parseInt(splitted[1])).forceComplete(c.getPlayer(), Integer.parseInt(splitted[2]));
             return true;
         }
     }
@@ -2078,8 +1969,8 @@ public class AdminCommand {
     public static class FStartOther extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            MapleQuest.getInstance(Integer.parseInt(splitted.get(2))).forceStart(c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1)), Integer.parseInt(splitted[3]), splitted.size() >= 4 ? splitted[4] : null);
+        public boolean execute(MapleClient c, String splitted[]) {
+            MapleQuest.getInstance(Integer.parseInt(splitted[2])).forceStart(c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]), Integer.parseInt(splitted[3]), splitted.length >= 4 ? splitted[4] : null);
             return true;
         }
     }
@@ -2087,8 +1978,8 @@ public class AdminCommand {
     public static class FCompleteOther extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            MapleQuest.getInstance(Integer.parseInt(splitted.get(2))).forceComplete(c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1)), Integer.parseInt(splitted[3]));
+        public boolean execute(MapleClient c, String splitted[]) {
+            MapleQuest.getInstance(Integer.parseInt(splitted[2])).forceComplete(c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]), Integer.parseInt(splitted[3]));
             return true;
         }
     }
@@ -2096,7 +1987,7 @@ public class AdminCommand {
     public static class NearestPortal extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MaplePortal portal = c.getPlayer().getMap().findClosestSpawnpoint(c.getPlayer().getPosition());
             c.getPlayer().dropMessage(6, portal.getName() + " id: " + portal.getId() + " script: " + portal.getScriptName());
 
@@ -2107,7 +1998,7 @@ public class AdminCommand {
     public static class SpawnDebug extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().dropMessage(6, c.getPlayer().getMap().spawnDebug());
             return true;
         }
@@ -2116,12 +2007,12 @@ public class AdminCommand {
     public static class Threads extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             Thread[] threads = new Thread[Thread.activeCount()];
             Thread.enumerate(threads);
             String filter = "";
-            if (splitted.size() > 1) {
-                filter = splitted.get(1);
+            if (splitted.length > 1) {
+                filter = splitted[1];
             }
             for (int i = 0; i < threads.length; i++) {
                 String tstring = threads[i].toString();
@@ -2136,13 +2027,13 @@ public class AdminCommand {
     public static class ShowTrace extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 2) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
                 throw new IllegalArgumentException();
             }
             Thread[] threads = new Thread[Thread.activeCount()];
             Thread.enumerate(threads);
-            Thread t = threads[Integer.parseInt(splitted.get(1))];
+            Thread t = threads[Integer.parseInt(splitted[1])];
             c.getPlayer().dropMessage(6, t.toString() + ":");
             for (StackTraceElement elem : t.getStackTrace()) {
                 c.getPlayer().dropMessage(6, elem.toString());
@@ -2154,7 +2045,7 @@ public class AdminCommand {
     public static class FakeRelog extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleCharacter player = c.getPlayer();
             c.sendPacket(MaplePacketCreator.getCharInfo(player));
             player.getMap().removePlayer(player);
@@ -2166,12 +2057,12 @@ public class AdminCommand {
     public static class ToggleOffense extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             try {
-                CheatingOffense co = CheatingOffense.valueOf(splitted.get(1));
+                CheatingOffense co = CheatingOffense.valueOf(splitted[1]);
                 co.setEnabled(!co.isEnabled());
             } catch (IllegalArgumentException iae) {
-                c.getPlayer().dropMessage(6, "Offense " + splitted.get(1) + " not found");
+                c.getPlayer().dropMessage(6, "Offense " + splitted[1] + " not found");
             }
             return true;
         }
@@ -2180,7 +2071,7 @@ public class AdminCommand {
     public static class TDrops extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().getMap().toggleDrops();
             return true;
         }
@@ -2189,7 +2080,7 @@ public class AdminCommand {
     public static class TMegaphone extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             World.toggleMegaphoneMuteState();
             c.getPlayer().dropMessage(6, "Megaphone state : " + (c.getChannelServer().getMegaphoneMuteState() ? "Enabled" : "Disabled"));
             return true;
@@ -2199,9 +2090,9 @@ public class AdminCommand {
     public static class SReactor extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            MapleReactorStats reactorSt = MapleReactorFactory.getReactor(Integer.parseInt(splitted.get(1)));
-            MapleReactor reactor = new MapleReactor(reactorSt, Integer.parseInt(splitted.get(1)));
+        public boolean execute(MapleClient c, String splitted[]) {
+            MapleReactorStats reactorSt = MapleReactorFactory.getReactor(Integer.parseInt(splitted[1]));
+            MapleReactor reactor = new MapleReactor(reactorSt, Integer.parseInt(splitted[1]));
             reactor.setDelay(-1);
             reactor.setPosition(c.getPlayer().getPosition());
             c.getPlayer().getMap().spawnReactor(reactor);
@@ -2212,8 +2103,8 @@ public class AdminCommand {
     public static class HReactor extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            c.getPlayer().getMap().getReactorByOid(Integer.parseInt(splitted.get(1))).hitReactor(c);
+        public boolean execute(MapleClient c, String splitted[]) {
+            c.getPlayer().getMap().getReactorByOid(Integer.parseInt(splitted[1])).hitReactor(c);
             return true;
         }
     }
@@ -2221,16 +2112,16 @@ public class AdminCommand {
     public static class DReactor extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleMap map = c.getPlayer().getMap();
             List<MapleMapObject> reactors = map.getMapObjectsInRange(c.getPlayer().getPosition(), Double.POSITIVE_INFINITY, Arrays.asList(MapleMapObjectType.REACTOR));
-            if (splitted.get(1).equals("all")) {
+            if (splitted[1].equals("all")) {
                 for (MapleMapObject reactorL : reactors) {
                     MapleReactor reactor2l = (MapleReactor) reactorL;
                     c.getPlayer().getMap().destroyReactor(reactor2l.getObjectId());
                 }
             } else {
-                c.getPlayer().getMap().destroyReactor(Integer.parseInt(splitted.get(1)));
+                c.getPlayer().getMap().destroyReactor(Integer.parseInt(splitted[1]));
             }
             return true;
         }
@@ -2239,7 +2130,7 @@ public class AdminCommand {
     public static class ResetReactor extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().getMap().resetReactors();
             return true;
         }
@@ -2248,8 +2139,8 @@ public class AdminCommand {
     public static class SetReactor extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            c.getPlayer().getMap().setReactorState(Byte.parseByte(splitted.get(1)));
+        public boolean execute(MapleClient c, String splitted[]) {
+            c.getPlayer().getMap().setReactorState(Byte.parseByte(splitted[1]));
             return true;
         }
     }
@@ -2257,7 +2148,7 @@ public class AdminCommand {
     public static class RemoveDrops extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().dropMessage(5, "Cleared " + c.getPlayer().getMap().getNumItems() + " drops");
             c.getPlayer().getMap().removeDrops();
             return true;
@@ -2267,10 +2158,10 @@ public class AdminCommand {
     public static class ExpRate extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() > 1) {
-                final int rate = Integer.parseInt(splitted.get(1));
-                if (splitted.size() > 2 && splitted.get(2).equalsIgnoreCase("all")) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length > 1) {
+                final int rate = Integer.parseInt(splitted[1]);
+                if (splitted.length > 2 && splitted[2].equalsIgnoreCase("all")) {
                     for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                         cserv.setExpRate(rate);
                     }
@@ -2288,10 +2179,10 @@ public class AdminCommand {
     public static class DropRate extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() > 1) {
-                final int rate = Integer.parseInt(splitted.get(1));
-                if (splitted.size() > 2 && splitted.get(2).equalsIgnoreCase("all")) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length > 1) {
+                final int rate = Integer.parseInt(splitted[1]);
+                if (splitted.length > 2 && splitted[2].equalsIgnoreCase("all")) {
                     for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                         cserv.setDropRate(rate);
                     }
@@ -2309,10 +2200,10 @@ public class AdminCommand {
     public static class MesoRate extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() > 1) {
-                final int rate = Integer.parseInt(splitted.get(1));
-                if (splitted.size() > 2 && splitted.get(2).equalsIgnoreCase("all")) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length > 1) {
+                final int rate = Integer.parseInt(splitted[1]);
+                if (splitted.length > 2 && splitted[2].equalsIgnoreCase("all")) {
                     for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                         cserv.setMesoRate(rate);
                     }
@@ -2330,10 +2221,10 @@ public class AdminCommand {
     public static class CashRate extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() > 1) {
-                final int rate = Integer.parseInt(splitted.get(1));
-                if (splitted.size() > 2 && splitted.get(2).equalsIgnoreCase("all")) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length > 1) {
+                final int rate = Integer.parseInt(splitted[1]);
+                if (splitted.length > 2 && splitted[2].equalsIgnoreCase("all")) {
                     for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                         cserv.setCashRate(rate);
                     }
@@ -2351,7 +2242,7 @@ public class AdminCommand {
     /*    public static class ListSquads extends CommandExecute {
 
      @Override
-     public boolean execute(MapleClient c, List<String> splitted) {
+     public boolean execute(MapleClient c, String splitted[]) {
      for (Entry<String, MapleSquad> squads : c.getChannelServer().getAllSquads().entrySet()) {
      c.getPlayer().dropMessage(5, "TYPE: " + squads.getKey() + ", Leader: " + squads.getValue().getLeader().getName() + ", status: " + squads.getValue().getStatus() + ", numMembers: " + squads.getValue().getSquadSize() + ", numBanned: " + squads.getValue().getBannedMemberSize());
      }
@@ -2361,7 +2252,7 @@ public class AdminCommand {
     public static class ClearSquads extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             final Collection<MapleSquad> squadz = new ArrayList<MapleSquad>(c.getChannelServer().getAllSquads().values());
             for (MapleSquad squads : squadz) {
                 squads.clear();
@@ -2373,14 +2264,14 @@ public class AdminCommand {
     public static class SetInstanceProperty extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            EventManager em = c.getChannelServer().getEventSM().getEventManager(splitted.get(1));
+        public boolean execute(MapleClient c, String splitted[]) {
+            EventManager em = c.getChannelServer().getEventSM().getEventManager(splitted[1]);
             if (em == null || em.getInstances().size() <= 0) {
                 c.getPlayer().dropMessage(5, "none");
             } else {
-                em.setProperty(splitted.get(2), splitted[3]);
+                em.setProperty(splitted[2], splitted[3]);
                 for (EventInstanceManager eim : em.getInstances()) {
-                    eim.setProperty(splitted.get(2), splitted[3]);
+                    eim.setProperty(splitted[2], splitted[3]);
                 }
             }
             return true;
@@ -2390,13 +2281,13 @@ public class AdminCommand {
     public static class ListInstanceProperty extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            EventManager em = c.getChannelServer().getEventSM().getEventManager(splitted.get(1));
+        public boolean execute(MapleClient c, String splitted[]) {
+            EventManager em = c.getChannelServer().getEventSM().getEventManager(splitted[1]);
             if (em == null || em.getInstances().size() <= 0) {
                 c.getPlayer().dropMessage(5, "none");
             } else {
                 for (EventInstanceManager eim : em.getInstances()) {
-                    c.getPlayer().dropMessage(5, "Event " + eim.getName() + ", eventManager: " + em.getName() + " iprops: " + eim.getProperty(splitted.get(2)) + ", eprops: " + em.getProperty(splitted.get(2)));
+                    c.getPlayer().dropMessage(5, "Event " + eim.getName() + ", eventManager: " + em.getName() + " iprops: " + eim.getProperty(splitted[2]) + ", eprops: " + em.getProperty(splitted[2]));
                 }
             }
             return true;
@@ -2406,7 +2297,7 @@ public class AdminCommand {
     public static class ListInstances extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             EventManager em = c.getChannelServer().getEventSM().getEventManager(StringUtil.joinStringFrom(splitted, 1));
             if (em == null || em.getInstances().size() <= 0) {
                 c.getPlayer().dropMessage(5, "none");
@@ -2422,7 +2313,7 @@ public class AdminCommand {
     public static class LeaveInstance extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             if (c.getPlayer().getEventInstance() == null) {
                 c.getPlayer().dropMessage(5, "You are not in one");
             } else {
@@ -2435,15 +2326,15 @@ public class AdminCommand {
     public static class StartInstance extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             if (c.getPlayer().getEventInstance() != null) {
                 c.getPlayer().dropMessage(5, "You are in one");
-            } else if (splitted.size() > 2) {
-                EventManager em = c.getChannelServer().getEventSM().getEventManager(splitted.get(1));
-                if (em == null || em.getInstance(splitted.get(2)) == null) {
+            } else if (splitted.length > 2) {
+                EventManager em = c.getChannelServer().getEventSM().getEventManager(splitted[1]);
+                if (em == null || em.getInstance(splitted[2]) == null) {
                     c.getPlayer().dropMessage(5, "Not exist");
                 } else {
-                    em.getInstance(splitted.get(2)).registerPlayer(c.getPlayer());
+                    em.getInstance(splitted[2]).registerPlayer(c.getPlayer());
                 }
             } else {
                 c.getPlayer().dropMessage(5, "!startinstance [eventmanager] [eventinstance]");
@@ -2456,7 +2347,7 @@ public class AdminCommand {
     public static class EventInstance extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             if (c.getPlayer().getEventInstance() == null) {
                 c.getPlayer().dropMessage(5, "none");
             } else {
@@ -2470,7 +2361,7 @@ public class AdminCommand {
     public static class Uptime extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().dropMessage(6, "Server has been up for " + StringUtil.getReadableMillis(ChannelServer.serverStartTime, System.currentTimeMillis()));
             return true;
         }
@@ -2479,13 +2370,13 @@ public class AdminCommand {
     public static class DCAll extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             int range = -1;
-            if (splitted.get(1).equals("m")) {
+            if (splitted[1].equals("m")) {
                 range = 0;
-            } else if (splitted.get(1).equals("c")) {
+            } else if (splitted[1].equals("c")) {
                 range = 1;
-            } else if (splitted.get(1).equals("w")) {
+            } else if (splitted[1].equals("w")) {
                 range = 2;
             }
             if (range == -1) {
@@ -2570,16 +2461,16 @@ public class AdminCommand {
         }
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() < 2) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
                 c.getPlayer().dropMessage(6, "Syntax: !goto <mapname>");
             } else {
-                if (gotomaps.containsKey(splitted.get(1))) {
-                    MapleMap target = c.getChannelServer().getMapFactory().getMap(gotomaps.get(splitted.get(1)));
+                if (gotomaps.containsKey(splitted[1])) {
+                    MapleMap target = c.getChannelServer().getMapFactory().getMap(gotomaps.get(splitted[1]));
                     MaplePortal targetPortal = target.getPortal(0);
                     c.getPlayer().changeMap(target, targetPortal);
                 } else {
-                    if (splitted.get(1).equals("locations")) {
+                    if (splitted[1].equals("locations")) {
                         c.getPlayer().dropMessage(6, "Use !goto <location>. Locations are as follows:");
                         StringBuilder sb = new StringBuilder();
                         for (String s : gotomaps.keySet()) {
@@ -2598,16 +2489,16 @@ public class AdminCommand {
     public static class KillAll extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleMap map = c.getPlayer().getMap();
             double range = Double.POSITIVE_INFINITY;
 
-            if (splitted.size() > 1) {
-                int irange = Integer.parseInt(splitted.get(1));
-                if (splitted.size() <= 2) {
+            if (splitted.length > 1) {
+                int irange = Integer.parseInt(splitted[1]);
+                if (splitted.length <= 2) {
                     range = irange * irange;
                 } else {
-                    map = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted.get(2)));
+                    map = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted[2]));
                 }
             }
             MapleMonster mob;
@@ -2624,7 +2515,7 @@ public class AdminCommand {
     public static class ResetMobs extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().getMap().killAllMonsters(false);
             return true;
         }
@@ -2633,13 +2524,13 @@ public class AdminCommand {
     public static class KillMonster extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleMap map = c.getPlayer().getMap();
             double range = Double.POSITIVE_INFINITY;
             MapleMonster mob;
             for (MapleMapObject monstermo : map.getMapObjectsInRange(c.getPlayer().getPosition(), range, Arrays.asList(MapleMapObjectType.MONSTER))) {
                 mob = (MapleMonster) monstermo;
-                if (mob.getId() == Integer.parseInt(splitted.get(1))) {
+                if (mob.getId() == Integer.parseInt(splitted[1])) {
                     mob.damage(c.getPlayer(), mob.getHp(), false);
                 }
             }
@@ -2650,9 +2541,9 @@ public class AdminCommand {
     public static class KillMonsterByOID extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleMap map = c.getPlayer().getMap();
-            int targetId = Integer.parseInt(splitted.get(1));
+            int targetId = Integer.parseInt(splitted[1]);
             MapleMonster monster = map.getMonsterByOid(targetId);
             if (monster != null) {
                 map.killMonster(monster, c.getPlayer(), false, false, (byte) 1);
@@ -2664,10 +2555,10 @@ public class AdminCommand {
     public static class HitMonsterByOID extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleMap map = c.getPlayer().getMap();
-            int targetId = Integer.parseInt(splitted.get(1));
-            int damage = Integer.parseInt(splitted.get(2));
+            int targetId = Integer.parseInt(splitted[1]);
+            int damage = Integer.parseInt(splitted[2]);
             MapleMonster monster = map.getMonsterByOid(targetId);
             if (monster != null) {
                 map.broadcastMessage(MobPacket.damageMonster(targetId, damage));
@@ -2680,18 +2571,18 @@ public class AdminCommand {
     public static class HitAll extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleMap map = c.getPlayer().getMap();
             double range = Double.POSITIVE_INFINITY;
-            if (splitted.size() > 1) {
-                int irange = Integer.parseInt(splitted.get(1));
-                if (splitted.size() <= 2) {
+            if (splitted.length > 1) {
+                int irange = Integer.parseInt(splitted[1]);
+                if (splitted.length <= 2) {
                     range = irange * irange;
                 } else {
-                    map = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted.get(2)));
+                    map = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted[2]));
                 }
             }
-            int damage = Integer.parseInt(splitted.get(1));
+            int damage = Integer.parseInt(splitted[1]);
             MapleMonster mob;
             for (MapleMapObject monstermo : map.getMapObjectsInRange(c.getPlayer().getPosition(), range, Arrays.asList(MapleMapObjectType.MONSTER))) {
                 mob = (MapleMonster) monstermo;
@@ -2705,14 +2596,14 @@ public class AdminCommand {
     public static class HitMonster extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleMap map = c.getPlayer().getMap();
             double range = Double.POSITIVE_INFINITY;
-            int damage = Integer.parseInt(splitted.get(1));
+            int damage = Integer.parseInt(splitted[1]);
             MapleMonster mob;
             for (MapleMapObject monstermo : map.getMapObjectsInRange(c.getPlayer().getPosition(), range, Arrays.asList(MapleMapObjectType.MONSTER))) {
                 mob = (MapleMonster) monstermo;
-                if (mob.getId() == Integer.parseInt(splitted.get(2))) {
+                if (mob.getId() == Integer.parseInt(splitted[2])) {
                     map.broadcastMessage(MobPacket.damageMonster(mob.getObjectId(), damage));
                     mob.damage(c.getPlayer(), damage, false);
                 }
@@ -2724,17 +2615,16 @@ public class AdminCommand {
     public static class KillAllDrops extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleMap map = c.getPlayer().getMap();
             double range = Double.POSITIVE_INFINITY;
 
-            if (splitted.size() > 1) {
-                //&& !splitted[0].equals("!killmonster") && !splitted[0].equals("!hitmonster") && !splitted[0].equals("!hitmonsterbyoid") && !splitted[0].equals("!killmonsterbyoid")) {
-                int irange = Integer.parseInt(splitted.get(1));
-                if (splitted.size() <= 2) {
+            if (splitted.length > 1) {
+                int irange = Integer.parseInt(splitted[1]);
+                if (splitted.length <= 2) {
                     range = irange * irange;
                 } else {
-                    map = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted.get(2)));
+                    map = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted[2]));
                 }
             }
             MapleMonster mob;
@@ -2749,7 +2639,7 @@ public class AdminCommand {
     public static class KillAllNoSpawn extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleMap map = c.getPlayer().getMap();
             map.killAllMonsters(false);
             return true;
@@ -2759,17 +2649,17 @@ public class AdminCommand {
     public static class MonsterDebug extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleMap map = c.getPlayer().getMap();
             double range = Double.POSITIVE_INFINITY;
 
-            if (splitted.size() > 1) {
+            if (splitted.length > 1) {
                 //&& !splitted[0].equals("!killmonster") && !splitted[0].equals("!hitmonster") && !splitted[0].equals("!hitmonsterbyoid") && !splitted[0].equals("!killmonsterbyoid")) {
-                int irange = Integer.parseInt(splitted.get(1));
-                if (splitted.size() <= 2) {
+                int irange = Integer.parseInt(splitted[1]);
+                if (splitted.length <= 2) {
                     range = irange * irange;
                 } else {
-                    map = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted.get(2)));
+                    map = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted[2]));
                 }
             }
             MapleMonster mob;
@@ -2784,8 +2674,8 @@ public class AdminCommand {
     public static class NPC extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            int npcId = Integer.parseInt(splitted.get(1));
+        public boolean execute(MapleClient c, String splitted[]) {
+            int npcId = Integer.parseInt(splitted[1]);
             MapleNPC npc = MapleLifeFactory.getNPC(npcId);
             if (npc != null && !npc.getName().equals("MISSINGNO")) {
                 npc.setPosition(c.getPlayer().getPosition());
@@ -2807,7 +2697,7 @@ public class AdminCommand {
     public static class RemoveNPCs extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().getMap().resetNPCs();
             return true;
         }
@@ -2816,7 +2706,7 @@ public class AdminCommand {
     public static class LookNPC extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             for (MapleMapObject reactor1l : c.getPlayer().getMap().getAllNPCsThreadsafe()) {
                 MapleNPC reactor2l = (MapleNPC) reactor1l;
                 c.getPlayer().dropMessage(5, "NPC: oID: " + reactor2l.getObjectId() + " npcID: " + reactor2l.getId() + " Position: " + reactor2l.getPosition().toString() + " Name: " + reactor2l.getName());
@@ -2828,7 +2718,7 @@ public class AdminCommand {
     public static class LookReactor extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             for (MapleMapObject reactor1l : c.getPlayer().getMap().getAllReactorsThreadsafe()) {
                 MapleReactor reactor2l = (MapleReactor) reactor1l;
                 c.getPlayer().dropMessage(5, "Reactor: oID: " + reactor2l.getObjectId() + " reactorID: " + reactor2l.getReactorId() + " Position: " + reactor2l.getPosition().toString() + " State: " + reactor2l.getState() + " Name: " + reactor2l.getName());
@@ -2840,7 +2730,7 @@ public class AdminCommand {
     public static class LookPortals extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             for (MaplePortal portal : c.getPlayer().getMap().getPortals()) {
                 c.getPlayer().dropMessage(5, "Portal: ID: " + portal.getId() + " script: " + portal.getScriptName() + " name: " + portal.getName() + " pos: " + portal.getPosition().x + "," + portal.getPosition().y + " target: " + portal.getTargetMapId() + " / " + portal.getTarget());
             }
@@ -2851,15 +2741,15 @@ public class AdminCommand {
     public static class MakePNPC extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             try {
                 c.getPlayer().dropMessage(6, "Making playerNPC...");
-                MapleCharacter chhr = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1));
+                MapleCharacter chhr = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
                 if (chhr == null) {
-                    c.getPlayer().dropMessage(6, splitted.get(1) + " is not online");
+                    c.getPlayer().dropMessage(6, splitted[1] + " is not online");
                     return 0;
                 }
-                int npcId = Integer.parseInt(splitted.get(2));
+                int npcId = Integer.parseInt(splitted[2]);
                 PlayerNPC npc = new PlayerNPC(chhr, npcId, c.getPlayer().getMap(), c.getPlayer());
                 npc.addToServer();
                 c.getPlayer().dropMessage(6, "Done");
@@ -2874,16 +2764,16 @@ public class AdminCommand {
     public static class MakeOfflineP extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             try {
                 c.getPlayer().dropMessage(6, "Making playerNPC...");
                 MapleClient cs = new MapleClient(null, null, new MockIOSession());
-                MapleCharacter chhr = MapleCharacter.loadCharFromDB(MapleCharacterUtil.getIdByName(splitted.get(1)), cs, false);
+                MapleCharacter chhr = MapleCharacter.loadCharFromDB(MapleCharacterUtil.getIdByName(splitted[1]), cs, false);
                 if (chhr == null) {
-                    c.getPlayer().dropMessage(6, splitted.get(1) + " does not exist");
+                    c.getPlayer().dropMessage(6, splitted[1] + " does not exist");
                     return 0;
                 }
-                PlayerNPC npc = new PlayerNPC(chhr, Integer.parseInt(splitted.get(2)), c.getPlayer().getMap(), c.getPlayer());
+                PlayerNPC npc = new PlayerNPC(chhr, Integer.parseInt(splitted[2]), c.getPlayer().getMap(), c.getPlayer());
                 npc.addToServer();
                 c.getPlayer().dropMessage(6, "Done");
             } catch (Exception e) {
@@ -2897,10 +2787,10 @@ public class AdminCommand {
     public static class DestroyPNPC extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             try {
                 c.getPlayer().dropMessage(6, "Destroying playerNPC...");
-                final MapleNPC npc = c.getPlayer().getMap().getNPCByOid(Integer.parseInt(splitted.get(1)));
+                final MapleNPC npc = c.getPlayer().getMap().getNPCByOid(Integer.parseInt(splitted[1]));
                 if (npc instanceof PlayerNPC) {
                     ((PlayerNPC) npc).destroy(true);
                     c.getPlayer().dropMessage(6, "Done");
@@ -2918,7 +2808,7 @@ public class AdminCommand {
     public static class MyNPCPos extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             Point pos = c.getPlayer().getPosition();
             c.getPlayer().dropMessage(6, "X: " + pos.x + " | Y: " + pos.y + " | RX0: " + (pos.x + 50) + " | RX1: " + (pos.x - 50) + " | FH: " + c.getPlayer().getFH() + "| CY:" + pos.y);
             return true;
@@ -2945,14 +2835,14 @@ public class AdminCommand {
         }
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             int joinmod = 1;
             int range = -1;
-            if (splitted.get(1).equals("m")) {
+            if (splitted[1].equals("m")) {
                 range = 0;
-            } else if (splitted.get(1).equals("c")) {
+            } else if (splitted[1].equals("c")) {
                 range = 1;
-            } else if (splitted.get(1).equals("w")) {
+            } else if (splitted[1].equals("w")) {
                 range = 2;
             }
 
@@ -2990,19 +2880,19 @@ public class AdminCommand {
     public static class Yellow extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             int range = -1;
-            if (splitted.get(1).equals("m")) {
+            if (splitted[1].equals("m")) {
                 range = 0;
-            } else if (splitted.get(1).equals("c")) {
+            } else if (splitted[1].equals("c")) {
                 range = 1;
-            } else if (splitted.get(1).equals("w")) {
+            } else if (splitted[1].equals("w")) {
                 range = 2;
             }
             if (range == -1) {
                 range = 2;
             }
-            MaplePacket packet = MaplePacketCreator.yellowChat((splitted.get(0).equals("!y") ? ("[" + c.getPlayer().getName() + "] ") : "") + StringUtil.joinStringFrom(splitted, 2));
+            MaplePacket packet = MaplePacketCreator.yellowChat((splitted[0].equals("!y") ? ("[" + c.getPlayer().getName() + "] ") : "") + StringUtil.joinStringFrom(splitted, 2));
             if (range == 0) {
                 c.getPlayer().getMap().broadcastMessage(packet);
             } else if (range == 1) {
@@ -3020,7 +2910,7 @@ public class AdminCommand {
     public static class ReloadOps extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             SendPacketOpcode.reloadValues();
             RecvPacketOpcode.reloadValues();
             return true;
@@ -3030,7 +2920,7 @@ public class AdminCommand {
     public static class ReloadDrops extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleMonsterInformationProvider.getInstance().clearDrops();
             ReactorScriptManager.getInstance().clearDrops();
             return true;
@@ -3040,7 +2930,7 @@ public class AdminCommand {
     public static class ReloadPortal extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             PortalScriptManager.getInstance().clearScripts();
             return true;
         }
@@ -3049,7 +2939,7 @@ public class AdminCommand {
     public static class ReloadShops extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleShopFactory.getInstance().clear();
             return true;
         }
@@ -3058,7 +2948,7 @@ public class AdminCommand {
     public static class ReloadEvents extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             for (ChannelServer instance : ChannelServer.getAllInstances()) {
                 instance.reloadEvents();
             }
@@ -3069,7 +2959,7 @@ public class AdminCommand {
     public static class ReloadQuests extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             MapleQuest.clearQuests();
             return true;
         }
@@ -3078,10 +2968,10 @@ public class AdminCommand {
     public static class mobstatus extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             int value = 0;
             try {
-                Integer.parseInt(splitted.get(0));
+                Integer.parseInt(splitted[0]);
                 for (MonsterStatus s : MonsterStatus.values()) {
 
                 }
@@ -3095,13 +2985,13 @@ public class AdminCommand {
     public static class Find extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() == 1) {
-                c.getPlayer().dropMessage(6, splitted.get(0) + ": <NPC> <MOB> <ITEM> <MAP> <SKILL>");
-            } else if (splitted.size() == 2) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length == 1) {
+                c.getPlayer().dropMessage(6, splitted[0] + ": <NPC> <MOB> <ITEM> <MAP> <SKILL>");
+            } else if (splitted.length == 2) {
                 c.getPlayer().dropMessage(6, "Provide something to search.");
             } else {
-                String type = splitted.get(1);
+                String type = splitted[1];
                 String search = StringUtil.joinStringFrom(splitted, 2);
                 MapleData data = null;
                 MapleDataProvider dataProvider = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/" + "String.wz");
@@ -3222,7 +3112,7 @@ public class AdminCommand {
     public static class ServerMessage extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             Collection<ChannelServer> cservs = ChannelServer.getAllInstances();
             String outputMessage = StringUtil.joinStringFrom(splitted, 1);
             for (ChannelServer cserv : cservs) {
@@ -3235,8 +3125,8 @@ public class AdminCommand {
     public static class Spawn extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            final int mid = Integer.parseInt(splitted.get(1));
+        public boolean execute(MapleClient c, String splitted[]) {
+            final int mid = Integer.parseInt(splitted[1]);
             final int num = Math.min(CommandProcessorUtil.getOptionalIntArg(splitted, 2, 1), 500);
 
             Long hp = CommandProcessorUtil.getNamedLongArg(splitted, 1, "hp");
@@ -3286,7 +3176,7 @@ public class AdminCommand {
     public static class Clock extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getClock(CommandProcessorUtil.getOptionalIntArg(splitted, 1, 60)));
             return true;
         }
@@ -3295,9 +3185,9 @@ public class AdminCommand {
     public static class WarpMapTo extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             try {
-                final MapleMap target = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted.get(1)));
+                final MapleMap target = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted[1]));
                 final MapleMap from = c.getPlayer().getMap();
                 for (MapleCharacter chr : from.getCharactersThreadsafe()) {
                     chr.changeMap(target, target.getPortal(0));
@@ -3313,17 +3203,17 @@ public class AdminCommand {
     public static class WarpHere extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted.get(1));
+        public boolean execute(MapleClient c, String splitted[]) {
+            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             if (victim != null) {
                 victim.changeMap(c.getPlayer().getMap(), c.getPlayer().getMap().findClosestSpawnpoint(c.getPlayer().getPosition()));
             } else {
-                int ch = World.Find.findChannel(splitted.get(1));
+                int ch = World.Find.findChannel(splitted[1]);
                 if (ch < 0) {
                     c.getPlayer().dropMessage(5, "找不到");
                     return 0;
                 }
-                victim = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(splitted.get(1));
+                victim = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(splitted[1]);
                 c.getPlayer().dropMessage(5, "正在把玩家傳到這來");
                 victim.dropMessage(5, "正在傳送到GM那邊");
                 if (victim.getMapId() != c.getPlayer().getMapId()) {
@@ -3339,7 +3229,7 @@ public class AdminCommand {
     public static class WarpAllHere extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             for (MapleCharacter mch : c.getChannelServer().getPlayerStorage().getAllCharacters()) {
                 if (mch.getMapId() != c.getPlayer().getMapId()) {
                     mch.changeMap(c.getPlayer().getMap(), c.getPlayer().getPosition());
@@ -3352,12 +3242,12 @@ public class AdminCommand {
     public static class LOLCastle extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            if (splitted.size() != 2) {
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length != 2) {
                 c.getPlayer().dropMessage(6, "Syntax: !lolcastle level (level = 1-5)");
                 return 0;
             }
-            MapleMap target = c.getChannelServer().getEventSM().getEventManager("lolcastle").getInstance("lolcastle" + splitted.get(1)).getMapFactory().getMap(990000300, false, false);
+            MapleMap target = c.getChannelServer().getEventSM().getEventManager("lolcastle").getInstance("lolcastle" + splitted[1]).getMapFactory().getMap(990000300, false, false);
             c.getPlayer().changeMap(target, target.getPortal(0));
 
             return true;
@@ -3367,13 +3257,13 @@ public class AdminCommand {
     public static class Map extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             try {
-                MapleMap target = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted.get(1)));
+                MapleMap target = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted[1]));
                 MaplePortal targetPortal = null;
-                if (splitted.size() > 2) {
+                if (splitted.length > 2) {
                     try {
-                        targetPortal = target.getPortal(Integer.parseInt(splitted.get(2)));
+                        targetPortal = target.getPortal(Integer.parseInt(splitted[2]));
                     } catch (IndexOutOfBoundsException e) {
                         // noop, assume the gm didn't know how many portals there are
                         c.getPlayer().dropMessage(5, "Invalid portal selected.");
@@ -3396,7 +3286,7 @@ public class AdminCommand {
     public static class StartProfiling extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             CPUSampler sampler = CPUSampler.getInstance();
             sampler.addIncluded("client");
             sampler.addIncluded("constants"); //or should we do Packages.constants etc.?
@@ -3414,12 +3304,12 @@ public class AdminCommand {
     public static class StopProfiling extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             CPUSampler sampler = CPUSampler.getInstance();
             try {
                 String filename = "odinprofile.txt";
-                if (splitted.size() > 1) {
-                    filename = splitted.get(1);
+                if (splitted.length > 1) {
+                    filename = splitted[1];
                 }
                 File file = new File(filename);
                 if (file.exists()) {
@@ -3441,8 +3331,8 @@ public class AdminCommand {
     public static class ReloadMap extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
-            final int mapId = Integer.parseInt(splitted.get(1));
+        public boolean execute(MapleClient c, String splitted[]) {
+            final int mapId = Integer.parseInt(splitted[1]);
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                 if (cserv.getMapFactory().isMapLoaded(mapId) && cserv.getMapFactory().getMap(mapId).getCharactersSize() > 0) {
                     c.getPlayer().dropMessage(5, "There exists characters on channel " + cserv.getChannel());
@@ -3461,7 +3351,7 @@ public class AdminCommand {
     public static class Respawn extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().getMap().respawn(true);
             return true;
         }
@@ -3470,7 +3360,7 @@ public class AdminCommand {
     public static class ResetMap extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, List<String> splitted) {
+        public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().getMap().resetFully();
             return true;
         }

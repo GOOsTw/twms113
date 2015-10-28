@@ -39,7 +39,7 @@ public class CommandObject {
      * @param splitted the arguments
      * @return See {@link CommandExecute#execute}
      */
-    public boolean execute(MapleClient c, List<String> splitted) {
+    public boolean execute(MapleClient c, String[] splitted) {
         return exe.execute(c, splitted);
     }
 
@@ -54,5 +54,9 @@ public class CommandObject {
      */
     public int getReqGMLevel() {
         return gmLevelReq;
+    }
+    
+    public String getMessage() {
+        return command != null ? exe.getMessage() : "";
     }
 }

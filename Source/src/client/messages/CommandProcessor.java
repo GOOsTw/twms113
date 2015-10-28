@@ -55,9 +55,9 @@ public class CommandProcessor {
         for (Class<?> clasz : CommandFiles) {
             try {
                 PlayerGMRank rankNeeded = (PlayerGMRank) clasz.getMethod("getPlayerLevelRequired", new Class<?>[]{}).invoke(null, (Object[]) null);
-                Class<?>[] a = clasz.getDeclaredClasses();
+                Class<?>[] commandClasses = clasz.getDeclaredClasses();
                 ArrayList<String> cL = new ArrayList<>();
-                for (Class<?> c : a) {
+                for (Class<?> c : commandClasses) {
                     try {
                         if (!Modifier.isAbstract(c.getModifiers()) && !c.isSynthetic()) {
                             Object o = c.newInstance();
@@ -100,17 +100,20 @@ public class CommandProcessor {
     }
 
     public static boolean processCommand(MapleClient c, String line, CommandType type) {
-        if (line.charAt(0) == PlayerGMRank.NORMAL.getCommandPrefix()) {
+
+        char commandPrefix = line.charAt(0);
+
+        if (commandPrefix == PlayerGMRank.NORMAL.getCommandPrefix()) {
             String[] splitted = line.split(" ");
             splitted[0] = splitted[0].toLowerCase();
 
             CommandObject co = commands.get(splitted[0]);
             if (co == null || co.getType() != type) {
                 sendDisplayMessage(c, "沒有這個指令,可以使用 @幫助/@help 來查看指令.", type);
-                return true;
+                return false;
             }
             try {
-                boolean ret = co.execute(c, Arrays.asList(splitted));
+                boolean ret = co.execute(c, splitted);
                 return ret;
             } catch (Exception e) {
                 sendDisplayMessage(c, "有錯誤.", type);
@@ -119,9 +122,7 @@ public class CommandProcessor {
                 }
             }
             return true;
-        }
-
-        if (c.getPlayer().getGMLevel() > PlayerGMRank.NORMAL.getLevel()) {
+        } else if (c.getPlayer().getGMLevel() > PlayerGMRank.NORMAL.getLevel()) {
             if (line.charAt(0) == PlayerGMRank.GM.getCommandPrefix() || line.charAt(0) == PlayerGMRank.ADMIN.getCommandPrefix() || line.charAt(0) == PlayerGMRank.INTERN.getCommandPrefix()) { //Redundant for now, but in case we change symbols later. This will become extensible.
                 String[] splitted = line.split(" ");
                 splitted[0] = splitted[0].toLowerCase();
@@ -132,7 +133,7 @@ public class CommandProcessor {
                         return true;
                     }
                     if (c.getPlayer().getGMLevel() >= co.getReqGMLevel()) {
-                        boolean ret = co.execute(c, Arrays.asList(splitted));
+                        boolean ret = co.execute(c, splitted);
                         if (ret && c.getPlayer() != null) { //incase d/c after command or something
                             logGMCommandToDB(c.getPlayer(), line);
                             if (c.getPlayer().getGMLevel() == 5) {
@@ -148,6 +149,8 @@ public class CommandProcessor {
                             } else {
                                 sendDisplayMessage(c, "你沒有權限可以使用指令.", type);
                             }
+                        } else if (!ret && c.getPlayer() != null) {
+                            c.getPlayer().dropMessage("指令錯誤，用法： " + co.getMessage());
                         }
                         return true;
                     }

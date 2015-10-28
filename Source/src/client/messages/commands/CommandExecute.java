@@ -20,7 +20,7 @@ public abstract class CommandExecute {
      * @return true if you want to log the command, false if not. TODO: USE
      * {@link #ReturnValue}
      */
-    public abstract boolean execute(MapleClient c, List<String> splitted);
+    public abstract boolean execute(MapleClient c, String[] splitted);
 
     enum ReturnValue {
         DONT_LOG,
