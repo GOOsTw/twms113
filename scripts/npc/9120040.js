@@ -7,7 +7,7 @@ var status = -1;
 
 function start() {
     if (cm.getMapId() == 802000210) {
-		if (cm.getPlayer().getClient().getChannel() != 1) {
+		if (cm.getPlayer().getClient().getChannel() != 3) {
 			cm.sendOk("這個BOSS只能在3頻挑戰!!");
 			cm.dispose();
 			return;
