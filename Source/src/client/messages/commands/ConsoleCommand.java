@@ -365,7 +365,7 @@ public class ConsoleCommand {
             int total = 0;
             for (ChannelServer ch : ChannelServer.getAllInstances()) {
                 System.out.println("----------------------------------------------------------");
-                System.out.println(new StringBuilder().append("頻道: ").append(ch.getChannel()).append(" 線上人數: ").append(curConnected).toString());
+                System.out.println(new StringBuilder().append("頻道: ").append(ch.getChannel()).append(" 線上人數: ").append(ch.getConnectedClients()).toString());
                 total += ch.getConnectedClients();
                 for (MapleCharacter chr : ch.getPlayerStorage().getAllCharacters()) {
 
