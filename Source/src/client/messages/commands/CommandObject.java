@@ -3,6 +3,7 @@ package client.messages.commands;
 import client.MapleCharacter;
 import client.MapleClient;
 import constants.ServerConstants.CommandType;
+import java.util.List;
 
 /**
  * Represents a command given by a user
@@ -38,7 +39,7 @@ public class CommandObject {
      * @param splitted the arguments
      * @return See {@link CommandExecute#execute}
      */
-    public int execute(MapleClient c, String[] splitted) {
+    public boolean execute(MapleClient c, String[] splitted) {
         return exe.execute(c, splitted);
     }
 
@@ -53,5 +54,9 @@ public class CommandObject {
      */
     public int getReqGMLevel() {
         return gmLevelReq;
+    }
+    
+    public String getMessage() {
+        return command != null ? exe.getMessage() : "";
     }
 }

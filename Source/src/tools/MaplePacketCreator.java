@@ -216,7 +216,7 @@ public class MaplePacketCreator {
         mplew.writeShort(SendPacketOpcode.UPDATE_STATS.getValue());
         mplew.write(itemReaction ? 1 : 0);
         mplew.writeInt(AVAILABLEAP.getValue());
-        mplew.writeShort(chr.getRemainingSp());
+        mplew.writeShort(chr.getRemainingAp());
         return mplew.getPacket();
     }
 

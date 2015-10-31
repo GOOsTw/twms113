@@ -755,6 +755,7 @@ public class MapleClient implements Serializable {
     }
 
     public final void disconnect(final boolean RemoveInChannelServer, final boolean fromCS, final boolean shutdown) {
+        
         if (player != null && isLoggedIn()) {
             MapleMap map = player.getMap();
             final MapleParty party = player.getParty();

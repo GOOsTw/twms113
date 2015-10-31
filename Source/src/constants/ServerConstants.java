@@ -25,6 +25,7 @@ public class ServerConstants {
      * Specifics which job gives an additional EXP to party
      * returns the percentage of EXP to increase
      */
+
     public static final byte Class_Bonus_EXP(final int job) {
         switch (job) {
             case 3000: //whenever these arrive, they'll give bonus
@@ -83,16 +84,15 @@ public class ServerConstants {
 
     public static enum PlayerGMRank {
 
-        NORMAL('@', 0),
-        INTERN('!', 1),
-        GM('!', 2),
-        ADMIN('!', 3);
-        //SUPERADMIN('!', 3);
-        private char commandPrefix;
-        private int level;
+        NORMAL(0),
+        INTERN(1),
+        GM(2),
+        ADMIN(5);
+        private final char commandPrefix;
+        private final int level;
 
-        PlayerGMRank(char ch, int level) {
-            commandPrefix = ch;
+        PlayerGMRank(int level) {
+            this.commandPrefix = level > 0 ? '!' : '@';
             this.level = level;
         }
 
@@ -103,13 +103,14 @@ public class ServerConstants {
         public int getLevel() {
             return level;
         }
+        
     }
 
     public static enum CommandType {
 
         NORMAL(0),
         TRADE(1);
-        private int level;
+        private final int level;
 
         CommandType(int level) {
             this.level = level;

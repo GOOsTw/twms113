@@ -39,9 +39,9 @@ public class ChatHandler {
             if (!chr.isGM() && text.length() >= 80) {
                 return;
             }
-            MapleMap map = c.getPlayer().getMap();
+           
             if (chr.getCanTalk() || chr.isStaff()) {
-                //Note: This patch is needed to prevent chat packet from being broadcast to people who might be packet sniffing.
+                 MapleMap map = c.getPlayer().getMap();
                 if (c.getPlayer().gmLevel() == 5 && !chr.isHidden()) {
                     chr.getCheatTracker().checkMsg();
                     map.broadcastMessage(MaplePacketCreator.yellowChat("<超級管理員> " + c.getPlayer().getName() + ": " + text));
@@ -52,26 +52,23 @@ public class ChatHandler {
                     map.broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
                 } else if (c.getPlayer().gmLevel() == 3 && !chr.isHidden()) {
                     chr.getCheatTracker().checkMsg();
-                    map.broadcastMessage(MaplePacketCreator.yellowChat("<巡邏者>" + c.getPlayer().getName() + ": " + text));
+                    map.broadcastMessage(MaplePacketCreator.yellowChat("<管理員>" + c.getPlayer().getName() + ": " + text));
                     map.broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
                 } else if (c.getPlayer().gmLevel() == 2 && !chr.isHidden()) {
                     chr.getCheatTracker().checkMsg();
-                    map.broadcastMessage(MaplePacketCreator.yellowChat("<老實習生>" + c.getPlayer().getName() + ": " + text));
+                    map.broadcastMessage(MaplePacketCreator.yellowChat("<巡察員>" + c.getPlayer().getName() + ": " + text));
                     map.broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
                 } else if (c.getPlayer().gmLevel() == 1 && !chr.isHidden()) {
                     chr.getCheatTracker().checkMsg();
                     map.broadcastMessage(MaplePacketCreator.yellowChat("<新實習生>" + c.getPlayer().getName() + ": " + text));
                     map.broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
-                    //chr.getMap().broadcastGMMessage(chr, MaplePacketCreator.getChatText(chr.getId(), text, c.getPlayer().isGM(), unk), true);
                 } else if (c.getPlayer().gmLevel() == 0 && !chr.isHidden()) {
                     chr.getCheatTracker().checkMsg();
                     map.broadcastMessage(MaplePacketCreator.getChatText(chr.getId(), text, c.getPlayer().isGM(), unk), c.getPlayer().getPosition());
                 } else {
                     map.broadcastGMMessage(chr, MaplePacketCreator.getChatText(chr.getId(), text, c.getPlayer().isGM(), unk), true);
                 }
-                /*if (text.equalsIgnoreCase(c.getChannelServer().getServerName() + " rocks")) {
-                 chr.finishAchievement(11);
-                 }*/
+
             } else {
                 c.sendPacket(MaplePacketCreator.serverNotice(6, "在這個地方不能說話。"));
             }
