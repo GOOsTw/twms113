@@ -362,10 +362,37 @@ public class ConsoleCommand {
 
         @Override
         public int execute(String[] splitted) {
-            for (ChannelServer cserv : ChannelServer.getAllInstances()) {
-                System.out.println("線上玩家： " + String.valueOf(cserv.getChannel()) + ":");
-                System.out.println(cserv.getPlayerStorage().getOnlinePlayers(true));
+            int total = 0;
+            for (ChannelServer ch : ChannelServer.getAllInstances()) {
+                System.out.println("----------------------------------------------------------");
+                System.out.println(new StringBuilder().append("頻道: ").append(ch.getChannel()).append(" 線上人數: ").append(curConnected).toString());
+                total += ch.getConnectedClients();
+                for (MapleCharacter chr : ch.getPlayerStorage().getAllCharacters()) {
+
+                    if (chr != null) {
+                        StringBuilder ret = new StringBuilder();
+                        ret.append(" 角色暱稱 ");
+                        ret.append(StringUtil.getRightPaddedStr(chr.getName(), ' ', 13));
+                        ret.append(" ID: ");
+                        ret.append(chr.getId());
+                        ret.append(" 等級: ");
+                        ret.append(StringUtil.getRightPaddedStr(String.valueOf(chr.getLevel()), ' ', 3));
+                        ret.append(" 職業: ");
+                        ret.append(chr.getJob());
+                        if (chr.getMap() != null) {
+                            ret.append(" 地圖: ");
+                            ret.append(chr.getMapId()).append(" - ").append(chr.getMap().getMapName());
+                            System.out.println(ret.toString());
+                        }
+                    }
+                }
+                System.out.println(new StringBuilder().append("當前頻道總計線上人數: ").append(total).toString());
+                System.out.println("-------------------------------------------------------------------------------------");
             }
+
+            System.out.println(new StringBuilder().append("當前伺服器總計線上人數: ").append(total).append("個").toString());
+            System.out.println("-------------------------------------------------------------------------------------");
+
             return 1;
         }
     }

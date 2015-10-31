@@ -12,17 +12,13 @@ import client.anticheat.CheatingOffense;
 import client.inventory.Equip;
 import client.inventory.IItem;
 import client.inventory.ItemFlag;
-import client.inventory.MapleInventory;
 import client.inventory.MapleInventoryIdentifier;
 import client.inventory.MapleInventoryType;
 import client.inventory.MapleRing;
 import client.inventory.ModifyInventory;
 import client.messages.CommandProcessorUtil;
-import client.status.MonsterStatus;
 import constants.GameConstants;
-import database.DatabaseConnection;
 import handling.MaplePacket;
-import handling.MapleServerHandler;
 import handling.RecvPacketOpcode;
 import handling.SendPacketOpcode;
 import handling.channel.ChannelServer;
@@ -32,13 +28,11 @@ import java.awt.Point;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,7 +41,6 @@ import provider.MapleData;
 import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;
 import provider.MapleDataTool;
-import scripting.EventInstanceManager;
 import scripting.EventManager;
 import scripting.PortalScriptManager;
 import scripting.ReactorScriptManager;
@@ -55,16 +48,8 @@ import server.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
 import server.MaplePortal;
 import server.MapleShopFactory;
-import server.MapleSquad;
 import server.ShutdownServer;
-import server.Timer;
-import server.Timer.BuffTimer;
-import server.Timer.CloneTimer;
-import server.Timer.EtcTimer;
 import server.Timer.EventTimer;
-import server.Timer.MapTimer;
-import server.Timer.MobTimer;
-import server.Timer.WorldTimer;
 import server.events.MapleEvent;
 import server.events.MapleEventType;
 import server.life.MapleLifeFactory;
@@ -88,12 +73,9 @@ import tools.MockIOSession;
 import tools.Pair;
 import tools.StringUtil;
 import tools.packet.MobPacket;
-import tools.packet.PlayerShopPacket;
-import com.mysql.jdbc.Connection;
 import java.util.concurrent.ScheduledFuture;
 import scripting.NPCScriptManager;
 import server.ServerProperties;
-import server.maps.MapleMapItem;
 import handling.login.LoginServer;
 
 /**
@@ -622,8 +604,6 @@ public class AdminCommand {
         }
     }
 
-   
-
     public static class Shop extends CommandExecute {
 
         @Override
@@ -1033,7 +1013,6 @@ public class AdminCommand {
             return new StringBuilder().append("!dropitem <道具ID> - 掉落道具").toString();
         }
     }
-
 
     public static class serverMsg extends CommandExecute {
 
@@ -1891,6 +1870,12 @@ public class AdminCommand {
             }
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!cheaters - 查看作弊角色").toString();
+
+        }
     }
 
     public static class Connected extends CommandExecute {
@@ -1919,14 +1904,29 @@ public class AdminCommand {
             c.getPlayer().dropMessage(6, conStr.toString());
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!connected - 查看已連線的客戶端").toString();
+
+        }
     }
 
     public static class ResetQuest extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
+                return false;
+            }
             MapleQuest.getInstance(Integer.parseInt(splitted[1])).forfeit(c.getPlayer());
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!resetquest <任務ID> - 重置任務").toString();
+
         }
     }
 
@@ -1934,8 +1934,17 @@ public class AdminCommand {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
+                return false;
+            }
             MapleQuest.getInstance(Integer.parseInt(splitted[1])).start(c.getPlayer(), Integer.parseInt(splitted[2]));
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!startquest <任務ID> - 開始任務").toString();
+
         }
     }
 
@@ -1943,8 +1952,17 @@ public class AdminCommand {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
+                return false;
+            }
             MapleQuest.getInstance(Integer.parseInt(splitted[1])).complete(c.getPlayer(), Integer.parseInt(splitted[2]), Integer.parseInt(splitted[3]));
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!completequest <任務ID> - 完成任務").toString();
+
         }
     }
 
@@ -1952,8 +1970,17 @@ public class AdminCommand {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
+                return false;
+            }
             MapleQuest.getInstance(Integer.parseInt(splitted[1])).forceStart(c.getPlayer(), Integer.parseInt(splitted[2]), splitted.length >= 4 ? splitted[3] : null);
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!fstartquest <任務ID> - 強制開始任務").toString();
+
         }
     }
 
@@ -1961,8 +1988,17 @@ public class AdminCommand {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
+                return false;
+            }
             MapleQuest.getInstance(Integer.parseInt(splitted[1])).forceComplete(c.getPlayer(), Integer.parseInt(splitted[2]));
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!fcompletequest <任務ID> - 強制完成任務").toString();
+
         }
     }
 
@@ -1970,8 +2006,15 @@ public class AdminCommand {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+
             MapleQuest.getInstance(Integer.parseInt(splitted[2])).forceStart(c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]), Integer.parseInt(splitted[3]), splitted.length >= 4 ? splitted[4] : null);
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!fstartother - 不知道啥").toString();
+
         }
     }
 
@@ -1981,6 +2024,12 @@ public class AdminCommand {
         public boolean execute(MapleClient c, String splitted[]) {
             MapleQuest.getInstance(Integer.parseInt(splitted[2])).forceComplete(c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]), Integer.parseInt(splitted[3]));
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!fcompleteother - 不知道啥").toString();
+
         }
     }
 
@@ -1993,6 +2042,12 @@ public class AdminCommand {
 
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!nearestportal - 不知道啥").toString();
+
+        }
     }
 
     public static class SpawnDebug extends CommandExecute {
@@ -2001,6 +2056,12 @@ public class AdminCommand {
         public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().dropMessage(6, c.getPlayer().getMap().spawnDebug());
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!spawndebug - debug怪物出生").toString();
+
         }
     }
 
@@ -2022,6 +2083,12 @@ public class AdminCommand {
             }
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!threads - 查看Threads資訊").toString();
+
+        }
     }
 
     public static class ShowTrace extends CommandExecute {
@@ -2029,7 +2096,7 @@ public class AdminCommand {
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             if (splitted.length < 2) {
-                throw new IllegalArgumentException();
+                return false;
             }
             Thread[] threads = new Thread[Thread.activeCount()];
             Thread.enumerate(threads);
@@ -2039,6 +2106,12 @@ public class AdminCommand {
                 c.getPlayer().dropMessage(6, elem.toString());
             }
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!showtrace - show trace info").toString();
+
         }
     }
 
@@ -2052,12 +2125,22 @@ public class AdminCommand {
             player.getMap().addPlayer(player);
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!fakerelog - 假登出再登入").toString();
+
+        }
     }
 
     public static class ToggleOffense extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
+                return false;
+
+            }
             try {
                 CheatingOffense co = CheatingOffense.valueOf(splitted[1]);
                 co.setEnabled(!co.isEnabled());
@@ -2066,18 +2149,30 @@ public class AdminCommand {
             }
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!toggleoffense <Offense> - 開啟或關閉CheatOffense").toString();
+
+        }
     }
 
-    public static class TDrops extends CommandExecute {
+    public static class toggleDrop extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().getMap().toggleDrops();
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!toggledrop - 開啟或關閉掉落").toString();
+
+        }
     }
 
-    public static class TMegaphone extends CommandExecute {
+    public static class ToggleMegaphone extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
@@ -2085,12 +2180,21 @@ public class AdminCommand {
             c.getPlayer().dropMessage(6, "Megaphone state : " + (c.getChannelServer().getMegaphoneMuteState() ? "Enabled" : "Disabled"));
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!togglemegaphone - 開啟或關閉廣播").toString();
+
+        }
     }
 
-    public static class SReactor extends CommandExecute {
+    public static class SpawnReactor extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
+                return false;
+            }
             MapleReactorStats reactorSt = MapleReactorFactory.getReactor(Integer.parseInt(splitted[1]));
             MapleReactor reactor = new MapleReactor(reactorSt, Integer.parseInt(splitted[1]));
             reactor.setDelay(-1);
@@ -2098,21 +2202,39 @@ public class AdminCommand {
             c.getPlayer().getMap().spawnReactor(reactor);
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!spawnreactor - 設立Reactor").toString();
+
+        }
     }
 
     public static class HReactor extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
+                return false;
+            }
             c.getPlayer().getMap().getReactorByOid(Integer.parseInt(splitted[1])).hitReactor(c);
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!hitreactor - 觸碰Reactor").toString();
+
+        }
     }
 
-    public static class DReactor extends CommandExecute {
+    public static class DestroyReactor extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
+                return false;
+            }
             MapleMap map = c.getPlayer().getMap();
             List<MapleMapObject> reactors = map.getMapObjectsInRange(c.getPlayer().getPosition(), Double.POSITIVE_INFINITY, Arrays.asList(MapleMapObjectType.REACTOR));
             if (splitted[1].equals("all")) {
@@ -2125,14 +2247,26 @@ public class AdminCommand {
             }
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!drstroyreactor - 移除Reactor").toString();
+
+        }
     }
 
-    public static class ResetReactor extends CommandExecute {
+    public static class ResetReactors extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().getMap().resetReactors();
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!resetreactors - 重置此地圖所有的Reactor").toString();
+
         }
     }
 
@@ -2140,8 +2274,17 @@ public class AdminCommand {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
+                return false;
+            }
             c.getPlayer().getMap().setReactorState(Byte.parseByte(splitted[1]));
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!hitreactor - 觸碰Reactor").toString();
+
         }
     }
 
@@ -2152,6 +2295,12 @@ public class AdminCommand {
             c.getPlayer().dropMessage(5, "Cleared " + c.getPlayer().getMap().getNumItems() + " drops");
             c.getPlayer().getMap().removeDrops();
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!removedrops - 移除地上的物品").toString();
+
         }
     }
 
@@ -2170,9 +2319,15 @@ public class AdminCommand {
                 }
                 c.getPlayer().dropMessage(6, "Exprate has been changed to " + rate + "x");
             } else {
-                c.getPlayer().dropMessage(6, "Syntax: !exprate <number> [all]");
+                return false;
             }
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!exprate <倍率> - 更改經驗備率").toString();
+
         }
     }
 
@@ -2191,9 +2346,15 @@ public class AdminCommand {
                 }
                 c.getPlayer().dropMessage(6, "Drop Rate has been changed to " + rate + "x");
             } else {
-                c.getPlayer().dropMessage(6, "Syntax: !droprate <number> [all]");
+                return false;
             }
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!droprate <倍率> - 更改掉落備率").toString();
+
         }
     }
 
@@ -2212,9 +2373,15 @@ public class AdminCommand {
                 }
                 c.getPlayer().dropMessage(6, "Meso Rate has been changed to " + rate + "x");
             } else {
-                c.getPlayer().dropMessage(6, "Syntax: !mesorate <number> [all]");
+                return false;
             }
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!mesorate <倍率> - 更改金錢備率").toString();
+
         }
     }
 
@@ -2233,137 +2400,15 @@ public class AdminCommand {
                 }
                 c.getPlayer().dropMessage(6, "Cash Rate has been changed to " + rate + "x");
             } else {
-                c.getPlayer().dropMessage(6, "Syntax: !cashrate <number> [all]");
+                return false;
             }
             return true;
         }
-    }
-
-    /*    public static class ListSquads extends CommandExecute {
-
-     @Override
-     public boolean execute(MapleClient c, String splitted[]) {
-     for (Entry<String, MapleSquad> squads : c.getChannelServer().getAllSquads().entrySet()) {
-     c.getPlayer().dropMessage(5, "TYPE: " + squads.getKey() + ", Leader: " + squads.getValue().getLeader().getName() + ", status: " + squads.getValue().getStatus() + ", numMembers: " + squads.getValue().getSquadSize() + ", numBanned: " + squads.getValue().getBannedMemberSize());
-     }
-     return true;
-     }
-     }*/
-    public static class ClearSquads extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            final Collection<MapleSquad> squadz = new ArrayList<MapleSquad>(c.getChannelServer().getAllSquads().values());
-            for (MapleSquad squads : squadz) {
-                squads.clear();
-            }
-            return true;
-        }
-    }
+        public String getMessage() {
+            return new StringBuilder().append("!cashrate <倍率> - 更改Gash備率").toString();
 
-    public static class SetInstanceProperty extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            EventManager em = c.getChannelServer().getEventSM().getEventManager(splitted[1]);
-            if (em == null || em.getInstances().size() <= 0) {
-                c.getPlayer().dropMessage(5, "none");
-            } else {
-                em.setProperty(splitted[2], splitted[3]);
-                for (EventInstanceManager eim : em.getInstances()) {
-                    eim.setProperty(splitted[2], splitted[3]);
-                }
-            }
-            return true;
-        }
-    }
-
-    public static class ListInstanceProperty extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            EventManager em = c.getChannelServer().getEventSM().getEventManager(splitted[1]);
-            if (em == null || em.getInstances().size() <= 0) {
-                c.getPlayer().dropMessage(5, "none");
-            } else {
-                for (EventInstanceManager eim : em.getInstances()) {
-                    c.getPlayer().dropMessage(5, "Event " + eim.getName() + ", eventManager: " + em.getName() + " iprops: " + eim.getProperty(splitted[2]) + ", eprops: " + em.getProperty(splitted[2]));
-                }
-            }
-            return true;
-        }
-    }
-
-    public static class ListInstances extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            EventManager em = c.getChannelServer().getEventSM().getEventManager(StringUtil.joinStringFrom(splitted, 1));
-            if (em == null || em.getInstances().size() <= 0) {
-                c.getPlayer().dropMessage(5, "none");
-            } else {
-                for (EventInstanceManager eim : em.getInstances()) {
-                    c.getPlayer().dropMessage(5, "Event " + eim.getName() + ", charSize: " + eim.getPlayers().size() + ", dcedSize: " + eim.getDisconnected().size() + ", mobSize: " + eim.getMobs().size() + ", eventManager: " + em.getName() + ", timeLeft: " + eim.getTimeLeft() + ", iprops: " + eim.getProperties().toString() + ", eprops: " + em.getProperties().toString());
-                }
-            }
-            return true;
-        }
-    }
-
-    public static class LeaveInstance extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            if (c.getPlayer().getEventInstance() == null) {
-                c.getPlayer().dropMessage(5, "You are not in one");
-            } else {
-                c.getPlayer().getEventInstance().unregisterPlayer(c.getPlayer());
-            }
-            return true;
-        }
-    }
-
-    public static class StartInstance extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            if (c.getPlayer().getEventInstance() != null) {
-                c.getPlayer().dropMessage(5, "You are in one");
-            } else if (splitted.length > 2) {
-                EventManager em = c.getChannelServer().getEventSM().getEventManager(splitted[1]);
-                if (em == null || em.getInstance(splitted[2]) == null) {
-                    c.getPlayer().dropMessage(5, "Not exist");
-                } else {
-                    em.getInstance(splitted[2]).registerPlayer(c.getPlayer());
-                }
-            } else {
-                c.getPlayer().dropMessage(5, "!startinstance [eventmanager] [eventinstance]");
-            }
-            return true;
-
-        }
-    }
-
-    public static class EventInstance extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            if (c.getPlayer().getEventInstance() == null) {
-                c.getPlayer().dropMessage(5, "none");
-            } else {
-                EventInstanceManager eim = c.getPlayer().getEventInstance();
-                c.getPlayer().dropMessage(5, "Event " + eim.getName() + ", charSize: " + eim.getPlayers().size() + ", dcedSize: " + eim.getDisconnected().size() + ", mobSize: " + eim.getMobs().size() + ", eventManager: " + eim.getEventManager().getName() + ", timeLeft: " + eim.getTimeLeft() + ", iprops: " + eim.getProperties().toString() + ", eprops: " + eim.getEventManager().getProperties().toString());
-            }
-            return true;
-        }
-    }
-
-    public static class Uptime extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            c.getPlayer().dropMessage(6, "Server has been up for " + StringUtil.getReadableMillis(ChannelServer.serverStartTime, System.currentTimeMillis()));
-            return true;
         }
     }
 
@@ -2393,11 +2438,17 @@ public class AdminCommand {
             }
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!dcall [m|c|w] - 所有玩家斷線").toString();
+
+        }
     }
 
     public static class GoTo extends CommandExecute {
 
-        private static final HashMap<String, Integer> gotomaps = new HashMap<String, Integer>();
+        private static final HashMap<String, Integer> gotomaps = new HashMap<>();
 
         static {
             gotomaps.put("gmmap", 180000000);
@@ -2484,6 +2535,12 @@ public class AdminCommand {
             }
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!goto <名稱> - 到某個地圖").toString();
+
+        }
     }
 
     public static class KillAll extends CommandExecute {
@@ -2510,6 +2567,12 @@ public class AdminCommand {
             c.getPlayer().dropMessage("您總共殺了 " + monsters.size() + " 怪物");
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!killall [range] [mapid] - 殺掉所有玩家").toString();
+
+        }
     }
 
     public static class ResetMobs extends CommandExecute {
@@ -2519,12 +2582,21 @@ public class AdminCommand {
             c.getPlayer().getMap().killAllMonsters(false);
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!resetmobs - 重置地圖上所有怪物").toString();
+
+        }
     }
 
     public static class KillMonster extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
+                return false;
+            }
             MapleMap map = c.getPlayer().getMap();
             double range = Double.POSITIVE_INFINITY;
             MapleMonster mob;
@@ -2536,12 +2608,21 @@ public class AdminCommand {
             }
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!killmonster <mobid> - 殺掉地圖上某個怪物").toString();
+
+        }
     }
 
     public static class KillMonsterByOID extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
+                return false;
+            }
             MapleMap map = c.getPlayer().getMap();
             int targetId = Integer.parseInt(splitted[1]);
             MapleMonster monster = map.getMonsterByOid(targetId);
@@ -2549,6 +2630,12 @@ public class AdminCommand {
                 map.killMonster(monster, c.getPlayer(), false, false, (byte) 1);
             }
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!killmonsterbyoid <moboid> - 殺掉地圖上某個怪物").toString();
+
         }
     }
 
@@ -2566,108 +2653,11 @@ public class AdminCommand {
             }
             return true;
         }
-    }
-
-    public static class HitAll extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            MapleMap map = c.getPlayer().getMap();
-            double range = Double.POSITIVE_INFINITY;
-            if (splitted.length > 1) {
-                int irange = Integer.parseInt(splitted[1]);
-                if (splitted.length <= 2) {
-                    range = irange * irange;
-                } else {
-                    map = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted[2]));
-                }
-            }
-            int damage = Integer.parseInt(splitted[1]);
-            MapleMonster mob;
-            for (MapleMapObject monstermo : map.getMapObjectsInRange(c.getPlayer().getPosition(), range, Arrays.asList(MapleMapObjectType.MONSTER))) {
-                mob = (MapleMonster) monstermo;
-                map.broadcastMessage(MobPacket.damageMonster(mob.getObjectId(), damage));
-                mob.damage(c.getPlayer(), damage, false);
-            }
-            return true;
-        }
-    }
+        public String getMessage() {
+            return new StringBuilder().append("!hitmonsterbyoid <moboid> <damage> - 碰撞地圖上某個怪物").toString();
 
-    public static class HitMonster extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            MapleMap map = c.getPlayer().getMap();
-            double range = Double.POSITIVE_INFINITY;
-            int damage = Integer.parseInt(splitted[1]);
-            MapleMonster mob;
-            for (MapleMapObject monstermo : map.getMapObjectsInRange(c.getPlayer().getPosition(), range, Arrays.asList(MapleMapObjectType.MONSTER))) {
-                mob = (MapleMonster) monstermo;
-                if (mob.getId() == Integer.parseInt(splitted[2])) {
-                    map.broadcastMessage(MobPacket.damageMonster(mob.getObjectId(), damage));
-                    mob.damage(c.getPlayer(), damage, false);
-                }
-            }
-            return true;
-        }
-    }
-
-    public static class KillAllDrops extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            MapleMap map = c.getPlayer().getMap();
-            double range = Double.POSITIVE_INFINITY;
-
-            if (splitted.length > 1) {
-                int irange = Integer.parseInt(splitted[1]);
-                if (splitted.length <= 2) {
-                    range = irange * irange;
-                } else {
-                    map = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted[2]));
-                }
-            }
-            MapleMonster mob;
-            for (MapleMapObject monstermo : map.getMapObjectsInRange(c.getPlayer().getPosition(), range, Arrays.asList(MapleMapObjectType.MONSTER))) {
-                mob = (MapleMonster) monstermo;
-                map.killMonster(mob, c.getPlayer(), true, false, (byte) 1);
-            }
-            return true;
-        }
-    }
-
-    public static class KillAllNoSpawn extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            MapleMap map = c.getPlayer().getMap();
-            map.killAllMonsters(false);
-            return true;
-        }
-    }
-
-    public static class MonsterDebug extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            MapleMap map = c.getPlayer().getMap();
-            double range = Double.POSITIVE_INFINITY;
-
-            if (splitted.length > 1) {
-                //&& !splitted[0].equals("!killmonster") && !splitted[0].equals("!hitmonster") && !splitted[0].equals("!hitmonsterbyoid") && !splitted[0].equals("!killmonsterbyoid")) {
-                int irange = Integer.parseInt(splitted[1]);
-                if (splitted.length <= 2) {
-                    range = irange * irange;
-                } else {
-                    map = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted[2]));
-                }
-            }
-            MapleMonster mob;
-            for (MapleMapObject monstermo : map.getMapObjectsInRange(c.getPlayer().getPosition(), range, Arrays.asList(MapleMapObjectType.MONSTER))) {
-                mob = (MapleMonster) monstermo;
-                c.getPlayer().dropMessage(6, "Monster " + mob.toString());
-            }
-            return true;
         }
     }
 
@@ -2688,9 +2678,14 @@ public class AdminCommand {
                 c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.spawnNPC(npc, true));
             } else {
                 c.getPlayer().dropMessage(6, "You have entered an invalid Npc-Id");
-                return 0;
+
             }
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!npc <npcid> - 呼叫出NPC").toString();
         }
     }
 
@@ -2701,9 +2696,14 @@ public class AdminCommand {
             c.getPlayer().getMap().resetNPCs();
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!removenpcs - 刪除所有NPC").toString();
+        }
     }
 
-    public static class LookNPC extends CommandExecute {
+    public static class LookNPCs extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
@@ -2713,9 +2713,14 @@ public class AdminCommand {
             }
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!looknpcs - 查看所有NPC").toString();
+        }
     }
 
-    public static class LookReactor extends CommandExecute {
+    public static class LookReactors extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
@@ -2724,6 +2729,11 @@ public class AdminCommand {
                 c.getPlayer().dropMessage(5, "Reactor: oID: " + reactor2l.getObjectId() + " reactorID: " + reactor2l.getReactorId() + " Position: " + reactor2l.getPosition().toString() + " State: " + reactor2l.getState() + " Name: " + reactor2l.getName());
             }
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!lookreactors - 查看所有反應堆").toString();
         }
     }
 
@@ -2736,28 +2746,42 @@ public class AdminCommand {
             }
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!lookportals - 查看所有反應堆").toString();
+        }
     }
 
     public static class MakePNPC extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 3) {
+                return false;
+            }
             try {
                 c.getPlayer().dropMessage(6, "Making playerNPC...");
                 MapleCharacter chhr = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
                 if (chhr == null) {
                     c.getPlayer().dropMessage(6, splitted[1] + " is not online");
-                    return 0;
+
+                } else {
+                    int npcId = Integer.parseInt(splitted[2]);
+                    PlayerNPC npc = new PlayerNPC(chhr, npcId, c.getPlayer().getMap(), c.getPlayer());
+                    npc.addToServer();
+                    c.getPlayer().dropMessage(6, "Done");
                 }
-                int npcId = Integer.parseInt(splitted[2]);
-                PlayerNPC npc = new PlayerNPC(chhr, npcId, c.getPlayer().getMap(), c.getPlayer());
-                npc.addToServer();
-                c.getPlayer().dropMessage(6, "Done");
             } catch (Exception e) {
                 c.getPlayer().dropMessage(6, "NPC failed... : " + e.getMessage());
-                e.printStackTrace();
+
             }
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!makepnpc <playername> <npcid> - 創造玩家NPC").toString();
         }
     }
 
@@ -2771,16 +2795,22 @@ public class AdminCommand {
                 MapleCharacter chhr = MapleCharacter.loadCharFromDB(MapleCharacterUtil.getIdByName(splitted[1]), cs, false);
                 if (chhr == null) {
                     c.getPlayer().dropMessage(6, splitted[1] + " does not exist");
-                    return 0;
+
+                } else {
+                    PlayerNPC npc = new PlayerNPC(chhr, Integer.parseInt(splitted[2]), c.getPlayer().getMap(), c.getPlayer());
+                    npc.addToServer();
+                    c.getPlayer().dropMessage(6, "Done");
                 }
-                PlayerNPC npc = new PlayerNPC(chhr, Integer.parseInt(splitted[2]), c.getPlayer().getMap(), c.getPlayer());
-                npc.addToServer();
-                c.getPlayer().dropMessage(6, "Done");
             } catch (Exception e) {
                 c.getPlayer().dropMessage(6, "NPC failed... : " + e.getMessage());
-                e.printStackTrace();
+
             }
             return true;
+        }
+        
+          @Override
+        public String getMessage() {
+            return new StringBuilder().append("!deletepnpc <charname> <npcid> - 創造離線PNPC").toString();
         }
     }
 
@@ -2803,9 +2833,14 @@ public class AdminCommand {
             }
             return true;
         }
+          @Override
+        public String getMessage() {
+            return new StringBuilder().append("!destroypnpc [objectid] - 刪除PNPC").toString();
+        }
+        
     }
 
-    public static class MyNPCPos extends CommandExecute {
+    public static class MyPos extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
@@ -2813,23 +2848,28 @@ public class AdminCommand {
             c.getPlayer().dropMessage(6, "X: " + pos.x + " | Y: " + pos.y + " | RX0: " + (pos.x + 50) + " | RX1: " + (pos.x - 50) + " | FH: " + c.getPlayer().getFH() + "| CY:" + pos.y);
             return true;
         }
+           @Override
+        public String getMessage() {
+            return new StringBuilder().append("!mypos - 我的位置").toString();
+        }
     }
 
     public static class Notice extends CommandExecute {
 
         private static int getNoticeType(String typestring) {
-            if (typestring.equals("n")) {
-                return 0;
-            } else if (typestring.equals("p")) {
-                return 1;
-            } else if (typestring.equals("l")) {
-                return 2;
-            } else if (typestring.equals("nv")) {
-                return 5;
-            } else if (typestring.equals("v")) {
-                return 5;
-            } else if (typestring.equals("b")) {
-                return 6;
+            switch (typestring) {
+                case "n":
+                    return 0;
+                case "p":
+                    return 1;
+                case "l":
+                    return 2;
+                case "nv":
+                    return 5;
+                case "v":
+                    return 5;
+                case "b":
+                    return 6;
             }
             return -1;
         }
@@ -2838,12 +2878,16 @@ public class AdminCommand {
         public boolean execute(MapleClient c, String splitted[]) {
             int joinmod = 1;
             int range = -1;
-            if (splitted[1].equals("m")) {
-                range = 0;
-            } else if (splitted[1].equals("c")) {
-                range = 1;
-            } else if (splitted[1].equals("w")) {
-                range = 2;
+            switch (splitted[1]) {
+                case "m":
+                    range = 0;
+                    break;
+                case "c":
+                    range = 1;
+                    break;
+                case "w":
+                    range = 2;
+                    break;
             }
 
             int tfrom = 2;
@@ -2851,18 +2895,22 @@ public class AdminCommand {
                 range = 2;
                 tfrom = 1;
             }
-            int type = getNoticeType(splitted.get(tfrom));
+            if( splitted.length < tfrom + 1 )
+                return false;
+            int type = getNoticeType(splitted[tfrom]);
             if (type == -1) {
                 type = 0;
                 joinmod = 0;
             }
             StringBuilder sb = new StringBuilder();
-            if (splitted.get(tfrom).equals("nv")) {
+            if (splitted[tfrom].equals("nv")) {
                 sb.append("[Notice]");
             } else {
                 sb.append("");
             }
             joinmod += tfrom;
+            if( splitted.length < joinmod + 1 )
+                return false;
             sb.append(StringUtil.joinStringFrom(splitted, joinmod));
 
             MaplePacket packet = MaplePacketCreator.serverNotice(type, sb.toString());
@@ -2875,6 +2923,11 @@ public class AdminCommand {
             }
             return true;
         }
+        
+           @Override
+        public String getMessage() {
+            return new StringBuilder().append("!notice <n|p|l|nv|v|b> <m|c|w> <message> - 公告").toString();
+        }
     }
 
     public static class Yellow extends CommandExecute {
@@ -2882,12 +2935,16 @@ public class AdminCommand {
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             int range = -1;
-            if (splitted[1].equals("m")) {
-                range = 0;
-            } else if (splitted[1].equals("c")) {
-                range = 1;
-            } else if (splitted[1].equals("w")) {
-                range = 2;
+            switch (splitted[1]) {
+                case "m":
+                    range = 0;
+                    break;
+                case "c":
+                    range = 1;
+                    break;
+                case "w":
+                    range = 2;
+                    break;
             }
             if (range == -1) {
                 range = 2;
@@ -2902,6 +2959,10 @@ public class AdminCommand {
             }
             return true;
         }
+           @Override
+        public String getMessage() {
+            return new StringBuilder().append("!yellow <m|c|w> <message> - 黃色公告").toString();
+        }
     }
 
     public static class Y extends Yellow {
@@ -2915,6 +2976,11 @@ public class AdminCommand {
             RecvPacketOpcode.reloadValues();
             return true;
         }
+        
+            @Override
+        public String getMessage() {
+            return new StringBuilder().append("!reloadops - 重新載入OpCode").toString();
+        }
     }
 
     public static class ReloadDrops extends CommandExecute {
@@ -2925,14 +2991,23 @@ public class AdminCommand {
             ReactorScriptManager.getInstance().clearDrops();
             return true;
         }
+        
+             @Override
+        public String getMessage() {
+            return new StringBuilder().append("!reloaddrops - 重新載入掉寶").toString();
+        }
     }
 
-    public static class ReloadPortal extends CommandExecute {
+    public static class ReloadPortals extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             PortalScriptManager.getInstance().clearScripts();
             return true;
+        }
+             @Override
+        public String getMessage() {
+            return new StringBuilder().append("!reloadportals - 重新載入進入點").toString();
         }
     }
 
@@ -2942,6 +3017,11 @@ public class AdminCommand {
         public boolean execute(MapleClient c, String splitted[]) {
             MapleShopFactory.getInstance().clear();
             return true;
+        }
+        
+             @Override
+        public String getMessage() {
+            return new StringBuilder().append("!reloadshops - 重新載入商店").toString();
         }
     }
 
@@ -2954,6 +3034,11 @@ public class AdminCommand {
             }
             return true;
         }
+        
+             @Override
+        public String getMessage() {
+            return new StringBuilder().append("!reloadevents - 重新載入活動腳本").toString();
+        }
     }
 
     public static class ReloadQuests extends CommandExecute {
@@ -2963,162 +3048,10 @@ public class AdminCommand {
             MapleQuest.clearQuests();
             return true;
         }
-    }
-
-    public static class mobstatus extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            int value = 0;
-            try {
-                Integer.parseInt(splitted[0]);
-                for (MonsterStatus s : MonsterStatus.values()) {
-
-                }
-            } catch (Exception e) {
-            }
-            return true;
-        }
-
-    }
-
-    public static class Find extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            if (splitted.length == 1) {
-                c.getPlayer().dropMessage(6, splitted[0] + ": <NPC> <MOB> <ITEM> <MAP> <SKILL>");
-            } else if (splitted.length == 2) {
-                c.getPlayer().dropMessage(6, "Provide something to search.");
-            } else {
-                String type = splitted[1];
-                String search = StringUtil.joinStringFrom(splitted, 2);
-                MapleData data = null;
-                MapleDataProvider dataProvider = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/" + "String.wz");
-                c.getPlayer().dropMessage(6, "<<Type: " + type + " | Search: " + search + ">>");
-
-                if (type.equalsIgnoreCase("NPC")) {
-                    List<String> retNpcs = new ArrayList<String>();
-                    data = dataProvider.getData("Npc.img");
-                    List<Pair<Integer, String>> npcPairList = new LinkedList<Pair<Integer, String>>();
-                    for (MapleData npcIdData : data.getChildren()) {
-                        npcPairList.add(new Pair<Integer, String>(Integer.parseInt(npcIdData.getName()), MapleDataTool.getString(npcIdData.getChildByPath("name"), "NO-NAME")));
-                    }
-                    for (Pair<Integer, String> npcPair : npcPairList) {
-                        if (npcPair.getRight().toLowerCase().contains(search.toLowerCase())) {
-                            retNpcs.add(npcPair.getLeft() + " - " + npcPair.getRight());
-                        }
-                    }
-                    if (retNpcs != null && retNpcs.size() > 0) {
-                        for (String singleRetNpc : retNpcs) {
-                            c.getPlayer().dropMessage(6, singleRetNpc);
-                        }
-                    } else {
-                        c.getPlayer().dropMessage(6, "No NPC's Found");
-                    }
-
-                } else if (type.equalsIgnoreCase("MAP")) {
-                    List<String> retMaps = new ArrayList<String>();
-                    data = dataProvider.getData("Map.img");
-                    List<Pair<Integer, String>> mapPairList = new LinkedList<Pair<Integer, String>>();
-                    for (MapleData mapAreaData : data.getChildren()) {
-                        for (MapleData mapIdData : mapAreaData.getChildren()) {
-                            mapPairList.add(new Pair<Integer, String>(Integer.parseInt(mapIdData.getName()), MapleDataTool.getString(mapIdData.getChildByPath("streetName"), "NO-NAME") + " - " + MapleDataTool.getString(mapIdData.getChildByPath("mapName"), "NO-NAME")));
-                        }
-                    }
-                    for (Pair<Integer, String> mapPair : mapPairList) {
-                        if (mapPair.getRight().toLowerCase().contains(search.toLowerCase())) {
-                            retMaps.add(mapPair.getLeft() + " - " + mapPair.getRight());
-                        }
-                    }
-                    if (retMaps != null && retMaps.size() > 0) {
-                        for (String singleRetMap : retMaps) {
-                            c.getPlayer().dropMessage(6, singleRetMap);
-                        }
-                    } else {
-                        c.getPlayer().dropMessage(6, "No Maps Found");
-                    }
-                } else if (type.equalsIgnoreCase("MOB")) {
-                    List<String> retMobs = new ArrayList<String>();
-                    data = dataProvider.getData("Mob.img");
-                    List<Pair<Integer, String>> mobPairList = new LinkedList<Pair<Integer, String>>();
-                    for (MapleData mobIdData : data.getChildren()) {
-                        mobPairList.add(new Pair<Integer, String>(Integer.parseInt(mobIdData.getName()), MapleDataTool.getString(mobIdData.getChildByPath("name"), "NO-NAME")));
-                    }
-                    for (Pair<Integer, String> mobPair : mobPairList) {
-                        if (mobPair.getRight().toLowerCase().contains(search.toLowerCase())) {
-                            retMobs.add(mobPair.getLeft() + " - " + mobPair.getRight());
-                        }
-                    }
-                    if (retMobs != null && retMobs.size() > 0) {
-                        for (String singleRetMob : retMobs) {
-                            c.getPlayer().dropMessage(6, singleRetMob);
-                        }
-                    } else {
-                        c.getPlayer().dropMessage(6, "No Mob's Found");
-                    }
-
-                } else if (type.equalsIgnoreCase("ITEM")) {
-                    List<String> retItems = new ArrayList<String>();
-                    for (Pair<Integer, String> itemPair : MapleItemInformationProvider.getInstance().getAllItems()) {
-                        if (itemPair.getRight().toLowerCase().contains(search.toLowerCase())) {
-                            retItems.add(itemPair.getLeft() + " - " + itemPair.getRight());
-                        }
-                    }
-                    if (retItems != null && retItems.size() > 0) {
-                        for (String singleRetItem : retItems) {
-                            c.getPlayer().dropMessage(6, singleRetItem);
-                        }
-                    } else {
-                        c.getPlayer().dropMessage(6, "No Item's Found");
-                    }
-
-                } else if (type.equalsIgnoreCase("SKILL")) {
-                    List<String> retSkills = new ArrayList<String>();
-                    data = dataProvider.getData("Skill.img");
-                    List<Pair<Integer, String>> skillPairList = new LinkedList<Pair<Integer, String>>();
-                    for (MapleData skillIdData : data.getChildren()) {
-                        skillPairList.add(new Pair<Integer, String>(Integer.parseInt(skillIdData.getName()), MapleDataTool.getString(skillIdData.getChildByPath("name"), "NO-NAME")));
-                    }
-                    for (Pair<Integer, String> skillPair : skillPairList) {
-                        if (skillPair.getRight().toLowerCase().contains(search.toLowerCase())) {
-                            retSkills.add(skillPair.getLeft() + " - " + skillPair.getRight());
-                        }
-                    }
-                    if (retSkills != null && retSkills.size() > 0) {
-                        for (String singleRetSkill : retSkills) {
-                            c.getPlayer().dropMessage(6, singleRetSkill);
-                        }
-                    } else {
-                        c.getPlayer().dropMessage(6, "No Skills Found");
-                    }
-                } else {
-                    c.getPlayer().dropMessage(6, "Sorry, that search call is unavailable");
-                }
-            }
-            return true;
-        }
-    }
-
-    public static class ID extends Find {
-    }
-
-    public static class LookUp extends Find {
-    }
-
-    public static class Search extends Find {
-    }
-
-    public static class ServerMessage extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            Collection<ChannelServer> cservs = ChannelServer.getAllInstances();
-            String outputMessage = StringUtil.joinStringFrom(splitted, 1);
-            for (ChannelServer cserv : cservs) {
-                cserv.setServerMessage(outputMessage);
-            }
-            return true;
+        
+             @Override
+        public String getMessage() {
+            return new StringBuilder().append("!reloadquests - 重新載入任務").toString();
         }
     }
 
@@ -3139,22 +3072,22 @@ public class AdminCommand {
                 onemob = MapleLifeFactory.getMonster(mid);
             } catch (RuntimeException e) {
                 c.getPlayer().dropMessage(5, "Error: " + e.getMessage());
-                return 0;
+                return true;
             }
 
             long newhp = 0;
             int newexp = 0;
             if (hp != null) {
-                newhp = hp.longValue();
+                newhp = hp;
             } else if (php != null) {
-                newhp = (long) (onemob.getMobMaxHp() * (php.doubleValue() / 100));
+                newhp = (long) (onemob.getMobMaxHp() * (php / 100));
             } else {
                 newhp = onemob.getMobMaxHp();
             }
             if (exp != null) {
-                newexp = exp.intValue();
+                newexp = exp;
             } else if (pexp != null) {
-                newexp = (int) (onemob.getMobExp() * (pexp.doubleValue() / 100));
+                newexp = (int) (onemob.getMobExp() * (pexp / 100));
             } else {
                 newexp = onemob.getMobExp();
             }
@@ -3171,18 +3104,32 @@ public class AdminCommand {
             }
             return true;
         }
+        
+        
+             @Override
+        public String getMessage() {
+            return new StringBuilder().append("!spawn <怪物ID> <hp|exp|php||pexp = ?> - 召喚怪物").toString();
+        }
     }
 
     public static class Clock extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
+                return false;
+            }
             c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getClock(CommandProcessorUtil.getOptionalIntArg(splitted, 1, 60)));
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!clock <time> 時鐘").toString();
+        }
     }
 
-    public static class WarpMapTo extends CommandExecute {
+    public static class WarpPlayersTo extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
@@ -3193,10 +3140,14 @@ public class AdminCommand {
                     chr.changeMap(target, target.getPortal(0));
                 }
             } catch (Exception e) {
-                c.getPlayer().dropMessage(5, "錯誤: " + e.getMessage());
-                return 0; //assume drunk GM
+                return false; //assume drunk GM
             }
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!warpplayersro <maipid> 把所有玩家傳送到某個地圖").toString();
         }
     }
 
@@ -3211,18 +3162,24 @@ public class AdminCommand {
                 int ch = World.Find.findChannel(splitted[1]);
                 if (ch < 0) {
                     c.getPlayer().dropMessage(5, "找不到");
-                    return 0;
+
+                } else {
+                    victim = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(splitted[1]);
+                    c.getPlayer().dropMessage(5, "正在把玩家傳到這來");
+                    victim.dropMessage(5, "正在傳送到GM那邊");
+                    if (victim.getMapId() != c.getPlayer().getMapId()) {
+                        final MapleMap mapp = victim.getClient().getChannelServer().getMapFactory().getMap(c.getPlayer().getMapId());
+                        victim.changeMap(mapp, mapp.getPortal(0));
+                    }
+                    victim.changeChannel(c.getChannel());
                 }
-                victim = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(splitted[1]);
-                c.getPlayer().dropMessage(5, "正在把玩家傳到這來");
-                victim.dropMessage(5, "正在傳送到GM那邊");
-                if (victim.getMapId() != c.getPlayer().getMapId()) {
-                    final MapleMap mapp = victim.getClient().getChannelServer().getMapFactory().getMap(c.getPlayer().getMapId());
-                    victim.changeMap(mapp, mapp.getPortal(0));
-                }
-                victim.changeChannel(c.getChannel());
             }
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!warphere 把玩家傳送到這裡").toString();
         }
     }
 
@@ -3230,12 +3187,17 @@ public class AdminCommand {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
-            for (MapleCharacter mch : c.getChannelServer().getPlayerStorage().getAllCharacters()) {
+            for (MapleCharacter mch : c.getChannelServer().getPlayerStorage().getAllCharactersThreadSafe()) {
                 if (mch.getMapId() != c.getPlayer().getMapId()) {
                     mch.changeMap(c.getPlayer().getMap(), c.getPlayer().getPosition());
                 }
             }
             return true;
+        }
+        
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!warphere 把所有玩家傳送到這裡").toString();
         }
     }
 
@@ -3244,20 +3206,28 @@ public class AdminCommand {
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             if (splitted.length != 2) {
-                c.getPlayer().dropMessage(6, "Syntax: !lolcastle level (level = 1-5)");
-                return 0;
+                return false;
             }
             MapleMap target = c.getChannelServer().getEventSM().getEventManager("lolcastle").getInstance("lolcastle" + splitted[1]).getMapFactory().getMap(990000300, false, false);
             c.getPlayer().changeMap(target, target.getPortal(0));
 
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!lolcastle level (level = 1-5) - 不知道是啥").toString();
+        }
+
     }
 
     public static class Map extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
+                return false;
+            }
             try {
                 MapleMap target = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted[1]));
                 MaplePortal targetPortal = null;
@@ -3277,9 +3247,13 @@ public class AdminCommand {
                 c.getPlayer().changeMap(target, targetPortal);
             } catch (Exception e) {
                 c.getPlayer().dropMessage(5, "Error: " + e.getMessage());
-                return 0;
             }
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!map <mapid|charname> [portal] - 傳送到某地圖/人").toString();
         }
     }
 
@@ -3299,6 +3273,11 @@ public class AdminCommand {
             sampler.start();
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!startprofiling 開始紀錄JVM資訊").toString();
+        }
     }
 
     public static class StopProfiling extends CommandExecute {
@@ -3314,7 +3293,7 @@ public class AdminCommand {
                 File file = new File(filename);
                 if (file.exists()) {
                     c.getPlayer().dropMessage(6, "The entered filename already exists, choose a different one");
-                    return 0;
+                    return true;
                 }
                 sampler.stop();
                 FileWriter fw = new FileWriter(file);
@@ -3326,17 +3305,25 @@ public class AdminCommand {
             sampler.reset();
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!stopprofiling <filename> - 取消紀錄JVM資訊並儲存到檔案").toString();
+        }
     }
 
     public static class ReloadMap extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
+                return false;
+            }
             final int mapId = Integer.parseInt(splitted[1]);
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                 if (cserv.getMapFactory().isMapLoaded(mapId) && cserv.getMapFactory().getMap(mapId).getCharactersSize() > 0) {
                     c.getPlayer().dropMessage(5, "There exists characters on channel " + cserv.getChannel());
-                    return 0;
+                    return true;
                 }
             }
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
@@ -3345,6 +3332,11 @@ public class AdminCommand {
                 }
             }
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!reloadmap <maipid> - 重置某個地圖").toString();
         }
     }
 
@@ -3355,6 +3347,11 @@ public class AdminCommand {
             c.getPlayer().getMap().respawn(true);
             return true;
         }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!respawn - 重新進入地圖").toString();
+        }
     }
 
     public static class ResetMap extends CommandExecute {
@@ -3363,6 +3360,11 @@ public class AdminCommand {
         public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().getMap().resetFully();
             return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!respawn - 重置這個地圖").toString();
         }
     }
 
