@@ -36,8 +36,7 @@ public class MapleSquad {
         dunas2(2), 
         core_blaze(2), 
         aufheben(2), 
-        cwkpq(10), 
-        tokyo_2095(2), 
+        cwkpq(10),  
         vonleon(3), 
         scartar(2),
         cygnus(3);

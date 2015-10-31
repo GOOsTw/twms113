@@ -45,7 +45,7 @@ function playerDisconnected(eim, player) {
 
 function monsterValue(eim, mobId) {
     if (mobId == 9300102) {
-	eim.broadcastPlayerMsg(5, "野豬掛惹");
+	eim.broadcastPlayerMsg(5, "好可惜野豬死了....");
 	end(eim);
     }
     return 1;

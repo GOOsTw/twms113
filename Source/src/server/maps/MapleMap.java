@@ -699,7 +699,6 @@ public final class MapleMap {
                     type = SpeedRunType.Targa;
                 }
             }
-            //INSERT HERE: 2095_tokyo
         } else if (mobid == 8820001 && mapid == 270050100) {
             World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, chr.getName() + " 經過帶領的隊伍經過無數次的挑戰，終於擊破了時間的寵兒－皮卡丘的遠征隊！你們才是時間神殿的真正英雄~").getBytes());
             /*for (MapleCharacter c : getCharactersThreadsafe()) {
@@ -2144,9 +2143,6 @@ public final class MapleMap {
             case 802000211:
                 zz = MapleSquadType.vergamot;
                 break;
-            case 802000311:
-                zz = MapleSquadType.tokyo_2095;
-                break;
             case 802000411:
                 zz = MapleSquadType.dunas;
                 break;
@@ -2217,7 +2213,7 @@ public final class MapleMap {
                 em = "Vergamot";
                 break;
             case 802000311:
-                em = "2095_tokyo";
+                em = "tokyo_2095";
                 break;
             case 802000411:
                 em = "Dunas";
