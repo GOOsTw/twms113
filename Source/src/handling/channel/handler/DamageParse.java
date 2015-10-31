@@ -31,6 +31,7 @@ import client.MapleBuffStat;
 import client.MapleCharacter;
 import client.inventory.MapleInventoryType;
 import client.PlayerStats;
+import client.Skill;
 import client.SkillFactory;
 import client.anticheat.CheatTracker;
 import client.anticheat.CheatingOffense;
@@ -295,6 +296,7 @@ public class DamageParse {
                     }
                     // effects
                     switch (attack.skill) {
+
                         case SkillType.刺客.吸血術: //drain
                         case SkillType.格鬥家.損人利己: { // Energy Drain
                             int getHP = ((int) Math.min(monster.getMobMaxHp(), Math.min(((int) ((double) totDamage * (double) theSkill.getEffect(player.getSkillLevel(theSkill)).getX() / 100.0)), stats.getMaxHp() / 2)));
@@ -333,8 +335,18 @@ public class DamageParse {
                                 if ((eff != null) && (eff.makeChanceResult()) && (!monster.isBuffed(MonsterStatus.NEUTRALISE))) {
                                     monster.applyStatus(player, new MonsterStatusEffect(MonsterStatus.NEUTRALISE, 1, eff.getSourceId(), null, false), false, eff.getX() * 1000, true, eff);
                                 }
+                                int[] skills = {4120005, 4220005, 14110004};
+                                for (int i : skills) {
+                                    final ISkill skill = SkillFactory.getSkill(i);
+                                    if (player.getSkillLevel(skill) > 0) {
+                                        final MapleStatEffect venomEffect = skill.getEffect(player.getSkillLevel(skill));
+                                        if (venomEffect.makeChanceResult()) {
+                                            monster.applyStatus(player, new MonsterStatusEffect(MonsterStatus.POISON, 1, i, null, false), true, venomEffect.getDuration(), true, venomEffect);
+                                        }
+                                        break;
+                                    }
+                                }
                             }
-                            break;
                         }
                         case SkillType.俠盜.妙手術:  //steal
                             monster.handleSteal(player);
