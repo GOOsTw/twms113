@@ -20,7 +20,7 @@ function action(mode, type, selection) {
 	if (cm.getParty() == null) { // No Party
 	    cm.sendOk("請組隊再來找我");
 	} else if (!cm.isLeader()) { // Not Party Leader
-	    cm.sendOk("If you want to try the quest, please tell the #bleader of your party#k to talk to me.#b#l");
+	    cm.sendOk("如果想嘗試保護野豬任務 #b請隊長來找我#k 談談。#b#l");
 	} else {
 	    // Check if all party members are within PQ levels
 	    var party = cm.getParty().getMembers();
@@ -47,7 +47,7 @@ function action(mode, type, selection) {
 	    if (next) {
 		var em = cm.getEventManager("ProtectPig");
 		if (em == null) {
-		    cm.sendSimple("The PQ has encountered an error. Please report this on the forums, with a screenshot.#b#l");
+		    cm.sendSimple("找不到此副本，請聯絡管理員。#b#l");
 		} else {
 		    var prop = em.getProperty("state");
 		    if (prop.equals("0") || prop == null) {
@@ -61,11 +61,11 @@ function action(mode, type, selection) {
 			cm.dispose();
 			return;
 		    } else {
-			cm.sendSimple("Another party has already entered the #rParty Quest#k in this channel. Please try another channel, or wait for the current party to finish.#b#");
+			cm.sendSimple("已經有 #r另外一隊#k 進去挑戰了，請稍後再嘗試。#b#");
 		    }
 		}
 	    } else {
-		cm.sendSimple("Your party is invalid. Please adhere to the following requirements:\r\n\r\n#rRequirements: " + minPartySize + " Party Members, all between level " + minLevel + " and level " + maxLevel + ".#b#l");
+		cm.sendSimple("組隊條件貌似沒有達到要求:\r\n\r\n#r最少的成員: " + minPartySize + " 全部等級必須在 " + minLevel + " 到 " + maxLevel + ".#b#l");
 	    }
 	}
 	}
