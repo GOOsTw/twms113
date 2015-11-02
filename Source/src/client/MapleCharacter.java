@@ -1439,6 +1439,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         final MapleBuffStatValueHolder mbsvh = effects.get(effect);
         return mbsvh == null ? null : mbsvh.value;
     }
+    
+    public boolean hasBuffedValue(MapleBuffStat effect) {
+        return getBuffedValue(effect) != null;
+    }
 
     public final Integer getBuffedSkill_X(final MapleBuffStat effect) {
         final MapleBuffStatValueHolder mbsvh = effects.get(effect);

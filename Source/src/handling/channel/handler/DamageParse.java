@@ -57,7 +57,6 @@ import tools.data.input.LittleEndianAccessor;
 
 public class DamageParse {
 
-    private static int[] charges = {1211005, 1211006};
 
     public static void applyAttack(final AttackInfo attack, final ISkill theSkill, final MapleCharacter player, int attackCount, final double maxDamagePerMonster, final MapleStatEffect effect, final AttackType attack_type) {
         if (!player.isAlive()) {
@@ -187,7 +186,7 @@ public class DamageParse {
 
                 if (!Tempest && !player.isGM()) {
                     if (!monster.isBuffed(MonsterStatus.DAMAGE_IMMUNITY) && !monster.isBuffed(MonsterStatus.WEAPON_IMMUNITY) && !monster.isBuffed(MonsterStatus.WEAPON_DAMAGE_REFLECT)) {
-                        maxDamagePerHit = CalculateMaxWeaponDamagePerHit(player, monster, attack, theSkill, effect, maxDamagePerMonster, CriticalDamage);
+                        maxDamagePerHit = calculateMaxWeaponDamagePerHit(player, monster, attack, theSkill, effect, maxDamagePerMonster, CriticalDamage);
                     } else {
                         maxDamagePerHit = 1;
                     }
@@ -323,19 +322,19 @@ public class DamageParse {
                         case SkillType.夜使者.三飛閃: // Triple Throw
                         case SkillType.暗殺者.風魔手裏劍: // Avenger
                         case SkillType.盜賊.雙飛斬: {
-                            if ((player.getBuffedValue(MapleBuffStat.WK_CHARGE) != null) && (!monster.getStats().isBoss())) {
+                            if ( player.hasBuffedValue(MapleBuffStat.WK_CHARGE) && !monster.getStats().isBoss()) {
                                 MapleStatEffect eff = player.getStatForBuff(MapleBuffStat.WK_CHARGE);
                                 if (eff != null) {
                                     monster.applyStatus(player, new MonsterStatusEffect(MonsterStatus.SPEED, eff.getX(), eff.getSourceId(), null, false), false, eff.getY() * 1000, true, eff);
                                 }
                             }
-                            if ((player.getBuffedValue(MapleBuffStat.BODY_PRESSURE) != null) && (!monster.getStats().isBoss())) {
+                            if ( player.hasBuffedValue(MapleBuffStat.BODY_PRESSURE) && !monster.getStats().isBoss() ) {
                                 MapleStatEffect eff = player.getStatForBuff(MapleBuffStat.BODY_PRESSURE);
 
                                 if ((eff != null) && (eff.makeChanceResult()) && (!monster.isBuffed(MonsterStatus.NEUTRALISE))) {
                                     monster.applyStatus(player, new MonsterStatusEffect(MonsterStatus.NEUTRALISE, 1, eff.getSourceId(), null, false), false, eff.getX() * 1000, true, eff);
                                 }
-                                int[] skills = {4120005, 4220005, 14110004};
+                                int[] skills = { SkillType.夜使者.飛毒殺, SkillType.暗影神偷.飛毒殺, SkillType.暗夜行者3.飛毒殺 };
                                 for (int i : skills) {
                                     final ISkill skill = SkillFactory.getSkill(i);
                                     if (player.getSkillLevel(skill) > 0) {
@@ -391,7 +390,7 @@ public class DamageParse {
                                 monster.applyStatus(player, monsterStatusEffect, false, 10000L, false, null);
                             }
                         }
-                        if (player.getBuffedValue(MapleBuffStat.BLIND) != null) {
+                        if (player.hasBuffedValue(MapleBuffStat.BLIND)) {
                             MapleStatEffect eff = player.getStatForBuff(MapleBuffStat.BLIND);
 
                             if ((eff != null) && (eff.makeChanceResult())) {
@@ -400,7 +399,7 @@ public class DamageParse {
                             }
                         }
 
-                        if (player.getBuffedValue(MapleBuffStat.HAMSTRING) != null) {
+                        if (player.hasBuffedValue(MapleBuffStat.HAMSTRING)) {
                             MapleStatEffect eff = player.getStatForBuff(MapleBuffStat.HAMSTRING);
 
                             if ((eff != null) && (eff.makeChanceResult())) {
@@ -408,6 +407,7 @@ public class DamageParse {
                                 monster.applyStatus(player, monsterStatusEffect, false, eff.getY() * 1000, true, eff);
                             }
                         }
+                        
                         if ((player.getJob() == 121) || (player.getJob() == 122)) {
                             ISkill skill = SkillFactory.getSkill(1211006);
                             if (player.isBuffFrom(MapleBuffStat.WK_CHARGE, skill)) {
@@ -415,9 +415,17 @@ public class DamageParse {
                                 MonsterStatusEffect monsterStatusEffect = new MonsterStatusEffect(MonsterStatus.FREEZE, Integer.valueOf(1), skill.getId(), null, false);
                                 monster.applyStatus(player, monsterStatusEffect, false, eff.getY() * 2000, true, eff);
                             }
+                            skill = SkillFactory.getSkill(1211005);
+                            if (player.isBuffFrom(MapleBuffStat.WK_CHARGE, skill)) {
+                                MapleStatEffect eff = skill.getEffect(player.getSkillLevel(skill));
+                                MonsterStatusEffect monsterStatusEffect = new MonsterStatusEffect(MonsterStatus.FREEZE, Integer.valueOf(1), skill.getId(), null, false);
+                                monster.applyStatus(player, monsterStatusEffect, false, eff.getY() * 2000, true, eff);
+                            }
+                           
+                            
                         }
                     }
-                    if ((effect != null) && (effect.getMonsterStati().size() > 0) && (effect.makeChanceResult())) {
+                    if (effect != null && (effect.getMonsterStati().size() > 0) && effect.makeChanceResult()) {
                         for (Map.Entry z : effect.getMonsterStati().entrySet()) {
                             monster.applyStatus(player, new MonsterStatusEffect((MonsterStatus) z.getKey(), (Integer) z.getValue(), theSkill.getId(), null, false), effect.isPoison(), effect.getDuration(), true, effect);
                         }
@@ -489,7 +497,6 @@ public class DamageParse {
             maxDamagePerHit = 1;
         } else {
             final double v75 = (effect.getMatk() * 0.058);
-//	    minDamagePerHit = stats.getTotalMagic() * (stats.getInt() * 0.5 + (v75 * v75) + (effect.getMastery() * 0.9 * effect.getMatk()) * 3.3) / 100;
             maxDamagePerHit = stats.getTotalMagic() * (stats.getInt() * 0.5 + (v75 * v75) + effect.getMatk() * 3.3) / 100;
         }
         maxDamagePerHit *= 1.04; // Avoid any errors for now
@@ -710,7 +717,7 @@ public class DamageParse {
         }
     }
 
-    private static double CalculateMaxWeaponDamagePerHit(final MapleCharacter player, final MapleMonster monster, final AttackInfo attack, final ISkill theSkill, final MapleStatEffect attackEffect, double maximumDamageToMonster, final Integer CriticalDamagePercent) {
+    private static double calculateMaxWeaponDamagePerHit(final MapleCharacter player, final MapleMonster monster, final AttackInfo attack, final ISkill theSkill, final MapleStatEffect attackEffect, double maximumDamageToMonster, final Integer CriticalDamagePercent) {
         if (player.getMapId() / 1000000 == 914) { //aran
             return 199999;
         }
