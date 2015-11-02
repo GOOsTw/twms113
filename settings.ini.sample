@@ -5,7 +5,7 @@ server.wzpath = \wz
 server.settings.db.name = twms
 server.settings.db.ip = 127.0.0.1
 server.settings.db.user          = root
-server.settings.db.password          = lkk19940326
+server.settings.db.password          = root
 
 #Channel Setting
 server.settings.channel.count         = 5
@@ -35,7 +35,7 @@ server.settings.admin         = false
 server.settings.gmitems		  = false
 server.settings.userlimit     = 600
 server.settings.maxCharacters = 3
-server.settings.ip            = 133.130.91.157
+server.settings.ip            = 127.0.0.1
 server.settings.packetLog     = false
 server.settings.debug = false
 server.crypt  = true
