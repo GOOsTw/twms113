@@ -120,8 +120,8 @@ public class ChatHandler {
     public static final void Messenger(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         String input;
         MapleMessenger messenger = c.getPlayer().getMessenger();
-
-        switch (slea.readByte()) {
+        byte mode = slea.readByte();
+        switch (mode) {
             case 0x00: // open
                 if (messenger == null) {
                     int messengerid = slea.readInt();
@@ -165,7 +165,7 @@ public class ChatHandler {
                                 c.sendPacket(MaplePacketCreator.messengerNote(input, 4, 0));
                             }
                         } else {
-                            c.sendPacket(MaplePacketCreator.messengerChat(c.getPlayer().getName() + " : " + target.getName() + " is already using Maple Messenger."));
+                            c.sendPacket(MaplePacketCreator.messengerChat(c.getPlayer().getName() + " : " + target.getName() + " 忙碌中."));
                         }
                     } else {
                         if (World.isConnected(input)) {
@@ -192,15 +192,17 @@ public class ChatHandler {
             case 0x06: // message
                 if (messenger != null) {
                     World.Messenger.messengerChat(messenger.getId(), slea.readMapleAsciiString(), c.getPlayer().getName());
-
                 }
                 break;
+            default:
+                System.out.println("Unhandled Messenger operation : " + String.valueOf(mode));
+                
         }
     }
 
     public static final void WhisperFind(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         final byte mode = slea.readByte();
-//        slea.readInt(); //ticks
+
         switch (mode) {
             case 68: //buddy
             case 5: { // Find

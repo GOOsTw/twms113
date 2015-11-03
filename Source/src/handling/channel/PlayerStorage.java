@@ -40,25 +40,24 @@ import server.Timer.PingTimer;
 public class PlayerStorage {
 
     private final ReentrantReadWriteLock mutex = new ReentrantReadWriteLock();
-    private final Lock rL = mutex.readLock(), wL = mutex.writeLock();
+    private final Lock readLock = mutex.readLock(), writeLock = mutex.writeLock();
     private final ReentrantReadWriteLock mutex2 = new ReentrantReadWriteLock();
-    private final Lock rL2 = mutex2.readLock(), wL2 = mutex2.writeLock();
+    private final Lock readLock2 = mutex2.readLock(), writeLock2 = mutex2.writeLock();
     private final Map<Integer, MapleCharacter> idToChar = new HashMap<>();
     private final Map<Integer, CharacterTransfer> PendingCharacter = new HashMap<>();
     private final int channel;
 
     public PlayerStorage(int channel) {
         this.channel = channel;
-        // Prune once every 15 minutes
         PingTimer.getInstance().schedule(new PersistingTask(), 900000);
     }
 
     public final Collection<MapleCharacter> getAllCharacters() {
-        rL.lock();
+        readLock.lock();
         try {
             return Collections.unmodifiableCollection(idToChar.values());
         } finally {
-            rL.unlock();
+            readLock.unlock();
         }
     }
 
@@ -69,63 +68,63 @@ public class PlayerStorage {
     }
 
     public final void registerPlayer(final MapleCharacter chr) {
-        wL.lock();
+        writeLock.lock();
         try {
             idToChar.put(chr.getId(), chr);
         } finally {
-            wL.unlock();
+            writeLock.unlock();
         }
         World.Find.register(chr.getId(), chr.getName(), channel);
     }
 
     public final void registerPendingPlayer(final CharacterTransfer chr, final int playerid) {
-        wL2.lock();
+        writeLock2.lock();
         try {
             PendingCharacter.put(playerid, chr);//new Pair(System.currentTimeMillis(), chr));
         } finally {
-            wL2.unlock();
+            writeLock2.unlock();
         }
     }
 
     public final void deregisterPlayer(final MapleCharacter chr) {
-        wL.lock();
+        writeLock.lock();
         try {
             if (chr.getMap() != null) {
                 idToChar.get(chr.getId()).getMap().removePlayer(chr);
             }
             idToChar.remove(chr.getId());
         } finally {
-            wL.unlock();
+            writeLock.unlock();
         }
         World.Find.forceDeregister(chr.getId(), chr.getName());
     }
 
     public final void deregisterPlayer(final int idz, final String namez) {
-        wL.lock();
+        writeLock.lock();
         try {
             idToChar.remove(idz);
         } finally {
-            wL.unlock();
+            writeLock.unlock();
         }
         World.Find.forceDeregister(idz, namez);
     }
 
     public final void deregisterPendingPlayer(final int charid) {
-        wL2.lock();
+        writeLock2.lock();
         try {
             PendingCharacter.remove(charid);
         } finally {
-            wL2.unlock();
+            writeLock2.unlock();
         }
     }
 
     public final CharacterTransfer getPendingCharacter(final int charid) {
         final CharacterTransfer toreturn;
-        rL2.lock();
+        readLock2.lock();
         try {
             toreturn = PendingCharacter.get(charid);//.right;
         } finally {
-            rL2.unlock();
+            readLock2.unlock();
         }
         if (toreturn != null) {
             deregisterPendingPlayer(charid);
@@ -135,7 +134,7 @@ public class PlayerStorage {
 
     public final MapleCharacter getCharacterByName(final String name) {
         MapleCharacter rchr = null;
-        rL.lock();
+        readLock.lock();
         try {
             for (MapleCharacter chr : idToChar.values()) {
                 if (chr.getName().equals(name)) {
@@ -143,7 +142,7 @@ public class PlayerStorage {
                 }
             }
         } finally {
-            rL.unlock();
+            readLock.unlock();
         }
         return rchr;
     }
@@ -158,11 +157,11 @@ public class PlayerStorage {
      return null;
      }*/
     public final MapleCharacter getCharacterById(final int id) {
-        rL.lock();
+        readLock.lock();
         try {
             return idToChar.get(id);
         } finally {
-            rL.unlock();
+            readLock.unlock();
         }
     }
 
@@ -173,7 +172,7 @@ public class PlayerStorage {
     public final List<CheaterData> getCheaters() {
         final List<CheaterData> cheaters = new ArrayList<>();
 
-        rL.lock();
+        readLock.lock();
         try {
             final Iterator<MapleCharacter> itr = this.idToChar.values().iterator();
             MapleCharacter chr;
@@ -185,7 +184,7 @@ public class PlayerStorage {
                 }
             }
         } finally {
-            rL.unlock();
+            readLock.unlock();
         }
         return cheaters;
     }
@@ -195,7 +194,7 @@ public class PlayerStorage {
     }
 
     public final void disconnectAll(final boolean checkGM) {
-        wL.lock();
+        writeLock.lock();
         try {
             final Iterator<MapleCharacter> itr = idToChar.values().iterator();
             MapleCharacter chr;
@@ -209,7 +208,7 @@ public class PlayerStorage {
                 }
             }
         } finally {
-            wL.unlock();
+            writeLock.unlock();
         }
     }
 
@@ -217,7 +216,7 @@ public class PlayerStorage {
         final StringBuilder sb = new StringBuilder();
 
         if (byGM) {
-            rL.lock();
+            readLock.lock();
             try {
                 final Iterator<MapleCharacter> itr = idToChar.values().iterator();
                 while (itr.hasNext()) {
@@ -225,10 +224,10 @@ public class PlayerStorage {
                     sb.append(", ");
                 }
             } finally {
-                rL.unlock();
+                readLock.unlock();
             }
         } else {
-            rL.lock();
+            readLock.lock();
             try {
                 final Iterator<MapleCharacter> itr = idToChar.values().iterator();
                 MapleCharacter chr;
@@ -241,26 +240,26 @@ public class PlayerStorage {
                     }
                 }
             } finally {
-                rL.unlock();
+                readLock.unlock();
             }
         }
         return sb.toString();
     }
 
     public final void broadcastPacket(final MaplePacket data) {
-        rL.lock();
+        readLock.lock();
         try {
             final Iterator<MapleCharacter> itr = idToChar.values().iterator();
             while (itr.hasNext()) {
                 itr.next().getClient().sendPacket(data);
             }
         } finally {
-            rL.unlock();
+            readLock.unlock();
         }
     }
 
     public final void broadcastSmegaPacket(final MaplePacket data) {
-        rL.lock();
+        readLock.lock();
         try {
             final Iterator<MapleCharacter> itr = idToChar.values().iterator();
             MapleCharacter chr;
@@ -272,12 +271,12 @@ public class PlayerStorage {
                 }
             }
         } finally {
-            rL.unlock();
+            readLock.unlock();
         }
     }
 
     public final void broadcastGMPacket(final MaplePacket data) {
-        rL.lock();
+        readLock.lock();
         try {
             final Iterator<MapleCharacter> itr = idToChar.values().iterator();
             MapleCharacter chr;
@@ -289,7 +288,7 @@ public class PlayerStorage {
                 }
             }
         } finally {
-            rL.unlock();
+            readLock.unlock();
         }
     }
 
@@ -297,7 +296,7 @@ public class PlayerStorage {
 
         @Override
         public void run() {
-            wL2.lock();
+            writeLock2.lock();
             try {
                 final long currenttime = System.currentTimeMillis();
                 final Iterator<Map.Entry<Integer, CharacterTransfer>> itr = PendingCharacter.entrySet().iterator();
@@ -309,7 +308,7 @@ public class PlayerStorage {
                 }
                 PingTimer.getInstance().schedule(new PersistingTask(), 900000);
             } finally {
-                wL2.unlock();
+                writeLock2.unlock();
             }
         }
     }

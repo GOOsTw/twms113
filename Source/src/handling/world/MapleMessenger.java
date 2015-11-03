@@ -24,9 +24,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 
-public final class MapleMessenger implements Serializable {
+public final class MapleMessenger {
 
-    private static final long serialVersionUID = 9179541993413738569L;
     private final MapleMessengerCharacter[] members = new MapleMessengerCharacter[3];
     private final String[] silentLink = new String[3];
     private int id;

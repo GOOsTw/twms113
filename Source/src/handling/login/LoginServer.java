@@ -27,6 +27,7 @@ import java.util.Map;
 
 import handling.MapleServerHandler;
 import handling.mina.MapleCodecFactory;
+import java.util.Iterator;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.buffer.SimpleBufferAllocator;
 import org.apache.mina.core.filterchain.IoFilter;
@@ -91,9 +92,11 @@ public class LoginServer {
             return;
         }
         System.out.println("【登入伺服器】 關閉中...");
-
-        for (IoSession session : acceptor.getManagedSessions().values()) {
-            session.close(true);
+        Iterator<IoSession> iterator = acceptor.getManagedSessions().values().iterator();
+        while (iterator.hasNext()) {
+            if (!iterator.next().isClosing()) {
+                iterator.next().close(true);
+            }
         }
         acceptor.unbind(new InetSocketAddress(PORT));
         acceptor.dispose();
