@@ -155,6 +155,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
         
         Connection con = DatabaseConnection.getConnection();
         try {
+            
             PreparedStatement ps = con.prepareStatement("DELETE FROM hiredmerch WHERE accountid = ? OR characterid = ?");
             ps.setInt(1, ownerAccount);
             ps.setInt(2, ownerId);
