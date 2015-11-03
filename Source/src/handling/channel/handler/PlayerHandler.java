@@ -513,15 +513,14 @@ public class PlayerHandler {
         }
         //chr.checkFollow(); //not msea-like but ALEX'S WISHES
         switch (skillid) {
-            case 1121001:
-            case 1221001:
-            case 1321001:
+            case 英雄.絕對引力:
+            case 聖騎士.絕對引力:
+            case 黑騎士.絕對引力:
             case 9001020: // GM magnet
                 final byte number_of_mobs = slea.readByte();
                 slea.skip(3);
                 for (int i = 0; i < number_of_mobs; i++) {
                     int mobId = slea.readInt();
-
                     final MapleMonster mob = chr.getMap().getMonsterByOid(mobId);
                     if (mob != null) {
 //			chr.getMap().broadcastMessage(chr, MaplePacketCreator.showMagnet(mobId, slea.readByte()), chr.getPosition());
@@ -703,7 +702,8 @@ public class PlayerHandler {
         }
         final AttackInfo attack = DamageParse.Modify_AttackCrit(DamageParse.parseDmgR(slea), chr, 2);
 
-        int bulletCount = 1, skillLevel = 0;
+        int bulletCount = 1;
+        int skillLevel = 0;
         MapleStatEffect effect = null;
         ISkill skill = null;
 
@@ -716,9 +716,9 @@ public class PlayerHandler {
             }
 
             switch (attack.skill) {
-                case 13111007:
-                case 21110004: // Ranged but uses attackcount instead
-                case 14101006: // Vampure
+                case 破風使者3.疾風掃射:
+                case 狂狼勇士3.狼魂衝擊: // Ranged but uses attackcount instead
+                case 暗夜行者2.吸血: // Vampure
                     bulletCount = effect.getAttackCount();
                     break;
                 default:
@@ -772,15 +772,15 @@ public class PlayerHandler {
             projectileWatk = MapleItemInformationProvider.getInstance().getWatkForProjectile(projectile);
         }
         final PlayerStats statst = chr.getStat();
+        
         switch (attack.skill) {
-            case 4001344: // Lucky Seven
-            case 4121007: // Triple Throw
-            case 14001004: // Lucky seven
-            case 14111005: // Triple Throw
+            case 盜賊.雙飛斬: // Lucky Seven
+            case 夜使者.三飛閃: // Triple Throw
+            case 暗夜行者1.雙飛斬: // Lucky seven
+            case 暗夜行者3.三飛閃: // Triple Throw
                 basedamage = (float) ((float) ((statst.getTotalLuk() * 5.0f) * (statst.getTotalWatk() + projectileWatk)) / 100);
                 break;
-            case 4111004: // Shadow Meso
-//		basedamage = ((effect.getMoneyCon() * 10) / 100) * effect.getProb(); // Not sure
+            case 暗殺者.楓幣攻擊: // Shadow Meso
                 basedamage = 13000;
                 break;
             default:
@@ -790,7 +790,7 @@ public class PlayerHandler {
                     basedamage = statst.getCurrentMaxBaseDamage();
                 }
                 switch (attack.skill) {
-                    case 3101005: // arrowbomb is hardcore like that
+                    case 破風使者2.暴風射擊: // arrowbomb is hardcore like that
                         if (effect != null) {
                             basedamage *= effect.getX() / 100.0;
                         }
@@ -800,7 +800,6 @@ public class PlayerHandler {
         }
         if (effect != null) {
             basedamage *= effect.getDamage() / 100.0;
-
             int money = effect.getMoneyCon();
             if (money != 0) {
                 if (money > chr.getMeso()) {
@@ -1101,7 +1100,7 @@ public class PlayerHandler {
                     chr.changeMap(to, to.getPortal(0));
                 } else {
                     c.sendPacket(MTSCSPacket.useWheel((byte) (chr.getInventory(MapleInventoryType.CASH).countById(5510000) - 1)));
-                    chr.getStat().setHp(((chr.getStat().getMaxHp() / 100) * 40));
+                    chr.getStat().setHp((chr.getStat().getMaxHp() / 100) * 40);
                     MapleInventoryManipulator.removeById(c, MapleInventoryType.CASH, 5510000, 1, true, false);
 
                     final MapleMap to = chr.getMap();

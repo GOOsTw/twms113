@@ -2320,7 +2320,6 @@ public class InventoryHandler {
         if (GameConstants.isUse(id)) { // TO prevent caching of everything, waste of mem
             final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
             final byte consumeval = ii.isConsumeOnPickup(id);
-
             if (consumeval > 0) {
                 if (consumeval == 2) {
                     if (c.getPlayer().getParty() != null) {
