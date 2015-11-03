@@ -22,7 +22,6 @@ package client.status;
 
 import client.MapleCharacter;
 import java.lang.ref.WeakReference;
-import java.util.concurrent.ScheduledFuture;
 import server.life.MapleMonster;
 
 import server.life.MobSkill;

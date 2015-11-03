@@ -102,13 +102,12 @@ public class BuddyListHandler {
                                 buddyChar.getId(),
                                 buddyGroup,
                                 buddyChannel,
-                                true,
+                                false,
                                 buddyChar.getLevel(),
                                 buddyChar.getJob());
                     }
                 } else {
                     buddy = BuddyEntry.getByNameFromDB(buddyName);
-                    
                 }
 
                 /* 無此角色*/
@@ -117,10 +116,6 @@ public class BuddyListHandler {
                     nextPendingRequest(client);
                     return;
                 }
-
-                buddy.setGroup(buddyGroup);
-                buddy.setChannel(buddyChannel);
-                buddy.setVisible(true);
 
                 /* 如果好友在線上 直接傳封包過去囉*/
                 if (buddyChannel > 0) {
@@ -150,6 +145,8 @@ public class BuddyListHandler {
                 if (reqRes == BuddyAddResult.BUDDYLIST_FULL) {
 
                     client.sendPacket(MaplePacketCreator.buddylistMessage((byte) 12));
+                    
+                    break;
 
                 } else {
                     if (reqRes == BuddyAddResult.ALREADY_ON_LIST && buddyChannel > 0) {

@@ -151,24 +151,23 @@ public class SkillType {
         public final static int 龍之獻祭 = 1311005;
         public final static int 龍咆哮 = 1311006;
         public final static int 力量消除 = 1311007;
-        public final static int 龍之魂 = 1211008;
+        public final static int 龍之魂 = 1311008;
         
     }
 
     public static class 黑騎士 {
 
-        public final static int 楓葉祝福 = 1221000;
-        public final static int 絕對引力 = 1221001;
-        public final static int 格擋 = 1221002;
-        public final static int 聖靈之劍 = 1221003;
-        public final static int 聖靈之棍 = 1221004;
-        public final static int 武神防禦 = 1220005;
-        public final static int 究極神盾 = 1220006;
-        public final static int 究極突刺 = 1221007;
-        public final static int 騎士衝擊波 = 1221009;
-        public final static int 屬性強化 = 1220010;
-        public final static int 鬼神之擊 = 1221011;
-        public final static int 楓葉淨化 = 1221012;
+        public final static int 楓葉祝福 = 1321000;
+        public final static int 絕對引力 = 1321001;
+        public final static int 格擋 = 1321002;
+        public final static int 究極突刺 = 1321003;
+        public final static int 武神防禦 = 1320005;
+        public final static int 黑暗力量 = 1320006;
+        public final static int 暗之靈魂 = 1321007;
+        public final static int 闇靈治癒 = 1320008;
+        public final static int 黑暗守護 = 1320009;
+        public final static int 楓葉淨化 = 1321010;
+        public final static int 鬼神之擊 = 1321011;
     }
 
     public static class 法師 {

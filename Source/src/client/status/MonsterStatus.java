@@ -26,7 +26,6 @@ import java.io.Serializable;
 public enum MonsterStatus implements Serializable {
 
     //物攻
-//物攻
     WATK(0),
     //物防
     WDEF(1),
@@ -131,8 +130,6 @@ public enum MonsterStatus implements Serializable {
     MBS59(59),
     MBS60(60, false),
     MBS61(61),
-    
-    //持續扣血 - 破滅之輪[178-完成]
     BLEED(62, false),    
     MBS63(63, false),
     
