@@ -513,7 +513,7 @@ public class InventoryHandler {
                 case 2270004: { //Purification Marble
                     final MapleMap map = chr.getMap();
 
-                    if (mob.getHp() <= mob.getMobMaxHp() / 2) {
+                    if (mob.getHp() <= mob.getMaxHp() / 2) {
                         map.broadcastMessage(MaplePacketCreator.catchMonster(mob.getId(), itemid, (byte) 1));
                         map.killMonster(mob, chr, true, false, (byte) 0);
                         MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, itemid, 1, false, false);
@@ -527,7 +527,7 @@ public class InventoryHandler {
                 case 2270002: { // Characteristic Stone
                     final MapleMap map = chr.getMap();
 
-                    if (mob.getHp() <= mob.getMobMaxHp() / 2) {
+                    if (mob.getHp() <= mob.getMaxHp() / 2) {
                         map.broadcastMessage(MaplePacketCreator.catchMonster(mob.getId(), itemid, (byte) 1));
                         map.killMonster(mob, chr, true, false, (byte) 0);
                         MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, itemid, 1, false, false);
@@ -555,7 +555,7 @@ public class InventoryHandler {
                     }
                     final MapleMap map = c.getPlayer().getMap();
 
-                    if (mob.getHp() <= mob.getMobMaxHp() / 2) {
+                    if (mob.getHp() <= mob.getMaxHp() / 2) {
                         map.broadcastMessage(MaplePacketCreator.catchMonster(mob.getId(), itemid, (byte) 1));
                         map.killMonster(mob, chr, true, false, (byte) 0);
                         MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, itemid, 1, false, false);

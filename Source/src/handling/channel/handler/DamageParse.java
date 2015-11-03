@@ -212,8 +212,8 @@ public class DamageParse {
                             eachd = attack.skill != 0 ? 0 : Math.min(eachd, (int) maxDamagePerHit);  // Convert to server calculated damage
                         } else if (!player.isGM()) {
                             if (Tempest) { // Monster buffed with Tempest
-                                if (eachd > monster.getMobMaxHp()) {
-                                    eachd = (int) Math.min(monster.getMobMaxHp(), Integer.MAX_VALUE);
+                                if (eachd > monster.getMaxHp()) {
+                                    eachd = (int) Math.min(monster.getMaxHp(), Integer.MAX_VALUE);
                                     player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE);
                                 }
                             } else if (!monster.isBuffed(MonsterStatus.DAMAGE_IMMUNITY) && !monster.isBuffed(MonsterStatus.WEAPON_IMMUNITY) && !monster.isBuffed(MonsterStatus.WEAPON_DAMAGE_REFLECT)) {
@@ -291,14 +291,14 @@ public class DamageParse {
                         }
                     }
                     if (player.getBuffedValue(MapleBuffStat.COMBO_DRAIN) != null) {
-                        stats.setHp((stats.getHp() + ((int) Math.min(monster.getMobMaxHp(), Math.min(((int) ((double) totDamage * (double) player.getStatForBuff(MapleBuffStat.COMBO_DRAIN).getX() / 100.0)), stats.getMaxHp() / 2)))), true);
+                        stats.setHp((stats.getHp() + ((int) Math.min(monster.getMaxHp(), Math.min(((int) ((double) totDamage * (double) player.getStatForBuff(MapleBuffStat.COMBO_DRAIN).getX() / 100.0)), stats.getMaxHp() / 2)))), true);
                     }
                     // effects
                     switch (attack.skill) {
 
                         case SkillType.刺客.吸血術: //drain
                         case SkillType.格鬥家.損人利己: { // Energy Drain
-                            int getHP = ((int) Math.min(monster.getMobMaxHp(), Math.min(((int) ((double) totDamage * (double) theSkill.getEffect(player.getSkillLevel(theSkill)).getX() / 100.0)), stats.getMaxHp() / 2)));
+                            int getHP = ((int) Math.min(monster.getMaxHp(), Math.min(((int) ((double) totDamage * (double) theSkill.getEffect(player.getSkillLevel(theSkill)).getX() / 100.0)), stats.getMaxHp() / 2)));
                             stats.setHp(stats.getHp() + getHP, true);
                             break;
                         }
@@ -541,8 +541,8 @@ public class DamageParse {
                             eachd = 0; // Magic is always not a normal attack
                         } else if (!player.isGM()) {
                             if (Tempest) { // Buffed with Tempest
-                                if (eachd > monster.getMobMaxHp()) {
-                                    eachd = (int) Math.min(monster.getMobMaxHp(), Integer.MAX_VALUE);
+                                if (eachd > monster.getMaxHp()) {
+                                    eachd = (int) Math.min(monster.getMaxHp(), Integer.MAX_VALUE);
                                     player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC);
                                 }
                             } else if (!monster.isBuffed(MonsterStatus.DAMAGE_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_DAMAGE_REFLECT)) {
@@ -751,7 +751,7 @@ public class DamageParse {
                     defined = true;
                     break;
                 case 3221007: // Sniping
-                    maximumDamageToMonster = (monster.getStats().isBoss() ? 199999 : monster.getMobMaxHp());
+                    maximumDamageToMonster = (monster.getStats().isBoss() ? 199999 : monster.getMaxHp());
                     defined = true;
                     break;
                 case 1221011://Heavens Hammer
@@ -759,7 +759,7 @@ public class DamageParse {
                     defined = true;
                     break;
                 case 4211006: // Meso Explosion
-                    maximumDamageToMonster = (monster.getStats().isBoss() ? 199999 : monster.getMobMaxHp());
+                    maximumDamageToMonster = (monster.getStats().isBoss() ? 199999 : monster.getMaxHp());
                     defined = true;
                     break;
                 case 1009: // Bamboo Trust
@@ -768,7 +768,7 @@ public class DamageParse {
                 case 20011009:
                 case 30001009:
                     defined = true;
-                    maximumDamageToMonster = (monster.getStats().isBoss() ? monster.getMobMaxHp() / 30 * 100 : monster.getMobMaxHp());
+                    maximumDamageToMonster = (monster.getStats().isBoss() ? monster.getMaxHp() / 30 * 100 : monster.getMaxHp());
                     break;
                 case 3211006: //Sniper Strafe
                     if (monster.getStatusSourceID(MonsterStatus.FREEZE) == 3211003) { //blizzard in effect

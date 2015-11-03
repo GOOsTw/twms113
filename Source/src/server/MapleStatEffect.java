@@ -662,7 +662,7 @@ public class MapleStatEffect implements Serializable {
                     }
                     final MapleMonster mob = (MapleMonster) obj; // x is absorb percentage
                     if (!mob.getStats().isBoss()) {
-                        final int absorbMp = Math.min((int) (mob.getMobMaxMp() * (getX() / 70.0)), mob.getMp());
+                        final int absorbMp = Math.min((int) (mob.getMaxMp() * (getX() / 70.0)), mob.getMp());
                         if (absorbMp > 0 && mob.canAbsorbMP()) {
                             mob.absorbMP(absorbMp);
                             applyto.getStat().setMp((short) (applyto.getStat().getMp() + absorbMp));

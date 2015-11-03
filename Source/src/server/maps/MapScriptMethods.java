@@ -830,8 +830,8 @@ public class MapScriptMethods {
                     MapleMonster mob = MapleLifeFactory.getMonster(3300005 + rand);
                     OverrideMonsterStats oms = new OverrideMonsterStats();
                     oms.setOExp(7110);
-                    oms.setOHp(mob.getMobMaxHp());
-                    oms.setOMp(mob.getMobMaxMp());
+                    oms.setOHp(mob.getMaxHp());
+                    oms.setOMp(mob.getMaxMp());
                     mob.setOverrideStats(oms);
                     c.getPlayer().getMap().spawnMonsterOnGroundBelow(mob, new Point(358, -68));
                     if (rand == 0) {

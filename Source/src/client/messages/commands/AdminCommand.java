@@ -981,38 +981,7 @@ public class AdminCommand {
         }
     }
 
-    public static class Drop extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            final int itemId = Integer.parseInt(splitted[1]);
-            final short quantity = (short) CommandProcessorUtil.getOptionalIntArg(splitted, 2, 1);
-            MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-            if (GameConstants.isPet(itemId)) {
-                c.getPlayer().dropMessage(5, "寵物請到購物商城購買.");
-            } else if (!ii.itemExists(itemId)) {
-                c.getPlayer().dropMessage(5, itemId + " - 物品不存在");
-            } else {
-                IItem toDrop;
-                if (GameConstants.getInventoryType(itemId) == MapleInventoryType.EQUIP) {
-
-                    toDrop = ii.randomizeStats((Equip) ii.getEquipById(itemId));
-                } else {
-                    toDrop = new client.inventory.Item(itemId, (byte) 0, (short) quantity, (byte) 0);
-                }
-                toDrop.setOwner(c.getPlayer().getName());
-                toDrop.setGMLog(c.getPlayer().getName());
-
-                c.getPlayer().getMap().spawnItemDrop(c.getPlayer(), c.getPlayer(), toDrop, c.getPlayer().getPosition(), true, true);
-            }
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!dropitem <道具ID> - 掉落道具").toString();
-        }
-    }
+   
 
     public static class serverMsg extends CommandExecute {
 
@@ -2854,119 +2823,7 @@ public class AdminCommand {
         }
     }
 
-    public static class Notice extends CommandExecute {
-
-        private static int getNoticeType(String typestring) {
-            switch (typestring) {
-                case "n":
-                    return 0;
-                case "p":
-                    return 1;
-                case "l":
-                    return 2;
-                case "nv":
-                    return 5;
-                case "v":
-                    return 5;
-                case "b":
-                    return 6;
-            }
-            return -1;
-        }
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            int joinmod = 1;
-            int range = -1;
-            switch (splitted[1]) {
-                case "m":
-                    range = 0;
-                    break;
-                case "c":
-                    range = 1;
-                    break;
-                case "w":
-                    range = 2;
-                    break;
-            }
-
-            int tfrom = 2;
-            if (range == -1) {
-                range = 2;
-                tfrom = 1;
-            }
-            if( splitted.length < tfrom + 1 )
-                return false;
-            int type = getNoticeType(splitted[tfrom]);
-            if (type == -1) {
-                type = 0;
-                joinmod = 0;
-            }
-            StringBuilder sb = new StringBuilder();
-            if (splitted[tfrom].equals("nv")) {
-                sb.append("[Notice]");
-            } else {
-                sb.append("");
-            }
-            joinmod += tfrom;
-            if( splitted.length < joinmod + 1 )
-                return false;
-            sb.append(StringUtil.joinStringFrom(splitted, joinmod));
-
-            MaplePacket packet = MaplePacketCreator.serverNotice(type, sb.toString());
-            if (range == 0) {
-                c.getPlayer().getMap().broadcastMessage(packet);
-            } else if (range == 1) {
-                ChannelServer.getInstance(c.getChannel()).broadcastPacket(packet);
-            } else if (range == 2) {
-                World.Broadcast.broadcastMessage(packet.getBytes());
-            }
-            return true;
-        }
-        
-           @Override
-        public String getMessage() {
-            return new StringBuilder().append("!notice <n|p|l|nv|v|b> <m|c|w> <message> - 公告").toString();
-        }
-    }
-
-    public static class Yellow extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            int range = -1;
-            switch (splitted[1]) {
-                case "m":
-                    range = 0;
-                    break;
-                case "c":
-                    range = 1;
-                    break;
-                case "w":
-                    range = 2;
-                    break;
-            }
-            if (range == -1) {
-                range = 2;
-            }
-            MaplePacket packet = MaplePacketCreator.yellowChat((splitted[0].equals("!y") ? ("[" + c.getPlayer().getName() + "] ") : "") + StringUtil.joinStringFrom(splitted, 2));
-            if (range == 0) {
-                c.getPlayer().getMap().broadcastMessage(packet);
-            } else if (range == 1) {
-                ChannelServer.getInstance(c.getChannel()).broadcastPacket(packet);
-            } else if (range == 2) {
-                World.Broadcast.broadcastMessage(packet.getBytes());
-            }
-            return true;
-        }
-           @Override
-        public String getMessage() {
-            return new StringBuilder().append("!yellow <m|c|w> <message> - 黃色公告").toString();
-        }
-    }
-
-    public static class Y extends Yellow {
-    }
+    
 
     public static class ReloadOps extends CommandExecute {
 
@@ -3080,22 +2937,22 @@ public class AdminCommand {
             if (hp != null) {
                 newhp = hp;
             } else if (php != null) {
-                newhp = (long) (onemob.getMobMaxHp() * (php / 100));
+                newhp = (long) (onemob.getMaxHp() * (php / 100));
             } else {
-                newhp = onemob.getMobMaxHp();
+                newhp = onemob.getMaxHp();
             }
             if (exp != null) {
                 newexp = exp;
             } else if (pexp != null) {
-                newexp = (int) (onemob.getMobExp() * (pexp / 100));
+                newexp = (int) (onemob.getExp() * (pexp / 100));
             } else {
-                newexp = onemob.getMobExp();
+                newexp = onemob.getExp();
             }
             if (newhp < 1) {
                 newhp = 1;
             }
 
-            final OverrideMonsterStats overrideStats = new OverrideMonsterStats(newhp, onemob.getMobMaxMp(), newexp, false);
+            final OverrideMonsterStats overrideStats = new OverrideMonsterStats(newhp, onemob.getMaxMp(), newexp, false);
             for (int i = 0; i < num; i++) {
                 MapleMonster mob = MapleLifeFactory.getMonster(mid);
                 mob.setHp(newhp);
@@ -3151,37 +3008,7 @@ public class AdminCommand {
         }
     }
 
-    public static class WarpHere extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
-            if (victim != null) {
-                victim.changeMap(c.getPlayer().getMap(), c.getPlayer().getMap().findClosestSpawnpoint(c.getPlayer().getPosition()));
-            } else {
-                int ch = World.Find.findChannel(splitted[1]);
-                if (ch < 0) {
-                    c.getPlayer().dropMessage(5, "找不到");
-
-                } else {
-                    victim = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(splitted[1]);
-                    c.getPlayer().dropMessage(5, "正在把玩家傳到這來");
-                    victim.dropMessage(5, "正在傳送到GM那邊");
-                    if (victim.getMapId() != c.getPlayer().getMapId()) {
-                        final MapleMap mapp = victim.getClient().getChannelServer().getMapFactory().getMap(c.getPlayer().getMapId());
-                        victim.changeMap(mapp, mapp.getPortal(0));
-                    }
-                    victim.changeChannel(c.getChannel());
-                }
-            }
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!warphere 把玩家傳送到這裡").toString();
-        }
-    }
+   
 
     public static class WarpAllHere extends CommandExecute {
 

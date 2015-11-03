@@ -176,6 +176,7 @@ public class PlayerCommand {
     public static class time extends CommandExecute {
 
 
+        @Override
         public boolean execute(MapleClient c, String[] splitted) {
             if (!c.getPlayer().getCheatTracker().GMSpam(300000, 3) && (!c.getPlayer().isGM())) { // 5 minutes.
                 World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "『玩家』" + c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期" + getDayOfWeek()).getBytes());

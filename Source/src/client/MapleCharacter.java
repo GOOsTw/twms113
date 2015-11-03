@@ -3190,23 +3190,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             maxmp += Randomizer.rand(50, 100);
         }
         maxmp += stats.getTotalInt() / 10;
+        
         exp -= GameConstants.getExpNeededForLevel(level);
         level += 1;
-        //int level = getLevel();
-
-        // 成就系統
-        /*if (level == 30) {
-         finishAchievement(2);
-         }
-         if (level == 70) {
-         finishAchievement(3);
-         }
-         if (level == 120) {
-         finishAchievement(4);
-         }
-         if (level == 200) {
-         finishAchievement(5);
-         }*/
+       
         if (level == 200 && !isGM()) {
             final StringBuilder sb = new StringBuilder("[恭喜] ");
             final IItem medal = getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -21);
@@ -3239,7 +3226,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             if (level <= 10) {
                 stats.setStr((short) (stats.getStr() + remainingAp));
                 remainingAp = 0;
-
                 statup.add(new Pair<>(MapleStat.STR, (int) stats.getStr()));
             }
         }
@@ -3272,39 +3258,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (GameConstants.isKOC(job) && level == 70) {
             client.sendPacket(MaplePacketCreator.startMapEffect("恭喜達到70等請回耶雷弗三轉吧。", 5120000, true));
         }
-
-        /*        if (getSubcategory() == 1) { //db level 2
-         switch (level) {
-         case 2:
-         client.sendPacket(MaplePacketCreator.startMapEffect("Click the lightbulb above you and accept the [Required] quest. Remake the character if this quest is not showing.", 5120009, true));
-         break;
-         case 10:
-         client.sendPacket(MaplePacketCreator.startMapEffect("Go and advance to a Rogue at Dark Lord in Kerning City. Make sure you do ALL the [Required] quests.", 5120000, true));
-         break;
-         case 15:
-         client.sendPacket(MaplePacketCreator.startMapEffect("Make sure you have been doing all the required quests. Remember that saving SP is possible.", 5120000, true));
-         break;
-         case 20:
-         client.sendPacket(MaplePacketCreator.startMapEffect("You have reached level 20. If you have done all your required quests, you can enter Secret Garden and advance.", 5120000, true));
-         break;
-         case 30:
-         client.sendPacket(MaplePacketCreator.startMapEffect("You have reached level 30. Please go to Lady Syl to advance.", 5120000, true));
-         break;
-         case 55:
-         client.sendPacket(MaplePacketCreator.startMapEffect("You have reached level 55. Please go to Lady Syl and do a few quests to advance.", 5120000, true));
-         break;
-         case 70:
-         client.sendPacket(MaplePacketCreator.startMapEffect("You have reached level 70. Please go to your job instructor in Elnath to advance.", 5120000, true));
-         break;
-         case 120:
-         client.sendPacket(MaplePacketCreator.startMapEffect("You have reached level 120. Please go to your job instructor in Leafre to advance.", 5120000, true));
-         break;
-         }
-         }*/
-        //if (map.getForceMove() > 0 && map.getForceMove() <= getLevel()) {
-        //    changeMap(map.getReturnMap(), map.getReturnMap().getPortal(0));
-        //    dropMessage(-1, "You have been expelled from the map.");
-        //}
+        
     }
 
     public void changeKeybinding(int key, byte type, int action) {

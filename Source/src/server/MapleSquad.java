@@ -399,7 +399,7 @@ public class MapleSquad {
     }
 
     public final Map<String, Integer> getJobs() {
-        final Map<String, Integer> jobs = new LinkedHashMap<String, Integer>();
+        final Map<String, Integer> jobs = new LinkedHashMap<>();
         for (Entry<String, String> chr : members.entrySet()) {
             if (jobs.containsKey(chr.getValue())) {
                 jobs.put(chr.getValue(), jobs.get(chr.getValue()) + 1);

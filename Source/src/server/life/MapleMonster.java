@@ -48,6 +48,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import server.MapleStatEffect;
 import server.Timer.BuffTimer;
 
+/**
+ * 怪物
+ * @author Flower
+ */
 public class MapleMonster extends AbstractLoadedMapleLife {
 
     /**
@@ -122,29 +126,39 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         carnivalTeam = -1;
         fake = false;
         dropsDisabled = false;
-
         if (stats.getNoSkills() > 0) {
             usedSkills = new HashMap<>();
         }
     }
 
-    //禁止該怪物掉的物品
+    /**
+     * 取消怪物掉落物品
+     */
     public final void disableDrops() {
         this.dropsDisabled = true;
     }
 
-    //控制怪物禁止掉的物品 傳回禁止該怪物掉的物品
-    public final boolean dropsDisabled() {
+    /**
+     * 判斷是否取消掉落
+     * @return 是否取消掉落
+     */
+    public final boolean isDropsDisabled() {
         return dropsDisabled;
     }
 
-    //設定當前地圖
+    /**
+     * 設定怪物所在之地圖
+     * @param map 怪物所在地圖
+     */
     public final void setMap(final MapleMap map) {
         this.map = map;
         startDropItemSchedule();
     }
 
-    //得到當前地圖 傳回地圖
+    /**
+     * 取得怪物所在之地圖
+     * @return 怪物當前所在地圖
+     */
     public final MapleMap getMap() {
         return map;
     }
@@ -159,25 +173,37 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         return sponge.get();
     }
 
-    //設定怪物HP
+    /**
+     * 設定怪物HP
+     * @param hp 欲設定的HP
+     */
     public final void setHp(long hp) {
         this.hp = hp;
     }
 
-    //得到怪物當前HP 傳回HP
+    /**
+     * 取得怪物HP
+     * @return 怪物HP
+     */
     public final long getHp() {
         return hp;
     }
 
-    //得到怪物當前最大的HP 傳回目前的HP
-    public final long getMobMaxHp() {
+    /**
+     * 取得怪物最大HP
+     * @return 怪物最大HP
+     */
+    public final long getMaxHp() {
         if (ostats != null) {
             return ostats.getHp();
         }
         return stats.getHp();
     }
 
-    //設定怪物MP
+    /**
+     * 設定怪物MP
+     * @param mp 欲設定的MP
+     */
     public final void setMp(int mp) {
         if (mp < 0) {
             mp = 0;
@@ -185,28 +211,40 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         this.mp = mp;
     }
 
-    //得到怪物當前MP 傳回MP
+    /**
+     * 取得怪物MP
+     * @return 怪物MP
+     */
     public final int getMp() {
         return mp;
     }
 
-    //得到怪物當前最大的MP 傳回目前的MP
-    public final int getMobMaxMp() {
+    /**
+     * 取得怪物最大MP
+     * @return 怪物最大MP
+     */
+    public final int getMaxMp() {
         if (ostats != null) {
             return ostats.getMp();
         }
         return stats.getMp();
     }
 
-    //得到怪物EXP 傳回EXP
-    public final int getMobExp() {
+    /**
+     * 取得怪物經驗值
+     * @return 怪物經驗值
+     */
+    public final int getExp() {
         if (ostats != null) {
             return ostats.getExp();
         }
         return stats.getExp();
     }
 
-    //設定怪物的能力值
+    /**
+     * 強制覆寫怪物HP、MP
+     * @param ostats 覆寫的狀態
+     */
     public final void setOverrideStats(final OverrideMonsterStats ostats) {
         this.ostats = ostats;
         this.hp = ostats.getHp();
@@ -244,11 +282,20 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         return this.lastAbsorbMP;
     }
 
+    /**
+     * 判斷是否可以吸取MP
+     * @return
+     */
     public final boolean canAbsorbMP() {
-        return System.currentTimeMillis() - this.lastAbsorbMP > 10 * 1000;
+        return System.currentTimeMillis() - this.lastAbsorbMP > 3 * 1000;
     }
 
-    //傷害判斷
+    /**
+     * 攻擊怪物
+     * @param from 攻擊怪物角色
+     * @param damage 攻擊的數字
+     * @param updateAttackTime 是否更新傷害時間
+     */
     public final void damage(final MapleCharacter from, final long damage, final boolean updateAttackTime) {
         damage(from, damage, updateAttackTime, 0);
     }
@@ -258,7 +305,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
      *
      * @param from 攻擊怪物角色
      * @param damage 攻擊的數字
-     * @param updateAttackTime 攻擊時間
+     * @param updateAttackTime 是否更新傷害時間
      * @param lastSkill 最後一次攻擊的技能是什麼
      */
     public final void damage(final MapleCharacter from, final long damage, final boolean updateAttackTime, final int lastSkill) {
@@ -304,7 +351,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                         for (final AttackingMapleCharacter cattacker : mattacker.getAttackers()) {
                             if ( cattacker != null && cattacker.getAttacker().getMap() == from.getMap()) { // current attacker is on the map of the monster
                                 if (cattacker.getLastAttackTime() >= System.currentTimeMillis() - 4000) {
-                                    cattacker.getAttacker().getClient().sendPacket(MobPacket.showMonsterHP(getObjectId(), (int) Math.ceil((hp * 100.0) / getMobMaxHp())));
+                                    cattacker.getAttacker().getClient().sendPacket(MobPacket.showMonsterHP(getObjectId(), (int) Math.ceil((hp * 100.0) / getMaxHp())));
                                 }
                             }
                         }
@@ -355,7 +402,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                             this.getMap().broadcastMessage(from, MobPacket.damageFriendlyMob(this, damage, true), false);
                             break;
                         case 2:
-                            this.getMap().broadcastMessage(MobPacket.showMonsterHP(getObjectId(), (int) Math.ceil((hp * 100.0) / getMobMaxHp())));
+                            this.getMap().broadcastMessage(MobPacket.showMonsterHP(getObjectId(), (int) Math.ceil((hp * 100.0) / getMaxHp())));
                             from.mulungEnergyModify(true);
                             break;
                         case 3:
@@ -363,7 +410,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                                 for (final AttackingMapleCharacter cattacker : mattacker.getAttackers()) {
                                     if (cattacker != null && cattacker.getAttacker().getMap() == from.getMap()) { // current attacker is on the map of the monster
                                         if (cattacker.getLastAttackTime() >= System.currentTimeMillis() - 4000) {
-                                            cattacker.getAttacker().getClient().sendPacket(MobPacket.showMonsterHP(getObjectId(), (int) Math.ceil((hp * 100.0) / getMobMaxHp())));
+                                            cattacker.getAttacker().getClient().sendPacket(MobPacket.showMonsterHP(getObjectId(), (int) Math.ceil((hp * 100.0) / getMaxHp())));
                                         }
                                     }
                                 }
@@ -392,8 +439,8 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         long totalHP = getHp() + hp;
         int totalMP = getMp() + mp;
 
-        totalHP = totalHP > this.getMobMaxHp() ? this.getMobMaxHp() : totalHP;
-        totalMP = totalMP > this.getMobMaxMp() ? this.getMobMaxMp() : totalMP;
+        totalHP = totalHP > this.getMaxHp() ? this.getMaxHp() : totalHP;
+        totalMP = totalMP > this.getMaxMp() ? this.getMaxMp() : totalMP;
 
         this.setHp(totalHP);
         this.setMp(totalMP);
@@ -405,8 +452,8 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         if (this.getSponge() != null) {
             totalHP = this.getSponge().getHp() + hp;
             totalMP = this.getSponge().getMp() + mp;
-            totalHP = totalHP > this.getSponge().getMobMaxHp() ? this.getSponge().getMobMaxHp() : totalHP;
-            totalMP = totalMP > this.getSponge().getMobMaxMp() ? this.getSponge().getMobMaxMp() : totalMP;
+            totalHP = totalHP > this.getSponge().getMaxHp() ? this.getSponge().getMaxHp() : totalHP;
+            totalMP = totalMP > this.getSponge().getMaxMp() ? this.getSponge().getMaxMp() : totalMP;
             this.getSponge().setHp(totalHP);
             this.getSponge().setMp(totalMP);
         }
@@ -492,7 +539,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
      */
     public final int killBy(final MapleCharacter killer, final int lastSkill) {
 
-        int totalBaseExp = getMobExp();
+        int totalBaseExp = getExp();
         int baseExp;
 
         /* 找出最高攻擊的人 */
@@ -507,7 +554,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
         /* 計算獲得的經驗值*/
         for (final AttackerEntry attackEntry : attackers) {
-            baseExp = (int) Math.ceil(totalBaseExp * ((double) attackEntry.getDamage() / getMobMaxHp()));
+            baseExp = (int) Math.ceil(totalBaseExp * ((double) attackEntry.getDamage() / getMaxHp()));
             attackEntry.killedMob(getMap(), baseExp, attackEntry == highest, lastSkill);
         }
 
@@ -615,7 +662,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                     if (eventInstance != null) {
                         eventInstance.registerMonster(mob);
                     }
-                    if (dropsDisabled()) {
+                    if (isDropsDisabled()) {
                         mob.disableDrops();
                     }
                     switch (mob.getId()) {
@@ -655,7 +702,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                     if (eventInstance != null) {
                         eventInstance.registerMonster(mob);
                     }
-                    if (dropsDisabled()) {
+                    if (isDropsDisabled()) {
                         mob.disableDrops();
                     }
                     switch (mob.getId()) {
@@ -692,7 +739,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                         eventInstance.registerMonster(mob);
                     }
                     mob.setPosition(getPosition());
-                    if (dropsDisabled()) {
+                    if (isDropsDisabled()) {
                         mob.disableDrops();
                     }
                     map.spawnRevives(mob, this.getObjectId());
@@ -856,11 +903,11 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         sb.append(") 座標 ");
         sb.append(getHp());
         sb.append("/ ");
-        sb.append(getMobMaxHp());
+        sb.append(getMaxHp());
         sb.append("血量, ");
         sb.append(getMp());
         sb.append("/ ");
-        sb.append(getMobMaxMp());
+        sb.append(getMaxMp());
         sb.append(" 魔力, 反應堆: ");
         sb.append(getObjectId());
         sb.append(" || 仇恨目標 : ");
@@ -1072,13 +1119,13 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         status.setCancelTask(aniTime);
         
         if (poison && getHp() > 1) { // 中毒[POISON]
-            final int poisonDamage = (int) Math.min(Short.MAX_VALUE, (long) (getMobMaxHp() / (70.0 - from.getSkillLevel(status.getSkill())) + 0.999));
+            final int poisonDamage = (int) Math.min(Short.MAX_VALUE, (long) (getMaxHp() / (70.0 - from.getSkillLevel(status.getSkill())) + 0.999));
             status.setValue(stat, poisonDamage);
             status.setX(poisonDamage);
             // 設定中毒持續傷害，如果status.getX()跟這裡傷害不一樣就會有顯示跟實際不同的問題
             status.setPoisonDamage(status.getX(), from);
         } else if (statusSkill == 4111003 || statusSkill == 14111001) { // shadow web
-            status.setValue(status.getStati(), (int) (getMobMaxHp() / 50.0 + 0.999));
+            status.setValue(status.getStati(), (int) (getMaxHp() / 50.0 + 0.999));
             status.setPoisonDamage(status.getX(), from);
         } else if (statusSkill == 4341003) { // monsterbomb
             status.setPoisonDamage((int) (eff.getDamage() * from.getStat().getCurrentMaxBaseDamage() / 100.0), from);
