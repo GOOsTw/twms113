@@ -70,14 +70,14 @@ public class MobPacket {
             mplew.writeInt((int) damage);
         }
         if (mob.getHp() > Integer.MAX_VALUE) {
-            mplew.writeInt((int) (((double) mob.getHp() / mob.getMaxHp()) * Integer.MAX_VALUE));
+            mplew.writeInt((int) (((double) mob.getHp() / mob.getMobMaxHp()) * Integer.MAX_VALUE));
         } else {
             mplew.writeInt((int) mob.getHp());
         }
-        if (mob.getMaxHp() > Integer.MAX_VALUE) {
+        if (mob.getMobMaxHp() > Integer.MAX_VALUE) {
             mplew.writeInt(Integer.MAX_VALUE);
         } else {
-            mplew.writeInt((int) mob.getMaxHp());
+            mplew.writeInt((int) mob.getMobMaxHp());
         }
 
         return mplew.getPacket();
@@ -121,14 +121,14 @@ public class MobPacket {
         mplew.write(5);
         mplew.writeInt(mob.getId());
         if (mob.getHp() > Integer.MAX_VALUE) {
-            mplew.writeInt((int) (((double) mob.getHp() / mob.getMaxHp()) * Integer.MAX_VALUE));
+            mplew.writeInt((int) (((double) mob.getHp() / mob.getMobMaxHp()) * Integer.MAX_VALUE));
         } else {
             mplew.writeInt((int) mob.getHp());
         }
-        if (mob.getMaxHp() > Integer.MAX_VALUE) {
+        if (mob.getMobMaxHp() > Integer.MAX_VALUE) {
             mplew.writeInt(Integer.MAX_VALUE);
         } else {
-            mplew.writeInt((int) mob.getMaxHp());
+            mplew.writeInt((int) mob.getMobMaxHp());
         }
         mplew.write(mob.getStats().getTagColor());
         mplew.write(mob.getStats().getTagBgColor());

@@ -132,16 +132,16 @@ public class CashItemFactory {
             }
             try {
                 Connection con = DatabaseConnection.getConnection();
-                PreparedStatement ps = con.prepareStatement("SELECT * FROM cashshop_modified_items WHERE serial = ?");
-                ps.setInt(1, sn);
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
-                    ret = new CashModInfo(sn, rs.getInt("discount_price"), rs.getInt("mark"), rs.getInt("showup") > 0, rs.getInt("itemid"), rs.getInt("priority"), rs.getInt("package") > 0, rs.getInt("period"), rs.getInt("gender"), rs.getInt("count"), rs.getInt("meso"), rs.getInt("unk_1"), rs.getInt("unk_2"), rs.getInt("unk_3"), rs.getInt("extra_flags"));
-                    itemMods.put(sn, ret);
-
+                try (PreparedStatement ps = con.prepareStatement("SELECT * FROM cashshop_modified_items WHERE serial = ?")) {
+                    ps.setInt(1, sn);
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        ret = new CashModInfo(sn, rs.getInt("discount_price"), rs.getInt("mark"), rs.getInt("showup") > 0, rs.getInt("itemid"), rs.getInt("priority"), rs.getInt("package") > 0, rs.getInt("period"), rs.getInt("gender"), rs.getInt("count"), rs.getInt("meso"), rs.getInt("unk_1"), rs.getInt("unk_2"), rs.getInt("unk_3"), rs.getInt("extra_flags"));
+                        itemMods.put(sn, ret);
+                        
+                    }
+                    rs.close();
                 }
-                rs.close();
-                ps.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }

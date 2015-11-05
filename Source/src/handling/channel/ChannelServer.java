@@ -184,14 +184,11 @@ public class ChannelServer implements Serializable {
         try {
             if (acceptor != null) {
                 Iterator<IoSession> iterator = acceptor.getManagedSessions().values().iterator();
-                while(iterator.hasNext()) {
-                    if(!iterator.next().isClosing())
-                        iterator.next().close(true);
+                while (iterator.hasNext()) {
+
+                    iterator.next().close(true);
                 }
-                acceptor.getManagedSessions().clear();
                 acceptor.unbind(new InetSocketAddress(port));
-                acceptor.dispose();
-                acceptor = null;
                 System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 解除端口成功");
             }
         } catch (Exception e) {
@@ -578,7 +575,7 @@ public class ChannelServer implements Serializable {
                     } catch (Exception ex) {
                     }
                     chrs = ch.getPlayerStorage().getAllCharactersThreadSafe();
-                    if(chrs.contains(c)) {
+                    if (chrs.contains(c)) {
                         ch.removePlayer(c);
                     }
                 }
@@ -598,7 +595,7 @@ public class ChannelServer implements Serializable {
                     } catch (Exception ex) {
                     }
                     chrs = ch.getPlayerStorage().getAllCharactersThreadSafe();
-                    if(chrs.contains(c)) {
+                    if (chrs.contains(c)) {
                         ch.removePlayer(c);
                     }
                 }

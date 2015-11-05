@@ -83,7 +83,7 @@ public class MobHandler {
                     if (ls == 0 || ((now - ls) > mobSkill.getCoolTime())) {
                         monster.setLastSkillUsed(realskill, now, mobSkill.getCoolTime());
 
-                        final int reqHp = (int) (((float) monster.getHp() / monster.getMaxHp()) * 100); // In case this monster have 2.1b and above HP
+                        final int reqHp = (int) (((float) monster.getHp() / monster.getMobMaxHp()) * 100); // In case this monster have 2.1b and above HP
                         if (reqHp <= mobSkill.getHP()) {
                             used = true;
                             mobSkill.applyEffect(chr, monster, true);
@@ -194,7 +194,7 @@ public class MobHandler {
                     //leader
                     if (chrz.haveItem(2022698)) {
                         MapleInventoryManipulator.removeById(chrz.getClient(), MapleInventoryType.USE, 2022698, 1, false, true);
-                        mobto.heal((int) mobto.getMaxHp(), mobto.getMaxMp(), true);
+                        mobto.heal((int) mobto.getMobMaxHp(), mobto.getMobMaxMp(), true);
                         return;
                     }
                     break;

@@ -296,8 +296,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             if (client != null && channel == -1 && !isCashShop && client.getLoginState() != MapleClient.LOGIN_SERVER_TRANSITION) {
                 client.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, client.getSessionIPAddress());
             }
-
-            DatabaseConnection.close();
+           
         } finally {
             super.sessionClosed(session);
         }

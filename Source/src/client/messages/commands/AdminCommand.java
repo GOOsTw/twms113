@@ -2937,22 +2937,22 @@ public class AdminCommand {
             if (hp != null) {
                 newhp = hp;
             } else if (php != null) {
-                newhp = (long) (onemob.getMaxHp() * (php / 100));
+                newhp = (long) (onemob.getMobMaxHp() * (php / 100));
             } else {
-                newhp = onemob.getMaxHp();
+                newhp = onemob.getMobMaxHp();
             }
             if (exp != null) {
                 newexp = exp;
             } else if (pexp != null) {
-                newexp = (int) (onemob.getExp() * (pexp / 100));
+                newexp = (int) (onemob.getMobExp() * (pexp / 100));
             } else {
-                newexp = onemob.getExp();
+                newexp = onemob.getMobExp();
             }
             if (newhp < 1) {
                 newhp = 1;
             }
 
-            final OverrideMonsterStats overrideStats = new OverrideMonsterStats(newhp, onemob.getMaxMp(), newexp, false);
+            final OverrideMonsterStats overrideStats = new OverrideMonsterStats(newhp, onemob.getMobMaxMp(), newexp, false);
             for (int i = 0; i < num; i++) {
                 MapleMonster mob = MapleLifeFactory.getMonster(mid);
                 mob.setHp(newhp);

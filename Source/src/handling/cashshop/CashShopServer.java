@@ -98,13 +98,11 @@ public class CashShopServer {
         System.out.println("[購物商城] 解除綁定端口...");
         Iterator<IoSession> iterator = acceptor.getManagedSessions().values().iterator();
         while (iterator.hasNext()) {
-            if (!iterator.next().isClosing()) {
-                iterator.next().close(true);
-            }
+
+            iterator.next().close(true);
         }
         acceptor.unbind(new InetSocketAddress(port));
-        acceptor.dispose();
-        finishedShutdown = true;
+
         System.out.println("[購物商城] 關閉完成...");
     }
 

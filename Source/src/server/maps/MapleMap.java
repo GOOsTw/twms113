@@ -464,7 +464,7 @@ public final class MapleMap {
     }
 
     private void dropFromMonster(final MapleCharacter chr, final MapleMonster mob) {
-        if (mob == null || chr == null || ChannelServer.getInstance(channel) == null || dropsDisabled || mob.isDropsDisabled() || chr.getPyramidSubway() != null) { //no drops in pyramid ok? no cash either
+        if (mob == null || chr == null || ChannelServer.getInstance(channel) == null || dropsDisabled || mob.dropsDisabled()|| chr.getPyramidSubway() != null) { //no drops in pyramid ok? no cash either
             return;
         }
 
@@ -522,7 +522,7 @@ public final class MapleMap {
         final List<MonsterGlobalDropEntry> globalEntry = new ArrayList<MonsterGlobalDropEntry>(mi.getGlobalDrop());
         Collections.shuffle(globalEntry);
         final int cashz = (int) ((mob.getStats().isBoss() && mob.getStats().getHPDisplayType() == 0 ? 20 : 1) * caServerrate);
-        final int cashModifier = (int) ((mob.getStats().isBoss() ? 0 : (mob.getExp() / 1000 + mob.getMaxHp() / 10000))); //no rate
+        final int cashModifier = (int) ((mob.getStats().isBoss() ? 0 : (mob.getMobExp() / 1000 + mob.getMobMaxHp() / 10000))); //no rate
         // Global Drops
         for (final MonsterGlobalDropEntry de : globalEntry) {
             if (Randomizer.nextInt(999999) < de.chance && (de.continent < 0 || (de.continent < 10 && mapid / 100000000 == de.continent) || (de.continent < 100 && mapid / 10000000 == de.continent) || (de.continent < 1000 && mapid / 1000000 == de.continent))) {
