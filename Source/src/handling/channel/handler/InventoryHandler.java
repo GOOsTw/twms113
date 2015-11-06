@@ -1015,12 +1015,12 @@ public class InventoryHandler {
                             used = false;
                         }
                         break;
-                    case HP: // hp
+                    case MAXHP: // hp
                         if (playerst.getMaxHp() >= 30000) {
                             used = false;
                         }
                         break;
-                    case MP: // mp
+                    case MAXMP: // mp
                         if (playerst.getMaxMp() >= 30000) {
                             used = false;
                         }
@@ -1052,12 +1052,12 @@ public class InventoryHandler {
                             used = false;
                         }
                         break;
-                    case HP: // hp
+                    case MAXHP: // hp
                         if (c.getPlayer().getHpMpApUsed() <= 0 || c.getPlayer().getHpMpApUsed() >= 10000) {
                             used = false;
                         }
                         break;
-                    case MP: // mp
+                    case MAXMP: // mp
                         if (c.getPlayer().getHpMpApUsed() <= 0 || c.getPlayer().getHpMpApUsed() >= 10000) {
                             used = false;
                         }
@@ -1089,7 +1089,7 @@ public class InventoryHandler {
                             statupdate.add(new Pair<>(MapleStat.LUK, toSet));
                             break;
                         }
-                        case HP: // hp
+                        case MAXHP: // hp
                             short maxhp = playerst.getMaxHp();
 
                             if (job == 0) { // Beginner
@@ -1139,7 +1139,7 @@ public class InventoryHandler {
                             statupdate.add(new Pair<>(MapleStat.MAXHP, (int) maxhp));
                             break;
 
-                        case MP: // mp
+                        case MAXMP: // mp
                             short maxmp = playerst.getMaxMp();
 
                             if (job == 0) { // Beginner
@@ -1200,46 +1200,46 @@ public class InventoryHandler {
                             statupdate.add(new Pair<>(MapleStat.LUK, toSet));
                             break;
                         }
-                        case HP: // HP
+                        case MAXHP: // HP
                             short maxhp = playerst.getMaxHp();
                             if (job == 0) { // Beginner
                                 maxhp -= 12;
                             } else if (job >= 100 && job <= 132) { // Warrior
                                 ISkill improvingMaxHP = SkillFactory.getSkill(1000001);
                                 int improvingMaxHPLevel = c.getPlayer().getSkillLevel(improvingMaxHP);
-                                maxhp -= 24;
+                                maxhp -=  Randomizer.rand(18, 28);
                                 if (improvingMaxHPLevel >= 1) {
                                     maxhp -= improvingMaxHP.getEffect(improvingMaxHPLevel).getY();
                                 }
                             } else if (job >= 200 && job <= 232) { // Magician
-                                maxhp -= 10;
+                                maxhp -=  Randomizer.rand(18, 20);
                             } else if ((job >= 300 && job <= 322) || (job >= 400 && job <= 434) || (job >= 1300 && job <= 1312) || (job >= 1400 && job <= 1412) || (job >= 3300 && job <= 3312) || (job >= 3500 && job <= 3512)) { // Bowman, Thief
-                                maxhp -= 15;
+                               maxhp -=  Randomizer.rand(17, 21);
                             } else if (job >= 500 && job <= 522) { // Pirate
                                 ISkill improvingMaxHP = SkillFactory.getSkill(5100000);
                                 int improvingMaxHPLevel = c.getPlayer().getSkillLevel(improvingMaxHP);
-                                maxhp -= 15;
+                                maxhp -=  Randomizer.rand(20, 22);
                                 if (improvingMaxHPLevel > 0) {
                                     maxhp -= improvingMaxHP.getEffect(improvingMaxHPLevel).getY();
                                 }
                             } else if (job >= 1500 && job <= 1512) { // Pirate
                                 ISkill improvingMaxHP = SkillFactory.getSkill(15100000);
                                 int improvingMaxHPLevel = c.getPlayer().getSkillLevel(improvingMaxHP);
-                                maxhp -= 15;
+                                maxhp -= Randomizer.rand(20 , 23);
                                 if (improvingMaxHPLevel > 0) {
                                     maxhp -= improvingMaxHP.getEffect(improvingMaxHPLevel).getY();
                                 }
                             } else if (job >= 1100 && job <= 1112) { // Soul Master
                                 ISkill improvingMaxHP = SkillFactory.getSkill(11000000);
                                 int improvingMaxHPLevel = c.getPlayer().getSkillLevel(improvingMaxHP);
-                                maxhp -= 27;
+                                maxhp -=  Randomizer.rand(38, 43);
                                 if (improvingMaxHPLevel >= 1) {
                                     maxhp -= improvingMaxHP.getEffect(improvingMaxHPLevel).getY();
                                 }
                             } else if (job >= 1200 && job <= 1212) { // Flame Wizard
-                                maxhp -= 12;
+                                 maxhp -=  Randomizer.rand(18, 22);
                             } else if ((job >= 2000 && job <= 2112) || (job >= 3200 && job <= 3212)) { // Aran
-                                maxhp -= 40;
+                                maxhp -=  Randomizer.rand(48, 52);
                             } else { // GameMaster
                                 maxhp -= 20;
                             }
@@ -1248,32 +1248,32 @@ public class InventoryHandler {
                             playerst.setMaxHp(maxhp);
                             statupdate.add(new Pair<>(MapleStat.MAXHP, (int) maxhp));
                             break;
-                        case MP: // MP
+                        case MAXMP: // MP
                             short maxmp = playerst.getMaxMp();
                             if (job == 0) { // Beginner
                                 maxmp -= 8;
                             } else if (job >= 100 && job <= 132) { // Warrior
-                                maxmp -= 4;
+                                 maxmp -=  Randomizer.rand(6, 7);
                             } else if (job >= 200 && job <= 232) { // Magician
                                 ISkill improvingMaxMP = SkillFactory.getSkill(2000001);
                                 int improvingMaxMPLevel = c.getPlayer().getSkillLevel(improvingMaxMP);
-                                maxmp -= 20;
+                                maxmp -=  Randomizer.rand(19, 21);
                                 if (improvingMaxMPLevel >= 1) {
                                     maxmp -= improvingMaxMP.getEffect(improvingMaxMPLevel).getY();
                                 }
                             } else if ((job >= 500 && job <= 522) || (job >= 300 && job <= 322) || (job >= 400 && job <= 434) || (job >= 1300 && job <= 1312) || (job >= 1400 && job <= 1412) || (job >= 1500 && job <= 1512) || (job >= 3300 && job <= 3312) || (job >= 3500 && job <= 3512)) { // Pirate, Bowman. Thief
-                                maxmp -= 10;
+                                maxmp -=  Randomizer.rand(10, 13);
                             } else if (job >= 1100 && job <= 1112) { // Soul Master
-                                maxmp -= 6;
+                               maxmp -=  Randomizer.rand(7, 10);
                             } else if (job >= 1200 && job <= 1212) { // Flame Wizard
                                 ISkill improvingMaxMP = SkillFactory.getSkill(12000000);
                                 int improvingMaxMPLevel = c.getPlayer().getSkillLevel(improvingMaxMP);
-                                maxmp -= 25;
+                                maxmp -=  Randomizer.rand(18, 23);
                                 if (improvingMaxMPLevel >= 1) {
                                     maxmp -= improvingMaxMP.getEffect(improvingMaxMPLevel).getY();
                                 }
                             } else if (job >= 2000 && job <= 2112) { // Aran
-                                maxmp -= 5;
+                                maxmp -=  Randomizer.rand(8, 10);
                             } else { // GameMaster
                                 maxmp -= 20;
                             }

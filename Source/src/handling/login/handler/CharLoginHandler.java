@@ -181,7 +181,9 @@ public class CharLoginHandler {
         slea.readByte();
         final int server = slea.readByte();
         final int channel = slea.readByte() + 1;
-
+        final int userLimit = LoginServer.getUserLimit();
+   
+        
         c.setWorld(server);
         //System.out.println("Client " + c.getSession().getRemoteAddress().toString().split(":")[0] + " is connecting to server " + server + " channel " + channel + "");
         c.setChannel(channel);

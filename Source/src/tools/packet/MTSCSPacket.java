@@ -642,12 +642,12 @@ public class MTSCSPacket {
         return mplew.getPacket();
     }
 
-    public static MaplePacket confirmToCSInventory(IItem item, int accId, int sn) {
+    public static MaplePacket confirmToCSInventory(IItem item, int accId) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.CS_OPERATION.getValue());
         mplew.write(0x61);
-        addCashItemInfo(mplew, item, accId, sn, false);
+        addCashItemInfo(mplew, item, accId, 0, false);
 
         return mplew.getPacket();
     }

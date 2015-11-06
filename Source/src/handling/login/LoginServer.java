@@ -94,12 +94,9 @@ public class LoginServer {
         System.out.println("【登入伺服器】 關閉中...");
         Iterator<IoSession> iterator = acceptor.getManagedSessions().values().iterator();
         while (iterator.hasNext()) {
-
             iterator.next().close(true);
-
         }
         acceptor.unbind(new InetSocketAddress(PORT));
-
         System.out.println("【登入伺服器】 關閉完畢...");
         finishedShutdown = true; //nothing. lol
     }

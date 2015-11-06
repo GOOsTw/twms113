@@ -420,7 +420,7 @@ public class CashShopOperation {
                     item_.setPosition((byte) 0);
                     c.getPlayer().getCashInventory().addToInventory(item_);
                     //warning: this d/cs
-                    //c.sendPacket(MTSCSPacket.confirmToCSInventory(item, c.getAccID(), c.getPlayer().getCashInventory().getSNForItem(item)));
+                    c.sendPacket(MTSCSPacket.confirmToCSInventory(item, c.getAccID()));
                 } else {
                     c.sendPacket(MTSCSPacket.sendCSFail(0xB1));
                 }
