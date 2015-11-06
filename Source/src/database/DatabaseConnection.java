@@ -42,7 +42,7 @@ public class DatabaseConnection {
             = new HashMap();
     private final static Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
     private static String dbDriver = "", dbUrl = "", dbUser = "", dbPass = "";
-    private static final long connectionTimeOut = 30 * 60 * 60 * 1000;
+    private static final long connectionTimeOut = 100000;
     private static final ReentrantLock lock = new ReentrantLock();// 锁对象
 
     public static int getConnectionsCount() {
@@ -136,20 +136,22 @@ public class DatabaseConnection {
             } else {
 
                 if (!expiredConnection()) {
-                    lock.lock();
+                   
                     try {
                         this.connection.close();
-                        connections.remove(tid);
                         ret = true;
                     } catch (SQLException e) {
                         ret = false;
-                    } finally {
-                        lock.unlock();
-                    }
+                    } 
                 }
 
             }
-            connections.remove(tid);
+            lock.lock();
+            try {
+                connections.remove(tid);
+            }finally {
+                lock.unlock();
+            }
             return ret;
         }
 
@@ -183,7 +185,7 @@ public class DatabaseConnection {
             props.put("password", dbPass);
             props.put("autoReconnect", "true");
             props.put("characterEncoding", "UTF8");
-            props.put("connectTimeout", "120000000");
+            props.put("connectTimeout", "120000");
             Connection con = DriverManager.getConnection(dbUrl, props);
             return con;
         } catch (SQLException e) {
@@ -213,7 +215,7 @@ public class DatabaseConnection {
         try {
             for (Integer tid : keys) {
                 ConWrapper con = connections.get(tid);
-                if (!con.expiredConnection()){
+                if (!con.expiredConnection()) {
                     con.close();
                     i++;
                 }

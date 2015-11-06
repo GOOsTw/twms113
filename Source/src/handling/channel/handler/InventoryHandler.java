@@ -1016,12 +1016,12 @@ public class InventoryHandler {
                         }
                         break;
                     case MAXHP: // hp
-                        if (playerst.getMaxHp() >= 30000) {
+                        if (playerst.getMaxHp() >= 30000 || c.getPlayer().getHpMpApUsed() >= 300) {
                             used = false;
                         }
                         break;
                     case MAXMP: // mp
-                        if (playerst.getMaxMp() >= 30000) {
+                        if (playerst.getMaxMp() >= 30000|| c.getPlayer().getHpMpApUsed() >= 300) {
                             used = false;
                         }
                         break;
@@ -1053,12 +1053,12 @@ public class InventoryHandler {
                         }
                         break;
                     case MAXHP: // hp
-                        if (c.getPlayer().getHpMpApUsed() <= 0 || c.getPlayer().getHpMpApUsed() >= 10000) {
+                        if (c.getPlayer().getHpMpApUsed() <= 0 || c.getPlayer().getHpMpApUsed() >= 500) {
                             used = false;
                         }
                         break;
                     case MAXMP: // mp
-                        if (c.getPlayer().getHpMpApUsed() <= 0 || c.getPlayer().getHpMpApUsed() >= 10000) {
+                        if (c.getPlayer().getHpMpApUsed() <= 0 || c.getPlayer().getHpMpApUsed() >= 500) {
                             used = false;
                         }
                         break;
@@ -1203,29 +1203,29 @@ public class InventoryHandler {
                         case MAXHP: // HP
                             short maxhp = playerst.getMaxHp();
                             if (job == 0) { // Beginner
-                                maxhp -= 12;
+                                maxhp -=  Randomizer.rand(9, 13);
                             } else if (job >= 100 && job <= 132) { // Warrior
                                 ISkill improvingMaxHP = SkillFactory.getSkill(1000001);
                                 int improvingMaxHPLevel = c.getPlayer().getSkillLevel(improvingMaxHP);
-                                maxhp -=  Randomizer.rand(18, 28);
+                                maxhp -=  Randomizer.rand(21, 26);
                                 if (improvingMaxHPLevel >= 1) {
                                     maxhp -= improvingMaxHP.getEffect(improvingMaxHPLevel).getY();
                                 }
                             } else if (job >= 200 && job <= 232) { // Magician
-                                maxhp -=  Randomizer.rand(18, 20);
+                                maxhp -=  Randomizer.rand(18, 19);
                             } else if ((job >= 300 && job <= 322) || (job >= 400 && job <= 434) || (job >= 1300 && job <= 1312) || (job >= 1400 && job <= 1412) || (job >= 3300 && job <= 3312) || (job >= 3500 && job <= 3512)) { // Bowman, Thief
                                maxhp -=  Randomizer.rand(17, 21);
                             } else if (job >= 500 && job <= 522) { // Pirate
                                 ISkill improvingMaxHP = SkillFactory.getSkill(5100000);
                                 int improvingMaxHPLevel = c.getPlayer().getSkillLevel(improvingMaxHP);
-                                maxhp -=  Randomizer.rand(20, 22);
+                                maxhp -=  Randomizer.rand(19, 23);
                                 if (improvingMaxHPLevel > 0) {
                                     maxhp -= improvingMaxHP.getEffect(improvingMaxHPLevel).getY();
                                 }
                             } else if (job >= 1500 && job <= 1512) { // Pirate
                                 ISkill improvingMaxHP = SkillFactory.getSkill(15100000);
                                 int improvingMaxHPLevel = c.getPlayer().getSkillLevel(improvingMaxHP);
-                                maxhp -= Randomizer.rand(20 , 23);
+                                maxhp -= Randomizer.rand(19 , 23);
                                 if (improvingMaxHPLevel > 0) {
                                     maxhp -= improvingMaxHP.getEffect(improvingMaxHPLevel).getY();
                                 }
@@ -1237,16 +1237,19 @@ public class InventoryHandler {
                                     maxhp -= improvingMaxHP.getEffect(improvingMaxHPLevel).getY();
                                 }
                             } else if (job >= 1200 && job <= 1212) { // Flame Wizard
-                                 maxhp -=  Randomizer.rand(18, 22);
+                                 maxhp -=  Randomizer.rand(16, 22);
                             } else if ((job >= 2000 && job <= 2112) || (job >= 3200 && job <= 3212)) { // Aran
-                                maxhp -=  Randomizer.rand(48, 52);
+                                maxhp -=  Randomizer.rand(44, 54);
                             } else { // GameMaster
                                 maxhp -= 20;
                             }
-                            c.getPlayer().setHpMpApUsed((short) (c.getPlayer().getHpMpApUsed() - 1));
-                            playerst.setHp(maxhp);
+                            //c.getPlayer().setHpMpApUsed((short) (c.getPlayer().getHpMpApUsed() - 1));
+                            if(playerst.getHp() > playerst.getMaxHp())
+                                playerst.setHp(maxhp);
                             playerst.setMaxHp(maxhp);
                             statupdate.add(new Pair<>(MapleStat.MAXHP, (int) maxhp));
+                            statupdate.add(new Pair<>(MapleStat.HP, (int) playerst.getHp()));
+
                             break;
                         case MAXMP: // MP
                             short maxmp = playerst.getMaxMp();
@@ -1277,10 +1280,12 @@ public class InventoryHandler {
                             } else { // GameMaster
                                 maxmp -= 20;
                             }
-                            c.getPlayer().setHpMpApUsed((short) (c.getPlayer().getHpMpApUsed() - 1));
-                            playerst.setMp(maxmp);
+                            //c.getPlayer().setHpMpApUsed((short) (c.getPlayer().getHpMpApUsed() - 1));
+                            if(playerst.getMp() > playerst.getMaxMp())
+                                playerst.setMp(maxmp);
                             playerst.setMaxMp(maxmp);
                             statupdate.add(new Pair<>(MapleStat.MAXMP, (int) maxmp));
+                            statupdate.add(new Pair<>(MapleStat.MP, (int) playerst.getMp()));
                             break;
                     }
                     c.sendPacket(MaplePacketCreator.updatePlayerStats(statupdate, true, c.getPlayer().getJob()));

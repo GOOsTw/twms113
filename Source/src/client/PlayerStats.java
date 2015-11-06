@@ -77,7 +77,7 @@ public class PlayerStats implements Serializable {
 
     public PlayerStats(final MapleCharacter chr) {
         // TODO, move str/dex/int etc here -_-
-        this.chr = new WeakReference<MapleCharacter>(chr);
+        this.chr = new WeakReference<>(chr);
     }
 
     //POTENTIALS:
