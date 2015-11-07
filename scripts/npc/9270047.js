@@ -16,7 +16,7 @@ function start() {
         cm.dispose();
         return;
     }
-    if (cm.getPlayer().getClient().getChannel() != 1 && cm.getPlayer().getClient().getChannel() != 2) {
+    if ( !cm.getPlayer().isGM() &&  cm.getPlayer().getClient().getChannel() != 1 && cm.getPlayer().getClient().getChannel() != 2) {
         cm.sendOk("熊獅只能在1,2頻挑戰.");
         cm.dispose();
         return;
@@ -46,7 +46,7 @@ function start() {
         var squadAvailability = cm.getSquadAvailability("ScarTar");
         if (squadAvailability == -1) {
             status = 0;
-            cm.sendYesNo("現在可以申請遠征隊，你想成為遠征隊隊長嗎？");
+            cm.sendYesNo("現在有人正在挑戰當中，您可以先申請遠征隊排隊，你想成為遠征隊隊長嗎？");
             if (cm.getBossLog("熊獅王次數") == yaoshi) {
                 cm.sendOk("很抱歉每天只能打兩次..");
                 cm.dispose();
@@ -83,7 +83,7 @@ function start() {
             if (eim == null) {
                 var squd = cm.getSquad("ScarTar");
                 if (squd != null) {
-                    cm.sendYesNo("遠征隊的挑戰已經開始.\r\n" + squd.getNextPlayer());
+                    cm.sendYesNo("已經遠征隊正在進行挑戰了.\r\n" + squd.getNextPlayer());
                     status = 3;
                 } else {
                     cm.sendOk("遠征隊的挑戰已經開始.");
@@ -99,7 +99,7 @@ function start() {
         if (eim == null) {
             var squd = cm.getSquad("ScarTar");
             if (squd != null) {
-                cm.sendYesNo("遠征隊的挑戰已經開始.\r\n" + squd.getNextPlayer());
+                cm.sendYesNo("已經遠征隊正在進行挑戰了.\r\n" + squd.getNextPlayer());
                 status = 3;
             } else {
                 cm.sendOk("遠征隊的挑戰已經開始.");
