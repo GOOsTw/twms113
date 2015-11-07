@@ -25,6 +25,7 @@ import java.net.InetSocketAddress;
 import handling.MapleServerHandler;
 import handling.channel.PlayerStorage;
 import handling.mina.MapleCodecFactory;
+import java.util.Iterator;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.buffer.SimpleBufferAllocator;
 import org.apache.mina.core.session.IoSession;
@@ -95,12 +96,13 @@ public class CashShopServer {
         playersMTS.disconnectAll();
         //MTSStorage.getInstance().saveBuyNow(true);
         System.out.println("[購物商城] 解除綁定端口...");
-        for (IoSession session : acceptor.getManagedSessions().values()) {
-            session.close(true);
+        Iterator<IoSession> iterator = acceptor.getManagedSessions().values().iterator();
+        while (iterator.hasNext()) {
+
+            iterator.next().close(true);
         }
         acceptor.unbind(new InetSocketAddress(port));
-        acceptor.dispose();
-        finishedShutdown = true;
+
         System.out.println("[購物商城] 關閉完成...");
     }
 

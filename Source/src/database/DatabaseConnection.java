@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,8 +41,8 @@ public class DatabaseConnection {
     private static final HashMap<Integer, ConWrapper> connections
             = new HashMap();
     private final static Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
-    private static String dbUrl = "", dbUser = "", dbPass = "";
-    private static final long connectionTimeOut = 30 * 60 * 60 * 1000;
+    private static String dbDriver = "", dbUrl = "", dbUser = "", dbPass = "";
+    private static final long connectionTimeOut = 100000;
     private static final ReentrantLock lock = new ReentrantLock();// 锁对象
 
     public static int getConnectionsCount() {
@@ -96,6 +95,23 @@ public class DatabaseConnection {
         }
 
         Connection c = ret.getConnection();
+        try {
+            if (c.isClosed()) {
+                Connection retCon = connectToDB();
+                lock.lock();
+                try {
+                    connections.remove(threadID);
+                    connections.put(threadID, ret);
+                } finally {
+                    lock.unlock();
+                }
+                ret = new ConWrapper(threadID, retCon);
+            }
+        } catch (Exception e) {
+
+        } finally {
+
+        }
 
         return ret.getConnection();
     }
@@ -114,44 +130,39 @@ public class DatabaseConnection {
 
         public boolean close() {
             boolean ret = false;
+
             if (connection == null) {
                 ret = false;
             } else {
 
-                try {
-                    if (expiredConnection() && !this.connection.isValid(100)) {
-                        lock.lock();
-                        try {
-                            connections.remove(tid);
-                            if(!this.connection.isClosed())
-                                this.connection.close();
-                            ret = true;
-                        } catch (SQLException e) {
-                            ret = false;
-                        } finally {
-                            lock.unlock();
-                        }
-                    }
-                } catch (SQLException ex) {
-                    ret = false;
+                if (!expiredConnection()) {
+                   
+                    try {
+                        this.connection.close();
+                        ret = true;
+                    } catch (SQLException e) {
+                        ret = false;
+                    } 
                 }
-            }
 
+            }
+            lock.lock();
+            try {
+                connections.remove(tid);
+            }finally {
+                lock.unlock();
+            }
             return ret;
         }
 
         public Connection getConnection() {
-            try {
-                if (expiredConnection() && !connection.isValid(100)) {
-                    if(!connection.isClosed())
-                        connection.close();
+            if (expiredConnection()) {
+                try { // Assume that the connection is stale
+                    connection.close();
+                } catch (SQLException err) {
                 }
-            } catch (SQLException ex) {
-
-            } finally{
                 this.connection = connectToDB();
             }
-            
             lastAccessTime = System.currentTimeMillis(); // Record Access
             return this.connection;
         }
@@ -174,7 +185,7 @@ public class DatabaseConnection {
             props.put("password", dbPass);
             props.put("autoReconnect", "true");
             props.put("characterEncoding", "UTF8");
-            props.put("connectTimeout", "120000000");
+            props.put("connectTimeout", "120000");
             Connection con = DriverManager.getConnection(dbUrl, props);
             return con;
         } catch (SQLException e) {
@@ -188,9 +199,11 @@ public class DatabaseConnection {
 
     public static void InitDB() {
 
+        dbDriver = "com.mysql.jdvc.Driver";
         String db = ServerProperties.getProperty("server.settings.db.name", "twms");
         String ip = ServerProperties.getProperty("server.settings.db.ip", "localhost");
         dbUrl = "jdbc:mysql://" + ip + ":3306/" + db + "?autoReconnect=true&characterEncoding=UTF8&?connectTimeout=120000000";
+
         dbUser = ServerProperties.getProperty("server.settings.db.user");
         dbPass = ServerProperties.getProperty("server.settings.db.password");
     }
@@ -202,7 +215,8 @@ public class DatabaseConnection {
         try {
             for (Integer tid : keys) {
                 ConWrapper con = connections.get(tid);
-                if (con.close()) {
+                if (!con.expiredConnection()) {
+                    con.close();
                     i++;
                 }
             }

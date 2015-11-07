@@ -35,10 +35,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import tools.FilePrinter;
 
 public class CommandProcessor {
@@ -123,7 +121,9 @@ public class CommandProcessor {
             }
             return true;
         } else if (c.getPlayer().getGMLevel() > PlayerGMRank.NORMAL.getLevel()) {
-            if (line.charAt(0) == PlayerGMRank.GM.getCommandPrefix() || line.charAt(0) == PlayerGMRank.ADMIN.getCommandPrefix() || line.charAt(0) == PlayerGMRank.INTERN.getCommandPrefix()) { //Redundant for now, but in case we change symbols later. This will become extensible.
+            if (line.charAt(0) == PlayerGMRank.GM.getCommandPrefix() 
+                    || line.charAt(0) == PlayerGMRank.ADMIN.getCommandPrefix() 
+                    || line.charAt(0) == PlayerGMRank.INTERN.getCommandPrefix()) { //Redundant for now, but in case we change symbols later. This will become extensible.
                 String[] splitted = line.split(" ");
                 splitted[0] = splitted[0].toLowerCase();
                 if (line.charAt(0) == '!') { //GM Commands

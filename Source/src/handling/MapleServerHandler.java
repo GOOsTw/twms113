@@ -192,15 +192,12 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
     @Override
     public void exceptionCaught(final IoSession session, final Throwable cause) throws Exception {
-        final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
-
-        if (client != null) {
-            client.disconnect(false, isCashShop);
-        }
+        session.close(true);//force close right now
     }
 
     @Override
     public void sessionOpened(final IoSession session) throws Exception {
+        session.getConfig().setBothIdleTime(180);//set timeout seconds, must
         // Start of IP checking
         final String address = session.getRemoteAddress().toString().split(":")[0];
 
@@ -276,33 +273,33 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
     @Override
     public void sessionClosed(final IoSession session) throws Exception {
+        try {
+            final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
 
-        final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
-
-    
-
-        if (client != null) {
-            if (client.getPlayer() != null) {
-                client.getPlayer().saveToDB(true, isCashShop);
-                if (!(client.getLoginState() == MapleClient.CASH_SHOP_TRANSITION
-                        || client.getLoginState() == MapleClient.CHANGE_CHANNEL
-                        || client.getLoginState() == MapleClient.LOGIN_SERVER_TRANSITION) && client.getPlayer() != null) {
-                    int ch = World.Find.findChannel(client.getPlayer().getId());
-                    ChannelServer.getInstance(ch).removePlayer(client.getPlayer());
-                    client.disconnect(true, isCashShop);
+            if (client != null) {
+                if (client.getPlayer() != null) {
+                    client.getPlayer().saveToDB(true, isCashShop);
+                    if (!(client.getLoginState() == MapleClient.CASH_SHOP_TRANSITION
+                            || client.getLoginState() == MapleClient.CHANGE_CHANNEL
+                            || client.getLoginState() == MapleClient.LOGIN_SERVER_TRANSITION) && client.getPlayer() != null) {
+                        int ch = World.Find.findChannel(client.getPlayer().getId());
+                        ChannelServer.getInstance(ch).removePlayer(client.getPlayer());
+                        client.disconnect(true, isCashShop);
+                    }
                 }
             }
-        }
 
-        if (client != null) {
-            session.removeAttribute(MapleClient.CLIENT_KEY);
-        }
+            if (client != null) {
+                session.removeAttribute(MapleClient.CLIENT_KEY);
+            }
 
-        if (client != null && channel == -1 && !isCashShop && client.getLoginState() != MapleClient.LOGIN_SERVER_TRANSITION) {
-            client.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, client.getSessionIPAddress());
+            if (client != null && channel == -1 && !isCashShop && client.getLoginState() != MapleClient.LOGIN_SERVER_TRANSITION) {
+                client.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, client.getSessionIPAddress());
+            }
+           
+        } finally {
+            super.sessionClosed(session);
         }
-        DatabaseConnection.close();
-        super.sessionClosed(session);
     }
 
     @Override

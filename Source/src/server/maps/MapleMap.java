@@ -464,7 +464,7 @@ public final class MapleMap {
     }
 
     private void dropFromMonster(final MapleCharacter chr, final MapleMonster mob) {
-        if (mob == null || chr == null || ChannelServer.getInstance(channel) == null || dropsDisabled || mob.dropsDisabled() || chr.getPyramidSubway() != null) { //no drops in pyramid ok? no cash either
+        if (mob == null || chr == null || ChannelServer.getInstance(channel) == null || dropsDisabled || mob.dropsDisabled()|| chr.getPyramidSubway() != null) { //no drops in pyramid ok? no cash either
             return;
         }
 
