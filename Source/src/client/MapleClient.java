@@ -620,16 +620,17 @@ public class MapleClient implements Serializable {
     }
 
     public final void updateLoginState(final int newstate, final String SessionID) { // TODO hide?
-
+       // System.out.println("調用位置: " + new java.lang.Throwable().getStackTrace()[1]);
+       // System.out.println(("UPDATE:" + String.valueOf(newstate)));
         Connection con = DatabaseConnection.getConnection();
         try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET loggedin = ?, SessionIP = ?, lastlogin = CURRENT_TIMESTAMP() WHERE id = ?")) {
             ps.setInt(1, newstate);
             ps.setString(2, SessionID);
             ps.setInt(3, getAccID());
             ps.executeUpdate();
-
+           
         } catch (SQLException e) {
-            System.err.println("error updating login state" + e);
+            System.out.println("error updating login state" + e);
         }
         if (newstate == MapleClient.LOGIN_NOTLOGGEDIN || newstate == MapleClient.LOGIN_WAITING) {
             loggedIn = false;
@@ -681,6 +682,7 @@ public class MapleClient implements Serializable {
                 }
                 birthday = rs.getInt("bday");
                 state = rs.getByte("loggedin");
+                
                 if (state == MapleClient.LOGIN_SERVER_TRANSITION || state == MapleClient.CHANGE_CHANNEL) {
                     if (rs.getTimestamp("lastlogin").getTime() + 20000 < System.currentTimeMillis()) { // connecting to chanserver timeout
                         state = MapleClient.LOGIN_NOTLOGGEDIN;
@@ -1060,6 +1062,7 @@ public class MapleClient implements Serializable {
                         MapleClient.this.disconnect(true, false);
                         MapleClient.this.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, MapleClient.this.getSessionIPAddress());
                         getSession().close(true);
+                        MapleClient.this.setReceiving(false);
                     }
                 } catch (final NullPointerException e) {
                     getSession().close(true);

@@ -59,6 +59,7 @@ import tools.Pair;
 import server.MTSStorage;
 import server.ServerProperties;
 import tools.FilePrinter;
+import tools.HexTool;
 
 public class MapleServerHandler extends IoHandlerAdapter implements MapleServerHandlerMBean {
 
@@ -192,7 +193,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
     @Override
     public void exceptionCaught(final IoSession session, final Throwable cause) throws Exception {
-        session.close(true);//force close right now
     }
 
     @Override
@@ -274,7 +274,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     @Override
     public void sessionClosed(final IoSession session) throws Exception {
         try {
-            final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
+            MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
 
             if (client != null) {
                 if (client.getPlayer() != null) {
@@ -293,9 +293,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 session.removeAttribute(MapleClient.CLIENT_KEY);
             }
 
-            if (client != null && channel == -1 && !isCashShop && client.getLoginState() != MapleClient.LOGIN_SERVER_TRANSITION) {
-                client.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, client.getSessionIPAddress());
-            }
            
         } finally {
             super.sessionClosed(session);
@@ -372,12 +369,14 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 break;
             case STRANGE_DATA:
                 if (slea.available() >= 5) {
-                    FilePrinter.print("38Logs.txt", slea.toString(), true);
-                }// Does nothing for now, HackShield's heartbeat
+                    Long avaible = slea.available();
+                    FilePrinter.print("38Logs.txt", HexTool.toString(slea.read(avaible.intValue())), true);
+                }// Does nothing for now, HackShield 's heartbeat
                 break;
             case HELLO_LOGIN:
                 if (slea.available() >= 5) {
-                    FilePrinter.print("38Logs.txt", slea.toString(), true);
+                    Long avaible = slea.available();
+                    FilePrinter.print("38Logs.txt", HexTool.toString(slea.read(avaible.intValue())),true);
                 }
                 CharLoginHandler.handleWelcome(c);
                 // Does nothing for now, HackShield's heartbeat
@@ -470,6 +469,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 break;
             case USE_CHAIR:
                 PlayerHandler.UseChair(slea.readInt(), c, c.getPlayer());
+                break;
+            case SHOW_EXP_CHAIR:
+                PlayerHandler.ShowExpChair(slea, c);
                 break;
             case CANCEL_CHAIR:
                 PlayerHandler.CancelChair(slea.readShort(), c, c.getPlayer());

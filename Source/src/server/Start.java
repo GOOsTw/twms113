@@ -39,6 +39,7 @@ public class Start {
         System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
         System.setProperty("file.encoding", "utf-8");
 
+        
         System.out.println("【台版楓之谷模擬器】");
         System.out.println("【版本】 v113");
 
@@ -76,6 +77,7 @@ public class Start {
         BuffTimer.getInstance().start();
         WorldTimer.getInstance().register(CloseSQLConnections, 30 * 60 * 1000);
         LoginInformationProvider.getInstance();
+        FishingRewardFactory.getInstance();
         MapleQuest.initQuests();
         MapleLifeFactory.loadQuestCounts();
 //        ItemMakerFactory.getInstance();

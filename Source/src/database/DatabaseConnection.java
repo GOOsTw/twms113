@@ -18,6 +18,8 @@ package database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +44,7 @@ public class DatabaseConnection {
             = new HashMap();
     private final static Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
     private static String dbDriver = "", dbUrl = "", dbUser = "", dbPass = "";
-    private static final long connectionTimeOut = 100000;
+    private static final long connectionTimeOut = 30 * 60 * 1000;
     private static final ReentrantLock lock = new ReentrantLock();// 锁对象
 
     public static int getConnectionsCount() {
@@ -135,23 +137,29 @@ public class DatabaseConnection {
                 ret = false;
             } else {
 
-                if (!expiredConnection()) {
-                   
+                try {
+                    lock.lock();
                     try {
-                        this.connection.close();
-                        ret = true;
-                    } catch (SQLException e) {
-                        ret = false;
-                    } 
-                }
+                        if (expiredConnection() || this.connection.isValid(10)) {
 
+                            try {
+
+                                this.connection.close();
+                                ret = true;
+                            } catch (SQLException e) {
+                                ret = false;
+                            }
+                        }
+                        connections.remove(tid);
+                    } finally {
+                        lock.unlock();
+                    }
+                } catch (SQLException ex) {
+                    ret = false;
+
+                }
             }
-            lock.lock();
-            try {
-                connections.remove(tid);
-            }finally {
-                lock.unlock();
-            }
+
             return ret;
         }
 
@@ -185,8 +193,15 @@ public class DatabaseConnection {
             props.put("password", dbPass);
             props.put("autoReconnect", "true");
             props.put("characterEncoding", "UTF8");
-            props.put("connectTimeout", "120000");
+            props.put("connectTimeout", "2000000");
+            props.put("serverTimezone", "Asia/Taipei");
             Connection con = DriverManager.getConnection(dbUrl, props);
+
+            PreparedStatement ps;
+            ps = con.prepareStatement("SET time_zone = '+08:00'");
+            ps.execute();
+            ps.close();
+           
             return con;
         } catch (SQLException e) {
             throw new DatabaseException(e);
@@ -202,7 +217,7 @@ public class DatabaseConnection {
         dbDriver = "com.mysql.jdvc.Driver";
         String db = ServerProperties.getProperty("server.settings.db.name", "twms");
         String ip = ServerProperties.getProperty("server.settings.db.ip", "localhost");
-        dbUrl = "jdbc:mysql://" + ip + ":3306/" + db + "?autoReconnect=true&characterEncoding=UTF8&?connectTimeout=120000000";
+        dbUrl = "jdbc:mysql://" + ip + ":3306/" + db;//+ "?autoReconnect=true&characterEncoding=UTF8&connectTimeout=120000000";
 
         dbUser = ServerProperties.getProperty("server.settings.db.user");
         dbPass = ServerProperties.getProperty("server.settings.db.password");
@@ -215,8 +230,7 @@ public class DatabaseConnection {
         try {
             for (Integer tid : keys) {
                 ConWrapper con = connections.get(tid);
-                if (!con.expiredConnection()) {
-                    con.close();
+                if (con.close()) {
                     i++;
                 }
             }

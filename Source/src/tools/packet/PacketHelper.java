@@ -410,6 +410,11 @@ public class PacketHelper {
                 mplew.writeShort(item.getQuantity());
                 mplew.writeMapleAsciiString(item.getOwner());
                 mplew.writeShort(item.getFlag()); // flag
+                
+                if(item.getItemId() == 3020000){
+                    mplew.writeInt(0);
+                    mplew.writeInt(0);
+                }
 
                 if (GameConstants.isRechargable(item.getItemId())) {
                     mplew.writeInt(2);

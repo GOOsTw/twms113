@@ -32,6 +32,7 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     MOVE_PLAYER(0x21),
     CANCEL_CHAIR(0x22),
     USE_CHAIR(0x23),
+    SHOW_EXP_CHAIR(0x24),
     CLOSE_RANGE_ATTACK(0x25),
     RANGED_ATTACK(0x26),
     MAGIC_ATTACK(0x27),

@@ -29,7 +29,6 @@ import client.inventory.Equip;
 import client.inventory.IItem;
 import client.inventory.Item;
 import constants.GameConstants;
-import client.MapleCharacter;
 import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import handling.channel.ChannelServer;
@@ -40,13 +39,15 @@ import server.Randomizer;
 import server.life.MapleLifeFactory;
 import server.maps.ReactorDropEntry;
 import server.maps.MapleReactor;
-import tools.MaplePacketCreator;
 import server.life.MapleMonster;
-import server.maps.MapleMap;
 
+/**
+ *
+ * @author Flower
+ */
 public class ReactorActionManager extends AbstractPlayerInteraction {
 
-    private MapleReactor reactor;
+    private final MapleReactor reactor;
 
     public ReactorActionManager(MapleClient c, MapleReactor reactor) {
         super(c);
@@ -64,7 +65,7 @@ public class ReactorActionManager extends AbstractPlayerInteraction {
 
     public void dropItems(boolean meso, int mesoChance, int minMeso, int maxMeso, int minItems) {
         final List<ReactorDropEntry> chances = ReactorScriptManager.getInstance().getDrops(reactor.getReactorId());
-        final List<ReactorDropEntry> items = new LinkedList<ReactorDropEntry>();
+        final List<ReactorDropEntry> items = new LinkedList<>();
 
         if (meso) {
             if (Math.random() < (1 / (double) mesoChance)) {

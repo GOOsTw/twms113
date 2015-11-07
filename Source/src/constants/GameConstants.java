@@ -1173,7 +1173,6 @@ public class GameConstants {
     };
     public static int[] eventSuperReward = {
         4031019, 5,
-        2022121, 10,
         4031307, 50,
         3010127, 10,
         3010128, 10,
@@ -2230,5 +2229,15 @@ public class GameConstants {
 
     public static boolean isEventMap(final int mapid) {
         return (mapid >= 109010000 && mapid < 109050000) || (mapid > 109050001 && mapid < 109090000) || (mapid >= 809040000 && mapid <= 809040100);
+    }
+    
+    public static boolean isExpChair(final int itemid ) {
+        switch(itemid) {
+            case 3020000:
+            case 3020001:
+                return true;
+            default:
+                return false;
+        }
     }
 }

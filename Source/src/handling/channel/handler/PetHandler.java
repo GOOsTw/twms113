@@ -247,7 +247,7 @@ public class PetHandler {
                             } else if (MapleInventoryManipulator.checkSpace(chr.getClient(), mapitem.getItem().getItemId(), mapitem.getItem().getQuantity(), mapitem.getItem().getOwner())) {
                                 if (mapitem.getItem().getQuantity() >= 50 && GameConstants.isUpgradeScroll(mapitem.getItem().getItemId())) {
 
-                                    chr.getClient().setMonitored(true); //hack check
+                                    //chr.getClient().setMonitored(true); //hack check
 
                                 }
 

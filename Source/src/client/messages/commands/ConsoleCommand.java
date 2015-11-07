@@ -6,8 +6,9 @@
 package client.messages.commands;
 
 import client.MapleCharacter;
-import client.MapleClient;
 import database.DatabaseConnection;
+import handling.RecvPacketOpcode;
+import handling.SendPacketOpcode;
 import handling.channel.ChannelServer;
 import handling.login.LoginServer;
 import handling.world.World;
@@ -18,8 +19,15 @@ import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import scripting.PortalScriptManager;
+import scripting.ReactorScriptManager;
+import server.CashItemFactory;
+import server.FishingRewardFactory;
+import server.MapleShopFactory;
 import server.ShutdownServer;
 import server.Timer;
+import server.life.MapleMonsterInformationProvider;
+import static tools.FilePrinter.MapleQuest;
 import tools.MaplePacketCreator;
 import tools.StringUtil;
 
@@ -413,4 +421,82 @@ public class ConsoleCommand {
             return 1;
         }
     }
+    
+    
+    public static class ReloadOps extends ConsoleCommandExecute {
+
+        @Override
+        public int execute(String splitted[]) {
+            SendPacketOpcode.reloadValues();
+            RecvPacketOpcode.reloadValues();
+            return 1;
+        }
+        
+       
+    }
+
+    public static class ReloadDrops extends ConsoleCommandExecute {
+
+        @Override
+        public int execute(String splitted[]) {
+            MapleMonsterInformationProvider.getInstance().clearDrops();
+            ReactorScriptManager.getInstance().clearDrops();
+            return 1;
+        }
+        
+        
+    }
+
+    public static class ReloadPortals extends ConsoleCommandExecute {
+
+        @Override
+        public int execute(String splitted[]) {
+            PortalScriptManager.getInstance().clearScripts();
+            return 1;
+        }
+    }
+
+    public static class ReloadShops extends ConsoleCommandExecute {
+
+        @Override
+        public int execute(String splitted[]) {
+            MapleShopFactory.getInstance().clear();
+            return 1;
+        }
+        
+    }
+    
+    public static class ReloadCS extends ConsoleCommandExecute {
+
+        @Override
+        public int execute(String splitted[]) {
+            CashItemFactory.getInstance().clearItems();
+            return 1;
+        }
+        
+    }
+    
+    public static class ReloadFishing extends ConsoleCommandExecute {
+
+        @Override
+        public int execute(String splitted[]) {
+            FishingRewardFactory.getInstance().reloadItems();
+            return 1;
+        }
+        
+    }
+     
+    public static class ReloadEvents extends ConsoleCommandExecute {
+
+        @Override
+        public int execute(String splitted[]) {
+            for (ChannelServer instance : ChannelServer.getAllInstances()) {
+                instance.reloadEvents();
+            }
+            return 1;
+        }
+        
+    }
+
+
 }

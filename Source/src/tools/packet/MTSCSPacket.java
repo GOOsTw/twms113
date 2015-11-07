@@ -36,6 +36,7 @@ import handling.SendPacketOpcode;
 import constants.ServerConstants;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import tools.Pair;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -47,6 +48,7 @@ import tools.data.output.MaplePacketLittleEndianWriter;
 public class MTSCSPacket {
 
     public static MaplePacket warpCS(MapleClient c) {
+        
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.SET_CASH_SHOP.getValue());
@@ -57,10 +59,10 @@ public class MTSCSPacket {
 
         List<CashModInfo> cmi = new ArrayList<>(CashItemFactory.getInstance().getAllModInfo());
         mplew.writeInt(0); // some info , it'size , decodeBuffer(4*size)
-
+        Iterator<CashModInfo> iterator = cmi.iterator();
         mplew.writeShort(cmi.size());
-        for (CashModInfo cmi1 : cmi) {
-            addModCashItemInfo(mplew, cmi1);
+        while(iterator.hasNext()) {
+            addModCashItemInfo(mplew, iterator.next());
         }
         mplew.write(HexTool.getByteArrayFromHexString("00 00 0A 00 50 10 27 00 00 00 5A 00 00 00 00 00 00 00 00 00 00 00 00 FF 00 00 00 00 00 00 00 00 00 "));
         mplew.write(HexTool.getByteArrayFromHexString("06 00 00 00 31 00 30 00 31 00 00 00 00 00 00 00 05 00 0E 00 05 00 08 06 A0 01 14 00 C8 FE 8D 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 03 00 13 00 0A 01 0C 06 06 00 00 00 31 00 30 00 31 00 00 00 00 00 00 00 03 00 16 00 0D 00 0C 06 90 01 14 00 F8 36 8C 06 31 00 00 00 00 00 00 00 03 00 19 00 10 01 0C 06 06 00 00 00 31 00 30 00"));
@@ -91,7 +93,7 @@ public class MTSCSPacket {
         mplew.writeShort(0);
         mplew.writeShort(0);
         mplew.write(0);
-
+ 
         return mplew.getPacket();
     }
 
