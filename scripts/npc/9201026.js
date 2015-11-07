@@ -35,8 +35,8 @@ function action(mode, type, selection) {
 	        }
 		if (cm.getPlayer().getMarriageId() <= 0 || !data.equals("3")) {
                     cm.sendOk("I am truly sorry my dear.  This Chair of Love is a special gift designed only for the married ones.  You might want to get married first.");
-		} else if (cm.canHold(cm.isGMS() ? 3012015 : 3012000,1) && !cm.haveItem(cm.isGMS() ? 3012015 : 3012000,1)) {
-		    cm.gainItem(cm.isGMS() ? 3012015 : 3012000,1);
+		} else if (cm.canHold(cm.isGMS() ? 3012015 : 3012004,1) && !cm.haveItem(cm.isGMS() ? 3012015 : 3012004,1)) {
+		    cm.gainItem(cm.isGMS() ? 3012015 : 3012004,1);
 		} else {
 		    cm.sendOk("Please make space or you already have this chair.");
 		}
