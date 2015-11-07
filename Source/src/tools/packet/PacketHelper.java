@@ -411,7 +411,7 @@ public class PacketHelper {
                 mplew.writeMapleAsciiString(item.getOwner());
                 mplew.writeShort(item.getFlag()); // flag
                 
-                if(item.getItemId() == 3020000){
+                if(GameConstants.isExpChair(item.getItemId())){
                     mplew.writeInt(0);
                     mplew.writeInt(0);
                 }

@@ -124,7 +124,7 @@ public class PlayerHandler {
             chr.getCheatTracker().registerOffense(CheatingOffense.USING_UNAVAILABLE_ITEM, Integer.toString(itemId));
             return;
         }
-        if (itemId == 3011000) {
+        if (itemId == 3010001 && GameConstants.isFishingMap(chr.getMapId())) {
             boolean haz = false;
             for (IItem item : c.getPlayer().getInventory(MapleInventoryType.CASH).list()) {
                 if (item.getItemId() == 5340000) {
@@ -146,7 +146,7 @@ public class PlayerHandler {
 
     public static final void CancelChair(final short id, final MapleClient c, final MapleCharacter chr) {
         if (id == -1) { // Cancel Chair
-            if (chr.getChair() == 3011000) {
+            if (chr.getChair() == 3010011 && GameConstants.isFishingMap(chr.getMapId())) {
                 chr.cancelFishingTask();
             }
             chr.setChair(0);

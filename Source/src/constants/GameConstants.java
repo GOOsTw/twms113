@@ -2232,12 +2232,23 @@ public class GameConstants {
     }
     
     public static boolean isExpChair(final int itemid ) {
-        switch(itemid) {
-            case 3020000:
-            case 3020001:
+        
+        switch(itemid/10000) {
+            case 302:
                 return true;
             default:
                 return false;
         }
+    }
+
+    public static boolean isFishingMap(int mapId) {
+       switch(mapId) {
+           case 749050500:
+           case 749050501:
+           case 749050502:
+               return true;
+           default:
+               return false;
+       }
     }
 }

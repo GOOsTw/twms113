@@ -22,8 +22,7 @@ import tools.Pair;
  */
 public class FishingRewardFactory {
 
-    private final List<Pair<Integer, Integer>> rewards;
-    private final List<Long> accumulated;
+    private final List<Pair<Integer, Long>> rewards;
     private Long total = 0L;
     private final Random rand;
     private final int[] typesChance = {40, 40, 20};
@@ -35,7 +34,6 @@ public class FishingRewardFactory {
     public FishingRewardFactory() {
         System.out.println("【讀取中】 FishingRewardFactory :::");
         this.rewards = new LinkedList<>();
-        this.accumulated = new LinkedList<>();
         this.rand = new Random();
         this.loadItems();
     }
@@ -58,7 +56,7 @@ public class FishingRewardFactory {
         if (this.rewards.isEmpty()) {
             this.loadItems();
         }
-        Iterator<Pair<Integer, Integer>> iterator = this.rewards.iterator();
+        Iterator<Pair<Integer,Long>> iterator = this.rewards.iterator();
 
         Long n = rand.nextLong() % total;
         while (iterator.hasNext()) {
@@ -82,9 +80,8 @@ public class FishingRewardFactory {
                 while (rs.next()) {
                     int itemid = rs.getInt("itemid");
                     int chance = rs.getInt("chance");
-                    rewards.add(new Pair<>(itemid, chance));
                     acc += chance;
-                    accumulated.add(acc);
+                    rewards.add(new Pair<>(itemid, acc));
                 }
             }
         } catch (SQLException e) {

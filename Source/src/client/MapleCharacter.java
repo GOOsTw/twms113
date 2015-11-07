@@ -1579,12 +1579,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
                 switch (rewardType) {
                     case 0: // Meso
-                        final int money = Randomizer.rand(expMulti ? 15 : 10, expMulti ? 15000 : 30000);
+                        final int money = Randomizer.rand(expMulti ? 15 : 10, expMulti ? 3000 : 1000);
                         gainMeso(money, true);
                         client.sendPacket(UIPacket.fishingUpdate((byte) 1, money));
                         break;
                     case 1: // EXP
-                        final int experi = Randomizer.nextInt(Math.abs(GameConstants.getExpNeededForLevel(level) / 200) + 1);
+                        final int experi = Randomizer.nextInt(Math.abs(GameConstants.getExpNeededForLevel(level) / 800) + 1);
                         gainExp(expMulti ? (experi * 3 / 2) : experi, true, false, true);
                         client.sendPacket(UIPacket.fishingUpdate((byte) 2, experi));
                         break;

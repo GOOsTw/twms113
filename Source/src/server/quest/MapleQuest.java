@@ -179,6 +179,7 @@ public class MapleQuest implements Serializable {
     }
 
     public static MapleQuest getInstance(int id) {
+
         MapleQuest ret = quests.get(id);
         if (ret == null) {
             ret = new MapleQuest(id);

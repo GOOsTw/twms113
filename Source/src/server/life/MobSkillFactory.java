@@ -43,10 +43,7 @@ public class MobSkillFactory {
         if (ret != null) {
             return ret;
         }
-        if (skillRoot == null || skillRoot.getChildren() == null || skillRoot.getChildByPath(String.valueOf(skillId)) == null || skillRoot.getChildByPath(String.valueOf(skillId)).getChildren() == null || skillRoot.getChildByPath(String.valueOf(skillId)).getChildByPath("level") == null) {
-            return null;
-        }
-        final MapleData skillData = skillRoot.getChildByPath(skillId + "/level/" + level);
+        MapleData skillData = skillRoot.getChildByPath(skillId + "/level/" + level);
         if (skillData != null && skillData.getChildren() != null) {
             List<Integer> toSummon = new ArrayList<>();
             for (int i = 0; i > -1; i++) {

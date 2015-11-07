@@ -173,7 +173,7 @@ public class CheatTracker {
 //                if (dc) {
 //                    chr.get().getClient().getSession().close();
 //                } else {
-                chr.get().getClient().setMonitored(true);
+//                chr.get().getClient().setMonitored(true);
 //                }
             }
         } else {

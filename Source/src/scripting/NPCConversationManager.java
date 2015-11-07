@@ -1411,9 +1411,11 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             @Override
             public void run() {
                 MapleMap warpMap = c.getChannelServer().getMapFactory().getMap(retmap);
-                c.sendPacket(MaplePacketCreator.stopClock());
-                c.getPlayer().changeMap(warpMap, warpMap.getPortal(0));
-                c.getPlayer().dropMessage(6, "已經到達目的地了!");
+                if (c.getPlayer() != null) {
+                    c.sendPacket(MaplePacketCreator.stopClock());
+                    c.getPlayer().changeMap(warpMap, warpMap.getPortal(0));
+                    c.getPlayer().dropMessage(6, "已經到達目的地了!");
+                }
             }
         }, 1000 * time); //設定時間, (1 秒 = 1000)
     }

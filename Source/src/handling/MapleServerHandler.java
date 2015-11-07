@@ -293,7 +293,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 session.removeAttribute(MapleClient.CLIENT_KEY);
             }
 
-           
         } finally {
             super.sessionClosed(session);
         }
@@ -334,7 +333,17 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                     if (isLogPackets) {
                         log(slea, recv, c, session);
                     }
-                    handlePacket(recv, slea, c, isCashShop);
+                    try {
+                        handlePacket(recv, slea, c, isCashShop);
+                    } catch (Exception e) {
+
+                        long pos = slea.getPosition();
+                        slea.seek(0);
+                        String allp = slea.toString();
+                        slea.skip((int)pos);
+                        String currp = slea.toString();
+                        FilePrinter.printError("PacketException.txt", e.getMessage() + "\r\nAll: " + allp + "\r\nCurrent: " + currp  );
+                    }
                     return;
                 }
             }
@@ -344,7 +353,10 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 System.out.println(sb.toString());
             }
         } catch (Exception e) {
+
+            //e.printStackTrace();
             FilePrinter.printError("PacketException.txt", e);
+
         }
 
     }
@@ -376,7 +388,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case HELLO_LOGIN:
                 if (slea.available() >= 5) {
                     Long avaible = slea.available();
-                    FilePrinter.print("38Logs.txt", HexTool.toString(slea.read(avaible.intValue())),true);
+                    FilePrinter.print("38Logs.txt", HexTool.toString(slea.read(avaible.intValue())), true);
                 }
                 CharLoginHandler.handleWelcome(c);
                 // Does nothing for now, HackShield's heartbeat

@@ -403,7 +403,8 @@ public class MapleInventoryManipulator {
             }
         }
         if (item.getQuantity() >= 50 && GameConstants.isUpgradeScroll(item.getItemId())) {
-            c.setMonitored(true);
+
+//            c.setMonitored(true);
         }
         if (before == 0) {
             switch (item.getItemId()) {

@@ -77,14 +77,13 @@ public class BBSHandler {
         switch (action) {
             case ADD_THREAD: {
                 final boolean isEdit = slea.readByte() > 0;
+                 if (isEdit) {
+                    localThreadId = slea.readInt();
+                }
                 final boolean isNotice = slea.readByte() > 0;
                 final String title = correctLength(slea.readMapleAsciiString(), 25);
                 final String content = correctLength(slea.readMapleAsciiString(), 600);
                 final int icon = slea.readInt();
-
-                if (isEdit) {
-                    localThreadId = slea.readInt();
-                }
 
                 if (icon >= 0x64 && icon <= 0x6a) {
                     if (!c.getPlayer().haveItem(5290000 + icon - 0x64, 1, false, true)) {

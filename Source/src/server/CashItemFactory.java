@@ -5,15 +5,12 @@
  */
 package server;
 
-import client.inventory.MapleInventoryType;
-import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,6 +34,7 @@ public class CashItemFactory {
     private final Map<Integer, CashItemInfo> itemStats = new HashMap<>();
     private final Map<Integer, List<CashItemInfo>> itemPackage = new HashMap<>();
     private final Map<Integer, CashModInfo> itemMods = new HashMap<>();
+    private final Map<Integer, Integer> itemIdToSN = new HashMap<>();
     private final MapleDataProvider data = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath")  + "/Etc.wz");
 
     public static final CashItemFactory getInstance() {
@@ -64,6 +62,7 @@ public class CashItemFactory {
 
             if (SN > 0) {
                 itemStats.put(SN, stats);
+                itemIdToSN.put(stats.getId(), SN);
             }
 
             if (itemId > 0) {
@@ -76,10 +75,16 @@ public class CashItemFactory {
         }
         for (int i : itemStats.keySet()) {
             getModInfo(i);
-            getItem(i); //init the modinfo's citem
+             //init the modinfo's citem
+            getItem(i);
         }
         
         initialized = true;
+    }
+ 
+    public final int getSnByItemItd(int itemid) {
+        int sn = itemIdToSN.get(itemid);
+        return sn;
     }
 
     public final CashItemInfo getItem(int sn) {
