@@ -34,9 +34,9 @@ public class CashItemFactory {
     private final static int[] bestItems = new int[]{50100010, 50100010, 50100010, 50100010, 50100010};
     private boolean initialized = false;
     private final Map<Integer, List<Integer>> openBox = new HashMap();
-    private final Map<Integer, CashItemInfo> itemStats = new HashMap<Integer, CashItemInfo>();
-    private final Map<Integer, List<CashItemInfo>> itemPackage = new HashMap<Integer, List<CashItemInfo>>();
-    private final Map<Integer, CashModInfo> itemMods = new HashMap<Integer, CashModInfo>();
+    private final Map<Integer, CashItemInfo> itemStats = new HashMap<>();
+    private final Map<Integer, List<CashItemInfo>> itemPackage = new HashMap<>();
+    private final Map<Integer, CashModInfo> itemMods = new HashMap<>();
     private final MapleDataProvider data = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath")  + "/Etc.wz");
 
     public static final CashItemFactory getInstance() {
@@ -70,6 +70,7 @@ public class CashItemFactory {
                 itemids.add(itemId);
             }
         }
+        refreshAllModInfo();
         for (int i : itemids) {
             getPackageItems(i);
         }
@@ -77,7 +78,7 @@ public class CashItemFactory {
             getModInfo(i);
             getItem(i); //init the modinfo's citem
         }
-
+        
         initialized = true;
     }
 
@@ -99,21 +100,21 @@ public class CashItemFactory {
     }
 
     public final List<CashItemInfo> getAllItems() {
-        return new ArrayList<CashItemInfo>(itemStats.values());
+        return new ArrayList<>(itemStats.values());
     }
 
     public final List<CashItemInfo> getPackageItems(int itemId) {
         if (itemPackage.get(itemId) != null) {
             return itemPackage.get(itemId);
         }
-        final List<CashItemInfo> packageItems = new ArrayList<CashItemInfo>();
+        final List<CashItemInfo> packageItems = new ArrayList<>();
 
         final MapleData b = data.getData("CashPackage.img");
         if (b == null || b.getChildByPath(itemId + "/SN") == null) {
             return null;
         }
         for (MapleData d : b.getChildByPath(itemId + "/SN").getChildren()) {
-            packageItems.add(itemStats.get(Integer.valueOf(MapleDataTool.getIntConvert(d))));
+            packageItems.add(itemStats.get(MapleDataTool.getIntConvert(d)));
         }
         itemPackage.put(itemId, packageItems);
         return packageItems;
@@ -177,5 +178,9 @@ public class CashItemFactory {
 
     public final int[] getBestItems() {
         return bestItems;
+    }
+
+    public void clearItems() {
+        refreshAllModInfo();
     }
 }

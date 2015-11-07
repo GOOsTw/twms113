@@ -77,6 +77,8 @@ import java.util.concurrent.ScheduledFuture;
 import scripting.NPCScriptManager;
 import server.ServerProperties;
 import handling.login.LoginServer;
+import server.CashItemFactory;
+import server.FishingRewardFactory;
 
 /**
  *
@@ -2881,7 +2883,35 @@ public class AdminCommand {
             return new StringBuilder().append("!reloadshops - 重新載入商店").toString();
         }
     }
+    
+    public static class ReloadCS extends CommandExecute {
 
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            CashItemFactory.getInstance().clearItems();
+            return true;
+        }
+        
+             @Override
+        public String getMessage() {
+            return new StringBuilder().append("!reloadCS - 重新載入購物商城").toString();
+        }
+    }
+    
+    public static class ReloadFishing extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            FishingRewardFactory.getInstance().reloadItems();
+            return true;
+        }
+        
+             @Override
+        public String getMessage() {
+            return new StringBuilder().append("!reloadFishing - 重新載入釣魚獎勵").toString();
+        }
+    }
+     
     public static class ReloadEvents extends CommandExecute {
 
         @Override

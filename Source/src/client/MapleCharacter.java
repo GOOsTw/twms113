@@ -107,6 +107,7 @@ import server.maps.SavedLocationType;
 import server.quest.MapleQuest;
 import server.shops.IMaplePlayerShop;
 import server.CashShop;
+import server.FishingRewardFactory;
 import tools.MaplePacketCreator;
 import tools.Pair;
 import tools.packet.MTSCSPacket;
@@ -1574,9 +1575,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 }
                 MapleInventoryManipulator.removeById(client, MapleInventoryType.USE, expMulti ? 2300001 : 2300000, 1, false, false);
 
-                final int randval = RandomRewards.getInstance().getFishingReward();
+                final int rewardType = FishingRewardFactory.getInstance().getNextRewardType();
 
-                switch (randval) {
+                switch (rewardType) {
                     case 0: // Meso
                         final int money = Randomizer.rand(expMulti ? 15 : 10, expMulti ? 15000 : 30000);
                         gainMeso(money, true);
@@ -1588,8 +1589,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                         client.sendPacket(UIPacket.fishingUpdate((byte) 2, experi));
                         break;
                     default:
-                        MapleInventoryManipulator.addById(client, randval, (short) 1);
-                        client.sendPacket(UIPacket.fishingUpdate((byte) 0, randval));
+                        final int itemid = FishingRewardFactory.getInstance().getNextRewardItemId();
+                        MapleInventoryManipulator.addById(client, itemid, (short) 1);
+                        client.sendPacket(UIPacket.fishingUpdate((byte) 0, itemid));
                         break;
                 }
                 map.broadcastMessage(UIPacket.fishingCaught(id));

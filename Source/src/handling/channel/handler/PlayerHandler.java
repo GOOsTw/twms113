@@ -124,7 +124,7 @@ public class PlayerHandler {
             chr.getCheatTracker().registerOffense(CheatingOffense.USING_UNAVAILABLE_ITEM, Integer.toString(itemId));
             return;
         }
-        if (itemId == 3010001) {
+        if (itemId == 3011000) {
             boolean haz = false;
             for (IItem item : c.getPlayer().getInventory(MapleInventoryType.CASH).list()) {
                 if (item.getItemId() == 5340000) {
@@ -146,7 +146,7 @@ public class PlayerHandler {
 
     public static final void CancelChair(final short id, final MapleClient c, final MapleCharacter chr) {
         if (id == -1) { // Cancel Chair
-            if (chr.getChair() == 3010001) {
+            if (chr.getChair() == 3011000) {
                 chr.cancelFishingTask();
             }
             chr.setChair(0);
@@ -1262,4 +1262,14 @@ public class PlayerHandler {
      c.getPlayer().setcharmessage(s);
      c.sendPacket(MaplePacketCreator.updateBeans(c.getPlayer().getId(), s));
      }*/
+
+    public static void ShowExpChair(SeekableLittleEndianAccessor slea, MapleClient client) {
+   
+        //E0 14 2E 00 
+        //00 00 00 00 00 00 00 00
+        int chairid = slea.readInt();
+        
+        client.sendPacket(MaplePacketCreator.enableActions());
+        
+    }
 }
