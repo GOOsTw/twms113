@@ -10,8 +10,9 @@ else
 fi
 
 export CLASSPATH=.:dist/*
-java -Xmx4500m \
+java -Xmx6500m \
      -Dfile.encoding=UTF-8 \
+     -Duser.timezone="Asia/Taipei" \
      -server server.Start
 #     -Dcom.sun.management.jmxremote=true \
 #     -Dcom.sun.management.jmxremote.port=13999 \
