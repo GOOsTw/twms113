@@ -1646,9 +1646,6 @@ public class MapleStatEffect implements Serializable {
         }
         return false;
     }
-    /*public boolean isPoison() {
-     return skill && (sourceid == 2111003 || sourceid == 4221006 || sourceid == 12111005 || sourceid == 14111006 || sourceid == 22161003 || sourceid == 32121006 || sourceid == 1076 || sourceid == 11076 || sourceid == 4121015); // poison mist, smokescreen and flame gear, recovery aura
-     }*/
 
     private boolean isMist() {
         return skill && (sourceid == 2111003 || sourceid == 4221006 || sourceid == 12111005 || sourceid == 14111006 || sourceid == 22161003); // poison mist, smokescreen and flame gear, recovery aura
