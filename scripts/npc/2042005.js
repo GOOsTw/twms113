@@ -52,7 +52,7 @@ function action(mode, type, selection) {
 	    var mapid = 980030000+((selection+1)*1000);
             if (cm.getEventManager("cpq2").getInstance("cpq"+mapid) == null) {
                 var party = cm.getParty().getMembers();
-                if (cm.getParty() != null && party.size() == 1) {
+                if (cm.getParty() != null && party.size() == 3) {
                     if (checkLevelsAndMap(51, 120) == 3) {
                         cm.sendOk("隊伍裡有人等級不符合。");
                         cm.dispose();
