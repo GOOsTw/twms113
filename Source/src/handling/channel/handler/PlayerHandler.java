@@ -146,7 +146,7 @@ public class PlayerHandler {
 
     public static final void CancelChair(final short id, final MapleClient c, final MapleCharacter chr) {
         if (id == -1) { // Cancel Chair
-            if (chr.getChair() == 3010011 && GameConstants.isFishingMap(chr.getMapId())) {
+            if (chr.getChair() == 3010001 && GameConstants.isFishingMap(chr.getMapId())) {
                 chr.cancelFishingTask();
             }
             chr.setChair(0);
@@ -958,7 +958,7 @@ public class PlayerHandler {
         }
         final Point Original_Pos = chr.getPosition(); // 4 bytes Added on v.80 MSEA
         slea.skip(33);
-
+        chr.cancelFishingTask();
         /**
          *
          * FF FF 01 FF FF FF FF FF FF FF FF 2A 8E 66 CB 8E 7D 17 FC 4A BF D5 CE

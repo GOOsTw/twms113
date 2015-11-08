@@ -153,7 +153,12 @@ public class ConsoleCommand {
         @Override
         public int execute(String[] splitted) {
             if (splitted.length > 2) {
-                final int rate = Integer.parseInt(splitted[1]);
+                int rate = 1;
+                try {
+                    rate = Integer.parseInt(splitted[1]);
+                } catch (Exception ex) {
+                    
+                }
                 if (splitted[2].equalsIgnoreCase("all")) {
                     for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                         cserv.setExpRate(rate);
@@ -175,7 +180,12 @@ public class ConsoleCommand {
         @Override
         public int execute(String[] splitted) {
             if (splitted.length > 2) {
-                final int rate = Integer.parseInt(splitted[1]);
+                 int rate = 1;
+                try {
+                    rate = Integer.parseInt(splitted[1]);
+                } catch (Exception ex) {
+                    
+                }
                 if (splitted.length > 2 && splitted[2].equalsIgnoreCase("all")) {
                     for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                         cserv.setDropRate(rate);
@@ -197,7 +207,12 @@ public class ConsoleCommand {
         @Override
         public int execute(String[] splitted) {
             if (splitted.length > 2) {
-                final int rate = Integer.parseInt(splitted[1]);
+                 int rate = 1;
+                try {
+                    rate = Integer.parseInt(splitted[1]);
+                } catch (Exception ex) {
+                    
+                }
                 if (splitted[2].equalsIgnoreCase("all")) {
                     for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                         cserv.setMesoRate(rate);
@@ -219,7 +234,12 @@ public class ConsoleCommand {
         @Override
         public int execute(String[] splitted) {
             if (splitted.length > 2) {
-                final int rate = Integer.parseInt(splitted[1]);
+                 int rate = 1;
+                try {
+                    rate = Integer.parseInt(splitted[1]);
+                } catch (Exception ex) {
+
+                }
                 if (splitted[2].equalsIgnoreCase("all")) {
                     for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                         cserv.setCashRate(rate);

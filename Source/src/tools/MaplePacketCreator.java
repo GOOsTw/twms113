@@ -775,7 +775,7 @@ public class MaplePacketCreator {
         mplew.writeInt(drop.getOwner()); // owner charid
         mplew.write(drop.getDropType()); // 0 = timeout for non-owner, 1 = timeout for non-owner's party, 2 = FFA, 3 = explosive/FFA
         mplew.writePos(dropto);
-        mplew.writeInt(0);
+        mplew.writeInt(drop.getDropType() == 0 ? drop.getOwner() : 0); //test
 
         if (mod != 2) {
             mplew.writePos(dropfrom);

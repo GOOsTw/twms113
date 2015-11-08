@@ -280,12 +280,13 @@ public class InternCommand {
                     } else {
                         victim = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(splitted[1]);
                         if (victim != null) {
-                            c.getPlayer().dropMessage(6, "正在改變頻道請等待");
-                            c.getPlayer().changeChannel(ch);
                             if (victim.getMapId() != c.getPlayer().getMapId()) {
                                 final MapleMap mapp = c.getChannelServer().getMapFactory().getMap(victim.getMapId());
                                 c.getPlayer().changeMap(mapp, mapp.getPortal(0));
                             }
+                            c.getPlayer().dropMessage(6, "正在改變頻道請等待");
+                            c.getPlayer().changeChannel(ch);
+                            
                         } else {
                             c.getPlayer().dropMessage(6, "角色不存在");
                         }

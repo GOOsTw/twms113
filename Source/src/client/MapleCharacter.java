@@ -1606,7 +1606,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void cancelFishingTask() {
-        if (fishing != null) {
+        if (fishing != null && !fishing.isCancelled()) {
             fishing.cancel(false);
         }
     }

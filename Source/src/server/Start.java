@@ -119,7 +119,7 @@ public class Start {
                 }
                 ConsoleCommandProcessor.processCommand(cmd);
             } catch (IOException ex) {
-                Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
