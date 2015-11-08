@@ -66,8 +66,8 @@ public class MapleStatEffect implements Serializable {
         return loadFromData(source, itemid, false, false, (byte) 1);
     }
 
-    private static final void addBuffStatPairToListIfNotZero(final List<Pair<MapleBuffStat, Integer>> list, final MapleBuffStat buffstat, final Integer val) {
-        if (val.intValue() != 0) {
+    private static void addBuffStatPairToListIfNotZero(final List<Pair<MapleBuffStat, Integer>> list, final MapleBuffStat buffstat, final Integer val) {
+        if (val != 0) {
             list.add(new Pair<>(buffstat, val));
         }
     }
