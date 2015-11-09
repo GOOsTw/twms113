@@ -415,7 +415,7 @@ public class MTSCSPacket {
         mplew.writeShort(quantity);
         mplew.writeAsciiString(sender, 15); //owner for the lulzlzlzl
         PacketHelper.addExpirationTime(mplew, expire);
-        mplew.writeLong(isFirst ? 0 : sn);
+        mplew.writeLong(0);
         //if (isFirst && uniqueid > 0 && GameConstants.isEffectRing(itemid)) {
         //	MapleRing ring = MapleRing.loadFromDb(uniqueid);
         //	if (ring != null) { //or is this only for friendship rings, i wonder. and does isFirst even matter
