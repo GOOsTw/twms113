@@ -701,18 +701,17 @@ public class DamageParse {
         final int maxmeso = player.getBuffedValue(MapleBuffStat.PICKPOCKET);
         final ISkill skill = SkillFactory.getSkill(4211003);
         final MapleStatEffect s = skill.getEffect(player.getSkillLevel(skill));
-
+        int i = 0;
         for (final Pair<Integer, Boolean> eachde : oned.attack) {
             final Integer eachd = eachde.left;
             if (s.makeChanceResult()) {
-
                 MapTimer.getInstance().schedule(new Runnable() {
-
                     @Override
                     public void run() {
                         player.getMap().spawnMesoDrop(Math.min((int) Math.max(((double) eachd / (double) 20000) * (double) maxmeso, (double) 1), maxmeso), new Point((int) (mob.getPosition().getX() + Randomizer.nextInt(100) - 50), (int) (mob.getPosition().getY())), mob, player, true, (byte) 0);
                     }
-                }, 100);
+                }, 100 * i);
+                i++;
             }
         }
     }
