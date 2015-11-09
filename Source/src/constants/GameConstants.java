@@ -2191,7 +2191,7 @@ public class GameConstants {
     }
 
     public static int getFishingTime(boolean vip, boolean gm) {
-        return gm ? 1000 : (vip ? 30000 : 60000);
+        return gm ? 1000 : (vip ? 90000 : 120000);
     }
 
     public static int getCustomSpawnID(int summoner, int def) {
