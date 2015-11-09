@@ -21,17 +21,21 @@ import tools.Pair;
  * @author Flower
  */
 public class FishingRewardFactory {
-    
+
     public class FishingReward {
+
         private final int itemid;
         private final int expiration;
+
         public FishingReward(final int itemid, final int expiration) {
             this.expiration = expiration;
             this.itemid = itemid;
         }
+
         public int getItemId() {
             return this.itemid;
         }
+
         public int getExpiration() {
             return this.expiration;
         }
@@ -71,17 +75,18 @@ public class FishingRewardFactory {
         if (this.rewards.isEmpty()) {
             this.loadItems();
         }
-        Iterator<Pair<Long,FishingReward>> iterator = this.rewards.iterator();
-        
-        Long n = rand.nextLong() * System.currentTimeMillis() + 47 * System.currentTimeMillis() % total;
+        Iterator<Pair<Long, FishingReward>> iterator = this.rewards.iterator();
+
+        Long n = Math.abs(rand.nextLong() * System.currentTimeMillis() + 47 * System.currentTimeMillis()) % total;
         while (iterator.hasNext()) {
-            if (n <= iterator.next().left) {
-                return iterator.next().right;
+            Pair<Long, FishingReward> c = iterator.next();
+            if (n <= c.left) {
+                return c.right;
             }
         }
         return null;
     }
-    
+
     public void reloadItems() {
         this.loadItems();
     }
@@ -97,7 +102,7 @@ public class FishingRewardFactory {
                     int chance = rs.getInt("chance");
                     int expirtaion = rs.getInt("expiration");
                     acc += chance;
-                    rewards.add(new Pair<>(acc,new FishingReward(itemid,expirtaion)));
+                    rewards.add(new Pair<>(acc, new FishingReward(itemid, expirtaion)));
                 }
             }
         } catch (SQLException e) {
