@@ -1597,7 +1597,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                                 cancelFishingTask();
                                 return;
                             }
-                            MapleInventoryManipulator.addById(client, item.getItemId(), (short) 1, MapleCharacter.this.getName(), null, item.getExpiration());
+                            MapleInventoryManipulator.addById(client, item.getItemId(), (short) 1, GameConstants.isChair(item.getItemId()) ? MapleCharacter.this.getName() : null, null, item.getExpiration());
                             client.sendPacket(UIPacket.fishingUpdate((byte) 0, item.getItemId()));
                         }
                         break;

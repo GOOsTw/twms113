@@ -49,7 +49,7 @@ public class FishingRewardFactory {
     public FishingRewardFactory() {
         System.out.println("【讀取中】 FishingRewardFactory :::");
         this.rewards = new LinkedList<>();
-        this.rand = new Random();
+        this.rand = new Random(System.currentTimeMillis());
         this.loadItems();
     }
 
@@ -72,8 +72,8 @@ public class FishingRewardFactory {
             this.loadItems();
         }
         Iterator<Pair<Long,FishingReward>> iterator = this.rewards.iterator();
-
-        Long n = rand.nextLong() % total;
+        
+        Long n = rand.nextLong() * System.currentTimeMillis() + 47 * System.currentTimeMillis() % total;
         while (iterator.hasNext()) {
             if (n <= iterator.next().left) {
                 return iterator.next().right;

@@ -2252,4 +2252,7 @@ public class GameConstants {
        }
     }
     
+    public static boolean isChair(final int itemid ) {
+        return itemid / 10000 == 302;
+    }
 }
