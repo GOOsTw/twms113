@@ -21,8 +21,23 @@ import tools.Pair;
  * @author Flower
  */
 public class FishingRewardFactory {
+    
+    public class FishingReward {
+        private final int itemid;
+        private final int expiration;
+        public FishingReward(final int itemid, final int expiration) {
+            this.expiration = expiration;
+            this.itemid = itemid;
+        }
+        public int getItemId() {
+            return this.itemid;
+        }
+        public int getExpiration() {
+            return this.expiration;
+        }
+    }
 
-    private final List<Pair<Integer, Long>> rewards;
+    private final List<Pair<Long, FishingReward>> rewards;
     private Long total = 0L;
     private final Random rand;
     private final int[] typesChance = {40, 40, 20};
@@ -52,19 +67,19 @@ public class FishingRewardFactory {
         return 0;
     }
 
-    public int getNextRewardItemId() {
+    public FishingReward getNextRewardItemId() {
         if (this.rewards.isEmpty()) {
             this.loadItems();
         }
-        Iterator<Pair<Integer,Long>> iterator = this.rewards.iterator();
+        Iterator<Pair<Long,FishingReward>> iterator = this.rewards.iterator();
 
         Long n = rand.nextLong() % total;
         while (iterator.hasNext()) {
-            if (n <= iterator.next().right) {
-                return iterator.next().left;
+            if (n <= iterator.next().left) {
+                return iterator.next().right;
             }
         }
-        return 0;
+        return null;
     }
     
     public void reloadItems() {
@@ -80,8 +95,9 @@ public class FishingRewardFactory {
                 while (rs.next()) {
                     int itemid = rs.getInt("itemid");
                     int chance = rs.getInt("chance");
+                    int expirtaion = rs.getInt("expiration");
                     acc += chance;
-                    rewards.add(new Pair<>(itemid, acc));
+                    rewards.add(new Pair<>(acc,new FishingReward(itemid,expirtaion)));
                 }
             }
         } catch (SQLException e) {

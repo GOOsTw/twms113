@@ -107,6 +107,7 @@ import server.quest.MapleQuest;
 import server.shops.IMaplePlayerShop;
 import server.CashShop;
 import server.FishingRewardFactory;
+import server.FishingRewardFactory.FishingReward;
 import tools.MaplePacketCreator;
 import tools.Pair;
 import tools.packet.MTSCSPacket;
@@ -1439,7 +1440,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         final MapleBuffStatValueHolder mbsvh = effects.get(effect);
         return mbsvh == null ? null : mbsvh.value;
     }
-    
+
     public boolean hasBuffedValue(MapleBuffStat effect) {
         return getBuffedValue(effect) != null;
     }
@@ -1560,6 +1561,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void startFishingTask(final boolean VIP) {
+
         final int time = GameConstants.getFishingTime(VIP, isGM());
         cancelFishingTask();
 
@@ -1588,9 +1590,16 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                         client.sendPacket(UIPacket.fishingUpdate((byte) 2, experi));
                         break;
                     default:
-                        final int itemid = FishingRewardFactory.getInstance().getNextRewardItemId();
-                        MapleInventoryManipulator.addById(client, itemid, (short) 1);
-                        client.sendPacket(UIPacket.fishingUpdate((byte) 0, itemid));
+                        final FishingReward item = FishingRewardFactory.getInstance().getNextRewardItemId();
+                        if (item != null) {
+                            if (!MapleInventoryManipulator.checkSpace(client, item.getItemId(), 1, getName())) {
+                                client.sendPacket(MaplePacketCreator.serverNotice(5, "你的背包已滿"));
+                                cancelFishingTask();
+                                return;
+                            }
+                            MapleInventoryManipulator.addById(client, item.getItemId(), (short) 1, MapleCharacter.this.getName(), null, item.getExpiration());
+                            client.sendPacket(UIPacket.fishingUpdate((byte) 0, item.getItemId()));
+                        }
                         break;
                 }
                 map.broadcastMessage(UIPacket.fishingCaught(id));
@@ -3191,10 +3200,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             maxmp += Randomizer.rand(50, 100);
         }
         maxmp += stats.getTotalInt() / 10;
-        
+
         exp -= GameConstants.getExpNeededForLevel(level);
         level += 1;
-       
+
         if (level == 200 && !isGM()) {
             final StringBuilder sb = new StringBuilder("[恭喜] ");
             final IItem medal = getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -21);
@@ -3259,7 +3268,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (GameConstants.isKOC(job) && level == 70) {
             client.sendPacket(MaplePacketCreator.startMapEffect("恭喜達到70等請回耶雷弗三轉吧。", 5120000, true));
         }
-        
+
     }
 
     public void changeKeybinding(int key, byte type, int action) {
