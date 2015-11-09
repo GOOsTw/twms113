@@ -259,16 +259,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         session.write(LoginPacket.getHello(ServerConstants.MAPLE_VERSION, ivSend, ivRecv));
         session.setAttribute(MapleClient.CLIENT_KEY, client);
 
-        //StringBuilder sb = new StringBuilder();
-        //if (channel > -1) {
-        //    sb.append("[Channel Server] Channel ").append(channel).append(" : ");
-        //} else if (cs) {
-        //    sb.append("[Cash Server]");
-        //} else {
-        //    sb.append("[Login Server]");
-        //}
-        //sb.append("IoSession opened ").append(address);
-        //System.out.println(sb.toString());
     }
 
     @Override
@@ -312,10 +302,11 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 if (recv.getValue() == header_num) {
 
                     if (debugMode) {
-                        final StringBuilder sb = new StringBuilder("Received data 已處理 :" + String.valueOf(recv) + "\n");
-                        sb.append(tools.HexTool.toString((byte[]) message)).append("\n").append(tools.HexTool.toStringFromAscii((byte[]) message));
+                        final StringBuilder sb = new StringBuilder("[Recv] 已處理 :" + String.valueOf(recv) + "\n");
+                        sb.append(tools.HexTool.toString((byte[]) message)).append("\n").append(tools.HexTool.toStringFromAscii((byte[]) message)).append("\n");
                         System.out.println(sb.toString());
                     }
+                    
                     final MapleClient c = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
                     if (!c.isReceiving()) {
                         return;
@@ -327,7 +318,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                     }
                     if (c.getPlayer() != null && c.isMonitored()) {
                         if (!blocked.contains(recv)) {
-                            FilePrinter.print("UnHandledPacketLogs.txt", String.valueOf(recv) + " (" + Integer.toHexString(header_num) + ") Handled: \r\n" + slea.toString() + "\r\n");
+                            FilePrinter.print("Monitored/" + c.getPlayer().getName() + ".txt", String.valueOf(recv) + " (" + Integer.toHexString(header_num) + ") Handled: \r\n" + slea.toString() + "\r\n");
                         }
                     }
                     if (isLogPackets) {
@@ -336,27 +327,22 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                     try {
                         handlePacket(recv, slea, c, isCashShop);
                     } catch (Exception e) {
-
                         long pos = slea.getPosition();
                         slea.seek(0);
                         String allp = slea.toString();
                         slea.skip((int)pos);
                         String currp = slea.toString();
-                        FilePrinter.printError("PacketException.txt", e.getMessage() + "\r\nAll: " + allp + "\r\nCurrent: " + currp  );
+                        FilePrinter.printError("PacketHandleException.txt", e.getSuppressed()[0] + "\r\n" +  e.getSuppressed()[1] +"\r\nAll: " + allp + "\r\nCurrent: " + currp  );
                     }
                     return;
                 }
             }
             if (debugMode) {
-                final StringBuilder sb = new StringBuilder("Received data 未處理 : ");
-                sb.append(tools.HexTool.toString((byte[]) message)).append("\n").append(tools.HexTool.toStringFromAscii((byte[]) message));
+                final StringBuilder sb = new StringBuilder("[Recv] 未處理 : ");
+                sb.append(tools.HexTool.toString((byte[]) message)).append("\n").append(tools.HexTool.toStringFromAscii((byte[]) message)).append("\n");;
                 System.out.println(sb.toString());
             }
         } catch (Exception e) {
-
-            //e.printStackTrace();
-            FilePrinter.printError("PacketException.txt", e);
-
         }
 
     }
@@ -382,16 +368,14 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case STRANGE_DATA:
                 if (slea.available() >= 5) {
                     Long avaible = slea.available();
-                    FilePrinter.print("38Logs.txt", HexTool.toString(slea.read(avaible.intValue())), true);
-                }// Does nothing for now, HackShield 's heartbeat
+                    FilePrinter.print("38Logs.txt", HexTool.toStringFromAscii(slea.read(avaible.intValue())), true);
+                }
                 break;
             case HELLO_LOGIN:
                 if (slea.available() >= 5) {
                     Long avaible = slea.available();
-                    FilePrinter.print("38Logs.txt", HexTool.toString(slea.read(avaible.intValue())), true);
+                    FilePrinter.print("38Logs.txt", HexTool.toStringFromAscii(slea.read(avaible.intValue())), true);
                 }
-                CharLoginHandler.handleWelcome(c);
-                // Does nothing for now, HackShield's heartbeat
                 break;
             case HELLO_CHANNEL:
                 CharLoginHandler.handleWelcome(c);

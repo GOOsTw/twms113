@@ -656,7 +656,7 @@ public class AdminCommand {
                     public void run() {
                         for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                             for (MapleCharacter mch : cserv.getPlayerStorage().getAllCharacters()) {
-                                if (c.canClickNPC() && !c.getPlayer().isGM()) {
+                                if(!c.getPlayer().isGM()) {
                                     NPCScriptManager.getInstance().start(mch.getClient(), 9010010);
                                 }
                             }

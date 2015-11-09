@@ -91,7 +91,6 @@ import server.MapleStatEffect;
 import server.MapleStorage;
 import server.MapleTrade;
 import server.Randomizer;
-import server.RandomRewards;
 import server.MapleCarnivalParty;
 import server.MapleItemInformationProvider;
 import server.life.MapleMonster;
@@ -200,8 +199,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private static final ReentrantLock saveLock = new ReentrantLock();// 锁对象
 
     private MapleCharacter(final boolean ChannelServer) {
-        setStance(0);
-        setPosition(new Point(0, 0));
+        this.setStance(0);
+        this.setPosition(new Point(0, 0));
 
         inventory = new MapleInventory[MapleInventoryType.values().length];
         for (MapleInventoryType type : MapleInventoryType.values()) {

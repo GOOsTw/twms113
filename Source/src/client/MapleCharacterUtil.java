@@ -29,8 +29,6 @@ import tools.Pair;
 import java.util.regex.Pattern;
 
 import database.DatabaseConnection;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import tools.FilePrinter;
 
 public class MapleCharacterUtil {

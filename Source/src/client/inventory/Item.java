@@ -61,6 +61,7 @@ public class Item implements IItem, Serializable {
         this.quantity = quantity;
     }
 
+    @Override
     public IItem copy() {
         final Item ret = new Item(id, position, quantity, flag, uniqueid);
         ret.pet = pet;
@@ -71,6 +72,7 @@ public class Item implements IItem, Serializable {
         return ret;
     }
 
+    @Override
     public final void setPosition(final short position) {
         this.position = position;
 
@@ -79,6 +81,7 @@ public class Item implements IItem, Serializable {
         }
     }
 
+    @Override
     public void setQuantity(final short quantity) {
         this.quantity = quantity;
     }
@@ -113,10 +116,12 @@ public class Item implements IItem, Serializable {
         return owner;
     }
 
+    @Override
     public final void setOwner(final String owner) {
         this.owner = owner;
     }
 
+    @Override
     public final void setFlag(final byte flag) {
         this.flag = flag;
     }
@@ -126,6 +131,7 @@ public class Item implements IItem, Serializable {
         return expiration;
     }
 
+    @Override
     public final void setExpiration(final long expire) {
         this.expiration = expire;
     }
@@ -150,6 +156,7 @@ public class Item implements IItem, Serializable {
         this.uniqueid = id;
     }
 
+    @Override
     public final MaplePet getPet() {
         return pet;
     }
@@ -186,6 +193,16 @@ public class Item implements IItem, Serializable {
         }
         final IItem ite = (IItem) obj;
         return uniqueid == ite.getUniqueId() && id == ite.getItemId() && quantity == ite.getQuantity() && Math.abs(position) == Math.abs(ite.getPosition());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + this.id;
+        hash = 97 * hash + this.position;
+        hash = 97 * hash + this.quantity;
+        hash = 97 * hash + this.uniqueid;
+        return hash;
     }
 
     @Override

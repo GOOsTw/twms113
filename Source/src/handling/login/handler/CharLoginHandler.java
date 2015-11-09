@@ -53,7 +53,7 @@ public class CharLoginHandler {
     }
 
     public static final void handleWelcome(final MapleClient c) {
-
+        c.sendPing();
     }
 
     public static final void handleLogin(final SeekableLittleEndianAccessor slea, final MapleClient c) {

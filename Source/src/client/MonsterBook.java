@@ -41,7 +41,7 @@ public class MonsterBook implements Serializable {
     private static final long serialVersionUID = 7179541993413738569L;
     private boolean changed = false;
     private int SpecialCard = 0, NormalCard = 0, BookLevel = 1;
-    private Map<Integer, Integer> cards;
+    private final Map<Integer, Integer> cards;
 
     public MonsterBook(Map<Integer, Integer> cards) {
         this.cards = cards;
@@ -71,22 +71,22 @@ public class MonsterBook implements Serializable {
 
     public final static MonsterBook loadCards(final int charid) throws SQLException {
         Connection con = DatabaseConnection.getConnection();
-        final PreparedStatement ps = con.prepareStatement("SELECT * FROM monsterbook WHERE charid = ? ORDER BY cardid ASC");
-        ps.setInt(1, charid);
-        final ResultSet rs = ps.executeQuery();
-        Map<Integer, Integer> cards = new LinkedHashMap<Integer, Integer>();
-        int cardid, level;
-
-        while (rs.next()) {
-            cards.put(rs.getInt("cardid"), rs.getInt("level"));
+        Map<Integer, Integer> cards;
+        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM monsterbook WHERE charid = ? ORDER BY cardid ASC")) {
+            ps.setInt(1, charid);
+            try (ResultSet rs = ps.executeQuery()) {
+                cards = new LinkedHashMap<>();
+                int cardid, level;
+                while (rs.next()) {
+                    cards.put(rs.getInt("cardid"), rs.getInt("level"));
+                }
+            }
         }
-        rs.close();
-        ps.close();
         return new MonsterBook(cards);
     }
 
     public final void saveCards(final int charid) throws SQLException {
-        if (!changed || cards.size() == 0) {
+        if (!changed || cards.isEmpty()) {
             return;
         }
         final Connection con = DatabaseConnection.getConnection();
@@ -117,7 +117,7 @@ public class MonsterBook implements Serializable {
         ps.close();
     }
 
-    private final void calculateLevel() {
+    private void calculateLevel() {
         int Size = NormalCard + SpecialCard;
         BookLevel = 8;
 
