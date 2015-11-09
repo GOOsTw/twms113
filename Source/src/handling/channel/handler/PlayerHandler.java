@@ -958,7 +958,7 @@ public class PlayerHandler {
         }
         final Point Original_Pos = chr.getPosition(); // 4 bytes Added on v.80 MSEA
         slea.skip(33);
-        chr.cancelFishingTask();
+       
         /**
          *
          * FF FF 01 FF FF FF FF FF FF FF FF 2A 8E 66 CB 8E 7D 17 FC 4A BF D5 CE
