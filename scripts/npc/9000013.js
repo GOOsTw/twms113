@@ -56,6 +56,9 @@ function action(mode, type, selection) {
 				if (!cm.canHold()) {
 					cm.sendNext("請確認是否身上有空位。");
 				} else if (cm.getChannelServer().getEvent() > -1) {
+					if (cm.haveItem(4031017)) {
+						cm.removeAll(4031017);
+					}
 					cm.saveReturnLocation("EVENT");
 					cm.getPlayer().setChalkboard(null);
 					cm.warp(cm.getChannelServer().getEvent(), cm.getChannelServer().getEvent() == 109080000 || cm.getChannelServer().getEvent() == 109080010 ? 0 : "join00");
