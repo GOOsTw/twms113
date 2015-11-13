@@ -48,6 +48,38 @@ function action(mode, type, selection) {
         else
             status--;
         if (status == 0) {
+	    if (cm.getQuestStatus(6192) == 1) {
+		if (cm.getParty() != null) {
+		    var ddz = cm.getEventManager("ProtectTylus");
+		    if (ddz == null) {
+			cm.sendOk("未知的錯誤");
+		    } else {
+			var prop = ddz.getProperty("state");
+			if (prop == null || prop.equals("0")) {
+			    ddz.startInstance(cm.getParty(), cm.getMap());
+			} else {
+			    cm.sendOk("別人已經在努力保護Tylus，請稍後重試了一下.");
+			}
+		    }
+		} else {
+		    cm.sendOk("請隊長來找我談話！");
+		}
+	    } else if (cm.getQuestStatus(6192) == 2) {
+		cm.sendOk("你保護了我。謝謝。我會教你的立場技巧.");
+		if (cm.getJob() == 112) {
+			if (cm.getPlayer().getMasterLevel(1121002) <= 0) {
+				cm.teachSkill(1121002, 0, 10);
+			}
+		} else if (cm.getJob() == 122) {
+			if (cm.getPlayer().getMasterLevel(1221002) <= 0) {
+				cm.teachSkill(1221002, 0, 10);
+			}
+		} else if (cm.getJob() == 132) {
+			if (cm.getPlayer().getMasterLevel(1321002) <= 0) {
+				cm.teachSkill(1321002, 0, 10);
+			}
+		}
+		}
 		if (cm.getJob() == 111 || cm.getJob() == 121 || cm.getJob() == 131 || cm.getJob() == 112 || cm.getJob() == 122 || cm.getJob() == 132 || cm.getJob() == 2111) {	
 	    cm.sendOk("您屬於劍士部,但是您已經成功三轉了,已經超越了教官的強度了!");
 	    cm.dispose();
