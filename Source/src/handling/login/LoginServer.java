@@ -62,7 +62,7 @@ public class LoginServer {
 
     public static final void setup() {
         try {
-            port = Integer.parseInt(ServerProperties.getProperty("server.settings.login.port"));
+            port = Short.parseShort(ServerProperties.getProperty("server.settings.login.port"));
             userLimit = Integer.parseInt(ServerProperties.getProperty("server.settings.userlimit"));
             serverName = ServerProperties.getProperty("server.settings.serverName");
             eventMessage = ServerProperties.getProperty("server.settings.eventMessage");
