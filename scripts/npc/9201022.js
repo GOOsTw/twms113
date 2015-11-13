@@ -14,10 +14,6 @@ function action(mode, type, selection) {
     if (mode == 1) {
         status++;
     } else {
-		cm.sendOk("你居然要放棄這麼好的機會？那裡真的很美~。你不會是還沒遇到心愛的人吧？沒錯，如果你有心愛的人，怎麼會對這麼浪漫的消息聽而不聞呢！！");
-        cm.dispose();
-        return;
-    } else {
         cm.dispose();
         return;
     }
@@ -35,21 +31,21 @@ function action(mode, type, selection) {
 	        }
 		if (cm.getPlayer().getMarriageId() <= 0 || !data.equals("3")) {
                     cm.sendOk("我很抱歉如果您想要得到這個椅子的話請先結婚~~");
-		} else if (cm.canHold(cm.isGMS() ? 3012015 : 3012004,1) && !cm.haveItem(cm.isGMS() ? 3012015 : 3012004,1)) {
-		    cm.gainItem(cm.isGMS() ? 3012015 : 3012004,1);
+		} else if (cm.canHold(3012004,1) && !cm.haveItem(3012004,1)) {
+		    cm.gainItem(3012004,1);
 		} else {
 		    cm.sendOk("請確定是否裝備欄滿了或者您已經有相同的椅子了...");
 		}
                 cm.dispose();
                 break;
         }
-	} else if (status == 1) {
+    } else if (status == 1) {
         cm.sendYesNo("你曾經去過的婚禮村莊？這是一個了不起的地方，愛情是無極限的。恩愛夫妻可以結婚還有，如何浪漫它是什麼？如果你想在那裡，我會告訴你的方式.");
     } else if (status == 2) {
         cm.sendNext("你做了一個正確的決定！你可以感受到愛的精神在婚禮村發揮到淋漓盡致。當你想回來，你的目的地將在這裡，所以不要擔心.");
     } else if (status == 3) {
 	   cm.saveLocation("AMORIA");
 	   cm.warp(680000000, 0);
-       cm.dispose();
-		}
+           cm.dispose();
     }
+}

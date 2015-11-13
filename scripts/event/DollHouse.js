@@ -50,9 +50,12 @@ function clear(eim) {
     var map = eim.getChannelServer().getMapFactory().getMap(221024400);
     em.setProperty("state", "0");
     if( eim.getPlayers().legnth != 0) {
-        var player = eim.getPlayers().get(0);
-        player.changeMap(map, map.getPortal(0));
-        eim.unregisterPlayer(player);
+        try {
+            var player = eim.getPlayers().get(0);
+            player.changeMap(map, map.getPortal(0));
+            eim.unregisterPlayer(player);
+        } catch (e) {
+        }
     }
     eim.dispose();
 }

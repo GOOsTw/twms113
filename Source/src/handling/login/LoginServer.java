@@ -43,7 +43,7 @@ import tools.FilePrinter;
 
 public class LoginServer {
 
-    public static final short PORT = 8484;
+    public static short port = 8484;
     private static IoAcceptor acceptor;
     private static Map<Integer, Integer> load = new HashMap<>();
     private static String serverName, eventMessage;
@@ -62,6 +62,7 @@ public class LoginServer {
 
     public static final void setup() {
         try {
+            port = Integer.parseInt(ServerProperties.getProperty("server.settings.login.port"));
             userLimit = Integer.parseInt(ServerProperties.getProperty("server.settings.userlimit"));
             serverName = ServerProperties.getProperty("server.settings.serverName");
             eventMessage = ServerProperties.getProperty("server.settings.eventMessage");
@@ -77,8 +78,8 @@ public class LoginServer {
 
             acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 30);
             acceptor.setHandler(new MapleServerHandler(-1, false));
-            acceptor.bind(new InetSocketAddress(PORT));
-            System.out.println("\n【登入伺服器】  - 監聽端口: " + Short.toString(PORT) + " \n");
+            acceptor.bind(new InetSocketAddress(port));
+            System.out.println("\n【登入伺服器】  - 監聽端口: " + Short.toString(port) + " \n");
 
         } catch (IOException ex) {
             FilePrinter.printError(FilePrinter.LoginServer, ex, "IOException");
@@ -96,7 +97,7 @@ public class LoginServer {
         while (iterator.hasNext()) {
             iterator.next().close(true);
         }
-        acceptor.unbind(new InetSocketAddress(PORT));
+        acceptor.unbind(new InetSocketAddress(port));
         System.out.println("【登入伺服器】 關閉完畢...");
         finishedShutdown = true; //nothing. lol
     }

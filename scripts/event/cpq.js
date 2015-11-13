@@ -95,7 +95,11 @@ function removePlayer(eim, player) {
 
 
 function getParty(eim, property) {
-    var chr = em.getChannelServer().getPlayerStorage().getCharacterById(parseInt(eim.getProperty(property)));
+    var chr = null;
+    try {
+        chr = em.getChannelServer().getPlayerStorage().getCharacterById(parseInt(eim.getProperty(property)));
+    } catch {}
+
     if (chr == null) {
 	eim.broadcastPlayerMsg(5, "隊伍的隊長 " + property + " 找不到。");
 	disposeAll(eim);
