@@ -1349,6 +1349,10 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         return stats.getBuffToGive();
     }
 
+    public int getLevel() {
+        return stats.getLevel();
+    }
+
     //毒任務
     private final class PoisonTask implements Runnable {
 
