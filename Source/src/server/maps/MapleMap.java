@@ -464,7 +464,7 @@ public final class MapleMap {
     }
 
     private void dropFromMonster(final MapleCharacter chr, final MapleMonster mob) {
-        if (mob == null || chr == null || ChannelServer.getInstance(channel) == null || dropsDisabled || mob.dropsDisabled()|| chr.getPyramidSubway() != null) { //no drops in pyramid ok? no cash either
+        if (mob == null || chr == null || ChannelServer.getInstance(channel) == null || dropsDisabled || mob.dropsDisabled() || chr.getPyramidSubway() != null) { //no drops in pyramid ok? no cash either
             return;
         }
 
@@ -488,6 +488,10 @@ public final class MapleMap {
         }
 
         final MapleMonsterInformationProvider mi = MapleMonsterInformationProvider.getInstance();
+        final List<MonsterDropEntry> drops = mi.retrieveDrop(mob.getId());
+        if (drops == null) { //if no drops, no global drops either
+            return;
+        }
         final List<MonsterDropEntry> dropEntry = mi.retrieveDrop(mob.getId());
         Collections.shuffle(dropEntry);
 
@@ -496,8 +500,15 @@ public final class MapleMap {
             if (de.itemId == mob.getStolen()) {
                 continue;
             }
-            if (Randomizer.nextInt(999999) < (int) (de.chance * chServerrate * chr.getDropMod() * (chr.getStat().dropBuff / 100.0) * (showdown / 100.0))) {
+            //if (Randomizer.nextInt(999999) < (int) (de.chance * chServerrate * chr.getDropMod() * (chr.getStat().dropBuff / 100.0) * (showdown / 100.0))) {
+            if (Randomizer.nextInt(999999) < (int) (de.chance * chServerrate * chr.getDropMod() * chr.getStat().dropBuff / 100.0 * (showdown / 100.0))) {
                 if (mesoDropped && droptype != 3 && de.itemId == 0) { //not more than 1 sack of meso
+                    continue;
+                }
+                if (de.questid > 0 && chr.getQuestStatus(de.questid) != 1) {
+                    continue;
+                }
+                if (de.itemId / 10000 == 238 && !mob.getStats().isBoss() && chr.getMonsterBook().getLevelByCard(ii.getCardMobId(de.itemId)) >= 2) {
                     continue;
                 }
                 if (droptype == 3) {
@@ -506,12 +517,12 @@ public final class MapleMap {
                     pos.x = (mobpos + ((d % 2 == 0) ? (25 * (d + 1) / 2) : -(25 * (d / 2))));
                 }
                 if (de.itemId == 0) { // meso
-                    int mesos = Randomizer.nextInt(1 + Math.abs(de.Maximum - de.Minimum)) + de.Minimum;
+                    //  int mesos = Randomizer.nextInt(1 + Math.abs(de.Maximum - de.Minimum)) + de.Minimum;
 
-                    if (mesos > 0) {
-                        spawnMobMesoDrop((int) (mesos * (chr.getStat().mesoBuff / 100.0) * chr.getDropMod() * cmServerrate), calcDropPos(pos, mob.getPosition()), mob, chr, false, droptype);
-                        mesoDropped = true;
-                    }
+                    //  if (mesos > 0) {
+                    //      spawnMobMesoDrop((int) (mesos * (chr.getStat().mesoBuff / 100.0) * chr.getDropMod() * cmServerrate), calcDropPos(pos, mob.getTruePosition()), mob, chr, false, droptype);
+                    //      mesoDropped = true;
+                    //  }
                 } else {
                     if (GameConstants.getInventoryType(de.itemId) == MapleInventoryType.EQUIP) {
                         idrop = ii.randomizeStats((Equip) ii.getEquipById(de.itemId));
@@ -523,6 +534,12 @@ public final class MapleMap {
                 }
                 d++;
             }
+        }
+        pos.x = Math.min(Math.max(mobpos - 25 * (d / 2), footholds.getMinDropX() + 25), footholds.getMaxDropX() - d * 25);
+        int mesos = Randomizer.nextInt(mob.getLevel()) + mob.getLevel();
+        if (mesos > 0) {
+            spawnMobMesoDrop((int) (mesos * (chr.getStat().mesoBuff / 100.0) * chr.getDropMod() * cmServerrate), calcDropPos(pos, mob.getTruePosition()), mob, chr, false, droptype);
+            //mesoDropped = true;
         }
         final List<MonsterGlobalDropEntry> globalEntry = new ArrayList<>(mi.getGlobalDrop());
         Collections.shuffle(globalEntry);
