@@ -167,9 +167,11 @@ public class PlayerHandler {
                 chr.deleteFromRocks(slea.readInt());
             } else if (addrem == 1) {
                 if (!FieldLimitType.VipRock.check(chr.getMap().getFieldLimit())) {
-                    chr.addRockMap();
-                } else {
-                    chr.dropMessage(1, "You may not add this map.");
+                    if (c.getPlayer().getMapId() != 180000000) {
+                        chr.addRockMap();
+                    } else {
+                        chr.dropMessage(1, "你不能儲存這張地圖");
+                    }
                 }
             }
         } else {
@@ -177,13 +179,15 @@ public class PlayerHandler {
                 chr.deleteFromRegRocks(slea.readInt());
             } else if (addrem == 1) {
                 if (!FieldLimitType.VipRock.check(chr.getMap().getFieldLimit())) {
-                    chr.addRegRockMap();
-                } else {
-                    chr.dropMessage(1, "You may not add this map.");
+                    if (c.getPlayer().getMapId() <= 197010000 && c.getPlayer().getMapId() != 180000000) {
+                        chr.addRegRockMap();
+                    } else {
+                        chr.dropMessage(1, "你不能儲存這張地圖");
+                    }
                 }
             }
         }
-        c.sendPacket(MTSCSPacket.getTrockRefresh(chr, vip == 1, addrem == 3));
+        c.sendPacket(MTSCSPacket.getTrockRefresh(chr, vip, addrem == 0));
     }
 
     public static final void CharInfoRequest(final int objectid, final MapleClient c, final MapleCharacter chr) {
@@ -772,7 +776,7 @@ public class PlayerHandler {
             projectileWatk = MapleItemInformationProvider.getInstance().getWatkForProjectile(projectile);
         }
         final PlayerStats statst = chr.getStat();
-        
+
         switch (attack.skill) {
             case 盜賊.雙飛斬: // Lucky Seven
             case 夜使者.三飛閃: // Triple Throw
@@ -958,7 +962,7 @@ public class PlayerHandler {
         }
         final Point Original_Pos = chr.getPosition(); // 4 bytes Added on v.80 MSEA
         slea.skip(33);
-       
+
         /**
          *
          * FF FF 01 FF FF FF FF FF FF FF FF 2A 8E 66 CB 8E 7D 17 FC 4A BF D5 CE
@@ -1262,14 +1266,13 @@ public class PlayerHandler {
      c.getPlayer().setcharmessage(s);
      c.sendPacket(MaplePacketCreator.updateBeans(c.getPlayer().getId(), s));
      }*/
-
     public static void ShowExpChair(SeekableLittleEndianAccessor slea, MapleClient client) {
-   
+
         //E0 14 2E 00 
         //00 00 00 00 00 00 00 00
         int chairid = slea.readInt();
-        
+
         client.sendPacket(MaplePacketCreator.enableActions());
-        
+
     }
 }

@@ -7,7 +7,7 @@
 var status = -1;
 
 function start() {
-    cm.sendSimple("啊~今天真是個好日子！這世界太美好了~！你不覺得這世界充滿了愛嗎？滿溢婚禮村的愛意都流淌到這裡來了~！ \n\r #b#L0# 我想要去結婚小鎮.#l \r\n #L1# 我已經結婚了我想要領戀愛之心~");
+    cm.sendSimple("啊~今天真是個好日子！這世界太美好了~！你不覺得這世界充滿了愛嗎？滿溢婚禮村的愛意都流淌到這裡來了~！ \n\r #b#L0# 我想回去結婚小鎮.#l \r\n #L1#我已經結婚了我想要領戀愛之心~");
 }
 
 function action(mode, type, selection) {
@@ -31,10 +31,12 @@ function action(mode, type, selection) {
 	        }
 		if (cm.getPlayer().getMarriageId() <= 0 || !data.equals("3")) {
                     cm.sendOk("我很抱歉如果您想要得到這個椅子的話請先結婚~~");
-		} else if (cm.canHold(3012004,1) && !cm.haveItem(3012004,1)) {
+		} else if (cm.canHold(3012004,1) && !cm.haveItem(3012004,1) && !cm.isQuestFinished(52013)) {
 		    cm.gainItem(3012004,1);
+			cm.forceCompleteQuest(52013);
+			cm.sendOk("結婚後多一份喜悅送你吧，但機會只有一次!");
 		} else {
-		    cm.sendOk("請確定是否裝備欄滿了或者您已經有相同的椅子了...");
+		    cm.sendOk("請確定是否裝備欄滿了或者您已經有相同的椅子了... 或者你領過了....");
 		}
                 cm.dispose();
                 break;

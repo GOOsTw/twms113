@@ -229,13 +229,13 @@ public class MTSCSPacket {
         return mplew.getPacket();
     }
 
-    public static MaplePacket getTrockRefresh(MapleCharacter chr, boolean vip, boolean delete) {
+    public static MaplePacket getTrockRefresh(MapleCharacter chr, byte vip, boolean delete) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.MAP_TRANSFER_RESULT.getValue());
         mplew.write(delete ? 2 : 3);
-        mplew.write(vip ? 1 : 0);
-        if (vip) {
+        mplew.write(vip);
+        if (vip==1) {
             int[] map = chr.getRocks();
             for (int i = 0; i < 10; i++) {
                 mplew.writeInt(map[i]);

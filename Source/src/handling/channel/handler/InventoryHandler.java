@@ -959,27 +959,9 @@ public class InventoryHandler {
             case 2320000: // The Teleport Rock
             case 5041000: // 高級順移之石
             case 5040000: // 順移之石
-            case 5040001: //可樂翅膀
-            {
-                if (slea.readByte() == 0) { // Rocktype
-                    final MapleMap target = c.getChannelServer().getMapFactory().getMap(slea.readInt());
-                    if ((itemId == 5041000 && c.getPlayer().isRockMap(target.getId())) || (itemId != 5041000 && c.getPlayer().isRegRockMap(target.getId()))) {
-                        if (!FieldLimitType.VipRock.check(c.getPlayer().getMap().getFieldLimit()) && !FieldLimitType.VipRock.check(target.getFieldLimit()) && c.getPlayer().getEventInstance() == null) { //Makes sure this map doesn't have a forced return map
-                            c.getPlayer().changeMap(target, target.getPortal(0));
-                            used = true;
-                        }
-                    }
-                } else {
-                    final MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(slea.readMapleAsciiString());
-                    if (victim != null && !victim.isGM() && c.getPlayer().getEventInstance() == null && victim.getEventInstance() == null) {
-                        if (!FieldLimitType.VipRock.check(c.getPlayer().getMap().getFieldLimit()) && !FieldLimitType.VipRock.check(c.getChannelServer().getMapFactory().getMap(victim.getMapId()).getFieldLimit())) {
-                            if (itemId == 5041000 || (victim.getMapId() / 100000000) == (c.getPlayer().getMapId() / 100000000)) { // Viprock or same continent
-                                c.getPlayer().changeMap(victim.getMap(), victim.getMap().findClosestSpawnpoint(victim.getPosition()));
-                                used = true;
-                            }
-                        }
-                    }
-                }
+            case 5040001: { //可樂翅膀
+
+                used = UseTeleRock(slea, c, itemId);
                 break;
             }
             case 5050000: { // 能力值
@@ -1021,7 +1003,7 @@ public class InventoryHandler {
                         }
                         break;
                     case MAXMP: // mp
-                        if (playerst.getMaxMp() >= 30000|| c.getPlayer().getHpMpApUsed() >= 300) {
+                        if (playerst.getMaxMp() >= 30000 || c.getPlayer().getHpMpApUsed() >= 300) {
                             used = false;
                         }
                         break;
@@ -1203,49 +1185,50 @@ public class InventoryHandler {
                         case MAXHP: // HP
                             short maxhp = playerst.getMaxHp();
                             if (job == 0) { // Beginner
-                                maxhp -=  Randomizer.rand(9, 13);
+                                maxhp -= Randomizer.rand(9, 13);
                             } else if (job >= 100 && job <= 132) { // Warrior
                                 ISkill improvingMaxHP = SkillFactory.getSkill(1000001);
                                 int improvingMaxHPLevel = c.getPlayer().getSkillLevel(improvingMaxHP);
-                                maxhp -=  Randomizer.rand(21, 26);
+                                maxhp -= Randomizer.rand(21, 26);
                                 if (improvingMaxHPLevel >= 1) {
                                     maxhp -= improvingMaxHP.getEffect(improvingMaxHPLevel).getY();
                                 }
                             } else if (job >= 200 && job <= 232) { // Magician
-                                maxhp -=  Randomizer.rand(18, 19);
+                                maxhp -= Randomizer.rand(18, 19);
                             } else if ((job >= 300 && job <= 322) || (job >= 400 && job <= 434) || (job >= 1300 && job <= 1312) || (job >= 1400 && job <= 1412) || (job >= 3300 && job <= 3312) || (job >= 3500 && job <= 3512)) { // Bowman, Thief
-                               maxhp -=  Randomizer.rand(17, 21);
+                                maxhp -= Randomizer.rand(17, 21);
                             } else if (job >= 500 && job <= 522) { // Pirate
                                 ISkill improvingMaxHP = SkillFactory.getSkill(5100000);
                                 int improvingMaxHPLevel = c.getPlayer().getSkillLevel(improvingMaxHP);
-                                maxhp -=  Randomizer.rand(19, 23);
+                                maxhp -= Randomizer.rand(19, 23);
                                 if (improvingMaxHPLevel > 0) {
                                     maxhp -= improvingMaxHP.getEffect(improvingMaxHPLevel).getY();
                                 }
                             } else if (job >= 1500 && job <= 1512) { // Pirate
                                 ISkill improvingMaxHP = SkillFactory.getSkill(15100000);
                                 int improvingMaxHPLevel = c.getPlayer().getSkillLevel(improvingMaxHP);
-                                maxhp -= Randomizer.rand(19 , 23);
+                                maxhp -= Randomizer.rand(19, 23);
                                 if (improvingMaxHPLevel > 0) {
                                     maxhp -= improvingMaxHP.getEffect(improvingMaxHPLevel).getY();
                                 }
                             } else if (job >= 1100 && job <= 1112) { // Soul Master
                                 ISkill improvingMaxHP = SkillFactory.getSkill(11000000);
                                 int improvingMaxHPLevel = c.getPlayer().getSkillLevel(improvingMaxHP);
-                                maxhp -=  Randomizer.rand(38, 43);
+                                maxhp -= Randomizer.rand(38, 43);
                                 if (improvingMaxHPLevel >= 1) {
                                     maxhp -= improvingMaxHP.getEffect(improvingMaxHPLevel).getY();
                                 }
                             } else if (job >= 1200 && job <= 1212) { // Flame Wizard
-                                 maxhp -=  Randomizer.rand(16, 22);
+                                maxhp -= Randomizer.rand(16, 22);
                             } else if ((job >= 2000 && job <= 2112) || (job >= 3200 && job <= 3212)) { // Aran
-                                maxhp -=  Randomizer.rand(44, 54);
+                                maxhp -= Randomizer.rand(44, 54);
                             } else { // GameMaster
                                 maxhp -= 20;
                             }
                             //c.getPlayer().setHpMpApUsed((short) (c.getPlayer().getHpMpApUsed() - 1));
-                            if(playerst.getHp() > playerst.getMaxHp())
+                            if (playerst.getHp() > playerst.getMaxHp()) {
                                 playerst.setHp(maxhp);
+                            }
                             playerst.setMaxHp(maxhp);
                             statupdate.add(new Pair<>(MapleStat.MAXHP, (int) maxhp));
                             statupdate.add(new Pair<>(MapleStat.HP, (int) playerst.getHp()));
@@ -1256,33 +1239,34 @@ public class InventoryHandler {
                             if (job == 0) { // Beginner
                                 maxmp -= 8;
                             } else if (job >= 100 && job <= 132) { // Warrior
-                                 maxmp -=  Randomizer.rand(6, 7);
+                                maxmp -= Randomizer.rand(6, 7);
                             } else if (job >= 200 && job <= 232) { // Magician
                                 ISkill improvingMaxMP = SkillFactory.getSkill(2000001);
                                 int improvingMaxMPLevel = c.getPlayer().getSkillLevel(improvingMaxMP);
-                                maxmp -=  Randomizer.rand(19, 21);
+                                maxmp -= Randomizer.rand(19, 21);
                                 if (improvingMaxMPLevel >= 1) {
                                     maxmp -= improvingMaxMP.getEffect(improvingMaxMPLevel).getY();
                                 }
                             } else if ((job >= 500 && job <= 522) || (job >= 300 && job <= 322) || (job >= 400 && job <= 434) || (job >= 1300 && job <= 1312) || (job >= 1400 && job <= 1412) || (job >= 1500 && job <= 1512) || (job >= 3300 && job <= 3312) || (job >= 3500 && job <= 3512)) { // Pirate, Bowman. Thief
-                                maxmp -=  Randomizer.rand(10, 13);
+                                maxmp -= Randomizer.rand(10, 13);
                             } else if (job >= 1100 && job <= 1112) { // Soul Master
-                               maxmp -=  Randomizer.rand(7, 10);
+                                maxmp -= Randomizer.rand(7, 10);
                             } else if (job >= 1200 && job <= 1212) { // Flame Wizard
                                 ISkill improvingMaxMP = SkillFactory.getSkill(12000000);
                                 int improvingMaxMPLevel = c.getPlayer().getSkillLevel(improvingMaxMP);
-                                maxmp -=  Randomizer.rand(18, 23);
+                                maxmp -= Randomizer.rand(18, 23);
                                 if (improvingMaxMPLevel >= 1) {
                                     maxmp -= improvingMaxMP.getEffect(improvingMaxMPLevel).getY();
                                 }
                             } else if (job >= 2000 && job <= 2112) { // Aran
-                                maxmp -=  Randomizer.rand(8, 10);
+                                maxmp -= Randomizer.rand(8, 10);
                             } else { // GameMaster
                                 maxmp -= 20;
                             }
                             //c.getPlayer().setHpMpApUsed((short) (c.getPlayer().getHpMpApUsed() - 1));
-                            if(playerst.getMp() > playerst.getMaxMp())
+                            if (playerst.getMp() > playerst.getMaxMp()) {
                                 playerst.setMp(maxmp);
+                            }
                             playerst.setMaxMp(maxmp);
                             statupdate.add(new Pair<>(MapleStat.MAXMP, (int) maxmp));
                             statupdate.add(new Pair<>(MapleStat.MP, (int) playerst.getMp()));
@@ -2574,5 +2558,31 @@ public class InventoryHandler {
                 }
             }
         }
+    }
+        public static final boolean UseTeleRock(final SeekableLittleEndianAccessor slea, final MapleClient c, int itemId) {
+        boolean used = false;
+        if (itemId == 5041001 || itemId == 5040004) {
+            slea.readByte(); //useless
+        }
+        if (slea.readByte() == 0) { // Rocktype
+            final MapleMap target = c.getChannelServer().getMapFactory().getMap(slea.readInt());
+            if ((itemId == 5041000 && c.getPlayer().isRockMap(target.getId())) || (itemId != 5041000 && c.getPlayer().isRegRockMap(target.getId())) || ((itemId == 5040004 || itemId == 5041001))) {
+                if (!FieldLimitType.VipRock.check(c.getPlayer().getMap().getFieldLimit()) && !FieldLimitType.VipRock.check(target.getFieldLimit()) && c.getPlayer().getEventInstance() == null) { //Makes sure this map doesn't have a forced return map
+                    c.getPlayer().changeMap(target, target.getPortal(0));
+                    used = true;
+                }
+            }
+        } else {
+            final MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(slea.readMapleAsciiString());
+            if (victim != null && !victim.isGM() && c.getPlayer().getEventInstance() == null && victim.getEventInstance() == null) {
+                if (!FieldLimitType.VipRock.check(c.getPlayer().getMap().getFieldLimit()) && !FieldLimitType.VipRock.check(c.getChannelServer().getMapFactory().getMap(victim.getMapId()).getFieldLimit())) {
+                    if (itemId == 5041000 || itemId == 5040004 || itemId == 5041001 || (victim.getMapId() / 100000000) == (c.getPlayer().getMapId() / 100000000)) { // Viprock or same continent
+                       c.getPlayer().changeMap(victim.getMap(), victim.getMap().findClosestSpawnpoint(victim.getPosition()));
+                        used = true;
+                    }
+                }
+            }
+        }
+        return used && itemId != 5041001 && itemId != 5040004;
     }
 }
