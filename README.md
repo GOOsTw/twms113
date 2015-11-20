@@ -31,4 +31,6 @@ cm.removeNpc 這個removeNpc函數 使用了NPC不會消失 會卡在地圖上 �
 騎上點數坐騎打開能力值表 MapleStory會整個Crash  
 怪物擂台守護物放了沒效果  
 坐騎野豬 沒有疲勞度  
-吐司寵物食品沒效果  
+某技能會導致parseMovement錯誤
+經驗值椅子待修復
+
