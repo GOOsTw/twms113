@@ -93,7 +93,7 @@ function scheduledTimeout(eim) {
 
     var players = eim.getPlayers();
     var exit = eim.getMapFactory().getMap(103000890);
-    for (var i = 0; i < player.size(); i++) {
+    for (var i = 0; i < players.size(); i++) {
         var player = players.get(i);
         eim.unregisterPlayer(player);
         player.changeMap(exit, exit.getPortal(0));
