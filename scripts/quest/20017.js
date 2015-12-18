@@ -6,7 +6,8 @@
 var status = -1;
 
 function start(mode, type, selection) {
-    if (mode == 1) {
+    x
+     if (mode == 1) {
 	status++;
     } else {
 	if (status == 2) {
