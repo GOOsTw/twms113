@@ -9,13 +9,15 @@ function start() {
 
 function action(mode, type, selection) {
     if (mode == 0) {
-	cm.sendOk("等你考慮好再來找我吧!");
-	cm.dispose();
-	} else {
-    if(cm.getPlayer().getMeso() >= 500) {
-	cm.gainMeso(-500);
-	cm.warpBack(200090051,101000400,80);
+        cm.sendOk("等你考慮好再來找我吧!");
+        cm.dispose();
+    } else {
+        if(cm.getPlayer().getMeso() >= 500) {
+            cm.gainMeso(-500);
+            cm.warpBack(200090051,101000400,80);
+        } else {
+            cm.sendSimple("你的錢好像不夠");
+        }
+        cm.dispose();
     }
-    cm.dispose();
-}
 }

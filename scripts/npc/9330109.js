@@ -25,10 +25,11 @@ function action(mode, type, selection) {
   } else if (status == 1) {
 	sel = selection;
 	if ( ( t == 1 && sel == 3  )  || (sel == 1 && t == 0) ) {
-	    cm.sendYesNo("請問確定要花 100萬 楓幣 買 120 個普通魚餌？？");
+	    cm.sendYesNo("請問確定要花 6萬 楓幣 買 120 個普通魚餌？？");
 	} else if (sel == 3) {
-	    cm.sendOk("暫時不開放");
-	    if (cm.canHold(2300001,120) && cm.haveItem(5350000,1)) {
+            cm.dispose();
+	    return;
+            if (cm.canHold(2300001,120) && cm.haveItem(5350000,1)) {
 		if (!cm.haveItem(2300001)) {
 		    cm.gainItem(2300001, 120);
 		    cm.gainItem(5350000,-1);
@@ -42,10 +43,10 @@ function action(mode, type, selection) {
 	    cm.safeDispose();
 	}
     } else if (status == 2) {
-	if (sel == 1) {
-	    if (cm.canHold(2300000,120) && cm.getMeso() >= 1000000) {
+	if ( ( t == 1 && sel == 3  )  || (sel == 1 && t == 0) ) {    
+            if (cm.canHold(2300000,120) && cm.getMeso() >= 60000) {
 		if (!cm.haveItem(2300000)) {
-		    cm.gainMeso(-1000000);
+		    cm.gainMeso(-60000);
 		    cm.gainItem(2300000, 120);
 		    cm.sendNext("開心釣魚吧！");
 		} else {
