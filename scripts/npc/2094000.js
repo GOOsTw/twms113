@@ -1,7 +1,7 @@
 ﻿function checkMap() {
     var map = [925100000, 925100100, 925100200, 925100201, 925100202, 925100300, 925100301, 925100302, 925100400, 925100400, 925100500];
     for(var i = 0 ; i < map.length; i++) {
-        if(cm.getPlayerCount(map[i])
+        if(cm.getPlayerCount(map[i]))
             return false;
     }
     return true;
@@ -39,7 +39,7 @@ function action(mode, type, selection) {
                     em.startInstance(cm.getPlayer().getParty(), cm.getPlayer().getMap());
                 }
             } else {
-                cm.sendOK("目前有人在打囉～");
+                cm.sendOk("目前有人在打囉～");
             }
         }else {
             cm.sendOk("需要3個人以上 等級必須是55到100級");

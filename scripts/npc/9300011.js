@@ -3,7 +3,7 @@ var points;
 function start() {
     var record = cm.getQuestRecord(150001);
     points = record.getCustomData() == null ? "0" : record.getCustomData();
-    cm.sendSimple("想挑戰BOSS副本嗎？？\n\r\n\r #b#L3#查看可兌換點數#l#k \r\n\r\n #b#L0##v03994115##l#l#L1##v03994116##l#L2##v03994117##l#L28##v03994118##l");
+    cm.sendSimple("想挑戰BOSS副本嗎？？\n\r\n\r #b#L3#查看可兌換點數#l#k \r\n\r\n #b#L0##v03994115##l#l#L1##v03994116##l#L2##v03994117##l#L28##v03994118##l \r\n #b#L4#進入幸福村#l#k");
 }
 
 function action(mode, type, selection) {
@@ -179,9 +179,9 @@ function action(mode, type, selection) {
                 cm.sendOk("#b點數數量 : " + points);
 				cm.dispose();
                 break;
-            /*case 99:
-                cm.warp(910000000);
-                break;*/
+            case 4:
+                cm.warp(209000000);
+                break;
         }
     }
     cm.dispose();
