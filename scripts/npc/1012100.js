@@ -74,6 +74,7 @@ function action(mode, type, selection) {
 		cm.changeJob(300); // 弓箭手
 		cm.resetStats(4, 25, 4, 4);
 	}
+	cm.forceCompleteQuest(6700);
 	cm.gainItem(1452002, 1);
 	cm.gainItem(2060000, 1000);
 	cm.sendOk("轉職成功 ! 請去開創天下吧.");

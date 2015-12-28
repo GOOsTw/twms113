@@ -42,7 +42,7 @@ function action(mode, type, selection) {
 	    }
 	    cm.sendSimple(selStr);
 	} else {
-	    cm.sendNextPrev("Hey, since you have a Taxi Coupon, I can take you to the town indicated on the pass for free. It looks like your destination is #bHenesys#k!");
+	    cm.sendNextPrev("嘿!您看起來有一張優惠票我可以免費帶你帶你去#b弓箭手村#k。");
 	}
     } else if (status == 2) {
 	if (!cm.haveItem(4032313)) {
