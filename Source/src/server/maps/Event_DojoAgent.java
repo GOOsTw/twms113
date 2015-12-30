@@ -66,7 +66,6 @@ public class Event_DojoAgent {
         }
         if (!fromResting) {
             clearMap(map, true);
-            player.modifyCSPoints(1, 5, true);
         }
         final ChannelServer ch = player.getClient().getChannelServer();
         if (currentmap >= 970032700 && currentmap <= 970032800) {
@@ -159,7 +158,6 @@ public class Event_DojoAgent {
                             if (cspoints <= 0) {
                                 cspoints = 5;
                             }
-                            chr.modifyCSPoints(1, points, true);
                             chr.setDojo(chr.getDojo() + point);
                             chr.getClient().sendPacket(MaplePacketCreator.Mulung_Pts(point, chr.getDojo()));
                         }
@@ -170,7 +168,6 @@ public class Event_DojoAgent {
                     if (cspoints <= 0) {
                         cspoints = 5;
                     }
-                    c.modifyCSPoints(1, cspoints, true);
                     c.setDojo(c.getDojo() + point);
                     c.getClient().sendPacket(MaplePacketCreator.Mulung_Pts(point, c.getDojo()));
                 }
@@ -184,11 +181,9 @@ public class Event_DojoAgent {
                         MapleCharacter chr = currentmap.getCharacterById(mem.getId());
                         if (chr != null) {
                             chr.changeMap(map, map.getPortal(1));
-                            chr.modifyCSPoints(1, 5, true);
                         }
                     }
                 } else {
-                    c.modifyCSPoints(1, 5, true);
                     c.changeMap(map, map.getPortal(1));
                 }
                 return true;

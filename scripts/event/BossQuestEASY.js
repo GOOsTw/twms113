@@ -102,7 +102,6 @@ function allMonstersDead(eim) {
 	eim.broadcastPlayerMsg(6, "準備！下一隻的BOSS即將來臨。");
 } else {
 	eim.saveBossQuest(200);
-	eim.saveNX(20);
 	eim.broadcastPlayerMsg(5, "恭喜整隊挑戰簡單模式成功額外獲得20 GASH點。");
     }
 // When invoking unregisterMonster(MapleMonster mob) OR killed
