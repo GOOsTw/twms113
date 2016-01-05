@@ -26,13 +26,13 @@
 importPackage(org.server.maps);
 
 function enter(pi) {
-	var returnMap = pi.getSavedLocation("CHRISTMAS");
-	pi.clearSavedLocation("CHRISTMAS");
-	if (returnMap < 0) {
-		returnMap = 100000000;
-	}
-	var target = pi.getMap(returnMap);
-	var portal = target.getPortal(0);
-	pi.getPlayer().changeMap(target, portal);
-	return true;
+    var returnMap = pi.getSavedLocation("CHRISTMAS");
+    pi.clearSavedLocation("CHRISTMAS");
+    if (returnMap < 0) {
+        returnMap = 100000000;
+    }
+    var target = pi.getMap(returnMap);
+    var portal = target.getPortal(0);
+    pi.getPlayer().changeMap(target, portal);
+    return true;
 }

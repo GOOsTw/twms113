@@ -1,4 +1,3 @@
-
 function enter(pi) {
     if (pi.getQuestStatus(21728) == 1) {
         pi.warp(910510001, 0);

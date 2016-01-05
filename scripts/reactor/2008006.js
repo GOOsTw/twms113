@@ -1,6 +1,5 @@
-
 function act() {
-    if(rm != null)
+    if (rm != null)
         rm.changeMusic("Bgm02/MissingYou");
     var em = rm.getEventManager("OrbisPQ");
     if (em != null) {

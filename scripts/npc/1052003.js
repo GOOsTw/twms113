@@ -21,8 +21,6 @@ var equip;
 var last_use; //last item is a use item
 
 function start() {
-    cm.dispose();
-    return;
     status = -1;
     action(1, 0, 0);
 }

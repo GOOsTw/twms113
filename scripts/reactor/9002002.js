@@ -1,7 +1,7 @@
 /* 尋寶活動by:Kodan
  * 
  * 
-*/
+ */
 
 function act() {
     if (!rm.haveItem(4031017)) {

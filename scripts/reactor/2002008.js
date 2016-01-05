@@ -23,8 +23,8 @@
 /* @Author Jvlaple
  * 
  * OPQ Lobby Reactor
-*/
+ */
 
-function act(){
-	rm.dropItems();
+function act() {
+    rm.dropItems();
 }

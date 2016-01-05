@@ -20,7 +20,7 @@
  */
 
 function enter(pi) {
-	pi.playPortalSE();
-	pi.warp(240050300, "sp");
-	return true;
+    pi.playPortalSE();
+    pi.warp(240050300, "sp");
+    return true;
 }

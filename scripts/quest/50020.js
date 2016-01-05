@@ -7,5 +7,4 @@ function start(mode, type, selection) {
     cm.dispose();
 }
 
-function end(mode, type, selection) {
-}
+function end(mode, type, selection) {}

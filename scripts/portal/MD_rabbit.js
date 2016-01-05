@@ -20,14 +20,14 @@
 */
 /*
 MiniDungeon - Rabbit
-*/ 
+*/
 var baseid = 221023400;
 var dungeonid = 221023401;
 var dungeons = 30;
 
 function enter(pi) {
     if (pi.getMapId() == baseid) {
-        for(var i = 0; i < dungeons; i++) {
+        for (var i = 0; i < dungeons; i++) {
             if (pi.getPlayerCount(dungeonid + i) == 0) {
                 pi.warp(dungeonid + i, 0);
                 return true;

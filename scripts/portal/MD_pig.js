@@ -18,7 +18,7 @@
 
 /*
 MiniDungeon - Pig
-*/ 
+*/
 
 var baseid = 100020000;
 var dungeonid = 100020100;

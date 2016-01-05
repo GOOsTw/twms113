@@ -13,17 +13,17 @@ function act() {
     var q = 0;
     var q2 = 0;
     if (rand < 2) {
-	q = 3;
-	q2 = 4;
+        q = 3;
+        q2 = 4;
     } else {
-	q = 4;
-	q2 = 3;
+        q = 4;
+        q2 = 3;
     }
     if (rm.getMapId() == 809050000) {
-	rm.spawnMonster(9400209, q);
-	rm.spawnMonster(9400210, q2);
+        rm.spawnMonster(9400209, q);
+        rm.spawnMonster(9400210, q2);
     } else if (rm.getMapId() == 809050010) {
-	rm.spawnMonster(9400209, q);
-	rm.spawnMonster(9400210, q2);
+        rm.spawnMonster(9400209, q);
+        rm.spawnMonster(9400210, q2);
     }
 }

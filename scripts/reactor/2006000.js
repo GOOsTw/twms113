@@ -21,14 +21,14 @@
 */
 /*@author Jvlaple
  * Spawns Eak When 20 Clouds are Dropped.
-  *2006000.js
-  */
-  
+ *2006000.js
+ */
+
 function act() {
     rm.spawnNpc(2013001);
-	var em = rm.getEventManager("OrbisPQ");
-	if (em != null) {
-                rm.givePartyExp(6000);
-		em.setProperty("pre", "1");
-	}
+    var em = rm.getEventManager("OrbisPQ");
+    if (em != null) {
+        rm.givePartyExp(6000);
+        em.setProperty("pre", "1");
+    }
 }

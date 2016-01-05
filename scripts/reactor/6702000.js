@@ -24,8 +24,8 @@
  * 
  * The Magik Mirror
  * 
-*/
+ */
 
-function act(){
-	rm.dropItems();
+function act() {
+    rm.dropItems();
 }

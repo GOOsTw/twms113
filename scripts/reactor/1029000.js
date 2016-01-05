@@ -1,4 +1,4 @@
 function act() {
-	rm.getPlayer().getMap().KillFk(true);
-	return true;
+    rm.getPlayer().getMap().KillFk(true);
+    return true;
 }

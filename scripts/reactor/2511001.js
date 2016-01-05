@@ -25,6 +25,6 @@
  */
 
 function act() {
-        rm.spawnMonster(9300124,6);
-        rm.spawnMonster(9300125,6);
+    rm.spawnMonster(9300124, 6);
+    rm.spawnMonster(9300125, 6);
 }

@@ -18,7 +18,7 @@
 
 /*
 MiniDungeon - Mushroom
-*/ 
+*/
 
 var baseid = 105050100;
 var dungeonid = 105050101;

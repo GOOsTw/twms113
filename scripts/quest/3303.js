@@ -7,11 +7,10 @@
 var status = -1;
 var oreArray;
 
-function start(mode, type, selection) {
-}
+function start(mode, type, selection) {}
 
 function end(mode, type, selection) {
-	    qm.sendNext("Then wait for awhile. I'll go and get the stuff to help you pass the test of Chief Alcadno.");
-	    qm.forceCompleteQuest();
-	    qm.dispose();
+    qm.sendNext("Then wait for awhile. I'll go and get the stuff to help you pass the test of Chief Alcadno.");
+    qm.forceCompleteQuest();
+    qm.dispose();
 }
