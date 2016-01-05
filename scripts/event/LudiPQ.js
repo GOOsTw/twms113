@@ -16,7 +16,7 @@ function setup() {
     em.setProperty("state", "1");
 
     var eim = em.newInstance("LudiPQ");
-    
+
     var map = eim.setInstanceMap(922010100);
     map.resetFully();
     map.getPortal("next00").setScriptName("lpq1");
@@ -65,34 +65,34 @@ function scheduledTimeout(eim) {
 
 function changedMap(eim, player, mapid) {
     switch (mapid) {
-	case 922010100: // Stage 1
-	case 922010200: // Stage 2
-	case 922010201: // Stage 2 - Tower's Trap'
-	case 922010300: // Stage 3
-	case 922010400: //stage 4
-	case 922010401: //darkness in stage 4
-	case 922010402: //darkness in stage 4
-	case 922010403: //darkness in stage 4
-	case 922010404: //darkness in stage 4
-	case 922010405: //darkness in stage 4
-	case 922010500: //stage 5
-	case 922010501: //tower's maze in stage 5
-	case 922010502: //tower's maze in stage 5
-	case 922010503: //tower's maze in stage 5
-	case 922010504: //tower's maze in stage 5
-	case 922010505: //tower's maze in stage 5
-	case 922010506: //tower's maze in stage 5
-	case 922010600:
-	case 922010700: //stage 7
-	case 922010800:
-	case 922010900: //crack on the wall
-	case 922011000: //bonus
-	    return;
+        case 922010100: // Stage 1
+        case 922010200: // Stage 2
+        case 922010201: // Stage 2 - Tower's Trap'
+        case 922010300: // Stage 3
+        case 922010400: //stage 4
+        case 922010401: //darkness in stage 4
+        case 922010402: //darkness in stage 4
+        case 922010403: //darkness in stage 4
+        case 922010404: //darkness in stage 4
+        case 922010405: //darkness in stage 4
+        case 922010500: //stage 5
+        case 922010501: //tower's maze in stage 5
+        case 922010502: //tower's maze in stage 5
+        case 922010503: //tower's maze in stage 5
+        case 922010504: //tower's maze in stage 5
+        case 922010505: //tower's maze in stage 5
+        case 922010506: //tower's maze in stage 5
+        case 922010600:
+        case 922010700: //stage 7
+        case 922010800:
+        case 922010900: //crack on the wall
+        case 922011000: //bonus
+            return;
     }
     eim.unregisterPlayer(player);
 
     if (eim.disposeIfPlayerBelow(0, 0)) {
-	em.setProperty("state", "0");
+        em.setProperty("state", "0");
     }
 }
 
@@ -102,19 +102,18 @@ function playerEntry(eim, player) {
     player.tryPartyQuest(1202);
 }
 
-function playerRevive(eim, player) {
-}
+function playerRevive(eim, player) {}
 
 function playerDisconnected(eim, player) {
     return -3;
 }
 
-function leftParty(eim, player) {			
+function leftParty(eim, player) {
     // If only 2 players are left, uncompletable
     if (eim.disposeIfPlayerBelow(minPlayers, eim.getProperty("cleared") == null ? 922010000 : 922011100)) {
-	em.setProperty("state", "0");
+        em.setProperty("state", "0");
     } else {
-	playerExit(eim, player);
+        playerExit(eim, player);
     }
 }
 
@@ -156,5 +155,7 @@ function timeOut(eim) {
 }
 
 function cancelSchedule() {}
+
 function playerDead() {}
+
 function allMonstersDead(eim) {}

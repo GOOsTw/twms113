@@ -1,4 +1,5 @@
-﻿/*
+﻿
+/*
     Blue Balloon - LudiPQ 8th stage NPC
 */
 
@@ -184,7 +185,7 @@ function boxStage(cm) {
     var currect = cm.getMap().getAreas();
     var objset = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-    if( eim == null )
+    if (eim == null)
         return;
 
     if (cm.isLeader()) { // leader

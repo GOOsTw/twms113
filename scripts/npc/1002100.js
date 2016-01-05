@@ -1,4 +1,5 @@
-﻿/*
+﻿
+/*
 	This file is part of the OdinMS Maple Story Server
     Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
 		       Matthias Butz <matze@odinms.de>
@@ -22,7 +23,12 @@
 // Jane the Alchemist
 var status = -1;
 var amount = -1;
-var items = [[2000002,310],[2022003,1060],[2022000,1600],[2001000,3120]];
+var items = [
+    [2000002, 310],
+    [2022003, 1060],
+    [2022000, 1600],
+    [2001000, 3120]
+];
 var item;
 
 function start() {
@@ -39,20 +45,20 @@ function start() {
 
 function action(mode, type, selection) {
     status++;
-    if (mode != 1){
-        if(mode == 0 && type == 1)
+    if (mode != 1) {
+        if (mode == 0 && type == 1)
             cm.sendNext("我仍然有不少你以前把我的材料。這些項目都存在這樣把你的時間選擇...");
         cm.dispose();
         return;
     }
-    if (status == 0){
+    if (status == 0) {
         var selStr = "你想購買那些藥水??#b";
         for (var i = 0; i < items.length; i++)
             selStr += "\r\n#L" + i + "##i" + items[i][0] + "# (價格 : " + items[i][1] + " 楓幣)#l";
         cm.sendSimple(selStr);
     } else if (status == 1) {
         item = items[selection];
-        var recHpMp = ["300 HP.","1000 HP.","800 MP","1000 HP and MP."];
+        var recHpMp = ["300 HP.", "1000 HP.", "800 MP", "1000 HP and MP."];
         cm.sendGetNumber("你想買 #b#t" + item[0] + "##k? #t" + item[0] + "# 允許您恢復 " + recHpMp[selection] + " 你想買多少個??", 1, 1, 100);
     } else if (status == 2) {
         cm.sendYesNo("你購買這些 #r" + selection + "#k #b#t" + item[0] + "#(s)#k? #t" + item[0] + "# 費用為 " + item[1] + " 楓幣 為一體，所以總出來是 #r" + (item[1] * selection) + "#k 楓幣.");

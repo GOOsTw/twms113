@@ -1,4 +1,5 @@
-﻿/*
+﻿
+/*
  六手邪神 -- 入口NPC
  */
 
@@ -8,16 +9,16 @@ function start() {
 }
 
 function action(mode, type, selection) {
-	if (cm.getPlayer().getClient().getChannel() != 2) {
-		cm.sendOk("六手邪神只能在頻道 2 能打而已。");
-		cm.dispose();
-	} else if (cm.getPlayer().getMapId() != 501030104) {
-		cm.sendOk("要打 #b六手邪神#k 請到 #r#m501030104##k 找我申請吧！！");
+    if (cm.getPlayer().getClient().getChannel() != 2) {
+        cm.sendOk("六手邪神只能在頻道 2 能打而已。");
         cm.dispose();
-	} else if (!cm.haveItem(4031722)) {
-		cm.sendOk("不明的力量無法進入，需要有太陽火花。");
-		cm.dispose();
-		}
+    } else if (cm.getPlayer().getMapId() != 501030104) {
+        cm.sendOk("要打 #b六手邪神#k 請到 #r#m501030104##k 找我申請吧！！");
+        cm.dispose();
+    } else if (!cm.haveItem(4031722)) {
+        cm.sendOk("不明的力量無法進入，需要有太陽火花。");
+        cm.dispose();
+    }
     if (mode == -1) {
         cm.dispose();
     } else {
@@ -34,7 +35,7 @@ function action(mode, type, selection) {
         } else if (status == 1) {
             if (selection == 0) {
                 var pt = cm.getPlayer().getParty();
-				if (cm.getParty() == null) {
+                if (cm.getParty() == null) {
                     cm.sendOk("請組隊再來找我....");
                 } else if (!cm.isLeader()) {
                     cm.sendOk("請叫你的隊長來找我!");

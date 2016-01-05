@@ -8,13 +8,13 @@ function start() {
 
 function action(mode, type, selection) {
     if (mode == 0) {
-	cm.sendNext("You must be busy, huh? But if you're loggin on from the internet cafe, then you should try going in. You may end up in a strange place once inside.");
+        cm.sendNext("You must be busy, huh? But if you're loggin on from the internet cafe, then you should try going in. You may end up in a strange place once inside.");
     } else {
-	if (cm.haveItem(5420007)) {
-	    cm.warp(193000000, 0);
-	} else {
-	    cm.sendNext("Hey, hey ... I don't think you're logging on from the internet cafe. You can't enter this place if you are logging on from home ...");
-	}
+        if (cm.haveItem(5420007)) {
+            cm.warp(193000000, 0);
+        } else {
+            cm.sendNext("Hey, hey ... I don't think you're logging on from the internet cafe. You can't enter this place if you are logging on from home ...");
+        }
     }
     cm.dispose();
 }

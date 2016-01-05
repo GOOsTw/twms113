@@ -1,4 +1,5 @@
-﻿/**
+﻿
+/**
 	Chief Tatamo - Leafre(240000000)
 **/
 
@@ -15,8 +16,8 @@ function action(mode, type, selection) {
         status++;
     } else {
         if (status == 0) {
-	    cm.dispose();
-	}
+            cm.dispose();
+        }
         if (status > 2) {
             if (section == 0) {
                 cm.sendOk("請慎重考慮。一旦你做出了決定，讓我知道。");
@@ -70,9 +71,9 @@ function action(mode, type, selection) {
             }
         } else {
             temp = selection;
-            if(cm.haveItem(itemID[temp])) {
-				//cm.sendGetNumber("How many #b#t" + itemID[temp] + "#k's would you like to donate?\r\n#b< Owned : #c" + itemID[temp] + "# >#k", 0, 0, "#c" + itemID[temp] + "#");
-				cm.sendGetNumber("你要捐多少個 #b#t" + itemID[temp] + "#k'我會給你很好的酬勞的！", 1, 1, 999);
+            if (cm.haveItem(itemID[temp])) {
+                //cm.sendGetNumber("How many #b#t" + itemID[temp] + "#k's would you like to donate?\r\n#b< Owned : #c" + itemID[temp] + "# >#k", 0, 0, "#c" + itemID[temp] + "#");
+                cm.sendGetNumber("你要捐多少個 #b#t" + itemID[temp] + "#k'我會給你很好的酬勞的！", 1, 1, 999);
             } else {
                 cm.sendNext("我不認為你有這道具。");
                 cm.safeDispose();
@@ -85,7 +86,7 @@ function action(mode, type, selection) {
             } else {
                 cm.sendOk("再會~");
                 cm.gainItem(4031346, temp);
-                cm.gainMeso( - cost);
+                cm.gainMeso(-cost);
             }
             cm.safeDispose();
         } else {

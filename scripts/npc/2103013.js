@@ -1,4 +1,5 @@
-﻿var status = 0;
+﻿
+var status = 0;
 var section = 0;
 importPackage(java.lang);
 //questid 29932, infoquest 7760
@@ -92,7 +93,7 @@ function action(mode, type, selection) {
                     cont_ = true;
                 }
             }
-            if (cont_ && cm.isLeader()) {//todo
+            if (cont_ && cm.isLeader()) { //todo
                 if (!cm.start_PyramidSubway(selection)) {
                     cm.sendOk("目前金字塔副本滿人，請稍後再嘗試。");
                 }
@@ -112,33 +113,33 @@ function action(mode, type, selection) {
             }
         } else if (section == 3) {
             if (selection == 0) {
-				if (cm.canHold(1132012)) {
-                if (cm.haveItem(2022613, 150)) {
-					cm.gainItem(2022613, -150);
-					cm.gainItem(1132012, 1);
-					cm.sendOk("來這是你的獎勵。");
-				} else {
-					cm.sendOk("我需要#b#t2022613##k 150個。");
-				}
-					cm.sendOk("請空出一些空間。");
-				}
+                if (cm.canHold(1132012)) {
+                    if (cm.haveItem(2022613, 150)) {
+                        cm.gainItem(2022613, -150);
+                        cm.gainItem(1132012, 1);
+                        cm.sendOk("來這是你的獎勵。");
+                    } else {
+                        cm.sendOk("我需要#b#t2022613##k 150個。");
+                    }
+                    cm.sendOk("請空出一些空間。");
+                }
             } else if (selection == 1) {
-				if (cm.canHold(1132013)) {
-                if (cm.haveItem(2022613, 400) && cm.haveItem(1132012)) {
-					cm.gainItem(2022613, -400);
-					cm.gainItem(1132012, -1);
-					cm.gainItem(1132013, 1);
-					cm.sendOk("來這是你的獎勵。");
-				} else {
-					cm.sendOk("我需要#b#t2022613##k 400個 和一條 #i1132012#。");
-				}
-					cm.sendOk("請空出一些空間。");
+                if (cm.canHold(1132013)) {
+                    if (cm.haveItem(2022613, 400) && cm.haveItem(1132012)) {
+                        cm.gainItem(2022613, -400);
+                        cm.gainItem(1132012, -1);
+                        cm.gainItem(1132013, 1);
+                        cm.sendOk("來這是你的獎勵。");
+                    } else {
+                        cm.sendOk("我需要#b#t2022613##k 400個 和一條 #i1132012#。");
+                    }
+                    cm.sendOk("請空出一些空間。");
+                }
             }
+            cm.dispose(); //todo
+        } else if (status == 100) {
+            cm.warp(926010000, 0);
+            cm.dispose();
         }
-        cm.dispose(); //todo
-    } else if (status == 100) {
-        cm.warp(926010000, 0);
-        cm.dispose();
     }
-}
 }

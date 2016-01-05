@@ -1,28 +1,29 @@
-﻿/*
+﻿
+/*
 	Machine Apparatus - Origin of Clocktower(220080001)
 */
 
 var status = -1;
 
 function start() {
-	action(1, 0, 0);
+    action(1, 0, 0);
 }
 
 function action(mode, type, selection) {
     if (mode == 1) {
-	status++;
+        status++;
     } else {
-	status--;
+        status--;
     }
     if (status == 0) {
-	cm.sendYesNo("嘟...嘟...你想要離開嗎？？");
+        cm.sendYesNo("嘟...嘟...你想要離開嗎？？");
     } else if (status == 1) {
-	cm.warp(220080000);
-	if (cm.getPlayerCount(220080001) == 0) {
-		cm.getMap(220080000).resetReactors();
-	}
-	cm.dispose();
+        cm.warp(220080000);
+        if (cm.getPlayerCount(220080001) == 0) {
+            cm.getMap(220080000).resetReactors();
+        }
+        cm.dispose();
     } else {
-	cm.dispose();
-	}
+        cm.dispose();
+    }
 }

@@ -13,22 +13,22 @@ function start() {
 
 function action(mode, type, selection) {
     if (status >= 2 && mode == 0) {
-	cm.dispose();
-	return;
+        cm.dispose();
+        return;
     }
     if (mode == 1) {
-	status++;
+        status++;
     } else {
-	status--;
+        status--;
     }
     if (status == 0) {
-	cm.warp(105040300);
-            
-	if (cm.getQuestStatus(2053) == 1 && !cm.haveItem(4031026)) {
-	    cm.gainItem(4031026, 20);
-	} else {
-	    cm.gainItem(itemSet[rand], 2);
-	}
-	cm.dispose();
+        cm.warp(105040300);
+
+        if (cm.getQuestStatus(2053) == 1 && !cm.haveItem(4031026)) {
+            cm.gainItem(4031026, 20);
+        } else {
+            cm.gainItem(itemSet[rand], 2);
+        }
+        cm.dispose();
     }
 }

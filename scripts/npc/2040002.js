@@ -1,4 +1,5 @@
-﻿var dh;
+﻿
+var dh;
 var entry = true;
 
 function start() {

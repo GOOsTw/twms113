@@ -3,6 +3,7 @@
  */
 
 var shaoling = 5;
+
 function start() {
     status = -1;
     action(1, 0, 0);
@@ -25,7 +26,7 @@ function action(mode, type, selection) {
         } else if (status == 1) {
             if (selection == 0) {
                 var pt = cm.getPlayer().getParty();
-                if ( cm.getQuestStatus(8534) != 0 ) {
+                if (cm.getQuestStatus(8534) != 0) {
                     cm.sendOk("你似乎不夠資格挑戰武陵妖僧！");
                     cm.dispose();
                 } else if (cm.getBossLog('shaoling') >= 5) {
@@ -59,7 +60,7 @@ function action(mode, type, selection) {
                             inMap += (cPlayer.getJobId() == 900 ? 3 : 1);
                         }
                     }
-                    if ( inMap < 1) {
+                    if (inMap < 1) {
                         next = false;
                     }
                     if (next) {

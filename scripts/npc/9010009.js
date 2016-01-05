@@ -3,5 +3,4 @@ function start() {
     cm.safeDispose();
 }
 
-function action(mode, type, selection) {
-}
+function action(mode, type, selection) {}

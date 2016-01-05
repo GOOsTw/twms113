@@ -1,4 +1,5 @@
-﻿/* Miranda
+﻿
+/* Miranda
 	NLC Skin Change.
 */
 var status = -1;
@@ -10,23 +11,23 @@ function start() {
 
 function action(mode, type, selection) {
     if (mode == 0) {
-	cm.dispose();
-	return;
+        cm.dispose();
+        return;
     } else {
-	status++;
+        status++;
     }
 
     if (status == 0) {
-	cm.sendNext("嗨，我是#p9201065# 如果您有5153009 那我可以幫助您~");
+        cm.sendNext("嗨，我是#p9201065# 如果您有5153009 那我可以幫助您~");
     } else if (status == 1) {
-	cm.askAvatar("選擇一個喜歡的", skin);
-    } else if (status == 2){
-	if (cm.setAvatar(5153009, skin[selection]) == 1) {
-	    cm.sendOk("享受！");
-	} else {
-	    cm.sendOk("痾...貌似沒有#b#t5153009##k");
-	}
+        cm.askAvatar("選擇一個喜歡的", skin);
+    } else if (status == 2) {
+        if (cm.setAvatar(5153009, skin[selection]) == 1) {
+            cm.sendOk("享受！");
+        } else {
+            cm.sendOk("痾...貌似沒有#b#t5153009##k");
+        }
 
-	cm.dispose();
+        cm.dispose();
     }
 }

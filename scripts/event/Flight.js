@@ -31,7 +31,7 @@ function scheduleNew() {
 }
 
 function stopEntry() {
-    em.setProperty("entry","false");
+    em.setProperty("entry", "false");
 }
 
 function takeoff() {
@@ -39,25 +39,24 @@ function takeoff() {
     Orbis_Station.setDocked(false);
     leafre_Station.broadcastMessage(MaplePacketCreator.boatPacket(false));
     Orbis_Station.broadcastMessage(MaplePacketCreator.boatPacket(false));
-    em.setProperty("docked","false");
+    em.setProperty("docked", "false");
     var temp1 = Orbis_btf.getCharacters().iterator();
-    while(temp1.hasNext())
+    while (temp1.hasNext())
         temp1.next().changeMap(Boat_to_leafre, Boat_to_leafre.getPortal(0));
     var temp2 = leafre_btf.getCharacters().iterator();
-    while(temp2.hasNext())
+    while (temp2.hasNext())
         temp2.next().changeMap(Boat_to_Orbis, Boat_to_Orbis.getPortal(0));
     em.schedule("arrived", 600000);
 }
 
 function arrived() {
     var temp1 = Boat_to_Orbis.getCharacters().iterator();
-    while(temp1.hasNext())
+    while (temp1.hasNext())
         temp1.next().changeMap(Orbis_docked, Orbis_docked.getPortal(0));
     var temp2 = Boat_to_leafre.getCharacters().iterator();
-    while(temp2.hasNext())
+    while (temp2.hasNext())
         temp2.next().changeMap(leafre_docked, leafre_docked.getPortal(0));
     scheduleNew();
 }
 
-function cancelSchedule() {
-}
+function cancelSchedule() {}

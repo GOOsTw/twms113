@@ -1,9 +1,10 @@
-﻿/* Ali
+﻿
+/* Ali
  * 
  * Adobis's Mission I: The Room of Tragedy (280090000)
  * 
  * Zakum Quest NPC Exit
-*/
+ */
 
 function start() {
     if (cm.haveItem(4031061)) {

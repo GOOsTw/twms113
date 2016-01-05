@@ -48,49 +48,49 @@ function action(mode, type, selection) {
         else
             status--;
         if (status == 0) {
-		if (cm.getJob() == 411 || cm.getJob() == 421 || cm.getJob() == 412 || cm.getJob() == 422) {	
-	    cm.sendOk("您屬於盜賊部,但是您已經成功三轉了,已經超越了教官的強度了!");
-	    cm.dispose();
-	    return;
-		}
-            if (!(cm.getJob()==410 ||cm.getJob()==420)) {
-				cm.sendOk("請找您的轉職教官,您不屬於盜賊部的滾吧!");
+            if (cm.getJob() == 411 || cm.getJob() == 421 || cm.getJob() == 412 || cm.getJob() == 422) {
+                cm.sendOk("您屬於盜賊部,但是您已經成功三轉了,已經超越了教官的強度了!");
                 cm.dispose();
                 return;
-			} else if (cm.getPlayer().getLevel() < 70) {
-				cm.sendOk("你的等級尚未滿70等");
-				cm.dispose();
-				return;		
-            }	
-			if (cm.haveItem(4031057, 1)){
-                cm.sendNext("恭喜你到達這裡,最後我將給你一個考驗!");			
-            } else if (!(cm.haveItem(4031057,1))) {
-				cm.warp(103000003);
+            }
+            if (!(cm.getJob() == 410 || cm.getJob() == 420)) {
+                cm.sendOk("請找您的轉職教官,您不屬於盜賊部的滾吧!");
+                cm.dispose();
+                return;
+            } else if (cm.getPlayer().getLevel() < 70) {
+                cm.sendOk("你的等級尚未滿70等");
+                cm.dispose();
+                return;
+            }
+            if (cm.haveItem(4031057, 1)) {
+                cm.sendNext("恭喜你到達這裡,最後我將給你一個考驗!");
+            } else if (!(cm.haveItem(4031057, 1))) {
+                cm.warp(103000003);
                 cm.sendOk("去找 #r達克魯#k 他會幫助你的!");
                 cm.dispose();
             } else if (cm.getPlayer().getRemainingSp() <= (cm.getLevel() - 70) * 3) {
                 cm.sendNext("你的技能點數還沒點完..");
-		} else {
+            } else {
                 cm.sendOk("你還不能轉職...");
                 cm.dispose();
             }
         } else if (status == 1) {
             if (cm.haveItem(4031058, 1)) {
-                if (cm.getJob()==410) {
+                if (cm.getJob() == 410) {
                     cm.changeJob(411);
                     //cm.getPlayer().gainAp(5);
-					cm.gainItem(4031057, -1);
-					cm.gainItem(4031058, -1);
-					cm.sendOk("恭喜轉職了!");
-					cm.worldMessage("『轉職快報』：恭喜玩家."+ cm.getChar().getName() +"  成功三轉-暗殺者讓我們熱烈的祝福他/她吧！");
+                    cm.gainItem(4031057, -1);
+                    cm.gainItem(4031058, -1);
+                    cm.sendOk("恭喜轉職了!");
+                    cm.worldMessage("『轉職快報』：恭喜玩家." + cm.getChar().getName() + "  成功三轉-暗殺者讓我們熱烈的祝福他/她吧！");
                     cm.dispose();
-                } else if (cm.getJob()==420) {
+                } else if (cm.getJob() == 420) {
                     cm.changeJob(421);
                     //cm.getPlayer().gainAp(5);
-					cm.gainItem(4031057, -1);
-					cm.gainItem(4031058, -1);
+                    cm.gainItem(4031057, -1);
+                    cm.gainItem(4031058, -1);
                     cm.sendOk("恭喜轉職了!");
-					cm.worldMessage("『轉職快報』：恭喜玩家."+ cm.getChar().getName() +"  成功三轉-神偷讓我們熱烈的祝福他/她吧！");
+                    cm.worldMessage("『轉職快報』：恭喜玩家." + cm.getChar().getName() + "  成功三轉-神偷讓我們熱烈的祝福他/她吧！");
                     cm.dispose();
                 }
             } else if (cm.haveItem(4031057, 1))

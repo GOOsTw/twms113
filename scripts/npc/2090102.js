@@ -1,4 +1,5 @@
-﻿/* Romi
+﻿
+/* Romi
 	Orbis Skin Change.
 */
 var status = -1;
@@ -10,22 +11,22 @@ function start() {
 
 function action(mode, type, selection) {
     if (mode == 0) {
-	cm.dispose();
-	return;
+        cm.dispose();
+        return;
     } else {
-	status++;
+        status++;
     }
 
     if (status == 0) {
-	cm.sendNext("嗨，我是#p2090102# 如果你有 #b#t5153006##k 我可以幫助你");
+        cm.sendNext("嗨，我是#p2090102# 如果你有 #b#t5153006##k 我可以幫助你");
     } else if (status == 1) {
-	cm.askAvatar("選擇一個想要的。", skin);
-    } else if (status == 2){
-	if (cm.setAvatar(5153006, skin[selection]) == 1) {
-	    cm.sendOk("享受!");
-	} else {
-	    cm.sendOk("你好像沒有#b#t5153006##k");
-	}
-	cm.dispose();
+        cm.askAvatar("選擇一個想要的。", skin);
+    } else if (status == 2) {
+        if (cm.setAvatar(5153006, skin[selection]) == 1) {
+            cm.sendOk("享受!");
+        } else {
+            cm.sendOk("你好像沒有#b#t5153006##k");
+        }
+        cm.dispose();
     }
 }

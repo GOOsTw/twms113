@@ -34,8 +34,8 @@ var items = [
         [2070005, 4500, 1, -1],
         [2330005, 8000, 1, -1],
         [2331000, 15000, 1, -1],
-        [2332000, 15000, 1, -1],		
-        [2330007, 300000, 1, -1],		
+        [2332000, 15000, 1, -1],
+        [2330007, 300000, 1, -1],
         [2070019, 300000, 1, -1]
     ],
     /*其它*/
@@ -43,7 +43,7 @@ var items = [
         [1122017, 30000, 1, 7],
         [2340000, 165000, 1, -1],
         [3993002, 10000, 1, -1],
-		[3993002, 100000, 10, -1]
+        [3993002, 100000, 10, -1]
     ]
 ]; //id, price
 
@@ -107,22 +107,22 @@ function action(mode, type, selection) {
 function chooseItem(index) {
     var choice = "選項你想要換得項目:#b";
     for (var i = 0; i < items[index].length; i++)
-        choice += "\r\n#L" + i + "##i" + items[index][i][0] + "# 交換 " + items[index][i][1] + " 點數 (#z" + items[index][i][0] + "#)"+ (items[index][i][2] > 0 ? (" X #r#e" + items[index][i][2] + "#n#b個") : "") +(items[index][i][3] > 0 ? (" ...期限 #r#e" + items[index][i][3] + "#n#b天") : "") + "#l";
+        choice += "\r\n#L" + i + "##i" + items[index][i][0] + "# 交換 " + items[index][i][1] + " 點數 (#z" + items[index][i][0] + "#)" + (items[index][i][2] > 0 ? (" X #r#e" + items[index][i][2] + "#n#b個") : "") + (items[index][i][3] > 0 ? (" ...期限 #r#e" + items[index][i][3] + "#n#b天") : "") + "#l";
     choice += "\r\n "
     cm.sendSimple(choice);
 }
 
 function gainReward(intPoints, record, index) {
     if (intPoints >= items[index][sel][1]) {
-		if (cm.canHold(items[index][sel][0])) {
-        intPoints -= items[index][sel][1];
-        record.setCustomData("" + intPoints + "");
-        cm.gainItemPeriod(items[index][sel][0], items[index][sel][2], items[index][sel][3]); // 3000 for bullets, they're unrechargable
-        cm.sendOk("享受 :P");
+        if (cm.canHold(items[index][sel][0])) {
+            intPoints -= items[index][sel][1];
+            record.setCustomData("" + intPoints + "");
+            cm.gainItemPeriod(items[index][sel][0], items[index][sel][2], items[index][sel][3]); // 3000 for bullets, they're unrechargable
+            cm.sendOk("享受 :P");
+        } else {
+            cm.sendOk("請確認是否有足夠的空間。");
+        }
     } else {
-		cm.sendOk("請確認是否有足夠的空間。");
-	}
-	} else {
         cm.sendOk("請確認是否點數足夠 #b目前點數總共 : " + points);
     }
 }

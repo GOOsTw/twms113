@@ -1,4 +1,3 @@
-
 var status = 0;
 
 function start() {
@@ -10,4 +9,3 @@ function action(mode, type, selection) {
     cm.openShop(44);
     cm.dispose();
 }
-

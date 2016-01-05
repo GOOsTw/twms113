@@ -1,4 +1,5 @@
-﻿/**
+﻿
+/**
  楓葉裝備製作活動 by:Kodan
  楓葉武器製作NPC
  35等 350萬 3000
@@ -351,12 +352,12 @@ function action(mode, type, selection) {
                     cm.dispose();
                 } else {
                     status = 2;
-                    cm.sendSimple("好吧，看來您有一個 #r武器催化劑#k 你想不想用 #r武器催化劑#k 來打造一把超強的武器？ 如果您使用 #r武器催化劑#k 來打造武器的話，那麼武器素質將是 #b平均#k. 如果您不使用 #r武器催化劑#k, 來打造武器的話 那麼武器的素質將是隨機取出#b低#k 或者 #b高#k 出原本素質\r\n#b#L20#打造#t"+newWepId+"#使用#r武器催化劑#k#l\r\n#L21##g打造#t"+newWepId+"#不使用#r武器催化劑#k#l");
+                    cm.sendSimple("好吧，看來您有一個 #r武器催化劑#k 你想不想用 #r武器催化劑#k 來打造一把超強的武器？ 如果您使用 #r武器催化劑#k 來打造武器的話，那麼武器素質將是 #b平均#k. 如果您不使用 #r武器催化劑#k, 來打造武器的話 那麼武器的素質將是隨機取出#b低#k 或者 #b高#k 出原本素質\r\n#b#L20#打造#t" + newWepId + "#使用#r武器催化劑#k#l\r\n#L21##g打造#t" + newWepId + "#不使用#r武器催化劑#k#l");
                 }
             }
-		} else if (sel == 0) {
+        } else if (sel == 0) {
             if ((cm.getMeso() < cost) || !cm.haveItem(4001126, leaves)) {
-                cm.sendOk("很抱歉，由於您的材料不足所以無法幫您製作，假如需要的話可以再來找我談談。");			
+                cm.sendOk("很抱歉，由於您的材料不足所以無法幫您製作，假如需要的話可以再來找我談談。");
             } else {
                 if (cm.canHold(newWepId)) {
                     cm.gainItem(4001126, -leaves);
@@ -368,12 +369,12 @@ function action(mode, type, selection) {
                 }
             }
             cm.dispose();
-		} else if (sel == 1) {
+        } else if (sel == 1) {
             if ((cm.getMeso() < cost) || !cm.haveItem(4001126, leaves) || !cm.haveItem(oldWepId, 1)) {
                 cm.sendOk("很抱歉，由於您的材料不足所以無法幫您製作，假如需要的話可以再來找我談談。");
             } else {
                 if (cm.canHold(newWepId)) {
-					cm.gainItem(oldWepId, -1);
+                    cm.gainItem(oldWepId, -1);
                     cm.gainItem(4001126, -leaves);
                     cm.gainMeso(-cost);
                     cm.gainItem(newWepId, 1);

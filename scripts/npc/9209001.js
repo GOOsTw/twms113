@@ -1,4 +1,5 @@
-﻿/*
+﻿
+/*
 	This file is part of the OdinMS Maple Story Server
     Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
 		       Matthias Butz <matze@odinms.de>
@@ -48,9 +49,9 @@ function action(mode, type, selection) {
             cm.sendNext("好了，我將送你到楓葉市場地圖.");
         } else
             cm.sendSimple("請問您想了解楓葉市場哪部分??#b\r\n#L0#那是什麼地方??\r\n#L1#能在楓葉市場幹什麼事情??\r\n#L2#我沒有任何問題");
-    } else if(status == 1) {
+    } else if (status == 1) {
         if (sel == 0) {
-			cm.saveLocation("EVENT");
+            cm.saveLocation("EVENT");
             cm.warp(680100000 + parseInt(Math.random() * 3));
             cm.dispose();
         } else if (selection == 0) {

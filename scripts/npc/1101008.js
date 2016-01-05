@@ -1,4 +1,5 @@
-﻿/* 
+﻿
+/* 
  *  NPC  : Guide Summoner
  *  Maps : Erev Map of the Start // 20021
  */
@@ -11,22 +12,22 @@ function start() {
 
 function action(mode, type, selection) {
     if (mode == 1) {
-	status++;
+        status++;
     } else {
-	cm.dispose();
+        cm.dispose();
     }
     if (status == 0) {
-	if (selection == 0) {
-	    cm.sendNext("你好我是提酷！");
-	} else if (selection == 12) {
-	    cm.sendOk("皇家騎士團就是皇家騎士團。");
-	    cm.dispose();
-	} else {
-	    cm.summonMsg(selection);
-	    cm.dispose();
-	}
+        if (selection == 0) {
+            cm.sendNext("你好我是提酷！");
+        } else if (selection == 12) {
+            cm.sendOk("皇家騎士團就是皇家騎士團。");
+            cm.dispose();
+        } else {
+            cm.summonMsg(selection);
+            cm.dispose();
+        }
     } else if (status == 1) {
-	cm.sendNext("很高興認識你。");
-	cm.dispose();
+        cm.sendNext("很高興認識你。");
+        cm.dispose();
     }
 }

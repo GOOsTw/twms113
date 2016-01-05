@@ -1,4 +1,5 @@
-﻿/*
+﻿
+/*
 	This file is part of the OdinMS Maple Story Server
     Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
 		       Matthias Butz <matze@odinms.de>
@@ -35,7 +36,7 @@ function start() {
 
 function action(mode, type, selection) {
     status++;
-    if (mode != 1){
+    if (mode != 1) {
         cm.dispose();
         return;
     }
@@ -45,7 +46,7 @@ function action(mode, type, selection) {
         else {
             var selStr = "你想要買哪種票??#b";
             for (var i = 0; i < zones; i++)
-                selStr += "\r\n#L" + i + "#工地 B" + (i+1) + " (" + cost + " 楓幣)#l";
+                selStr += "\r\n#L" + i + "#工地 B" + (i + 1) + " (" + cost + " 楓幣)#l";
             cm.sendSimple(selStr);
         }
     } else if (status == 1) {
@@ -53,7 +54,7 @@ function action(mode, type, selection) {
             cm.sendOk("看來你沒有足夠的楓幣...");
         else {
             cm.gainMeso(-cost);
-            cm.gainItem(4031036 + selection,1);
+            cm.gainItem(4031036 + selection, 1);
         }
         cm.dispose();
     }

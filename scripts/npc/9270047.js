@@ -16,7 +16,7 @@ function start() {
         cm.dispose();
         return;
     }
-    if ( !cm.getPlayer().isGM() &&  cm.getPlayer().getClient().getChannel() != 1 && cm.getPlayer().getClient().getChannel() != 2) {
+    if (!cm.getPlayer().isGM() && cm.getPlayer().getClient().getChannel() != 1 && cm.getPlayer().getClient().getChannel() != 2) {
         cm.sendOk("熊獅只能在1,2頻挑戰.");
         cm.dispose();
         return;
@@ -157,7 +157,7 @@ function action(mode, type, selection) {
                 } else {
                     cm.sendOk("你已經參加了遠征隊，請等候隊長指示。");
                 }
-            } else if (selection == 1) {// withdraw
+            } else if (selection == 1) { // withdraw
                 var baa = cm.addMember("ScarTar", false);
                 if (baa == 1) {
                     cm.sendOk("成功退出遠征隊。");

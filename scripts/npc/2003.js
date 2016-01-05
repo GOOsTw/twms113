@@ -1,4 +1,5 @@
-﻿/* Author: Xterminator
+﻿
+/* Author: Xterminator
 	NPC Name: 		Robin
 	Map(s): 		Maple Road : Snail Hunting Ground I (40000)
 	Description: 		Beginner Helper
@@ -15,15 +16,15 @@ function start() {
 function action(mode, type, selection) {
     status++;
     if (mode != 1) {
-        if(mode == 0 && type != 4)
+        if (mode == 0 && type != 4)
             status -= 2;
-        else{
+        else {
             cm.dispose();
             return;
         }
     }
     if (status == 0) {
-        if(sel == -1)
+        if (sel == -1)
             sel = selection;
         if (sel == 0)
             cm.sendNext("好，我來教你如何移動。 使用 #方向左鍵#k 就能在平台上移動了，按下 #bAlt#k 可以進行跳躍。 有些鞋子能提升你的速度以及跳躍力。");
@@ -66,9 +67,9 @@ function action(mode, type, selection) {
             cm.sendNextPrev("Once you make the job advancement, you'll acquire different kinds of skills, and you can assign them to HotKeys for easier access. If it's an attacking skill, you don't need to press Ctrl to attack, just press the button assigned as a HotKey.");
         else if (sel == 2)
             cm.sendNextPrev("Remember, though, that if your item inventory is full, you won't be able to acquire more. So if you have an item you don't need, sell it so you can make something out of it. The inventory may expand once you make the job advancement.");
-        else if (sel == 3)  
+        else if (sel == 3)
             cm.sendNextPrev("There isn't much to lose when you die if you are just a beginner. Once you have a job, however, it's a different story. You'll lose a portion of your EXP when you die, so make sure you avoid danger and death at all cost.");
-        else if (sel == 4) 
+        else if (sel == 4)
             cm.sendNextPrev("Level isn't the only thing that determines the advancement, though. You also need to boost up the levels of a particular ability based on the occupation. For example, to be a warrior, your STR has to be over 35, and so forth, you know what I'm saying? Make sure you boost up the abilities that has direct implications to your job.");
         else if (sel == 5)
             cm.sendNextPrev("But, if you want to be a powerful player, better not think about staying here for too long. You won't be able to get a job anyway. Underneath this island lies an enormous island called Victoria Island. That place is so much bigger than here, it's not even funny.");
@@ -80,6 +81,6 @@ function action(mode, type, selection) {
             cm.sendNextPrev("Oh yeah! One last piece of information before I go. If you are not sure where you are, always press #bW#k. The world map will pop up with the locator showing where you stand. You won't have to worry about getting lost with that.");
         else
             start();
-    }else
+    } else
         start();
 }

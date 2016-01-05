@@ -33,7 +33,7 @@ function start() {
         text += "\r\n#L3##t4031713#";
     for (var i = 0; i < 3; i++)
         if (cm.haveItem(4031036 + i))
-            text += "\r\n#L" + i + "##t" + (4031036 + i) +"#";
+            text += "\r\n#L" + i + "##t" + (4031036 + i) + "#";
     if (close) {
         cm.sendOk(text);
         cm.dispose();
@@ -44,7 +44,7 @@ function start() {
 function action(mode, type, selection) {
     status++;
     if (mode != 1) {
-        if(mode == 0)
+        if (mode == 0)
             cm.sendNext("你必須有一些經濟負擔，對吧？");
         cm.dispose();
         return;
@@ -58,7 +58,7 @@ function action(mode, type, selection) {
                 cm.sendNext("我們停止接收票前1分鐘了，所以請務必要在這裡的時間。");
                 cm.dispose();
             }
-        }else{
+        } else {
             cm.sendNext("好運~~"); //Not GMS-like
         }
         oldSelection = selection;

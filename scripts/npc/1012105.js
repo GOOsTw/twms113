@@ -1,4 +1,5 @@
-﻿/*
+﻿
+/*
 	This file is part of the OdinMS Maple Story Server
     Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
 		       Matthias Butz <matze@odinms.de>
@@ -38,7 +39,7 @@ function action(mode, type, selection) {
         if (status == 1)
             cm.sendStyle("選一個想要的風格.", skin);
         else {
-            if (cm.haveItem(5153000)){
+            if (cm.haveItem(5153000)) {
                 cm.gainItem(5153000, -1);
                 cm.setSkin(selection);
                 cm.sendOk("享受!");

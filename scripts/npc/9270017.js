@@ -28,14 +28,14 @@ function start() {
 function action(mode, type, selection) {
     if (mode != 1) {
         if (mode == 0)
-         cm.sendOk("請再堅持一秒鐘，與平面將起飛。謝謝你的耐心。");
+            cm.sendOk("請再堅持一秒鐘，與平面將起飛。謝謝你的耐心。");
         cm.dispose();
         return;
     }
     status++;
     if (status == 1) {
-		cm.warp(103000000, 0); //回墮落城市
+        cm.warp(103000000, 0); //回墮落城市
         cm.dispose();
     }
-	cm.dispose();
+    cm.dispose();
 }

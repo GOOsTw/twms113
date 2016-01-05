@@ -1,10 +1,10 @@
 function init() {
-	em.setProperty("leader", "true");
+    em.setProperty("leader", "true");
     em.setProperty("state", "0");
 }
 
 function setup(eim, leaderid) {
-	em.setProperty("leader", "true");
+    em.setProperty("leader", "true");
     var eim = em.newInstance("Zakumbattle");
     var map = eim.setInstanceMap(280030000);
     map.resetFully();
@@ -26,17 +26,17 @@ function playerRevive(eim, player) {
 function scheduledTimeout(eim) {
     eim.disposeIfPlayerBelow(100, 211042400);
     em.setProperty("state", "0");
-		em.setProperty("leader", "true");
+    em.setProperty("leader", "true");
 }
 
 function changedMap(eim, player, mapid) {
     if (mapid != 280030000) {
-	eim.unregisterPlayer(player);
+        eim.unregisterPlayer(player);
 
-	if (eim.disposeIfPlayerBelow(0, 0)) {
-	    em.setProperty("state", "0");
-		em.setProperty("leader", "true");
-	}
+        if (eim.disposeIfPlayerBelow(0, 0)) {
+            em.setProperty("state", "0");
+            em.setProperty("leader", "true");
+        }
     }
 }
 
@@ -52,15 +52,15 @@ function playerExit(eim, player) {
     eim.unregisterPlayer(player);
 
     if (eim.disposeIfPlayerBelow(0, 0)) {
-	em.setProperty("state", "0");
-		em.setProperty("leader", "true");
+        em.setProperty("state", "0");
+        em.setProperty("leader", "true");
     }
 }
 
 function end(eim) {
     if (eim.disposeIfPlayerBelow(100, 211042400)) {
-	em.setProperty("state", "0");
-		em.setProperty("leader", "true");
+        em.setProperty("state", "0");
+        em.setProperty("leader", "true");
     }
 }
 
@@ -68,10 +68,12 @@ function clearPQ(eim) {
     end(eim);
 }
 
-function allMonstersDead(eim) {
-}
+function allMonstersDead(eim) {}
 
-function leftParty (eim, player) {}
-function disbandParty (eim) {}
+function leftParty(eim, player) {}
+
+function disbandParty(eim) {}
+
 function playerDead(eim, player) {}
+
 function cancelSchedule() {}

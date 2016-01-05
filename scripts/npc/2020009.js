@@ -48,58 +48,58 @@ function action(mode, type, selection) {
         else
             status--;
         if (status == 0) {
-		if (cm.getJob() == 211 || cm.getJob() == 221 || cm.getJob() == 231 || cm.getJob() == 212 || cm.getJob() == 222 || cm.getJob() == 232) {	
-	    cm.sendOk("您屬於法師部,但是您已經成功三轉了,已經超越了教官的強度了!");
-	    cm.dispose();
-	    return;
-		}
-            if (!(cm.getJob()==210 ||cm.getJob()==220||cm.getJob()==230)) {
-		cm.sendOk("請找您的轉職教官,您不屬於法師部的滾吧!");
+            if (cm.getJob() == 211 || cm.getJob() == 221 || cm.getJob() == 231 || cm.getJob() == 212 || cm.getJob() == 222 || cm.getJob() == 232) {
+                cm.sendOk("您屬於法師部,但是您已經成功三轉了,已經超越了教官的強度了!");
                 cm.dispose();
                 return;
-			} else if (cm.getPlayer().getLevel() < 70) {
-				cm.sendOk("你的等級尚未滿70等");
-				cm.dispose();
-				return;		
-            }	
-			if (cm.haveItem(4031057, 1)){
-                cm.sendNext("恭喜你到達這裡,最後我將給你一個考驗!");			
-            } else if (!(cm.haveItem(4031057,1))) {
-				cm.warp(101000003);
+            }
+            if (!(cm.getJob() == 210 || cm.getJob() == 220 || cm.getJob() == 230)) {
+                cm.sendOk("請找您的轉職教官,您不屬於法師部的滾吧!");
+                cm.dispose();
+                return;
+            } else if (cm.getPlayer().getLevel() < 70) {
+                cm.sendOk("你的等級尚未滿70等");
+                cm.dispose();
+                return;
+            }
+            if (cm.haveItem(4031057, 1)) {
+                cm.sendNext("恭喜你到達這裡,最後我將給你一個考驗!");
+            } else if (!(cm.haveItem(4031057, 1))) {
+                cm.warp(101000003);
                 cm.sendOk("去找 #r漢斯#k 他會幫助你的!");
                 cm.dispose();
             } else if (cm.getPlayer().getRemainingSp() <= (cm.getLevel() - 70) * 3) {
                 cm.sendNext("你的技能點數還沒點完..");
-		} else {
+            } else {
                 cm.sendOk("你還不能轉職...");
                 cm.dispose();
             }
         } else if (status == 1) {
             if (cm.haveItem(4031058, 1)) {
-                if (cm.getJob()==210) {
+                if (cm.getJob() == 210) {
                     cm.changeJob(211);
                     //cm.getPlayer().gainAp(5);
-					cm.gainItem(4031057, -1);
-					cm.gainItem(4031058, -1);
-					cm.sendOk("恭喜你現在已經成為最帥的魔導士(火.毒)了!");
-					cm.worldMessage("『轉職快報』：恭喜玩家."+ cm.getChar().getName() +"  成功三轉-魔導士(火.毒)讓我們熱烈的祝福他/她吧！");
+                    cm.gainItem(4031057, -1);
+                    cm.gainItem(4031058, -1);
+                    cm.sendOk("恭喜你現在已經成為最帥的魔導士(火.毒)了!");
+                    cm.worldMessage("『轉職快報』：恭喜玩家." + cm.getChar().getName() + "  成功三轉-魔導士(火.毒)讓我們熱烈的祝福他/她吧！");
                     cm.dispose();
-                } else if (cm.getJob()==220) {
+                } else if (cm.getJob() == 220) {
                     cm.changeJob(221);
                     //cm.getPlayer().gainAp(5);
-					cm.gainItem(4031057, -1);
-					cm.gainItem(4031058, -1);
+                    cm.gainItem(4031057, -1);
+                    cm.gainItem(4031058, -1);
                     cm.sendOk("恭喜你現在已經成為最帥的魔導士(冰.雷)了!");
-					cm.worldMessage("『轉職快報』：恭喜玩家."+ cm.getChar().getName() +"  成功三轉-魔導士(冰.雷)讓我們熱烈的祝福他/她吧！");
-					
+                    cm.worldMessage("『轉職快報』：恭喜玩家." + cm.getChar().getName() + "  成功三轉-魔導士(冰.雷)讓我們熱烈的祝福他/她吧！");
+
                     cm.dispose();
-                } else if (cm.getJob()==230) {
+                } else if (cm.getJob() == 230) {
                     cm.changeJob(231);
                     //cm.getPlayer().gainAp(5);
-					cm.gainItem(4031057, -1);
-					cm.gainItem(4031058, -1);
+                    cm.gainItem(4031057, -1);
+                    cm.gainItem(4031058, -1);
                     cm.sendOk("恭喜你現在已經成為最帥的祭司了!");
-					cm.worldMessage("『轉職快報』：恭喜玩家."+ cm.getChar().getName() +"  成功三轉-祭司讓我們熱烈的祝福他/她吧！");
+                    cm.worldMessage("『轉職快報』：恭喜玩家." + cm.getChar().getName() + "  成功三轉-祭司讓我們熱烈的祝福他/她吧！");
                     cm.dispose();
                 }
             } else if (cm.haveItem(4031057, 1))

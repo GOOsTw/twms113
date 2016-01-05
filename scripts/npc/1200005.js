@@ -2,11 +2,11 @@ var status = -1;
 
 function action(mode, type, selection) {
     if (mode == 1)
-	status++;
+        status++;
     else
-	status--;
+        status--;
     if (status == 0) {
         cm.sendOk("今天天氣真好啊?");
-	cm.dispose();
+        cm.dispose();
     }
 }

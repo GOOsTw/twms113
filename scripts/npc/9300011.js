@@ -25,30 +25,30 @@ function action(mode, type, selection) {
                                 next = false;
                                 break;
                             }
-                        }	
+                        }
                         if (next) {
                             var q = cm.getEventManager("BossQuestEASY");
                             if (q == null) {
                                 cm.sendOk("找不到腳本，請聯繫GM！");
-								cm.dispose();
-								break;
+                                cm.dispose();
+                                break;
                             } else {
                                 q.startInstance(cm.getParty(), cm.getMap());
                             }
                         } else {
                             cm.sendOk("全部隊友必須達到70等.");
-							cm.dispose();
-							break;
+                            cm.dispose();
+                            break;
                         }
                     } else {
                         cm.sendOk("你不是隊長.");
-						cm.dispose();
-						break;
+                        cm.dispose();
+                        break;
                     }
                 } else {
                     cm.sendOk("你沒有隊伍.");
-					cm.dispose();
-					break;
+                    cm.dispose();
+                    break;
                 }
                 break;
             case 1:
@@ -67,30 +67,30 @@ function action(mode, type, selection) {
                                 next = false;
                                 break;
                             }
-                        }	
+                        }
                         if (next) {
                             var q = cm.getEventManager("BossQuestMed");
                             if (q == null) {
                                 cm.sendOk("找不到腳本，請聯繫GM！");
-								cm.dispose();
-								break;
+                                cm.dispose();
+                                break;
                             } else {
                                 q.startInstance(cm.getParty(), cm.getMap());
                             }
                         } else {
                             cm.sendOk("全部隊友必須達到100等.");
-							cm.dispose();
-							break;
+                            cm.dispose();
+                            break;
                         }
                     } else {
                         cm.sendOk("你不是隊長.");
-						cm.dispose();
-						break;
+                        cm.dispose();
+                        break;
                     }
                 } else {
                     cm.sendOk("你沒有隊伍.");
-					cm.dispose();
-					break;
+                    cm.dispose();
+                    break;
                 }
                 break;
             case 2:
@@ -109,29 +109,29 @@ function action(mode, type, selection) {
                                 next = false;
                                 break;
                             }
-                        }	
+                        }
                         if (next) {
                             var q = cm.getEventManager("BossQuestHARD");
                             if (q == null) {
                                 cm.sendOk("找不到腳本，請聯繫GM！");
-								cm.dispose();
+                                cm.dispose();
                             } else {
                                 q.startInstance(cm.getParty(), cm.getMap());
                             }
                         } else {
                             cm.sendOk("全部隊友必須達到120等.");
-							cm.dispose();
-							break;
+                            cm.dispose();
+                            break;
                         }
                     } else {
                         cm.sendOk("你不是隊長.");
-						cm.dispose();
-						break;
+                        cm.dispose();
+                        break;
                     }
                 } else {
                     cm.sendOk("你沒有隊伍.");
-					cm.dispose();
-					break;
+                    cm.dispose();
+                    break;
                 }
                 break;
             case 28:
@@ -150,34 +150,34 @@ function action(mode, type, selection) {
                                 next = false;
                                 break;
                             }
-                        }	
+                        }
                         if (next) {
                             var q = cm.getEventManager("BossQuestHELL");
                             if (q == null) {
                                 cm.sendOk("找不到腳本，請聯繫GM！");
-								cm.dispose();
+                                cm.dispose();
                             } else {
                                 q.startInstance(cm.getParty(), cm.getMap());
                             }
                         } else {
                             cm.sendOk("全部隊友必須達到160等.");
-							cm.dispose();
-							break;
+                            cm.dispose();
+                            break;
                         }
                     } else {
                         cm.sendOk("你不是隊長.");
-						cm.dispose();
-						break;
+                        cm.dispose();
+                        break;
                     }
                 } else {
                     cm.sendOk("你沒有隊伍.");
-					cm.dispose();
-					break;
+                    cm.dispose();
+                    break;
                 }
                 break;
             case 3:
                 cm.sendOk("#b點數數量 : " + points);
-				cm.dispose();
+                cm.dispose();
                 break;
             case 4:
                 cm.warp(209000000);

@@ -12,29 +12,29 @@ function setup() {
     em.setProperty("state", "1");
 
     var eim = em.newInstance("HontalePQ");
-    
+
     var map = eim.setInstanceMap(240050100);
     map.resetFully();
-//    map.getPortal("next00").setScriptName("lpq1");
+    //    map.getPortal("next00").setScriptName("lpq1");
     map = eim.setInstanceMap(240050101);
     map.resetFully();
-//    map.getPortal("next00").setScriptName("lpq2");
+    //    map.getPortal("next00").setScriptName("lpq2");
     eim.setInstanceMap(922010201).resetFully();
     map = eim.setInstanceMap(240050102);
     map.resetFully();
-//    map.getPortal("next00").setScriptName("lpq3");
+    //    map.getPortal("next00").setScriptName("lpq3");
     map = eim.setInstanceMap(240050103);
     map.resetFully();
-//    map.getPortal("next00").setScriptName("lpq4");
+    //    map.getPortal("next00").setScriptName("lpq4");
     eim.setInstanceMap(240050104).resetFully();
     eim.setInstanceMap(240050105).resetFully();
     eim.setInstanceMap(240050200).resetFully();
     map = eim.setInstanceMap(240050300);
     map.resetFully();
-//    map.getPortal("next00").setScriptName("lpq7");
+    //    map.getPortal("next00").setScriptName("lpq7");
     map = eim.setInstanceMap(240050310);
     map.resetFully();
-//    map.getPortal("next00").setScriptName("lpq8");
+    //    map.getPortal("next00").setScriptName("lpq8");
 
     eim.startEventTimer(60 * 1000 * 60);
 
@@ -49,22 +49,22 @@ function scheduledTimeout(eim) {
 
 function changedMap(eim, player, mapid) {
     switch (mapid) {
-	case 240050100:
-	case 240050101:
-	case 240050102:
-	case 240050103:
-	case 240050104:
-	case 240050105:
-	case 240050200:
-	case 240050300:
-	case 240050310:
-	case 240050500:
-	    return;
+        case 240050100:
+        case 240050101:
+        case 240050102:
+        case 240050103:
+        case 240050104:
+        case 240050105:
+        case 240050200:
+        case 240050300:
+        case 240050310:
+        case 240050500:
+            return;
     }
     eim.unregisterPlayer(player);
 
     if (eim.disposeIfPlayerBelow(0, 0)) {
-	em.setProperty("state", "0");
+        em.setProperty("state", "0");
     }
 }
 
@@ -73,19 +73,18 @@ function playerEntry(eim, player) {
     player.changeMap(map, map.getPortal(0));
 }
 
-function playerRevive(eim, player) {
-}
+function playerRevive(eim, player) {}
 
 function playerDisconnected(eim, player) {
     return -3;
 }
 
-function leftParty(eim, player) {			
+function leftParty(eim, player) {
     // If only 2 players are left, uncompletable
     if (eim.disposeIfPlayerBelow(minPlayers, eim.getProperty("cleared") == null ? 240050000 : 240050400)) {
-	em.setProperty("state", "0");
+        em.setProperty("state", "0");
     } else {
-	playerExit(eim, player);
+        playerExit(eim, player);
     }
 }
 
@@ -127,5 +126,7 @@ function timeOut(eim) {
 }
 
 function cancelSchedule() {}
+
 function playerDead() {}
+
 function allMonstersDead(eim) {}

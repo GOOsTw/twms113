@@ -1,4 +1,5 @@
-﻿var status = 0;
+﻿
+var status = 0;
 var skin = Array(0, 1, 2, 3, 4);
 var price;
 
@@ -14,7 +15,7 @@ function action(mode, type, selection) {
         if (status == 1)
             cm.sendStyle("選一個想要的風格.", skin);
         else {
-            if (cm.haveItem(5153008)){
+            if (cm.haveItem(5153008)) {
                 cm.gainItem(5153008, -1);
                 cm.setSkin(selection);
                 cm.sendOk("享受!");

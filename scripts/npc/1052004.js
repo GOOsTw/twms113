@@ -1,4 +1,5 @@
-﻿/*
+﻿
+/*
 	This file is part of the OdinMS Maple Story Server
     Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
 		       Matthias Butz <matze@odinms.de>
@@ -50,7 +51,7 @@ function action(mode, type, selection) {
             cm.sendSimple("我是黛瑪院長. 如果你有 #b#t5152001##k 任何機會，那麼怎麼樣讓我幫整形? \r\n\#L2#使用 #b#t5152001##k");
         } else if (status == 1) {
             if (selection == 1) {
-                if(cm.getMeso() >= price) {
+                if (cm.getMeso() >= price) {
                     cm.gainMeso(-price);
                     cm.gainItem(5152001, 1);
                     cm.sendOk("Enjoy!");
@@ -60,19 +61,18 @@ function action(mode, type, selection) {
             } else if (selection == 2) {
                 facenew = Array();
                 if (cm.getPlayer().getGender() == 0) {
-                    for(var i = 0; i < mface.length; i++)
-                        facenew.push(mface[i] + cm.getPlayer().getFace()% 1000 - (cm.getPlayer().getFace()% 100));
+                    for (var i = 0; i < mface.length; i++)
+                        facenew.push(mface[i] + cm.getPlayer().getFace() % 1000 - (cm.getPlayer().getFace() % 100));
                 }
                 if (cm.getPlayer().getGender() == 1) {
-                    for(var i = 0; i < fface.length; i++)
-                        facenew.push(fface[i] + cm.getPlayer().getFace()% 1000 - (cm.getPlayer().getFace()% 100));
+                    for (var i = 0; i < fface.length; i++)
+                        facenew.push(fface[i] + cm.getPlayer().getFace() % 1000 - (cm.getPlayer().getFace() % 100));
                 }
                 cm.sendStyle("讓我看看選擇一個想要的..", facenew);
             }
-        }
-        else if (status == 2){
+        } else if (status == 2) {
             cm.dispose();
-            if (cm.haveItem(5152001) == true){
+            if (cm.haveItem(5152001) == true) {
                 cm.gainItem(5152001, -1);
                 cm.setFace(facenew[selection]);
                 cm.sendOk("享受!!");

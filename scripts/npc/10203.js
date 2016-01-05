@@ -12,22 +12,22 @@ function start() {
 
 function action(mode, type, selection) {
     if (mode == 1) {
-	status++;
+        status++;
     } else {
-	if (status == 1) {
-	    cm.sendOk("滾開.");
-	    cm.dispose();
-	    return;
-	}
-	status--;
+        if (status == 1) {
+            cm.sendOk("滾開.");
+            cm.dispose();
+            return;
+        }
+        status--;
     }
     if (status == 0) {
-	cm.sendNext("想成為盜賊嗎?");
+        cm.sendNext("想成為盜賊嗎?");
     } else if (status == 1) {
-	cm.sendYesNo("要我短暫幫你實現夢想嗎?");
+        cm.sendYesNo("要我短暫幫你實現夢想嗎?");
     } else if (status == 2) {
-	cm.MovieClipIntroUI(true);
-	cm.warp(1020400, 0); // Effect/Direction3.img/magician/Scene00
-	cm.dispose();
+        cm.MovieClipIntroUI(true);
+        cm.warp(1020400, 0); // Effect/Direction3.img/magician/Scene00
+        cm.dispose();
     }
 }

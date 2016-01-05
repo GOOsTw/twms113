@@ -1,4 +1,5 @@
-﻿/*
+﻿
+/*
 	This file is part of the OdinMS Maple Story Server
     Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc> 
                        Matthias Butz <matze@odinms.de>
@@ -35,8 +36,7 @@ function start() {
 }
 
 function action(mode, type, selection) {
-    if (mode == -1) {
-    } else if (mode == 0) {
+    if (mode == -1) {} else if (mode == 0) {
         cm.sendNext("#b(我沒有想太多，所以我沒有去碰它。)");
     } else if (mode == 1) {
         cm.sendNext("#b(呸...這是寵物便便!)");

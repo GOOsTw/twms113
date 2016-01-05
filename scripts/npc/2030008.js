@@ -56,8 +56,9 @@ function action(mode, type, selection) {
             } else {
                 if (cm.haveItem(4001109)) {
                     cm.sendSimple("好。。。我看你們有充分的資格，你想挑戰那一階段？ #b\r\n#L0#廢礦調查 (第一階段)#l\r\n#L1#殘暴炎魔迷宮調查 (第二階段)#l\r\n#L2#治煉邀請 (第三階段)#l\r\n#L3#進去打殘暴炎魔#l\r\n#L4#跳過任務 (需要花錢)#l");
-					} else {
-                    cm.sendSimple("好。。。我看你們有充分的資格，你想挑戰那一階段？ #b\r\n#L0#廢礦調查 (第一階段)#l\r\n#L1#殘暴炎魔迷宮調查 (第二階段)#l\r\n#L2#治煉邀請 (第三階段)#l\r\n#L4#跳過任務 (需要花錢)#l");					}
+                } else {
+                    cm.sendSimple("好。。。我看你們有充分的資格，你想挑戰那一階段？ #b\r\n#L0#廢礦調查 (第一階段)#l\r\n#L1#殘暴炎魔迷宮調查 (第二階段)#l\r\n#L2#治煉邀請 (第三階段)#l\r\n#L4#跳過任務 (需要花錢)#l");
+                }
             }
             if (cm.getQuestStatus(100201) == 2) { // They're done the quests
                 teethmode = 2;
@@ -116,9 +117,9 @@ function action(mode, type, selection) {
                     if (em == null) {
                         cm.sendOk("我不能讓你進入這個未知的世界，因為管理員還沒有準備好開放。");
                     } else {
-			var prop = em.getProperty("started");
-			if (prop.equals("false") || prop == null) {
-			    em.startInstance(cm.getParty(), cm.getMap());
+                        var prop = em.getProperty("started");
+                        if (prop.equals("false") || prop == null) {
+                            em.startInstance(cm.getParty(), cm.getMap());
                         } else {
                             cm.sendOk("另一個組隊已經開始了調查任務，請稍後再來。");
                         }

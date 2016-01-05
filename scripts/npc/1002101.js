@@ -4,4 +4,4 @@ function start() {
 
 function action(mode, type, selection) {
     cm.dispose();
-}	
+}

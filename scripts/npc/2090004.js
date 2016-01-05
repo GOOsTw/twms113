@@ -1,4 +1,5 @@
-﻿/* Author: aaroncsn(MapleSea Like)(Incomplete)
+﻿
+/* Author: aaroncsn(MapleSea Like)(Incomplete)
 	NPC Name: 		Mr. Do
 	Map(s): 		Mu Lung: Mu Lung(2500000000)
 	Description: 		Potion Creator
@@ -110,7 +111,7 @@ function action(mode, type, selection) {
         }
         if (!complete || !cm.canHold(2044900)) {
             cm.sendOk("你好像沒有足夠的材料。");
-			cm.dispose();
+            cm.dispose();
         } else {
             if (mats instanceof Array) {
                 for (var i = 0; i < mats.length; i++) {

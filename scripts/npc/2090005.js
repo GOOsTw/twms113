@@ -49,38 +49,38 @@ function action(mode, type, selection) {
                 cm.dispose();
             } else {
                 if (cm.getMapId() == 251000000) {
-                    cm.gainMeso( - cost[3]);
+                    cm.gainMeso(-cost[3]);
                     cm.warp(250000100);
                     cm.dispose();
                 } else {
-				if (cm.getMapId() == 200000141) {
-				if(cm.getPlayer().getMeso() >= cost[selection]) {
-					cm.gainMeso(- cost[2]);
-					cm.warpBack(200090300,250000100,80);
-					cm.dispose();
-				} else {
-					cm.sendOk("滾!你沒有足夠的楓幣");
-					cm.dispose();
-					}
-				} else if (cm.getMapId() == 250000100) {
-					if(cm.getPlayer().getMeso() >= cost[selection]) {
-					cm.gainMeso(- cost[1]);
-					cm.warpBack(200090310,200000100,80);
-					cm.dispose();
-				} else {
-					cm.sendOk("滾!你沒有足夠的楓幣");
-					cm.dispose();
-				}
+                    if (cm.getMapId() == 200000141) {
+                        if (cm.getPlayer().getMeso() >= cost[selection]) {
+                            cm.gainMeso(-cost[2]);
+                            cm.warpBack(200090300, 250000100, 80);
+                            cm.dispose();
+                        } else {
+                            cm.sendOk("滾!你沒有足夠的楓幣");
+                            cm.dispose();
+                        }
+                    } else if (cm.getMapId() == 250000100) {
+                        if (cm.getPlayer().getMeso() >= cost[selection]) {
+                            cm.gainMeso(-cost[1]);
+                            cm.warpBack(200090310, 200000100, 80);
+                            cm.dispose();
+                        } else {
+                            cm.sendOk("滾!你沒有足夠的楓幣");
+                            cm.dispose();
+                        }
+                    }
                 }
             }
         }
-		}
     } else if (status == 2) {
         if (cm.getMeso() < cost[2]) {
             cm.sendNext("滾!你沒有足夠的楓幣");
             cm.dispose();
         } else {
-            cm.gainMeso( - cost[2]);
+            cm.gainMeso(-cost[2]);
             cm.warp(251000000);
             cm.dispose();
         }

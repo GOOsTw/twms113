@@ -1,5 +1,5 @@
 /* Storage
-*/
+ */
 
 function start() {
     cm.sendStorage();

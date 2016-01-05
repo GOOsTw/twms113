@@ -8,9 +8,9 @@ function start() {
 
 function action(mode, type, selection) {
     if (mode == 0) {
-	cm.sendOk("如果你想回去 #m801000000#, 告訴我");
+        cm.sendOk("如果你想回去 #m801000000#, 告訴我");
     } else {
-	cm.warp(801000000,0);
+        cm.warp(801000000, 0);
     }
     cm.dispose();
 }

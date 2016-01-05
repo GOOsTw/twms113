@@ -1,4 +1,5 @@
-﻿/* Everton
+﻿
+/* Everton
 	Ludibrium Random Eye Change.
 */
 var status = -1;
@@ -13,34 +14,34 @@ function start() {
 
 function action(mode, type, selection) {
     if (mode == 0) {
-	cm.dispose();
-	return;
+        cm.dispose();
+        return;
     } else {
-	status++;
+        status++;
     }
 
     if (status == 0) {
-	cm.sendNext("嗨，我好無聊喔 如果你有一張 #b#t5152006##k, 我可以隨機幫你搞定一張臉");
+        cm.sendNext("嗨，我好無聊喔 如果你有一張 #b#t5152006##k, 我可以隨機幫你搞定一張臉");
     } else if (status == 1) {
-	cm.sendYesNo("是否想用 #b#t5152006##k?");
-    } else if (status == 2){
-	var face = cm.getPlayerStat("FACE");
-	var facetype;
+        cm.sendYesNo("是否想用 #b#t5152006##k?");
+    } else if (status == 2) {
+        var face = cm.getPlayerStat("FACE");
+        var facetype;
 
-	if (cm.getPlayerStat("GENDER") == 0) {
-	    facetype = [20000, 20001, 20002, 20003, 20004, 20005, 20006, 20007, 20008, 20012, 20014];
-	} else {
-	    facetype = [21000, 21001, 21002, 21003, 21004, 21005, 21006, 21007, 21008, 21012, 21014];
-	}
-	for (var i = 0; i < facetype.length; i++) {
-	    facetype[i] = facetype[i] + face % 1000 - (face % 100);
-	}
-	
-	if (cm.setRandomAvatar(5152006, facetype) == 1) {
-	    cm.sendOk("享受!");
-	} else {
-	    cm.sendOk("痾..貌似沒有#t5152006#");
-	}
-	cm.dispose();
+        if (cm.getPlayerStat("GENDER") == 0) {
+            facetype = [20000, 20001, 20002, 20003, 20004, 20005, 20006, 20007, 20008, 20012, 20014];
+        } else {
+            facetype = [21000, 21001, 21002, 21003, 21004, 21005, 21006, 21007, 21008, 21012, 21014];
+        }
+        for (var i = 0; i < facetype.length; i++) {
+            facetype[i] = facetype[i] + face % 1000 - (face % 100);
+        }
+
+        if (cm.setRandomAvatar(5152006, facetype) == 1) {
+            cm.sendOk("享受!");
+        } else {
+            cm.sendOk("痾..貌似沒有#t5152006#");
+        }
+        cm.dispose();
     }
 }

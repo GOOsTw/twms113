@@ -1,4 +1,5 @@
-﻿/*
+﻿
+/*
 	This file is part of the OdinMS Maple Story Server
     Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
 		       Matthias Butz <matze@odinms.de>
@@ -50,7 +51,7 @@ function action(mode, type, selection) {
             cm.sendSimple("嗨，我是差不多醫生 如果您有 #b#t5152000##k,我將可以幫您隨機整形!\r\n#L2#使用 #b#t5152000##k");
         } else if (status == 1) {
             if (selection == 1) {
-                if(cm.getMeso() >= price) {
+                if (cm.getMeso() >= price) {
                     cm.gainMeso(-price);
                     cm.gainItem(5152000, 1);
                     cm.sendOk("Enjoy!");
@@ -61,25 +62,20 @@ function action(mode, type, selection) {
             } else if (selection == 2) {
                 facenew = Array();
                 if (cm.getPlayer().getGender() == 0) {
-                    for(var i = 0; i < mface.length; i++) {
-                        facenew.push(mface[i] + cm.getPlayer().getFace()
-                            % 1000 - (cm.getPlayer().getFace()
-                                % 100));
+                    for (var i = 0; i < mface.length; i++) {
+                        facenew.push(mface[i] + cm.getPlayer().getFace() % 1000 - (cm.getPlayer().getFace() % 100));
                     }
                 }
                 if (cm.getPlayer().getGender() == 1) {
-                    for(var i = 0; i < fface.length; i++) {
-                        facenew.push(fface[i] + cm.getPlayer().getFace()
-                            % 1000 - (cm.getPlayer().getFace()
-                                % 100));
+                    for (var i = 0; i < fface.length; i++) {
+                        facenew.push(fface[i] + cm.getPlayer().getFace() % 1000 - (cm.getPlayer().getFace() % 100));
                     }
                 }
                 cm.sendYesNo("注意!這是隨機，請問是否要使用 #b#t5152000##k?");
             }
-        }
-        else if (status == 2){
+        } else if (status == 2) {
             cm.dispose();
-            if (cm.haveItem(5152000) == true){
+            if (cm.haveItem(5152000) == true) {
                 cm.gainItem(5152000, -1);
                 cm.setFace(facenew[Math.floor(Math.random() * facenew.length)]);
                 cm.sendOk("享受");

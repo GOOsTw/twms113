@@ -37,7 +37,7 @@ function action(mode, type, selection) {
     else if (status == 1) {
         sel = selection;
         cm.sendNext("好 #h #, 我將帶你到 #m" + (200000110 + (sel * 10)) + "#");
-    } else if(status == 2){
+    } else if (status == 2) {
         cm.warp(200000110 + (sel * 10));
         cm.dispose();
     }

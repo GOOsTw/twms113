@@ -30,36 +30,34 @@ function playerEntry(eim, player) {
     player.sendEnglishQuiz(eim.getProperty("question"));
 }
 
-function playerDead(eim, player) {
-}
+function playerDead(eim, player) {}
 
 function changedMap(eim, player, mapid) {
     switch (mapid) {
-	case 702090301: // 1st Stage
-	case 702090302: // 2nd Stage
-	case 702090303: // 3rd Stage
-	    return; // Everything is fine
+        case 702090301: // 1st Stage
+        case 702090302: // 2nd Stage
+        case 702090303: // 3rd Stage
+            return; // Everything is fine
     }
     eim.unregisterPlayer(player);
 
     if (eim.disposeIfPlayerBelow(2, 702090400)) {
-	em.setProperty("state", "0");
+        em.setProperty("state", "0");
     }
 }
 
-function playerRevive(eim, player) {
-}
+function playerRevive(eim, player) {}
 
 function playerDisconnected(eim, player) {
     return -2;
 }
 
-function leftParty(eim, player) {			
+function leftParty(eim, player) {
     // If only 2 players are left, uncompletable
     if (eim.disposeIfPlayerBelow(2, 702090400)) {
-	em.setProperty("state", "0");
+        em.setProperty("state", "0");
     } else {
-	playerExit(eim, player);
+        playerExit(eim, player);
     }
 }
 
@@ -81,7 +79,7 @@ function playerExit(eim, player) {
     var exit = eim.getMapFactory().getMap(702090400);
     player.changeMap(exit, exit.getPortal(0));
     if (eim.disposeIfPlayerBelow(2, 702090400)) {
-	em.setProperty("state", "0");
+        em.setProperty("state", "0");
     }
 }
 
@@ -92,8 +90,6 @@ function clearPQ(eim) {
     em.setProperty("state", "0");
 }
 
-function allMonstersDead(eim) {
-}
+function allMonstersDead(eim) {}
 
-function cancelSchedule() {
-}
+function cancelSchedule() {}

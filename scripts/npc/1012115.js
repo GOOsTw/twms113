@@ -1,6 +1,7 @@
-﻿function start() {
+﻿
+function start() {
     var status = cm.getQuestStatus(20706);
-    
+
     if (status == 0) {
         cm.sendNext("它看起來像有什麼可疑的地方.");
     } else if (status == 1) {
@@ -11,6 +12,7 @@
     }
     cm.dispose();
 }
+
 function action(mode, type, selection) {
     cm.dispose();
 }

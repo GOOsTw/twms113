@@ -1,4 +1,5 @@
-﻿/* Kedrick
+﻿
+/* Kedrick
     Fishking King NPC
 */
 

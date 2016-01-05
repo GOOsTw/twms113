@@ -16,17 +16,17 @@ function start() {
 
 function action(mode, type, selection) {
     if (status >= 0 && mode == 0) {
-	cm.dispose();
-	return;
+        cm.dispose();
+        return;
     }
     if (mode == 1)
-	status++;
+        status++;
     else
-	status--;
+        status--;
     if (status == 0) {
-	cm.sendYesNo("你想要回去魔法#m101000000#了？？");
+        cm.sendYesNo("你想要回去魔法#m101000000#了？？");
     } else if (status == 1) {
-	cm.warp(101000000,0);
-	cm.dispose();
+        cm.warp(101000000, 0);
+        cm.dispose();
     }
-}	
+}

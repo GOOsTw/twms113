@@ -2,15 +2,15 @@ var itemList = [5150016, 3010045, 3010049, 3010021, 2002099, 2022465, 2022466, 2
 var chance = [70, 70, 70, 70, 500, 500, 500, 500, 500, 500];
 var sum = [];
 
-for(var i = 1 ; i < itemList.length; i++)
-    chance[i] = chance[i-1] + chance[i];
+for (var i = 1; i < itemList.length; i++)
+    chance[i] = chance[i - 1] + chance[i];
 
-var randNum = Math.floor(Math.random()* chance[chance.length-1]);
+var randNum = Math.floor(Math.random() * chance[chance.length - 1]);
 
-var randItem = chance[chance.length-1]
+var randItem = chance[chance.length - 1]
 
-for(var i = 0 ; i < chance.length; i++) {
-    if ( randNum <= chance[i] ) {
+for (var i = 0; i < chance.length; i++) {
+    if (randNum <= chance[i]) {
         randItem = itemList[i];
         break;
     }
@@ -81,9 +81,10 @@ function action(mode, type, selection) {
         } else if (cm.haveItem(4031875, num)) {
             cm.gainItem(4031875, -num);
             cm.giveKegs(num);
-            cm.sendOk("Don't forget to give me the powder keg when you obtain them."); cm.safeDispose();
+            cm.sendOk("Don't forget to give me the powder keg when you obtain them.");
+            cm.safeDispose();
         } else if (selection == 8) {
-            cm.sendNext("Status of Powder Keg Collection \n\r #B"+cm.getKegs()+"# \n\r If we collect them all, we can start the firework...");
+            cm.sendNext("Status of Powder Keg Collection \n\r #B" + cm.getKegs() + "# \n\r If we collect them all, we can start the firework...");
         }
         cm.safeDispose();
     }

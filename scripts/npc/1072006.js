@@ -21,7 +21,7 @@
 
 
 function start() {
-    if (cm.haveItem(4031013,30)) {
+    if (cm.haveItem(4031013, 30)) {
         cm.sendNext("wow 果然是個大俠恭喜通過這次個考驗 你已經是個強大的弓箭手了所以我將頒贈給你神秘的小禮物.");
     } else {
         cm.sendOk("你還沒有 #b30 #t4031013##k. 請收集完畢再來找我,祝你好運.");
@@ -32,9 +32,9 @@ function start() {
 function action(mode, type, selection) {
     if (mode == 1) {
         cm.warp(100000201, 0);
-		cm.removeAll(4031013);
-		cm.gainItem(4031010, -1);
-		cm.gainItem(4031012, 1);
-	}
-	cm.dispose();
+        cm.removeAll(4031013);
+        cm.gainItem(4031010, -1);
+        cm.gainItem(4031012, 1);
+    }
+    cm.dispose();
 }

@@ -1,4 +1,5 @@
-﻿/*
+﻿
+/*
 	Robert Holly - Ludibrium: Ludibrium (220000000)
 */
 
@@ -35,7 +36,7 @@ function action(mode, type, selection) {
             cm.dispose();
         } else {
             var newcapacity = capacity + 5;
-            cm.gainMeso( - 250000);
+            cm.gainMeso(-250000);
             cm.updateBuddyCapacity(newcapacity);
             cm.sendOk("好的！你的好友目錄已經增加了5個。你可以確認一下。如果好友目錄還是不夠的話，可以隨時來找我。我可以隨時幫你增加，不管多少次都行。當然不是免費的……那麼再見~");
             cm.dispose();

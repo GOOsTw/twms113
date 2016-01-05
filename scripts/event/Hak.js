@@ -9,7 +9,7 @@ var docked;
 var timeOnRide = 60; //Seconds
 
 function init() {
-    em.setProperty("isRiding","false");
+    em.setProperty("isRiding", "false");
 }
 
 function playerEntry(eim, player) {
@@ -18,21 +18,20 @@ function playerEntry(eim, player) {
     returnMap = em.getChannelServer().getMapFactory().getMap(returnTo[myRide]);
     onRide = em.getChannelServer().getMapFactory().getMap(birdRide[myRide]);
 
-    em.setProperty("isRiding","true");
+    em.setProperty("isRiding", "true");
     em.schedule("timeOut", 60000);
     player.changeMap(onRide, onRide.getPortal(0));
-//    player.getClient().getSession().write(tools.MaplePacketCreator.getClock(timeOnRide));
+    //    player.getClient().getSession().write(tools.MaplePacketCreator.getClock(timeOnRide));
 }
 
 function timeout() {
     returnMap = em.getChannelServer().getMapFactory().getMap(returnTo[myRide]);
     em.warpAllPlayer(returnMap);
-    em.setProperty("isRiding","false");
+    em.setProperty("isRiding", "false");
 }
 
 function playerDisconnected(eim, player) {
     return 0;
 }
 
-function cancelSchedule() {
-}
+function cancelSchedule() {}

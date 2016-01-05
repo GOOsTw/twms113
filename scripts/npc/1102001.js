@@ -10,9 +10,9 @@ function start() {
 
 function action(mode, type, selection) {
     if (mode == 0) {
-	cm.sendNext("你可能需要一些時間。.");
+        cm.sendNext("你可能需要一些時間。.");
     } else {
-	cm.warp(130020000, 0);
+        cm.warp(130020000, 0);
     }
     cm.dispose();
 }

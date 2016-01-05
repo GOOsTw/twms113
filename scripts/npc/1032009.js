@@ -13,10 +13,10 @@ function action(mode, type, selection) {
             cm.dispose();
         } else {
             if (status == 1) {
-                cm.sendNext ("好吧.下次再見.");
+                cm.sendNext("好吧.下次再見.");
                 status++;
             } else if (status == 2) {
-                cm.warp(101000300, 0);// back to orbis
+                cm.warp(101000300, 0); // back to orbis
                 cm.dispose();
             }
         }

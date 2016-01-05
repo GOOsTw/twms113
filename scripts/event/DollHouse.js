@@ -1,4 +1,3 @@
-
 function init() {
     em.setProperty("state", "0");
 }
@@ -19,13 +18,13 @@ function playerEntry(eim, player) {
 
 function changedMap(eim, player, mapid) {
     switch (mapid) {
-	case 103000800: // 1st Stage
-	case 103000801: // 2nd Stage
-	case 103000802: // 3rd Stage
-	case 103000803: // 4th Stage
-	case 103000804: // 5th Stage
-    	case 103000805: // Bonus stage
-	    return;
+        case 103000800: // 1st Stage
+        case 103000801: // 2nd Stage
+        case 103000802: // 3rd Stage
+        case 103000803: // 4th Stage
+        case 103000804: // 5th Stage
+        case 103000805: // Bonus stage
+            return;
     }
     eim.unregisterPlayer(player);
 }
@@ -49,16 +48,14 @@ function playerDisconnected(eim, player) {
 function clear(eim) {
     var map = eim.getChannelServer().getMapFactory().getMap(221024400);
     em.setProperty("state", "0");
-    if( eim.getPlayers().legnth != 0) {
+    if (eim.getPlayers().legnth != 0) {
         try {
             var player = eim.getPlayers().get(0);
             player.changeMap(map, map.getPortal(0));
             eim.unregisterPlayer(player);
-        } catch (e) {
-        }
+        } catch (e) {}
     }
     eim.dispose();
 }
 
-function cancelSchedule() {
-}
+function cancelSchedule() {}

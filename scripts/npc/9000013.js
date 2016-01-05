@@ -1,4 +1,5 @@
-﻿/*
+﻿
+/*
     This file is part of the OdinMS Maple Story Server
     Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
                Matthias Butz <matze@odinms.de>
@@ -53,20 +54,20 @@ function action(mode, type, selection) {
             } else if (selection == 1) {
                 cm.sendSimple("有許多活動官則。這將幫助在你開始活動之前。好了...選擇你想了解的活動.. #b\r\n#L0# 爬繩子#l\r\n#L1# 終極忍耐#l\r\n#L2# 滾雪球#l\r\n#L3# 打果子#l\r\n#L6# 打瓶蓋#l\r\n#L4# 是非題大考驗#l\r\n#L5# 尋寶#l#k");
             } else if (selection == 2) {
-				if (!cm.canHold()) {
-					cm.sendNext("請確認是否身上有空位。");
-				} else if (cm.getChannelServer().getEvent() > -1) {
-					if (cm.haveItem(4031017)) {
-						cm.removeAll(4031017);
-					}
-					cm.saveReturnLocation("EVENT");
-					cm.getPlayer().setChalkboard(null);
-					cm.warp(cm.getChannelServer().getEvent(), cm.getChannelServer().getEvent() == 109080000 || cm.getChannelServer().getEvent() == 109080010 ? 0 : "join00");
-				} else {
-					cm.sendNext("活動尚未開放，請確認是否你有在24小時內參加過一個活動。請稍後在試！");
-				}
-				cm.dispose();
-			}
+                if (!cm.canHold()) {
+                    cm.sendNext("請確認是否身上有空位。");
+                } else if (cm.getChannelServer().getEvent() > -1) {
+                    if (cm.haveItem(4031017)) {
+                        cm.removeAll(4031017);
+                    }
+                    cm.saveReturnLocation("EVENT");
+                    cm.getPlayer().setChalkboard(null);
+                    cm.warp(cm.getChannelServer().getEvent(), cm.getChannelServer().getEvent() == 109080000 || cm.getChannelServer().getEvent() == 109080010 ? 0 : "join00");
+                } else {
+                    cm.sendNext("活動尚未開放，請確認是否你有在24小時內參加過一個活動。請稍後在試！");
+                }
+                cm.dispose();
+            }
         } else if (status == 4) {
             if (selection == 0) {
                 cm.sendNext("#b[爬繩子]#k 自己#e#rGoogle#k!");
@@ -80,7 +81,7 @@ function action(mode, type, selection) {
             } else if (selection == 3) {
                 cm.sendNext("#b[打果子]#k 自己#e#rGoogle#k!");
                 cm.dispose();
-			} else if (selection == 6) {
+            } else if (selection == 6) {
                 cm.sendNext("#b[打瓶蓋]#k 自己#e#rGoogle#k!");
                 cm.dispose();
             } else if (selection == 4) {
@@ -90,6 +91,6 @@ function action(mode, type, selection) {
                 cm.sendNext("#b[尋寶]#k 自己#e#rGoogle#k!");
                 cm.dispose();
             }
-        }   
+        }
     }
-}  
+}

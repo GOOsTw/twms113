@@ -1,4 +1,5 @@
-﻿var status = 0;
+﻿
+var status = 0;
 var beauty = 0;
 var mhair = Array();
 var fhair = Array();
@@ -29,28 +30,27 @@ function action(mode, type, selection) {
                 cm.sendSimple("");
             } else if (selection == 2) {
                 beauty = 2;
-				var hair = cm.getPlayerStat("HAIR");
-				hair_Colo_new = [];
-				if (cm.getPlayerStat("GENDER") == 0) {
-				hair_Colo_new = [30310, 30330, 30060, 30150, 30410, 30210, 30140, 30120, 30200, 30560, 30510, 30610, 30470, 30920, 30860, 30800];
-			} else {
-				hair_Colo_new = [31150, 31310, 31300, 31160, 31100, 31410, 31030, 31080, 31070, 31610, 31350, 31510, 31740, 31560, 31710, 31880];
-			}
-			for (var i = 0; i < hair_Colo_new.length; i++) {
-				hair_Colo_new[i] = hair_Colo_new[i] + (hair % 10);
-			}
+                var hair = cm.getPlayerStat("HAIR");
+                hair_Colo_new = [];
+                if (cm.getPlayerStat("GENDER") == 0) {
+                    hair_Colo_new = [30310, 30330, 30060, 30150, 30410, 30210, 30140, 30120, 30200, 30560, 30510, 30610, 30470, 30920, 30860, 30800];
+                } else {
+                    hair_Colo_new = [31150, 31310, 31300, 31160, 31100, 31410, 31030, 31080, 31070, 31610, 31350, 31510, 31740, 31560, 31710, 31880];
+                }
+                for (var i = 0; i < hair_Colo_new.length; i++) {
+                    hair_Colo_new[i] = hair_Colo_new[i] + (hair % 10);
+                }
                 cm.sendYesNo("注意!這是隨機，請問是否要使用 #b#t5150041##k?");
             }
-        }
-        else if (status == 2){
+        } else if (status == 2) {
             cm.dispose();
-            if (beauty == 2){
-				if (cm.setRandomAvatar(5150041, hair_Colo_new) == 1) {
-					cm.sendOk("享受！");
+            if (beauty == 2) {
+                if (cm.setRandomAvatar(5150041, hair_Colo_new) == 1) {
+                    cm.sendOk("享受！");
                 } else {
                     cm.sendOk("您貌似沒有#b#t5150041##k..");
                 }
             }
+        }
     }
-}
 }
