@@ -417,7 +417,7 @@ public class CashShopOperation {
                 IItem item = c.getPlayer().getInventory(type).findByUniqueId(uniqueid);
                 if (item != null && item.getQuantity() > 0 && item.getUniqueId() > 0 && c.getPlayer().getCashInventory().getItemsSize() < 100) {
                     IItem item_ = item.copy();
-                    MapleInventoryManipulator.removeFromSlot(c, type, item.getPosition(), item.getQuantity(), false);
+                    c.getPlayer().getInventory(type).removeItem(item.getPosition(), item.getQuantity(), false);
                     int sn = CashItemFactory.getInstance().getSnByItemItd(item_.getItemId());
                     if (item_.getPet() != null) {
                         c.getPlayer().removePetCS(item_.getPet());
