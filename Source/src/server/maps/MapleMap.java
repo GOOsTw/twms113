@@ -2004,9 +2004,6 @@ public final class MapleMap {
             }
         }
 
-        if ((mapid == 10000 && chr.getJob() == 0) || (mapid == 130030000 && chr.getJob() == 1000) || (mapid == 914000000 && chr.getJob() == 2000) || (mapid == 900010000 && chr.getJob() == 2001)) {
-            chr.dropMessage(1, "歡迎來SyncMS。\r\n新手技能記得在一轉之前點完！");
-        }
 
         if (permanentWeather > 0) {
             chr.getClient().sendPacket(MaplePacketCreator.startMapEffect("", permanentWeather, false)); //snow, no msg
