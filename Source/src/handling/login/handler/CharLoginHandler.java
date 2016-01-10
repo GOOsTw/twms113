@@ -204,7 +204,7 @@ public class CharLoginHandler {
     public static final void handleCreateCharacter(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         final String name = slea.readMapleAsciiString();
         final int JobType = slea.readInt(); // 1 = Adventurer, 0 = Cygnus, 2 = Aran
-        if (JobType == 0) {
+        if (JobType == 0 && !c.isGm()) {
             c.sendPacket(MaplePacketCreator.serverNotice(1, "很抱歉\r\n皇家騎士團還未開放\r\n日後如果BUG差不多會開放其他職業。"));
             return;
         }

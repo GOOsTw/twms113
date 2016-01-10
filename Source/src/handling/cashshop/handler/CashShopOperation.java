@@ -59,6 +59,7 @@ public class CashShopOperation {
         }
         MapleCharacter chr = MapleCharacter.ReconstructChr(transfer, client, false);
 
+        chr.reloadCSPoints();
         client.setPlayer(chr);
         client.setAccID(chr.getAccountID());
         client.loadAccountData(chr.getAccountID());
@@ -168,7 +169,7 @@ public class CashShopOperation {
         } else {
             c.sendPacket(MTSCSPacket.sendCSFail(validcode ? 0xA5 : 0xA7)); //A1, 9F
         }
-        c.getPlayer().saveCSPoint();
+    
         RefreshCashShop(c);
     }
 

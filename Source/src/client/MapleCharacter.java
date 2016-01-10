@@ -977,32 +977,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
     }
 
-    public boolean saveCSPoint() {
-        Connection con = DatabaseConnection.getConnection();
-
-        PreparedStatement ps = null;
-        PreparedStatement pse = null;
-        try {
-            ps = con.prepareStatement("UPDATE accounts SET `ACash` = ?, `mPoints` = ?, `points` = ?, `vpoints` = ? WHERE id = ?");
-
-            ps.setInt(1, acash);
-            ps.setInt(2, maplepoints);
-            ps.setInt(3, points);
-            ps.setInt(4, vpoints);
-            ps.setInt(5, client.getAccID());
-            ps.execute();
-            ps.close();
-            
-        } catch (SQLException ex) {
-            FilePrinter.printError("CashPoint.txt", this.getName() + "點數儲存異常，目前有 ACash:" 
-                    + this.getCSPoints(1) 
-                    + " mpoints:" + this.getCSPoints(2) 
-                    + " vpoints" + this.getVPoints());
-            return false;
-        }
-        return true;
-    }
-
     public int saveToDB(boolean dc, boolean fromcs) {
         if (isClone()) {
             return -1;
@@ -3967,17 +3941,71 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         dropMessage(6, message);
     }
 
-    public void modifyCSPoints(int type, int quantity, boolean show) {
+    public boolean reloadCSPoints() {
+        Connection con = DatabaseConnection.getConnection();
+        ResultSet rs;
+        try (PreparedStatement ps = con.prepareStatement("SELECT `ACash` , `mPoints` , `points` , `vpoints` FROM accounts where id = ?")) {
+            ps.setInt(1, this.getAccountID());
+            rs = ps.executeQuery();
+            if (rs.next()) {
+               this.acash = rs.getInt("ACash");
+               this.maplepoints = rs.getInt("mPoints");
+               this.points = rs.getInt("points");
+               this.vpoints = rs.getInt("vpoints");
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException ex) {
+              FilePrinter.printError("CashPoint.txt", this.getName() + "點數讀取異常，目前有 ACash:"
+                    + this.getCSPoints(1)
+                    + " points:" + this.getPoints()
+                    + " mpoints:" + this.getCSPoints(2)
+                    + " vpoints" + this.getVPoints());
+              return false;
+        }
+        return true;
+    }
 
+    public boolean saveCSPoints() {
+        try {
+            Connection con = DatabaseConnection.getConnection();
+            PreparedStatement ps = null;
+            ps = con.prepareStatement("UPDATE accounts SET `ACash` = ?, `mPoints` = ?, `points` = ?, `vpoints` = ? WHERE id = ?");
+            ps.setInt(1, acash);
+            ps.setInt(2, maplepoints);
+            ps.setInt(3, points);
+            ps.setInt(4, vpoints);
+            ps.setInt(5, client.getAccID());
+            ps.execute();
+            ps.close();
+        } catch (SQLException ex) {
+            FilePrinter.printError("CashPoint.txt", this.getName() + "點數儲存異常，目前有 ACash:"
+                    + this.getCSPoints(1)
+                    + " points:" + this.getPoints()
+                    + " mpoints:" + this.getCSPoints(2)
+                    + " vpoints" + this.getVPoints());
+            return false;
+        }
+        return true;
+    }
+
+    public void modifyCSPoints(int type, int quantity, boolean show) {
+        reloadCSPoints();
         switch (type) {
             case 1:
                 if (acash + quantity < 0) {
+                    if (show) {
+                        dropMessage(-1, "You have gained the max cash. No cash will be awarded.");
+                    }
                     return;
                 }
                 acash += quantity;
                 break;
             case 2:
                 if (maplepoints + quantity < 0) {
+                    if (show) {
+                        dropMessage(-1, "You have gained the max maple points. No cash will be awarded.");
+                    }
                     return;
                 }
                 maplepoints += quantity;
@@ -3986,9 +4014,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 break;
         }
         if (show && quantity != 0) {
-            dropMessage(-1, "你" + (quantity > 0 ? "獲得了 " : "失去了 ") + quantity + (type == 1 ? " 點GASH." : " 點楓葉點數."));
-        this.saveCSPoint();
+            dropMessage(-1, "You have " + (quantity > 0 ? "gained " : "lost ") + quantity + (type == 1 ? " cash." : " maple points."));
+            //client.sendPacket(MaplePacketCreator.showSpecialEffect(19));
         }
+        saveCSPoints();
+
     }
 
     public int getCSPoints(int type) {
