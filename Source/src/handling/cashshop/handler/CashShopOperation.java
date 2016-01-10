@@ -168,6 +168,7 @@ public class CashShopOperation {
         } else {
             c.sendPacket(MTSCSPacket.sendCSFail(validcode ? 0xA5 : 0xA7)); //A1, 9F
         }
+        c.getPlayer().saveCSPoint();
         RefreshCashShop(c);
     }
 
@@ -553,6 +554,8 @@ public class CashShopOperation {
                 c.sendPacket(MTSCSPacket.sendCSFail(0));
                 RefreshCashShop(c);
         }
+        
+        c.getPlayer().saveCSPoint();
 
     }
 

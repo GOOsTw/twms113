@@ -175,28 +175,26 @@ public enum ItemLoader {
 
     public void saveItems(List<Pair<IItem, MapleInventoryType>> items, Integer... id) throws SQLException {
         Connection con = DatabaseConnection.getConnection();
-        /*try {
-
-         con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
-         con.setAutoCommit(false);*/
-        saveItems(items, con, id);
-        /*	con.commit();
-         } catch (Exception e) {
-         e.printStackTrace();
-         System.err.println("[charsave] Error saving inventory" + e);
-         try {
-         con.rollback();
-         } catch (SQLException ex) {
-         System.err.println("[charsave] Error Rolling Back inventory" + e);
-         }
-         } finally {
-         try {
-         con.setAutoCommit(true);
-         con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
-         } catch (SQLException e) {
-         System.err.println("[charsave] Error going back to autocommit mode inventory" + e);
-         }
-         }*/
+        try {
+            con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+            con.setAutoCommit(false);
+            saveItems(items, con, id);
+            con.commit();
+        } catch (Exception e) {
+            System.err.println("[charsave] Error saving inventory" + e);
+            try {
+                con.rollback();
+            } catch (SQLException ex) {
+                System.err.println("[charsave] Error Rolling Back inventory" + e);
+            }
+        } finally {
+            try {
+                con.setAutoCommit(true);
+                con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+            } catch (SQLException e) {
+                System.err.println("[charsave] Error going back to autocommit mode inventory" + e);
+            }
+        }
     }
 
     public void saveItems(List<Pair<IItem, MapleInventoryType>> items, final Connection con, Integer... id) throws SQLException {

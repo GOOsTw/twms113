@@ -82,6 +82,8 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import tools.MockIOSession;
 import scripting.EventInstanceManager;
 import scripting.NPCScriptManager;
@@ -367,10 +369,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ret.map = mapFactory.getMap(ret.mapid);
             if (ret.map == null) { //char is on a map that doesn't exist warp it to henesys
                 ret.map = mapFactory.getMap(100000000);
-            } else {
-                if (ret.map.getForcedReturnId() != 999999999) {
-                    ret.map = ret.map.getForcedReturnMap();
-                }
+            } else if (ret.map.getForcedReturnId() != 999999999) {
+                ret.map = ret.map.getForcedReturnMap();
             }
             MaplePortal portal = ret.map.getPortal(ret.initialSpawnPoint);
             if (portal == null) {
@@ -977,6 +977,32 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
     }
 
+    public boolean saveCSPoint() {
+        Connection con = DatabaseConnection.getConnection();
+
+        PreparedStatement ps = null;
+        PreparedStatement pse = null;
+        try {
+            ps = con.prepareStatement("UPDATE accounts SET `ACash` = ?, `mPoints` = ?, `points` = ?, `vpoints` = ? WHERE id = ?");
+
+            ps.setInt(1, acash);
+            ps.setInt(2, maplepoints);
+            ps.setInt(3, points);
+            ps.setInt(4, vpoints);
+            ps.setInt(5, client.getAccID());
+            ps.execute();
+            ps.close();
+            
+        } catch (SQLException ex) {
+            FilePrinter.printError("CashPoint.txt", this.getName() + "點數儲存異常，目前有 ACash:" 
+                    + this.getCSPoints(1) 
+                    + " mpoints:" + this.getCSPoints(2) 
+                    + " vpoints" + this.getVPoints());
+            return false;
+        }
+        return true;
+    }
+
     public int saveToDB(boolean dc, boolean fromcs) {
         if (isClone()) {
             return -1;
@@ -1208,15 +1234,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 ps.setInt(3, entry.isVisible() ? 0 : 1);
                 ps.execute();
             }
-            ps.close();
-
-            ps = con.prepareStatement("UPDATE accounts SET `ACash` = ?, `mPoints` = ?, `points` = ?, `vpoints` = ? WHERE id = ?");
-            ps.setInt(1, acash);
-            ps.setInt(2, maplepoints);
-            ps.setInt(3, points);
-            ps.setInt(4, vpoints);
-            ps.setInt(5, client.getAccID());
-            ps.execute();
             ps.close();
 
             if (storage != null) {
@@ -1850,11 +1867,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     cancelEffect(mbsvh.effect, false, mbsvh.startTime);
                     break;
                 }
-            } else {
-                if (mbsvh.effect.isSkill() && mbsvh.effect.getSourceId() == skillid) {
-                    cancelEffect(mbsvh.effect, false, mbsvh.startTime);
-                    break;
-                }
+            } else if (mbsvh.effect.isSkill() && mbsvh.effect.getSourceId() == skillid) {
+                cancelEffect(mbsvh.effect, false, mbsvh.startTime);
+                break;
             }
         }
     }
@@ -3232,12 +3247,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (isGM() || (job != 0 && job != 1000 && job != 2000 && job != 2001 && job != 3000)) { // Not Beginner, Nobless and Legend
             remainingSp[GameConstants.getSkillBook(this.job)] += 3;
             client.sendPacket(MaplePacketCreator.updateSp(this, false));
-        } else {
-            if (level <= 10) {
-                stats.setStr((short) (stats.getStr() + remainingAp));
-                remainingAp = 0;
-                statup.add(new Pair<>(MapleStat.STR, (int) stats.getStr()));
-            }
+        } else if (level <= 10) {
+            stats.setStr((short) (stats.getStr() + remainingAp));
+            remainingAp = 0;
+            statup.add(new Pair<>(MapleStat.STR, (int) stats.getStr()));
         }
 
         statup.add(new Pair<>(MapleStat.AVAILABLEAP, (int) remainingAp));
@@ -3959,18 +3972,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         switch (type) {
             case 1:
                 if (acash + quantity < 0) {
-                    if (show) {
-                        dropMessage(-1, "You have gained the max cash. No cash will be awarded.");
-                    }
                     return;
                 }
                 acash += quantity;
                 break;
             case 2:
                 if (maplepoints + quantity < 0) {
-                    if (show) {
-                        dropMessage(-1, "You have gained the max maple points. No cash will be awarded.");
-                    }
                     return;
                 }
                 maplepoints += quantity;
@@ -3980,7 +3987,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
         if (show && quantity != 0) {
             dropMessage(-1, "You have " + (quantity > 0 ? "gained " : "lost ") + quantity + (type == 1 ? " cash." : " maple points."));
-            //client.sendPacket(MaplePacketCreator.showSpecialEffect(19));
+        this.saveCSPoint();
         }
     }
 
@@ -4786,14 +4793,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                         } else if (GameConstants.isFriendshipRing(item.getItemId())) {
                             frings.add(ring);
                         }
-                    } else {
-                        if (crings.isEmpty() && GameConstants.isCrushRing(item.getItemId())) {
-                            crings.add(ring);
-                        } else if (frings.isEmpty() && GameConstants.isFriendshipRing(item.getItemId())) {
-                            frings.add(ring);
-                        } //for 3rd person the actual slot doesnt matter, so we'll use this to have both shirt/ring same?
-                        //however there seems to be something else behind this, will have to sniff someone with shirt and ring, or more conveniently 3-4 of those
-                    }
+                    } else if (crings.isEmpty() && GameConstants.isCrushRing(item.getItemId())) {
+                        crings.add(ring);
+                    } else if (frings.isEmpty() && GameConstants.isFriendshipRing(item.getItemId())) {
+                        frings.add(ring);
+                    } //for 3rd person the actual slot doesnt matter, so we'll use this to have both shirt/ring same?
+                    //however there seems to be something else behind this, will have to sniff someone with shirt and ring, or more conveniently 3-4 of those
                 }
             }
         }
