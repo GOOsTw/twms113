@@ -3986,7 +3986,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 break;
         }
         if (show && quantity != 0) {
-            dropMessage(-1, "You have " + (quantity > 0 ? "gained " : "lost ") + quantity + (type == 1 ? " cash." : " maple points."));
+            dropMessage(-1, "你" + (quantity > 0 ? "獲得了 " : "失去了 ") + quantity + (type == 1 ? " 點GASH." : " 點楓葉點數."));
         this.saveCSPoint();
         }
     }

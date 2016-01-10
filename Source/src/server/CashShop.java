@@ -126,7 +126,7 @@ public class CashShop implements Serializable {
             uniqueid = MapleInventoryIdentifier.getInstance();
         }
         long period = cItem.getPeriod();
-        if (period <= 0 || GameConstants.isPet(cItem.getId())) {
+        if (GameConstants.isPet(cItem.getId())) {
             period = 45;
         }
         IItem ret = null;

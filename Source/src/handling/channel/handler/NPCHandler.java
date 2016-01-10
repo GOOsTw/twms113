@@ -133,9 +133,10 @@ public class NPCHandler {
             }
             case 1: { // Start Quest
                 final int npc = slea.readInt();
-                q.start(chr, npc);
-                if (slea.available() > 4) {
+                if (npc == 0 && quest > 0) {
                     q.forceStart(chr, npc, null);
+                } else if (!q.hasStartScript()) {
+                    q.start(chr, npc);
                 }
                 break;
             }
@@ -335,12 +336,16 @@ public class NPCHandler {
                 return;//h4x
             }
             if (selection >= -1 && action != -1) {
-                if (cm.getType() == 0) {
-                    NPCScriptManager.getInstance().startQuest(c, action, lastMsg, selection);
-                } else if (cm.getType() == 1) {
-                    NPCScriptManager.getInstance().endQuest(c, action, lastMsg, selection);
-                } else {
-                    NPCScriptManager.getInstance().action(c, action, lastMsg, selection);
+                switch (cm.getType()) {
+                    case 0:
+                        NPCScriptManager.getInstance().startQuest(c, action, lastMsg, selection);
+                        break;
+                    case 1:
+                        NPCScriptManager.getInstance().endQuest(c, action, lastMsg, selection);
+                        break;
+                    default:
+                        NPCScriptManager.getInstance().action(c, action, lastMsg, selection);
+                        break;
                 }
             } else {
                 cm.dispose();

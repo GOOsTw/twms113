@@ -555,7 +555,6 @@ public class CashShopOperation {
                 RefreshCashShop(c);
         }
         
-        c.getPlayer().saveCSPoint();
 
     }
 

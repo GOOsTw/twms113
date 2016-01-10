@@ -57,7 +57,7 @@ public class MaplePacketEncoder implements ProtocolEncoder {
                 System.arraycopy(unencrypted, 0, ret, 4, unencrypted.length);
                 if(crypt) {
                     for(int i = 0 ; i < ret.length ; i++) {
-                        ret[i] ^= 0xC;
+                        ret[i] ^= 0x78;
                     }
                 }
                 out.write(IoBuffer.wrap(ret));
