@@ -118,6 +118,7 @@ public class HiredMerchantHandler {
                         if (deletePackage(c.getPlayer().getId(), c.getPlayer().getAccountID(), pack.getPackageid())) {
                             c.getPlayer().gainMeso(pack.getMesos(), false);
                             c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x1d));
+                             c.getPlayer().setConversation(0);
                         } else {
                             c.getPlayer().dropMessage(1, "An unknown error occured.");
                         }
