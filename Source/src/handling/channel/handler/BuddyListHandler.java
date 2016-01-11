@@ -120,11 +120,11 @@ public class BuddyListHandler {
                 /* 如果好友在線上 直接傳封包過去囉*/
                 if (buddyChannel > 0) {
                     reqRes = World.Buddy.requestBuddyAdd(buddyName,
-                            client.getChannel(),
-                            client.getPlayer().getId(),
-                            client.getPlayer().getName(),
-                            client.getPlayer().getLevel(),
-                            client.getPlayer().getJob());
+                            buddy.getChannel(),
+                            buddy.getCharacterId(),
+                            buddy.getName(),
+                            buddy.getLevel(),
+                            buddy.getJob());
                 } else {
 
                     final int buddyCount = BuddyList.getBuddyCount(buddy.getCharacterId(), 0);

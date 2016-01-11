@@ -218,7 +218,7 @@ public class MapleLifeFactory {
                 hpdisplaytype = 3;
             }
             stats.setHPDisplayType(hpdisplaytype);
-
+            
             monsterStats.put(mid, stats);
         }
         return new MapleMonster(mid, stats);
