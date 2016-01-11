@@ -377,6 +377,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                     FilePrinter.print("38Logs.txt", HexTool.toStringFromAscii(slea.read(avaible.intValue())), true);
                 }
                 break;
+            case CLIENT_LOGOUT: {
+                CharLoginHandler.handleLogout(slea, c);
+            }
             case HELLO_CHANNEL:
                 CharLoginHandler.handleWelcome(c);
                 break;
