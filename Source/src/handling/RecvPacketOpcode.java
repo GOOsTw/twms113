@@ -23,6 +23,7 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     SERVERSTATUS_REQUEST(0x18),
     HELLO_CHANNEL(0xDA),
     SET_GENDER(0x19),
+    CLIENT_LOGOUT(0x1A),
     
     // CHANNEL
     

@@ -6,7 +6,7 @@
 
 var status = -1;
 var cost, sel;
-var togo1, togo2, togo3, togo4, togo5;
+var togo1, togo2, togo3, togo4, togo5, togo6;
 var map;
 var back = true;
 
@@ -47,7 +47,7 @@ function action(mode, type, selection) {
         else
             status--;
 
-        if (!back) {
+        /*if (!back) {
             if (status == 0) {
                 cm.sendSimple("目前我們提供這幾個地方請問你想去哪裡?:\r\n#b古代神社(日本)#k. \r\n#L0##b 是，我想要去日本的古代神社#k#l");
             } else if (status == 1) {
@@ -62,9 +62,9 @@ function action(mode, type, selection) {
                     cm.dispose();
                 }
             }
-        } else {
+        } else {*/
             if (status == 0) {
-                if (selection == 0) {
+                if (selection == 0 || back == false) {
                     switch (cm.getMapId()) {
                         case 740000000:
                             togo1 = 800000000;
@@ -72,12 +72,14 @@ function action(mode, type, selection) {
                             togo3 = 500000000;
                             togo4 = 702000000;
                             togo5 = 501000000;
+                            togo6 = 0;
                         case 500000000:
                             togo1 = 800000000;
                             togo2 = 701000000;
                             togo3 = 740000000;
                             togo4 = 702000000;
                             togo5 = 501000000;
+                            togo6 = 0;
                             break;
                         case 800000000:
                             togo1 = 701000000;
@@ -85,6 +87,7 @@ function action(mode, type, selection) {
                             togo3 = 740000000;
                             togo4 = 702000000;
                             togo5 = 501000000;
+                            togo6 = 0;
                             break;
                         case 701000000:
                             togo1 = 500000000;
@@ -92,6 +95,7 @@ function action(mode, type, selection) {
                             togo3 = 740000000;
                             togo4 = 702000000;
                             togo5 = 501000000;
+                            togo6 = 0;
                             break;
                         case 702000000:
                             togo1 = 500000000;
@@ -99,6 +103,7 @@ function action(mode, type, selection) {
                             togo3 = 740000000;
                             togo4 = 800000000;
                             togo5 = 501000000;
+                            togo6 = 0;
                             break;
                         case 501000000:
                             togo1 = 500000000;
@@ -106,10 +111,18 @@ function action(mode, type, selection) {
                             togo3 = 740000000;
                             togo4 = 800000000;
                             togo5 = 702000000;
+                            togo6 = 0;
+                        default:
+                            togo1 = 500000000;
+                            togo2 = 701000000;
+                            togo3 = 740000000;
+                            togo4 = 800000000;
+                            togo5 = 702000000;
+                            togo6 = 501000000;
                             break;
                     }
-                    cm.sendSimple("選擇你想要的旅行地點? \n\r #b#L0##m" + togo1 + "# (3,000 楓幣)#l \n\r #L1##m" + togo2 + "# (3,000 楓幣)#l \n\r #L2##m" + togo3 + "# (3,000 楓幣)#l \n\r #L3##m" + togo4 + "# (3,000 楓幣)#l \r\n#L4##m" + togo5 + "# (3,000 楓幣)#l");
-
+                    cm.sendSimple("選擇你想要的旅行地點? \n\r #b#L0##m" + togo1 + "# (3,000 楓幣)#l \n\r #L1##m" + togo2 + "# (3,000 楓幣)#l \n\r #L2##m" + togo3 + "# (3,000 楓幣)#l \n\r #L3##m" + togo4 + "# (3,000 楓幣)#l \r\n#L4##m" + togo5 + "# (3,000 楓幣)#l" + ( togo6 != 0 ? "\r\n#L5##m" + togo6 + "# (3,000 楓幣)#l" : "" ));
+                
                 } else if (selection == 1) {
                     cm.warp(map == -1 ? 100000000 : map);
                     cm.clearSavedLocation("WORLDTOUR");
@@ -127,6 +140,8 @@ function action(mode, type, selection) {
                     cm.sendNext("你想要去這個地方旅行? #b#m" + togo4 + "##k? 我將帶你去只需要 #b3,000 楓幣#k. 你現在願意去?");
                 } else if (sel == 4) {
                     cm.sendNext("你想要去這個地方旅行? #b#m" + togo5 + "##k? 我將帶你去只需要 #b3,000 楓幣#k. 你現在願意去?");
+                } else if (sel == 5) {
+                   cm.sendNext("你想要去這個地方旅行? #b#m" + togo6 + "##k? 我將帶你去只需要 #b3,000 楓幣#k. 你現在願意去?");
                 }
             } else if (status == 2) {
                 if (sel == 0) {
@@ -139,9 +154,12 @@ function action(mode, type, selection) {
                     cm.warp(togo4);
                 } else if (sel == 4) {
                     cm.warp(togo5);
+                } else if (sel ==5) {
+                    cm.warp(togo6);
+
                 }
                 cm.dispose();
             }
-        }
+        //}
     }
 }

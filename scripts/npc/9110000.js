@@ -15,7 +15,7 @@ function action(mode, type, selection) {
     status++;
     if (status == 1) {
         if (cm.getMeso() < cost) {
-            cm.sendOk("幹沒錢還敢去日本神社!!");
+            cm.sendOk("你的錢似乎不夠喔!");
             cm.dispose();
         } else {
             cm.gainMeso(-cost);

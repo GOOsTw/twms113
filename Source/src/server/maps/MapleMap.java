@@ -1484,7 +1484,6 @@ public final class MapleMap {
             @Override
             public final void sendPackets(MapleClient c) {
                 c.sendPacket(MobPacket.spawnMonster(monster, -2, 0xfc, 0));
-//		c.sendPacket(MobPacket.spawnFakeMonster(monster, 0));
             }
         }, null);
         updateMonsterController(monster);
@@ -1513,6 +1512,7 @@ public final class MapleMap {
     public final void spawnDoor(final MapleDoor door) {
         spawnAndAddRangedMapObject(door, new DelayedPacketCreation() {
 
+            @Override
             public final void sendPackets(MapleClient c) {
                 c.sendPacket(MaplePacketCreator.spawnDoor(door.getOwner().getId(), door.getTargetPosition(), false));
                 if (door.getOwner().getParty() != null && (door.getOwner() == c.getPlayer() || door.getOwner().getParty().containsMembers(new MaplePartyCharacter(c.getPlayer())))) {
@@ -1523,6 +1523,7 @@ public final class MapleMap {
             }
         }, new SpawnCondition() {
 
+            @Override
             public final boolean canSpawn(final MapleCharacter chr) {
                 return door.getTarget().getId() == chr.getMapId() || door.getOwnerId() == chr.getId() || (door.getOwner() != null && door.getOwner().getParty() != null && door.getOwner().getParty().getMemberById(chr.getId()) != null);
             }

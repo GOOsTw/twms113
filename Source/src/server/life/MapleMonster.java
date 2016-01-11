@@ -105,6 +105,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     public MapleMonster(final MapleMonster monster) {
         super(monster);
         initWithStats(monster.stats);
+       
     }
 
     //得到目前怪物該有的狀態 傳回給狀態
