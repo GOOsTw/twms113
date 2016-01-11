@@ -65,6 +65,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.mina.core.session.IoSession;
+import server.AutoGiveCSPoints;
 
 import server.Timer.PingTimer;
 import server.quest.MapleQuest;
@@ -107,6 +108,7 @@ public class MapleClient {
     private final transient Lock mutex = new ReentrantLock(true);
     private final transient Lock npcMutex = new ReentrantLock();
     private final static Lock loginMutex = new ReentrantLock(true);
+    
 
     public MapleClient(MapleAESOFB send, MapleAESOFB receive, IoSession session) {
         this.send = send;
@@ -1041,6 +1043,7 @@ public class MapleClient {
     }
 
     public final void pongReceived() {
+        
         lastPong = System.currentTimeMillis();
     }
 

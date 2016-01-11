@@ -46,6 +46,7 @@ public class Start {
         boolean adminMode = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.admin"));
         boolean autoReg = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.autoRegister"));
         boolean gmitems = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.gmitems"));
+        
 
         if (adminMode) {
             System.out.println("【管理員模式】開啟");

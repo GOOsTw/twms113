@@ -87,6 +87,7 @@ import java.util.logging.Logger;
 import tools.MockIOSession;
 import scripting.EventInstanceManager;
 import scripting.NPCScriptManager;
+import server.AutoGiveCSPoints;
 import server.MaplePortal;
 import server.MapleShop;
 import server.MapleStatEffect;
@@ -200,6 +201,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private String teleportname = "";
     private boolean isSaveing = false;
     private static final ReentrantLock saveLock = new ReentrantLock();// 锁对象
+    private  AutoGiveCSPoints giveCSpoints = null;
 
     private MapleCharacter(final boolean ChannelServer) {
         this.setStance(0);
@@ -248,8 +250,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             questinfo = new LinkedHashMap<>();
             anticheat = new CheatTracker(this);
             pets = new ArrayList<>();
+            
         }
     }
+    
 
     public static MapleCharacter getDefault(final MapleClient client, final int type) {
         MapleCharacter ret = new MapleCharacter(false);
@@ -5871,5 +5875,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             MapleInventoryManipulator.addById(client, id, (short) 1);
             World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[恭喜]" + getName() + "剛才得到了 " + MapleItemInformationProvider.getInstance().getName(id) + "！").getBytes());
         }
+    }
+    
+    public void autoGiveCSPoints() {
+        if(this.giveCSpoints == null)
+            this.giveCSpoints = new AutoGiveCSPoints(this);
+        giveCSpoints.checkGivePoints();
     }
 }

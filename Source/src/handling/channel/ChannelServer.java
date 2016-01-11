@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import client.MapleCharacter;
+import client.MapleClient;
 import constants.ServerConstants;
 import handling.ByteArrayMaplePacket;
 import handling.MaplePacket;
@@ -531,12 +532,28 @@ public class ChannelServer implements Serializable {
         broadcastGMPacket(new ByteArrayMaplePacket(message));
     }
 
+    public void giveCSPoints() {
+        List<MapleCharacter> all = this.players.getAllCharactersThreadSafe();
+        for (MapleCharacter chr : all) {
+            if (chr.getClient() != null) {
+                if (chr.getClient().getLoginState() == MapleClient.LOGIN_NOTLOGGEDIN) {
+                    this.removePlayer(chr);
+                }
+                chr.autoGiveCSPoints();
+            }
+        }
+    }
+
     public void saveAll() {
         int ppl = 0;
         List<MapleCharacter> all = this.players.getAllCharactersThreadSafe();
         for (MapleCharacter chr : all) {
             try {
-
+                if (chr.getClient() != null) {
+                    if (chr.getClient().getLoginState() == MapleClient.LOGIN_NOTLOGGEDIN) {
+                        this.removePlayer(chr);
+                    }
+                }
                 int res = chr.saveToDB(false, false);
                 if (res == 1) {
                     ++ppl;

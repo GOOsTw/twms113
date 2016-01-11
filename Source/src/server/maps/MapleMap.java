@@ -652,10 +652,7 @@ public final class MapleMap {
                 doShrine(true);
             }
         } else if (mobid == 8810122 && mapid == 240060201) { // Horntail
-            // World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "經過無數次的挑戰，" + chr.getName() + "所帶領的隊伍最終擊破了混屯闇黑龍王的遠征隊！你們才是龍之林的真正英雄~").getBytes());
-            /*for (MapleCharacter c : getCharactersThreadsafe()) {
-             c.finishAchievement(24);
-             }*/
+
             FilePrinter.print(FilePrinter.HorntailLog, MapDebug_Log());
 
             if (speedRunStart > 0) {

@@ -1493,7 +1493,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         public void killedMob(final MapleMap map, final int baseExp, final boolean mostDamage, final int lastSkill) {
             final MapleCharacter chr = map.getCharacterById(chrid);
             if (chr != null && chr.isAlive()) {
-                giveExpToCharacter(chr, baseExp, mostDamage, 1, (byte) 0, (byte) 0, (byte) 0, lastSkill);
+                giveExpToCharacter(chr, ((Double)(baseExp * ServerConstants.RATE_SINGLE_PLAYER_EXP)).intValue(), mostDamage, 1, (byte) 0, (byte) 0, (byte) 0, lastSkill);
             }
         }
 
@@ -1632,6 +1632,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             byte Class_Bonus_EXP;
             byte Premium_Bonus_EXP;
             byte added_partyinc = 0;
+            int partyMemOnline = 0;
 
             for (final Entry<MapleCharacter, OnePartyAttacker> attacker : resolveAttackers().entrySet()) {
                 party = attacker.getValue().lastKnownParty;
@@ -1641,8 +1642,11 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 Premium_Bonus_EXP = 0;
                 expApplicable = new ArrayList<>();
                 for (final MaplePartyCharacter partychar : party.getMembers()) {
+                    pchr = map.getCharacterById(partychar.getId());
+                    if(partychar.isOnline() && pchr.isAlive() && pchr.getMap() == map)
+                        partyMemOnline++;
                     if (attacker.getKey().getLevel() - partychar.getLevel() <= 5 || stats.getLevel() - partychar.getLevel() <= 5) {
-                        pchr = map.getCharacterById(partychar.getId());
+                        
                         if (pchr != null) {
                             if (pchr.isAlive() && pchr.getMap() == map) {
                                 expApplicable.add(pchr);
@@ -1661,6 +1665,8 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                         }
                     }
                 }
+               
+                
                 if (expApplicable.size() > 1) {
                     averagePartyLevel /= expApplicable.size();
                 } else {
@@ -1682,7 +1688,11 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                         levelMod = 1.0;
                     }
                     iexp += (int) Math.round(expFraction * expWeight * levelMod);
-                    expMap.put(expReceiver, new ExpMap(iexp, (byte) (expApplicable.size() + added_partyinc), Class_Bonus_EXP, Premium_Bonus_EXP));
+                    if(partyMemOnline > 1)
+                        expMap.put(expReceiver, new ExpMap(((Double)(iexp * ServerConstants.RATE_PARTY_EXP + 0.05 * partyMemOnline )).intValue(), (byte) (expApplicable.size() + added_partyinc), Class_Bonus_EXP, Premium_Bonus_EXP));
+                    else
+                        expMap.put(expReceiver, new ExpMap(iexp, (byte) (expApplicable.size() + added_partyinc), Class_Bonus_EXP, Premium_Bonus_EXP));
+                   
                 }
             }
             ExpMap expmap;

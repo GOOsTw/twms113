@@ -94,7 +94,7 @@ public class CashShop implements Serializable {
     }
 
     public void checkExpire(MapleClient c) {
-        List<IItem> toberemove = new ArrayList<IItem>();
+        List<IItem> toberemove = new ArrayList<>();
         for (IItem item : inventory) {
             if (item != null && !GameConstants.isPet(item.getItemId()) && item.getExpiration() > 0 && item.getExpiration() < System.currentTimeMillis()) {
                 toberemove.add(item);
@@ -145,7 +145,8 @@ public class CashShop implements Serializable {
             ret = eq.copy();
         } else {
             Item item = new Item(cItem.getId(), (byte) 0, (short) cItem.getCount(), (byte) 0, uniqueid);
-            item.setExpiration((long) (System.currentTimeMillis() + (long) (period * 24 * 60 * 60 * 1000)));
+            if( period != 0)
+                item.setExpiration((long) (System.currentTimeMillis() + (long) (period * 24 * 60 * 60 * 1000)));
             item.setGiftFrom(gift);
             if (GameConstants.isPet(cItem.getId())) {
                 final MaplePet pet = MaplePet.createPet(cItem.getId(), uniqueid);
