@@ -1114,7 +1114,11 @@ public class MapleStatEffect implements Serializable {
                 normal = false;
                 break;
             }
-            case 13101006:
+            case 13101006: {
+                final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.WIND_WALK, 0));
+                applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveForeignBuff(applyto.getId(), stat, this), false);
+                break;
+            }
             case 4330001:
             case 4001003:
             case 14001003: { // Dark Sight

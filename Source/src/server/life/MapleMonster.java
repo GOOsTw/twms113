@@ -1031,7 +1031,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 return;
             } else if (getId() == 8850011 && stat == MonsterStatus.MAGIC_CRASH) {
                 return;
-            } else if ( stat == MonsterStatus.FREEZE ) {
+            } else if ( stat == MonsterStatus.FREEZE  || stat == MonsterStatus.POISON ) {
                 return;
             }
         }

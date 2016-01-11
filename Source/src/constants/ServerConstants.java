@@ -58,6 +58,8 @@ public class ServerConstants {
     public static final int MTS_TAX = 10; //+% to everything
     public static final int MTS_MESO = 5000; //mesos needed
     public static final int CHANNEL_COUNT = 200;
+    public static final int RATE_MONSTER_HP = 2;
+    public static final int RATE_BOSS_HP = 1;
     public static final String CashShop_Key = "a;!%dfb_=*-a123d9{P~";
     public static final String Login_Key = "pWv]xq:SPTCtk^LGnU9F";
     public static final String[] Channel_Key = {"a56=-_dcSAgb",
