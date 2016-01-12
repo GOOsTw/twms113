@@ -183,6 +183,7 @@ function action(mode, type, selection) {
 
         if (cm.getMeso() < cost) {
             cm.sendOk("我只接受楓幣。")
+            complete = false;
         } else {
             if (mats instanceof Array) {
                 for (var i = 0; complete && i < mats.length; i++) {
