@@ -3,6 +3,8 @@
  * Map   : GMMAP
  */
 
+importPackage(java.lang);
+
 var status = 0;
 var invs = Array(1, 5);
 var invv;
@@ -53,11 +55,16 @@ function action(mode, type, selection) {
     } else if (status == 2) {
         invv = selection / 1000;
         selected = selection % 1000;
+
         var inzz = cm.getInventory(invv);
         if (invv == invs[0]) {
             statsSel = inzz.getItem(slot_1[selected]);
         } else {
-            statsSel = inzz.getItem(slot_2[selected]);
+            var sitem = slot_2[selected];
+            if(sitem != null)
+                statsSel = inzz.getItem(slot_2[selected]);
+            else
+                statsSel = null;
         }
         if (statsSel == null) {
             cm.sendOk("錯誤, 請再嘗試一次.");
@@ -70,6 +77,7 @@ function action(mode, type, selection) {
             cm.sendOk("錯誤, 請再嘗試一次.");
             cm.dispose();
         } else {
+            statsSel.setExpiration((System.currentTimeMillis() - 1));
             status = 0;
             action(1, 0, 0);
         }

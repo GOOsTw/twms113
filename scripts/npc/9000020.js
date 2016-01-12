@@ -144,6 +144,8 @@ function action(mode, type, selection) {
                    cm.sendNext("你想要去這個地方旅行? #b#m" + togo6 + "##k? 我將帶你去只需要 #b3,000 楓幣#k. 你現在願意去?");
                 }
             } else if (status == 2) {
+                if(!back)
+                    cm.saveLocation("WORLDTOUR");
                 if (sel == 0) {
                     cm.warp(togo1);
                 } else if (sel == 1) {
