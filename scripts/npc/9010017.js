@@ -25,7 +25,7 @@ function action(mode, type, selection) {
     status++;
     if (status == 1) {
         var bbb = false;
-        var selStr = "請不要拿來交換楓幣之類的 避免發生爭執\r\n你要丟哪個點裝 丟出來會丟在地上 丟寵物的話會直接消失\r\n請不要拿來交換楓幣之類的 避免發生爭執\r\n\r\n#b";
+        var selStr = "注意! 點數商品丟掉之後就會到期了哦~~~\r\n你要丟哪個點裝 丟出來會丟在地上 丟寵物的話會直接消失\r\n請不要拿來交換楓幣之類的 避免發生爭執\r\n\r\n#b";
         for (var x = 0; x < invs.length; x++) {
             var inv = cm.getInventory(invs[x]);
             for (var i = 0; i <= inv.getSlotLimit(); i++) {

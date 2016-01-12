@@ -152,8 +152,8 @@ function action(mode, type, selection) {
         var complete = true;
 
         if (cm.getMeso() < cost * qty) {
-            cm.sendOk("我怕你付不起我的工資,抱歉囉.");
             complete = false;
+            cm.sendOk("我怕你付不起我的工資,抱歉囉.");
         } else {
             if (mats instanceof Array) {
                 for (var i = 0; complete && i < mats.length; i++) {
