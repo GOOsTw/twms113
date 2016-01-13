@@ -733,7 +733,7 @@ public class PlayerStats implements Serializable {
             final MapleStatEffect eff = chra.getStatForBuff(MapleBuffStat.MONSTER_RIDING);
             pickRate = eff.getProb();
         }
-
+        
         buff = chra.getBuffedValue(MapleBuffStat.LIGHTNING_CHARGE);
         if (buff != null) {
             final MapleStatEffect eff = chra.getStatForBuff(MapleBuffStat.LIGHTNING_CHARGE);

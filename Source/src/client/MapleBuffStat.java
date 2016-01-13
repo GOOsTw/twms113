@@ -149,8 +149,8 @@ public enum MapleBuffStat implements Serializable {
     FINALATTACK(63),
     //自然力重置     
     ELEMENT_RESET(65),
-    //(CMS_风影漫步)
-    WIND_WALK(66),
+    //(TMS_風影漫步)
+    WIND_WALK(10),
     SOUL_STONE(73), //same as pyramid_pq
     ENERGY_CHARGE(75),
     DASH_SPEED(76),
