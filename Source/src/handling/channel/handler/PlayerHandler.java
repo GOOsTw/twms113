@@ -376,8 +376,6 @@ public class PlayerHandler {
             final long curr = System.currentTimeMillis();
 
             if (combo > 0 && (curr - chr.getLastCombo()) > 7000) {
-                // Official MS timing is 3.5 seconds, so 7 seconds should be safe.
-                //chr.getCheatTracker().registerOffense(CheatingOffense.ARAN_COMBO_HACK);
                 combo = 0;
             } else {
                 if (combo == 9 && c.getPlayer().getQuestStatus(10370) == 0) {
@@ -403,7 +401,7 @@ public class PlayerHandler {
             chr.setLastCombo(curr);
             chr.setCombo(combo);
 
-            c.sendPacket(MaplePacketCreator.testCombo(combo));
+            c.sendPacket(MaplePacketCreator.updateCombo(combo));
 
             switch (combo) { // Hackish method xD
                 case 10:
