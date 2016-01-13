@@ -2129,7 +2129,7 @@ public class GameConstants {
 
     public static int getExpRate_Below10(final int job) {
         if (GameConstants.isAran(job) || GameConstants.isKOC(job)) {
-            return 1;
+            return 3;
         }
         return 1;
     }

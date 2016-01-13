@@ -30,6 +30,7 @@ import client.MapleCharacter;
 import client.MapleCharacterUtil;
 import client.inventory.MapleInventory;
 import client.inventory.MapleInventoryType;
+import handling.MapleServerHandler;
 import handling.channel.ChannelServer;
 import handling.login.LoginInformationProvider;
 import handling.login.LoginServer;
@@ -58,7 +59,7 @@ public class CharLoginHandler {
     
     public static final void handleLogout(final SeekableLittleEndianAccessor slea, MapleClient c ) {
         String account = slea.readMapleAsciiString();
-        if(c.isLoggedIn() && account.equals(c.getAccountName())) {
+        if(c.getLoginState() > 0) {
             c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
         }
     }

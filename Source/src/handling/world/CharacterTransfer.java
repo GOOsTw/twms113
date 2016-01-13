@@ -60,6 +60,7 @@ public class CharacterTransfer implements Externalizable {
     public final Map<Integer, Object> Quest = new LinkedHashMap<>(); // Questid instead of MapleQuest, as it's huge. Cant be transporting MapleQuest.java
     public Map<Integer, String> InfoQuest = new LinkedHashMap<>();
     public final Map<Integer, SkillEntry> Skills = new LinkedHashMap<>(); // Skillid instead of Skill.java, as it's huge. Cant be transporting Skill.java and MapleStatEffect.java
+    public long giveCSpointsLasttime = 0;
 
     public CharacterTransfer() {
     }
@@ -190,6 +191,8 @@ public class CharacterTransfer implements Externalizable {
         this.mount_Fatigue = mount.getFatigue();
         this.mount_level = mount.getLevel();
         this.mount_exp = mount.getExp();
+        this.giveCSpointsLasttime = chr.getGiveCSpointsLasttime();
+
         TranferTime = System.currentTimeMillis();
     }
 
@@ -278,7 +281,7 @@ public class CharacterTransfer implements Externalizable {
         this.battleshipHP = in.readInt();
         this.prefix = in.readUTF();
         this.gachexp = in.readInt();
-        
+
         final int mbooksize = in.readShort();
         for (int i = 0; i < mbooksize; i++) {
             this.mbook.put(in.readInt(), in.readInt());
@@ -347,6 +350,8 @@ public class CharacterTransfer implements Externalizable {
         for (int i = 0; i < 3; i++) {
             this.petStore[i] = in.readByte();
         }
+        
+        this.lastfametime = in.readLong();
         TranferTime = System.currentTimeMillis();
     }
 
@@ -434,7 +439,7 @@ public class CharacterTransfer implements Externalizable {
         out.writeInt(this.day);
         out.writeUTF(this.prefix);
         out.writeInt(this.gachexp);
-        
+
         out.writeShort(this.mbook.size());
         for (Map.Entry<Integer, Integer> ms : this.mbook.entrySet()) {
             out.writeInt(ms.getKey());
@@ -515,5 +520,7 @@ public class CharacterTransfer implements Externalizable {
         for (int i = 0; i < petStore.length; i++) {
             out.writeByte(petStore[i]);
         }
+        
+        out.writeLong(this.lastfametime);
     }
 }

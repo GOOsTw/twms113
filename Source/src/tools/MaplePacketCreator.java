@@ -617,7 +617,7 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static MaplePacket testCombo(int value) {
+    public static MaplePacket updateCombo(int value) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.ARAN_COMBO.getValue());

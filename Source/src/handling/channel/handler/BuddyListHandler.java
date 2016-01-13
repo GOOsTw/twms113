@@ -117,14 +117,14 @@ public class BuddyListHandler {
                     return;
                 }
 
-                /* 如果好友在線上 直接傳封包過去囉*/
+                /* 傳給對方好友邀請 */
                 if (buddyChannel > 0) {
                     reqRes = World.Buddy.requestBuddyAdd(buddyName,
-                            buddy.getChannel(),
-                            buddy.getCharacterId(),
-                            buddy.getName(),
-                            buddy.getLevel(),
-                            buddy.getJob());
+                            client.getChannel(),
+                            client.getPlayer().getId(),
+                            client.getPlayer().getName(),
+                            client.getPlayer().getLevel(),
+                            client.getPlayer().getJob());
                 } else {
 
                     final int buddyCount = BuddyList.getBuddyCount(buddy.getCharacterId(), 0);

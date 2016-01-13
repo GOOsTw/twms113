@@ -201,7 +201,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private String teleportname = "";
     private boolean isSaveing = false;
     private static final ReentrantLock saveLock = new ReentrantLock();// 锁对象
-    private  AutoGiveCSPoints giveCSpoints = null;
+    private long giveCSpointsLasttime = 0;
 
     private MapleCharacter(final boolean ChannelServer) {
         this.setStance(0);
@@ -250,10 +250,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             questinfo = new LinkedHashMap<>();
             anticheat = new CheatTracker(this);
             pets = new ArrayList<>();
-            
+
         }
     }
-    
 
     public static MapleCharacter getDefault(final MapleClient client, final int type) {
         MapleCharacter ret = new MapleCharacter(false);
@@ -450,6 +449,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.mount = new MapleMount(ret, ct.mount_itemid, GameConstants.isKOC(ret.job) ? 10001004 : (GameConstants.isAran(ret.job) ? 20001004 : 1004), ct.mount_Fatigue, ct.mount_level, ct.mount_exp);
 
         ret.stats.recalcLocalStats(true);
+
+        ret.giveCSpointsLasttime = ct.giveCSpointsLasttime;
 
         return ret;
     }
@@ -2729,11 +2730,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 boolean leveled = false;
                 if (exp + total >= needed) {
                     exp += total;
-                    levelUp();
-                    leveled = true;
-                    needed = GameConstants.getExpNeededForLevel(level);
-                    if (exp > needed) {
-                        setExp(needed);
+                    while (exp >= needed) {
+                        levelUp();
+                        leveled = true;
+                        needed = GameConstants.getExpNeededForLevel(level);
                     }
                 } else {
                     exp += total;
@@ -3952,20 +3952,20 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.setInt(1, this.getAccountID());
             rs = ps.executeQuery();
             if (rs.next()) {
-               this.acash = rs.getInt("ACash");
-               this.maplepoints = rs.getInt("mPoints");
-               this.points = rs.getInt("points");
-               this.vpoints = rs.getInt("vpoints");
+                this.acash = rs.getInt("ACash");
+                this.maplepoints = rs.getInt("mPoints");
+                this.points = rs.getInt("points");
+                this.vpoints = rs.getInt("vpoints");
             }
             rs.close();
             ps.close();
         } catch (SQLException ex) {
-              FilePrinter.printError("CashPoint.txt", this.getName() + "點數讀取異常，目前有 ACash:"
+            FilePrinter.printError("CashPoint.txt", this.getName() + "點數讀取異常，目前有 ACash:"
                     + this.getCSPoints(1)
                     + " points:" + this.getPoints()
                     + " mpoints:" + this.getCSPoints(2)
                     + " vpoints" + this.getVPoints());
-              return false;
+            return false;
         }
         return true;
     }
@@ -5876,10 +5876,28 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[恭喜]" + getName() + "剛才得到了 " + MapleItemInformationProvider.getInstance().getName(id) + "！").getBytes());
         }
     }
-    
+
+    public long getGiveCSpointsLasttime() {
+        return this.giveCSpointsLasttime;
+    }
+
     public void autoGiveCSPoints() {
-        if(this.giveCSpoints == null)
-            this.giveCSpoints = new AutoGiveCSPoints(this);
-        giveCSpoints.checkGivePoints();
+
+        long current = System.currentTimeMillis();
+        if (this.giveCSpointsLasttime == 0) {
+            giveCSpointsLasttime = current;
+        } else if (current - giveCSpointsLasttime > ServerConstants.CSPOINTS_PERIOD) {
+            if (this.getClient() != null) {
+                try {
+                    int gainPoints = Math.abs(Randomizer.nextInt()) % 10 + 1;
+                    this.modifyCSPoints(1, gainPoints);
+                    this.dropMessage("在線獎勵 : " + gainPoints + "點Gash");
+                } catch (Exception ex) {
+                    FilePrinter.printError("AutoCSpoints.txt", ex, "在線商城點數泡點失敗 : ");
+                }
+            }
+            giveCSpointsLasttime = current;
+        }
+
     }
 }
