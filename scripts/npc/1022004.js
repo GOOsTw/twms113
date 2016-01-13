@@ -135,8 +135,8 @@ function action(mode, type, selection) {
         var complete = true;
 
         if (cm.getMeso() < cost * qty) {
-            cm.sendOk("糟糕...你的錢好像不夠哦...");
             complete = false;
+            cm.sendOk("糟糕...你的錢好像不夠哦...");
         } else {
             if (mats instanceof Array) {
                 for (var i = 0; complete && i < mats.length; i++) {

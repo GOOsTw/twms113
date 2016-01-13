@@ -538,8 +538,9 @@ public class ChannelServer implements Serializable {
             if (chr.getClient() != null) {
                 if (chr.getClient().getLoginState() == MapleClient.LOGIN_NOTLOGGEDIN) {
                     this.removePlayer(chr);
+                } else {
+                    chr.autoGiveCSPoints();
                 }
-                chr.autoGiveCSPoints();
             }
         }
     }

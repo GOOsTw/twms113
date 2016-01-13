@@ -37,6 +37,7 @@ function action(mode, type, selection) {
         var cost = 500000;
 
         if (cm.getMeso() < cost * selection) {
+            complete = false;
             cm.sendOk("I'm sorry, but I am NOT doing this for free.")
         } else {
             complete = cm.haveItem(matID, matQty * selection);
