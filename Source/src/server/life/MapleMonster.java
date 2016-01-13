@@ -105,7 +105,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     public MapleMonster(final MapleMonster monster) {
         super(monster);
         initWithStats(monster.stats);
-       
+
     }
 
     //得到目前怪物該有的狀態 傳回給狀態
@@ -301,9 +301,9 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                     this.getMap().killMonster(this, from, false, false, this.getStats().getSelfD(), lastSkill);
                 } else { // Show HP
                     for (final AttackerEntry mattacker : attackers) {
-                        
+
                         for (final AttackingMapleCharacter cattacker : mattacker.getAttackers()) {
-                            if ( cattacker != null && cattacker.getAttacker().getMap() == from.getMap()) { // current attacker is on the map of the monster
+                            if (cattacker != null && cattacker.getAttacker().getMap() == from.getMap()) { // current attacker is on the map of the monster
                                 if (cattacker.getLastAttackTime() >= System.currentTimeMillis() - 4000) {
                                     cattacker.getAttacker().getClient().sendPacket(MobPacket.showMonsterHP(getObjectId(), (int) Math.ceil((hp * 100.0) / getMobMaxHp())));
                                 }
@@ -551,7 +551,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
          if (killer != null && stats.isBoss()) {
          killer.finishAchievement(18);
          }*/
-        /* 召喚小弟囉 */
+ /* 召喚小弟囉 */
         this.spawnRevives(getMap());
 
         /**
@@ -908,7 +908,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     public void applyMonsterBuff(final Map<MonsterStatus, Integer> effect, final int x, final int skillId, long duration, final MobSkill skill, final List<Integer> reflection) {
         final MapleCharacter con = getController();
         BuffTimer BuffTimer = Timer.BuffTimer.getInstance();
-        
+
         final Runnable cancelTask = new Runnable() {
             @Override
             public void run() {
@@ -1019,7 +1019,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
 
         final MonsterStatus stat = status.getStati();
-        
+
         if (stats.isNoDoom() && stat == MonsterStatus.DOOM) {
             return;
         }
@@ -1031,7 +1031,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 return;
             } else if (getId() == 8850011 && stat == MonsterStatus.MAGIC_CRASH) {
                 return;
-            } else if ( stat == MonsterStatus.FREEZE  || stat == MonsterStatus.POISON ) {
+            } else if (stat == MonsterStatus.FREEZE || stat == MonsterStatus.POISON) {
                 return;
             }
         }
@@ -1045,11 +1045,11 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         if ((stat == MonsterStatus.VENOMOUS_WEAPON || stat == MonsterStatus.POISON) && eff == null) {
             return;
         }
-        
+
         if (stati.containsKey(stat)) {
             return;
         }
-        
+
         if (stat == MonsterStatus.POISON || stat == MonsterStatus.VENOMOUS_WEAPON) {
             int count = 0;
             poisonsLock.readLock().lock();
@@ -1069,9 +1069,9 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         if (skilz != null) {
             aniTime += skilz.getAnimationTime();
         }
-        
+
         status.setCancelTask(aniTime);
-        
+
         if (poison && getHp() > 1) { // 中毒[POISON]
             final int poisonDamage = (int) Math.min(Short.MAX_VALUE, (long) (getMobMaxHp() / (70.0 - from.getSkillLevel(status.getSkill())) + 0.999));
             status.setValue(stat, poisonDamage);
@@ -1122,7 +1122,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 }
                 status.cancelPoisonSchedule(MapleMonster.this);
                 if (from.isStaff() && MapleServerHandler.isDebugMode()) {
-                   // from.dropMessage(6, "結束 => 持續傷害: 結束時間[" + System.currentTimeMillis() + "]");
+                    // from.dropMessage(6, "結束 => 持續傷害: 結束時間[" + System.currentTimeMillis() + "]");
                 }
             }
         };
@@ -1494,7 +1494,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         public void killedMob(final MapleMap map, final int baseExp, final boolean mostDamage, final int lastSkill) {
             final MapleCharacter chr = map.getCharacterById(chrid);
             if (chr != null && chr.isAlive()) {
-                giveExpToCharacter(chr, ((Double)(baseExp * ServerConstants.RATE_SINGLE_PLAYER_EXP)).intValue(), mostDamage, 1, (byte) 0, (byte) 0, (byte) 0, lastSkill);
+                giveExpToCharacter(chr, ((Double) (baseExp * ServerConstants.RATE_SINGLE_PLAYER_EXP)).intValue(), mostDamage, 1, (byte) 0, (byte) 0, (byte) 0, lastSkill);
             }
         }
 
@@ -1630,6 +1630,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             double averagePartyLevel, expWeight, levelMod, innerBaseExp, expFraction;
             List<MapleCharacter> expApplicable;
             final Map<MapleCharacter, ExpMap> expMap = new HashMap<>(6);
+            final Map<MapleCharacter, Integer> partyBonus = new HashMap<>(6);
             byte Class_Bonus_EXP;
             byte Premium_Bonus_EXP;
             byte added_partyinc = 0;
@@ -1642,12 +1643,16 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 Class_Bonus_EXP = 0;
                 Premium_Bonus_EXP = 0;
                 expApplicable = new ArrayList<>();
+                partyMemOnline = 0;
                 for (final MaplePartyCharacter partychar : party.getMembers()) {
                     pchr = map.getCharacterById(partychar.getId());
-                    if(partychar.isOnline() && pchr.isAlive() && pchr.getMap() == map)
-                        partyMemOnline++;
+                    if (pchr != null) {
+                        if (partychar.isOnline() && pchr.isAlive() && pchr.getMap() == map ) {
+                            partyMemOnline++;
+                        }
+                    }
                     if (attacker.getKey().getLevel() - partychar.getLevel() <= 5 || stats.getLevel() - partychar.getLevel() <= 5) {
-                        
+
                         if (pchr != null) {
                             if (pchr.isAlive() && pchr.getMap() == map) {
                                 expApplicable.add(pchr);
@@ -1666,8 +1671,9 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                         }
                     }
                 }
-               
                 
+                
+
                 if (expApplicable.size() > 1) {
                     averagePartyLevel /= expApplicable.size();
                 } else {
@@ -1689,11 +1695,12 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                         levelMod = 1.0;
                     }
                     iexp += (int) Math.round(expFraction * expWeight * levelMod);
-                    if(partyMemOnline > 1)
-                        expMap.put(expReceiver, new ExpMap(((Double)(iexp * ServerConstants.RATE_PARTY_EXP + 0.05 * partyMemOnline )).intValue(), (byte) (expApplicable.size() + added_partyinc), Class_Bonus_EXP, Premium_Bonus_EXP));
-                    else
-                        expMap.put(expReceiver, new ExpMap(iexp, (byte) (expApplicable.size() + added_partyinc), Class_Bonus_EXP, Premium_Bonus_EXP));
-                   
+                    if (partyMemOnline > 1) {
+                        expMap.put(expReceiver, new ExpMap(((Double) (iexp * ServerConstants.RATE_PARTY_EXP + 0.05 * partyMemOnline)).intValue(), (byte) (expApplicable.size() + added_partyinc), Class_Bonus_EXP, Premium_Bonus_EXP));
+                    } else {
+                        expMap.put(expReceiver, new ExpMap(((Double) (iexp * ServerConstants.RATE_SINGLE_PLAYER_EXP)).intValue(), (byte) (expApplicable.size() + added_partyinc), Class_Bonus_EXP, Premium_Bonus_EXP));
+                    }
+
                 }
             }
             ExpMap expmap;

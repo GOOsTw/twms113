@@ -337,10 +337,10 @@ public class CashShopOperation {
                 if (coupon) {
                     final MapleInventoryType type = getInventoryType(slea.readInt());
 
-                    if (chr.getCSPoints(1) >= 400 && chr.getInventory(type).getSlotLimit() < 89) {
-                        chr.modifyCSPoints(1, -400, false);
+                    if (chr.getCSPoints(1) >= 100 && chr.getInventory(type).getSlotLimit() < 89) {
+                        chr.modifyCSPoints(1, -100, false);
                         chr.getInventory(type).addSlot((byte) 8);
-                        chr.dropMessage(1, "Slots has been increased to " + chr.getInventory(type).getSlotLimit());
+                        chr.dropMessage(1, "欄位已經被擴充至" + chr.getInventory(type).getSlotLimit());
                     } else {
                         c.sendPacket(MTSCSPacket.sendCSFail(0xA4));
                     }
@@ -350,7 +350,7 @@ public class CashShopOperation {
                     if (chr.getCSPoints(1) >= 300 && chr.getInventory(type).getSlotLimit() < 93) {
                         chr.modifyCSPoints(1, -300, false);
                         chr.getInventory(type).addSlot((byte) 4);
-                        chr.dropMessage(1, "Slots has been increased to " + chr.getInventory(type).getSlotLimit());
+                        chr.dropMessage(1, "欄位已經被擴充至" + chr.getInventory(type).getSlotLimit());
                     } else {
                         c.sendPacket(MTSCSPacket.sendCSFail(0xA4));
                     }
@@ -359,8 +359,8 @@ public class CashShopOperation {
                 break;
             }
             case 7: {
-                if (chr.getCSPoints(1) >= 300 && chr.getStorage().getSlots() < 45) {
-                    chr.modifyCSPoints(1, -300, false);
+                if (chr.getCSPoints(1) >= 100 && chr.getStorage().getSlots() < 45) {
+                    chr.modifyCSPoints(1, -100, false);
                     chr.getStorage().increaseSlots((byte) 4);
                     chr.getStorage().saveToDB();
                     c.sendPacket(MTSCSPacket.increasedStorageSlots(chr.getStorage().getSlots()));

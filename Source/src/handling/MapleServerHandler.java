@@ -379,6 +379,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 break;
             case CLIENT_LOGOUT: {
                 CharLoginHandler.handleLogout(slea, c);
+                break;
             }
             case HELLO_CHANNEL:
                 CharLoginHandler.handleWelcome(c);
