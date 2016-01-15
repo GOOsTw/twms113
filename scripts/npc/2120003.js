@@ -1,0 +1,40 @@
+﻿/* 鬼娃恰吉PQ by:Kodan*/
+var Ghostbaby = 5; //一天五場
+var status = 0;
+var randTalk = Math.floor(Math.random()*10) +1;
+
+function start() {
+   cm.sendNext("蒐集到解夢鑰匙了嗎？讓我來幫你解夢吧！看看你在萬聖節會出現什麼樣的夢，解夢鑰匙就由我來拿走吧！");
+}
+
+function action(mode, type, selection) {
+	if (cm.getBossLog('Ghostbaby') >= 5) {
+		cm.sendOk("每天只能打5次鬼娃恰吉！");
+	}
+	if (cm.haveItem(4001337)) {
+	if (randTalk >= 3) {
+		cm.sendOk("夢裡面的南瓜正在睡覺呢~如果你帶一些南瓜碎片，他有可能會喚醒也說不定？");
+		cm.gainItem(4001337, -1);
+	} else {
+		cm.sendNext("哦不~可怕的噩夢就要開始了，你夢見了鬼娃恰吉正在開始破壞萬聖節派對，並搶走孩子們的糖果！好好教訓他們，並把他們趕出去吧！");
+        var em = cm.getEventManager("Ghostbaby");
+        if (em == null) {
+			cm.sendOk("當前副本有問題，請聯絡管理員....");
+        } else {
+			var prop = em.getProperty("state");
+            if (prop.equals("0") || prop == null) {
+                em.startInstance(cm.getPlayer(), cm.getMap());
+                cm.setBossLog("Ghostbaby");
+				cm.gainItem(4001337, -1);
+                cm.dispose();
+                return;
+            } else {
+                cm.sendOk("裡面已經有人在挑戰鬼娃恰吉了...");
+                }
+		}
+	}
+	} else {
+		cm.sendOk("貌似沒有鑰匙呢不能做夢了！");
+	}
+	cm.dispose();
+}
