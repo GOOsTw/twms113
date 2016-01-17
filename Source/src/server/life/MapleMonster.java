@@ -1696,7 +1696,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                     }
                     iexp += (int) Math.round(expFraction * expWeight * levelMod);
                     if (partyMemOnline > 1) {
-                        expMap.put(expReceiver, new ExpMap(((Double) (iexp * ServerConstants.RATE_PARTY_EXP + 0.05 * partyMemOnline)).intValue(), (byte) (expApplicable.size() + added_partyinc), Class_Bonus_EXP, Premium_Bonus_EXP));
+                        expMap.put(expReceiver, new ExpMap(((Double) (iexp * ServerConstants.RATE_PARTY_EXP + 0.02 * partyMemOnline)).intValue(), (byte) (expApplicable.size() + added_partyinc), Class_Bonus_EXP, Premium_Bonus_EXP));
                     } else {
                         expMap.put(expReceiver, new ExpMap(((Double) (iexp * ServerConstants.RATE_SINGLE_PLAYER_EXP)).intValue(), (byte) (expApplicable.size() + added_partyinc), Class_Bonus_EXP, Premium_Bonus_EXP));
                     }

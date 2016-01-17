@@ -26,6 +26,7 @@ import handling.MaplePacket;
 import handling.channel.ChannelServer;
 import handling.world.World;
 import server.MapleInventoryManipulator;
+import server.MapleItemInformationProvider;
 import server.RandomRewards;
 import server.Randomizer;
 import server.Timer.EventTimer;
@@ -64,48 +65,60 @@ public abstract class MapleEvent {
 
     public void givePrize(final MapleCharacter chr) {
         final int reward = RandomRewards.getInstance().getEventReward();
-        if (reward == 0) {
-            chr.gainMeso(66666, true, false, false);
-            chr.dropMessage(5, "你獲得 66666 楓幣");
-        } else if (reward == 1) {
-            chr.gainMeso(399999, true, false, false);
-            chr.dropMessage(5, "你獲得 399999 楓幣");
-        } else if (reward == 2) {
-            chr.gainMeso(666666, true, false, false);
-            chr.dropMessage(5, "你獲得 666666 楓幣");
-        } else if (reward == 3) {
-            chr.addFame(10);
-            chr.dropMessage(5, "你獲得 10 名聲");
-        } else {
-            int max_quantity = 1;
-            switch (reward) {
-                case 5062000:
-                    max_quantity = 3;
-                    break;
-                case 5220000:
-                    max_quantity = 25;
-                    break;
-                case 4031307:
-                case 5050000:
-                    max_quantity = 5;
-                    break;
-                case 2022121:
-                    max_quantity = 10;
-                    break;
-            }
-            final int quantity = (max_quantity > 1 ? Randomizer.nextInt(max_quantity) : 0) + 1;
-            if (MapleInventoryManipulator.checkSpace(chr.getClient(), reward, quantity, "")) {
-                MapleInventoryManipulator.addById(chr.getClient(), reward, (short) quantity);
-            } else {
-                // givePrize(chr); //do again until they get
-                chr.gainMeso(100000, true, false, false);
-                chr.dropMessage(5, "參加獎 100000 楓幣");
-            }
-            //5062000 = 1-3
-            //5220000 = 1-25
-            //5050000 = 1-5
-            //2022121 = 1-10
-            //4031307 = 1-5
+        switch (reward) {
+            case 0:
+                chr.gainMeso(66666, true, false, false);
+                chr.dropMessage(5, "你獲得 66666 楓幣");
+                break;
+            case 1:
+                chr.gainMeso(399999, true, false, false);
+                chr.dropMessage(5, "你獲得 399999 楓幣");
+                break;
+            case 2:
+                chr.gainMeso(666666, true, false, false);
+                chr.dropMessage(5, "你獲得 666666 楓幣");
+                break;
+            case 3:
+                chr.addFame(10);
+                chr.dropMessage(5, "你獲得 10 名聲");
+                break;
+            case 4:
+                chr.modifyCSPoints(2, 10, true);
+                break;
+            case 5:
+                chr.modifyCSPoints(2, 50, true);
+                break;
+            case 6:
+                chr.modifyCSPoints(2, 100, true);
+                break;
+            default:
+                int max_quantity = 1;
+                switch (reward) {
+                    case 5062000:
+                        max_quantity = 3;
+                        break;
+                    case 5220000:
+                        max_quantity = 25;
+                        break;
+                    case 4031307:
+                    case 5050000:
+                        max_quantity = 5;
+                        break;
+                    case 2022121:
+                        max_quantity = 10;
+                        break;
+                }
+                final int quantity = (max_quantity > 1 ? Randomizer.nextInt(max_quantity) : 0) + 1;
+                if (MapleInventoryManipulator.checkSpace(chr.getClient(), reward, quantity, "")) {
+                    MapleInventoryManipulator.addById(chr.getClient(), reward, (short) quantity);
+                    
+                    chr.dropMessage(5, "獲得了 " + MapleItemInformationProvider.getInstance().getName(reward));
+                } else {
+                    chr.gainMeso(100000, true, false, false);
+                    chr.dropMessage(5, "參加獎 100000 楓幣");
+                }
+
+                break;
         }
     }
 

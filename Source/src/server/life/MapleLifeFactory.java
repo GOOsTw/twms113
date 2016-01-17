@@ -134,9 +134,9 @@ public class MapleLifeFactory {
             stats.setMagicDefense((short) MapleDataTool.getIntConvert("MDDamage", monsterInfoData, 0));
             stats.setEva((short) MapleDataTool.getIntConvert("eva", monsterInfoData, 0));
             if(!stats.isBoss()) {
-                stats.setHp(stats.getHp() * ServerConstants.RATE_MONSTER_HP);
+                stats.setHp(((Double)(stats.getHp() * ServerConstants.RATE_MONSTER_HP)).intValue());
             } else {
-                stats.setHp(stats.getHp() * ServerConstants.RATE_BOSS_HP);
+                stats.setHp(((Double)(stats.getHp() * ServerConstants.RATE_BOSS_HP)).intValue());
             }
             final boolean hideHP = MapleDataTool.getIntConvert("HPgaugeHide", monsterInfoData, 0) > 0 || MapleDataTool.getIntConvert("hideHP", monsterInfoData, 0) > 0;
             final MapleData selfd = monsterInfoData.getChildByPath("selfDestruction");

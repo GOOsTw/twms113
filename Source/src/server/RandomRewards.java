@@ -9,13 +9,13 @@ import constants.GameConstants;
 public class RandomRewards {
 
     private final static RandomRewards instance = new RandomRewards();
-    private List<Integer> compiledGold = null;
-    private List<Integer> compiledSilver = null;
+    private List<Integer> 金寶箱獎勵 = null;
+    private List<Integer> 銀寶箱獎勵 = null;
     private List<Integer> compiledFishing = null;
-    private List<Integer> compiledEvent = null;
-    private List<Integer> compiledEventC = null;
-    private List<Integer> compiledEventB = null;
-    private List<Integer> compiledEventA = null;
+    private List<Integer> 活動獎勵大獎 = null;
+    private List<Integer> 活動普通獎勵 = null;
+    private List<Integer> 活動獎勵三獎 = null;
+    private List<Integer> 活動獎勵二獎 = null;
 
     public static RandomRewards getInstance() {
         return instance;
@@ -28,14 +28,14 @@ public class RandomRewards {
 
         processRewards(returnArray, GameConstants.goldrewards);
 
-        compiledGold = returnArray;
+        金寶箱獎勵 = returnArray;
 
         // Silver Box
         returnArray = new ArrayList<>();
 
         processRewards(returnArray, GameConstants.silverrewards);
 
-        compiledSilver = returnArray;
+        銀寶箱獎勵 = returnArray;
 
         // Fishing Rewards
         returnArray = new ArrayList<>();
@@ -47,27 +47,27 @@ public class RandomRewards {
         // Event Rewards
         returnArray = new ArrayList<>();
 
-        processRewards(returnArray, GameConstants.eventCommonReward);
+        processRewards(returnArray, GameConstants.活動普獎);
 
-        compiledEventC = returnArray;
-
-        returnArray = new ArrayList<>();
-
-        processRewards(returnArray, GameConstants.eventUncommonReward);
-
-        compiledEventB = returnArray;
+        活動普通獎勵 = returnArray;
 
         returnArray = new ArrayList<>();
 
-        processRewards(returnArray, GameConstants.eventRareReward);
+        processRewards(returnArray, GameConstants.活動三獎);
 
-        compiledEventA = returnArray;
+        活動獎勵三獎 = returnArray;
 
         returnArray = new ArrayList<>();
 
-        processRewards(returnArray, GameConstants.eventSuperReward);
+        processRewards(returnArray, GameConstants.活動二獎);
 
-        compiledEvent = returnArray;
+        活動獎勵二獎 = returnArray;
+
+        returnArray = new ArrayList<>();
+
+        processRewards(returnArray, GameConstants.活動大獎);
+
+        活動獎勵大獎 = returnArray;
     }
 
     private void processRewards(final List<Integer> returnArray, final int[] list) {
@@ -85,11 +85,11 @@ public class RandomRewards {
     }
 
     public final int getGoldBoxReward() {
-        return compiledGold.get(Randomizer.nextInt(compiledGold.size()));
+        return 金寶箱獎勵.get(Randomizer.nextInt(金寶箱獎勵.size()));
     }
 
     public final int getSilverBoxReward() {
-        return compiledSilver.get(Randomizer.nextInt(compiledSilver.size()));
+        return 銀寶箱獎勵.get(Randomizer.nextInt(銀寶箱獎勵.size()));
     }
 
     public final int getFishingReward() {
@@ -98,14 +98,14 @@ public class RandomRewards {
 
     public final int getEventReward() {
         final int chance = Randomizer.nextInt(100);
-        if (chance < 50) {
-            return compiledEventC.get(Randomizer.nextInt(compiledEventC.size()));
+        if (chance < 45) {
+            return 活動普通獎勵.get(Randomizer.nextInt(活動普通獎勵.size()));
         } else if (chance < 80) {
-            return compiledEventB.get(Randomizer.nextInt(compiledEventB.size()));
+            return 活動獎勵三獎.get(Randomizer.nextInt(活動獎勵三獎.size()));
         } else if (chance < 95) {
-            return compiledEventA.get(Randomizer.nextInt(compiledEventA.size()));
+            return 活動獎勵二獎.get(Randomizer.nextInt(活動獎勵二獎.size()));
         } else {
-            return compiledEvent.get(Randomizer.nextInt(compiledEvent.size()));
+            return 活動獎勵大獎.get(Randomizer.nextInt(活動獎勵大獎.size()));
         }
     }
 }

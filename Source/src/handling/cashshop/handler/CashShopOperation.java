@@ -98,6 +98,7 @@ public class CashShopOperation {
     }
 
     public static void sendCashShopUpdate(final MapleClient c) {
+        c.getPlayer().reloadCSPoints();
         c.sendPacket(MTSCSPacket.showCashShopAcc(c));
         c.sendPacket(MTSCSPacket.showGifts(c));
         RefreshCashShop(c);

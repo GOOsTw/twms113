@@ -144,7 +144,7 @@ public class Event_DojoAgent {
             final int temp = (currentmap.getId() - 925000000) / 100;
             final int thisStage = (int) (temp - ((temp / 100) * 100));
             final int points = getDojoPoints(thisStage);
-
+            final int cspoints = getCSPoints(thisStage);
             final ChannelServer ch = c.getClient().getChannelServer();
             if (!fromResting) {
                 clearMap(currentmap, true);
@@ -154,20 +154,16 @@ public class Event_DojoAgent {
                         if (chr != null) {
                             final int point = (points * 3);
                             final int pLevel = c.getParty().getAverageLevel();
-                            int cspoints = (int) ((((double)thisStage) * 3.3 + ((double)(thisStage - pLevel)) * 4 ) * 1.1 );
-                            if (cspoints <= 0) {
-                                cspoints = 5;
-                            }
+                            
+                            
                             chr.setDojo(chr.getDojo() + point);
+                            chr.modifyCSPoints(2, points, true);
                             chr.getClient().sendPacket(MaplePacketCreator.Mulung_Pts(point, chr.getDojo()));
                         }
                     }
                 } else {
                     final int point = ((points + 1) * 3);
-                    int cspoints = (int) ((((double)thisStage) * 3.3 + ((double)(thisStage - c.getLevel())) * 5 ) * 1.3 );
-                    if (cspoints <= 0) {
-                        cspoints = 5;
-                    }
+                    c.modifyCSPoints(2, cspoints, true);
                     c.setDojo(c.getDojo() + point);
                     c.getClient().sendPacket(MaplePacketCreator.Mulung_Pts(point, c.getDojo()));
                 }
@@ -239,6 +235,53 @@ public class Event_DojoAgent {
             }
         }
         map.resetFully();
+    }
+    
+    private static final int getCSPoints(final int stage) {
+
+        switch (stage) {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+                return 1;
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+                return 2;
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+            case 17:
+                return 3;
+            case 19:
+            case 20:
+            case 21:
+            case 22:
+            case 23:
+                return 4;
+            case 25:
+            case 26:
+            case 27:
+            case 28:
+            case 29:
+                return 5;
+            case 31:
+            case 32:
+            case 33:
+            case 34:
+            case 35:
+                return 8;
+            case 37:
+            case 38:
+                return 10;
+            default:
+                return 0;
+        }
     }
 
     private static final int getDojoPoints(final int stage) {
