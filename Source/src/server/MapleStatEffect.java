@@ -419,18 +419,19 @@ public class MapleStatEffect implements Serializable {
                 case 30008002:
                     statups.add(new Pair<>(MapleBuffStat.SHARP_EYES, ret.x << 8 | ret.y));
                     break;
-
-                case 21101003: // Body Pressure
+                case 21111001: // 精準擊退
+                    statups.add(new Pair<>(MapleBuffStat.SMART_KNOCKBACK, ret.x));
+                    break;
+                case 21101003: // 強化連擊
                     statups.add(new Pair<>(MapleBuffStat.BODY_PRESSURE, ret.x));
                     break;
                 case 21000000: //矛之鬥氣
                     statups.add(new Pair<>(MapleBuffStat.ARAN_COMBO, 100));
                     break;
-                case 21100005: // Combo Drain
+                case 21100005: // 連環吸血
                 case 32101004:
                     statups.add(new Pair<>(MapleBuffStat.COMBO_DRAIN, ret.x));
                     break;
-
                 case 22181003: //soul stone
                     statups.add(new Pair<>(MapleBuffStat.SOUL_STONE, 1));
                     break;
