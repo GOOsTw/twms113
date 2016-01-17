@@ -733,7 +733,7 @@ public class PlayerStats implements Serializable {
             final MapleStatEffect eff = chra.getStatForBuff(MapleBuffStat.MONSTER_RIDING);
             pickRate = eff.getProb();
         }
-        
+
         buff = chra.getBuffedValue(MapleBuffStat.LIGHTNING_CHARGE);
         if (buff != null) {
             final MapleStatEffect eff = chra.getStatForBuff(MapleBuffStat.LIGHTNING_CHARGE);
@@ -1106,6 +1106,34 @@ public class PlayerStats implements Serializable {
     }
 
     public final float getHealHP() {
+        int shouldHealHp = 10;
+        Skill bx;
+        int bof;
+        MapleStatEffect eff;
+        bx = (Skill) SkillFactory.getSkill(1000000);
+        bof = chr.get().getSkillLevel(bx);
+        if (bof > 0) {
+            eff = bx.getEffect(bof);
+            shouldHealHP += eff.getHp();
+        }
+        bx = (Skill) SkillFactory.getSkill(1320008);
+        bof = chr.get().getSkillLevel(bx);
+        if (bof >0) {
+            eff = bx.getEffect(bof);
+            shouldHealHP += eff.getHp();
+        }
+        bx = (Skill) SkillFactory.getSkill(4100002);
+        bof = chr.get().getSkillLevel(bx);
+        if (bof > 0) {
+            eff = bx.getEffect(bof);
+            shouldHealHP += eff.getHp();
+        }
+        bx = (Skill) SkillFactory.getSkill(4200001);
+        bof = chr.get().getSkillLevel(bx);
+        if (bof > 0) {
+            eff = bx.getEffect(bof);
+            shouldHealHP += eff.getHp();
+        }
         return shouldHealHP;
     }
 
