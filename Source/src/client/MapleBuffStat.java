@@ -149,8 +149,21 @@ public enum MapleBuffStat implements Serializable {
     FINALATTACK(63),
     //自然力重置     
     ELEMENT_RESET(65),
-    //(TMS_風影漫步)
+    /* 
+    風影漫步(原67但跟隱身術一樣效果所以這使用 Buff基址10)
+    already added buff stat effect
+    */
     WIND_WALK(10),
+    // 矛之鬥氣
+    ARAN_COMBO(68),
+    // 連環吸血
+    COMBO_DRAIN(69),
+    // 宙斯之盾
+    COMBO_BARRIER(70),
+    // 強化連擊
+    BODY_PRESSURE(71),
+    // 精準擊退
+    SMART_KNOCKBACK(72),
     SOUL_STONE(73), //same as pyramid_pq
     ENERGY_CHARGE(75),
     DASH_SPEED(76),
@@ -163,10 +176,7 @@ public enum MapleBuffStat implements Serializable {
     LIGHTNING_CHARGE(84),
     MIRROR_IMAGE(85),
     OWL_SPIRIT(86),
-    ARAN_COMBO(92),
-    COMBO_DRAIN(93),
-    COMBO_BARRIER(94),
-    BODY_PRESSURE(95), //POST BB
+
     //DUMMY_STAT0     (0x8000000L, true), //appears on login
     //DUMMY_STAT1     (0x10000000L, true),
     //DUMMY_STAT2     (0x20000000L, true),

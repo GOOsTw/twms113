@@ -1,10 +1,11 @@
-/* Author: aaroncsn(MapleSea Like)
-	NPC Name: 		Small Trunk
-	Map(s): 		Victoria Road : Top of the Tree That Grew (101010103)
-	Description: 		A tree
-*/
-
+/*
+ * NPC: 潔淨的樹根
+ * 任務: 很可疑的愛溫
+ */
 function start() {
-    cm.sendOk("A sweet scent of tree bark tickles my nose.");
-    cm.dispose();
+    if (cm.isQuestActive(20716) && !cm.haveItem(4032142)) {
+        cm.gainItem(4032142, 1);
+        cm.sendOk("你從樹根中找到了#b清澈的樹脂#k");
+        cm.dispose();
+    }
 }
