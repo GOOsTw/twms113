@@ -23,7 +23,8 @@ function cancelSchedule() {
 
 function start() {
     scheduleNew();
-    em.getChannelServer().giveCSPoints();
+    if(em.getChannelServer() != null)
+        em.getChannelServer().giveCSPoints();
     var iter = em.getInstances().iterator();
     while (iter.hasNext()) {
         var eim = iter.next();
