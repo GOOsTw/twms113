@@ -1,7 +1,7 @@
 ﻿/**
   NPC : 黑影
   任務:肥肥農場的黑影 20716
- */*
+ */`
 function start() {
     var status = cm.getQuestStatus(20706);
 
