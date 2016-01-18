@@ -351,7 +351,7 @@ public class DamageParse {
                         case SkillType.俠盜.妙手術:  //steal
                             monster.handleSteal(player);
                             break;
-                        //case 21101003: // body pressure
+                        case SkillType.狂狼勇士2.強化連擊:  // body pressure
                         case SkillType.狂狼勇士1.雙重攻擊: // Double attack
                         case SkillType.狂狼勇士2.三重攻擊: // Triple Attack
                         case SkillType.狂狼勇士2.突刺之矛: // Pole Arm Push

@@ -155,15 +155,15 @@ public enum MapleBuffStat implements Serializable {
     */
     WIND_WALK(10),
     // 矛之鬥氣
-    ARAN_COMBO(68),
+    ARAN_COMBO(66), //68
     // 連環吸血
-    COMBO_DRAIN(69),
+    COMBO_DRAIN(67), //69
     // 宙斯之盾
-    COMBO_BARRIER(70),
+    COMBO_BARRIER(68), //70
     // 強化連擊
-    BODY_PRESSURE(71),
+    BODY_PRESSURE(69), //71
     // 精準擊退
-    SMART_KNOCKBACK(72),
+    SMART_KNOCKBACK(70), //72
     SOUL_STONE(73), //same as pyramid_pq
     ENERGY_CHARGE(75),
     DASH_SPEED(76),
