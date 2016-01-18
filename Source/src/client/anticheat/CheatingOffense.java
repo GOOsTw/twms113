@@ -23,8 +23,8 @@ package client.anticheat;
 public enum CheatingOffense {
 
     FAST_SUMMON_ATTACK((byte) 5, 6000, 10, (byte) 2),
-    FASTATTACK((byte) 5, 6000, 50, (byte) 2),
-    FASTATTACK2((byte) 5, 9000, 20, (byte) 2),
+    FASTATTACK_CLIENTSIDE((byte) 5, 6000, 50, (byte) 2),
+    FASTATTACK_SERVERSIDE((byte) 5, 9000, 20, (byte) 2),
     MOVE_MONSTERS((byte) 1, 30000),
     FAST_HP_MP_REGEN((byte) 5, 20000, 10, (byte) 2),
     SAME_DAMAGE((byte) 2, 30000, 150),

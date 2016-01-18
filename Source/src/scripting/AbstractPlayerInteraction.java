@@ -53,6 +53,7 @@ import tools.packet.PetPacket;
 import tools.packet.UIPacket;
 import client.inventory.MapleInventoryIdentifier;
 import handling.world.World;
+import server.Timer;
 import server.events.MapleEvent;
 import server.events.MapleEventType;
 import server.maps.MapleMapFactory;
@@ -521,6 +522,7 @@ public abstract class AbstractPlayerInteraction {
         }
         return getParty().getLeader().getId() == c.getPlayer().getId();
     }
+    
 
     public final boolean isAllPartyMembersAllowedJob(final int job) {
         if (c.getPlayer().getParty() == null) {
@@ -606,6 +608,41 @@ public abstract class AbstractPlayerInteraction {
                 curChar.changeMap(target, target.getPortal(0));
             }
         }
+    }
+
+        public void setPlayerVariable(String name, String value) {
+        c.getPlayer().setPlayerVariable(name, value);
+    }
+    
+    public String getPlayerVariable(String name) {
+        return c.getPlayer().getPlayerVariable(name);
+    }
+    
+    public void deletePlayerVariable(String name) {
+        c.getPlayer().deletePlayerVariable(name);
+    }
+    
+    public void warpBack(int mid, final int retmap, final int time) {
+        warpBack(mid, retmap, time, "");
+    }
+
+    public void warpBack(int mid, final int retmap, final int time, final String msg) {
+
+        MapleMap warpMap = c.getChannelServer().getMapFactory().getMap(mid);
+        c.getPlayer().changeMap(warpMap, warpMap.getPortal(0));
+        c.sendPacket(MaplePacketCreator.getClock(time));
+        Timer.EventTimer.getInstance().schedule(new Runnable() {
+            @Override
+            public void run() {
+                MapleMap warpMap = c.getChannelServer().getMapFactory().getMap(retmap);
+                if (c.getPlayer() != null) {
+                    c.sendPacket(MaplePacketCreator.stopClock());
+                    c.getPlayer().changeMap(warpMap, warpMap.getPortal(0));
+                    if(!msg.equals(""))
+                        c.getPlayer().dropMessage(6, msg);
+                }
+            }
+        }, 1000 * time); //設定時間, (1 秒 = 1000)
     }
 
     public void gainMeso(int gain) {

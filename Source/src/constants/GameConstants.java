@@ -2173,7 +2173,7 @@ public class GameConstants {
     }
 // Custom Balloon Tips on the Login Screen
     private static final List<Balloon> lBalloon = Arrays.asList(
-            new Balloon("歡迎來到SyncMS", 236, 122),
+            new Balloon("歡迎來到啾咪谷", 236, 122),
             new Balloon("禁止開外掛", 0, 276),
             new Balloon("遊戲愉快", 196, 263));
 
