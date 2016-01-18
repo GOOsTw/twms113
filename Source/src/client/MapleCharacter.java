@@ -3499,7 +3499,15 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public boolean isAlive() {
         return stats.getHp() > 0;
     }
-
+    
+    public boolean isKOC(final int job) {
+        return job >= 1000 && job < 2000;
+    }
+    
+    public boolean isAran(final int job) {
+        return job >= 2000 && job <= 2112 && job != 2001;
+    }
+    
     @Override
     public void sendDestroyData(MapleClient client) {
         client.sendPacket(MaplePacketCreator.removePlayerFromMap(this.getObjectId()));
