@@ -129,6 +129,10 @@ function action(mode, type, selection) {
                     cm.dispose();
                 }
             } else if (status == 1) {
+                if (cm.getMeso() < cost) {
+                   cm.sendPrev("請確認身上楓幣是否足夠");
+                   cm.dispose();
+                }
                 sel = selection;
                 if (sel == 0) {
                     cm.sendNext("你想要去這個地方旅行? #b#m" + togo1 + "##k? 我將帶你去只需要 #b3,000 楓幣#k. 你現在願意去?");
@@ -146,6 +150,7 @@ function action(mode, type, selection) {
             } else if (status == 2) {
                 if(!back)
                     cm.saveLocation("WORLDTOUR");
+                cm.gainMeso(-cost);
                 if (sel == 0) {
                     cm.warp(togo1);
                 } else if (sel == 1) {
@@ -158,7 +163,6 @@ function action(mode, type, selection) {
                     cm.warp(togo5);
                 } else if (sel ==5) {
                     cm.warp(togo6);
-
                 }
                 cm.dispose();
             }
