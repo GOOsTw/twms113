@@ -1548,7 +1548,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
         time *= 1000;
         mapTimeLimitTask = MapTimer.getInstance().register(new Runnable() {
-
             @Override
             public void run() {
                 changeMap(to, to.getPortal(0));
@@ -1654,10 +1653,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
         }
         stats.recalcLocalStats();
-        //System.out.println("Effect registered. Effect: " + effect.getSourceId());
+        if(this.isGM())
+            System.out.println("[BUFF 註冊] 來源 :"  + effect.getSourceId());
     }
 
-    public List<MapleBuffStat> getBuffStats(final MapleStatEffect effect, final long startTime) {
+    public List<MapleBuffStat> getBuffStatsFromStatEffect(final MapleStatEffect effect, final long startTime) {
         final List<MapleBuffStat> bstats = new ArrayList<>();
         final Map<MapleBuffStat, MapleBuffStatValueHolder> allBuffs = new EnumMap<>(effects);
         for (Entry<MapleBuffStat, MapleBuffStatValueHolder> stateffect : allBuffs.entrySet()) {
@@ -1669,7 +1669,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return bstats;
     }
 
-    private boolean deregisterBuffStats(List<MapleBuffStat> stats) {
+    private boolean unRegisterBuffStats(List<MapleBuffStat> stats) {
         boolean clonez = false;
         List<MapleBuffStatValueHolder> effectsToCancel = new ArrayList<>(stats.size());
         for (MapleBuffStat stat : stats) {
@@ -1715,7 +1715,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
         }
         for (MapleBuffStatValueHolder cancelEffectCancelTasks : effectsToCancel) {
-            if (getBuffStats(cancelEffectCancelTasks.effect, cancelEffectCancelTasks.startTime).isEmpty()) {
+            if (getBuffStatsFromStatEffect(cancelEffectCancelTasks.effect, cancelEffectCancelTasks.startTime).isEmpty()) {
                 if (cancelEffectCancelTasks.schedule != null) {
                     cancelEffectCancelTasks.schedule.cancel(false);
                 }
@@ -1737,7 +1737,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public void cancelEffect(final MapleStatEffect effect, final boolean overwrite, final long startTime, List<Pair<MapleBuffStat, Integer>> statups) {
         List<MapleBuffStat> buffstats;
         if (!overwrite) {
-            buffstats = getBuffStats(effect, startTime);
+            buffstats = getBuffStatsFromStatEffect(effect, startTime);
         } else {
             buffstats = new ArrayList<>(statups.size());
             for (Pair<MapleBuffStat, Integer> statup : statups) {
@@ -1747,7 +1747,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (buffstats.size() <= 0) {
             return;
         }
-        final boolean clonez = deregisterBuffStats(buffstats);
+        final boolean clonez = unRegisterBuffStats(buffstats);
         if (effect.isMagicDoor()) {
             // remove for all on maps
             if (!getDoors().isEmpty()) {
@@ -1801,7 +1801,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public void cancelBuffStats(MapleBuffStat... stat) {
         List<MapleBuffStat> buffStatList = Arrays.asList(stat);
-        deregisterBuffStats(buffStatList);
+        unRegisterBuffStats(buffStatList);
         cancelPlayerBuffs(buffStatList);
     }
 
@@ -5899,5 +5899,75 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             giveCSpointsLasttime = current;
         }
 
+    }
+    
+     public void setPlayerVariable(String name, String value) {
+        try {
+            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM player_variables WHERE name = ? AND characterid = ?");
+            ps.setString(1, name);
+            ps.setInt(2, id);
+            ResultSet rs = ps.executeQuery();
+            PreparedStatement ps2;
+            if (rs.next()) {
+                ps2 = DatabaseConnection.getConnection().prepareStatement("UPDATE player_variables SET value = ? WHERE characterid = ? AND name = ?");
+                ps2.setString(1, value);
+                ps2.setInt(2, id);
+                ps2.setString(3, name);
+            } else {
+                ps2 = DatabaseConnection.getConnection().prepareStatement("INSERT INTO player_variables (characterid, name, value) VALUES (?, ?, ?)");
+                ps2.setInt(1, id);
+                ps2.setString(2, name);
+                ps2.setString(3, value);
+            }
+            ps.close();
+            rs.close();
+            ps2.execute();
+            ps2.close();
+        } catch (SQLException ex) {
+            System.out.println("Error setting player variable: " + ex);
+        }
+    }
+    
+    public String getPlayerVariable(String name) {
+        try {
+            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM player_variables WHERE name = ? AND characterid = ?");
+            ps.setString(1, name);
+            ps.setInt(2, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                String value = rs.getString("value");
+                ps.close();
+                rs.close();
+                return value;
+            } else {
+                ps.close();
+                rs.close();
+                return null;
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error getting player variable: " + ex);
+            return null;
+        }
+    }
+    
+    public void deletePlayerVariable(String name) {
+        try {
+            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM player_variables WHERE name = ? AND characterid = ?");
+            ps.setString(1, name);
+            ps.setInt(2, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                ps.close();
+                rs.close();
+                ps = DatabaseConnection.getConnection().prepareStatement("DELETE FROM player_variables WHERE name = ? AND characterid = ?");
+                ps.setString(1, name);
+                ps.setInt(2, id);
+                ps.execute();
+            }
+            ps.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println("Error deleting player variable: " + ex);
+        }
     }
 }

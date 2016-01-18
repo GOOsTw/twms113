@@ -27,10 +27,10 @@ public class CheatTracker {
     private final Lock rL = lock.readLock(), wL = lock.writeLock();
     private final Map<CheatingOffense, CheatingOffenseEntry> offenses = new LinkedHashMap<CheatingOffense, CheatingOffenseEntry>();
     private final WeakReference<MapleCharacter> chr;
-    // For keeping track of speed attack hack.
+ 
     private int lastAttackTickCount = 0;
-    private byte Attack_tickResetCount = 0;
-    private long Server_ClientAtkTickDiff = 0;
+    private byte attackResetCount = 0;
+    private long ServerClientAttackTickCountDiff = 0;
     private long lastDamage = 0;
     private long takingDamageSince;
     private int numSequentialDamage = 0;
@@ -58,29 +58,47 @@ public class CheatTracker {
         takingDamageSince = System.currentTimeMillis();
     }
 
-    public final void checkAttack(final int skillId, final int tickcount) {
-        final short AtkDelay = GameConstants.getAttackDelay(skillId);
-        if ((tickcount - lastAttackTickCount) < AtkDelay) {
-            registerOffense(CheatingOffense.FASTATTACK);
+    /**
+     * 檢查
+     * @param skillID
+     * @param tickCoint 
+     */
+    public final void checkAttackDelay(final int skillID, final int tickCoint) {
+        final short attackDelay = GameConstants.getAttackDelay(skillID);
+        /**
+         *  檢查客戶端傳回的攻擊時間
+         */
+        if ((tickCoint - lastAttackTickCount) < attackDelay) {
+            registerOffense(CheatingOffense.FASTATTACK_CLIENTSIDE);
         }
-        final long STime_TC = System.currentTimeMillis() - tickcount; // hack = - more
-        if (Server_ClientAtkTickDiff - STime_TC > 250) { // 250 is the ping, TODO
-            registerOffense(CheatingOffense.FASTATTACK2);
+        /**
+         *  檢查伺服器端的攻擊時間，阻擋更改客戶端時間加速
+         * 
+         *  ServerClientAttackTickCountDiff 伺服器與客戶端時間差距
+         */
+        final long STime_TC = System.currentTimeMillis() - tickCoint; // hack = - more
+        if (ServerClientAttackTickCountDiff - STime_TC > 250) { // 250 is the ping, TODO
+            registerOffense(CheatingOffense.FASTATTACK_SERVERSIDE);
         }
-        // if speed hack, client tickcount values will be running at a faster pace
-        // For lagging, it isn't an issue since TIME is running simotaniously, client
-        // will be sending values of older time
 
 //	System.out.println("Delay [" + skillId + "] = " + (tickcount - lastAttackTickCount) + ", " + (Server_ClientAtkTickDiff - STime_TC));
-        Attack_tickResetCount++; // Without this, the difference will always be at 100
-        if (Attack_tickResetCount >= (AtkDelay <= 200 ? 2 : 4)) {
-            Attack_tickResetCount = 0;
-            Server_ClientAtkTickDiff = STime_TC;
+
+        /**
+         *  attackResetCount 如果正常攻擊多少次，就將檢測數值歸零
+         */
+        attackResetCount++; // Without this, the difference will always be at 100
+        if (attackResetCount >= (attackDelay <= 200 ? 2 : 4)) {
+            attackResetCount = 0;
+            ServerClientAttackTickCountDiff = STime_TC;
         }
-        chr.get().updateTick(tickcount);
-        lastAttackTickCount = tickcount;
+        chr.get().updateTick(tickCoint);
+        lastAttackTickCount = tickCoint;
     }
 
+    /**
+     * 檢查角色受到傷害
+     * @param damage 
+     */
     public final void checkTakeDamage(final int damage) {
         numSequentialDamage++;
         lastDamageTakenTime = System.currentTimeMillis();
@@ -112,10 +130,14 @@ public class CheatTracker {
         }
     }
 
+    /**
+     * 檢查相同傷害
+     * @param dmg
+     * @param expected 
+     */
     public final void checkSameDamage(final int dmg, final double expected) {
         if (dmg > 2000 && lastDamage == dmg && chr.get() != null && (chr.get().getLevel() < 175 || dmg > expected * 2)) {
             numSameDamage++;
-
             if (numSameDamage > 5) {
                 numSameDamage = 0;
                 registerOffense(CheatingOffense.SAME_DAMAGE, numSameDamage + " 次, 攻擊傷害: " + dmg + ", 預計傷害: " + expected + " [等級: " + chr.get().getLevel() + ", 職業: " + chr.get().getJob() + "]");
@@ -126,6 +148,10 @@ public class CheatTracker {
         }
     }
 
+    /**
+     * 檢查異常移動怪物
+     * @param pos 
+     */
     public final void checkMoveMonster(final Point pos) {
 
         double dis = Math.abs(pos.distance(lastMonsterMove));
@@ -146,11 +172,18 @@ public class CheatTracker {
         }
     }
 
+    /**
+     * 清除召喚獸檢測
+     */
     public final void resetSummonAttack() {
         summonSummonTime = System.currentTimeMillis();
         numSequentialSummonAttack = 0;
     }
 
+    /**
+     * 檢查召喚獸攻擊
+     * @return 
+     */
     public final boolean checkSummonAttack() {
         numSequentialSummonAttack++;
         //estimated
@@ -162,10 +195,17 @@ public class CheatTracker {
         return true;
     }
 
+    /**
+     * 
+     */
     public final void checkDrop() {
         checkDrop(false);
     }
 
+    /**
+     * 檢查掉落
+     * @param dc 
+     */
     public final void checkDrop(final boolean dc) {
         if ((System.currentTimeMillis() - lastDropTime) < 1000) {
             dropsPerSecond++;

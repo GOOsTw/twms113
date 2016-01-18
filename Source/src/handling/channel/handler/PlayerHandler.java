@@ -57,6 +57,7 @@ import server.maps.MapleMap;
 import server.maps.FieldLimitType;
 import server.movement.LifeMovementFragment;
 import server.quest.MapleQuest;
+import tools.FilePrinter;
 import tools.MaplePacketCreator;
 import tools.packet.MobPacket;
 import tools.packet.MTSCSPacket;
@@ -987,7 +988,7 @@ public class PlayerHandler {
 
         if (res != null && c.getPlayer().getMap() != null) { // TODO more validation of input data
             if (slea.available() < 13 || slea.available() > 26) {
-                System.out.println("slea.available != 13-26 (movement parsing error)\n" + slea.toString(true));
+                FilePrinter.printError("MovementParseError.txt", "角色名稱: " +  c.getPlayer().getName() + " 職業 :" + String.valueOf(c.getPlayer().getJob()) + "\r\n" + "slea.available != 13-26 (movement parsing error)\n" + slea.toString(true));
                 return;
             }
             final List<LifeMovementFragment> res2 = new ArrayList<>(res);

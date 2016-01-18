@@ -64,7 +64,7 @@ public class DamageParse {
             return;
         }
         if (attack.real) {
-            player.getCheatTracker().checkAttack(attack.skill, attack.lastAttackTickCount);
+            player.getCheatTracker().checkAttackDelay(attack.skill, attack.lastAttackTickCount);
         }
 
         if (attack.skill != 0) {
@@ -454,7 +454,7 @@ public class DamageParse {
             return;
         }
         if (attack.real) {
-            player.getCheatTracker().checkAttack(attack.skill, attack.lastAttackTickCount);
+            player.getCheatTracker().checkAttackDelay(attack.skill, attack.lastAttackTickCount);
         }
 //	if (attack.skill != SkillType.僧侶.群體治癒) { // heal is both an attack and a special move (healing) so we'll let the whole applying magic live in the special move part
 //	    effect.applyTo(player);
