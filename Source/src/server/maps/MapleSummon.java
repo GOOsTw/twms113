@@ -202,15 +202,15 @@ public class MapleSummon extends AbstractAnimatedMapleMapObject {
         return MapleMapObjectType.SUMMON;
     }
 
-    public final void CheckSummonAttackFrequency(final MapleCharacter chr, final int tickcount) {
+    public final void checkSummonAttackFrequency(final MapleCharacter chr, final int tickcount) {
         final int tickdifference = (tickcount - lastSummonTickCount);
         if (tickdifference < GameConstants.getSummonAttackDelay(skill)) {
-            chr.getCheatTracker().registerOffense(CheatingOffense.FAST_SUMMON_ATTACK);
+            chr.getCheatTracker().registerOffense(CheatingOffense.召喚獸無延遲);
         }
         final long STime_TC = System.currentTimeMillis() - tickcount;
         final long S_C_Difference = Server_ClientSummonTickDiff - STime_TC;
         if (S_C_Difference > 200) {
-            chr.getCheatTracker().registerOffense(CheatingOffense.FAST_SUMMON_ATTACK);
+            chr.getCheatTracker().registerOffense(CheatingOffense.召喚獸無延遲);
         }
         Summon_tickResetCount++;
         if (Summon_tickResetCount > 4) {

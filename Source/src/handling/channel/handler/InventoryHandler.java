@@ -1981,7 +1981,8 @@ public class InventoryHandler {
                 break;
             }
 
-            case 5281001:  /*花香*/
+            case 5281001:
+            /*花香*/
 
             case 5280001: // Gas Skill
             /*毒屁*/
@@ -2157,7 +2158,7 @@ public class InventoryHandler {
         }
         chr.updateTick(slea.readInt());
         slea.skip(1); // [4] Seems to be tickcount, [1] always 0
-        final Point Client_Reportedpos = slea.readPos();
+        final Point clientPickPos = slea.readPos();
         final MapleMapObject ob = chr.getMap().getMapObject(slea.readInt(), MapleMapObjectType.ITEM);
 
         if (ob == null) {
@@ -2181,11 +2182,15 @@ public class InventoryHandler {
                 c.sendPacket(MaplePacketCreator.enableActions());
                 return;
             }
-            final double Distance = Client_Reportedpos.distanceSq(mapitem.getPosition());
-            if (Distance > 2500) {
-                chr.getCheatTracker().registerOffense(CheatingOffense.ITEMVAC_CLIENT, String.valueOf(Distance));
-            } else if (chr.getPosition().distanceSq(mapitem.getPosition()) > 640000.0) {
-                chr.getCheatTracker().registerOffense(CheatingOffense.ITEMVAC_SERVER);
+            final double pickupDistanceCS = clientPickPos.distanceSq(mapitem.getPosition());
+            final double pickupDistanceSS = chr.getPosition().distanceSq(mapitem.getPosition());
+            if (pickupDistanceCS > 2500) {
+                chr.getCheatTracker().registerOffense(CheatingOffense.拾取物品距離過遠_客戶端, "距離" + pickupDistanceCS + " 人物座標 (" + clientPickPos.getX() + "," + clientPickPos.getY() + ")"
+                        + "物品座標 (" + mapitem.getPosition().getX() + "," + mapitem.getPosition().getY() + ")");
+            }
+            if (pickupDistanceSS > 640000.0) {
+                chr.getCheatTracker().registerOffense(CheatingOffense.拾取物品距離過遠_伺服器端, "距離" + pickupDistanceSS + " 人物座標 (" + chr.getPosition().getX() + "," + chr.getPosition().getY() + ")"
+                        + "物品座標 (" + mapitem.getPosition().getX() + "," + mapitem.getPosition().getY() + ")");
             }
             if (mapitem.getMeso() > 0) {
                 if (chr.getParty() != null && mapitem.getOwner() != chr.getId()) {
@@ -2204,24 +2209,22 @@ public class InventoryHandler {
                     chr.gainMeso(mapitem.getMeso(), true, true);
                 }
                 removeItem(chr, mapitem, ob);
-            } else {
-                if (MapleItemInformationProvider.getInstance().isPickupBlocked(mapitem.getItem().getItemId())) {
-                    c.sendPacket(MaplePacketCreator.enableActions());
-                    c.getPlayer().dropMessage(5, "This item cannot be picked up.");
-                } else if (useItem(c, mapitem.getItemId())) {
-                    removeItem(c.getPlayer(), mapitem, ob);
-                } else if (MapleInventoryManipulator.checkSpace(c, mapitem.getItem().getItemId(), mapitem.getItem().getQuantity(), mapitem.getItem().getOwner())) {
-                    if (mapitem.getItem().getQuantity() >= 50 && GameConstants.isUpgradeScroll(mapitem.getItem().getItemId())) {
-                        c.setMonitored(true); //hack check
-                    }
-                    if (MapleInventoryManipulator.addFromDrop(c, mapitem.getItem(), true, mapitem.getDropper() instanceof MapleMonster)) {
-                        removeItem(chr, mapitem, ob);
-                    }
-                } else {
-                    c.sendPacket(MaplePacketCreator.getInventoryFull());
-                    c.sendPacket(MaplePacketCreator.getShowInventoryFull());
-                    c.sendPacket(MaplePacketCreator.enableActions());
+            } else if (MapleItemInformationProvider.getInstance().isPickupBlocked(mapitem.getItem().getItemId())) {
+                c.sendPacket(MaplePacketCreator.enableActions());
+                c.getPlayer().dropMessage(5, "This item cannot be picked up.");
+            } else if (useItem(c, mapitem.getItemId())) {
+                removeItem(c.getPlayer(), mapitem, ob);
+            } else if (MapleInventoryManipulator.checkSpace(c, mapitem.getItem().getItemId(), mapitem.getItem().getQuantity(), mapitem.getItem().getOwner())) {
+                if (mapitem.getItem().getQuantity() >= 50 && GameConstants.isUpgradeScroll(mapitem.getItem().getItemId())) {
+                    c.setMonitored(true); //hack check
                 }
+                if (MapleInventoryManipulator.addFromDrop(c, mapitem.getItem(), true, mapitem.getDropper() instanceof MapleMonster)) {
+                    removeItem(chr, mapitem, ob);
+                }
+            } else {
+                c.sendPacket(MaplePacketCreator.getInventoryFull());
+                c.sendPacket(MaplePacketCreator.getShowInventoryFull());
+                c.sendPacket(MaplePacketCreator.enableActions());
             }
         } finally {
             lock.unlock();
@@ -2236,7 +2239,7 @@ public class InventoryHandler {
         final MaplePet pet = chr.getPet(petz);
         slea.skip(1); // [4] Zero, [4] Seems to be tickcount, [1] Always zero
         chr.updateTick(slea.readInt());
-        final Point Client_Reportedpos = slea.readPos();
+        final Point clientPickPos = slea.readPos();
         final MapleMapObject ob = chr.getMap().getMapObject(slea.readInt(), MapleMapObjectType.ITEM);
 
         if (ob == null || pet == null) {
@@ -2261,11 +2264,15 @@ public class InventoryHandler {
                 c.sendPacket(MaplePacketCreator.enableActions());
                 return;
             }
-            final double Distance = Client_Reportedpos.distanceSq(mapitem.getPosition());
-            if (Distance > 10000 && (mapitem.getMeso() > 0 || mapitem.getItemId() != 4001025)) {
-                chr.getCheatTracker().registerOffense(CheatingOffense.PET_ITEMVAC_CLIENT, String.valueOf(Distance));
-            } else if (pet.getPos().distanceSq(mapitem.getPosition()) > 640000.0) {
-                chr.getCheatTracker().registerOffense(CheatingOffense.PET_ITEMVAC_SERVER);
+            final double pickUpDistanceCS = clientPickPos.distanceSq(mapitem.getPosition());
+            final double pickUpDistanceSS = pet.getPos().distanceSq(mapitem.getPosition());
+            if (pickUpDistanceCS > 10000 && (mapitem.getMeso() > 0 || mapitem.getItemId() != 4001025)) {
+                chr.getCheatTracker().registerOffense(CheatingOffense.寵物拾取物品距離過遠_客戶端, "距離" + pickUpDistanceCS + " 寵物座標 (" + clientPickPos.getX() + "," + clientPickPos.getY() + ")"
+                        + "物品座標 (" + mapitem.getPosition().getX() + "," + mapitem.getPosition().getY() + ")");
+            }
+            if (pickUpDistanceSS > 640000.0) {
+                chr.getCheatTracker().registerOffense(CheatingOffense.寵物拾取物品距離過遠_伺服器端, "距離" + pickUpDistanceSS + " 寵物座標 (" + pet.getPos().getX() + "," + pet.getPos().getY() + ")"
+                        + "物品座標 (" + mapitem.getPosition().getX() + "," + mapitem.getPosition().getY() + ")");
 
             }
 
@@ -2287,18 +2294,16 @@ public class InventoryHandler {
                     chr.gainMeso(mapitem.getMeso(), true);
                 }
                 removeItemPet(chr, mapitem, petz);
-            } else {
-                if (MapleItemInformationProvider.getInstance().isPickupBlocked(mapitem.getItemId()) || mapitem.getItemId() / 10000 == 291) {
-                    c.sendPacket(MaplePacketCreator.enableActions());
-                } else if (useItem(c, mapitem.getItemId())) {
-                    removeItemPet(chr, mapitem, petz);
-                } else if (MapleInventoryManipulator.checkSpace(c, mapitem.getItemId(), mapitem.getItem().getQuantity(), mapitem.getItem().getOwner())) {
-                    if (mapitem.getItem().getQuantity() >= 50 && mapitem.getItemId() == 2340000) {
-                        c.setMonitored(true); //hack check
-                    }
-                    MapleInventoryManipulator.addFromDrop(c, mapitem.getItem(), true, mapitem.getDropper() instanceof MapleMonster);
-                    removeItemPet(chr, mapitem, petz);
+            } else if (MapleItemInformationProvider.getInstance().isPickupBlocked(mapitem.getItemId()) || mapitem.getItemId() / 10000 == 291) {
+                c.sendPacket(MaplePacketCreator.enableActions());
+            } else if (useItem(c, mapitem.getItemId())) {
+                removeItemPet(chr, mapitem, petz);
+            } else if (MapleInventoryManipulator.checkSpace(c, mapitem.getItemId(), mapitem.getItem().getQuantity(), mapitem.getItem().getOwner())) {
+                if (mapitem.getItem().getQuantity() >= 50 && mapitem.getItemId() == 2340000) {
+                    c.setMonitored(true); //hack check
                 }
+                MapleInventoryManipulator.addFromDrop(c, mapitem.getItem(), true, mapitem.getDropper() instanceof MapleMonster);
+                removeItemPet(chr, mapitem, petz);
             }
         } finally {
             lock.unlock();
@@ -2538,20 +2543,16 @@ public class InventoryHandler {
                         merchant.removeAllVisitors((byte) 16, (byte) 0);
                         c.getPlayer().setPlayerShop(merchant);
                         c.sendPacket(PlayerShopPacket.getHiredMerch(c.getPlayer(), merchant, false));
+                    } else if (!merchant.isOpen() || !merchant.isAvailable()) {
+                        c.getPlayer().dropMessage(1, "這個商店在整理或者是沒再販賣東西。");
+                    } else if (merchant.getFreeSlot() == -1) {
+                        c.getPlayer().dropMessage(1, "商店人數已經滿了，請稍後再進入。");
+                    } else if (merchant.isInBlackList(c.getPlayer().getName())) {
+                        c.getPlayer().dropMessage(1, "被加入黑名單了，所以不能進入。");
                     } else {
-                        if (!merchant.isOpen() || !merchant.isAvailable()) {
-                            c.getPlayer().dropMessage(1, "這個商店在整理或者是沒再販賣東西。");
-                        } else {
-                            if (merchant.getFreeSlot() == -1) {
-                                c.getPlayer().dropMessage(1, "商店人數已經滿了，請稍後再進入。");
-                            } else if (merchant.isInBlackList(c.getPlayer().getName())) {
-                                c.getPlayer().dropMessage(1, "被加入黑名單了，所以不能進入。");
-                            } else {
-                                c.getPlayer().setPlayerShop(merchant);
-                                merchant.addVisitor(c.getPlayer());
-                                c.sendPacket(PlayerShopPacket.getHiredMerch(c.getPlayer(), merchant, false));
-                            }
-                        }
+                        c.getPlayer().setPlayerShop(merchant);
+                        merchant.addVisitor(c.getPlayer());
+                        c.sendPacket(PlayerShopPacket.getHiredMerch(c.getPlayer(), merchant, false));
                     }
                 } else {
                     c.getPlayer().dropMessage(1, "商店正在整理中，");
@@ -2559,7 +2560,8 @@ public class InventoryHandler {
             }
         }
     }
-        public static final boolean UseTeleRock(final SeekableLittleEndianAccessor slea, final MapleClient c, int itemId) {
+
+    public static final boolean UseTeleRock(final SeekableLittleEndianAccessor slea, final MapleClient c, int itemId) {
         boolean used = false;
         if (itemId == 5041001 || itemId == 5040004) {
             slea.readByte(); //useless
@@ -2577,7 +2579,7 @@ public class InventoryHandler {
             if (victim != null && !victim.isGM() && c.getPlayer().getEventInstance() == null && victim.getEventInstance() == null) {
                 if (!FieldLimitType.VipRock.check(c.getPlayer().getMap().getFieldLimit()) && !FieldLimitType.VipRock.check(c.getChannelServer().getMapFactory().getMap(victim.getMapId()).getFieldLimit())) {
                     if (itemId == 5041000 || itemId == 5040004 || itemId == 5041001 || (victim.getMapId() / 100000000) == (c.getPlayer().getMapId() / 100000000)) { // Viprock or same continent
-                       c.getPlayer().changeMap(victim.getMap(), victim.getMap().findClosestSpawnpoint(victim.getPosition()));
+                        c.getPlayer().changeMap(victim.getMap(), victim.getMap().findClosestSpawnpoint(victim.getPosition()));
                         used = true;
                     }
                 }

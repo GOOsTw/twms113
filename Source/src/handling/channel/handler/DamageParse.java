@@ -60,7 +60,7 @@ public class DamageParse {
 
     public static void applyAttack(final AttackInfo attack, final ISkill theSkill, final MapleCharacter player, int attackCount, final double maxDamagePerMonster, final MapleStatEffect effect, final AttackType attack_type) {
         if (!player.isAlive()) {
-            player.getCheatTracker().registerOffense(CheatingOffense.ATTACKING_WHILE_DEAD);
+            player.getCheatTracker().registerOffense(CheatingOffense.人物死亡攻擊);
             return;
         }
         if (attack.real) {
@@ -132,14 +132,14 @@ public class DamageParse {
                             map.broadcastMessage(MaplePacketCreator.explodeDrop(mapitem.getObjectId()));
                             mapitem.setPickedUp(true);
                         } else {
-                            player.getCheatTracker().registerOffense(CheatingOffense.ETC_EXPLOSION);
+                            player.getCheatTracker().registerOffense(CheatingOffense.楓幣炸彈異常_非金錢);
                             return;
                         }
                     } finally {
                         mapitem.getLock().unlock();
                     }
                 } else {
-                    player.getCheatTracker().registerOffense(CheatingOffense.EXPLODING_NONEXISTANT);
+                    player.getCheatTracker().registerOffense(CheatingOffense.楓幣炸彈異常_不存在物品);
                     return; // etc explosion, exploding nonexistant things, etc.
                 }
             }
@@ -214,16 +214,16 @@ public class DamageParse {
                             if (Tempest) { // Monster buffed with Tempest
                                 if (eachd > monster.getMobMaxHp()) {
                                     eachd = (int) Math.min(monster.getMobMaxHp(), Integer.MAX_VALUE);
-                                    player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE);
+                                    player.getCheatTracker().registerOffense(CheatingOffense.攻擊過高_1);
                                 }
                             } else if (!monster.isBuffed(MonsterStatus.DAMAGE_IMMUNITY) && !monster.isBuffed(MonsterStatus.WEAPON_IMMUNITY) && !monster.isBuffed(MonsterStatus.WEAPON_DAMAGE_REFLECT)) {
                                 if (eachd > maxDamagePerHit) {
-                                    player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
+                                    player.getCheatTracker().registerOffense(CheatingOffense.攻擊過高_1, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
                                     if (eachd > maxDamagePerHit * 2) {
                                         eachd = (int) (maxDamagePerHit * 2); // Convert to server calculated damage
-                                        player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
+                                        player.getCheatTracker().registerOffense(CheatingOffense.攻擊過高_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
                                         if (eachd >= 2000000) {
-                                            player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
+                                            player.getCheatTracker().registerOffense(CheatingOffense.攻擊過高_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
                                         }
                                     }
                                 }
@@ -248,7 +248,7 @@ public class DamageParse {
                 player.checkMonsterAggro(monster);
 
                 if (player.getPosition().distanceSq(monster.getPosition()) > 700000.0) { // 815^2 <-- the most ranged attack in the game is Flame Wheel at 815 range
-                    player.getCheatTracker().registerOffense(CheatingOffense.ATTACK_FARAWAY_MONSTER); // , Double.toString(Math.sqrt(distance))
+                    player.getCheatTracker().registerOffense(CheatingOffense.攻擊距離過遠); // , Double.toString(Math.sqrt(distance))
                 }
                 // pickpocket
                 if (player.getBuffedValue(MapleBuffStat.PICKPOCKET) != null) {
@@ -443,14 +443,14 @@ public class DamageParse {
 
             tracker.setAttacksWithoutHit(true);
             if (tracker.getAttacksWithoutHit() > 1000) {
-                tracker.registerOffense(CheatingOffense.ATTACK_WITHOUT_GETTING_HIT, Integer.toString(tracker.getAttacksWithoutHit()));
+                tracker.registerOffense(CheatingOffense.無敵, Integer.toString(tracker.getAttacksWithoutHit()));
             }
         }
     }
 
     public static final void applyAttackMagic(final AttackInfo attack, final ISkill theSkill, final MapleCharacter player, final MapleStatEffect effect) {
         if (!player.isAlive()) {
-            player.getCheatTracker().registerOffense(CheatingOffense.ATTACKING_WHILE_DEAD);
+            player.getCheatTracker().registerOffense(CheatingOffense.人物死亡攻擊);
             return;
         }
         if (attack.real) {
@@ -544,20 +544,19 @@ public class DamageParse {
                             if (Tempest) { // Buffed with Tempest
                                 if (eachd > monster.getMobMaxHp()) {
                                     eachd = (int) Math.min(monster.getMobMaxHp(), Integer.MAX_VALUE);
-                                    player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC);
+                                    player.getCheatTracker().registerOffense(CheatingOffense.魔法攻擊過高_1);
                                 }
                             } else if (!monster.isBuffed(MonsterStatus.DAMAGE_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_DAMAGE_REFLECT)) {
                                 if (eachd > maxDamagePerHit) {
-                                    player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
+                                    player.getCheatTracker().registerOffense(CheatingOffense.攻擊過高_1, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
                                     if (attack.real) {
                                         player.getCheatTracker().checkSameDamage(eachd.intValue(), maxDamagePerHit);
                                     }
                                     if (eachd > MaxDamagePerHit * 2) {
-//				    System.out.println("EXCEED!!! Client damage : " + eachd + " Server : " + MaxDamagePerHit);
                                         eachd = (int) (MaxDamagePerHit * 2); // Convert to server calculated damage
-                                        player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
+                                        player.getCheatTracker().registerOffense(CheatingOffense.魔法攻擊過高_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
                                         if (eachd >= 2000000) {
-                                            player.getCheatTracker().registerOffense(CheatingOffense.HIGH_DAMAGE_MAGIC_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
+                                            player.getCheatTracker().registerOffense(CheatingOffense.魔法攻擊過高_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
                                             return;
                                         }
                                     }
@@ -573,12 +572,16 @@ public class DamageParse {
                 }
                 totDamage += totDamageToOneMonster;
                 player.checkMonsterAggro(monster);
+                
+                double attackDistanceSq = player.getPosition().distanceSq(monster.getPosition()) ;
 
-                if (player.getPosition().distanceSq(monster.getPosition()) > 700000.0) { // 600^2, 550 is approximatly the range of ultis
-                    player.getCheatTracker().registerOffense(CheatingOffense.ATTACK_FARAWAY_MONSTER);
+                if (attackDistanceSq > 700000.0) { 
+                    player.getCheatTracker().registerOffense(CheatingOffense.攻擊距離過遠
+                            , "攻擊距離 " + attackDistanceSq + " 人物座標 (" +  player.getPosition().getX() + "," +  player.getPosition().getY() +")" 
+                                    + "怪物座標 (" +  monster.getPosition().getX() + "," +  monster.getPosition().getY() +")" );
                 }
                 if (attack.skill == SkillType.僧侶.群體治癒 && !monsterstats.getUndead()) {
-                    player.getCheatTracker().registerOffense(CheatingOffense.HEAL_ATTACKING_UNDEAD);
+                    player.getCheatTracker().registerOffense(CheatingOffense.治癒非不死系怪物);
                     return;
                 }
 
@@ -616,9 +619,8 @@ public class DamageParse {
         if (totDamage > 1) {
             final CheatTracker tracker = player.getCheatTracker();
             tracker.setAttacksWithoutHit(true);
-
             if (tracker.getAttacksWithoutHit() > 1000) {
-                tracker.registerOffense(CheatingOffense.ATTACK_WITHOUT_GETTING_HIT, Integer.toString(tracker.getAttacksWithoutHit()));
+                tracker.registerOffense(CheatingOffense.無敵, "無敵次數 " + Integer.toString(tracker.getAttacksWithoutHit()));
             }
         }
     }

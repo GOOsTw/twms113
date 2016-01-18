@@ -51,7 +51,6 @@ import tools.data.input.SeekableLittleEndianAccessor;
 
 public class SummonHandler {
 
-
     public static final void MoveSummon(final SeekableLittleEndianAccessor slea, final MapleCharacter chr) {
         final int oid = slea.readInt();
         Point startPos = new Point(slea.readShort(), slea.readShort());
@@ -115,7 +114,7 @@ public class SummonHandler {
         slea.skip(8);
         int tick = slea.readInt();
         chr.updateTick(tick);
-        summon.CheckSummonAttackFrequency(chr, tick);
+        summon.checkSummonAttackFrequency(chr, tick);
         slea.skip(8);
         final byte animation = slea.readByte();
         slea.skip(8);
@@ -135,8 +134,10 @@ public class SummonHandler {
             if (mob == null) {
                 continue;
             }
-            if (chr.getPosition().distanceSq(mob.getPosition()) > 400000.0) {
-                chr.getCheatTracker().registerOffense(CheatingOffense.ATTACK_FARAWAY_MONSTER_SUMMON);
+            final double distanceSS = chr.getPosition().distanceSq(mob.getPosition());
+            if (distanceSS > 400000.0) {
+                chr.getCheatTracker().registerOffense(CheatingOffense.召喚獸攻擊距離過遠, "距離" + distanceSS + " 人物座標 (" + chr.getPosition().getX() + "," + chr.getPosition().getY() + ")"
+                        + "怪物座標 (" + mob.getPosition().getX() + "," + mob.getPosition().getY() + ")");
             }
             slea.skip(18); // who knows
             final int damage = slea.readInt();

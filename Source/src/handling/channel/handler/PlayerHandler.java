@@ -564,7 +564,7 @@ public class PlayerHandler {
             return;
         }
         if (!chr.isAlive() || chr.getMap() == null) {
-            chr.getCheatTracker().registerOffense(CheatingOffense.ATTACKING_WHILE_DEAD);
+            chr.getCheatTracker().registerOffense(CheatingOffense.人物死亡攻擊);
             return;
         }
         final AttackInfo attack = DamageParse.Modify_AttackCrit(DamageParse.parseDmgM(slea), chr, 1);
@@ -700,7 +700,7 @@ public class PlayerHandler {
             return;
         }
         if (!chr.isAlive() || chr.getMap() == null) {
-            chr.getCheatTracker().registerOffense(CheatingOffense.ATTACKING_WHILE_DEAD);
+            chr.getCheatTracker().registerOffense(CheatingOffense.人物死亡攻擊);
             return;
         }
         final AttackInfo attack = DamageParse.Modify_AttackCrit(DamageParse.parseDmgR(slea), chr, 2);
@@ -843,7 +843,7 @@ public class PlayerHandler {
             return;
         }
         if (!chr.isAlive() || chr.getMap() == null) {
-            chr.getCheatTracker().registerOffense(CheatingOffense.ATTACKING_WHILE_DEAD);
+            chr.getCheatTracker().registerOffense(CheatingOffense.人物死亡攻擊);
             return;
         }
         final AttackInfo attack = DamageParse.Modify_AttackCrit(DamageParse.parseDmgMa(slea), chr, 3);
@@ -942,13 +942,13 @@ public class PlayerHandler {
 
         if (healHP != 0) {
             if (healHP > stats.getHealHP()) {
-                chr.getCheatTracker().registerOffense(CheatingOffense.REGEN_HIGH_HP, String.valueOf(healHP));
+                chr.getCheatTracker().registerOffense(CheatingOffense.回復血量過高, String.valueOf(healHP));
             }
             chr.addHP(healHP);
         }
         if (healMP != 0) {
             if (healMP > stats.getHealMP()) {
-                chr.getCheatTracker().registerOffense(CheatingOffense.REGEN_HIGH_MP, String.valueOf(healMP));
+                chr.getCheatTracker().registerOffense(CheatingOffense.回復魔量過高, String.valueOf(healMP));
             }
             chr.addMP(healMP);
         }
@@ -1207,7 +1207,7 @@ public class PlayerHandler {
         if (portal == null) {
             return;
         } else if (portal.getPosition().distanceSq(chr.getPosition()) > 22500) {
-            chr.getCheatTracker().registerOffense(CheatingOffense.USING_FARAWAY_PORTAL);
+            chr.getCheatTracker().registerOffense(CheatingOffense.使用過遠傳點);
         }
         chr.getMap().movePlayer(chr, new Point(toX, toY));
         chr.checkFollow();

@@ -89,7 +89,7 @@ public class MapleClient {
     private MapleCharacter player;
     private int accountId = 1;
     private String accountName;
-    private int world = 1;
+    private int world = 0;
     private int channel = 1;
     private int birthday;
     private int charslots = DEFAULT_CHARSLOT;
