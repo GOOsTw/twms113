@@ -369,9 +369,11 @@ public class PlayerInteractionHandler {
                         }
                         if (GameConstants.isThrowingStar(ivItem.getItemId()) || GameConstants.isBullet(ivItem.getItemId())) {
                             // Ignore the bundles
+                            short quantity = ivItem.getQuantity();
                             MapleInventoryManipulator.removeFromSlot(c, type, slot, ivItem.getQuantity(), true);
 
                             final IItem sellItem = ivItem.copy();
+                            sellItem.setQuantity(quantity);
                             shop.addItem(new MaplePlayerShopItem(sellItem, (short) 1, price));
                         } else {
                             MapleInventoryManipulator.removeFromSlot(c, type, slot, bundles_perbundle, true);
