@@ -871,9 +871,6 @@ public abstract class AbstractPlayerInteraction {
 
     public final int getSavedLocation(final String loc) {
         final Integer ret = c.getPlayer().getSavedLocation(SavedLocationType.fromString(loc));
-        if (ret == null || ret == -1) {
-            return 100000000;
-        }
         return ret;
     }
 

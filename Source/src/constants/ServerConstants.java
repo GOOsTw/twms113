@@ -21,11 +21,11 @@
 package constants;
 
 public class ServerConstants {
+
     /*
      * Specifics which job gives an additional EXP to party
      * returns the percentage of EXP to increase
      */
-
     public static final byte Class_Bonus_EXP(final int job) {
         switch (job) {
             case 3000: //whenever these arrive, they'll give bonus
@@ -86,6 +86,10 @@ public class ServerConstants {
         "oTL2jy9^zkH.84u(%b[d",
         "WCSJZj3tGX,[4hu;9s?g"
     };
+    
+    public final static byte BANTYPE_DISABLE = 3;
+    public final static byte BANTYPE_ENABLE = 1;
+    public final static byte BANTYPE_DC = 2;
 
     public static enum PlayerGMRank {
 
@@ -108,7 +112,7 @@ public class ServerConstants {
         public int getLevel() {
             return level;
         }
-        
+
     }
 
     public static enum CommandType {

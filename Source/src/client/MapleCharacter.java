@@ -1654,7 +1654,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
         stats.recalcLocalStats();
         if(this.isGM())
-            System.out.println("[BUFF 註冊] 來源 :"  + effect.getSourceId());
+            this.dropMessage("[BUFF 註冊] 來源 :"  + effect.getSourceId());
     }
 
     public List<MapleBuffStat> getBuffStatsFromStatEffect(final MapleStatEffect effect, final long startTime) {
@@ -5559,14 +5559,22 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public void resetStatsByJob(boolean beginnerJob) {
         int baseJob = (beginnerJob ? (job % 1000) : (job % 1000 / 100 * 100)); //1112 -> 112 -> 1 -> 100
-        if (baseJob == 100) { //first job = warrior
-            resetStats(25, 4, 4, 4);
-        } else if (baseJob == 200) {
-            resetStats(4, 4, 20, 4);
-        } else if (baseJob == 300 || baseJob == 400) {
-            resetStats(4, 25, 4, 4);
-        } else if (baseJob == 500) {
-            resetStats(4, 20, 4, 4);
+        switch (baseJob) {
+            case 100:
+                resetStats(25, 4, 4, 4);
+                break;
+            case 200:
+                resetStats(4, 4, 20, 4);
+                break;
+            case 300:
+            case 400:
+                resetStats(4, 25, 4, 4);
+                break;
+            case 500:
+                resetStats(4, 20, 4, 4);
+                break;
+            default:
+                break;
         }
     }
 
@@ -5726,21 +5734,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public void fakeRelog() {
         client.sendPacket(MaplePacketCreator.getCharInfo(this));
         final MapleMap mapp = getMap();
-//        mapp.setCheckStates(false);
         mapp.removePlayer(this);
         mapp.addPlayer(this);
-//        mapp.setCheckStates(true);
     }
 
-    /*public String getcharmessage(){
-     System.err.println("CharMessage(get)");
-     return charmessage;
-     }
-
-     public void setcharmessage(int s){
-     System.err.println("CharMessage(set)");
-     charmessage += s;
-     }*/
     public String getcharmessage() {
         //System.err.println("CharMessage(get)");
         return charmessage;

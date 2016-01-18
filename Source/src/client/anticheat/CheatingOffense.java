@@ -1,27 +1,14 @@
-/*
- This file is part of the OdinMS Maple Story Server
- Copyright (C) 2008 ~ 2010 Patrick Huy <patrick.huy@frz.cc> 
- Matthias Butz <matze@odinms.de>
- Jan Christian Meyer <vimes@odinms.de>
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU Affero General Public License version 3
- as published by the Free Software Foundation. You may not use, modify
- or distribute this program under any other version of the
- GNU Affero General Public License.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Affero General Public License for more details.
-
- You should have received a copy of the GNU Affero General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package client.anticheat;
+
+import static constants.ServerConstants.BANTYPE_DISABLE;
+import static constants.ServerConstants.BANTYPE_ENABLE;
 
 public enum CheatingOffense {
 
+    /**
+     * points
+     * 
+     */
     FAST_SUMMON_ATTACK((byte) 5, 6000, 10, (byte) 2),
     FASTATTACK_CLIENTSIDE((byte) 5, 6000, 50, (byte) 2),
     FASTATTACK_SERVERSIDE((byte) 5, 9000, 20, (byte) 2),
@@ -58,12 +45,15 @@ public enum CheatingOffense {
     SUMMON_HACK_MOBS((byte) 1, 300000),
     ARAN_COMBO_HACK((byte) 1, 600000, 50),
     HEAL_ATTACKING_UNDEAD((byte) 20, 30000, 100);
-    private final byte points;
+    
+    private final int points;
+    private final int maxPoints;
     private final long validityDuration;
-    private final int autobancount;
-    private byte bantype = 0; // 0 = Disabled, 1 = Enabled, 2 = DC
+    
 
-    public final byte getPoints() {
+    private byte banType = 0; // 0 = Disabled, 1 = Enabled, 2 = DC
+
+    public final int getPoints() {
         return points;
     }
 
@@ -72,22 +62,22 @@ public enum CheatingOffense {
     }
 
     public final boolean shouldAutoban(final int count) {
-        if (autobancount == -1) {
+        if (maxPoints == -1) {
             return false;
         }
-        return count >= autobancount;
+        return count >= maxPoints;
     }
 
     public final byte getBanType() {
-        return bantype;
+        return banType;
     }
 
     public final void setEnabled(final boolean enabled) {
-        bantype = (byte) (enabled ? 1 : 0);
+        banType = (byte) (enabled ? BANTYPE_ENABLE : BANTYPE_DISABLE);
     }
 
     public final boolean isEnabled() {
-        return bantype >= 1;
+        return banType >= BANTYPE_ENABLE;
     }
 
     private CheatingOffense(final byte points, final long validityDuration) {
@@ -95,13 +85,13 @@ public enum CheatingOffense {
     }
 
     private CheatingOffense(final byte points, final long validityDuration, final int autobancount) {
-        this(points, validityDuration, autobancount, (byte) 1);
+        this(points, validityDuration, autobancount, (byte) BANTYPE_ENABLE);
     }
 
-    private CheatingOffense(final byte points, final long validityDuration, final int autobancount, final byte bantype) {
+    private CheatingOffense(final int points, final long validityDuration, final int autobancount, final byte bantype) {
         this.points = points;
         this.validityDuration = validityDuration;
-        this.autobancount = autobancount;
-        this.bantype = bantype;
+        this.maxPoints = autobancount;
+        this.banType = bantype;
     }
 }

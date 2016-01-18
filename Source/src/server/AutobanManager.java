@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import client.MapleClient;
 import handling.world.World;
+import java.util.Calendar;
 import java.util.concurrent.locks.ReentrantLock;
 import tools.MaplePacketCreator;
 
@@ -25,6 +26,7 @@ public class AutobanManager implements Runnable {
             this.points = points;
         }
 
+        @Override
         public int compareTo(AutobanManager.ExpirationEntry o) {
             return (int) (time - o.time);
         }
@@ -37,12 +39,21 @@ public class AutobanManager implements Runnable {
             final AutobanManager.ExpirationEntry ee = (AutobanManager.ExpirationEntry) oth;
             return (time == ee.time && points == ee.points && acc == ee.acc);
         }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 67 * hash + (int) (this.time ^ (this.time >>> 32));
+            hash = 67 * hash + this.acc;
+            hash = 67 * hash + this.points;
+            return hash;
+        }
     }
-    private Map<Integer, Integer> points = new HashMap<Integer, Integer>();
-    private Map<Integer, List<String>> reasons = new HashMap<Integer, List<String>>();
-    private Set<ExpirationEntry> expirations = new TreeSet<ExpirationEntry>();
+    private final Map<Integer, Integer> points = new HashMap<>();
+    private final Map<Integer, List<String>> reasons = new HashMap<>();
+    private final Set<ExpirationEntry> expirations = new TreeSet<>();
     private static final int AUTOBAN_POINTS = 5000;
-    private static AutobanManager instance = new AutobanManager();
+    private static final AutobanManager instance = new AutobanManager();
     private final ReentrantLock lock = new ReentrantLock(true);
 
     public static final AutobanManager getInstance() {
@@ -51,7 +62,7 @@ public class AutobanManager implements Runnable {
 
     public final void autoban(final MapleClient c, final String reason) {
         if (c.getPlayer().isGM() || c.getPlayer().isClone()) {
-            c.getPlayer().dropMessage(5, "[WARNING] A/b triggled : " + reason);
+            c.getPlayer().dropMessage(5, "[自動偵測系統] 已觸違規偵測 :" + reason);
             return;
         }
         addPoints(c, AUTOBAN_POINTS, 0, reason);
@@ -61,46 +72,45 @@ public class AutobanManager implements Runnable {
         lock.lock();
         try {
             List<String> reasonList;
-            final int acc = c.getPlayer().getAccountID();
+            final int accountId = c.getPlayer().getAccountID();
 
-            if (this.points.containsKey(acc)) {
-                final int SavedPoints = this.points.get(acc);
-                if (SavedPoints >= AUTOBAN_POINTS) { // Already auto ban'd.
-                    return;
-                }
-                this.points.put(acc, SavedPoints + points); // Add
-                reasonList = this.reasons.get(acc);
+            if (this.points.containsKey(accountId)) {
+                final int lastPoints = this.points.get(accountId);
+                this.points.put(accountId, lastPoints + points);
+                reasonList = this.reasons.get(accountId);
                 reasonList.add(reason);
             } else {
-                this.points.put(acc, points);
-                reasonList = new LinkedList<String>();
+                this.points.put(accountId, points);
+                reasonList = new LinkedList<>();
                 reasonList.add(reason);
-                this.reasons.put(acc, reasonList);
+                this.reasons.put(accountId, reasonList);
             }
 
-            if (this.points.get(acc) >= AUTOBAN_POINTS) { // See if it's sufficient to auto ban
+            if (this.points.get(accountId) >= AUTOBAN_POINTS) { // See if it's sufficient to auto ban
+                
                 if (c.getPlayer().isGM() || c.getPlayer().isClone()) {
-                    c.getPlayer().dropMessage(5, "[WARNING] A/b triggled : " + reason);
+                    c.getPlayer().dropMessage(5, "[自動封號系統] 觸發鎖定 : " + reason);
                     return;
                 }
-                final StringBuilder sb = new StringBuilder("a/b ");
+                
+                final StringBuilder sb = new StringBuilder("[自動封號系統] ");
+                sb.append("角色 : ");
                 sb.append(c.getPlayer().getName());
-                sb.append(" (IP ");
+                sb.append(" IP :");
                 sb.append(c.getSession().getRemoteAddress().toString());
-                sb.append("): ");
-                for (final String s : reasons.get(acc)) {
+                for (final String s : reasons.get(accountId)) {
                     sb.append(s);
                     sb.append(", ");
                 }
-                World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0, "'" + c.getPlayer().getName() + "'那麼愛開掛你到底是來玩三小的 這遊戲不是要交朋友跟人跟人之間合作 慢慢享受打怪的樂趣才好玩嗎 你是想狂衝等還是啥才開掛 這樣有意義嗎 廢物").getBytes());
-//		Calendar cal = Calendar.getInstance();
-//		cal.add(Calendar.DATE, 60);
-//		c.getPlayer().tempban(sb.toString(), cal, 1, false);
-                c.getPlayer().ban(sb.toString(), false, true, false);
+                World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0, "[自動偵測系統] 玩家" + c.getPlayer().getName() + "已遭到系統鎖定7天。呼籲其他玩家千萬不要開外掛，感謝！").getBytes());
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 7);
+		c.getPlayer().tempban(sb.toString(), cal, 1, false);
+                //c.getPlayer().ban(sb.toString(), false, true, false);
                 c.disconnect(true, false);
             } else {
                 if (expiration > 0) {
-                    expirations.add(new ExpirationEntry(System.currentTimeMillis() + expiration, acc, points));
+                    expirations.add(new ExpirationEntry(System.currentTimeMillis() + expiration, accountId, points));
                 }
             }
         } finally {
@@ -108,6 +118,7 @@ public class AutobanManager implements Runnable {
         }
     }
 
+    @Override
     public final void run() {
         final long now = System.currentTimeMillis();
         for (final ExpirationEntry e : expirations) {

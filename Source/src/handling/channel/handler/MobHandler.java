@@ -167,8 +167,7 @@ public class MobHandler {
             MovementParse.updatePosition(res, monster, -1);
             map.moveMonster(monster, monster.getPosition());
             map.broadcastMessage(chr, MobPacket.moveMonster(useSkill, skill, skill1, skill2, skill3, skill4, monster.getObjectId(), startPos, monster.getPosition(), res), monster.getPosition());
-            //if(!chr.isGM())
-            //    chr.getCheatTracker().checkMoveMonster(monster.getPosition());
+            chr.getCheatTracker().checkMoveMonster(monster.getPosition());
         }
     }
 
