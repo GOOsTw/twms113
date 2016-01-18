@@ -4007,7 +4007,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             case 1:
                 if (acash + quantity < 0) {
                     if (show) {
-                        dropMessage(-1, "You have gained the max cash. No cash will be awarded.");
+                        dropMessage(-1, "你已經不能再獲得更多點數");
                     }
                     return;
                 }
@@ -4016,7 +4016,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             case 2:
                 if (maplepoints + quantity < 0) {
                     if (show) {
-                        dropMessage(-1, "You have gained the max maple points. No cash will be awarded.");
+                        dropMessage(-1, "你已經不能再獲得更多楓葉點數");
                     }
                     return;
                 }
@@ -4026,7 +4026,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 break;
         }
         if (show && quantity != 0) {
-            dropMessage(-1, "You have " + (quantity > 0 ? "gained " : "lost ") + quantity + (type == 1 ? " cash." : " maple points."));
+            dropMessage(-1, "你" + (quantity > 0 ? "獲得了 " : "失去了 ") + quantity + (type == 1 ? " 點Gash." : " 點楓葉點數."));
             //client.sendPacket(MaplePacketCreator.showSpecialEffect(19));
         }
         saveCSPoints();
@@ -4067,10 +4067,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public final boolean haveItem(int itemid) {
         return haveItem(itemid, 1, true, true);
-    }
-
-    public int getInt() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public void dropNPC(String message) {

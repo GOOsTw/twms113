@@ -103,7 +103,10 @@ public class MapleGenericPortal implements MaplePortal {
     @Override
     public final void enterPortal(final MapleClient c) {
         if (getPosition().distanceSq(c.getPlayer().getPosition()) > 22500) {
-            c.getPlayer().getCheatTracker().registerOffense(CheatingOffense.USING_FARAWAY_PORTAL);
+            Point pos = c.getPlayer().getPosition();
+            c.getPlayer().getCheatTracker().registerOffense(CheatingOffense.使用過遠傳點, 
+                    "使用過遠的傳點 (" + pos.getX() + "," + pos.getY() + ") -> (" + getPosition().getX() + "," + getPosition().getY() + ")" 
+                    + " 距離 : " + getPosition().distanceSq(c.getPlayer().getPosition()));
         }
         final MapleMap currentmap = c.getPlayer().getMap();
         if (portalState || c.getPlayer().isGM()) {

@@ -76,7 +76,7 @@ public class CheatTracker {
          * 檢查客戶端傳回的攻擊時間
          */
         if ((tickCoint - lastAttackTickCount) < attackDelay) {
-            registerOffense(CheatingOffense.FASTATTACK_CLIENTSIDE);
+            registerOffense(CheatingOffense.攻擊速度過快_客戶端);
         }
         /**
          * 檢查伺服器端的攻擊時間，阻擋更改客戶端時間加速
@@ -85,7 +85,7 @@ public class CheatTracker {
          */
         final long STime_TC = System.currentTimeMillis() - tickCoint; // hack = - more
         if (serverClientAttackTickCountDiff - STime_TC > 300) { // 250 is the ping, TODO
-            registerOffense(CheatingOffense.FASTATTACK_SERVERSIDE);
+            registerOffense(CheatingOffense.攻擊速度過快_伺服器端);
         }
 
 //	System.out.println("Delay [" + skillId + "] = " + (tickcount - lastAttackTickCount) + ", " + (Server_ClientAtkTickDiff - STime_TC));
@@ -130,7 +130,7 @@ public class CheatTracker {
             numZeroDamageTaken++;
             if (numZeroDamageTaken >= 35) { // Num count MSEA a/b players
                 numZeroDamageTaken = 0;
-                registerOffense(CheatingOffense.HIGH_AVOID);
+                registerOffense(CheatingOffense.迴避過高);
             }
         } else if (damage != -1) {
             numZeroDamageTaken = 0;
@@ -148,7 +148,7 @@ public class CheatTracker {
             numSameDamage++;
             if (numSameDamage > 5) {
                 numSameDamage = 0;
-                registerOffense(CheatingOffense.SAME_DAMAGE, numSameDamage + " 次, 攻擊傷害: " + dmg + ", 預計傷害: " + expected + " [等級: " + chr.get().getLevel() + ", 職業: " + chr.get().getJob() + "]");
+                registerOffense(CheatingOffense.攻擊數值異常相同, numSameDamage + " 次, 攻擊傷害: " + dmg + ", 預計傷害: " + expected + " [等級: " + chr.get().getLevel() + ", 職業: " + chr.get().getJob() + "]");
             }
         } else {
             lastDamage = dmg;
@@ -168,12 +168,12 @@ public class CheatTracker {
         if (pos == lastMonsterMove) {
             monsterMoveCount++;
             if (monsterMoveCount > 15) {
-                registerOffense(CheatingOffense.MOVE_MONSTERS);
+                registerOffense(CheatingOffense.異常移動怪物);
             }
         } else if (dis > 1500) {
             monsterMoveCount++;
             if (monsterMoveCount > 15) {
-                registerOffense(CheatingOffense.MOVE_MONSTERS);
+                registerOffense(CheatingOffense.異常移動怪物);
             }
         } else {
             lastMonsterMove = pos;
@@ -197,7 +197,7 @@ public class CheatTracker {
     public final boolean checkSummonAttack() {
         numSequentialSummonAttack++;
         if ((System.currentTimeMillis() - summonSummonTime) / (2000 + 1) < numSequentialSummonAttack) {
-            registerOffense(CheatingOffense.FAST_SUMMON_ATTACK);
+            registerOffense(CheatingOffense.召喚獸無延遲);
             return false;
         }
         return true;
@@ -216,11 +216,11 @@ public class CheatTracker {
      * @param dc
      */
     public final void checkDrop(final boolean dc) {
-        if ((System.currentTimeMillis() - lastDropTime) < 300) {
+        if ((System.currentTimeMillis() - lastDropTime) < 200) {
             dropsPerSecond++;
             if (dropsPerSecond >= (dc ? 32 : 16) && chr.get() != null) {
                 if (dc) {
-                    chr.get().getClient().getSession().close();
+                    chr.get().getClient().disconnect(true, false);
                 } else {
                     chr.get().getClient().setMonitored(true);
                 }
@@ -331,15 +331,15 @@ public class CheatTracker {
         }
 
         switch (offense) {
-            case HIGH_DAMAGE_MAGIC:
-            case HIGH_DAMAGE_MAGIC_2:
-            case HIGH_DAMAGE:
-            case HIGH_DAMAGE_2:
-            case ATTACK_FARAWAY_MONSTER:
-            case ATTACK_FARAWAY_MONSTER_SUMMON:
-            case SAME_DAMAGE:
+            case 魔法攻擊過高_1:
+            case 魔法攻擊過高_2:
+            case 攻擊過高_1:
+            case 攻擊過高_2:
+            case 攻擊距離過遠:
+            case 召喚獸攻擊距離過遠:
+            case 攻擊數值異常相同:
                 System.out.println(MapleCharacterUtil.makeMapleReadable(cheater.getName()) + "疑似使用外掛");
-                World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[封號系統] " + MapleCharacterUtil.makeMapleReadable(cheater.getName()) + " 疑似使用外掛! " + StringUtil.makeEnumHumanReadable(offense.name()) + (message == null ? "" : (" - " + message))).getBytes());
+                World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[封號系統] " + MapleCharacterUtil.makeMapleReadable(cheater.getName()) + " 偵測到 " + StringUtil.makeEnumHumanReadable(offense.name()) + (message == null ? "" : (" - " + message))).getBytes());
                 AutobanManager.getInstance().autoban(cheater.getClient(), StringUtil.makeEnumHumanReadable(offense.name()));
                 break;
         }
