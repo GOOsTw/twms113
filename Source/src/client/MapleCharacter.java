@@ -1653,8 +1653,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
         }
         stats.recalcLocalStats();
-        if(this.isGM())
-            this.dropMessage("[BUFF 註冊] 來源 :"  + effect.getSourceId());
+        if (this.isGM()) {
+            this.dropMessage("[BUFF 註冊] 來源 :" + effect.getSourceId());
+        }
     }
 
     public List<MapleBuffStat> getBuffStatsFromStatEffect(final MapleStatEffect effect, final long startTime) {
@@ -3499,15 +3500,15 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public boolean isAlive() {
         return stats.getHp() > 0;
     }
-    
+
     public boolean isKOC(final int job) {
         return job >= 1000 && job < 2000;
     }
-    
+
     public boolean isAran(final int job) {
         return job >= 2000 && job <= 2112 && job != 2001;
     }
-    
+
     @Override
     public void sendDestroyData(MapleClient client) {
         client.sendPacket(MaplePacketCreator.removePlayerFromMap(this.getObjectId()));
@@ -3764,10 +3765,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public void setSmega() {
         if (smega) {
             smega = false;
-            dropMessage(5, "You have set megaphone to disabled mode");
+            dropMessage(5, "你已經禁止廣播訊息。");
         } else {
             smega = true;
-            dropMessage(5, "You have set megaphone to enabled mode");
+            dropMessage(5, "你已經啟用廣播訊息。");
         }
     }
 
@@ -5901,8 +5902,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
 
     }
-    
-     public void setPlayerVariable(String name, String value) {
+
+    public void setPlayerVariable(String name, String value) {
         try {
             PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM player_variables WHERE name = ? AND characterid = ?");
             ps.setString(1, name);
@@ -5928,7 +5929,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             System.out.println("Error setting player variable: " + ex);
         }
     }
-    
+
     public String getPlayerVariable(String name) {
         try {
             PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM player_variables WHERE name = ? AND characterid = ?");
@@ -5950,7 +5951,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             return null;
         }
     }
-    
+
     public void deletePlayerVariable(String name) {
         try {
             PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM player_variables WHERE name = ? AND characterid = ?");

@@ -839,7 +839,7 @@ public class MapleStatEffect implements Serializable {
                     applyto.silentPartyUpdate();
                 }
             } else {
-                applyto.dropMessage(5, "你可能沒辦法使用傳送們因為村莊內禁止..");
+                applyto.dropMessage(5, "村莊裡已經沒有可以創造時空門的位置。");
             }
 
         } else if (isMist()) {
