@@ -2232,6 +2232,14 @@ public class GameConstants {
         }
     }
 
+    public static boolean is_new_year_card_item_etc(int nItemID) {
+        return nItemID / 10000 == 430;
+    }
+
+    public static boolean is_new_year_card_item_con(int nItemID) {
+        return nItemID / 10000 == 216;
+    }
+
     public static boolean isGMEquip(final int itemId) {
         switch (itemId) {
             case 1002140://維澤特帽

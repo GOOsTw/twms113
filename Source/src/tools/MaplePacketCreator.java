@@ -800,6 +800,70 @@ public class MaplePacketCreator {
         }
     }
 
+    public static void EncodeNewYearCardInfo(MaplePacketLittleEndianWriter mplew, MapleCharacter chr) {
+        if (chr.getNewYearRecord() != null) {
+            mplew.write(1);
+            mplew.writeInt(chr.getNewYearRecord().m_bReceiverReceivedCard ? 1 : 0);
+            if (chr.getNewYearRecord().m_bReceiverReceivedCard) {
+                mplew.writeInt(4300000);//effect? 
+            }
+            return;
+        }
+        mplew.write(0);
+    }
+
+    public static MaplePacket OnNewYearCardRes(MapleCharacter pUser, int nMode, int sMsg) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+        mplew.writeShort(SendPacketOpcode.NewYearCardRes.getValue());
+        mplew.write(nMode);
+        switch (nMode) {
+            case 4: // Successfully sent a New Year Card\r\n to %s. 
+            case 6: // Successfully received a New Year Card. 
+                pUser.getNewYearRecord().Encode(mplew);
+                break;
+            case 8: // Successfully deleted a New Year Card. 
+                mplew.writeInt(0); // nSN 
+                break;
+            case 5: // Nexon's stupid and makes 4 modes do the same operation.. 
+            case 7:
+            case 9:
+            case 0xB:
+                // 0x10: You have no free slot to store card.\r\ntry later on please. 
+                // 0x11: You have no card to send. 
+                // 0x12: Wrong inventory information ! 
+                // 0x13: Cannot find such character ! 
+                // 0x14: Incoherent Data ! 
+                // 0x15: An error occured during DB operation. 
+                // 0x16: An unknown error occured ! 
+                // 0xF: You cannot send a card to yourself ! 
+                mplew.write(sMsg);
+                break;
+            case 0xA:
+                int nSN = 1;
+                mplew.writeInt(nSN);
+                if ((nSN - 1) <= 98 && nSN > 0) {//lol nexon are you kidding 
+                    for (int i = 0; i < nSN; i++) {
+                        mplew.writeInt(pUser.getNewYearRecord().m_dwSN);
+                        mplew.writeInt(pUser.getNewYearRecord().m_dwSenderID);
+                        mplew.writeMapleAsciiString(pUser.getNewYearRecord().m_sSenderName);
+                    }
+                }
+                break;
+            case 0xC:
+                mplew.writeInt(0); // dwSN 
+                mplew.writeMapleAsciiString(""); // sSender 
+                break;
+            case 0xD:
+                mplew.writeInt(0); // dwSN 
+                mplew.writeInt(pUser.dwCharacterID);
+                break;
+            case 0xE:
+                mplew.writeInt(0); // dwSN 
+                break;
+        }
+        return mplew.getPacket();
+    }
+
     public static MaplePacket spawnPlayerMapobject(MapleCharacter chr) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
@@ -3963,27 +4027,27 @@ public class MaplePacketCreator {
                 byte v16 = 0;
                 mplew.write(v16); // somthing true or false
                 /*        
-                v16 = CInPacket__Decode1(v4) != 0;
-                if ( dword_BED278 && ((*(*(dword_BED278 + 4) + 72))(&dword_BF32D4) != 0 ? dword_BED278 : 0) )
-                {
-                  CWnd__InvalidateRect(0);
-                }
-                else
-                {
-                  v17 = ZAllocEx_ZAllocAnonSelector___Alloc(dword_BF5D00, 0x10Cu);
-                  v42 = v17;
-                  LOBYTE(v51) = 12;
-                  if ( v17 )
-                    v5 = sub_52F09D(v17);
-                  v37 = v16;
-                  v36 = v17;
-                  v42 = &v36;
-                  LOBYTE(v51) = 11;
-                  ZXString_char___operator_(&v36, &a1);
-                  sub_532A5B(v36, v37);
-                  sub_A40D66(v5);
-                }
-*/
+                 v16 = CInPacket__Decode1(v4) != 0;
+                 if ( dword_BED278 && ((*(*(dword_BED278 + 4) + 72))(&dword_BF32D4) != 0 ? dword_BED278 : 0) )
+                 {
+                 CWnd__InvalidateRect(0);
+                 }
+                 else
+                 {
+                 v17 = ZAllocEx_ZAllocAnonSelector___Alloc(dword_BF5D00, 0x10Cu);
+                 v42 = v17;
+                 LOBYTE(v51) = 12;
+                 if ( v17 )
+                 v5 = sub_52F09D(v17);
+                 v37 = v16;
+                 v36 = v17;
+                 v42 = &v36;
+                 LOBYTE(v51) = 11;
+                 ZXString_char___operator_(&v36, &a1);
+                 sub_532A5B(v36, v37);
+                 sub_A40D66(v5);
+                 }
+                 */
             }
             case 27: {
                 mplew.write(0);

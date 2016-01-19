@@ -266,7 +266,8 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     UPDATE_BEANS,
     BEANS_TIPS,
     BEANS_GAME1,
-    BEANS_GAME2;
+    BEANS_GAME2,
+    NewYearCardRes;
     private short code = -2;
 
     private SendPacketOpcode() {
