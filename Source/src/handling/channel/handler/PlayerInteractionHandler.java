@@ -512,11 +512,11 @@ public class PlayerInteractionHandler {
             case CLOSE_MERCHANT: {
                  final IMaplePlayerShop merchant = chr.getPlayerShop();
                  if (merchant != null && merchant.getShopType() == 1 && merchant.isOwner(chr) && merchant.isAvailable()) {
-                 c.sendPacket(MaplePacketCreator.serverNotice(1, "請去找富蘭德里領取你的裝備和楓幣"));
-                 c.sendPacket(MaplePacketCreator.enableActions());
-                 merchant.removeAllVisitors(-1, -1);
-                 chr.setPlayerShop(null);
-                 merchant.closeShop(true, true);
+                  merchant.removeAllVisitors(-1, -1);
+                  chr.setPlayerShop(null);
+                  merchant.closeShop(true, true);
+                  c.sendPacket(MaplePacketCreator.serverNotice(1, "請去找富蘭德里領取你的裝備和楓幣"));
+                  c.sendPacket(MaplePacketCreator.enableActions());
                  }
                  break;
               /*  final IMaplePlayerShop merchant = chr.getPlayerShop();
