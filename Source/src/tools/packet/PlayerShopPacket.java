@@ -296,12 +296,43 @@ public class PlayerShopPacket {
         mplew.writeShort(SendPacketOpcode.MERCH_ITEM_STORE.getValue());
         mplew.write(op);
 
+        byte mode = (byte) (op - 0x22);
+
         switch (op) {
-            case 0x24:
-                mplew.writeZeroBytes(8);
+            case 0x22:
+                mplew.write(0); // 1 or 0 跳出訊息
                 break;
-            default:
+            case 0x26: // 跳訊息
+
+                break;
+            case 0x25:
+                mplew.writeInt(0);
+                mplew.writeInt(0);
                 mplew.write(0);
+                break;
+            /**
+             * v65 = CInPacket__Decode4(v4); // opcode == 0x25 v10 =
+             * CInPacket__Decode4(v4); v9 = CInPacket__Decode1(v4); a2 = 0; v70
+             * = 5; if ( v10 == 999999999 || (unsigned __int8)v9 >= 0xFEu ) {
+             * v16 = StringPool__GetInstance(); v50 = *(_DWORD
+             * *)StringPool__GetString(v16, &v66, 3014); LOBYTE(v70) = 6;
+             * ZXString_char___Format((int)&a2, (char *)v50, v51); LOBYTE(v70) =
+             * 5; v11 = &v66; }
+             */
+            case 0x24:
+                /*
+                 v23 = CInPacket__Decode4(v4);
+                 v24 = CInPacket__Decode4(v4);
+                 sub_79E528((void *)v22, v23, v24);
+                 */
+                mplew.writeInt(0);
+                mplew.writeInt(0);
+                break;
+            case 0x23:
+                /* I can't decode */
+                //CField__OnPacket
+                //sub_79E62D(Args, Str);
+                //int __thiscall sub_79CFF6(int this, int a2)
                 break;
         }
 
@@ -387,7 +418,8 @@ public class PlayerShopPacket {
         mplew.write(slot);
         return mplew.getPacket();
     }
-        public static MaplePacket getMiniGameSkip1(int slot) {
+
+    public static MaplePacket getMiniGameSkip1(int slot) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.PLAYER_INTERACTION.getValue());
         mplew.write(0x3C);
@@ -402,7 +434,7 @@ public class PlayerShopPacket {
         mplew.write(0x2F);
         return mplew.getPacket();
     }
-      
+
     public static MaplePacket getMiniGameRequestREDO() {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.PLAYER_INTERACTION.getValue());
@@ -410,15 +442,14 @@ public class PlayerShopPacket {
         return mplew.getPacket();
     }
 
-
     public static MaplePacket getMiniGameDenyTie() {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.PLAYER_INTERACTION.getValue());
         mplew.write(0x30);
         return mplew.getPacket();
     }
-    
-       public static MaplePacket getMiniGameDenyREDO() {
+
+    public static MaplePacket getMiniGameDenyREDO() {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.PLAYER_INTERACTION.getValue());
         mplew.write(0x30);

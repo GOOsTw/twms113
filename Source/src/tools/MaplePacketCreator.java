@@ -2834,7 +2834,7 @@ public class MaplePacketCreator {
             mplew.writeInt(buddy.getChannel() == -1 || !buddy.isVisible() ? -1 : buddy.getChannel() - 1);
             mplew.writeAsciiString(buddy.getGroup(), 17);
         }
-        
+
         for (int x = 0; x < buddylist.size(); x++) {
             mplew.writeInt(0);
         }
@@ -3949,10 +3949,44 @@ public class MaplePacketCreator {
         mplew.write(operation);
 
         switch (operation) {
-            case 9: { // Request 13 Digit AS
+            case 9: {
                 mplew.write(1);
                 // 0xFF = error
                 break;
+            }
+            case 25: {
+                // some notice
+                break;
+            }
+            case 26: {
+                mplew.writeMapleAsciiString("");
+                byte v16 = 0;
+                mplew.write(v16); // somthing true or false
+                /*        
+                v16 = CInPacket__Decode1(v4) != 0;
+                if ( dword_BED278 && ((*(*(dword_BED278 + 4) + 72))(&dword_BF32D4) != 0 ? dword_BED278 : 0) )
+                {
+                  CWnd__InvalidateRect(0);
+                }
+                else
+                {
+                  v17 = ZAllocEx_ZAllocAnonSelector___Alloc(dword_BF5D00, 0x10Cu);
+                  v42 = v17;
+                  LOBYTE(v51) = 12;
+                  if ( v17 )
+                    v5 = sub_52F09D(v17);
+                  v37 = v16;
+                  v36 = v17;
+                  v42 = &v36;
+                  LOBYTE(v51) = 11;
+                  ZXString_char___operator_(&v36, &a1);
+                  sub_532A5B(v36, v37);
+                  sub_A40D66(v5);
+                }
+*/
+            }
+            case 27: {
+                mplew.write(0);
             }
             case 10: { // Open duey
                 mplew.write(0);
