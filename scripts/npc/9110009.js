@@ -4,7 +4,7 @@
 	Place: 弓箭手村
 */
 
-var status = 0;
+var status = -1;
 
 var requireItem = 5220040; /* 楓葉轉蛋券 */
 
