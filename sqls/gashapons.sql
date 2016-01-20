@@ -1,0 +1,26 @@
+SET NAMES utf8;
+SET time_zone = '+00:00';
+
+SET NAMES utf8mb4;
+
+DROP TABLE IF EXISTS `gashapons`;
+CREATE TABLE `gashapons` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `npcId` int(11) NOT NULL,
+  `name` varchar(255) CHARACTER SET latin1 NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_npcId` (`id`,`npcId`),
+  KEY `npcId` (`npcId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+DROP TABLE IF EXISTS `gashapon_items`;
+CREATE TABLE `gashapon_items` (
+  `gashaponsid` int(11) NOT NULL,
+  `itemid` int(11) NOT NULL,
+  `chance` int(11) NOT NULL,
+  `name` varchar(255) CHARACTER SET latin1 NOT NULL,
+  UNIQUE KEY `gashaponsid_itemid` (`gashaponsid`,`itemid`),
+  KEY `itemid` (`itemid`),
+  CONSTRAINT `gashapon_items_ibfk_1` FOREIGN KEY (`gashaponsid`) REFERENCES `gashapons` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

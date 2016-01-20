@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.Timer.*;
 import server.events.MapleOxQuizFactory;
+import server.gashapon.GashaponFactory;
 import server.life.MapleLifeFactory;
 import server.quest.MapleQuest;
 
@@ -81,6 +82,7 @@ public class Start {
         FishingRewardFactory.getInstance();
         MapleQuest.initQuests();
         MapleLifeFactory.loadQuestCounts();
+        GashaponFactory.reloadGashapons();
 //        ItemMakerFactory.getInstance();
         MapleItemInformationProvider.getInstance().load();
         RandomRewards.getInstance();
