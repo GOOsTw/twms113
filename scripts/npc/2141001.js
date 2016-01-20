@@ -11,7 +11,7 @@ function start() {
         cm.dispose();
         return;
     }
-    if (cm.getPlayer().getClient().getChannel() != 1) {
+    if (cm.getPlayer().getClient().getChannel() != 3) {
         cm.sendOk("皮卡啾只能在3頻挑戰");
         cm.dispose();
         return;
