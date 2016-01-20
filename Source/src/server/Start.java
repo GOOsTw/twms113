@@ -82,7 +82,7 @@ public class Start {
         FishingRewardFactory.getInstance();
         MapleQuest.initQuests();
         MapleLifeFactory.loadQuestCounts();
-        GashaponFactory.reloadGashapons();
+        GashaponFactory.getInstance().reloadGashapons();
 //        ItemMakerFactory.getInstance();
         MapleItemInformationProvider.getInstance().load();
         RandomRewards.getInstance();
