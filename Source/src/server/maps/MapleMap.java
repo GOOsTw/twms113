@@ -87,6 +87,7 @@ import server.MapleSquad.MapleSquadType;
 import server.SpeedRunner;
 import server.Timer.MapTimer;
 import server.events.MapleEvent;
+import server.life.CustomNPC;
 import server.maps.MapleNodes.MapleNodeInfo;
 import server.maps.MapleNodes.MaplePlatform;
 import server.maps.MapleNodes.MonsterPoint;
@@ -1299,12 +1300,19 @@ public final class MapleMap {
     }
 
     public final void removeNpc(final int npcid) {
+        removeNpc(npcid, false);
+    }
+
+    public final void removeNpc(final int npcid, boolean onlyCustom) {
         mapObjectLocks.get(MapleMapObjectType.NPC).writeLock().lock();
         try {
             Iterator<MapleMapObject> itr = mapObjects.get(MapleMapObjectType.NPC).values().iterator();
             while (itr.hasNext()) {
                 MapleNPC npc = (MapleNPC) itr.next();
                 if (npc.isCustom() && npc.getId() == npcid) {
+                    if (onlyCustom && !npc.isCustom()) {
+                        continue;
+                    }
                     broadcastMessage(MaplePacketCreator.removeNPC(npc.getObjectId()));
                     itr.remove();
                 }
@@ -2001,7 +2009,6 @@ public final class MapleMap {
                 chr.getClient().sendPacket(MaplePacketCreator.temporaryStats_Reset());
             }
         }
-
 
         if (permanentWeather > 0) {
             chr.getClient().sendPacket(MaplePacketCreator.startMapEffect("", permanentWeather, false)); //snow, no msg
@@ -3008,6 +3015,14 @@ public final class MapleMap {
                 broadcastMessage(MaplePacketCreator.spawnNPC(npc, false));
                 removeMapObject(npc);
             }
+        }
+        respawnCustomNpcs();
+    }
+
+    public void respawnCustomNpcs() {
+        List<CustomNPC> list = CustomNPC.loadAll(this.getId(), this.getChannel());
+        for (CustomNPC cnpc : list) {
+            this.spawnNpc(cnpc.getId(), cnpc.getPosition());
         }
     }
 

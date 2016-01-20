@@ -79,6 +79,7 @@ import server.ServerProperties;
 import handling.login.LoginServer;
 import server.CashItemFactory;
 import server.FishingRewardFactory;
+import server.life.CustomNPC;
 
 /**
  *
@@ -656,7 +657,7 @@ public class AdminCommand {
                     public void run() {
                         for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                             for (MapleCharacter mch : cserv.getPlayerStorage().getAllCharacters()) {
-                                if(!c.getPlayer().isGM()) {
+                                if (!c.getPlayer().isGM()) {
                                     NPCScriptManager.getInstance().start(mch.getClient(), 9010010);
                                 }
                             }
@@ -982,8 +983,6 @@ public class AdminCommand {
             return new StringBuilder().append("!item <道具ID> - 取得道具").toString();
         }
     }
-
-   
 
     public static class serverMsg extends CommandExecute {
 
@@ -2636,19 +2635,29 @@ public class AdminCommand {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            boolean persistant = false;
+            if (splitted.length > 2) {
+                try {
+                    persistant = Boolean.parseBoolean(splitted[2]) == true;
+                } catch (Exception e) {
+                }
+            }
             int npcId = Integer.parseInt(splitted[1]);
             MapleNPC npc = MapleLifeFactory.getNPC(npcId);
             if (npc != null && !npc.getName().equals("MISSINGNO")) {
-                npc.setPosition(c.getPlayer().getPosition());
-                npc.setCy(c.getPlayer().getPosition().y);
-                npc.setRx0(c.getPlayer().getPosition().x + 50);
-                npc.setRx1(c.getPlayer().getPosition().x - 50);
-                npc.setFh(c.getPlayer().getMap().getFootholds().findBelow(c.getPlayer().getPosition()).getId());
-                npc.setCustom(true);
-                c.getPlayer().getMap().addMapObject(npc);
-                c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.spawnNPC(npc, true));
+                CustomNPC cnpc = new CustomNPC(npc.getId(), npc.getName(), c.getPlayer().getMapId(), c.getChannel());
+                cnpc.setPosition(c.getPlayer().getPosition());
+                cnpc.setCy(c.getPlayer().getPosition().y);
+                cnpc.setRx0(c.getPlayer().getPosition().x + 50);
+                cnpc.setRx1(c.getPlayer().getPosition().x - 50);
+                cnpc.setFh(c.getPlayer().getMap().getFootholds().findBelow(c.getPlayer().getPosition()).getId());
+                if (persistant) {
+                    cnpc.saveToDB();
+                }
+                c.getPlayer().getMap().addMapObject(cnpc);
+                c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.spawnNPC(cnpc, true));
             } else {
-                c.getPlayer().dropMessage(6, "You have entered an invalid Npc-Id");
+                c.getPlayer().dropMessage(6, "你輸入不正確的NPC編號");
 
             }
             return true;
@@ -2656,7 +2665,36 @@ public class AdminCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!npc <npcid> - 呼叫出NPC").toString();
+            return new StringBuilder().append("!npc <npcid> - <true/false> - 呼叫自訂NPC 第二個參數為是否儲存NPC在這張地圖").toString();
+        }
+    }
+
+    public static class RemoveNPC extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            int npcId = Integer.parseInt(splitted[1]);
+            boolean persistant = false;
+            if (splitted.length > 2) {
+                try {
+                    persistant = Boolean.parseBoolean(splitted[2]) == true;
+                } catch (Exception e) {
+                }
+            }
+            MapleNPC npc = MapleLifeFactory.getNPC(npcId);
+            CustomNPC cnpc = CustomNPC.loadFromDB(npcId, c.getPlayer().getMapId(), c.getChannel());
+            if (npc != null && !npc.getName().equals("MISSINGNO")) {
+                c.getPlayer().getMap().removeNpc(cnpc.getId(), true);
+            } else {
+                c.getPlayer().dropMessage(6, "你輸入不正確的NPC編號");
+
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!removenpc <npcid> <true/false> - 刪除自訂NPC 第二個參數為是否刪除NPC在這張地圖").toString();
         }
     }
 
@@ -2778,8 +2816,8 @@ public class AdminCommand {
             }
             return true;
         }
-        
-          @Override
+
+        @Override
         public String getMessage() {
             return new StringBuilder().append("!deletepnpc <charname> <npcid> - 創造離線PNPC").toString();
         }
@@ -2804,11 +2842,12 @@ public class AdminCommand {
             }
             return true;
         }
-          @Override
+
+        @Override
         public String getMessage() {
             return new StringBuilder().append("!destroypnpc [objectid] - 刪除PNPC").toString();
         }
-        
+
     }
 
     public static class MyPos extends CommandExecute {
@@ -2819,13 +2858,12 @@ public class AdminCommand {
             c.getPlayer().dropMessage(6, "X: " + pos.x + " | Y: " + pos.y + " | RX0: " + (pos.x + 50) + " | RX1: " + (pos.x - 50) + " | FH: " + c.getPlayer().getFH() + "| CY:" + pos.y);
             return true;
         }
-           @Override
+
+        @Override
         public String getMessage() {
             return new StringBuilder().append("!mypos - 我的位置").toString();
         }
     }
-
-    
 
     public static class ReloadOps extends CommandExecute {
 
@@ -2835,8 +2873,8 @@ public class AdminCommand {
             RecvPacketOpcode.reloadValues();
             return true;
         }
-        
-            @Override
+
+        @Override
         public String getMessage() {
             return new StringBuilder().append("!reloadops - 重新載入OpCode").toString();
         }
@@ -2850,8 +2888,8 @@ public class AdminCommand {
             ReactorScriptManager.getInstance().clearDrops();
             return true;
         }
-        
-             @Override
+
+        @Override
         public String getMessage() {
             return new StringBuilder().append("!reloaddrops - 重新載入掉寶").toString();
         }
@@ -2864,7 +2902,8 @@ public class AdminCommand {
             PortalScriptManager.getInstance().clearScripts();
             return true;
         }
-             @Override
+
+        @Override
         public String getMessage() {
             return new StringBuilder().append("!reloadportals - 重新載入進入點").toString();
         }
@@ -2877,13 +2916,13 @@ public class AdminCommand {
             MapleShopFactory.getInstance().clear();
             return true;
         }
-        
-             @Override
+
+        @Override
         public String getMessage() {
             return new StringBuilder().append("!reloadshops - 重新載入商店").toString();
         }
     }
-    
+
     public static class ReloadCS extends CommandExecute {
 
         @Override
@@ -2891,13 +2930,13 @@ public class AdminCommand {
             CashItemFactory.getInstance().clearItems();
             return true;
         }
-        
-             @Override
+
+        @Override
         public String getMessage() {
             return new StringBuilder().append("!reloadCS - 重新載入購物商城").toString();
         }
     }
-    
+
     public static class ReloadFishing extends CommandExecute {
 
         @Override
@@ -2905,13 +2944,13 @@ public class AdminCommand {
             FishingRewardFactory.getInstance().reloadItems();
             return true;
         }
-        
-             @Override
+
+        @Override
         public String getMessage() {
             return new StringBuilder().append("!reloadFishing - 重新載入釣魚獎勵").toString();
         }
     }
-     
+
     public static class ReloadEvents extends CommandExecute {
 
         @Override
@@ -2921,8 +2960,8 @@ public class AdminCommand {
             }
             return true;
         }
-        
-             @Override
+
+        @Override
         public String getMessage() {
             return new StringBuilder().append("!reloadevents - 重新載入活動腳本").toString();
         }
@@ -2935,8 +2974,8 @@ public class AdminCommand {
             MapleQuest.clearQuests();
             return true;
         }
-        
-             @Override
+
+        @Override
         public String getMessage() {
             return new StringBuilder().append("!reloadquests - 重新載入任務").toString();
         }
@@ -2991,9 +3030,8 @@ public class AdminCommand {
             }
             return true;
         }
-        
-        
-             @Override
+
+        @Override
         public String getMessage() {
             return new StringBuilder().append("!spawn <怪物ID> <hp|exp|php||pexp = ?> - 召喚怪物").toString();
         }
@@ -3038,8 +3076,6 @@ public class AdminCommand {
         }
     }
 
-   
-
     public static class WarpAllHere extends CommandExecute {
 
         @Override
@@ -3051,7 +3087,7 @@ public class AdminCommand {
             }
             return true;
         }
-        
+
         @Override
         public String getMessage() {
             return new StringBuilder().append("!warphere 把所有玩家傳送到這裡").toString();
