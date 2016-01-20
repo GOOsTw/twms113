@@ -1,6 +1,7 @@
 SET NAMES utf8;
 SET time_zone = '+00:00';
 
+
 DROP TABLE IF EXISTS `custom_npcs`;
 CREATE TABLE `custom_npcs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -11,6 +12,5 @@ CREATE TABLE `custom_npcs` (
   `map` int(11) NOT NULL,
   `channel` int(11) NOT NULL,
   `foothold` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `scriptid` (`npcId`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
