@@ -55,7 +55,7 @@ public class MonsterStatusEffect {
         this.reflect = reflect;
     }
 
-    public final MonsterStatus getStati() {
+    public final MonsterStatus getStatus() {
         return stati;
     }
     

@@ -28,4 +28,4 @@ cm.removeNpc 這個removeNpc函數 使用了NPC不會消失 會卡在地圖上 �
 坐騎野豬 沒有疲勞度  
 某技能會導致parseMovement錯誤
 經驗值椅子待修復
-
+冰風暴+致命毒霧會斷線

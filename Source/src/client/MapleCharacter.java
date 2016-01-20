@@ -4576,12 +4576,16 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void dropMessage(int type, String message) {
-        if (type == -1) {
-            client.sendPacket(UIPacket.getTopMsg(message));
-        } else if (type == -2) {
-            client.sendPacket(PlayerShopPacket.shopChat(message, 0)); //0 or what
-        } else {
-            client.sendPacket(MaplePacketCreator.serverNotice(type, message));
+        switch (type) {
+            case -1:
+                client.sendPacket(UIPacket.getTopMsg(message));
+                break;
+            case -2:
+                client.sendPacket(PlayerShopPacket.shopChat(message, 0)); //0 or what
+                break;
+            default:
+                client.sendPacket(MaplePacketCreator.serverNotice(type, message));
+                break;
         }
     }
 

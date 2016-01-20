@@ -44,6 +44,9 @@ import java.util.Map.Entry;
 import java.util.concurrent.ScheduledFuture;
 import java.awt.Point;
 import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import server.MapleStatEffect;
 import server.Timer.BuffTimer;
@@ -89,6 +92,8 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     private final EnumMap<MonsterStatus, MonsterStatusEffect> stati = new EnumMap<>(MonsterStatus.class);
     private final LinkedList<MonsterStatusEffect> poisons = new LinkedList<>();
     private final ReentrantReadWriteLock poisonsLock = new ReentrantReadWriteLock();
+    private final AtomicInteger waiteApplyedStatusCount = new AtomicInteger(0);
+
     private Map<Integer, Long> usedSkills;
     private int stolen = -1; //monster can only be stolen ONCE
     private ScheduledFuture<?> dropItemSchedule;
@@ -904,36 +909,34 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         return stats.getEffectiveness(e);
     }
 
+    public final void applyMonsterStatus(final MaplePacket packet) {
+        // int delay = waiteApplyedStatusCount.incrementAndGet() / 10;
+        final MapleCharacter con = getController();
+        if (con != null) {
+            MapleMonster.this.map.broadcastMessage(con, packet, MapleMonster.this.getTruePosition());
+            con.getClient().sendPacket(packet);
+        } else {
+            MapleMonster.this.map.broadcastMessage(packet, MapleMonster.this.getTruePosition());
+        }
+        //         MapleMonster.this.waiteApplyedStatusCount.decrementAndGet();
+    }
+
     //套用怪物BUFF 判斷
     public void applyMonsterBuff(final Map<MonsterStatus, Integer> effect, final int x, final int skillId, long duration, final MobSkill skill, final List<Integer> reflection) {
         final MapleCharacter con = getController();
         BuffTimer BuffTimer = Timer.BuffTimer.getInstance();
-
         final Runnable cancelTask = new Runnable() {
             @Override
             public void run() {
                 if (isAlive()) {
-                    List<MonsterStatusEffect> mse = new ArrayList<>();
-                    for (Entry<MonsterStatus, Integer> z : effect.entrySet()) {
-                        mse.add(new MonsterStatusEffect(z.getKey(), z.getValue(), skillId, skill, true, reflection.size() > 0));
-                    }
-                    map.broadcastMessage(con, MobPacket.cancelMonsterStatus(MapleMonster.this, mse), getPosition());
-                    if (getController() != null && !getController().isMapObjectVisible(MapleMonster.this)) {
-                        getController().getClient().sendPacket(MobPacket.cancelMonsterStatus(MapleMonster.this, mse));
-                    }
-                    for (final MonsterStatus stat : effect.keySet()) {
-                        stati.remove(stat);
-                    }
+                    MapleMonster.this.cancelStatus(effect.keySet());
                     reflection.clear();
-                }
-                if (con.isStaff()) {
-                    //con.dropMessage(6, "結束 => 持續傷害: 結束時間[" + System.currentTimeMillis() + "]");
                 }
             }
         };
 
         for (Entry<MonsterStatus, Integer> z : effect.entrySet()) {
-            if (stati.containsKey(z.getKey())) {
+            if (getStati().containsKey(z.getKey())) {
                 cancelStatus(z.getKey());
             }
             final MonsterStatusEffect effectz = new MonsterStatusEffect(z.getKey(), z.getValue(), 0, skill, true, reflection.size() > 0);
@@ -946,14 +949,12 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 mse.add(new MonsterStatusEffect(z.getKey(), z.getValue(), 0, skill, true, reflection.size() > 0));
             }
             this.reflectpack = MobPacket.applyMonsterStatus(this, mse);
-            map.broadcastMessage(con, reflectpack, getTruePosition());
-            con.getClient().sendPacket(this.reflectpack);
+            applyMonsterStatus(this.reflectpack);
 
         } else {
             for (Entry<MonsterStatus, Integer> z : effect.entrySet()) {
                 final MonsterStatusEffect effectz = new MonsterStatusEffect(z.getKey(), z.getValue(), 0, skill, true, reflection.size() > 0);
-                map.broadcastMessage(con, MobPacket.applyMonsterStatus(this, effectz), getTruePosition());
-                con.getClient().sendPacket(MobPacket.applyMonsterStatus(this, effectz));
+                applyMonsterStatus(MobPacket.applyMonsterStatus(this, effectz));
             }
         }
         BuffTimer.schedule(cancelTask, duration);
@@ -966,12 +967,14 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
     }
 
-    public final void applyStatus(final MapleCharacter from, final MonsterStatusEffect status, final boolean poison, long duration, final boolean checkboss, final MapleStatEffect eff) {
+    public final void applyStatus(final MapleCharacter from, final MonsterStatusEffect statusEff, final boolean poison, long duration, final boolean checkboss, final MapleStatEffect eff) {
         if (!isAlive()) {
             return;
         }
 
-        ISkill skilz = SkillFactory.getSkill(status.getSkill());
+        final ISkill skilz = SkillFactory.getSkill(statusEff.getSkill());
+        final int statusSkill = statusEff.getSkill();
+
         if (skilz != null) {
             switch (stats.getEffectiveness(skilz.getElement())) {
                 case IMMUNE:
@@ -984,8 +987,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                     return;
             }
         }
-        // compos don't have an elemental (they have 2 - so we have to hack here...)
-        final int statusSkill = status.getSkill();
+
         switch (statusSkill) {
             case SkillType.火毒魔導士.火毒合擊: { // FP compo
                 switch (stats.getEffectiveness(Element.POISON)) {
@@ -1015,42 +1017,41 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
 
         if (duration >= 2000000000) {
-            duration = 5000; //teleport master
+            duration = 5000;
         }
 
-        final MonsterStatus stat = status.getStati();
+        final MonsterStatus status = statusEff.getStatus();
 
-        if (stats.isNoDoom() && stat == MonsterStatus.DOOM) {
+        if (stats.isNoDoom() && status == MonsterStatus.DOOM) {
             return;
         }
 
         if (stats.isBoss()) {
-            if (stat == MonsterStatus.STUN) {
+            if (status == MonsterStatus.STUN) {
                 return;
-            } else if (checkboss && stat != (MonsterStatus.SPEED) && stat != (MonsterStatus.NINJA_AMBUSH) && stat != (MonsterStatus.WATK)) {
+            } else if (checkboss && status != (MonsterStatus.SPEED) && status != (MonsterStatus.NINJA_AMBUSH) && status != (MonsterStatus.WATK)) {
                 return;
-            } else if (getId() == 8850011 && stat == MonsterStatus.MAGIC_CRASH) {
+            } else if (getId() == 8850011 && status == MonsterStatus.MAGIC_CRASH) {
                 return;
-            } else if (stat == MonsterStatus.FREEZE || stat == MonsterStatus.POISON) {
+            } else if (status == MonsterStatus.FREEZE || status == MonsterStatus.POISON) {
                 return;
             }
         }
 
         if (stats.isFriendly() || isFake()) {
-            if (stat == MonsterStatus.STUN || stat == MonsterStatus.SPEED || stat == MonsterStatus.POISON || stat == MonsterStatus.VENOMOUS_WEAPON) {
+            if (status == MonsterStatus.STUN || status == MonsterStatus.SPEED || status == MonsterStatus.POISON || status == MonsterStatus.VENOMOUS_WEAPON) {
                 return;
             }
         }
 
-        if ((stat == MonsterStatus.VENOMOUS_WEAPON || stat == MonsterStatus.POISON) && eff == null) {
+        if ((status == MonsterStatus.VENOMOUS_WEAPON || status == MonsterStatus.POISON) && eff == null) {
+            return;
+        }
+        if (stati.containsKey(status)) {
             return;
         }
 
-        if (stati.containsKey(stat)) {
-            return;
-        }
-
-        if (stat == MonsterStatus.POISON || stat == MonsterStatus.VENOMOUS_WEAPON) {
+        if (status == MonsterStatus.POISON || status == MonsterStatus.VENOMOUS_WEAPON) {
             int count = 0;
             poisonsLock.readLock().lock();
             try {
@@ -1070,37 +1071,38 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             aniTime += skilz.getAnimationTime();
         }
 
-        status.setCancelTask(aniTime);
+        statusEff.setCancelTask(aniTime);
 
         if (poison && getHp() > 1) { // 中毒[POISON]
-            final int poisonDamage = (int) Math.min(Short.MAX_VALUE, (long) (getMobMaxHp() / (70.0 - from.getSkillLevel(status.getSkill())) + 0.999));
-            status.setValue(stat, poisonDamage);
-            status.setX(poisonDamage);
+            final int poisonDamage = (int) Math.min(Short.MAX_VALUE, (long) (getMobMaxHp() / (70.0 - from.getSkillLevel(statusEff.getSkill())) + 0.999));
+            statusEff.setValue(status, poisonDamage);
+            statusEff.setX(poisonDamage);
             // 設定中毒持續傷害，如果status.getX()跟這裡傷害不一樣就會有顯示跟實際不同的問題
-            status.setPoisonDamage(status.getX(), from);
+            statusEff.setPoisonDamage(statusEff.getX(), from);
         } else if (statusSkill == 4111003 || statusSkill == 14111001) { // shadow web
-            status.setValue(status.getStati(), (int) (getMobMaxHp() / 50.0 + 0.999));
-            status.setPoisonDamage(status.getX(), from);
+            statusEff.setValue(statusEff.getStatus(), (int) (getMobMaxHp() / 50.0 + 0.999));
+            statusEff.setPoisonDamage(statusEff.getX(), from);
         } else if (statusSkill == 4341003) { // monsterbomb
-            status.setPoisonDamage((int) (eff.getDamage() * from.getStat().getCurrentMaxBaseDamage() / 100.0), from);
+            statusEff.setPoisonDamage((int) (eff.getDamage() * from.getStat().getCurrentMaxBaseDamage() / 100.0), from);
 
         } else if (statusSkill == 4121004 || statusSkill == 4221004) { // NINJA_AMBUSH
-            status.setValue(status.getStati(), Math.min(Short.MAX_VALUE, (int) (eff.getDamage() * from.getStat().getCurrentMaxBaseDamage() / 100.0)));
-            int dam = (int) (aniTime / 1000 * status.getX() / 2);
-            status.setPoisonDamage(dam, from);
+            statusEff.setValue(statusEff.getStatus(), Math.min(Short.MAX_VALUE, (int) (eff.getDamage() * from.getStat().getCurrentMaxBaseDamage() / 100.0)));
+            int dam = (int) (aniTime / 1000 * statusEff.getX() / 2);
+            statusEff.setPoisonDamage(dam, from);
         }
 
         final BuffTimer applyEffectTimer = Timer.BuffTimer.getInstance();
+
         final Runnable applyEffectTask = new Runnable() {
             @Override
             public final void run() {
-                if (status.getPoisonDamage() != 0 && isAlive() && (hp - status.getPoisonDamage()) > 1) {
+                if (statusEff.getPoisonDamage() != 0 && isAlive() && (hp - statusEff.getPoisonDamage()) > 1) {
                     if (from.isStaff() && MapleServerHandler.isDebugMode()) {
-                        //from.dropMessage(6, "執行 => 持續傷害: 傷害[" + status.getPoisonSchedule() + "] 執行時間[" + System.currentTimeMillis() + "]");
+                        //from.dropMessage("執行 => 持續傷害: 傷害[" + status.getX() + "] 執行時間[" + System.currentTimeMillis() + "]");
                     }
-                    int dam = status.getPoisonDamage();
+                    int dam = statusEff.getPoisonDamage();
                     if (dam >= hp) {
-                        dam = (int) (hp - status.getPoisonDamage());
+                        dam = (int) (hp - statusEff.getPoisonDamage());
                     }
                     damage(from, dam, false);
                 } else {
@@ -1108,55 +1110,41 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 }
             }
         };
-
+        final int delay = this.getMap().getApplyedStatusMonsterCount();
         final BuffTimer BuffTimer = Timer.BuffTimer.getInstance();
-        final Runnable cancelTask = new Runnable() {
+        final Runnable cancelTask;
+        cancelTask = new Runnable() {
             @Override
             public final void run() {
                 if (isAlive()) {
-                    map.broadcastMessage(MobPacket.cancelMonsterStatus(MapleMonster.this, status), getPosition());
-                    if (getController() != null && !getController().isMapObjectVisible(MapleMonster.this)) {
-                        getController().getClient().sendPacket(MobPacket.cancelMonsterStatus(MapleMonster.this, status));
+                    if (getStati().containsKey(status)) {
+                        MapleMonster.this.cancelStatus(status, delay);
                     }
-                    stati.remove(stat);
-                }
-                status.cancelPoisonSchedule(MapleMonster.this);
-                if (from.isStaff() && MapleServerHandler.isDebugMode()) {
-                    // from.dropMessage(6, "結束 => 持續傷害: 結束時間[" + System.currentTimeMillis() + "]");
                 }
             }
         };
 
         final MapleCharacter con = getController();
-        if (stat == MonsterStatus.POISON || stat == MonsterStatus.VENOMOUS_WEAPON) {
+        if (true || status == MonsterStatus.POISON || status == MonsterStatus.VENOMOUS_WEAPON || status == MonsterStatus.FREEZE) {
             poisonsLock.writeLock().lock();
             try {
-                stati.put(stat, status);
-                poisons.add(status);
-                if (con != null) {
-                    map.broadcastMessage(con, MobPacket.applyMonsterStatus(this, poisons), getTruePosition());
-                    con.getClient().sendPacket(MobPacket.applyMonsterStatus(this, poisons));
-                } else {
-                    map.broadcastMessage(MobPacket.applyMonsterStatus(this, poisons), getTruePosition());
-                }
+                stati.put(status, statusEff);
+                poisons.add(statusEff);
+                applyMonsterStatus(MobPacket.applyMonsterStatus(this, poisons));
             } finally {
                 poisonsLock.writeLock().unlock();
             }
         } else {
-            stati.put(stat, status);
-            if (con != null) {
-                map.broadcastMessage(con, MobPacket.applyMonsterStatus(this, status), getTruePosition());
-                con.getClient().sendPacket(MobPacket.applyMonsterStatus(this, status));
-            } else {
-                map.broadcastMessage(MobPacket.applyMonsterStatus(this, status), getTruePosition());
-            }
+            stati.put(status, statusEff);
+            applyMonsterStatus(MobPacket.applyMonsterStatus(this, statusEff));
         }
-        BuffTimer.schedule(cancelTask, aniTime + (int) (Math.random() * this.getStati().size() * 1500) + this.getStati().size() * 700);
+
+        BuffTimer.schedule(cancelTask, aniTime * 2);
         if (from.isStaff() && MapleServerHandler.isDebugMode()) {
             ///from.dropMessage(6, "開始 => 給予怪物狀態: 持續時間[" + aniTime + "] 狀態效果[" + status.getStati().name() + "] 開始時間[" + System.currentTimeMillis() + "]");
         }
         // 持續傷害的Buff
-        if (status.getStati() == MonsterStatus.POISON || status.getStati() == MonsterStatus.NINJA_AMBUSH) {
+        if (statusEff.getStatus() == MonsterStatus.POISON || statusEff.getStatus() == MonsterStatus.NINJA_AMBUSH) {
             int reTime = 1000;
             applyEffectTimer.register(applyEffectTask, reTime);
         }
@@ -1177,8 +1165,8 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
     }
 
-    public final void cancelStatus(final Collection<MonsterStatus> stats) {
-        List<MonsterStatusEffect> mses = new ArrayList<>();
+    public final void cancelStatus(final Collection<MonsterStatus> stats, final int delay) {
+        final List<MonsterStatusEffect> mses = new ArrayList<>();
         for (MonsterStatus stat : stats) {
             if (stat == MonsterStatus.BLEED || stat == MonsterStatus.SUMMON) {
                 return;
@@ -1195,44 +1183,43 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
 
         final MapleCharacter con = getController();
-        if (con != null) {
-            map.broadcastMessage(con, MobPacket.cancelMonsterStatus(this, mses), getTruePosition());
-            con.getClient().sendPacket(MobPacket.cancelMonsterStatus(this, mses));
-        } else {
-            map.broadcastMessage(MobPacket.cancelMonsterStatus(this, mses), getTruePosition());
-        }
-        for (MonsterStatus stat : stats) {
-            stati.remove(stat);
-        }
+        final Runnable cancelMonsterStatusTask;
+        cancelMonsterStatusTask = new Runnable() {
+            @Override
+            public final void run() {
+                if (con != null) {
+                    map.broadcastMessage(con, MobPacket.cancelMonsterStatus(MapleMonster.this, mses), getTruePosition());
+                    con.getClient().sendPacket(MobPacket.cancelMonsterStatus(MapleMonster.this, mses));
+                } else {
+                    map.broadcastMessage(MobPacket.cancelMonsterStatus(MapleMonster.this, mses), getTruePosition());
+                }
+                for (MonsterStatus stat : stats) {
+                    MapleMonster.this.getStati().remove(stat);
+                }
+                if(delay > 0)
+                MapleMonster.this.getMap().decApplyedStatusMonster();
+            }
+        };
+        BuffTimer.getInstance().schedule(cancelMonsterStatusTask, 250 * delay);
     }
 
     public final void cancelStatus(final MonsterStatus stat) {
-        if (stat == MonsterStatus.BLEED || stat == MonsterStatus.SUMMON) {
-            return;
-        }
-        final MonsterStatusEffect mse = stati.get(stat);
-        if (mse == null || !isAlive()) {
-            return;
-        }
-        if (mse.isReflect()) {
-            reflectpack = null;
-        }
-        mse.cancelPoisonSchedule(this);
-        final MapleCharacter con = getController();
-        if (con != null) {
-            map.broadcastMessage(con, MobPacket.cancelMonsterStatus(this, mse), getTruePosition());
-            con.getClient().sendPacket(MobPacket.cancelMonsterStatus(this, mse));
-        } else {
-            map.broadcastMessage(MobPacket.cancelMonsterStatus(this, mse), getTruePosition());
-        }
-        stati.remove(stat);
+        cancelStatus(Collections.singletonList(stat), 0);
+    }
+
+    public final void cancelStatus(final Collection<MonsterStatus> stats) {
+        cancelStatus(stats, 0);
+    }
+
+    public final void cancelStatus(final MonsterStatus stat, int delay) {
+        cancelStatus(Collections.singletonList(stat), delay);
     }
 
     public final void doPoison(final MonsterStatusEffect status, final WeakReference<MapleCharacter> weakChr) {
-        if ((status.getStati() == MonsterStatus.VENOMOUS_WEAPON || status.getStati() == MonsterStatus.POISON) && poisons.size() <= 0) {
+        if ((status.getStatus() == MonsterStatus.VENOMOUS_WEAPON || status.getStatus() == MonsterStatus.POISON) && poisons.size() <= 0) {
             return;
         }
-        if (status.getStati() != MonsterStatus.VENOMOUS_WEAPON && status.getStati() != MonsterStatus.POISON && !stati.containsKey(status.getStati())) {
+        if (status.getStatus() != MonsterStatus.VENOMOUS_WEAPON && status.getStatus() != MonsterStatus.POISON && !stati.containsKey(status.getStatus())) {
             return;
         }
         if (weakChr == null) {
@@ -1647,7 +1634,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 for (final MaplePartyCharacter partychar : party.getMembers()) {
                     pchr = map.getCharacterById(partychar.getId());
                     if (pchr != null) {
-                        if (partychar.isOnline() && pchr.isAlive() && pchr.getMap() == map ) {
+                        if (partychar.isOnline() && pchr.isAlive() && pchr.getMap() == map) {
                             partyMemOnline++;
                         }
                     }
@@ -1671,8 +1658,6 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                         }
                     }
                 }
-                
-                
 
                 if (expApplicable.size() > 1) {
                     averagePartyLevel /= expApplicable.size();

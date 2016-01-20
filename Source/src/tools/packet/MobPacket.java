@@ -218,7 +218,7 @@ public class MobPacket {
     private static void writeMaskFromList(MaplePacketLittleEndianWriter mplew, Collection<MonsterStatusEffect> ss) {
         int[] mask = new int[4];
         for (MonsterStatusEffect statup : ss) {
-            mask[(statup.getStati().getPosition())] |= statup.getStati().getValue();
+            mask[(statup.getStatus().getPosition())] |= statup.getStatus().getValue();
         }
         for (int i = 0; i < mask.length; i++) {
             mplew.writeInt(mask[(i)]);
@@ -230,31 +230,31 @@ public class MobPacket {
         if (life.getStati().size() <= 0) {
             life.addEmpty(); //not done yet lulz ok so we add it now for the lulz
         }
-        
+
         writeMaskFromList(mplew, life.getStati().values());
         boolean ignore_imm = false;
         for (MonsterStatusEffect buff : life.getStati().values()) {
-            if (buff.getStati() == MonsterStatus.MAGIC_DAMAGE_REFLECT || buff.getStati() == MonsterStatus.WEAPON_DAMAGE_REFLECT) {
+            if (buff.getStatus() == MonsterStatus.MAGIC_DAMAGE_REFLECT || buff.getStatus() == MonsterStatus.WEAPON_DAMAGE_REFLECT) {
                 ignore_imm = true;
                 break;
             }
         }
         for (MonsterStatusEffect buff : life.getStati().values()) {
-            if (buff.getStati() != MonsterStatus.MAGIC_DAMAGE_REFLECT && buff.getStati() != MonsterStatus.WEAPON_DAMAGE_REFLECT) {
+            if (buff.getStatus() != MonsterStatus.MAGIC_DAMAGE_REFLECT && buff.getStatus() != MonsterStatus.WEAPON_DAMAGE_REFLECT) {
                 if (ignore_imm) {
-                    if (buff.getStati() == MonsterStatus.MAGIC_IMMUNITY || buff.getStati() == MonsterStatus.WEAPON_IMMUNITY) {
+                    if (buff.getStatus() == MonsterStatus.MAGIC_IMMUNITY || buff.getStatus() == MonsterStatus.WEAPON_IMMUNITY) {
                         continue;
                     }
                 }
                 mplew.writeShort(buff.getX().shortValue());
-                if (buff.getStati() != MonsterStatus.SUMMON) {
+                if (buff.getStatus() != MonsterStatus.SUMMON) {
                     if (buff.getMobSkill() != null) {
                         mplew.writeShort(buff.getMobSkill().getSkillId());
                         mplew.writeShort(buff.getMobSkill().getSkillLevel());
                     } else if (buff.getSkill() > 0) {
                         mplew.writeInt(buff.getSkill());
                     }
-                    mplew.writeShort(buff.getStati().isEmpty() ? 0 : 1);
+                    mplew.writeShort(buff.getStatus().isEmpty() ? 0 : 1);
                 }
             }
         }
@@ -346,8 +346,7 @@ public class MobPacket {
         Set<MonsterStatus> mobstat = new HashSet();
         writeMaskFromList(mplew, buffs);
         for (MonsterStatusEffect buff : buffs) {
-            mobstat.add(buff.getStati());
-            if (buff.getStati() != MonsterStatus.SUMMON) {
+            if (buff.getStatus() != MonsterStatus.SUMMON && buff.getStatus() != MonsterStatus.EMPTY && !mobstat.contains(buff.getStatus())) {
                 mplew.writeShort(buff.getX());
                 if (buff.getMobSkill() != null) {
                     mplew.writeShort(buff.getMobSkill().getSkillId());
@@ -355,9 +354,10 @@ public class MobPacket {
                 } else {
                     mplew.writeInt(buff.getSkill() > 0 ? buff.getSkill() : 0);
                 }
-                 mplew.writeShort(-1);
-               // mplew.writeShort((short) ((buff.getCancelTask() - System.currentTimeMillis()) / 1000));
+                //mplew.writeShort(-1);
+                mplew.writeShort((short) ((buff.getCancelTask() - System.currentTimeMillis())));
             }
+            mobstat.add(buff.getStatus());
         }
         if (mobstat.contains(MonsterStatus.WDEF)) {
             mplew.writeInt(0);
@@ -384,7 +384,7 @@ public class MobPacket {
         if (mobstat.contains(MonsterStatus.MBS61)) {
             mplew.writeInt(0);
         }
-        
+
         if (mobstat.contains(MonsterStatus.MBS39)) {
             mplew.writeInt(0);
             mplew.writeInt(0);
@@ -430,21 +430,20 @@ public class MobPacket {
             mplew.write(0);
             mplew.write(0);
         }
-        
+
         if (mobstat.contains(MonsterStatus.MONSTER_BOMB)) {
             mplew.writeInt(0);
             mplew.writeInt(0);
             mplew.writeInt(0);
         }
-        
+
     }
-    
+
     public static void ProcessStatSet(MaplePacketLittleEndianWriter mplew, Collection<MonsterStatusEffect> buffs) {
         EncodeTemporary(mplew, buffs);
-        mplew.writeShort(2);
+        mplew.writeShort(1);
         mplew.write(1);
-        // if (MobStat::IsMovementAffectingStat)
-        mplew.write(1);
+        mplew.write(2);
     }
 
     public static MaplePacket applyMonsterStatus(MapleMonster mons, MonsterStatusEffect ms) {
@@ -461,11 +460,10 @@ public class MobPacket {
         mplew.write(1); // size
 //        mplew.write(1); // ? v97*/
         SingleProcessStatSet(mplew, ms);
-         
 
         return mplew.getPacket();
     }
-    
+
     public static MaplePacket applyMonsterStatus(MapleMonster mons, List<MonsterStatusEffect> mse) {
         if ((mse.size() <= 0) || (mse.get(0) == null)) {
             return MaplePacketCreator.enableActions();
@@ -480,31 +478,7 @@ public class MobPacket {
         return mplew.getPacket();
     }
 
-
-    public static MaplePacket applyMonsterStatus(final int oid, final MonsterStatusEffect mse) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        mplew.writeShort(SendPacketOpcode.APPLY_MONSTER_STATUS.getValue());
-        mplew.writeInt(oid);
-        //aftershock extra int here
-        writeMaskFromList(mplew, Collections.singletonList(mse));
-
-        mplew.writeShort(mse.getX());
-        if (mse.isMonsterSkill()) {
-            mplew.writeShort(mse.getMobSkill().getSkillId());
-            mplew.writeShort(mse.getMobSkill().getSkillLevel());
-        } else if (mse.getSkill() > 0) {
-            mplew.writeInt(mse.getSkill());
-        }
-        mplew.writeShort(mse.getStati().isEmpty() ? 1 : 0); // might actually be the buffTime but it's not displayed anywhere
-        mplew.writeShort(0); // delay in ms
-        mplew.write(1); // size
-//        mplew.write(1); // ? v97
-
-        return mplew.getPacket();
-    }
-
-   /* public static MaplePacket applyMonsterStatus(final int oid, final Map<MonsterStatus, Integer> stati, final List<Integer> reflection, MobSkill skil) {
+    /* public static MaplePacket applyMonsterStatus(final int oid, final Map<MonsterStatus, Integer> stati, final List<Integer> reflection, MobSkill skil) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.APPLY_MONSTER_STATUS.getValue());
@@ -534,7 +508,6 @@ public class MobPacket {
 
         return mplew.getPacket();
     }*/
-
     public static MaplePacket cancelMonsterStatus(MapleMonster mons, MonsterStatusEffect ms) {
         List<MonsterStatusEffect> mse = new ArrayList<>();
         mse.add(ms);
@@ -542,8 +515,8 @@ public class MobPacket {
     }
 
     public static MaplePacket cancelMonsterStatus(MapleMonster mons, List<MonsterStatusEffect> mse) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.CANCEL_MONSTER_STATUS.getValue());
         mplew.writeInt(mons.getObjectId());
         writeMaskFromList(mplew, mse);

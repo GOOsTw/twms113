@@ -2002,7 +2002,6 @@ public final class MapleMap {
             }
         }
 
-
         if (permanentWeather > 0) {
             chr.getClient().sendPacket(MaplePacketCreator.startMapEffect("", permanentWeather, false)); //snow, no msg
         }
@@ -2689,12 +2688,11 @@ public final class MapleMap {
                 chr.addVisibleMapObject(mo);
                 mo.sendSpawnData(chr.getClient());
             }
-        } else { // monster left view range
-            if (mo.getType() != MapleMapObjectType.SUMMON && mo.getPosition().distanceSq(chr.getPosition()) > GameConstants.maxViewRangeSq()) {
+        } else // monster left view range
+         if (mo.getType() != MapleMapObjectType.SUMMON && mo.getPosition().distanceSq(chr.getPosition()) > GameConstants.maxViewRangeSq()) {
                 chr.removeVisibleMapObject(mo);
                 mo.sendDestroyData(chr.getClient());
             }
-        }
     }
 
     public void moveMonster(MapleMonster monster, Point reportedPos) {
@@ -3339,4 +3337,14 @@ public final class MapleMap {
         }
         return false;
     }
+    private final AtomicInteger applyedMonsterCount = new AtomicInteger(0);
+
+    public final void decApplyedStatusMonster() {
+        applyedMonsterCount.decrementAndGet();
+    }
+
+    public final int getApplyedStatusMonsterCount() {
+        return applyedMonsterCount.incrementAndGet();
+    }
+
 }
