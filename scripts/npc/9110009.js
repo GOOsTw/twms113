@@ -23,14 +23,18 @@ function action(mode, _type, selection) {
         case 1: {
             if (cm.haveItem(requireItem)) {
                 var gashapon = cm.getGashapon();
-                if (cm.canHold()) {
-                    var gashaponItem = gashapon.generateReward();
-                    if(gashaponItem != null) { 
-                    cm.gainItem(gashaponItem.getItemId(), 1);
-                    cm.gainItem(requireItem, -1);
-                    cm.sendOk("恭喜你轉到了#b#i" + gashaponItem.getItemId() + "##k。");
+                if(gashapon != null) {
+                    if (cm.canHold()) {
+                        var gashaponItem = gashapon.generateReward();
+                        if(gashaponItem != null) { 
+                            cm.gainItem(gashaponItem.getItemId(), 1);
+                            cm.gainItem(requireItem, -1);
+                            cm.sendOk("恭喜你轉到了#b#i" + gashaponItem.getItemId() + "##k。");
+                        } else {
+                            cm.sendOk("轉蛋機維護中。");
+                        }
                     } else {
-                        cm.sendOk("轉蛋機維護中。");
+                        cm.sendOk("轉蛋機尚未開放");
                     }
                 } else {
                     cm.sendOk("請確認你的物品欄位還有空間。");
