@@ -34,7 +34,7 @@ function action(mode, _type, selection) {
                             cm.sendOk("轉蛋機維護中。");
                         }
                     } else {
-                        cm.sendOk("轉蛋機尚未開放");
+                        cm.sendOk("請確認你的物品欄位還有空間。");
                     }
                 } else {
                     cm.sendOk("請確認你的物品欄位還有空間。");
