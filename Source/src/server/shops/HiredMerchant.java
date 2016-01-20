@@ -49,6 +49,7 @@ public class HiredMerchant extends AbstractPlayerStore {
         this.schedule = EtcTimer.getInstance().schedule(new Runnable() {
             @Override
             public void run() {
+                HiredMerchant.this.removeAllVisitors(-1, -1);
                 closeShop(true, true);
             }
         }, 1000 * 60 * 60 * 24);

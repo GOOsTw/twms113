@@ -88,20 +88,21 @@ public class PlayerInteractionHandler {
             SELECT_CARD = 0x41;
 
     public static final void PlayerInteraction(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
-       
-        if (chr == null)
+
+        if (chr == null) {
             return;
-       
+        }
+
         final byte action = slea.readByte();
-        
+
         switch (action) { // Mode
-            
+
             case CREATE: {
                 final byte createType = slea.readByte();
                 if (createType == 3) {
                     /* 交易 */
                     MapleTrade.startTrade(chr);
-                } else if (createType == 1 || createType == 2 || createType == 4 || createType == 5) { 
+                } else if (createType == 1 || createType == 2 || createType == 4 || createType == 5) {
                     /* 商店 */
                     if (createType == 4 && !chr.isAdmin()) { //not hired merch... blocked playershop
                         c.sendPacket(MaplePacketCreator.enableActions());
@@ -422,11 +423,20 @@ public class PlayerInteractionHandler {
                 long check = tobuy.bundles * quantity;
                 long check2 = tobuy.price * quantity;
                 long check3 = tobuy.item.getQuantity() * quantity;
-                if (check <= 0 || check2 > 2147483647 || check2 <= 0 || check3 > 32767 || check3 < 0) { //This is the better way to check.
+                if (check <= 0 || check2 > 2147483647 || check2 <= 0 || check3 > 32767 || check3 < 0) { // 這是更好的方法來檢查.
+                    c.getPlayer().dropMessage(1, "您不能購買這個道具，因為賣家可能有太多的楓幣。"); // 仿正服.
+                    c.sendPacket(MaplePacketCreator.enableActions());
                     return;
                 }
-                if (tobuy.bundles < quantity || (tobuy.bundles % quantity != 0 && GameConstants.isEquip(tobuy.item.getItemId())) // Buying
-                        || chr.getMeso() - (check2) < 0 || chr.getMeso() - (check2) > 2147483647 || shop.getMeso() + (check2) < 0 || shop.getMeso() + (check2) > 2147483647) {
+                if ((tobuy.bundles < quantity) || ((tobuy.bundles % quantity != 0) && (GameConstants.isEquip(tobuy.item.getItemId()))) 
+                    || (chr.getMeso() - check2 > 2147483647L) || (shop.getMeso() + check2 < 0L) || (shop.getMeso() + check2 > 2147483647L)) { // 這是更好的方法來檢查.
+                    c.getPlayer().dropMessage(1, "您攜帶的楓幣超過(2147483647)無法購買商品，請將多餘的楓幣存入倉庫。"); // 仿正服.
+                    c.sendPacket(MaplePacketCreator.enableActions());
+                    return;
+                }
+                if (chr.getMeso() - check2 < 0) { // 這是更好的方法來檢查.
+                    chr.dropMessage(1, "你沒有足夠的楓幣無法購買。");
+                    c.sendPacket(MaplePacketCreator.enableActions());
                     return;
                 }
                 if (quantity >= 50 && tobuy.item.getItemId() == 2340000) {

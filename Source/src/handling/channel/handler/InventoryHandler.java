@@ -2544,18 +2544,18 @@ public class InventoryHandler {
                         c.getPlayer().setPlayerShop(merchant);
                         c.sendPacket(PlayerShopPacket.getHiredMerch(c.getPlayer(), merchant, false));
                     } else if (!merchant.isOpen() || !merchant.isAvailable()) {
-                        c.getPlayer().dropMessage(1, "這個商店在整理或者是沒再販賣東西。");
+                        c.getPlayer().dropMessage(1, "商店主人正在整理商店物品\r\n請稍後再度光臨！");
                     } else if (merchant.getFreeSlot() == -1) {
-                        c.getPlayer().dropMessage(1, "商店人數已經滿了，請稍後再進入。");
+                        c.getPlayer().dropMessage(1, "商店已達到最大人數\r\n請稍後再度光臨！");
                     } else if (merchant.isInBlackList(c.getPlayer().getName())) {
-                        c.getPlayer().dropMessage(1, "被加入黑名單了，所以不能進入。");
+                        c.getPlayer().dropMessage(1, "你被禁止進入該商店。");
                     } else {
                         c.getPlayer().setPlayerShop(merchant);
                         merchant.addVisitor(c.getPlayer());
                         c.sendPacket(PlayerShopPacket.getHiredMerch(c.getPlayer(), merchant, false));
                     }
                 } else {
-                    c.getPlayer().dropMessage(1, "商店正在整理中，");
+                    c.getPlayer().dropMessage(1, "商店主人正在整理商店物品\r\n請稍後再度光臨！");
                 }
             }
         }
@@ -2583,6 +2583,8 @@ public class InventoryHandler {
                         used = true;
                     }
                 }
+            } else {
+                c.getPlayer().dropMessage(1, "在此頻道未找到該玩家。");
             }
         }
         return used && itemId != 5041001 && itemId != 5040004;

@@ -38,6 +38,7 @@ import handling.world.World;
 import java.util.Map;
 import server.MapleInventoryManipulator;
 import server.MerchItemPackage;
+import tools.FilePrinter;
 import tools.Pair;
 import tools.packet.PlayerShopPacket;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -63,7 +64,7 @@ public class HiredMerchantHandler {
                     }
                     break;
                 default:
-                    c.getPlayer().dropMessage(1, "An unknown error occured.");
+                    c.getPlayer().dropMessage(1, "未知的錯誤");
                     break;
             }
         } else {
@@ -106,9 +107,11 @@ public class HiredMerchantHandler {
                     c.getPlayer().setConversation(0);
                 } else if (conv == 3) { // Hired Merch
                     final MerchItemPackage pack = loadItemFromDatabase(c.getPlayer().getId(), c.getPlayer().getAccountID());
-
                     if (pack == null) {
                         c.getPlayer().dropMessage(1, "你沒有在這邊置放道具!");
+                        c.getPlayer().setConversation(0);
+                    } else if ((c.getPlayer().getMeso() + pack.getMesos()) >= 2147483647) {
+                        c.getPlayer().dropMessage(1, "由於你身上的楓幣可能滿了，請將多餘的楓幣存入倉庫。");
                         c.getPlayer().setConversation(0);
                     } else if (pack.getItems().size() <= 0) { //error fix for complainers.
                         if (!check(c.getPlayer(), pack)) {
@@ -116,14 +119,22 @@ public class HiredMerchantHandler {
                             return;
                         }
                         if (deletePackage(c.getPlayer().getId(), c.getPlayer().getAccountID(), pack.getPackageid())) {
-                            c.getPlayer().gainMeso(pack.getMesos(), false);
+                            if (pack.getMesos() > 0) {
+                                c.getPlayer().dropMessage(1, "你已經從精靈商人領取了" + pack.getMesos() + "楓幣");
+                                FilePrinter.print("HiredMerchantLog.txt", "角色名字:" + c.getPlayer().getName() + " 從精靈商人取回楓幣: " + pack.getMesos() + " 取回時間:" + FilePrinter.getLocalDateString());
+                                c.getPlayer().setConversation(0);
+                            }
+                            for (IItem item : pack.getItems()) {
+                                MapleInventoryManipulator.addFromDrop(c, item, false);
+                            }
                             c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x1d));
-                             c.getPlayer().setConversation(0);
+                            c.getPlayer().setConversation(0);
                         } else {
-                            c.getPlayer().dropMessage(1, "An unknown error occured.");
+                            c.getPlayer().dropMessage(1, "未知的錯誤");
                         }
                     } else {
                         c.sendPacket(PlayerShopPacket.merchItemStore_ItemData(pack));
+                        FilePrinter.print("HiredMerchantLog.txt", "角色名字:" + c.getPlayer().getName() + " 從精靈商人取回楓幣: " + pack.getMesos() + " 和" + pack.getItems().size() + "件物品 取回時間:" + FilePrinter.getLocalDateString());
                     }
                 }
                 break;
@@ -142,7 +153,7 @@ public class HiredMerchantHandler {
                 final MerchItemPackage pack = loadItemFromDatabase(c.getPlayer().getId(), c.getPlayer().getAccountID());
 
                 if (pack == null) {
-                    c.getPlayer().dropMessage(1, "An unknown error occured.");
+                    c.getPlayer().dropMessage(1, "未知的錯誤");
                     return;
                 }
                 if (!check(c.getPlayer(), pack)) {
@@ -156,7 +167,7 @@ public class HiredMerchantHandler {
                     }
                     c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x1d));
                 } else {
-                    c.getPlayer().dropMessage(1, "An unknown error occured.");
+                    c.getPlayer().dropMessage(1, "未知的錯誤");
                 }
                 break;
             }

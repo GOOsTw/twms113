@@ -16,6 +16,7 @@ import java.util.Arrays;
 import tools.StringUtil;
 import handling.world.World;
 import java.util.Calendar;
+import java.util.Iterator;
 import server.maps.SavedLocationType;
 import tools.FilePrinter;
 
@@ -249,7 +250,6 @@ public class PlayerCommand {
         public boolean execute(MapleClient c, String[] splitted) {
             int channelOnline = c.getChannelServer().getConnectedClients();
             int totalOnline = 0;
-            /*伺服器總人數*/
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                 totalOnline += cserv.getConnectedClients();
             }
