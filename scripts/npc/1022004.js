@@ -153,6 +153,8 @@ function action(mode, type, selection) {
 
         if (!complete) {
             cm.sendOk("糟糕!? 你的材料好像不夠哦...這樣子我就不能幫你製作了,請重新確認一下");
+        } if (!cm.canHold()) {
+            cm.sendOk("請確認道具欄是否有空間");
         } else {
             if (mats instanceof Array) {
                 for (var i = 0; i < mats.length; i++) {

@@ -188,7 +188,9 @@ function action(mode, type, selection) {
 
         if (!complete)
             cm.sendOk("Sorry, but you're missing a required item. Possibly a manual? Or one of the ores?");
-        else {
+        else if (!cm.canHold()) {
+            cm.sendOk("請確認道具欄是否有空間");
+        } else {
             if (mats instanceof Array) {
                 for (var i = 0; i < mats.length; i++) {
                     cm.gainItem(mats[i], -matQty[i]);

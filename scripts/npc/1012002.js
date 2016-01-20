@@ -217,7 +217,9 @@ function action(mode, type, selection) {
 
         if (!complete)
             cm.sendOk("身為一個弓箭手不能容許不細心的事情發生吧? 再確認你的包包是否有材料吧");
-        else {
+        else if(cm.canHold()) {
+            cm.sendOk("請確認道具欄位是否有空間");
+        } else {
             if (cm.canHold(item)) {
                 if (mats instanceof Array) {
                     for (var i = 0; i < mats.length; i++) {

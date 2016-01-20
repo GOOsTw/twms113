@@ -43,9 +43,11 @@ function action(mode, type, selection) {
             complete = cm.haveItem(matID, matQty * selection);
         }
 
-        if (!complete)
+        if (!complete) {
             cm.sendOk("I need that ore to refine the Crystal. No exceptions..");
-        else {
+        } else if (!cm.canHold()) {
+            cm.sendOk("請確認道具欄是否有空間");
+        } else {
             cm.gainItem(matID, -matQty * selection);
             cm.gainMeso(-cost * selection);
             cm.gainItem(itemID, selection);

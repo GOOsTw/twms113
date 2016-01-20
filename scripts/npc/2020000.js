@@ -202,6 +202,8 @@ function action(mode, type, selection) {
 
         if (!complete) {
             cm.sendOk("很抱歉由於你的材料不足，所以我不想幫你做了。");
+        } if (!cm.canHold()) {
+            cm.sendOk("請確認道具欄是否有空間");
         } else {
             if (mats instanceof Array) {
                 for (var i = 0; i < mats.length; i++) {
