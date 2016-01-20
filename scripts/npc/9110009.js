@@ -37,7 +37,7 @@ function action(mode, _type, selection) {
                         cm.sendOk("請確認你的物品欄位還有空間。");
                     }
                 } else {
-                    cm.sendOk("請確認你的物品欄位還有空間。");
+                    cm.sendOk("轉蛋機尚未開放。");
                 }
             } else {
                 cm.sendOk("很抱歉由於你沒有#b#i" + requireItem + "##k，所以不能轉蛋哦。");
