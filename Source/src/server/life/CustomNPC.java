@@ -130,6 +130,7 @@ public class CustomNPC extends MapleNPC {
 
     public void saveToDB() {
         Connection con = DatabaseConnection.getConnection();
+        this.deleteFromDB();
         try (PreparedStatement ps = con.prepareStatement("INSERT INTO custom_npcs(npcId, name, x, y, map, channel, foothold) values ( ?, ?, ?, ?, ?, ?, ?)")) {
             ps.setInt(1, getId());
             ps.setString(2, getName());
@@ -145,7 +146,7 @@ public class CustomNPC extends MapleNPC {
     }
 
     public int getChannel() {
-        return this.mapId;
+        return this.channel;
     }
 
     public void setChannel(final int channel) {
