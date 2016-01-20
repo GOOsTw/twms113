@@ -197,8 +197,31 @@ public class MapleStorage implements Serializable {
         c.sendPacket(MaplePacketCreator.takeOutStorage(slots, type, typeItems.get(type)));
     }
 
+    public void update(MapleClient c) {
+        c.sendPacket(MaplePacketCreator.arrangeStorage(slots, items, true));
+    }
+
     public int getMeso() {
         return meso;
+    }
+
+    public void arrange() { //i believe gms does by itemID
+        Collections.sort(items, new Comparator<IItem>() {
+
+            @Override
+            public int compare(IItem o1, IItem o2) {
+                if (o1.getItemId() < o2.getItemId()) {
+                    return -1;
+                } else if (o1.getItemId() == o2.getItemId()) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        });
+        for (MapleInventoryType type : MapleInventoryType.values()) {
+            typeItems.put(type, items);
+        }
     }
 
     public IItem findById(int itemId) {
