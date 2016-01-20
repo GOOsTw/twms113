@@ -2512,6 +2512,22 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
+    public static MaplePacket arrangeStorage(byte slots, Collection<IItem> items, boolean changed) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.OPEN_STORAGE.getValue());
+        mplew.write(15);
+        mplew.write(slots);
+        mplew.write(124);
+        mplew.writeZeroBytes(10);
+        mplew.write(items.size());
+        for (IItem item : items) {
+            PacketHelper.addItemInfo(mplew, item, true, true);
+        }
+        mplew.write(0);
+        return mplew.getPacket();
+    }
+
     public static MaplePacket fairyPendantMessage(int type, int percent) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
