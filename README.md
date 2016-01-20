@@ -17,7 +17,6 @@ http://puu.sh/jmoZx/158ec24af8.jpg
 //勇者掠奪術 放了打怪 有機率 斷線 彈回登入畫面  
 PICKPOCKET(27)  
 
-cm.removeNpc 這個removeNpc函數 使用了NPC不會消失 會卡在地圖上 正常來說NPC會消失  
 營業執照踢買家沒效果  
 營業執照東西賣完後會斷線 彈回登入畫面  
 闇黑龍王死掉後會斷線彈回登入畫面  
