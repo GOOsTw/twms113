@@ -255,52 +255,59 @@ public class InternCommand {
             if (splitted.length < 2) {
                 return false;
             }
-            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
+            String input = splitted[1];
+            int ch = World.Find.findChannel(input);
+            if (ch < 0) {
+                int mapid = -1;
+                try {
+                    mapid = Integer.parseInt(input);
+                } catch (Exception ex) {
+                    c.getPlayer().dropMessage(6, "出問題了 " + ex.getMessage());
+                }
+                doMap(c, mapid);
+                return true;
+            }
+
+            MapleCharacter victim = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(splitted[1]);
             if (victim != null) {
                 if (splitted.length == 2) {
+                    if (victim.getMapId() != c.getPlayer().getMapId()) {
+                        final MapleMap mapp = c.getChannelServer().getMapFactory().getMap(victim.getMapId());
+                        c.getPlayer().changeMap(mapp, mapp.getPortal(0));
+                    }
+                    if (victim.getClient().getChannel() != c.getChannel()) {
+                        c.getPlayer().dropMessage(6, "正在改變頻道請等待");
+                        c.getPlayer().changeChannel(victim.getClient().getChannel());
+                    }
                     c.getPlayer().changeMap(victim.getMap(), victim.getMap().findClosestSpawnpoint(victim.getPosition()));
                 } else {
-                    MapleMap target = ChannelServer.getInstance(c.getChannel()).getMapFactory().getMap(Integer.parseInt(splitted[2]));
-                    if (target == null) {
-                        c.getPlayer().dropMessage(6, "地圖不存在");
-                    } else {
-                        victim.changeMap(target, target.getPortal(0));
-                    }
+                    doMap(victim.getClient(), Integer.parseInt(splitted[2]));
+                    return true;
                 }
             } else {
-                try {
-                    int ch = World.Find.findChannel(splitted[1]);
-                    if (ch < 0) {
-                        MapleMap target = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted[1]));
-                        if (target == null) {
-                            c.getPlayer().dropMessage(6, "地圖不存在");
-                        } else {
-                            c.getPlayer().changeMap(target, target.getPortal(0));
-                        }
-                    } else {
-                        victim = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(splitted[1]);
-                        if (victim != null) {
-                            if (victim.getMapId() != c.getPlayer().getMapId()) {
-                                final MapleMap mapp = c.getChannelServer().getMapFactory().getMap(victim.getMapId());
-                                c.getPlayer().changeMap(mapp, mapp.getPortal(0));
-                            }
-                            c.getPlayer().dropMessage(6, "正在改變頻道請等待");
-                            c.getPlayer().changeChannel(ch);
-                            
-                        } else {
-                            c.getPlayer().dropMessage(6, "角色不存在");
-                        }
-                    }
-                } catch (Exception e) {
-                    c.getPlayer().dropMessage(6, "出問題了 " + e.getMessage());
-                }
+                c.getPlayer().dropMessage(6, "角色不存在");
+            }
+            return true;
+        }
+
+        public boolean doMap(MapleClient c, int mapid) {
+            MapleMap target = null;
+            try {
+                target = c.getChannelServer().getMapFactory().getMap(mapid);
+            } catch (Exception ex) {
+                c.getPlayer().dropMessage(6, "出問題了 " + ex.getMessage());
+            }
+            if (target == null) {
+                c.getPlayer().dropMessage(6, "地圖不存在");
+            } else {
+                c.getPlayer().changeMap(target, target.getPortal(0));
             }
             return true;
         }
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!warp [玩家名稱] <地圖ID> - 移動到某個地圖或某個玩家所在的地方").toString();
+            return new StringBuilder().append("!warp 	玩家名稱 <地圖ID> - 移動到某個地圖或某個玩家所在的地方").toString();
         }
     }
 

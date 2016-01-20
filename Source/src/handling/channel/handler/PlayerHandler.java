@@ -540,6 +540,12 @@ public class PlayerHandler {
                 }
                 if (effect.isMagicDoor()) { // Mystic Door
                     if (!FieldLimitType.MysticDoor.check(chr.getMap().getFieldLimit())) {
+                        if (chr.skillisCooling(SkillType.祭師.時空門)) {
+                            c.sendPacket(MaplePacketCreator.enableActions());
+                            return;
+                        }
+                        c.sendPacket(MaplePacketCreator.skillCooldown(SkillType.祭師.時空門, 2));
+                        chr.addCooldown(SkillType.祭師.時空門, System.currentTimeMillis(), 2 * 1000);
                         effect.applyTo(c.getPlayer(), pos);
                     } else {
                         c.sendPacket(MaplePacketCreator.enableActions());
@@ -988,7 +994,7 @@ public class PlayerHandler {
 
         if (res != null && c.getPlayer().getMap() != null) { // TODO more validation of input data
             if (slea.available() < 13 || slea.available() > 26) {
-                FilePrinter.printError("MovementParseError.txt", "角色名稱: " +  c.getPlayer().getName() + " 職業 :" + String.valueOf(c.getPlayer().getJob()) + "\r\n" + "slea.available != 13-26 (movement parsing error)\n" + slea.toString(true));
+                FilePrinter.printError("MovementParseError.txt", "角色名稱: " + c.getPlayer().getName() + " 職業 :" + String.valueOf(c.getPlayer().getJob()) + "\r\n" + "slea.available != 13-26 (movement parsing error)\n" + slea.toString(true));
                 return;
             }
             final List<LifeMovementFragment> res2 = new ArrayList<>(res);

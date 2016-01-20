@@ -73,6 +73,7 @@ import server.maps.SpeedRunType;
 import server.StructPotentialItem;
 import server.Timer;
 import server.Timer.CloneTimer;
+import server.gashapon.GashaponFactory;
 import server.life.MapleMonster;
 import server.life.MapleMonsterInformationProvider;
 import server.maps.Event_PyramidSubway;
@@ -1419,4 +1420,10 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             }
         }, 1000 * time); //設定時間, (1 秒 = 1000)
     }
+    
+    // 轉蛋
+    public GashaponFactory getGashaponFactory() {
+        return GashaponFactory.getInstance();
+    }
+    
 }

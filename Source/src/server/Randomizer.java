@@ -33,7 +33,7 @@ public class Randomizer {
     public static final long nextLong() {
         return rand.nextLong();
     }
-
+    
     public static final int rand(final int lbound, final int ubound) {
         return (int) ((rand.nextDouble() * (ubound - lbound + 1)) + lbound);
     }

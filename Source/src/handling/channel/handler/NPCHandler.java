@@ -264,6 +264,11 @@ public class NPCHandler {
                 storage.sendStored(c, GameConstants.getInventoryType(itemId));
                 break;
             }
+            case 6: {
+                storage.arrange();
+                storage.update(c);
+             break;
+            }
             case 7: {
                 int meso = slea.readInt();
                 final int storageMesos = storage.getMeso();

@@ -137,7 +137,7 @@ public class PlayerStorage {
         readLock.lock();
         try {
             for (MapleCharacter chr : idToChar.values()) {
-                if (chr.getName().equals(name)) {
+                if (chr.getName().equalsIgnoreCase(name)) {
                     rchr = chr;
                 }
             }
