@@ -28,7 +28,7 @@ public class CustomNPC extends MapleNPC {
     private int customNpcId;
     private int mapId;
     private int channel;
-    
+
     public CustomNPC(MapleNPC npc, final int mapId, final int channel) {
         super(npc.getId(), npc.getName());
     }
@@ -41,24 +41,22 @@ public class CustomNPC extends MapleNPC {
     }
 
     public void deleteFromDB() {
-        deleteFromDB(this.getId(), getMapId(), getChannel(), false);
+        deleteFromDB(this.getId(), getMapId(), getChannel());
     }
 
-    public void deleteFromDB(boolean remove) {
-        deleteFromDB(this.getId(), getMapId(), getChannel(), remove);
-    }
-
-    public static void deleteFromDB(final int npcId, final int mapId, final int channel, boolean remove) {
+    public static void deleteFromDB(final int npcId, final int mapId, final int channel) {
         Connection con = DatabaseConnection.getConnection();
-        try (PreparedStatement ps = con.prepareStatement("DELETE FROM custom_npcs WHERE npcId = ? and mapid = ? and channel = ?")) {
+        try (PreparedStatement ps = con.prepareStatement("DELETE FROM custom_npcs WHERE npcId = ? and map = ? and channel = ?")) {
             ps.setInt(1, npcId);
             ps.setInt(2, mapId);
             ps.setInt(3, channel);
             ps.execute();
-            if (remove) {
-                ChannelServer ch = ChannelServer.getInstance(channel);
+            ChannelServer ch = ChannelServer.getInstance(channel);
+            if (ch != null) {
                 MapleMap map = ch.getMapFactory().getMap(mapId);
-                map.removeNpc(npcId, true);
+                if (map != null) {
+                    map.removeNpc(npcId, true);
+                }
             }
         } catch (SQLException ex) {
             FilePrinter.printError("CustomNPC.txt", ex, "deleteFromDB");
@@ -74,13 +72,13 @@ public class CustomNPC extends MapleNPC {
         this.setRx1(ret.getRx1());
         this.setCustom(true);
     }
-
+    
     public static CustomNPC loadFromDB(final int npcId, final int mapId, final int channel) {
 
         CustomNPC ret = null;
         Connection con = DatabaseConnection.getConnection();
 
-        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM custom_npcs WHERE npcId = ? and mapid = ? and channel = ?")) {
+        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM custom_npcs WHERE npcId = ? and map = ? and channel = ?")) {
             ps.setInt(1, npcId);
             ps.setInt(2, mapId);
             ps.setInt(3, channel);
@@ -90,7 +88,7 @@ public class CustomNPC extends MapleNPC {
                     ret.setCustom(true);
                     Point pos = new Point(rs.getInt("x"), rs.getInt("y"));
                     ret.setPosition(pos);
-                    ret.setCy(rs.getInt("cy"));
+                    ret.setCy((int) ret.getPosition().getY());
                     ret.setFh(rs.getInt("foothold"));
                     ret.setRx0((int) (pos.getX() + 50));
                     ret.setRx1((int) (pos.getX() - 50));
@@ -115,7 +113,7 @@ public class CustomNPC extends MapleNPC {
                     npc.setCustom(true);
                     Point pos = new Point(rs.getInt("x"), rs.getInt("y"));
                     npc.setPosition(pos);
-                    npc.setCy(rs.getInt("cy"));
+                    npc.setCy((int) pos.getY());
                     npc.setFh(rs.getInt("foothold"));
                     npc.setRx0((int) (pos.getX() + 50));
                     npc.setRx1((int) (pos.getX() - 50));

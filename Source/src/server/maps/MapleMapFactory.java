@@ -199,7 +199,7 @@ public class MapleMapFactory {
                 map.setRecoveryRate(MapleDataTool.getFloat(mapData.getChildByPath("info/recovery"), 1));
                 map.setFixedMob(MapleDataTool.getInt(mapData.getChildByPath("info/fixedMobCapacity"), 0));
                 map.setConsumeItemCoolTime(MapleDataTool.getInt(mapData.getChildByPath("info/consumeItemCoolTime"), 0));
-
+                map.respawnCustomNpcs();
                 maps.put(omapid, map);
             } finally {
                 lock.unlock();

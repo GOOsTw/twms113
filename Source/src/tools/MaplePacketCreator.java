@@ -520,8 +520,15 @@ public class MaplePacketCreator {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.REMOVE_NPC.getValue());
-        mplew.writeLong(objectid);
+        mplew.writeInt(objectid);
+        return mplew.getPacket();
+    }
 
+    public static MaplePacket removeNPCRequestController(MapleNPC life) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+        mplew.writeShort(SendPacketOpcode.SPAWN_NPC_REQUEST_CONTROLLER.getValue());
+        mplew.write(0);
+        mplew.writeInt(life.getObjectId());
         return mplew.getPacket();
     }
 
@@ -1594,28 +1601,22 @@ public class MaplePacketCreator {
                     final MapleGuildAlliance allianceName = World.Alliance.getAlliance(gs.getAllianceId());
                     if (allianceName != null) {
                         mplew.writeMapleAsciiString(allianceName.getName());
-                    } else {
-                        if (chr.getPrefix().equals("")) {
-                            mplew.writeMapleAsciiString("尚未加入聯盟");
-                        } else {
-                            mplew.writeMapleAsciiString(Prefix);
-                        }
-                    }
-                } else {
-                    if (chr.getPrefix().equals("")) {
+                    } else if (chr.getPrefix().equals("")) {
                         mplew.writeMapleAsciiString("尚未加入聯盟");
                     } else {
                         mplew.writeMapleAsciiString(Prefix);
                     }
-                }
-            } else {
-                if (chr.getPrefix().equals("")) {
-                    mplew.writeMapleAsciiString("尚未加入公會");
+                } else if (chr.getPrefix().equals("")) {
                     mplew.writeMapleAsciiString("尚未加入聯盟");
                 } else {
                     mplew.writeMapleAsciiString(Prefix);
-                    mplew.writeMapleAsciiString("尚未加入聯盟");
                 }
+            } else if (chr.getPrefix().equals("")) {
+                mplew.writeMapleAsciiString("尚未加入公會");
+                mplew.writeMapleAsciiString("尚未加入聯盟");
+            } else {
+                mplew.writeMapleAsciiString(Prefix);
+                mplew.writeMapleAsciiString("尚未加入聯盟");
             }
         }
 //        mplew.write(isSelf ? 1 : 0);

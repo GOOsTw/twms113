@@ -67,6 +67,7 @@ import server.events.MapleOla;
 import server.events.MapleOxQuiz;
 import server.events.MapleSnowball;
 import server.events.MapleJewel;
+import server.life.CustomNPC;
 import tools.CollectionUtil;
 import tools.ConcurrentEnumMap;
 
@@ -446,6 +447,14 @@ public class ChannelServer implements Serializable {
 
     public final Collection<PlayerNPC> getAllPlayerNPC() {
         return playerNPCs.values();
+    }
+    
+    public final void removeCustomNPC(final CustomNPC cnpc) {
+         getMapFactory().getMap(cnpc.getMapId()).removeNpc(cnpc.getId(), true);
+    }
+    
+     public final void addCustomNPC(final CustomNPC cnpc) {
+         getMapFactory().getMap(cnpc.getMapId()).spawnNpc(cnpc.getId(), cnpc.getPosition());
     }
 
     public final PlayerNPC getPlayerNPC(final int id) {

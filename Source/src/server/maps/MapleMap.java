@@ -1313,6 +1313,7 @@ public final class MapleMap {
                     if (onlyCustom && !npc.isCustom()) {
                         continue;
                     }
+                    broadcastMessage(MaplePacketCreator.removeNPCRequestController(npc));
                     broadcastMessage(MaplePacketCreator.removeNPC(npc.getObjectId()));
                     itr.remove();
                 }
@@ -3073,16 +3074,16 @@ public final class MapleMap {
         resetFully();
         monsterSpawn.clear();
         for (Spawns s : sss) {
-            MapleMonster newMons = MapleLifeFactory.getMonster(mobid);
+            MapleMonster e = MapleLifeFactory.getMonster(mobid);
             MapleMonster oldMons = s.getMonster();
-            newMons.setCy(oldMons.getCy());
-            newMons.setF(oldMons.getF());
-            newMons.setFh(oldMons.getFh());
-            newMons.setRx0(oldMons.getRx0());
-            newMons.setRx1(oldMons.getRx1());
-            newMons.setPosition(new Point(oldMons.getPosition()));
-            newMons.setHide(oldMons.isHidden());
-            addMonsterSpawn(newMons, mobTime, (byte) -1, null);
+            e.setCy(oldMons.getCy());
+            e.setF(oldMons.getF());
+            e.setFh(oldMons.getFh());
+            e.setRx0(oldMons.getRx0());
+            e.setRx1(oldMons.getRx1());
+            e.setPosition(new Point(oldMons.getPosition()));
+            e.setHide(oldMons.isHidden());
+            addMonsterSpawn(e, mobTime, (byte) -1, null);
         }
         loadMonsterRate(true);
     }

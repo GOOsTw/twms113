@@ -279,12 +279,10 @@ public class AdminCommand {
                     c.getPlayer().dropMessage(6, "[" + getCommand() + "] 不能封鎖GM...");
 
                 }
+            } else if (MapleCharacter.ban(splitted[1], sb.toString(), false, c.getPlayer().isAdmin() ? 250 : c.getPlayer().getGMLevel(), splitted[0].equals("!hellban"))) {
+                c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功離線鎖定 " + splitted[1] + ".");
             } else {
-                if (MapleCharacter.ban(splitted[1], sb.toString(), false, c.getPlayer().isAdmin() ? 250 : c.getPlayer().getGMLevel(), splitted[0].equals("!hellban"))) {
-                    c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功離線鎖定 " + splitted[1] + ".");
-                } else {
-                    c.getPlayer().dropMessage(6, "[" + getCommand() + "] Failed to ban " + splitted[1]);
-                }
+                c.getPlayer().dropMessage(6, "[" + getCommand() + "] Failed to ban " + splitted[1]);
             }
             return true;
         }
@@ -422,13 +420,11 @@ public class AdminCommand {
                 victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[i]);
                 if (victim == null) {
                     c.getPlayer().dropMessage(6, "[kill] 玩家 " + splitted[i] + " 不存在.");
-                } else {
-                    if (player.allowedToTarget(victim)) {
-                        victim.getStat().setHp((short) 0);
-                        victim.getStat().setMp((short) 0);
-                        victim.updateSingleStat(MapleStat.HP, 0);
-                        victim.updateSingleStat(MapleStat.MP, 0);
-                    }
+                } else if (player.allowedToTarget(victim)) {
+                    victim.getStat().setHp((short) 0);
+                    victim.getStat().setMp((short) 0);
+                    victim.updateSingleStat(MapleStat.HP, 0);
+                    victim.updateSingleStat(MapleStat.MP, 0);
                 }
             }
             return true;
@@ -2485,23 +2481,19 @@ public class AdminCommand {
         public boolean execute(MapleClient c, String splitted[]) {
             if (splitted.length < 2) {
                 c.getPlayer().dropMessage(6, "Syntax: !goto <mapname>");
-            } else {
-                if (gotomaps.containsKey(splitted[1])) {
-                    MapleMap target = c.getChannelServer().getMapFactory().getMap(gotomaps.get(splitted[1]));
-                    MaplePortal targetPortal = target.getPortal(0);
-                    c.getPlayer().changeMap(target, targetPortal);
-                } else {
-                    if (splitted[1].equals("locations")) {
-                        c.getPlayer().dropMessage(6, "Use !goto <location>. Locations are as follows:");
-                        StringBuilder sb = new StringBuilder();
-                        for (String s : gotomaps.keySet()) {
-                            sb.append(s).append(", ");
-                        }
-                        c.getPlayer().dropMessage(6, sb.substring(0, sb.length() - 2));
-                    } else {
-                        c.getPlayer().dropMessage(6, "Invalid command 指令規則 - Use !goto <location>. For a list of locations, use !goto locations.");
-                    }
+            } else if (gotomaps.containsKey(splitted[1])) {
+                MapleMap target = c.getChannelServer().getMapFactory().getMap(gotomaps.get(splitted[1]));
+                MaplePortal targetPortal = target.getPortal(0);
+                c.getPlayer().changeMap(target, targetPortal);
+            } else if (splitted[1].equals("locations")) {
+                c.getPlayer().dropMessage(6, "Use !goto <location>. Locations are as follows:");
+                StringBuilder sb = new StringBuilder();
+                for (String s : gotomaps.keySet()) {
+                    sb.append(s).append(", ");
                 }
+                c.getPlayer().dropMessage(6, sb.substring(0, sb.length() - 2));
+            } else {
+                c.getPlayer().dropMessage(6, "Invalid command 指令規則 - Use !goto <location>. For a list of locations, use !goto locations.");
             }
             return true;
         }
@@ -2635,13 +2627,7 @@ public class AdminCommand {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
-            boolean persistant = false;
-            if (splitted.length > 2) {
-                try {
-                    persistant = Boolean.parseBoolean(splitted[2]) == true;
-                } catch (Exception e) {
-                }
-            }
+
             int npcId = Integer.parseInt(splitted[1]);
             MapleNPC npc = MapleLifeFactory.getNPC(npcId);
             if (npc != null && !npc.getName().equals("MISSINGNO")) {
@@ -2651,9 +2637,7 @@ public class AdminCommand {
                 cnpc.setRx0(c.getPlayer().getPosition().x + 50);
                 cnpc.setRx1(c.getPlayer().getPosition().x - 50);
                 cnpc.setFh(c.getPlayer().getMap().getFootholds().findBelow(c.getPlayer().getPosition()).getId());
-                if (persistant) {
-                    cnpc.saveToDB();
-                }
+                cnpc.saveToDB();
                 c.getPlayer().getMap().addMapObject(cnpc);
                 c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.spawnNPC(cnpc, true));
             } else {
@@ -2674,20 +2658,11 @@ public class AdminCommand {
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             int npcId = Integer.parseInt(splitted[1]);
-            boolean persistant = false;
-            if (splitted.length > 2) {
-                try {
-                    persistant = Boolean.parseBoolean(splitted[2]) == true;
-                } catch (Exception e) {
-                }
-            }
-            MapleNPC npc = MapleLifeFactory.getNPC(npcId);
             CustomNPC cnpc = CustomNPC.loadFromDB(npcId, c.getPlayer().getMapId(), c.getChannel());
-            if (npc != null && !npc.getName().equals("MISSINGNO")) {
-                c.getPlayer().getMap().removeNpc(cnpc.getId(), true);
+            if (cnpc != null && !cnpc.getName().equals("MISSINGNO")) {
+                cnpc.deleteFromDB();
             } else {
                 c.getPlayer().dropMessage(6, "你輸入不正確的NPC編號");
-
             }
             return true;
         }
