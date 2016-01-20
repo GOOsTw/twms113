@@ -73,6 +73,7 @@ import server.maps.SpeedRunType;
 import server.StructPotentialItem;
 import server.Timer;
 import server.Timer.CloneTimer;
+import server.gashapon.Gashapon;
 import server.gashapon.GashaponFactory;
 import server.life.MapleMonster;
 import server.life.MapleMonsterInformationProvider;
@@ -1422,8 +1423,8 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
     
     // 轉蛋
-    public GashaponFactory getGashaponFactory() {
-        return GashaponFactory.getInstance();
+    public Gashapon getGashapon() {
+        return GashaponFactory.getInstance().getGashaponByNpcId(this.getNpc());
     }
     
 }

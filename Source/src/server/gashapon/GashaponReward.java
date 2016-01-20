@@ -13,10 +13,12 @@ public class GashaponReward {
 
     private final int itemid;
     private final int chance;
+    private final boolean showMsg;
 
-    public GashaponReward(final int itemid , final int chance) {
+    public GashaponReward(final int itemid , final int chance, final boolean showMsg) {
         this.itemid = itemid;
         this.chance = chance;
+        this.showMsg = showMsg;
     }
     
     public int getChance() {
@@ -25,6 +27,10 @@ public class GashaponReward {
 
     public int getItemId() {
         return this.itemid;
+    }
+    
+    public boolean canShowMsg() {
+        return this.showMsg;
     }
 
 }

@@ -58,6 +58,7 @@ public final class Gashapon {
         long total = items.get(items.size() - 1).left;
 
         Long n = Math.abs(Randomizer.nextLong() * System.currentTimeMillis() + 47 * System.currentTimeMillis()) % total;
+        
         while (iterator.hasNext()) {
             Pair<Long, GashaponReward> c = iterator.next();
             if (n <= c.left) {
@@ -72,9 +73,11 @@ public final class Gashapon {
 
         Connection con = DatabaseConnection.getConnection();
         long chanceTotal = 0L;
-        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM gashapon_items WHERE gashaponsid = ?"); ResultSet rs = ps.executeQuery()) {
+        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM gashapon_items WHERE gashaponsid = ? ORDER BY chance ASC")) {
+            ps.setInt(1, getId());
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                GashaponReward reward = new GashaponReward(rs.getInt("itemid"), rs.getInt("chance"));
+                GashaponReward reward = new GashaponReward(rs.getInt("itemid"), rs.getInt("chance"), rs.getBoolean("showmsg"));
                 chanceTotal += reward.getChance();
                 this.items.add(new Pair<>(chanceTotal, reward));
             }
