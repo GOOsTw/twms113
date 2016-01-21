@@ -1837,6 +1837,27 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
         }
     }
+    private String excluded = "";
+
+    // Make sure to save and load this from the database like how others in handled. (In string of course)
+    // store item ids as string with a splitter, eg : 1000000,1010000,1020000 and so on.
+    public List<Integer> getPetItemIgnore() {
+        List<Integer> ret = new ArrayList<>(10);
+        if (!getExcluded().equals("")) {
+            final String[] iig = getExcluded().split(",");
+            for (final String x : iig) {
+                ret.add(Integer.parseInt(x));
+            }
+        }
+        return ret;
+    }
+
+    public String getExcluded() {
+        return excluded;
+    }
+    public void setExcluded(final String ex) {
+        this.excluded = ex;
+    }
 
     public void dispelSkill(int skillid) {
         final LinkedList<MapleBuffStatValueHolder> allBuffs = new LinkedList<>(effects.values());
@@ -3565,6 +3586,20 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     return pet;
                 }
                 count++;
+            }
+        }
+        return null;
+    }
+
+    public final MaplePet getPetByUID(final int uid) {
+        if (pets == null) {
+            return null;
+        }
+        for (final MaplePet pet : pets) {
+            if (pet.getSummoned()) {
+                if (pet.getUniqueId() == uid) {
+                    return pet;
+                }
             }
         }
         return null;

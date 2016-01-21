@@ -89,6 +89,26 @@ public class PetPacket {
         return mplew.getPacket();
     }
 
+    public static MaplePacket loadExceptionList(final int cid, final int petId, final String data) {
+        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.PET_LOAD_EXCEPTIONLIST.getValue());
+        mplew.writeInt(cid);
+        mplew.write(0); // lets make it 0, 0 = only boss pet
+        mplew.writeLong(petId);
+        final String[] ii = data.split(",");
+        mplew.write(ii.length > 10 ? 10 : ii.length);
+        int i = 0;
+        for (final String ids : ii) {
+            i++;
+            if (i > 10) {
+                break;
+            }
+            mplew.writeInt(Integer.parseInt(ids));
+        }
+        return mplew.getPacket();
+    }
+
     public static final MaplePacket removePet(final int cid, final int index) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 

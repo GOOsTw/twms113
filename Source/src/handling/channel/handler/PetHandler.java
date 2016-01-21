@@ -41,6 +41,7 @@ import server.life.MapleMonster;
 import server.movement.LifeMovementFragment;
 import server.maps.FieldLimitType;
 import server.maps.MapleMapItem;
+import server.quest.MapleQuest;
 import tools.MaplePacketCreator;
 import tools.packet.PetPacket;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -67,7 +68,7 @@ public class PetHandler {
         }
         final long time = System.currentTimeMillis();
         if (chr.getNextConsume() > time) {
-            chr.dropMessage(5, "You may not use this item yet.");
+            chr.dropMessage(5, "你不能使用這個道具！");
             c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
@@ -80,6 +81,37 @@ public class PetHandler {
             }
         } else {
             c.sendPacket(MaplePacketCreator.enableActions());
+        }
+    }
+
+    public static void PetIgnoreTag(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) { // 170001
+        final int petId = (int) slea.readLong();
+        if (chr == null || chr.getMap() == null || chr.getPetIndex(petId) < 0) {
+            return;
+        }
+        final MaplePet pet = chr.getPetByUID(petId);
+        if (pet == null) {
+            return;
+        }
+        if (chr.getPetIndex(petId) != 0) {
+            c.getPlayer().dropMessage(1, "只有BOSS寵物可以使用這個！");
+            c.sendPacket(MaplePacketCreator.enableActions());
+            return;
+        }
+        // Store in quest data will do
+        final byte size = slea.readByte();
+        if (size <= 0) {
+            chr.setExcluded("");
+        } else {
+            final StringBuilder st = new StringBuilder();
+            for (int i = 0; i < size; i++) {
+                if (i > 10) {
+                    break;
+                }
+                st.append(slea.readInt()).append(",");
+            }
+            st.deleteCharAt(st.length() - 1);
+            chr.setExcluded(st.toString());
         }
     }
 
@@ -248,7 +280,6 @@ public class PetHandler {
                                 if (mapitem.getItem().getQuantity() >= 50 && GameConstants.isUpgradeScroll(mapitem.getItem().getItemId())) {
 
                                     //chr.getClient().setMonitored(true); //hack check
-
                                 }
 
                                 if (MapleInventoryManipulator.addFromDrop(chr.getClient(), mapitem.getItem(), true, mapitem.getDropper() instanceof MapleMonster)) {
