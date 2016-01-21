@@ -111,7 +111,6 @@ public class CharLoginHandler {
         if (loginok == 0 && (ipBan || macBan) && !c.isGm()) {
             loginok = 3;
             if (macBan) {
-                // this is only an ipban o.O" - maybe we should refactor this a bit so it's more readable
                 MapleCharacter.ban(c.getSession().getRemoteAddress().toString().split(":")[0], "Enforcing account ban, account " + account, false, 4, false);
             }
         }
