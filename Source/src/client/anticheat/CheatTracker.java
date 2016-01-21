@@ -1,5 +1,6 @@
 package client.anticheat;
 
+import client.MapleBuffStat;
 import java.awt.Point;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -71,10 +72,22 @@ public class CheatTracker {
      * @param tickCoint
      */
     public final void checkAttackDelay(final int skillID, final int tickCoint) {
-        final short attackDelay = GameConstants.getAttackDelay(skillID);
+        short attackDelay = GameConstants.getAttackDelay(skillID);
         /**
          * 檢查客戶端傳回的攻擊時間
          */
+        if (chr.get().getBuffedValue(MapleBuffStat.BOOSTER) != null) {
+            attackDelay = (short)(int)(attackDelay / 1.5);
+        }
+        if (chr.get().getBuffedValue(MapleBuffStat.BODY_PRESSURE) != null) {
+            attackDelay = (short)(attackDelay / 6);
+        }
+        if (chr.get().getBuffedValue(MapleBuffStat.SPEED_INFUSION) != null) {
+            attackDelay = (short)(int)(attackDelay / 1.35);
+        }
+        if (GameConstants.isAran(chr.get().getJob())) {
+              attackDelay = (short)(int)(attackDelay / 1.3);
+        }
         if ((tickCoint - lastAttackTickCount) < attackDelay) {
             registerOffense(CheatingOffense.攻擊速度過快_客戶端);
         }

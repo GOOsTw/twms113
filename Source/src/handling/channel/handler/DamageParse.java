@@ -57,7 +57,6 @@ import tools.data.input.LittleEndianAccessor;
 
 public class DamageParse {
 
-
     public static void applyAttack(final AttackInfo attack, final ISkill theSkill, final MapleCharacter player, int attackCount, final double maxDamagePerMonster, final MapleStatEffect effect, final AttackType attack_type) {
         if (!player.isAlive()) {
             player.getCheatTracker().registerOffense(CheatingOffense.人物死亡攻擊);
@@ -323,19 +322,19 @@ public class DamageParse {
                         case SkillType.夜使者.三飛閃: // Triple Throw
                         case SkillType.暗殺者.風魔手裏劍: // Avenger
                         case SkillType.盜賊.雙飛斬: {
-                            if ( player.hasBuffedValue(MapleBuffStat.WK_CHARGE) && !monster.getStats().isBoss()) {
+                            if (player.hasBuffedValue(MapleBuffStat.WK_CHARGE) && !monster.getStats().isBoss()) {
                                 MapleStatEffect eff = player.getStatForBuff(MapleBuffStat.WK_CHARGE);
                                 if (eff != null) {
                                     monster.applyStatus(player, new MonsterStatusEffect(MonsterStatus.SPEED, eff.getX(), eff.getSourceId(), null, false), false, eff.getY() * 1000, true, eff);
                                 }
                             }
-                            if ( player.hasBuffedValue(MapleBuffStat.BODY_PRESSURE) && !monster.getStats().isBoss() ) {
+                            if (player.hasBuffedValue(MapleBuffStat.BODY_PRESSURE) && !monster.getStats().isBoss()) {
                                 MapleStatEffect eff = player.getStatForBuff(MapleBuffStat.BODY_PRESSURE);
 
                                 if ((eff != null) && (eff.makeChanceResult()) && (!monster.isBuffed(MonsterStatus.NEUTRALISE))) {
                                     monster.applyStatus(player, new MonsterStatusEffect(MonsterStatus.NEUTRALISE, 1, eff.getSourceId(), null, false), false, eff.getX() * 1000, true, eff);
                                 }
-                                int[] skills = { SkillType.夜使者.飛毒殺, SkillType.暗影神偷.飛毒殺, SkillType.暗夜行者3.飛毒殺 };
+                                int[] skills = {SkillType.夜使者.飛毒殺, SkillType.暗影神偷.飛毒殺, SkillType.暗夜行者3.飛毒殺};
                                 for (int i : skills) {
                                     final ISkill skill = SkillFactory.getSkill(i);
                                     if (player.getSkillLevel(skill) > 0) {
@@ -408,7 +407,7 @@ public class DamageParse {
                                 monster.applyStatus(player, monsterStatusEffect, false, eff.getY() * 1000, true, eff);
                             }
                         }
-                        
+
                         if ((player.getJob() == 121) || (player.getJob() == 122)) {
                             ISkill skill = SkillFactory.getSkill(1211006);
                             if (player.isBuffFrom(MapleBuffStat.WK_CHARGE, skill)) {
@@ -422,8 +421,7 @@ public class DamageParse {
                                 MonsterStatusEffect monsterStatusEffect = new MonsterStatusEffect(MonsterStatus.FREEZE, Integer.valueOf(1), skill.getId(), null, false);
                                 monster.applyStatus(player, monsterStatusEffect, false, eff.getY() * 2000, true, eff);
                             }
-                           
-                            
+
                         }
                     }
                     if (effect != null && (effect.getMonsterStati().size() > 0) && effect.makeChanceResult()) {
@@ -572,13 +570,12 @@ public class DamageParse {
                 }
                 totDamage += totDamageToOneMonster;
                 player.checkMonsterAggro(monster);
-                
-                double attackDistanceSq = player.getPosition().distanceSq(monster.getPosition()) ;
 
-                if (attackDistanceSq > 700000.0) { 
-                    player.getCheatTracker().registerOffense(CheatingOffense.攻擊距離過遠
-                            , "攻擊距離 " + attackDistanceSq + " 人物座標 (" +  player.getPosition().getX() + "," +  player.getPosition().getY() +")" 
-                                    + "怪物座標 (" +  monster.getPosition().getX() + "," +  monster.getPosition().getY() +")" );
+                double attackDistanceSq = player.getPosition().distanceSq(monster.getPosition());
+
+                if (attackDistanceSq > 700000.0) {
+                    player.getCheatTracker().registerOffense(CheatingOffense.攻擊距離過遠, "攻擊距離 " + attackDistanceSq + " 人物座標 (" + player.getPosition().getX() + "," + player.getPosition().getY() + ")"
+                            + "怪物座標 (" + monster.getPosition().getX() + "," + monster.getPosition().getY() + ")");
                 }
                 if (attack.skill == SkillType.僧侶.群體治癒 && !monsterstats.getUndead()) {
                     player.getCheatTracker().registerOffense(CheatingOffense.治癒非不死系怪物);
@@ -701,20 +698,13 @@ public class DamageParse {
     }
 
     private static void handlePickPocket(final MapleCharacter player, final MapleMonster mob, AttackPair oned) {
-        final int maxmeso = player.getBuffedValue(MapleBuffStat.PICKPOCKET);
+        int maxmeso = player.getBuffedValue(MapleBuffStat.PICKPOCKET).intValue();
         final ISkill skill = SkillFactory.getSkill(4211003);
         final MapleStatEffect s = skill.getEffect(player.getSkillLevel(skill));
-        int i = 0;
         for (final Pair<Integer, Boolean> eachde : oned.attack) {
             final Integer eachd = eachde.left;
             if (s.makeChanceResult()) {
-                MapTimer.getInstance().schedule(new Runnable() {
-                    @Override
-                    public void run() {
-                        player.getMap().spawnMesoDrop(Math.min((int) Math.max(((double) eachd / (double) 20000) * (double) maxmeso, (double) 1), maxmeso), new Point((int) (mob.getPosition().getX() + Randomizer.nextInt(100) - 50), (int) (mob.getPosition().getY())), mob, player, true, (byte) 0);
-                    }
-                }, 150 * i);
-                i++;
+                player.getMap().spawnMesoDrop(Math.min((int) Math.max(((double) eachd / (double) 20000) * (double) maxmeso, (double) 1), maxmeso), new Point((int) (mob.getPosition().getX() + Randomizer.nextInt(100) - 50), (int) (mob.getPosition().getY())), mob, player, true, (byte) 0);
             }
         }
     }
