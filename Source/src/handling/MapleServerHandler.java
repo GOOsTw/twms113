@@ -744,6 +744,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case PET_AUTO_POT:
                 PetHandler.Pet_AutoPotion(slea, c, c.getPlayer());
                 break;
+            case PET_IGNORE:
+                PetHandler.PetIgnoreTag(slea, c, c.getPlayer());
+                break;
             case MONSTER_CARNIVAL:
                 MonsterCarnivalHandler.MonsterCarnival(slea, c);
                 break;

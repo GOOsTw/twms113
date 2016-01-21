@@ -62,6 +62,7 @@ import tools.MaplePacketCreator;
 import tools.packet.MobPacket;
 import tools.packet.MTSCSPacket;
 import tools.data.input.SeekableLittleEndianAccessor;
+import tools.packet.PetPacket;
 import tools.packet.UIPacket;
 
 public class PlayerHandler {
@@ -199,6 +200,9 @@ public class PlayerHandler {
         c.sendPacket(MaplePacketCreator.enableActions());
         if (player != null && !player.isClone()) {
             if (!player.isGM() || c.getPlayer().isGM()) {
+          //      if (!player.getExcluded("") && player.getPet(0) != null) {
+           //         c.sendPacket(PetPacket.loadExceptionList(player.getId(), player.getPet(0).getUniqueId(), player.getExcluded()));
+           //     }
                 c.sendPacket(MaplePacketCreator.charInfo(player, c.getPlayer().getId() == objectid));
             }
         }

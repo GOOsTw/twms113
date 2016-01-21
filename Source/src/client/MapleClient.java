@@ -438,7 +438,6 @@ public class MapleClient {
                             boolean updatePasswordHashtosha1 = false;
                             // Check if the passwords are correct here. :B
                             if (password.equalsIgnoreCase("fixlogged")) {
-                                loginok = 7;
                                 ChannelServer.forceRemovePlayerByAccId(accountId);
                                 this.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, this.getSessionIPAddress());
                                 this.sendPacket(MaplePacketCreator.serverNotice(1, "帳號解卡成功,請重新登入!"));

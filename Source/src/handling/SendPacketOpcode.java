@@ -135,7 +135,7 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     MOVE_PET(0xA5),
     PET_CHAT(0xA6),
     PET_NAMECHANGE(0xA7),
-    PET_LOAD_EXCEPTIONLIST(0xA8),//
+    PET_LOAD_EXCEPTIONLIST(0xA8),
     PET_COMMAND(0xA9),
     SPAWN_SUMMON(0xAA),
     REMOVE_SUMMON(0xAB),
