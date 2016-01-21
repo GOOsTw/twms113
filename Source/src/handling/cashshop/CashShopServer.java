@@ -38,7 +38,8 @@ import server.ServerProperties;
 
 public class CashShopServer {
 
-    private static String ip;
+    private static String bindIP;
+    private static String gatewayIP;
     private static InetSocketAddress InetSocketadd;
     private static int port = 8600;
     private static NioSocketAcceptor acceptor;
@@ -48,7 +49,8 @@ public class CashShopServer {
 
     public static final void setup() {
         port = Short.valueOf(ServerProperties.getProperty("server.settings.cashshop.port", "8600"));
-        ip = ServerProperties.getProperty("server.settings.ip") + ":" + port;
+        bindIP = ServerProperties.getProperty("server.settings.ip.bind") + ":" + port;
+        gatewayIP = ServerProperties.getProperty("server.settings.ip.gateway") + ":" + port;
 
         IoBuffer.setUseDirectBuffer(false);
         IoBuffer.setAllocator(new SimpleBufferAllocator());
@@ -75,9 +77,13 @@ public class CashShopServer {
     }
 
     public static final String getIP() {
-        return ip;
+        return bindIP;
     }
-
+    
+    public static final String getGatewayIP() {
+        return gatewayIP;
+    }
+    
     public static final PlayerStorage getPlayerStorage() {
         return players;
     }

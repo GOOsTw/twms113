@@ -77,11 +77,12 @@ public class ChannelServer implements Serializable {
     private int expRate, mesoRate, dropRate, cashRate;
     private short port = 8585;
     private String ip = "127.0.0.1";
+    private static String gatewayIP = "127.0.0.1";
     private static final short DEFAULT_PORT = 8585;
     private final int channel;
     private final String key;
     private int running_MerchantID = 0, flags = 0;
-    private String serverMessage, socket, serverName;
+    private String serverMessage, serverName;
     private boolean shutdown = false, finishedShutdown = false, MegaphoneMuteState = false, adminOnly = false;
     private PlayerStorage players;
     private MapleServerHandler serverHandler;
@@ -142,8 +143,8 @@ public class ChannelServer implements Serializable {
             throw new RuntimeException(e);
         }
 
-        ip = ServerProperties.getProperty("server.settings.ip");
-        socket = ip + ":" + port;
+        ip = ServerProperties.getProperty("server.settings.ip.bind");
+        gatewayIP = ServerProperties.getProperty("server.settings.ip.gateway");
 
         IoBuffer.setUseDirectBuffer(false);
         IoBuffer.setAllocator(new SimpleBufferAllocator());
@@ -285,6 +286,10 @@ public class ChannelServer implements Serializable {
     public final String getIP() {
         return this.ip;
     }
+    
+    public final String getGatewayIP() {
+        return gatewayIP;
+    }
 
     public final int getChannel() {
         return channel;
@@ -297,10 +302,6 @@ public class ChannelServer implements Serializable {
 
     public static final Collection<ChannelServer> getAllInstances() {
         return Collections.unmodifiableCollection(instances.values());
-    }
-
-    public final String getSocket() {
-        return socket;
     }
 
     public final boolean isShutdown() {
@@ -448,13 +449,13 @@ public class ChannelServer implements Serializable {
     public final Collection<PlayerNPC> getAllPlayerNPC() {
         return playerNPCs.values();
     }
-    
+
     public final void removeCustomNPC(final CustomNPC cnpc) {
-         getMapFactory().getMap(cnpc.getMapId()).removeNpc(cnpc.getId(), true);
+        getMapFactory().getMap(cnpc.getMapId()).removeNpc(cnpc.getId(), true);
     }
-    
-     public final void addCustomNPC(final CustomNPC cnpc) {
-         getMapFactory().getMap(cnpc.getMapId()).spawnNpc(cnpc.getId(), cnpc.getPosition());
+
+    public final void addCustomNPC(final CustomNPC cnpc) {
+        getMapFactory().getMap(cnpc.getMapId()).spawnNpc(cnpc.getId(), cnpc.getPosition());
     }
 
     public final PlayerNPC getPlayerNPC(final int id) {

@@ -43,7 +43,7 @@ import tools.FilePrinter;
 
 public class LoginServer {
 
-    public static short port = 8484;
+    private static short port = 8484;
     private static IoAcceptor acceptor;
     private static Map<Integer, Integer> load = new HashMap<>();
     private static String serverName, eventMessage;

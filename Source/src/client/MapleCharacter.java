@@ -5283,7 +5283,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         World.channelChangeData(new CharacterTransfer(this), getId(), channel);
         ch.removePlayer(this);
         client.updateLoginState(MapleClient.CHANGE_CHANNEL, client.getSessionIPAddress());
-        client.sendPacket(MaplePacketCreator.getChannelChange(toch.getIP(), toch.getPort()));
+        client.sendPacket(MaplePacketCreator.getChannelChange(toch.getGatewayIP(), toch.getPort()));
         getMap().removePlayer(this);
         client.setPlayer(null);
         client.setReceiving(false);

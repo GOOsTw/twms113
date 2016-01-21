@@ -38,7 +38,7 @@ public class CashShopOperation {
 
         try {
             World.channelChangeData(new CharacterTransfer(chr), chr.getId(), c.getChannel());
-            c.sendPacket(MaplePacketCreator.getChannelChange(ChannelServer.getInstance(c.getChannel()).getIP(), ChannelServer.getInstance(c.getChannel()).getPort()));
+            c.sendPacket(MaplePacketCreator.getChannelChange(ChannelServer.getInstance(c.getChannel()).getGatewayIP(), ChannelServer.getInstance(c.getChannel()).getPort()));
         } finally {
             c.disconnect(true, true);
             c.setPlayer(null);

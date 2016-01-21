@@ -80,7 +80,7 @@ public class InterServerHandler {
         c.updateLoginState(MapleClient.CHANGE_CHANNEL, c.getSessionIPAddress());
 
         chr.getMap().removePlayer(chr);
-        c.sendPacket(MaplePacketCreator.getChannelChange(CashShopServer.getIP().split(":")[0], Integer.parseInt(CashShopServer.getIP().split(":")[1])));
+        c.sendPacket(MaplePacketCreator.getChannelChange(CashShopServer.getGatewayIP().split(":")[0], Integer.parseInt(CashShopServer.getGatewayIP().split(":")[1])));
         c.setPlayer(null);
         c.setReceiving(false);
     }

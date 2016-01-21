@@ -399,11 +399,11 @@ public class CharLoginHandler {
 
         byte[] ip = {127, 0, 0, 1};
         try {
-            ip = InetAddress.getByName(ChannelServer.getInstance(c.getChannel()).getSocket().split(":")[0]).getAddress();
+            ip = InetAddress.getByName(ChannelServer.getInstance(c.getChannel()).getGatewayIP()).getAddress();
         } catch (UnknownHostException ex) {
             Logger.getLogger(CharLoginHandler.class.getName()).log(Level.SEVERE, "getIP Error", ex);
         }
-        int port = Integer.parseInt(ChannelServer.getInstance(c.getChannel()).getSocket().split(":")[1]);
+        int port = ChannelServer.getInstance(c.getChannel()).getPort();
         c.sendPacket(MaplePacketCreator.getServerIP(ip, port, charId));
     }
 
