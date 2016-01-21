@@ -20,7 +20,7 @@ function action(mode, type, selection) {
     if (status == 0) {
         switch (selection) {
             case 0:
-                cm.sendNext("哦！多麼美好的一天！這個世界是多麼的美好〜！這個世界似乎是充滿愛的，不是嗎？我可以從這裡感受到愛的精神填補了婚禮!");
+                cm.sendNext("哦！ 多麼美好的一天！ 這個世界是多麼的美好〜！這個世界似乎是充滿愛的，不是嗎？我可以從這裡感受到愛的精神填補了婚禮!");
                 break;
             case 1:
                 var marr = cm.getQuestRecord(160001);
@@ -46,7 +46,6 @@ function action(mode, type, selection) {
     } else if (status == 2) {
         cm.sendNext("你做了一個正確的決定！你可以感受到愛的精神在婚禮村發揮到淋漓盡致。當你想回來，你的目的地將在這裡，所以不要擔心.");
     } else if (status == 3) {
-        cm.saveLocation("AMORIA");
         cm.warp(680000000, 0);
         cm.dispose();
     }
