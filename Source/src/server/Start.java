@@ -98,7 +98,7 @@ public class Start {
         LoginServer.setup();
         ChannelServer.startAllChannels();
 
-        System.out.println("【啟動中】 購物商城:::");
+        System.out.println("【啟動中】 CashShop Items:::");
         CashShopServer.setup();
         
         CheatTimer.getInstance().register(AutobanManager.getInstance(), 60000);
