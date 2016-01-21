@@ -1,20 +1,25 @@
 package constants;
 
 public class MapConstants {
-    
+
     public static boolean isBlockFM(final int mapid) {
         int header = mapid / 100000;
-        if(isEventMap(mapid))
+        if (isEventMap(mapid)) {
             return true;
-        if( header == 9800 && (mapid % 10 == 1 || mapid % 1000 == 100))
+        }
+        if (header == 9800 && (mapid % 10 == 1 || mapid % 1000 == 100)) {
             return true;
-        if ( mapid / 10000 == 92502 )
+        }
+        if (mapid / 10000 == 92502) {
             return true;
-        if( header == 7090)
+        }
+        if (header == 7090) {
             return true;
-        if(header == 1090)
+        }
+        if (header == 1090) {
             return true;
-        switch(mapid) {
+        }
+        switch (mapid) {
             case 702060000:
                 return true;
             default:
@@ -30,7 +35,49 @@ public class MapConstants {
         }
         return false;
     }
+
+    public static boolean CanUseDropCard(final int mapid) {
+        switch (mapid) {
+            case 100040101:
+            case 100040102:
+            case 100040103:
+            case 100040104:
+            case 107000401:
+            case 107000402:
+            case 107000403:
+            case 191000000:
+                return true;
+        }
+        return false;
+    }
+
+    public static boolean CanUseDropCard1(final int mapid) {
+        switch (mapid) {
+            case 251010000:
+            case 251010100:
+            case 251010101:
+                return true;
+        }
+        return false;
+    }
     
+    public static boolean CanUseMesoCard(final int mapid) {
+        switch(mapid) {
+            case 221020100:
+            case 221020200:
+            case 221020400:
+            case 221020300:
+            case 221023700:
+            case 221023800:
+            case 221023900:
+            case 221024000:
+            case 221024100:
+            case 221024200:
+                return true;
+        }
+        return false;
+    }
+
     public static boolean isStartingEventMap(final int mapid) {
         switch (mapid) {
             case 109010000:

@@ -31,6 +31,7 @@ import client.inventory.IEquip;
 import client.inventory.IEquip.ScrollResult;
 import client.inventory.IItem;
 import client.ISkill;
+import client.MapleBuffStat;
 import client.inventory.ItemFlag;
 import client.inventory.MaplePet;
 import client.inventory.MaplePet.PetFlag;
@@ -45,6 +46,7 @@ import constants.GameConstants;
 import client.SkillFactory;
 import client.anticheat.CheatingOffense;
 import client.inventory.ModifyInventory;
+import constants.MapConstants;
 import handling.channel.ChannelServer;
 import handling.world.MaplePartyCharacter;
 import handling.world.World;
@@ -949,6 +951,13 @@ public class InventoryHandler {
                     final MapleMap target = c.getChannelServer().getMapFactory().getMap(slea.readInt());
                     if (itemId == 5560000 || itemId == 5561000 || (itemId != 5560000 || itemId != 5561000 && c.getPlayer().isRegRockMap(target.getId()))) {
                         if (!FieldLimitType.VipRock.check(c.getPlayer().getMap().getFieldLimit()) && !FieldLimitType.VipRock.check(target.getFieldLimit()) && c.getPlayer().getEventInstance() == null) { //Makes sure this map doesn't have a forced return map
+                            if (!MapConstants.CanUseDropCard(c.getPlayer().getMapId()) && c.getPlayer().getBuffSource(MapleBuffStat.DROP_RATE) == 2382040) {
+                                c.getPlayer().cancelBuffStats(MapleBuffStat.DROP_RATE);
+                            } else if (!MapConstants.CanUseDropCard1(c.getPlayer().getMapId()) && (c.getPlayer().getBuffSource(MapleBuffStat.DROP_RATE) == 2383006) || (c.getPlayer().getBuffSource(MapleBuffStat.DROP_RATE) == 2383010)) {
+                                c.getPlayer().cancelBuffStats(MapleBuffStat.DROP_RATE);
+                            } else if (!MapConstants.CanUseMesoCard(c.getPlayer().getMapId()) && (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382005) || (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382016)) {
+                                c.getPlayer().cancelBuffStats(MapleBuffStat.MESO_RATE);
+                            }
                             c.getPlayer().changeMap(target, target.getPortal(0));
                             used = true;
                         }
@@ -2141,10 +2150,10 @@ public class InventoryHandler {
         c.sendPacket(MaplePacketCreator.enableActions());
         if (cc) {
             if (!c.getPlayer().isAlive() || c.getPlayer().getEventInstance() != null || FieldLimitType.ChannelSwitch.check(c.getPlayer().getMap().getFieldLimit())) {
-                c.getPlayer().dropMessage(1, "Auto change channel failed.");
+                c.getPlayer().dropMessage(1, "自動換頻失敗！");
                 return;
             }
-            c.getPlayer().dropMessage(5, "Auto changing channels. Please wait.");
+            c.getPlayer().dropMessage(5, "正在切換頻道起等待。");
             c.getPlayer().changeChannel(c.getChannel() == ChannelServer.getChannelCount() ? 1 : (c.getChannel() + 1));
         }
     }
@@ -2211,7 +2220,7 @@ public class InventoryHandler {
                 removeItem(chr, mapitem, ob);
             } else if (MapleItemInformationProvider.getInstance().isPickupBlocked(mapitem.getItem().getItemId())) {
                 c.sendPacket(MaplePacketCreator.enableActions());
-                c.getPlayer().dropMessage(5, "This item cannot be picked up.");
+                c.getPlayer().dropMessage(5, "這個道具不能撿取！");
             } else if (useItem(c, mapitem.getItemId())) {
                 removeItem(c.getPlayer(), mapitem, ob);
             } else if (MapleInventoryManipulator.checkSpace(c, mapitem.getItem().getItemId(), mapitem.getItem().getQuantity(), mapitem.getItem().getOwner())) {
@@ -2365,7 +2374,7 @@ public class InventoryHandler {
 
     private static boolean getIncubatedItems(MapleClient c) {
         if (c.getPlayer().getInventory(MapleInventoryType.EQUIP).getNumFreeSlot() < 2 || c.getPlayer().getInventory(MapleInventoryType.USE).getNumFreeSlot() < 2 || c.getPlayer().getInventory(MapleInventoryType.SETUP).getNumFreeSlot() < 2) {
-            c.getPlayer().dropMessage(5, "Please make room in your inventory.");
+            c.getPlayer().dropMessage(5, "請確認你身上的欄位是否足夠！");
             return false;
         }
         final int[] ids = {2430091, 2430092, 2430093, 2430101, 2430102, //mounts 
@@ -2570,6 +2579,13 @@ public class InventoryHandler {
             final MapleMap target = c.getChannelServer().getMapFactory().getMap(slea.readInt());
             if ((itemId == 5041000 && c.getPlayer().isRockMap(target.getId())) || (itemId != 5041000 && c.getPlayer().isRegRockMap(target.getId())) || ((itemId == 5040004 || itemId == 5041001))) {
                 if (!FieldLimitType.VipRock.check(c.getPlayer().getMap().getFieldLimit()) && !FieldLimitType.VipRock.check(target.getFieldLimit()) && c.getPlayer().getEventInstance() == null) { //Makes sure this map doesn't have a forced return map
+                    if (!MapConstants.CanUseDropCard(c.getPlayer().getMapId()) && c.getPlayer().getBuffSource(MapleBuffStat.DROP_RATE) == 2382040) {
+                        c.getPlayer().cancelBuffStats(MapleBuffStat.DROP_RATE);
+                    } else if (!MapConstants.CanUseDropCard1(c.getPlayer().getMapId()) && (c.getPlayer().getBuffSource(MapleBuffStat.DROP_RATE) == 2383006) || (c.getPlayer().getBuffSource(MapleBuffStat.DROP_RATE) == 2383010)) {
+                        c.getPlayer().cancelBuffStats(MapleBuffStat.DROP_RATE);
+                    } else if (!MapConstants.CanUseMesoCard(c.getPlayer().getMapId()) && (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382005) || (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382016)) {
+                        c.getPlayer().cancelBuffStats(MapleBuffStat.MESO_RATE);
+                    }
                     c.getPlayer().changeMap(target, target.getPortal(0));
                     used = true;
                 }
@@ -2579,6 +2595,13 @@ public class InventoryHandler {
             if (victim != null && !victim.isGM() && c.getPlayer().getEventInstance() == null && victim.getEventInstance() == null) {
                 if (!FieldLimitType.VipRock.check(c.getPlayer().getMap().getFieldLimit()) && !FieldLimitType.VipRock.check(c.getChannelServer().getMapFactory().getMap(victim.getMapId()).getFieldLimit())) {
                     if (itemId == 5041000 || itemId == 5040004 || itemId == 5041001 || (victim.getMapId() / 100000000) == (c.getPlayer().getMapId() / 100000000)) { // Viprock or same continent
+                        if (!MapConstants.CanUseDropCard(c.getPlayer().getMapId()) && c.getPlayer().getBuffSource(MapleBuffStat.DROP_RATE) == 2382040) {
+                            c.getPlayer().cancelBuffStats(MapleBuffStat.DROP_RATE);
+                        } else if (!MapConstants.CanUseDropCard1(c.getPlayer().getMapId()) && (c.getPlayer().getBuffSource(MapleBuffStat.DROP_RATE) == 2383006) || (c.getPlayer().getBuffSource(MapleBuffStat.DROP_RATE) == 2383010)) {
+                            c.getPlayer().cancelBuffStats(MapleBuffStat.DROP_RATE);
+                        } else if (!MapConstants.CanUseMesoCard(c.getPlayer().getMapId()) && (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382005) || (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382016)) {
+                            c.getPlayer().cancelBuffStats(MapleBuffStat.MESO_RATE);
+                        }
                         c.getPlayer().changeMap(victim.getMap(), victim.getMap().findClosestSpawnpoint(victim.getPosition()));
                         used = true;
                     }

@@ -2251,10 +2251,6 @@ public class GameConstants {
         return false;
     }
 
-    public static boolean isEventMap(final int mapid) {
-        return (mapid >= 109010000 && mapid < 109050000) || (mapid > 109050001 && mapid < 109090000) || (mapid >= 809040000 && mapid <= 809040100);
-    }
-
     public static boolean isExpChair(final int itemid) {
 
         switch (itemid / 10000) {

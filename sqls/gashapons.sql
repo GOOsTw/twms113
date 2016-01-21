@@ -1,8 +1,8 @@
-SET NAMES utf8;
-SET time_zone = '+00:00';
+SET FOREIGN_KEY_CHECKS=0;
 
-SET NAMES utf8;
-
+-- ----------------------------
+-- Table structure for `gashapon_items`
+-- ----------------------------
 DROP TABLE IF EXISTS `gashapon_items`;
 CREATE TABLE `gashapon_items` (
   `gashaponsid` int(11) NOT NULL,
@@ -15,8 +15,13 @@ CREATE TABLE `gashapon_items` (
   CONSTRAINT `gashapon_items_ibfk_1` FOREIGN KEY (`gashaponsid`) REFERENCES `gashapons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- ----------------------------
+-- Records of gashapon_items
+-- ----------------------------
 
-
+-- ----------------------------
+-- Table structure for `gashapons`
+-- ----------------------------
 DROP TABLE IF EXISTS `gashapons`;
 CREATE TABLE `gashapons` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -26,3 +31,7 @@ CREATE TABLE `gashapons` (
   UNIQUE KEY `id_npcId` (`id`,`npcId`),
   KEY `npcId` (`npcId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of gashapons
+-- ----------------------------

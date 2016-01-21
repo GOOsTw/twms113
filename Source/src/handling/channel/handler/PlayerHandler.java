@@ -769,7 +769,7 @@ public class PlayerHandler {
                     bulletConsume = effect.getBulletConsume() * (ShadowPartner != null ? 2 : 1);
                 }
                 if (!MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, projectile, bulletConsume, false, true)) {
-                    chr.dropMessage(5, "You do not have enough arrows/bullets/stars.");
+                    chr.dropMessage(5, "你沒有足夠的箭矢、飛鏢、彈丸。");
                     return;
                 }
             }
@@ -1083,6 +1083,7 @@ public class PlayerHandler {
         if (slea.available() != 0) {
 //            slea.skip(6); //D3 75 00 00 00 00
             slea.readByte(); // 1 = from dying 2 = regular portals
+
             final int targetid = slea.readInt(); // FF FF FF FF
             final MaplePortal portal = chr.getMap().getPortal(slea.readMapleAsciiString());
             /*            if (slea.available() >= 7) {
@@ -1090,7 +1091,13 @@ public class PlayerHandler {
              }*/
             slea.skip(1);
             final boolean wheel = slea.readShort() > 0 && !MapConstants.isEventMap(chr.getMapId()) && chr.haveItem(5510000, 1, false, true);
-
+            if (!MapConstants.CanUseDropCard(chr.getMapId()) && chr.getBuffSource(MapleBuffStat.DROP_RATE) == 2382040) {
+                chr.cancelBuffStats(MapleBuffStat.DROP_RATE);
+            } else if (!MapConstants.CanUseDropCard1(chr.getMapId()) && (chr.getBuffSource(MapleBuffStat.DROP_RATE) == 2383006 || chr.getBuffSource(MapleBuffStat.DROP_RATE) == 2383010)) {
+                chr.cancelBuffStats(MapleBuffStat.DROP_RATE);
+            } else if (!MapConstants.CanUseMesoCard(chr.getMapId()) && (chr.getBuffSource(MapleBuffStat.MESO_RATE) == 2382005 || chr.getBuffSource(MapleBuffStat.MESO_RATE) == 2382016)) {
+                chr.cancelBuffStats(MapleBuffStat.MESO_RATE);
+            }
             if (targetid != -1 && !chr.isAlive()) {
                 chr.setStance(0);
                 if (chr.getEventInstance() != null && chr.getEventInstance().revivePlayer(chr) && chr.isAlive()) {
@@ -1101,7 +1108,6 @@ public class PlayerHandler {
                     chr.getPyramidSubway().fail(chr);
                     return;
                 }
-
                 if (!wheel) {
                     chr.getStat().setHp((short) 50);
 

@@ -1653,8 +1653,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
         }
         stats.recalcLocalStats();
-        if (this.isGM()) {
-            this.dropMessage("[BUFF 註冊] 來源 :" + effect.getSourceId());
+        if (this.isAdmin()) {
+            this.dropMessage("[BUFF 註冊] 來源 :" + effect.getName() + "(" + effect.getSourceId() + ")");
         }
     }
 

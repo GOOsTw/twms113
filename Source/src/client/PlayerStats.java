@@ -27,6 +27,7 @@ import client.inventory.Equip;
 import client.inventory.IEquip;
 import client.inventory.MapleWeaponType;
 import client.inventory.ModifyInventory;
+import constants.MapConstants;
 import constants.SkillType.*;
 import java.lang.ref.WeakReference;
 import java.util.Map;
@@ -654,7 +655,23 @@ public class PlayerStats implements Serializable {
         }
         buff = chra.getBuffedValue(MapleBuffStat.DROP_RATE);
         if (buff != null) {
-            dropBuff *= buff.doubleValue() / 100.0;
+            if (chra.getBuffSource(MapleBuffStat.DROP_RATE) == 2382040) {
+                if (MapConstants.CanUseDropCard(chra.getMapId())) {
+                    dropBuff *= buff.doubleValue() / 100.0;
+                } else {
+                    chra.cancelBuffStats(MapleBuffStat.DROP_RATE);
+                    dropBuff = 100;
+                }
+            } else if (chra.getBuffSource(MapleBuffStat.DROP_RATE) == 2383006 || chra.getBuffSource(MapleBuffStat.DROP_RATE) == 2383010) {
+                if (MapConstants.CanUseDropCard1(chra.getMapId())) {
+                    dropBuff *= buff.doubleValue() / 100.0;
+                } else {
+                    chra.cancelBuffStats(MapleBuffStat.DROP_RATE);
+                    dropBuff = 100;
+                }
+            } else {
+                dropBuff *= buff.doubleValue() / 100.0;
+            }
         }
         buff = chra.getBuffedValue(MapleBuffStat.ACASH_RATE);
         if (buff != null) {
@@ -662,8 +679,18 @@ public class PlayerStats implements Serializable {
         }
         buff = chra.getBuffedValue(MapleBuffStat.MESO_RATE);
         if (buff != null) {
-            mesoBuff *= buff.doubleValue() / 100.0;
+            if (chra.getBuffSource(MapleBuffStat.MESO_RATE) == 2382005 || chra.getBuffSource(MapleBuffStat.MESO_RATE) == 2382016) {
+                if (!MapConstants.CanUseMesoCard(chra.getMapId())) {
+                    chra.cancelBuffStats(MapleBuffStat.MESO_RATE);
+                } else {
+                    chra.cancelBuffStats(MapleBuffStat.MESO_RATE);
+                    mesoBuff = 100;
+                }
+            } else {
+                mesoBuff *= buff.doubleValue() / 100.0;
+            }
         }
+
         buff = chra.getBuffedValue(MapleBuffStat.MESOUP);
         if (buff != null) {
             mesoBuff *= buff.doubleValue() / 100.0;
@@ -701,7 +728,7 @@ public class PlayerStats implements Serializable {
         buff = chra.getBuffedValue(MapleBuffStat.WIND_WALK);
         if (buff != null) {
             final MapleStatEffect eff = chra.getStatForBuff(MapleBuffStat.WIND_WALK);
-            dam_r *= eff.getDamage()/ 100.0;
+            dam_r *= eff.getDamage() / 100.0;
             bossdam_r *= eff.getDamage() / 100.0;
         }
 
@@ -1118,7 +1145,7 @@ public class PlayerStats implements Serializable {
         }
         bx = (Skill) SkillFactory.getSkill(1320008);
         bof = chr.get().getSkillLevel(bx);
-        if (bof >0) {
+        if (bof > 0) {
             eff = bx.getEffect(bof);
             shouldHealHP += eff.getHp();
         }
