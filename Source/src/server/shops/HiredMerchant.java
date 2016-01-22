@@ -33,6 +33,7 @@ import java.util.List;
 import server.MapleInventoryManipulator;
 import server.Timer.EtcTimer;
 import server.maps.MapleMapObjectType;
+import tools.MaplePacketCreator;
 import tools.packet.PlayerShopPacket;
 
 public class HiredMerchant extends AbstractPlayerStore {
@@ -136,7 +137,8 @@ public class HiredMerchant extends AbstractPlayerStore {
             setMeso(gainmeso - GameConstants.EntrustedStoreTax(gainmeso));
             c.getPlayer().gainMeso(-pItem.price * quantity, false);
         } else {
-            c.getPlayer().dropMessage(1, "您的背包滿了.");
+            c.getPlayer().dropMessage(1, "您的背包滿了，請檢查您的背包！");
+            c.sendPacket(MaplePacketCreator.enableActions());
         }
     }
 
