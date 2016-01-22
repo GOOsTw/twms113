@@ -171,7 +171,7 @@ public class MapleQuest implements Serializable {
 
     public static void initQuests() {
 
-        System.out.println("【讀取中】 MapleQuest 讀取中:::");
+        System.out.println("【讀取中】 MapleQuest:::");
 
         questData = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/Quest.wz");
         actions = questData.getData("Act.img");
