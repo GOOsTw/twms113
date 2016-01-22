@@ -56,10 +56,9 @@ public class CharLoginHandler {
     public static final void handleWelcome(final MapleClient c) {
         c.sendPing();
     }
-    
-    public static final void handleLogout(final SeekableLittleEndianAccessor slea, MapleClient c ) {
-        String account = slea.readMapleAsciiString();
-        if(c.getLoginState() > 0) {
+
+    public static final void handleLogout(final SeekableLittleEndianAccessor slea, MapleClient c) {
+        if (c.getLoginState() > 0) {
             c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
         }
     }
@@ -113,7 +112,12 @@ public class CharLoginHandler {
             if (macBan) {
                 MapleCharacter.ban(c.getSession().getRemoteAddress().toString().split(":")[0], "Enforcing account ban, account " + account, false, 4, false);
             }
+        } else if (loginok == 0 && (c.getGender() == 10 || c.getSecondPassword() == null)) {
+            // 防止第一次按取消後卡角問題
+            c.sendPacket(LoginPacket.getGenderNeeded(c));
+            return;
         }
+
         if (loginok != 0) {
             if (!loginFailCount(c)) {
                 c.sendPacket(LoginPacket.getLoginFailed(loginok));
@@ -189,8 +193,7 @@ public class CharLoginHandler {
         final int server = slea.readByte();
         final int channel = slea.readByte() + 1;
         final int userLimit = LoginServer.getUserLimit();
-   
-        
+
         c.setWorld(server);
         //System.out.println("Client " + c.getSession().getRemoteAddress().toString().split(":")[0] + " is connecting to server " + server + " channel " + channel + "");
         c.setChannel(channel);
@@ -212,7 +215,7 @@ public class CharLoginHandler {
     public static final void handleCreateCharacter(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         final String name = slea.readMapleAsciiString();
         final int JobType = slea.readInt(); // 1 = Adventurer, 0 = Cygnus, 2 = Aran
-       
+
         final short db = 0; //whether dual blade = 1 or adventurer = 0
         final int face = slea.readInt();
         final int hair = slea.readInt();

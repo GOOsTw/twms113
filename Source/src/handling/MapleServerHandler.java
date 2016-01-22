@@ -377,10 +377,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                     FilePrinter.print("38Logs.txt", HexTool.toStringFromAscii(slea.read(avaible.intValue())), true);
                 }
                 break;
-            case CLIENT_LOGOUT: {
-                CharLoginHandler.handleLogout(slea, c);
-                break;
-            }
             case HELLO_CHANNEL:
                 CharLoginHandler.handleWelcome(c);
                 break;
@@ -410,6 +406,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 break;
             case SET_GENDER:
                 CharLoginHandler.SetGenderRequest(slea, c);
+                break;
+            case CLIENT_LOGOUT:
+                CharLoginHandler.handleLogout(slea, c);
                 break;
             // END OF LOGIN SERVER
             case CHANGE_CHANNEL:

@@ -59,13 +59,9 @@ public class LoginWorker {
         }
 
         if (c.finishLogin() == 0) {
-            if (c.getSecondPassword() == null) {
-                c.sendPacket(LoginPacket.getGenderNeeded(c));
-            } else {
-                c.sendPacket(LoginPacket.getAuthSuccessRequest(c));
-                c.sendPacket(LoginPacket.getServerList(0, LoginServer.getServerName(), LoginServer.getLoad()));
-                c.sendPacket(LoginPacket.getEndOfServerList());
-            }
+            c.sendPacket(LoginPacket.getAuthSuccessRequest(c));
+            c.sendPacket(LoginPacket.getServerList(0, LoginServer.getServerName(), LoginServer.getLoad()));
+            c.sendPacket(LoginPacket.getEndOfServerList());
             c.setIdleTask(PingTimer.getInstance().schedule(new Runnable() {
 
                 @Override
