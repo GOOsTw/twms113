@@ -73,6 +73,7 @@ function action(mode, type, selection) {
             if (sel == 3) {
                 cm.setDojoRecord(true);
                 cm.sendOk("我已經幫您歸零，好運。");
+				cm.dispose();
             } else if (sel == 2) {
                 var record = cm.getDojoRecord();
                 var required = 0;
