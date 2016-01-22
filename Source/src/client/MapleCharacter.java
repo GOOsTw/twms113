@@ -4400,7 +4400,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (beholderBuffSchedule != null) {
             beholderBuffSchedule.cancel(false);
         }
-        ISkill bHealing = SkillFactory.getSkill(1320008);
+       /* ISkill bHealing = SkillFactory.getSkill(1320008);
         final int bHealingLvl = getSkillLevel(bHealing);
         final int berserkLvl = getSkillLevel(SkillFactory.getSkill(1320006));
 
@@ -4420,7 +4420,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     map.broadcastMessage(MapleCharacter.this, MaplePacketCreator.showBuffeffect(getId(), 1321007, 2), false);
                 }
             }, healInterval, healInterval);
-        }
+        }*/
         ISkill bBuff = SkillFactory.getSkill(1320009);
         final int bBuffLvl = getSkillLevel(bBuff);
         if (bBuffLvl > 0) {

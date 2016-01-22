@@ -66,7 +66,7 @@ public class PortalScriptManager {
             CompiledScript compiled = ((Compilable) portal).compile(fr);
             compiled.eval();
         } catch (final Exception e) {
-            System.err.println("Error executing Portalscript: " + scriptName + ":" + e);
+            System.err.println("進入傳送腳本失敗: " + scriptName + ":" + e);
             FilePrinter.printError("PortalScriptManager.txt", e);
         } finally {
             if (fr != null) {
@@ -84,16 +84,18 @@ public class PortalScriptManager {
 
     public final void executePortalScript(final MaplePortal portal, final MapleClient c) {
         final PortalScript script = getPortalScript(portal.getScriptName());
-
+        if (c.getPlayer().isAdmin()) {
+            c.getPlayer().dropMessage("您已經建立與傳送門腳本: " + portal.getScriptName() + ".js 的關聯。");
+        }
         if (script != null) {
             try {
                 script.enter(new PortalPlayerInteraction(c, portal));
             } catch (Exception e) {
-                System.err.println("Error entering Portalscript: " + portal.getScriptName() + ":" + e);
+                System.err.println("進入傳送腳本失敗: " + portal.getScriptName() + ":" + e);
             }
         } else {
-            System.out.println("Unhandled portal script " + portal.getScriptName() + " on map " + c.getPlayer().getMapId());
-            FilePrinter.printError("PortalScriptManager.txt", "Unhandled portal script " + portal.getScriptName() + " on map " + c.getPlayer().getMapId());
+            System.out.println("未處理的傳送腳本 " + portal.getScriptName() + " 所在地圖 " + c.getPlayer().getMapId());
+            FilePrinter.printError("PortalScriptManager.txt", "未處理的傳送腳本 " + portal.getScriptName() + " 所在地圖 " + c.getPlayer().getMapId());
         }
     }
 

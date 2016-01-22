@@ -80,6 +80,7 @@ import tools.packet.PetPacket;
 import tools.data.input.SeekableLittleEndianAccessor;
 import tools.MaplePacketCreator;
 import tools.packet.PlayerShopPacket;
+import server.maps.MapleKite;
 
 public class InventoryHandler {
 
@@ -1805,15 +1806,24 @@ public class InventoryHandler {
                 World.Broadcast.broadcastSmega(MaplePacketCreator.serverNotice(3, c.getChannel(), c.getPlayer().getName() + " : " + message, ear).getBytes());
                 break;
             }
-            case 5090100: // Wedding Invitation Card
-            case 5090000: { // Note
+            case 5080000: //風箏
+            case 5080001: //氫氣球
+            case 5080002: //畢業祝賀橫幅
+            case 5080003: { //入學祝賀帷幕
+                MapleKite Kite = new MapleKite(c.getPlayer(),c.getPlayer().getPosition(),c.getPlayer().getMap().getFootholds().findBelow(c.getPlayer().getPosition()).getId(),slea.readMapleAsciiString(),itemId);
+                c.getPlayer().getMap().spawnKite(Kite);
+                used = true;
+                break;
+            }
+            case 5090100: // 請柬-1
+            case 5090000: { // 訊息
                 final String sendTo = slea.readMapleAsciiString();
                 final String msg = slea.readMapleAsciiString();
                 c.getPlayer().sendNote(sendTo, msg);
                 used = true;
                 break;
             }
-            case 5100000: { // Congratulatory Song
+            case 5100000: { // 賀曲
                 c.getPlayer().getMap().broadcastMessage(MTSCSPacket.playCashSong(5100000, c.getPlayer().getName()));
                 used = true;
                 break;

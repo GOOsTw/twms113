@@ -29,6 +29,7 @@ public enum MapleMapObjectType {
     DOOR,
     SUMMON,
     SHOP,
+    Kite,
     MIST,
     REACTOR,
     HIRED_MERCHANT;

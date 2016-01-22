@@ -80,7 +80,7 @@ public enum MapleBuffStat implements Serializable {
     SUMMON(21), //hack buffstat for summons ^.- (does/should not increase damage... hopefully <3)
     //屬性攻擊
     WK_CHARGE(22),
-    //龍之力量 ? 需要測試
+    //龍之魂
     DRAGONBLOOD(23),
     //神聖祈禱
     HOLY_SYMBOL(24),
