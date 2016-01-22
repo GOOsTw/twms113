@@ -17,7 +17,7 @@ function action(mode, type, selection) {
             status--;
         var mapId = cm.getMapId();
         var outText;
-        if (mapId == 740000000) {
+        if (mapId == 220080001) {
             outText = "你確定要離開BOSS PQ？？";
         }
         if (status == 0) {

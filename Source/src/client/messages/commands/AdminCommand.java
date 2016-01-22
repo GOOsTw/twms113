@@ -1489,7 +1489,7 @@ public class AdminCommand {
         }
     }
 
-    public static class Disease extends CommandExecute {
+    public static class 異常 extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
@@ -1499,34 +1499,26 @@ public class AdminCommand {
             }
             int type = 0;
             MapleDisease dis = null;
-            if (splitted[1].equalsIgnoreCase("SEAL")) {
+            if (splitted[1].equalsIgnoreCase("封印")) {
                 type = 120;
-            } else if (splitted[1].equalsIgnoreCase("DARKNESS")) {
+            } else if (splitted[1].equalsIgnoreCase("黑暗")) {
                 type = 121;
-            } else if (splitted[1].equalsIgnoreCase("WEAKEN")) {
+            } else if (splitted[1].equalsIgnoreCase("虛弱")) {
                 type = 122;
-            } else if (splitted[1].equalsIgnoreCase("STUN")) {
+            } else if (splitted[1].equalsIgnoreCase("暈眩")) {
                 type = 123;
-            } else if (splitted[1].equalsIgnoreCase("CURSE")) {
+            } else if (splitted[1].equalsIgnoreCase("詛咒")) {
                 type = 124;
-            } else if (splitted[1].equalsIgnoreCase("POISON")) {
+            } else if (splitted[1].equalsIgnoreCase("中毒")) {
                 type = 125;
-            } else if (splitted[1].equalsIgnoreCase("SLOW")) {
+            } else if (splitted[1].equalsIgnoreCase("緩慢")) {
                 type = 126;
-            } else if (splitted[1].equalsIgnoreCase("SEDUCE")) {
+            } else if (splitted[1].equalsIgnoreCase("誘惑")) {
                 type = 128;
-            } else if (splitted[1].equalsIgnoreCase("REVERSE")) {
+            } else if (splitted[1].equalsIgnoreCase("相反")) {
                 type = 132;
-            } else if (splitted[1].equalsIgnoreCase("ZOMBIFY")) {
+            } else if (splitted[1].equalsIgnoreCase("不死")) {
                 type = 133;
-            } else if (splitted[1].equalsIgnoreCase("POTION")) {
-                type = 134;
-            } else if (splitted[1].equalsIgnoreCase("SHADOW")) {
-                type = 135;
-            } else if (splitted[1].equalsIgnoreCase("BLIND")) {
-                type = 136;
-            } else if (splitted[1].equalsIgnoreCase("FREEZE")) {
-                type = 137;
             } else {
                 return false;
             }
@@ -1554,7 +1546,7 @@ public class AdminCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!disease <SEAL/DARKNESS/WEAKEN/STUN/CURSE/POISON/SLOW/SEDUCE/REVERSE/ZOMBIFY/POTION/SHADOW/BLIND/FREEZE> [角色名稱] <狀態等級> - 讓人得到特殊狀態").toString();
+            return new StringBuilder().append("!異常 <封印/黑暗/虛弱/暈眩/詛咒/中毒/緩慢/誘惑/相反/不死> [角色名稱] <狀態等級> - 讓人得到特殊狀態").toString();
         }
 
     }

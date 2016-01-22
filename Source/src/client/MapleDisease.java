@@ -25,22 +25,38 @@ import server.Randomizer;
 
 public enum MapleDisease implements Serializable {
 
-    POTION(0x80000000000L, true),
-    SHADOW(0x100000000000L, true), //receiving damage/moving
-    BLIND(0x200000000000L, true),
-    FREEZE(0x8000000000000L, true),
+    // 緩慢
     SLOW(0x1),
+    // 變身
     MORPH(0x2),
+    // 迷惑
     SEDUCE(0x80),
+    // 不死化
     ZOMBIFY(0x4000),
+    // 混亂
     REVERSE_DIRECTION(0x80000),
+    // 火焰
     WEIRD_FLAME(0x8000000),
+    // 昏迷
     STUN(0x2000000000000L),
+    // 中毒
     POISON(0x4000000000000L),
+    // 封印
     SEAL(0x8000000000000L),
+    // 黑暗
     DARKNESS(0x10000000000000L),
+    // 虛弱
     WEAKEN(0x4000000000000000L),
-    CURSE(0x8000000000000000L),;
+    // 無法使用藥水
+    POTION(0x80000000000L, true),
+    // 影子
+    SHADOW(0x100000000000L, true), //receiving damage/moving
+    // 致盲
+    BLIND(0x200000000000L, true),
+    // 冰凍
+    FREEZE(0x8000000000000L, true),
+    // 龍捲風
+    CURSE(0x8000000000000000L);
     // 0x100 is disable skill except buff
     private static final long serialVersionUID = 0L;
     private final long i;
