@@ -132,20 +132,34 @@ public enum MapleBuffStat implements Serializable {
     ZOMBIFY(46),
     //英雄的回響  
     ECHO_OF_HERO(47),
+    // 
     UNKNOWN3(48),
+    // 鬼魂變身
     GHOST_MORPH(49),
+    // 
     ARIANT_COSS_IMU(50), // The white ball around you
+    // 掉寶倍率
     DROP_RATE(52),
+    // 楓幣倍率
     MESO_RATE(53),
+    // 經驗倍率
     EXPRATE(54),
+    // GASH倍率
     ACASH_RATE(55),
+    // 終極隱身
     GM_HIDE(56),
+    // 未知
     UNKNOWN7(57),
+    // 龍魔島-四連殺
     ILLUSION(58),
+    // 狂暴戰魂
     BERSERK_FURY(59),
+    // 金剛霸體
     DIVINE_BODY(60),
+    // 閃光擊
     SPARK(61),
     ARIANT_COSS_IMU2(62), // no idea, seems the same
+    // 終極之弓
     FINALATTACK(63),
     //自然力重置     
     ELEMENT_RESET(65),
@@ -164,17 +178,29 @@ public enum MapleBuffStat implements Serializable {
     BODY_PRESSURE(69), //71
     // 精準擊退
     SMART_KNOCKBACK(70), //72
+    // 靈魂之石
     SOUL_STONE(73), //same as pyramid_pq
+    // 能量獲得
     ENERGY_CHARGE(75),
+    // 衝鋒_速度
     DASH_SPEED(76),
+    // 衝鋒_跳躍
     DASH_JUMP(77),
+    // 怪物騎乘
     MONSTER_RIDING(78),
+    // 最終極速
     SPEED_INFUSION(79),
+    // 指定攻擊(無盡追擊)
     HOMING_BEACON(80),
+    // 飛天騎乘
     SOARING(82),
+    // 冰凍
     FREEZE(83),
+    // 雷鳴之劍
     LIGHTNING_CHARGE(84),
+    // 替身術
     MIRROR_IMAGE(85),
+    // 貓頭鷹召喚
     OWL_SPIRIT(86),
 
     //DUMMY_STAT0     (0x8000000L, true), //appears on login

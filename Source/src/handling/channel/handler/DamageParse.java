@@ -263,6 +263,7 @@ public class DamageParse {
                             break;
                     }
                 }
+                player.cancelEffectFromBuffStat(MapleBuffStat.WIND_WALK);
                 final MapleStatEffect ds = player.getStatForBuff(MapleBuffStat.DARKSIGHT);
                 if (ds != null && !player.isGM()) {
                     if (ds.getSourceId() != 4330001 || !ds.makeChanceResult()) {
