@@ -2782,6 +2782,34 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
+    public static MaplePacket spawnKiteError() {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+        mplew.writeShort(SendPacketOpcode.SPAWN_KITE_ERROR.getValue());
+
+        return mplew.getPacket();
+    }
+
+    public static MaplePacket spawnKite(int oid, int itemid, String name, String msg, Point pos, int ft) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+        mplew.writeShort(SendPacketOpcode.SPAWN_KITE.getValue());
+        mplew.writeInt(oid);
+        mplew.writeInt(itemid);
+        mplew.writeMapleAsciiString(msg);
+        mplew.writeMapleAsciiString(name);
+        mplew.writeShort(pos.x);
+        mplew.writeShort(ft);
+
+        return mplew.getPacket();
+    }
+
+    public static MaplePacket destroyKite(int oid) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+        mplew.writeShort(SendPacketOpcode.DESTROY_KITE.getValue());
+        mplew.writeInt(oid);
+
+        return mplew.getPacket();
+    }
+
     public static MaplePacket spawnMist(final MapleMist mist) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 

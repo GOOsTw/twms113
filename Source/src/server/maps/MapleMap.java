@@ -1551,7 +1551,20 @@ public final class MapleMap {
             }
         }, null);
     }
+    
+    public final void spawnKite(final MapleKite Kite) {
+        addMapObject(Kite);
+        broadcastMessage(Kite.makeSpawnData());
+        MapTimer.getInstance().schedule(new Runnable() {
 
+            @Override
+            public void run() {
+                removeMapObject(Kite);
+                broadcastMessage(Kite.makeDestroyData());
+            }
+        }, 1000 * 60 * 60);
+    }
+    
     public final void spawnMist(final MapleMist mist, final int duration, boolean fake) {
         spawnAndAddRangedMapObject(mist, new DelayedPacketCreation() {
 
