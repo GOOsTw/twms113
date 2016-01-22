@@ -159,10 +159,10 @@ public class MaplePet implements Serializable {
     }
 
     public static final MaplePet createPet(final int itemid, final int uniqueid) {
-        return createPet(itemid, MapleItemInformationProvider.getInstance().getName(itemid), 1, 0, 100, uniqueid, itemid == 5000054 ? 18000 : 0);
+        return createPet(itemid, MapleItemInformationProvider.getInstance().getName(itemid), 1, 0, 100, uniqueid, itemid == 5000054 ? 18000 : 0, (short) 0x1E7F);
     }
 
-    public static final MaplePet createPet(int itemid, String name, int level, int closeness, int fullness, int uniqueid, int secondsLeft) {
+    public static final MaplePet createPet(int itemid, String name, int level, int closeness, int fullness, int uniqueid, int secondsLeft, short flag) {
         if (uniqueid <= -1) { //wah
             uniqueid = MapleInventoryIdentifier.getInstance();
         }
@@ -174,7 +174,7 @@ public class MaplePet implements Serializable {
             pse.setShort(4, (short) closeness);
             pse.setByte(5, (byte) fullness);
             pse.setInt(6, secondsLeft);
-            pse.setShort(7, (short) 0); //flags
+            pse.setShort(7, flag); //flags
             pse.executeUpdate();
            
         } catch (final SQLException ex) {
@@ -186,7 +186,7 @@ public class MaplePet implements Serializable {
         pet.setLevel(level);
         pet.setFullness(fullness);
         pet.setCloseness(closeness);
-        pet.setFlags(0);
+        pet.setFlags(flag);
         pet.setSecondsLeft(secondsLeft);
 
         return pet;

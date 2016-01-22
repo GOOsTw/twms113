@@ -49,6 +49,7 @@ import static client.MapleStat.AVAILABLEAP;
 import static client.MapleStat.AVAILABLESP;
 import client.inventory.MapleRing;
 import client.SkillMacro;
+import client.inventory.Item;
 import client.inventory.ModifyInventory;
 import handling.ByteArrayMaplePacket;
 import handling.MaplePacket;
@@ -1638,8 +1639,8 @@ public class MaplePacketCreator {
                 mplew.write(pet.getLevel()); // pet level
                 mplew.writeShort(pet.getCloseness()); // pet closeness
                 mplew.write(pet.getFullness()); // pet fullness
-                mplew.writeShort(0);
-                mplew.writeInt(peteqid);
+                mplew.writeShort(pet.getFlags()); // 寵物使用技能
+                mplew.writeInt(inv == null ? 0 : inv.getItemId());
             }
         }
         mplew.write(0); // End of pet

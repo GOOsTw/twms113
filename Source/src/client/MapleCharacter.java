@@ -3663,8 +3663,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (pet.getSummoned()) {
             pet.saveToDb();
             map.broadcastMessage(this, PetPacket.showPet(this, pet, true, hunger), true);
-            //List<Pair<MapleStat, Integer>> stats = new ArrayList<Pair<MapleStat, Integer>>();
-            //stats.add(new Pair<MapleStat, Integer>(MapleStat.PET, Integer.valueOf(0)));
+            List<Pair<MapleStat, Integer>> stats = new ArrayList<Pair<MapleStat, Integer>>();
+            stats.add(new Pair<MapleStat, Integer>(MapleStat.PET, Integer.valueOf(0)));
             removePet(pet, shiftLeft);
             client.sendPacket(PetPacket.petStatUpdate(this));
             client.sendPacket(MaplePacketCreator.enableActions());
@@ -4978,8 +4978,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                         if (broadcast) {
                             getMap().broadcastMessage(this, PetPacket.showPet(this, pet, false, false), true);
 
-                            //final List<Pair<MapleStat, Integer>> stats = new ArrayList<Pair<MapleStat, Integer>>(1);
-                            //stats.add(new Pair<MapleStat, Integer>(MapleStat.PET, Integer.valueOf(pet.getUniqueId())));
+                            final List<Pair<MapleStat, Integer>> stats = new ArrayList<Pair<MapleStat, Integer>>(1);
+                            stats.add(new Pair<MapleStat, Integer>(MapleStat.PET, Integer.valueOf(pet.getUniqueId())));
                             client.sendPacket(PetPacket.petStatUpdate(this));
                         }
                     }
