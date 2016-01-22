@@ -40,9 +40,6 @@ public class MonsterCarnivalPacket {
         mplew.writeShort(friendly.getTotalCP());
         mplew.writeShort(enemyavailable);
         mplew.writeShort(enemytotal);
-        mplew.writeLong(0);
-        mplew.writeShort(0);
-
         return mplew.getPacket();
     }
 
