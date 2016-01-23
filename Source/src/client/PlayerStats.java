@@ -669,6 +669,13 @@ public class PlayerStats implements Serializable {
                     chra.cancelBuffStats(MapleBuffStat.DROP_RATE);
                     dropBuff = 100;
                 }
+            } else if (chra.getBuffSource(MapleBuffStat.DROP_RATE) == 2382028) {
+                if (MapConstants.CanUseDropCard2(chra.getMapId())) {
+                    dropBuff *= buff.doubleValue() / 100.0;
+                } else {
+                    chra.cancelBuffStats(MapleBuffStat.DROP_RATE);
+                    dropBuff = 100;
+                }                
             } else {
                 dropBuff *= buff.doubleValue() / 100.0;
             }
