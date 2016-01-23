@@ -675,41 +675,73 @@ public class AdminCommand {
         }
     }
 
-    public static class GainCash extends CommandExecute {
+    public static class 給人點數 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 4) {
+                return false;
+            }
+            int nx = 0;
+            String po = "";
+            if (splitted[1].equalsIgnoreCase("點數")) {
+                nx = 1;
+                po = "Gash";
+            } else if (splitted[1].equalsIgnoreCase("楓點")) {
+                nx = 2;
+                po = "楓葉";
+            }
+            String name = splitted[2];
+            int ch = World.Find.findChannel(name);
+            if (ch <= 0) {
+                c.getPlayer().dropMessage(6, "玩家必須上線");
+                return false;
+            }
+            MapleCharacter victim = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(name);
+            if (victim == null) {
+                c.getPlayer().dropMessage(5, "找不到此玩家");
+            } else {
+                victim.modifyCSPoints(nx, Integer.parseInt(splitted[3]), true);
+                c.getPlayer().dropMessage(6, "成功給予 " + victim.getName() + splitted[3] + "點 " + po + "點數");
+            }
+
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!給人點數 點數/楓點 玩家名稱 數量").toString();
+        }
+    }
+
+    public static class 給點數 extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             if (splitted.length < 2) {
                 return false;
             }
-            c.getPlayer().modifyCSPoints(1, Integer.parseInt(splitted[1]), true);
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!gaingash <數量> - 取得Gash點數").toString();
-        }
-    }
-
-    public static class GainMaplePoint extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            if (splitted.length < 2) {
-                return false;
+            int nx = 0;
+            String po = "";
+            if (splitted[1].equalsIgnoreCase("點數")) {
+                nx = 1;
+                po = "Gash";
+            } else if (splitted[1].equalsIgnoreCase("楓點")) {
+                nx = 2;
+                po = "楓葉";
             }
-            c.getPlayer().modifyCSPoints(2, Integer.parseInt(splitted[1]), true);
+            c.getPlayer().modifyCSPoints(nx, Integer.parseInt(splitted[2]), true);
+            c.getPlayer().dropMessage(6, "成功獲得" + splitted[2] + "點 " + po + "點數");
             return true;
         }
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!gainmaplepoint <數量> - 取得楓葉點數").toString();
+            return new StringBuilder().append("!給點數 點數/楓點 數量").toString();
         }
     }
 
-    public static class GainPoint extends CommandExecute {
+    public static class 給贊助點 extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
@@ -722,11 +754,11 @@ public class AdminCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!gainpoint <數量> - 取得Point").toString();
+            return new StringBuilder().append("!給贊助點 <數量> - 取得贊助點").toString();
         }
     }
 
-    public static class GainVP extends CommandExecute {
+    public static class 給投票點 extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
@@ -739,7 +771,7 @@ public class AdminCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!gainvpoint <數量> - 取得VPoint").toString();
+            return new StringBuilder().append("!給投票點 <數量> - 取得VPoint").toString();
         }
     }
 
