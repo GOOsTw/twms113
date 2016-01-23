@@ -60,12 +60,12 @@ public class AutobanManager implements Runnable {
         return instance;
     }
 
-    public final void autoban(final MapleClient c, final String reason) {
+    public final void autoban(final MapleClient c, final String reason, int points) {
         if (c.getPlayer().isGM() || c.getPlayer().isClone()) {
             c.getPlayer().dropMessage(5, "[自動偵測系統] 已觸違規偵測 :" + reason);
             return;
         }
-        addPoints(c, AUTOBAN_POINTS, 0, reason);
+        addPoints(c, points, 0, reason);
     }
 
     public final void addPoints(final MapleClient c, final int points, final long expiration, final String reason) {
@@ -105,8 +105,8 @@ public class AutobanManager implements Runnable {
                 World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0, "[自動偵測系統] 玩家" + c.getPlayer().getName() + "已遭到系統鎖定7天。呼籲其他玩家千萬不要開外掛，感謝！").getBytes());
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, 7);
-		c.getPlayer().tempban(sb.toString(), cal, 1, false);
-                //c.getPlayer().ban(sb.toString(), false, true, false);
+		//c.getPlayer().tempban(sb.toString(), cal, 1, false);
+                c.getPlayer().ban(sb.toString(), false, true, false);
                 c.disconnect(true, false);
             } else {
                 if (expiration > 0) {

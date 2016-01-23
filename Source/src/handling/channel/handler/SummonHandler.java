@@ -135,7 +135,7 @@ public class SummonHandler {
                 continue;
             }
             final double distanceSS = chr.getPosition().distanceSq(mob.getPosition());
-            if (distanceSS > 400000.0) {
+            if (distanceSS > 600000.0) {
                 chr.getCheatTracker().registerOffense(CheatingOffense.召喚獸攻擊距離過遠, " 距離" + distanceSS + " 人物座標 (" + chr.getPosition().getX() + "," + chr.getPosition().getY() + ")"
                         + "怪物座標 (" + mob.getPosition().getX() + "," + mob.getPosition().getY() + ")");
             }
@@ -170,7 +170,7 @@ public class SummonHandler {
                     chr.getClient().sendPacket(MobPacket.killMonster(mob.getObjectId(), 1));
                 }
             } else {
-                AutobanManager.getInstance().autoban(c, "High Summon Damage (" + toDamage + " to " + attackEntry.getMonster().getId() + ")");
+                AutobanManager.getInstance().autoban(c, "High Summon Damage (" + toDamage + " to " + attackEntry.getMonster().getId() + ")", 1000);
                 // TODO : Check player's stat for damage checking.
             }
         }

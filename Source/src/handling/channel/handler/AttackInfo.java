@@ -49,7 +49,7 @@ public class AttackInfo {
             final ISkill skillLink = SkillFactory.getSkill(skill);
             if (display > 80) {
                 if (!skillLink.hasAction()) {
-                    AutobanManager.getInstance().autoban(chr.getClient(), "攻擊無延遲，技能ID： : " + skill); // 2 of the same autobans? wtf...
+                    AutobanManager.getInstance().autoban(chr.getClient(), "攻擊無延遲，技能ID： : " + skill, 50000); // 2 of the same autobans? wtf...
                     return null;
                 }
             }
@@ -57,7 +57,7 @@ public class AttackInfo {
         }
         if (display > 80) {
             if (!skill_.hasAction()) {
-                AutobanManager.getInstance().autoban(chr.getClient(), "攻擊無延遲，技能ID： " + skill);
+                AutobanManager.getInstance().autoban(chr.getClient(), "攻擊無延遲，技能ID： " + skill, 50000);
                 return null;
             }
         }

@@ -79,6 +79,7 @@ import server.ServerProperties;
 import handling.login.LoginServer;
 import server.CashItemFactory;
 import server.FishingRewardFactory;
+import server.gashapon.GashaponFactory;
 import server.life.CustomNPC;
 
 /**
@@ -2901,6 +2902,20 @@ public class AdminCommand {
         @Override
         public String getMessage() {
             return new StringBuilder().append("!reloadCS - 重新載入購物商城").toString();
+        }
+    }
+    
+       public static class ReloadGashapon extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            GashaponFactory.getInstance().reloadGashapons();
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!reloadGashapon - 重新載入轉蛋機").toString();
         }
     }
 

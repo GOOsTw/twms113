@@ -292,22 +292,23 @@ public class MaplePacketCreator {
 
         mplew.writeShort(SendPacketOpcode.SPAWN_SUMMON.getValue());
         mplew.writeInt(summon.getOwnerId());
+
         mplew.writeInt(summon.getObjectId());
         mplew.writeInt(summon.getSkill());
-        mplew.write(summon.getOwnerLevel() - 1);
-        mplew.write(1); //idk but nexon sends 1 for octo, so we'll leave it
+        mplew.write(summon.getOwnerLevel());
+        mplew.write(summon.getSkillLevel()); //idk but nexon sends 1 for octo, so we'll leave it
+
         mplew.writePos(summon.getPosition());
-        mplew.write(summon.getSkill() == 32111006 ? 5 : 4); //reaper = 5?
-        mplew.writeShort(0/*summon.getFh()*/);
+        mplew.write(summon.getSkill() == 32111006 || summon.getSkill() == 33101005 ? 5 : 4); //reaper = 5?
+        if (summon.getSkill() == 35121003 && summon.getOwner().getMap() != null) {
+            mplew.writeShort(summon.getOwner().getMap().getFootholds().findBelow(summon.getPosition()).getId());
+        } else {
+            mplew.writeShort(0);
+        }
         mplew.write(summon.getMovementType().getValue());
         mplew.write(summon.getSummonType()); // 0 = Summon can't attack - but puppets don't attack with 1 either ^.-
         mplew.write(0/*animated ? 0 : 1*/);
-        final MapleCharacter chr = summon.getOwner();
-        /*        mplew.write(summon.getSkill() == 4341006 && chr != null ? 1 : 0); //mirror target
-         if (summon.getSkill() == 4341006 && chr != null) {
-         PacketHelper.addCharLook(mplew, chr, true);
-         }*/
-
+     
         return mplew.getPacket();
     }
 
@@ -2805,6 +2806,7 @@ public class MaplePacketCreator {
     public static MaplePacket destroyKite(int oid) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.DESTROY_KITE.getValue());
+        mplew.write(0);
         mplew.writeInt(oid);
 
         return mplew.getPacket();
@@ -3997,7 +3999,7 @@ public class MaplePacketCreator {
         switch (operation) {
             case 9: {
                 mplew.write(1);
-                // 0xFF = error
+                //第二組密碼
                 break;
             }
             case 25: {
@@ -4008,47 +4010,28 @@ public class MaplePacketCreator {
                 mplew.writeMapleAsciiString("");
                 byte v16 = 0;
                 mplew.write(v16); // somthing true or false
-                /*        
-                 v16 = CInPacket__Decode1(v4) != 0;
-                 if ( dword_BED278 && ((*(*(dword_BED278 + 4) + 72))(&dword_BF32D4) != 0 ? dword_BED278 : 0) )
-                 {
-                 CWnd__InvalidateRect(0);
-                 }
-                 else
-                 {
-                 v17 = ZAllocEx_ZAllocAnonSelector___Alloc(dword_BF5D00, 0x10Cu);
-                 v42 = v17;
-                 LOBYTE(v51) = 12;
-                 if ( v17 )
-                 v5 = sub_52F09D(v17);
-                 v37 = v16;
-                 v36 = v17;
-                 v42 = &v36;
-                 LOBYTE(v51) = 11;
-                 ZXString_char___operator_(&v36, &a1);
-                 sub_532A5B(v36, v37);
-                 sub_A40D66(v5);
-                 }
-                 */
             }
             case 27: {
+                //開啟傳送快遞
                 mplew.write(0);
+            }
+            case 28: {
+                mplew.write(0); //種類 0 = 宅配 / 1 = 快遞
             }
             case 10: { // Open duey
                 mplew.write(0);
                 mplew.write(packages.size());
-
                 for (MapleDueyActions dp : packages) {
                     mplew.writeInt(dp.getPackageId());
                     mplew.writeAsciiString(dp.getSender(), 15);
                     mplew.writeInt(dp.getMesos());
                     mplew.writeLong(KoreanDateUtil.getFileTimestamp(dp.getSentTime(), false));
                     mplew.writeZeroBytes(205);
-
                     if (dp.getItem() != null) {
                         mplew.write(1);
                         PacketHelper.addItemInfo(mplew, dp.getItem(), true, true);
                     } else {
+                        //超過有效期限
                         mplew.write(0);
                     }
                     //System.out.println("Package has been sent in packet: " + dp.getPackageId());
