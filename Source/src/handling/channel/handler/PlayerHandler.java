@@ -210,6 +210,9 @@ public class PlayerHandler {
 
     public static final void TakeDamage(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         //System.out.println(slea.toString());
+        if (slea.available() < 4) { //封包長度少於4byte Return 避免Null
+            return;
+        }
         chr.updateTick(slea.readInt());
         final byte type = slea.readByte(); //-4 is mist, -3 and -2 are map damage.
         slea.skip(1); // Element - 0x00 = elementless, 0x01 = ice, 0x02 = fire, 0x03 = lightning
