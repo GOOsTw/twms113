@@ -37,7 +37,7 @@ public class MapleFamilyBuff {
 
     //todo; read from somewhere
 
-    private static final int event = 11; //numevents
+    private static final int event = 10; //numevents
     // 0=tele, 1=summ, 2=drop, 3=exp, 4=both
     // questrecords used for time: 190000 to 190010
     private static final int[] type = {0, 1, 2, 3, 2, 3, 2, 3, 2, 3};
