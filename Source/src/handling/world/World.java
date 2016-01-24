@@ -323,10 +323,8 @@ public class World {
                     }
                     if (!buddylist.contains(cidFrom)) {
                         buddylist.addBuddyRequest(addChar.getClient(), cidFrom, nameFrom, channelFrom, levelFrom, jobFrom);
-                    } else {
-                        if (buddylist.containsVisible(cidFrom)) {
-                            return BuddyAddResult.ALREADY_ON_LIST;
-                        }
+                    } else if (buddylist.containsVisible(cidFrom)) {
+                        return BuddyAddResult.ALREADY_ON_LIST;
                     }
                 }
             }
@@ -1283,10 +1281,10 @@ public class World {
             }
         }
 
-        public static int setRep(int fid, int cid, int addrep, int oldLevel) {
+        public static int setRep(int fid, int cid, int addrep, int oldLevel, String oldName) {
             MapleFamily f = getFamily(fid);
             if (f != null) {
-                return f.setRep(cid, addrep, oldLevel);
+                return f.setRep(cid, addrep, oldLevel, oldName);
             }
             return 0;
         }

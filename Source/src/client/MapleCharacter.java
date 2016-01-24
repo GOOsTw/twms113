@@ -2793,9 +2793,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 percentrep = 100 - percentrep + (level / 2);
             }
             if (percentrep > 0) {
-                int sensen = World.Family.setRep(mfc.getFamilyId(), mfc.getSeniorId(), percentrep, level);
+                int sensen = World.Family.setRep(mfc.getFamilyId(), mfc.getSeniorId(), percentrep, level, name);
                 if (sensen > 0) {
-                    World.Family.setRep(mfc.getFamilyId(), sensen, percentrep / 2, level); //and we stop here
+                    World.Family.setRep(mfc.getFamilyId(), sensen, percentrep / 2, level, name); //and we stop here
                 }
             }
         }

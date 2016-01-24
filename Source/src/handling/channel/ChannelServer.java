@@ -78,7 +78,7 @@ public class ChannelServer implements Serializable {
     private short port = 8585;
     private String ip = "127.0.0.1";
     private static String gatewayIP = "127.0.0.1";
-    private static final short DEFAULT_PORT = 8585;
+    private static final short DEFAULT_PORT = 14000;
     private final int channel;
     private final String key;
     private int running_MerchantID = 0, flags = 0;

@@ -308,7 +308,7 @@ public class MaplePacketCreator {
         mplew.write(summon.getMovementType().getValue());
         mplew.write(summon.getSummonType()); // 0 = Summon can't attack - but puppets don't attack with 1 either ^.-
         mplew.write(0/*animated ? 0 : 1*/);
-     
+
         return mplew.getPacket();
     }
 
@@ -2531,16 +2531,13 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static MaplePacket fairyPendantMessage(int type, int percent) {
+    public static MaplePacket fairyPendantMessage(int type, int incExpR) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
-        mplew.writeShort(SendPacketOpcode.FAIRY_PEND_MSG.getValue());
-        mplew.writeShort(21); // 0x15
-        mplew.writeInt(0); // idk
-        mplew.writeShort(0); // idk
-        mplew.writeShort(percent); // percent
-        mplew.writeShort(0); // idk
-
+        mplew.writeShort(SendPacketOpcode.BONUS_EXP_CHANGED.getValue());
+        mplew.writeInt(17);
+        mplew.writeInt(0);
+        mplew.writeInt(incExpR);
         return mplew.getPacket();
     }
 
@@ -4760,4 +4757,5 @@ public class MaplePacketCreator {
         //mplew.write(HexTool.getByteArrayFromHexString("DA 01 00 05 BD 0F 01 60 00 00 00 FF 0E 01 61 00 00 00 69 0E 01 62 00 00 00 05 0F 01 63 00 00 00 C6 0F 01 64 00 00 00"));
         return mplew.getPacket();
     }
+
 }

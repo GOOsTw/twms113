@@ -138,7 +138,7 @@ public class FamilyHandler {
         }
         if (success) { //again
             c.getPlayer().setCurrentRep(c.getPlayer().getCurrentRep() - entry.rep);
-            c.sendPacket(FamilyPacket.changeRep(-entry.rep));
+            c.sendPacket(FamilyPacket.changeRep(-entry.rep, c.getPlayer().getName()));
             c.getPlayer().useFamilyBuff(entry);
         } else {
             c.getPlayer().dropMessage(5, "發生了未知的錯誤。");
@@ -196,7 +196,7 @@ public class FamilyHandler {
             if (accepted) {
                 c.getPlayer().changeMap(tt.getMap(), tt.getMap().getPortal(0));
                 tt.setCurrentRep(tt.getCurrentRep() - cost.rep);
-                tt.getClient().sendPacket(FamilyPacket.changeRep(-cost.rep));
+                tt.getClient().sendPacket(FamilyPacket.changeRep(-cost.rep, c.getPlayer().getName()));
                 tt.useFamilyBuff(cost);
             } else {
                 tt.dropMessage(5, "召喚失敗，因為您當前的位置或者狀態是不准許召喚。");

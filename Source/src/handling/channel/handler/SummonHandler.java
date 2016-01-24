@@ -135,7 +135,7 @@ public class SummonHandler {
                 continue;
             }
             final double distanceSS = chr.getPosition().distanceSq(mob.getPosition());
-            if (distanceSS > 600000.0) {
+            if (distanceSS > 700000.0) {
                 chr.getCheatTracker().registerOffense(CheatingOffense.召喚獸攻擊距離過遠, " 距離" + distanceSS + " 人物座標 (" + chr.getPosition().getX() + "," + chr.getPosition().getY() + ")"
                         + "怪物座標 (" + mob.getPosition().getX() + "," + mob.getPosition().getY() + ")");
             }
