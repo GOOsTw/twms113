@@ -956,6 +956,8 @@ public class InventoryHandler {
                                 c.getPlayer().cancelBuffStats(MapleBuffStat.DROP_RATE);
                             } else if (!MapConstants.CanUseDropCard1(c.getPlayer().getMapId()) && (c.getPlayer().getBuffSource(MapleBuffStat.DROP_RATE) == 2383006) || (c.getPlayer().getBuffSource(MapleBuffStat.DROP_RATE) == 2383010)) {
                                 c.getPlayer().cancelBuffStats(MapleBuffStat.DROP_RATE);
+                            } else if (!MapConstants.CanUseDropCard2(c.getPlayer().getMapId()) && c.getPlayer().getBuffSource(MapleBuffStat.DROP_RATE) == 2382028) {
+                                c.getPlayer().cancelBuffStats(MapleBuffStat.DROP_RATE);
                             } else if (!MapConstants.CanUseMesoCard(c.getPlayer().getMapId()) && (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382005) || (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382016)) {
                                 c.getPlayer().cancelBuffStats(MapleBuffStat.MESO_RATE);
                             }
@@ -1810,7 +1812,7 @@ public class InventoryHandler {
             case 5080001: //氫氣球
             case 5080002: //畢業祝賀橫幅
             case 5080003: { //入學祝賀帷幕
-                MapleKite Kite = new MapleKite(c.getPlayer(),c.getPlayer().getPosition(),c.getPlayer().getMap().getFootholds().findBelow(c.getPlayer().getPosition()).getId(),slea.readMapleAsciiString(),itemId);
+                MapleKite Kite = new MapleKite(c.getPlayer(), c.getPlayer().getPosition(), c.getPlayer().getMap().getFootholds().findBelow(c.getPlayer().getPosition()).getId(), slea.readMapleAsciiString(), itemId);
                 c.getPlayer().getMap().spawnKite(Kite);
                 used = true;
                 break;
@@ -2592,6 +2594,8 @@ public class InventoryHandler {
                     if (!MapConstants.CanUseDropCard(c.getPlayer().getMapId()) && c.getPlayer().getBuffSource(MapleBuffStat.DROP_RATE) == 2382040) {
                         c.getPlayer().cancelBuffStats(MapleBuffStat.DROP_RATE);
                     } else if (!MapConstants.CanUseDropCard1(c.getPlayer().getMapId()) && (c.getPlayer().getBuffSource(MapleBuffStat.DROP_RATE) == 2383006) || (c.getPlayer().getBuffSource(MapleBuffStat.DROP_RATE) == 2383010)) {
+                        c.getPlayer().cancelBuffStats(MapleBuffStat.DROP_RATE);
+                    } else if (!MapConstants.CanUseDropCard2(c.getPlayer().getMapId()) && c.getPlayer().getBuffSource(MapleBuffStat.DROP_RATE) == 2382028) {
                         c.getPlayer().cancelBuffStats(MapleBuffStat.DROP_RATE);
                     } else if (!MapConstants.CanUseMesoCard(c.getPlayer().getMapId()) && (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382005) || (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382016)) {
                         c.getPlayer().cancelBuffStats(MapleBuffStat.MESO_RATE);

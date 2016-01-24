@@ -333,13 +333,14 @@ public class CashShopOperation {
             }
             ////////////////////
             case 6: {
-                slea.skip(1);
+                //slea.skip(1);
+                final int useNX = slea.readByte() + 1;
                 final boolean coupon = slea.readByte() > 0;
                 if (coupon) {
                     final MapleInventoryType type = getInventoryType(slea.readInt());
 
-                    if (chr.getCSPoints(1) >= 100 && chr.getInventory(type).getSlotLimit() < 89) {
-                        chr.modifyCSPoints(1, -100, false);
+                    if (chr.getCSPoints(useNX) >= 100 && chr.getInventory(type).getSlotLimit() < 89) {
+                        chr.modifyCSPoints(useNX, -100, false);
                         chr.getInventory(type).addSlot((byte) 8);
                         chr.dropMessage(1, "欄位已經被擴充至" + chr.getInventory(type).getSlotLimit());
                     } else {
@@ -348,8 +349,8 @@ public class CashShopOperation {
                 } else {
                     final MapleInventoryType type = MapleInventoryType.getByType(slea.readByte());
 
-                    if (chr.getCSPoints(1) >= 100 && chr.getInventory(type).getSlotLimit() < 93) {
-                        chr.modifyCSPoints(1, -100, false);
+                    if (chr.getCSPoints(useNX) >= 100 && chr.getInventory(type).getSlotLimit() < 93) {
+                        chr.modifyCSPoints(useNX, -100, false);
                         chr.getInventory(type).addSlot((byte) 4);
                         chr.dropMessage(1, "欄位已經被擴充至" + chr.getInventory(type).getSlotLimit());
                     } else {
@@ -360,11 +361,13 @@ public class CashShopOperation {
                 break;
             }
             case 7: {
-                if (chr.getCSPoints(1) >= 100 && chr.getStorage().getSlots() < 45) {
-                    chr.modifyCSPoints(1, -100, false);
+                final int useNX = slea.readByte() + 1;
+                if (chr.getCSPoints(useNX) >= 100 && chr.getStorage().getSlots() < 45) {
+                    chr.modifyCSPoints(useNX, -100, false);
                     chr.getStorage().increaseSlots((byte) 4);
                     chr.getStorage().saveToDB();
-                    c.sendPacket(MTSCSPacket.increasedStorageSlots(chr.getStorage().getSlots()));
+                    //c.sendPacket(MTSCSPacket.increasedStorageSlots(chr.getStorage().getSlots()));
+                    chr.dropMessage(1, "倉庫欄位已經被擴充至" + chr.getStorage().getSlots());
                 } else {
                     c.sendPacket(MTSCSPacket.sendCSFail(0xA4));
                 }

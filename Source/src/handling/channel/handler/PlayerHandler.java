@@ -201,8 +201,8 @@ public class PlayerHandler {
         if (player != null && !player.isClone()) {
             if (!player.isGM() || c.getPlayer().isGM()) {
           //      if (!player.getExcluded("") && player.getPet(0) != null) {
-           //         c.sendPacket(PetPacket.loadExceptionList(player.getId(), player.getPet(0).getUniqueId(), player.getExcluded()));
-           //     }
+                //         c.sendPacket(PetPacket.loadExceptionList(player.getId(), player.getPet(0).getUniqueId(), player.getExcluded()));
+                //     }
                 c.sendPacket(MaplePacketCreator.charInfo(player, c.getPlayer().getId() == objectid));
             }
         }
@@ -210,6 +210,9 @@ public class PlayerHandler {
 
     public static final void TakeDamage(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         //System.out.println(slea.toString());
+        if (slea.available() < 4) { //封包長度少於4byte Return 避免Null
+            return;
+        }
         chr.updateTick(slea.readInt());
         final byte type = slea.readByte(); //-4 is mist, -3 and -2 are map damage.
         slea.skip(1); // Element - 0x00 = elementless, 0x01 = ice, 0x02 = fire, 0x03 = lightning
@@ -1098,6 +1101,8 @@ public class PlayerHandler {
             if (!MapConstants.CanUseDropCard(chr.getMapId()) && chr.getBuffSource(MapleBuffStat.DROP_RATE) == 2382040) {
                 chr.cancelBuffStats(MapleBuffStat.DROP_RATE);
             } else if (!MapConstants.CanUseDropCard1(chr.getMapId()) && (chr.getBuffSource(MapleBuffStat.DROP_RATE) == 2383006 || chr.getBuffSource(MapleBuffStat.DROP_RATE) == 2383010)) {
+                chr.cancelBuffStats(MapleBuffStat.DROP_RATE);
+            } else if (!MapConstants.CanUseDropCard2(chr.getMapId()) && chr.getBuffSource(MapleBuffStat.DROP_RATE) == 2382028) {
                 chr.cancelBuffStats(MapleBuffStat.DROP_RATE);
             } else if (!MapConstants.CanUseMesoCard(chr.getMapId()) && (chr.getBuffSource(MapleBuffStat.MESO_RATE) == 2382005 || chr.getBuffSource(MapleBuffStat.MESO_RATE) == 2382016)) {
                 chr.cancelBuffStats(MapleBuffStat.MESO_RATE);
