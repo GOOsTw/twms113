@@ -38,6 +38,9 @@ import handling.login.handler.*;
 import handling.world.World;
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.EnumSet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.management.InstanceAlreadyExistsException;
@@ -239,11 +242,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 session.close(true);
                 return;
             }
-        } else {
-            if (LoginServer.isShutdown()) {
-                session.close(true);
-                return;
-            }
+        } else if (LoginServer.isShutdown()) {
+            session.close(true);
+            return;
         }
 
         byte ivRecv[] = {70, 114, 122, (byte) (Math.random() * 255)};
@@ -258,7 +259,17 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
         session.write(LoginPacket.getHello(ServerConstants.MAPLE_VERSION, ivSend, ivRecv));
         session.setAttribute(MapleClient.CLIENT_KEY, client);
-
+        DateFormat dateFormat;
+        dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        System.out.println(dateFormat.format(cal.getTime())); //2014/08/06 16:00:22
+        if (this.channel == -1) {
+            FilePrinter.print("Sessions/LoginServer.txt", "IP: " + address.split(":")[0] + " 時間: " + dateFormat.format(cal.getTime()), true);
+        } else if (this.isCashShop) {
+            FilePrinter.print("Sessions/CashShop.txt", "IP: " + address.split(":")[0] + " 時間: " + dateFormat.format(cal.getTime()), true);
+        } else {
+            FilePrinter.print("Sessions/ChannelServer.txt", "IP: " + address.split(":")[0] + " 頻道: " + this.channel + " 時間: " + dateFormat.format(cal.getTime()), true);
+        }
     }
 
     @Override
@@ -306,7 +317,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                         sb.append(tools.HexTool.toString((byte[]) message)).append("\n").append(tools.HexTool.toStringFromAscii((byte[]) message)).append("\n");
                         System.out.println(sb.toString());
                     }
-                    
+
                     final MapleClient c = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
                     if (!c.isReceiving()) {
                         return;
@@ -330,9 +341,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                         long pos = slea.getPosition();
                         slea.seek(0);
                         String allp = slea.toString();
-                        slea.skip((int)pos);
+                        slea.skip((int) pos);
                         String currp = slea.toString();
-                        FilePrinter.printError("PacketHandleException.txt", e.getSuppressed()[0] + "\r\n" +  e.getSuppressed()[1] +"\r\nAll: " + allp + "\r\nCurrent: " + currp  );
+                        FilePrinter.printError("PacketHandleException.txt", e.getSuppressed()[0] + "\r\n" + e.getSuppressed()[1] + "\r\nAll: " + allp + "\r\nCurrent: " + currp);
                     }
                     return;
                 }
