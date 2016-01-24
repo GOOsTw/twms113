@@ -7,8 +7,10 @@ import constants.ServerConstants;
 import handling.channel.ChannelServer;
 import handling.world.World;
 import server.maps.MapleMap;
+import tools.FilePrinter;
 import tools.MaplePacketCreator;
 import tools.StringUtil;
+import client.messages.commands.BlackConfig;
 
 public class InternCommand {
 
@@ -104,6 +106,38 @@ public class InternCommand {
         @Override
         public String getMessage() {
             return new StringBuilder().append("!unban <玩家> - 解鎖玩家").toString();
+        }
+    }
+
+    public static class 加黑單 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String[] splitted) {
+            if (splitted.length < 2) {
+                return false;
+            }
+            String input = splitted[1];
+            int ch = World.Find.findChannel(input);
+            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
+            if (victim.isAdmin()) {
+                c.getPlayer().dropMessage("玩家:" + input + " 是GM不能加黑單！");
+                return true;
+            }
+            if (ch <= 0) {
+                c.getPlayer().dropMessage("玩家:" + input + " 不在線上。");
+                return true;
+            }
+            int accID = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(input).getAccountID();
+            BlackConfig.setBlackList(accID, input);
+            String msg = "[GM 密語] GM " + c.getPlayer().getName() + " 在回報系統黑單了 " + input;
+            World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, msg).getBytes());
+            FilePrinter.print("PlayerBlackList.txt", "\r\n  " + FilePrinter.getLocalDateString() + " GM :" + c.getPlayer().getName() + " 在回報系統黑單了 " + input);
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!黑單 <玩家名稱> - 將玩家設定為無法回報的黑名單").toString();
         }
     }
 

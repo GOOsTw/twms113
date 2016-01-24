@@ -398,6 +398,10 @@ public abstract class AbstractPlayerInteraction {
         c.getPlayer().modifyCSPoints(1, amount, true);
     }
 
+    public final void gainPotion(final int type, final int amount) {
+        c.getPlayer().modifyCSPoints(type, amount, true);
+    }
+
     public final void gainItemPeriod(final int id, final short quantity, final int period) { //period is in days
         gainItem(id, quantity, false, period, -1, "");
     }
@@ -522,7 +526,6 @@ public abstract class AbstractPlayerInteraction {
         }
         return getParty().getLeader().getId() == c.getPlayer().getId();
     }
-    
 
     public final boolean isAllPartyMembersAllowedJob(final int job) {
         if (c.getPlayer().getParty() == null) {
@@ -610,18 +613,18 @@ public abstract class AbstractPlayerInteraction {
         }
     }
 
-        public void setPlayerVariable(String name, String value) {
+    public void setPlayerVariable(String name, String value) {
         c.getPlayer().setPlayerVariable(name, value);
     }
-    
+
     public String getPlayerVariable(String name) {
         return c.getPlayer().getPlayerVariable(name);
     }
-    
+
     public void deletePlayerVariable(String name) {
         c.getPlayer().deletePlayerVariable(name);
     }
-    
+
     public void warpBack(int mid, final int retmap, final int time) {
         warpBack(mid, retmap, time, "");
     }
@@ -638,8 +641,9 @@ public abstract class AbstractPlayerInteraction {
                 if (c.getPlayer() != null) {
                     c.sendPacket(MaplePacketCreator.stopClock());
                     c.getPlayer().changeMap(warpMap, warpMap.getPortal(0));
-                    if(!msg.equals(""))
+                    if (!msg.equals("")) {
                         c.getPlayer().dropMessage(6, msg);
+                    }
                 }
             }
         }, 1000 * time); //設定時間, (1 秒 = 1000)

@@ -1140,6 +1140,9 @@ public class MapleStatEffect implements Serializable {
              }*/
             case 1111002:
             case 11111001: { // Combo
+                if (applyto.isHidden()) {
+                    break;
+                }
                 final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.COMBO, 0));
                 applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveForeignBuff(applyto.getId(), stat, this), false);
                 break;
