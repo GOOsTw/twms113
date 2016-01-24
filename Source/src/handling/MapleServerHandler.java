@@ -262,7 +262,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         DateFormat dateFormat;
         dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        System.out.println(dateFormat.format(cal.getTime())); //2014/08/06 16:00:22
         if (this.channel == -1) {
             FilePrinter.print("Sessions/LoginServer.txt", "IP: " + address.split(":")[0] + " 時間: " + dateFormat.format(cal.getTime()), true);
         } else if (this.isCashShop) {
