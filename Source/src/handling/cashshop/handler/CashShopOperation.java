@@ -73,12 +73,12 @@ public class CashShopOperation {
         boolean allowLogin = false;
         if (state == MapleClient.LOGIN_SERVER_TRANSITION || state == MapleClient.CHANGE_CHANNEL) {
             //if (!World.isCharacterListConnected(client.loadCharacterNames(client.getWorld()))) {
-            if(!World.isConnected(chr.getName())) {
+            if (!World.isConnected(chr.getName())) {
                 allowLogin = true;
             }
         }
-       // System.out.println( state );
-        
+        // System.out.println( state );
+
         if (!allowLogin) {
             client.disconnect(false, false);
             return;
@@ -107,14 +107,14 @@ public class CashShopOperation {
 
     public static void CouponCode(final String code, final MapleClient c) {
         boolean validcode = false;
-        int type = -1;
-        int item = -1;
+        int type = -1, item = -1, size = -1;
 
         validcode = MapleCharacterUtil.getNXCodeValid(code.toUpperCase(), validcode);
 
         if (validcode) {
             type = MapleCharacterUtil.getNXCodeType(code);
             item = MapleCharacterUtil.getNXCodeItem(code);
+            size = MapleCharacterUtil.getNXCodeSize(code);
             if (type != 4) {
                 try {
                     MapleCharacterUtil.setNXCodeUsed(c.getPlayer().getName(), code);
@@ -122,55 +122,49 @@ public class CashShopOperation {
                     e.printStackTrace();
                 }
             }
+
             /*
-             * Explanation of type!
-             * Basically, this makes coupon codes do
-             * different things!
+             * 類型說明！
+             * 基本上，這使得優惠券代碼做不同的東西！
              *
-             * Type 1: A-Cash,
-             * Type 2: Maple Points
-             * Type 3: Item.. use SN
-             * Type 4: A-Cash Coupon that can be used over and over
-             * Type 5: Mesos
+             * Type 1: GASH點數
+             * Type 2: 楓葉點數
+             * Type 3: 物品x數量(默認1個)
+             * Type 4: 楓幣
              */
-            Map<Integer, IItem> itemz = new HashMap<>();
-            int maplePoints = 0, mesos = 0;
+            int maplePoints = 0, mesos = 0, as = 0;
+            String cc = "";
             switch (type) {
                 case 1:
-                case 2:
-                    c.getPlayer().modifyCSPoints(type, item, false);
-                    maplePoints = item;
-                    break;
-                case 3:
-                    CashItemInfo itez = CashItemFactory.getInstance().getItem(item);
-                    if (itez == null) {
-                        c.sendPacket(MTSCSPacket.sendCSFail(0));
-                        refreshCashShop(c);
-                        return;
-                    }
-                    byte slot = MapleInventoryManipulator.addId(c, itez.getId(), (short) 1, "");
-                    if (slot <= -1) {
-                        c.sendPacket(MTSCSPacket.sendCSFail(0));
-                        refreshCashShop(c);
-                        return;
-                    } else {
-                        itemz.put(item, c.getPlayer().getInventory(GameConstants.getInventoryType(item)).getItem(slot));
-                    }
-                    break;
-                case 4:
                     c.getPlayer().modifyCSPoints(1, item, false);
                     maplePoints = item;
+                    cc = "GASH";
                     break;
-                case 5:
+                case 2:
+                    c.getPlayer().modifyCSPoints(2, item, false);
+                    maplePoints = item;
+                    cc = "楓葉點數";
+                    break;
+                case 3:
+                    MapleInventoryManipulator.addById(c, item, (short) size, "優待卷禮品.", null, -1);
+                    as = 1;
+                    break;
+                case 4:
                     c.getPlayer().gainMeso(item, false);
                     mesos = item;
+                    cc = "楓幣";
                     break;
             }
-            c.sendPacket(MTSCSPacket.showCouponRedeemedItem(itemz, mesos, maplePoints, c));
+            if (as == 1) {
+                //c.sendPacket(MTSCSPacket.showCouponRedeemedItem(itemz, mesos, maplePoints, c));
+                c.getPlayer().dropMessage(1, "已成功使用優待卷獲得" + MapleItemInformationProvider.getInstance().getName(item) + " x" + size + "。");
+            } else {
+                c.getPlayer().dropMessage(1, "已成功使用優待卷獲得" + item + cc);
+            }
         } else {
             c.sendPacket(MTSCSPacket.sendCSFail(validcode ? 0xA5 : 0xA7)); //A1, 9F
         }
-    
+
         refreshCashShop(c);
     }
 
@@ -300,7 +294,7 @@ public class CashShopOperation {
                     }
                     c.getPlayer().getCashInventory().gift(info.getLeft(), c.getPlayer().getName(), message, cItem.getSN(), MapleInventoryIdentifier.getInstance());
                     c.getPlayer().modifyCSPoints(1, -cItem.getPrice(), false);
-      
+
                     c.sendPacket(MTSCSPacket.sendGift(characterName, cItem, cItem.getPrice() / 2, false));
                     chr.sendNote(characterName, chr.getName() + " 送了你禮物! 趕快去商城確認看看.", (byte) 0); //fame or not
                     MapleCharacter receiver = c.getChannelServer().getPlayerStorage().getCharacterByName(characterName);
@@ -419,7 +413,7 @@ public class CashShopOperation {
             case 14: {
                 int uniqueid = (int) slea.readLong();
                 MapleInventoryType type = MapleInventoryType.getByType(slea.readByte());
-                
+
                 IItem item = c.getPlayer().getInventory(type).findByUniqueId(uniqueid);
                 if (item != null && item.getQuantity() > 0 && item.getUniqueId() > 0 && c.getPlayer().getCashInventory().getItemsSize() < 100) {
                     IItem item_ = item.copy();
@@ -538,9 +532,9 @@ public class CashShopOperation {
                         refreshCashShop(c);
                         return;
                     }
-                    
+
                     c.getPlayer().modifyCSPoints(1, -cItem.getPrice(), false);
-                    
+
                     chr.sendNote(partnerName, chr.getName() + " 送了你禮物! 趕快去商城確認看看.", (byte) 0); //fame or not
                     MapleCharacter receiver = c.getChannelServer().getPlayerStorage().getCharacterByName(partnerName);
                     if (receiver != null) {
@@ -559,7 +553,6 @@ public class CashShopOperation {
                 c.sendPacket(MTSCSPacket.sendCSFail(0));
                 refreshCashShop(c);
         }
-        
 
     }
 
