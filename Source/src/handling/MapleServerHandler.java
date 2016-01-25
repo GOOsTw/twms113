@@ -635,6 +635,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case NPC_TALK:
                 NPCHandler.handleNPCTalk(slea, c, c.getPlayer());
                 break;
+            case REMOTE_STORE:
+                HiredMerchantHandler.handleRemote(slea, c);
+                break;
             case NPC_TALK_MORE:
                 NPCHandler.NPCMoreTalk(slea, c);
                 break;
