@@ -1,7 +1,7 @@
 
 /*
-	Name:  弓箭手村楓葉轉蛋機
-	Place: 弓箭手村
+	Name:  卷軸轉蛋機
+	Place: 轉蛋屋
 */
 
 importPackage(Packages.handling.world);
