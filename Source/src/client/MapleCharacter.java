@@ -5248,6 +5248,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.storage = storage;
         ret.cs = this.cs;
         ret.client.setAccountName(client.getAccountName());
+        ret.client.setAccID(this.accountid);
         ret.acash = acash;
         ret.maplepoints = maplepoints;
         ret.clone = true;
