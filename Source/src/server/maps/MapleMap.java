@@ -827,7 +827,7 @@ public final class MapleMap {
             }
         }
         if (withDrops) {
-            MapleCharacter drop = null;
+            MapleCharacter drop;
             if (dropOwner <= 0) {
                 drop = chr;
             } else {
@@ -1454,6 +1454,7 @@ public final class MapleMap {
         }
         spawnAndAddRangedMapObject(monster, new DelayedPacketCreation() {
 
+            @Override
             public final void sendPackets(MapleClient c) {
                 c.sendPacket(MobPacket.spawnMonster(monster, spawnType, 0, 0));
             }
@@ -1712,10 +1713,11 @@ public final class MapleMap {
         }
         MapTimer.getInstance().schedule(new Runnable() {
 
+            @Override
             public void run() {
                 final Point pos = new Point(Randomizer.nextInt(800) + 531, -806);
                 final int theItem = Randomizer.nextInt(1000);
-                int itemid = 0;
+                int itemid;
                 if (theItem < 950) { //0-949 = normal, 950-989 = rare, 990-999 = super
                     itemid = GameConstants.normalDrops[Randomizer.nextInt(GameConstants.normalDrops.length)];
                 } else if (theItem < 990) {
@@ -1729,7 +1731,8 @@ public final class MapleMap {
     }
 
     public final void spawnAutoDrop(final int itemid, final Point pos) {
-        IItem idrop = null;
+        IItem idrop;
+        
         final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
         if (GameConstants.getInventoryType(itemid) == MapleInventoryType.EQUIP) {
             idrop = ii.randomizeStats((Equip) ii.getEquipById(itemid));
@@ -2131,6 +2134,7 @@ public final class MapleMap {
             } else { //inforce timer to gtfo
                 run = new Runnable() {
 
+                    @Override
                     public void run() {
                         MapleSquad sqnow = MapleMap.this.getSquadByMap();
                         //we dont need to stop clock here because they're getting warped out anyway
@@ -2159,7 +2163,7 @@ public final class MapleMap {
     }
 
     public final MapleSquad getSquadByMap() {
-        MapleSquadType zz = null;
+        MapleSquadType zz;
         switch (mapid) {
             case 105100300:
                 zz = MapleSquadType.bossbalrog;
@@ -2228,7 +2232,7 @@ public final class MapleMap {
     }
 
     public final EventManager getEMByMap() {
-        String em = null;
+        String em;
         switch (mapid) {
             case 105100300:
                 em = "BossBalrog";
@@ -2476,7 +2480,7 @@ public final class MapleMap {
     }
 
     public final List<MapleMapObject> getMapObjectsInRange(final Point from, final double rangeSq, final List<MapleMapObjectType> MapObject_types) {
-        final List<MapleMapObject> ret = new ArrayList<MapleMapObject>();
+        final List<MapleMapObject> ret = new ArrayList<>();
         for (MapleMapObjectType type : MapObject_types) {
             mapObjectLocks.get(type).readLock().lock();
             try {
@@ -2821,9 +2825,9 @@ public final class MapleMap {
 
     private class ActivateItemReactor implements Runnable {
 
-        private MapleMapItem mapitem;
-        private MapleReactor reactor;
-        private MapleClient c;
+        private final MapleMapItem mapitem;
+        private final MapleReactor reactor;
+        private final MapleClient c;
 
         public ActivateItemReactor(MapleMapItem mapitem, MapleReactor reactor, MapleClient c) {
             this.mapitem = mapitem;
@@ -2921,11 +2925,11 @@ public final class MapleMap {
     }
 
     public boolean isDisconnected(int id) {
-        return disconnectedClients.contains(Integer.valueOf(id));
+        return disconnectedClients.contains(id);
     }
 
     public void addDisconnected(int id) {
-        disconnectedClients.add(Integer.valueOf(id));
+        disconnectedClients.add(id);
     }
 
     public void resetDisconnected() {
@@ -2933,10 +2937,10 @@ public final class MapleMap {
     }
 
     public void startSpeedRun() {
-        final MapleSquad squad = getSquadByMap();
-        if (squad != null) {
+        final MapleSquad sq = getSquadByMap();
+        if (sq != null) {
             for (MapleCharacter chr : getCharactersThreadsafe()) {
-                if (chr.getName().equals(squad.getLeaderName())) {
+                if (chr.getName().equals(sq.getLeaderName())) {
                     startSpeedRun(chr.getName());
                     return;
                 }
@@ -2969,14 +2973,14 @@ public final class MapleMap {
                 z = z.substring(0, z.length() - 1);
             }
             Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("INSERT INTO speedruns(`type`, `leader`, `timestring`, `time`, `members`) VALUES (?,?,?,?,?)");
-            ps.setString(1, type.name());
-            ps.setString(2, leader);
-            ps.setString(3, time);
-            ps.setLong(4, timz);
-            ps.setString(5, z);
-            ps.executeUpdate();
-            ps.close();
+            try (PreparedStatement ps = con.prepareStatement("INSERT INTO speedruns(`type`, `leader`, `timestring`, `time`, `members`) VALUES (?,?,?,?,?)")) {
+                ps.setString(1, type.name());
+                ps.setString(2, leader);
+                ps.setString(3, time);
+                ps.setLong(4, timz);
+                ps.setString(5, z);
+                ps.executeUpdate();
+            }
 
             if (SpeedRunner.getInstance().getSpeedRunData(type) == null) { //great, we just add it
                 SpeedRunner.getInstance().addSpeedRunData(type, SpeedRunner.getInstance().addSpeedRunData(new StringBuilder("#rThese are the speedrun times for " + type + ".#k\r\n\r\n"), new HashMap<Integer, String>(), z, leader, 1, time));

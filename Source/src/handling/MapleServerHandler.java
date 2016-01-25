@@ -69,10 +69,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     public static final boolean isLogPackets = true;
     private int channel = -1;
     private boolean isCashShop;
-    private final List<String> BlockedIP = new ArrayList<>();
+    private final List<String> blockedIP = new ArrayList<>();
     private final Map<String, Pair<Long, Byte>> tracker = new ConcurrentHashMap<>();
     private static final String nl = System.getProperty("line.separator");
-    private static final File loggedIPs = new File("iplogs/logIps.txt");
 
     private static boolean debugMode = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.debug", "false"));
     private static final EnumSet<RecvPacketOpcode> blocked = EnumSet.noneOf(RecvPacketOpcode.class);
@@ -204,7 +203,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         // Start of IP checking
         final String address = session.getRemoteAddress().toString().split(":")[0];
 
-        if (BlockedIP.contains(address)) {
+        if (blockedIP.contains(address)) {
             session.close(true);
             return;
         }
@@ -223,7 +222,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 count = 1;
             }
             if (count >= 10) {
-                BlockedIP.add(address);
+                blockedIP.add(address);
                 tracker.remove(address); // Cleanup
                 session.close(true);
                 return;
@@ -262,12 +261,16 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         DateFormat dateFormat;
         dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
+
+        String IP = address.split(":")[0].replace("/", "");
+        String account = client.getAccountName();
+        String charName = client.getPlayer() != null ? client.getPlayer().getName() : "";
         if (this.channel == -1) {
-            FilePrinter.print("Sessions/LoginServer.txt", "IP: " + address.split(":")[0] + " 時間: " + dateFormat.format(cal.getTime()), true);
+            FilePrinter.print("Sessions/LoginServer.txt", "IP: " + IP  + " 帳號: " + account + " 時間: " + dateFormat.format(cal.getTime()), true);
         } else if (this.isCashShop) {
-            FilePrinter.print("Sessions/CashShop.txt", "IP: " + address.split(":")[0] + " 時間: " + dateFormat.format(cal.getTime()), true);
+            FilePrinter.print("Sessions/CashShopServer.txt", "IP: " + IP  + " 帳號: " + account + (charName.equals("") ? "" :  "角色: ") + charName + " 時間: " + dateFormat.format(cal.getTime()), true);
         } else {
-            FilePrinter.print("Sessions/ChannelServer.txt", "IP: " + address.split(":")[0] + " 頻道: " + this.channel + " 時間: " + dateFormat.format(cal.getTime()), true);
+            FilePrinter.print("Sessions/ChannelServer.txt", "IP: " + IP  + " 帳號: " + account  + (charName.equals("") ? "" :  "角色: ") + " 頻道: " + this.channel + " 時間: " + dateFormat.format(cal.getTime()), true);
         }
     }
 

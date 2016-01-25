@@ -2883,7 +2883,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 }
                 updateSingleStat(MapleStat.EXP, getExp());
                 if (show) { // still show the expgain even if it's not there
-                    client.sendPacket(MaplePacketCreator.GainEXP_Others(total, inChat, white));
+                    client.sendPacket(MaplePacketCreator.GainEXPOthers(total, inChat, white));
                 }
                 if (total > 0) {
                     stats.checkEquipLevels(this, total); //gms like

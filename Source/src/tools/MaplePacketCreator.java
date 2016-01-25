@@ -662,7 +662,7 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static final MaplePacket GainEXP_Others(final int gain, final boolean inChat, final boolean white) {
+    public static final MaplePacket GainEXPOthers(final int gain, final boolean inChat, final boolean white) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.SHOW_STATUS_INFO.getValue());
@@ -684,8 +684,6 @@ public class MaplePacketCreator {
         }
         mplew.writeZeroBytes(4); // Premium bonus EXP
         mplew.writeZeroBytes(4); // Class bonus EXP
-//        mplew.writeInt(0);
-//        mplew.write(0);
 
         return mplew.getPacket();
     }
@@ -843,89 +841,6 @@ public class MaplePacketCreator {
                 mplew.writeInt(0);
             }
         }
-        //mplew.writeInt(3); after aftershock
-        /*List<Pair<Integer, Boolean>> buffvalue = new ArrayList<>();
-         Map<MapleBuffStat, Object[]> statups = new LinkedHashMap<>();
-         //long fbuffmask = 0xFFFC0000000000L; //becomes F8000000 after bb?
-
-         if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
-         statups.put(MapleBuffStat.SOARING, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.FREEZE) != null) {
-         statups.put(MapleBuffStat.FREEZE, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.LIGHTNING_CHARGE) != null) {
-         statups.put(MapleBuffStat.LIGHTNING_CHARGE, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.MIRROR_IMAGE) != null) {
-         statups.put(MapleBuffStat.MIRROR_IMAGE, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.OWL_SPIRIT) != null) {
-         statups.put(MapleBuffStat.OWL_SPIRIT, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.ARAN_COMBO) != null) {
-         statups.put(MapleBuffStat.ARAN_COMBO, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.COMBO_DRAIN) != null) {
-         statups.put(MapleBuffStat.COMBO_DRAIN, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.COMBO_BARRIER) != null) {
-         statups.put(MapleBuffStat.COMBO_BARRIER, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.BODY_PRESSURE) != null) {
-         statups.put(MapleBuffStat.BODY_PRESSURE, null);
-         }
-
-         //mplew.writeLong(fbuffmask);
-         if (chr.getBuffedValue(MapleBuffStat.DARKSIGHT) != null && !chr.isHidden()) {
-         statups.put(MapleBuffStat.DARKSIGHT, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
-         statups.put(MapleBuffStat.COMBO,
-         new Object[]{
-         (Byte) chr.getBuffedValue(MapleBuffStat.COMBO).byteValue()
-         });
-         }
-         if (chr.getBuffedValue(MapleBuffStat.SHADOWPARTNER) != null) {
-         statups.put(MapleBuffStat.SHADOWPARTNER,
-         null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.SOULARROW) != null) {
-         statups.put(MapleBuffStat.SOULARROW,
-         null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.DIVINE_BODY) != null) {
-         statups.put(MapleBuffStat.DIVINE_BODY,
-         null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.BERSERK_FURY) != null) {
-         statups.put(MapleBuffStat.BERSERK_FURY,
-         null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.MORPH) != null) {
-         statups.put(MapleBuffStat.MORPH,
-         new Object[]{
-         chr.getBuffedValue(MapleBuffStat.MORPH).shortValue()});
-         }
-       
-         writeBuffMask(mplew, statups.keySet());
-
-         for (Object[] ary : statups.values()) {
-         if (ary == null) {
-         continue;
-         }
-         for (Object i : ary) {
-         if (i instanceof Byte) {
-         mplew.write((Byte) i);
-         } else if (i instanceof Short) {
-         mplew.writeShort((Short) i);
-         } else if (i instanceof Integer) {
-         mplew.writeInt((Integer) i);
-         } else if (i instanceof Long) {
-         mplew.writeLong((Long) i);
-         }
-         }
-         }*/
 
         List<Pair<Integer, Integer>> buffvalue = new ArrayList<>();
         Long fbuffmask = 0xFFFC0000000000L; //becomes F8000000 after bb?
@@ -1115,7 +1030,6 @@ public class MaplePacketCreator {
         mplew.writeInt(cid);
         mplew.writeInt(oid);
         mplew.writePos(startPos);
-//        mplew.writeInt(0);
         PacketHelper.serializeMovementList(mplew, moves);
 
         return mplew.getPacket();

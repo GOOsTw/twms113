@@ -1,23 +1,3 @@
-/*
- This file is part of the OdinMS Maple Story Server
- Copyright (C) 2008 ~ 2010 Patrick Huy <patrick.huy@frz.cc> 
- Matthias Butz <matze@odinms.de>
- Jan Christian Meyer <vimes@odinms.de>
-
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU Affero General Public License version 3
- as published by the Free Software Foundation. You may not use, modify
- or distribute this program under any other version of the
- GNU Affero General Public License.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Affero General Public License for more details.
-
- You should have received a copy of the GNU Affero General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package server.maps;
 
 import java.awt.Point;
@@ -31,10 +11,10 @@ public class MapleFootholdTree {
     private MapleFootholdTree ne = null;
     private MapleFootholdTree sw = null;
     private MapleFootholdTree se = null;
-    private List<MapleFoothold> footholds = new LinkedList<MapleFoothold>();
-    private Point p1;
-    private Point p2;
-    private Point center;
+    private final List<MapleFoothold> footholds = new LinkedList<>();
+    private final Point p1;
+    private final Point p2;
+    private final Point center;
     private int depth = 0;
     private static final byte maxDepth = 8;
     private int maxDropX;
@@ -89,11 +69,11 @@ public class MapleFootholdTree {
         }
     }
 
-    private final List<MapleFoothold> getRelevants(final Point p) {
+    private List<MapleFoothold> getRelevants(final Point p) {
         return getRelevants(p, new LinkedList<MapleFoothold>());
     }
 
-    private final List<MapleFoothold> getRelevants(final Point p, final List<MapleFoothold> list) {
+    private List<MapleFoothold> getRelevants(final Point p, final List<MapleFoothold> list) {
         list.addAll(footholds);
         if (nw != null) {
             if (p.x <= center.x && p.y <= center.y) {
@@ -109,7 +89,7 @@ public class MapleFootholdTree {
         return list;
     }
 
-    private final MapleFoothold findWallR(final Point p1, final Point p2) {
+    private MapleFoothold findWallR(final Point p1, final Point p2) {
         MapleFoothold ret;
         for (final MapleFoothold f : footholds) {
             //if (f.isWall()) System.out.println(f.getX1() + " " + f.getX2());
@@ -177,7 +157,7 @@ public class MapleFootholdTree {
     public final MapleFoothold findBelow(final Point p) {
         final List<MapleFoothold> relevants = getRelevants(p);
         // find fhs with matching x coordinates
-        final List<MapleFoothold> xMatches = new LinkedList<MapleFoothold>();
+        final List<MapleFoothold> xMatches = new LinkedList<>();
         for (final MapleFoothold fh : relevants) {
             if (fh.getX1() <= p.x && fh.getX2() >= p.x) {
                 xMatches.add(fh);
