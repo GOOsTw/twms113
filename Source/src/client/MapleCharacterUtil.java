@@ -260,4 +260,21 @@ public class MapleCharacterUtil {
         }
         return item;
     }
+
+    public static int getNXCodeSize(String code) {
+        int item = -1;
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement ps = con.prepareStatement("SELECT `size` FROM nxcode WHERE code = ?")) {
+            ps.setString(1, code);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    item = rs.getInt("size");
+                }
+            }
+
+        } catch (SQLException ex) {
+            FilePrinter.printError("MapleCharacterUtil.txt", ex);
+        }
+        return item;
+    }
 }

@@ -46,8 +46,8 @@ import tools.StringUtil;
 
 public class MapleMapFactory {
 
-    private static final MapleDataProvider source = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/Map.wz");
-    private static final MapleData nameData = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/String.wz").getData("Map.img");
+    private static final MapleDataProvider mapsData = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/Map.wz");
+    private static final MapleData stringDate = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/String.wz").getData("Map.img");
     private final Map<Integer, MapleMap> maps = new HashMap<>();
     private final Map<Integer, MapleMap> instanceMap = new HashMap<>();
     private static final Map<Integer, MapleNodes> mapInfos = new HashMap<>();
@@ -73,11 +73,11 @@ public class MapleMapFactory {
                 if (map != null) {
                     return map;
                 }
-                MapleData mapData = source.getData(getMapName(mapid));
+                MapleData mapData = MapleMapFactory.mapsData.getData(getMapName(mapid));
 
                 MapleData link = mapData.getChildByPath("info/link");
                 if (link != null) {
-                    mapData = source.getData(getMapName(MapleDataTool.getIntConvert("info/link", mapData)));
+                    mapData = MapleMapFactory.mapsData.getData(getMapName(MapleDataTool.getIntConvert("info/link", mapData)));
                 }
 
                 float monsterRate = 0;
@@ -175,8 +175,8 @@ public class MapleMapFactory {
                 }
 
                 try {
-                    map.setMapName(MapleDataTool.getString("mapName", nameData.getChildByPath(getMapStringName(omapid)), ""));
-                    map.setStreetName(MapleDataTool.getString("streetName", nameData.getChildByPath(getMapStringName(omapid)), ""));
+                    map.setMapName(MapleDataTool.getString("mapName", stringDate.getChildByPath(getMapStringName(omapid)), ""));
+                    map.setStreetName(MapleDataTool.getString("streetName", stringDate.getChildByPath(getMapStringName(omapid)), ""));
                 } catch (Exception e) {
                     map.setMapName("");
                     map.setStreetName("");
@@ -230,10 +230,10 @@ public class MapleMapFactory {
         if (isInstanceMapLoaded(instanceid)) {
             return getInstanceMap(instanceid);
         }
-        MapleData mapData = source.getData(getMapName(mapid));
+        MapleData mapData = MapleMapFactory.mapsData.getData(getMapName(mapid));
         MapleData link = mapData.getChildByPath("info/link");
         if (link != null) {
-            mapData = source.getData(getMapName(MapleDataTool.getIntConvert("info/link", mapData)));
+            mapData = MapleMapFactory.mapsData.getData(getMapName(MapleDataTool.getIntConvert("info/link", mapData)));
         }
 
         float monsterRate = 0;
@@ -327,8 +327,8 @@ public class MapleMapFactory {
             }
         }
         try {
-            map.setMapName(MapleDataTool.getString("mapName", nameData.getChildByPath(getMapStringName(mapid)), ""));
-            map.setStreetName(MapleDataTool.getString("streetName", nameData.getChildByPath(getMapStringName(mapid)), ""));
+            map.setMapName(MapleDataTool.getString("mapName", stringDate.getChildByPath(getMapStringName(mapid)), ""));
+            map.setStreetName(MapleDataTool.getString("streetName", stringDate.getChildByPath(getMapStringName(mapid)), ""));
         } catch (Exception e) {
             map.setMapName("");
             map.setStreetName("");
@@ -478,10 +478,10 @@ public class MapleMapFactory {
     }
 
     private void addAreaBossSpawn(final MapleMap map) {
-        int monsterid = -1;
-        int mobtime = -1;
-        String msg = null;
-        Point pos1 = null, pos2 = null, pos3 = null;
+        int monsterid;
+        int mobtime;
+        String msg;
+        Point pos1, pos2, pos3;
 
         switch (map.getId()) {
             case 104000400: // Mano
@@ -612,63 +612,6 @@ public class MapleMapFactory {
                 pos2 = new Point(-272, -500);
                 pos3 = new Point(-462, 640);
                 break;
-            /*            case 910000000: // FM
-             if (channel == 5 || channel == 7) {
-             mobtime = 3600;
-             monsterid = 9420015;
-             msg = "NooNoo has appeared out of anger, it seems that NooNoo is stuffed with Christmas gifts!";
-             pos1 = new Point(498, 4);
-             pos2 = new Point(498, 4);
-             pos3 = new Point(498, 4);
-             }
-             break;*/
-            /*            case 209080000: // Happyvile
-             mobtime = 2700;
-             monsterid = 9400708;
-             pos1 = new Point(-115, 154);
-             pos2 = new Point(-115, 154);
-             pos3 = new Point(-115, 154);
-             break;*/
-            /*            case 677000001:
-             mobtime = 60;
-             monsterid = 9400612;
-             msg = "Marbas has appeared.";
-             pos1 = new Point(99, 60);
-             pos2 = new Point(99, 60);
-             pos3 = new Point(99, 60);
-             break;
-             case 677000003:
-             mobtime = 60;
-             monsterid = 9400610;
-             msg = "Amdusias has appeared.";
-             pos1 = new Point(6, 35);
-             pos2 = new Point(6, 35);
-             pos3 = new Point(6, 35);
-             break;
-             case 677000005:
-             mobtime = 60;
-             monsterid = 9400609;
-             msg = "Andras has appeared.";
-             pos1 = new Point(-277, 78); //on the spawnpoint
-             pos2 = new Point(547, 86); //bottom of right ladder
-             pos3 = new Point(-347, 80); //bottom of left ladder
-             break;
-             case 677000007:
-             mobtime = 60;
-             monsterid = 9400611;
-             msg = "Crocell has appeared.";
-             pos1 = new Point(117, 73);
-             pos2 = new Point(117, 73);
-             pos3 = new Point(117, 73);
-             break;
-             case 677000009:
-             mobtime = 60;
-             monsterid = 9400613;
-             msg = "Valefor has appeared.";
-             pos1 = new Point(85, 66);
-             pos2 = new Point(85, 66);
-             pos3 = new Point(85, 66);
-             break;*/
             default:
                 return;
         }

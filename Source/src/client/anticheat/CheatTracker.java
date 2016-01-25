@@ -335,7 +335,7 @@ public class CheatTracker {
 
             final byte type = offense.getBanType();
             if (type == BANTYPE_ENABLE) {
-                AutobanManager.getInstance().autoban(cheater.getClient(), StringUtil.makeEnumHumanReadable(offense.name()));
+                AutobanManager.getInstance().autoban(cheater.getClient(), StringUtil.makeEnumHumanReadable(offense.name()), 1);
             } else if (type == BANTYPE_DC) {
                 cheater.getClient().disconnect(true, false);
             }
@@ -353,7 +353,7 @@ public class CheatTracker {
             case 攻擊數值異常相同:
                 System.out.println(MapleCharacterUtil.makeMapleReadable(cheater.getName()) + "疑似使用外掛");
                 World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[封號系統] " + MapleCharacterUtil.makeMapleReadable(cheater.getName()) + " 偵測到 " + StringUtil.makeEnumHumanReadable(offense.name()) + (message == null ? "" : (" - " + message))).getBytes());
-                AutobanManager.getInstance().autoban(cheater.getClient(), StringUtil.makeEnumHumanReadable(offense.name()));
+                AutobanManager.getInstance().autoban(cheater.getClient(), StringUtil.makeEnumHumanReadable(offense.name()), offense.getPoints());
                 break;
         }
         CheatingOffensePersister.getInstance().persistEntry(entry);

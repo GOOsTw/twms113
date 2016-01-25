@@ -292,21 +292,22 @@ public class MaplePacketCreator {
 
         mplew.writeShort(SendPacketOpcode.SPAWN_SUMMON.getValue());
         mplew.writeInt(summon.getOwnerId());
+
         mplew.writeInt(summon.getObjectId());
         mplew.writeInt(summon.getSkill());
-        mplew.write(summon.getOwnerLevel() - 1);
-        mplew.write(1); //idk but nexon sends 1 for octo, so we'll leave it
+        mplew.write(summon.getOwnerLevel());
+        mplew.write(summon.getSkillLevel()); //idk but nexon sends 1 for octo, so we'll leave it
+
         mplew.writePos(summon.getPosition());
-        mplew.write(summon.getSkill() == 32111006 ? 5 : 4); //reaper = 5?
-        mplew.writeShort(0/*summon.getFh()*/);
+        mplew.write(summon.getSkill() == 32111006 || summon.getSkill() == 33101005 ? 5 : 4); //reaper = 5?
+        if (summon.getSkill() == 35121003 && summon.getOwner().getMap() != null) {
+            mplew.writeShort(summon.getOwner().getMap().getFootholds().findBelow(summon.getPosition()).getId());
+        } else {
+            mplew.writeShort(0);
+        }
         mplew.write(summon.getMovementType().getValue());
         mplew.write(summon.getSummonType()); // 0 = Summon can't attack - but puppets don't attack with 1 either ^.-
         mplew.write(0/*animated ? 0 : 1*/);
-        final MapleCharacter chr = summon.getOwner();
-        /*        mplew.write(summon.getSkill() == 4341006 && chr != null ? 1 : 0); //mirror target
-         if (summon.getSkill() == 4341006 && chr != null) {
-         PacketHelper.addCharLook(mplew, chr, true);
-         }*/
 
         return mplew.getPacket();
     }
@@ -661,7 +662,7 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static final MaplePacket GainEXP_Others(final int gain, final boolean inChat, final boolean white) {
+    public static final MaplePacket GainEXPOthers(final int gain, final boolean inChat, final boolean white) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.SHOW_STATUS_INFO.getValue());
@@ -683,8 +684,6 @@ public class MaplePacketCreator {
         }
         mplew.writeZeroBytes(4); // Premium bonus EXP
         mplew.writeZeroBytes(4); // Class bonus EXP
-//        mplew.writeInt(0);
-//        mplew.write(0);
 
         return mplew.getPacket();
     }
@@ -842,89 +841,6 @@ public class MaplePacketCreator {
                 mplew.writeInt(0);
             }
         }
-        //mplew.writeInt(3); after aftershock
-        /*List<Pair<Integer, Boolean>> buffvalue = new ArrayList<>();
-         Map<MapleBuffStat, Object[]> statups = new LinkedHashMap<>();
-         //long fbuffmask = 0xFFFC0000000000L; //becomes F8000000 after bb?
-
-         if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
-         statups.put(MapleBuffStat.SOARING, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.FREEZE) != null) {
-         statups.put(MapleBuffStat.FREEZE, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.LIGHTNING_CHARGE) != null) {
-         statups.put(MapleBuffStat.LIGHTNING_CHARGE, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.MIRROR_IMAGE) != null) {
-         statups.put(MapleBuffStat.MIRROR_IMAGE, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.OWL_SPIRIT) != null) {
-         statups.put(MapleBuffStat.OWL_SPIRIT, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.ARAN_COMBO) != null) {
-         statups.put(MapleBuffStat.ARAN_COMBO, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.COMBO_DRAIN) != null) {
-         statups.put(MapleBuffStat.COMBO_DRAIN, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.COMBO_BARRIER) != null) {
-         statups.put(MapleBuffStat.COMBO_BARRIER, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.BODY_PRESSURE) != null) {
-         statups.put(MapleBuffStat.BODY_PRESSURE, null);
-         }
-
-         //mplew.writeLong(fbuffmask);
-         if (chr.getBuffedValue(MapleBuffStat.DARKSIGHT) != null && !chr.isHidden()) {
-         statups.put(MapleBuffStat.DARKSIGHT, null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
-         statups.put(MapleBuffStat.COMBO,
-         new Object[]{
-         (Byte) chr.getBuffedValue(MapleBuffStat.COMBO).byteValue()
-         });
-         }
-         if (chr.getBuffedValue(MapleBuffStat.SHADOWPARTNER) != null) {
-         statups.put(MapleBuffStat.SHADOWPARTNER,
-         null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.SOULARROW) != null) {
-         statups.put(MapleBuffStat.SOULARROW,
-         null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.DIVINE_BODY) != null) {
-         statups.put(MapleBuffStat.DIVINE_BODY,
-         null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.BERSERK_FURY) != null) {
-         statups.put(MapleBuffStat.BERSERK_FURY,
-         null);
-         }
-         if (chr.getBuffedValue(MapleBuffStat.MORPH) != null) {
-         statups.put(MapleBuffStat.MORPH,
-         new Object[]{
-         chr.getBuffedValue(MapleBuffStat.MORPH).shortValue()});
-         }
-       
-         writeBuffMask(mplew, statups.keySet());
-
-         for (Object[] ary : statups.values()) {
-         if (ary == null) {
-         continue;
-         }
-         for (Object i : ary) {
-         if (i instanceof Byte) {
-         mplew.write((Byte) i);
-         } else if (i instanceof Short) {
-         mplew.writeShort((Short) i);
-         } else if (i instanceof Integer) {
-         mplew.writeInt((Integer) i);
-         } else if (i instanceof Long) {
-         mplew.writeLong((Long) i);
-         }
-         }
-         }*/
 
         List<Pair<Integer, Integer>> buffvalue = new ArrayList<>();
         Long fbuffmask = 0xFFFC0000000000L; //becomes F8000000 after bb?
@@ -1114,7 +1030,6 @@ public class MaplePacketCreator {
         mplew.writeInt(cid);
         mplew.writeInt(oid);
         mplew.writePos(startPos);
-//        mplew.writeInt(0);
         PacketHelper.serializeMovementList(mplew, moves);
 
         return mplew.getPacket();
@@ -2530,16 +2445,13 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static MaplePacket fairyPendantMessage(int type, int percent) {
+    public static MaplePacket fairyPendantMessage(int type, int incExpR) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
-        mplew.writeShort(SendPacketOpcode.FAIRY_PEND_MSG.getValue());
-        mplew.writeShort(21); // 0x15
-        mplew.writeInt(0); // idk
-        mplew.writeShort(0); // idk
-        mplew.writeShort(percent); // percent
-        mplew.writeShort(0); // idk
-
+        mplew.writeShort(SendPacketOpcode.BONUS_EXP_CHANGED.getValue());
+        mplew.writeInt(17);
+        mplew.writeInt(0);
+        mplew.writeInt(incExpR);
         return mplew.getPacket();
     }
 
@@ -2805,6 +2717,7 @@ public class MaplePacketCreator {
     public static MaplePacket destroyKite(int oid) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.DESTROY_KITE.getValue());
+        mplew.write(0);
         mplew.writeInt(oid);
 
         return mplew.getPacket();
@@ -3997,7 +3910,7 @@ public class MaplePacketCreator {
         switch (operation) {
             case 9: {
                 mplew.write(1);
-                // 0xFF = error
+                //第二組密碼
                 break;
             }
             case 25: {
@@ -4008,47 +3921,28 @@ public class MaplePacketCreator {
                 mplew.writeMapleAsciiString("");
                 byte v16 = 0;
                 mplew.write(v16); // somthing true or false
-                /*        
-                 v16 = CInPacket__Decode1(v4) != 0;
-                 if ( dword_BED278 && ((*(*(dword_BED278 + 4) + 72))(&dword_BF32D4) != 0 ? dword_BED278 : 0) )
-                 {
-                 CWnd__InvalidateRect(0);
-                 }
-                 else
-                 {
-                 v17 = ZAllocEx_ZAllocAnonSelector___Alloc(dword_BF5D00, 0x10Cu);
-                 v42 = v17;
-                 LOBYTE(v51) = 12;
-                 if ( v17 )
-                 v5 = sub_52F09D(v17);
-                 v37 = v16;
-                 v36 = v17;
-                 v42 = &v36;
-                 LOBYTE(v51) = 11;
-                 ZXString_char___operator_(&v36, &a1);
-                 sub_532A5B(v36, v37);
-                 sub_A40D66(v5);
-                 }
-                 */
             }
             case 27: {
+                //開啟傳送快遞
                 mplew.write(0);
+            }
+            case 28: {
+                mplew.write(0); //種類 0 = 宅配 / 1 = 快遞
             }
             case 10: { // Open duey
                 mplew.write(0);
                 mplew.write(packages.size());
-
                 for (MapleDueyActions dp : packages) {
                     mplew.writeInt(dp.getPackageId());
                     mplew.writeAsciiString(dp.getSender(), 15);
                     mplew.writeInt(dp.getMesos());
                     mplew.writeLong(KoreanDateUtil.getFileTimestamp(dp.getSentTime(), false));
                     mplew.writeZeroBytes(205);
-
                     if (dp.getItem() != null) {
                         mplew.write(1);
                         PacketHelper.addItemInfo(mplew, dp.getItem(), true, true);
                     } else {
+                        //超過有效期限
                         mplew.write(0);
                     }
                     //System.out.println("Package has been sent in packet: " + dp.getPackageId());
@@ -4777,4 +4671,5 @@ public class MaplePacketCreator {
         //mplew.write(HexTool.getByteArrayFromHexString("DA 01 00 05 BD 0F 01 60 00 00 00 FF 0E 01 61 00 00 00 69 0E 01 62 00 00 00 05 0F 01 63 00 00 00 C6 0F 01 64 00 00 00"));
         return mplew.getPacket();
     }
+
 }

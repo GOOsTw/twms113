@@ -52,9 +52,10 @@ import tools.data.output.MaplePacketLittleEndianWriter;
 public class PlayerStats implements Serializable {
 
     private static final long serialVersionUID = -679541993413738569L;
-    private transient WeakReference<MapleCharacter> chr;
-    private Map<Integer, Integer> setHandling = new HashMap<Integer, Integer>();
-    private List<Equip> durabilityHandling = new ArrayList<Equip>(), equipLevelHandling = new ArrayList<Equip>();
+    
+    private final transient WeakReference<MapleCharacter> chr;
+    private final Map<Integer, Integer> setHandling = new HashMap<>();
+    private final List<Equip> durabilityHandling = new ArrayList<>(), equipLevelHandling = new ArrayList<Equip>();
     private transient float shouldHealHP, shouldHealMP;
     public short str, dex, luk, int_, hp, maxhp, mp, maxmp;
     private transient short passive_sharpeye_percent, localmaxhp, localmaxmp;
@@ -669,6 +670,13 @@ public class PlayerStats implements Serializable {
                     chra.cancelBuffStats(MapleBuffStat.DROP_RATE);
                     dropBuff = 100;
                 }
+            } else if (chra.getBuffSource(MapleBuffStat.DROP_RATE) == 2382028) {
+                if (MapConstants.CanUseDropCard2(chra.getMapId())) {
+                    dropBuff *= buff.doubleValue() / 100.0;
+                } else {
+                    chra.cancelBuffStats(MapleBuffStat.DROP_RATE);
+                    dropBuff = 100;
+                }                
             } else {
                 dropBuff *= buff.doubleValue() / 100.0;
             }
@@ -830,7 +838,7 @@ public class PlayerStats implements Serializable {
     public boolean checkEquipLevels(final MapleCharacter chr, int gain) {
         boolean changed = false;
         final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-        List<Equip> all = new ArrayList<Equip>(equipLevelHandling);
+        List<Equip> all = new ArrayList<>(equipLevelHandling);
         for (Equip eq : all) {
             int lvlz = eq.getEquipLevel();
             eq.setItemEXP(eq.getItemEXP() + gain);
@@ -876,7 +884,7 @@ public class PlayerStats implements Serializable {
                 item.setDurability(0);
             }
         }
-        List<Equip> all = new ArrayList<Equip>(durabilityHandling);
+        List<Equip> all = new ArrayList<>(durabilityHandling);
         for (Equip eqq : all) {
             if (eqq.getDurability() == 0) { //> 0 went to negative
                 if (chr.getInventory(MapleInventoryType.EQUIP).isFull()) {
@@ -896,7 +904,7 @@ public class PlayerStats implements Serializable {
         return true;
     }
 
-    private final void CalcPassive_Mastery(final MapleCharacter player) {
+    private void CalcPassive_Mastery(final MapleCharacter player) {
         if (player.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -11) == null) {
             passive_mastery = 0;
             return;
@@ -955,7 +963,7 @@ public class PlayerStats implements Serializable {
         passive_mastery = (byte) ((player.getSkillLevel(skil) / 2) + (player.getSkillLevel(skil) % 2)); //after bb, simpler?
     }
 
-    private final void CalcPassive_SharpEye(final MapleCharacter player, final int added_sharpeye_rate, final int added_sharpeye_dmg) {
+    private void CalcPassive_SharpEye(final MapleCharacter player, final int added_sharpeye_rate, final int added_sharpeye_dmg) {
         switch (player.getJob()) { // Apply passive Critical bonus
             case 410:
             case 411:

@@ -38,6 +38,9 @@ import handling.login.handler.*;
 import handling.world.World;
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.EnumSet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.management.InstanceAlreadyExistsException;
@@ -66,10 +69,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     public static final boolean isLogPackets = true;
     private int channel = -1;
     private boolean isCashShop;
-    private final List<String> BlockedIP = new ArrayList<>();
+    private final List<String> blockedIP = new ArrayList<>();
     private final Map<String, Pair<Long, Byte>> tracker = new ConcurrentHashMap<>();
     private static final String nl = System.getProperty("line.separator");
-    private static final File loggedIPs = new File("iplogs/logIps.txt");
 
     private static boolean debugMode = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.debug", "false"));
     private static final EnumSet<RecvPacketOpcode> blocked = EnumSet.noneOf(RecvPacketOpcode.class);
@@ -201,7 +203,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         // Start of IP checking
         final String address = session.getRemoteAddress().toString().split(":")[0];
 
-        if (BlockedIP.contains(address)) {
+        if (blockedIP.contains(address)) {
             session.close(true);
             return;
         }
@@ -220,7 +222,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 count = 1;
             }
             if (count >= 10) {
-                BlockedIP.add(address);
+                blockedIP.add(address);
                 tracker.remove(address); // Cleanup
                 session.close(true);
                 return;
@@ -239,11 +241,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 session.close(true);
                 return;
             }
-        } else {
-            if (LoginServer.isShutdown()) {
-                session.close(true);
-                return;
-            }
+        } else if (LoginServer.isShutdown()) {
+            session.close(true);
+            return;
         }
 
         byte ivRecv[] = {70, 114, 122, (byte) (Math.random() * 255)};
@@ -255,10 +255,25 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 session);
 
         client.setChannel(channel);
+        client.setWorld(0);
 
         session.write(LoginPacket.getHello(ServerConstants.MAPLE_VERSION, ivSend, ivRecv));
         session.setAttribute(MapleClient.CLIENT_KEY, client);
+        
+        DateFormat dateFormat;
+        dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
 
+        String IP = address.split(":")[0].replace("/", "");
+        String account = client.getAccountName();
+        String charName = client.getPlayer() != null ? client.getPlayer().getName() : "";
+        if (this.channel == -1) {
+            FilePrinter.print("Sessions/LoginServer.txt", "IP: " + IP  + " 帳號: " + account + " 時間: " + dateFormat.format(cal.getTime()), true);
+        } else if (this.isCashShop) {
+            FilePrinter.print("Sessions/CashShopServer.txt", "IP: " + IP  + " 帳號: " + account + (charName.equals("") ? "" :  "角色: ") + charName + " 時間: " + dateFormat.format(cal.getTime()), true);
+        } else {
+            FilePrinter.print("Sessions/ChannelServer.txt", "IP: " + IP  + " 帳號: " + account  + (charName.equals("") ? "" :  "角色: ") + " 頻道: " + this.channel + " 時間: " + dateFormat.format(cal.getTime()), true);
+        }
     }
 
     @Override
@@ -306,7 +321,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                         sb.append(tools.HexTool.toString((byte[]) message)).append("\n").append(tools.HexTool.toStringFromAscii((byte[]) message)).append("\n");
                         System.out.println(sb.toString());
                     }
-                    
+
                     final MapleClient c = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
                     if (!c.isReceiving()) {
                         return;
@@ -330,9 +345,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                         long pos = slea.getPosition();
                         slea.seek(0);
                         String allp = slea.toString();
-                        slea.skip((int)pos);
+                        slea.skip((int) pos);
                         String currp = slea.toString();
-                        FilePrinter.printError("PacketHandleException.txt", e.getSuppressed()[0] + "\r\n" +  e.getSuppressed()[1] +"\r\nAll: " + allp + "\r\nCurrent: " + currp  );
+                        FilePrinter.printError("PacketHandleException.txt", e.getSuppressed()[0] + "\r\n" + e.getSuppressed()[1] + "\r\nAll: " + allp + "\r\nCurrent: " + currp);
                     }
                     return;
                 }
@@ -625,6 +640,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case NPC_TALK:
                 NPCHandler.handleNPCTalk(slea, c, c.getPlayer());
                 break;
+            case REMOTE_STORE:
+                HiredMerchantHandler.handleRemote(slea, c);
+                break;
             case NPC_TALK_MORE:
                 NPCHandler.NPCMoreTalk(slea, c);
                 break;
@@ -709,6 +727,12 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case MTS_TAB:
                 MTSOperation.MTSOperation(slea, c);
                 break;
+            case MTS_Recharge:
+                CashShopOperation.sendWebSite(c);
+                break;
+            case CS_Recharge:
+                CashShopOperation.sendWebSite(c);
+                break;     
             case DAMAGE_SUMMON:
                 slea.skip(4);
                 SummonHandler.DamageSummon(slea, c.getPlayer());

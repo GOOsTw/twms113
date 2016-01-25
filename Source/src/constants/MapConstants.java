@@ -60,9 +60,19 @@ public class MapConstants {
         }
         return false;
     }
-    
+
+    public static boolean CanUseDropCard2(final int mapid) {
+        switch (mapid) {
+            case 222020100:
+            case 222020200:
+            case 222020300:
+              return true;
+        }
+        return false;
+    }
+
     public static boolean CanUseMesoCard(final int mapid) {
-        switch(mapid) {
+        switch (mapid) {
             case 221020100:
             case 221020200:
             case 221020400:

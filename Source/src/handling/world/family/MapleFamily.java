@@ -305,7 +305,7 @@ public final class MapleFamily implements java.io.Serializable {
         bDirty = true; // member formation has changed, update notifications
     }
 
-    public final int setRep(final int cid, int addrep, final int oldLevel) {
+    public final int setRep(final int cid, int addrep, final int oldLevel, final String oldName) {
         final MapleFamilyCharacter mgc = getMFC(cid);
         if (mgc != null && mgc.getFamilyId() == id) {
             if (oldLevel > mgc.getLevel()) {
@@ -316,7 +316,7 @@ public final class MapleFamily implements java.io.Serializable {
             if (mgc.isOnline()) {
                 List<Integer> dummy = new ArrayList<Integer>();
                 dummy.add(mgc.getId());
-                broadcast(FamilyPacket.changeRep(addrep), -1, dummy);
+                broadcast(FamilyPacket.changeRep(addrep, oldName), -1, dummy);
                 World.Family.setFamily(id, mgc.getSeniorId(), mgc.getJunior1(), mgc.getJunior2(), mgc.getCurrentRep() + addrep, mgc.getTotalRep() + addrep, mgc.getId());
             } else {
                 setOfflineFamilyStatus(id, mgc.getSeniorId(), mgc.getJunior1(), mgc.getJunior2(), mgc.getCurrentRep() + addrep, mgc.getTotalRep() + addrep, mgc.getId());

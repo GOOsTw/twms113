@@ -109,12 +109,12 @@ public class MapleFamilyBuff {
 
         public int getEffectId() {
             switch (type) {
-                case 2: //drop
-                    return 2022694;
-                case 3: //exp
-                    return 2450018;
+                case 2: //掉寶加倍-微微安的魔法
+                    return 2022124;
+                case 3: //經驗加倍-獵人的幸運
+                    return 2450000;
             }
-            return 2022332; //custom
+            return 2022332; //幹員O的鼓勵
         }
 
         public final List<Pair<MapleBuffStat, Integer>> getEffects() {

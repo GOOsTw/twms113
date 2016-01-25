@@ -4,14 +4,25 @@
 	Place: 各大村莊
  */
 
-var status = -1;
+function start() {
+    status = -1;
+    action(1, 0, 0);
+}
 
 function action(mode, type, selection) {
-    if (mode == 1) {
-        status++;
+    if (mode == -1) {
+        cm.dispose();
     } else {
-        status--;
-    }
+		if (status <= 0 && mode == 0) {
+			cm.sendOk("需要的時候再告訴我。");
+            cm.dispose();
+            return;
+		}
+	}
+    if (mode == 1)
+            status++;
+        else
+            status--;
     if (status == 0) {
         if (cm.haveItem(4032226, 10)) {
             cm.sendYesNo("你有一些 #b#t4032226##k\r\n你想要嘗試運氣！？");

@@ -16,7 +16,9 @@ import java.util.Arrays;
 import tools.StringUtil;
 import handling.world.World;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import server.maps.SavedLocationType;
 import tools.FilePrinter;
 
@@ -175,7 +177,6 @@ public class PlayerCommand {
     }
 
     public static class time extends CommandExecute {
-
 
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
@@ -361,10 +362,16 @@ public class PlayerCommand {
             if (c.getPlayer().isGM()) {
                 c.getPlayer().dropMessage(6, "因為你自己是GM所法使用此指令,可以嘗試!cngm <訊息> 來建立GM聊天頻道~");
             } else {
-                if (!c.getPlayer().getCheatTracker().GMSpam(100000, 1)) { // 1 minutes.
-                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "頻道 " + c.getPlayer().getClient().getChannel() + " 玩家 [" + c.getPlayer().getName() + "] : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
+                if (!c.getPlayer().getCheatTracker().GMSpam(1, 1)) { // 1 minutes.
+                    boolean fake = false;
+                    if (BlackConfig.getBlackList().containsKey(c.getAccID())) {
+                        fake = true;
+                    }
                     c.getPlayer().dropMessage(6, "訊息已經寄送給GM了!");
-                    System.out.println("[管理員幫幫忙] " + c.getPlayer().getName() + " : " + StringUtil.joinStringFrom(splitted, 1));
+                    if (!fake) {
+                        World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "	管理員幫幫忙頻道 " + c.getPlayer().getClient().getChannel() + " 玩家 	" + c.getPlayer().getName() + " : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
+                        System.out.println("[管理員幫幫忙] " + c.getPlayer().getName() + " : " + StringUtil.joinStringFrom(splitted, 1));
+                    }
                 } else {
                     c.getPlayer().dropMessage(6, "為了防止對GM刷屏所以每1分鐘只能發一次.");
                 }

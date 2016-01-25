@@ -33,7 +33,8 @@ public class MapleGenericPortal implements MaplePortal {
 
     private String name, target, scriptName;
     private Point position;
-    private int targetmap, type, id;
+    private final int type;
+    private int targetmap, id;
     private boolean portalState = true;
 
     public MapleGenericPortal(final int type) {

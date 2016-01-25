@@ -37,7 +37,7 @@ public class FamilyPacket {
     public static MaplePacket getFamilyData() {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
-        mplew.writeShort(SendPacketOpcode.FAMILY_PRIVILEGE_LIST.getValue());
+        mplew.writeShort(SendPacketOpcode.FAMILY.getValue());
         List<MapleFamilyBuffEntry> entries = MapleFamilyBuff.getBuffEntry();
         mplew.writeInt(entries.size()); // Number of events
 
@@ -51,17 +51,26 @@ public class FamilyPacket {
         return mplew.getPacket();
     }
 
-    public static MaplePacket changeRep(int r) {
+    public static MaplePacket getSeniorMessage(String name) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendPacketOpcode.FAMILY_FAMOUS_POINT_INC_RESULT.getValue());
+
+        mplew.writeShort(SendPacketOpcode.SENIOR_MESSAGE.getValue());
+        mplew.writeMapleAsciiString(name);
+
+        return mplew.getPacket();
+    }
+
+    public static MaplePacket changeRep(int r, String name) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+        mplew.writeShort(SendPacketOpcode.FAMILY_REP_INCREASE.getValue());
         mplew.writeInt(r);
-        mplew.writeInt(0);
+        mplew.writeMapleAsciiString(name);
         return mplew.getPacket();
     }
 
     public static MaplePacket getFamilyInfo(MapleCharacter chr) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendPacketOpcode.FAMILY_INFO_RESULT.getValue());
+        mplew.writeShort(SendPacketOpcode.OPEN_FAMILY.getValue());
         mplew.writeInt(chr.getCurrentRep()); //rep
         mplew.writeInt(chr.getTotalRep()); // total rep
         mplew.writeInt(chr.getTotalRep()); //rep recorded today
@@ -101,7 +110,7 @@ public class FamilyPacket {
 
     public static MaplePacket getFamilyPedigree(MapleCharacter chr) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendPacketOpcode.FAMILY_CHART_RESULT.getValue());
+        mplew.writeShort(SendPacketOpcode.SEND_PEDIGREE.getValue());
         mplew.writeInt(chr.getId());
         MapleFamily family = World.Family.getFamily(chr.getFamilyId());
         int descendants = 2, gens = 0, generations = 0;
@@ -163,8 +172,8 @@ public class FamilyPacket {
             gens = family.getGens();
             generations = family.getMemberSize();
         }
-        mplew.writeLong(descendants);
-        mplew.writeInt(gens);
+        mplew.writeLong(gens);
+        mplew.writeInt(0);
         mplew.writeInt(-1);
         mplew.writeInt(generations);
         if (family != null) {
@@ -205,13 +214,13 @@ public class FamilyPacket {
     public static MaplePacket sendFamilyInvite(int cid, int otherLevel, int otherJob, String inviter) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
-        mplew.writeShort(SendPacketOpcode.FAMILY_JOIN_REQUEST.getValue());
+        mplew.writeShort(SendPacketOpcode.FAMILY_INVITE.getValue());
         mplew.writeInt(cid);
         mplew.writeMapleAsciiString(inviter);
 
         return mplew.getPacket();
     }
-    
+
     /**
      * Family Result Message
      *
@@ -246,22 +255,15 @@ public class FamilyPacket {
      */
     public static MaplePacket sendFamilyMessage(int type, int mesos) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(6);
-        mplew.writeShort(SendPacketOpcode.FAMILY_RESULT.getValue());
+        mplew.writeShort(SendPacketOpcode.FAMILY_MESSAGE.getValue());
         mplew.writeInt(type);
         mplew.writeInt(mesos);
         return mplew.getPacket();
     }
 
-    public static MaplePacket getSeniorMessage(String name) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendPacketOpcode.FAMILY_JOIN_ACCEPTED.getValue());
-        mplew.writeMapleAsciiString(name);
-        return mplew.getPacket();
-    }
-
     public static MaplePacket sendFamilyJoinResponse(boolean accepted, String added) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendPacketOpcode.FAMILY_JOIN_REQUEST_RESULT.getValue());
+        mplew.writeShort(SendPacketOpcode.FAMILY_JUNIOR.getValue());
         mplew.write(accepted ? 1 : 0);
         mplew.writeMapleAsciiString(added);
         return mplew.getPacket();
