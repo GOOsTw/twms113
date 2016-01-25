@@ -732,7 +732,10 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 break;
             case CS_Recharge:
                 CashShopOperation.sendWebSite(c);
-                break;     
+                break;
+            case CS_RANDOMEQS:
+                CashShopOperation.randomes(c);
+                break;
             case DAMAGE_SUMMON:
                 slea.skip(4);
                 SummonHandler.DamageSummon(slea, c.getPlayer());

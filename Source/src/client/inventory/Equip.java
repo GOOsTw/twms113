@@ -29,7 +29,7 @@ public class Equip extends Item implements IEquip, Serializable {
     private byte upgradeSlots = 0;
     private byte level = 0, vicioushammer = 0, enhance = 0;
     private short str = 0, dex = 0, _int = 0, luk = 0, hp = 0, mp = 0, watk = 0, matk = 0, wdef = 0, mdef = 0, acc = 0, avoid = 0, hands = 0, speed = 0, jump = 0, potential1 = 0, potential2 = 0, potential3 = 0, hpR = 0, mpR = 0;
-    private int itemEXP = 0, durability = -1;
+    private int itemEXP = 0, durability = -1, equipLevel = 1, equipExp = 0;
 
     public Equip(int id, short position, byte flag) {
         super(id, position, (short) 1, flag);
@@ -68,6 +68,8 @@ public class Equip extends Item implements IEquip, Serializable {
         ret.potential3 = potential3;
         ret.hpR = hpR;
         ret.mpR = mpR;
+        ret.equipLevel = equipLevel;
+        ret.equipExp = equipExp;
         ret.setGiftFrom(getGiftFrom());
         ret.setOwner(getOwner());
         ret.setQuantity(getQuantity());
@@ -276,6 +278,31 @@ public class Equip extends Item implements IEquip, Serializable {
 
     public void setLevel(byte level) {
         this.level = level;
+    }
+
+    // Equipment Upgrade System
+    public int getEquipmentLevel() {
+        return equipLevel;
+    }
+
+    public void setEquipLevel(int level) {
+        equipLevel = level;
+    }
+
+    public void levelUpEquip() { // won't need this for Exp because yeah.. logic lol
+        equipLevel += 1;
+    }
+
+    public void addEquipLevel(int level) {
+        equipLevel += level;
+    }
+
+    public int getEquipmentExp() {
+        return equipExp;
+    }
+
+    public void setEquipExp(int exp) {
+        equipExp = exp;
     }
 
     @Override

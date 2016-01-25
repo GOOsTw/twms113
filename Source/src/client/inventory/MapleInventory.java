@@ -85,6 +85,15 @@ public class MapleInventory implements Iterable<IItem>, Serializable {
         return null;
     }
 
+    public IItem findByInventoryId(long itemId, int itemI) {
+        for (IItem item : inventory.values()) {
+            if (item.getInventoryId() == itemId && item.getItemId() == itemI) {
+                return item;
+            }
+        }
+        return findById(itemI);
+    }
+
     public int countById(int itemId) {
         int possesed = 0;
         for (IItem item : inventory.values()) {

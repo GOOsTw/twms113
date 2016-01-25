@@ -1178,6 +1178,8 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
                 eq.setJump((short) (eq.getJump() + offset));
             } else if (type.equalsIgnoreCase("ItemEXP")) {
                 eq.setItemEXP(eq.getItemEXP() + offset);
+            } else if (type.equalsIgnoreCase("EquipLevel")) {
+                eq.setEquipLevel(eq.getEquipLevel() + offset);
             } else if (type.equalsIgnoreCase("Expiration")) {
                 eq.setExpiration((long) (eq.getExpiration() + offset));
             } else if (type.equalsIgnoreCase("Flag")) {

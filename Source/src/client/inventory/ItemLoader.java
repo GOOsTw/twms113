@@ -133,6 +133,8 @@ public enum ItemLoader {
                     equip.setPotential3(rs.getShort("potential3"));
                     equip.setHpR(rs.getShort("hpR"));
                     equip.setMpR(rs.getShort("mpR"));
+                    equip.setEquipLevel(rs.getInt("EquipLevel"));
+                    equip.setEquipExp(rs.getInt("EquipExp"));
                     equip.setGiftFrom(rs.getString("sender"));
                     if (equip.getUniqueId() > -1) {
                         if (GameConstants.isEffectRing(rs.getInt("itemid"))) {
@@ -242,7 +244,7 @@ public enum ItemLoader {
         }
         query_2.append(")");
         ps = con.prepareStatement(query_2.toString(), Statement.RETURN_GENERATED_KEYS);
-        PreparedStatement pse = con.prepareStatement("INSERT INTO " + table_equip + " VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement pse = con.prepareStatement("INSERT INTO " + table_equip + " VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         final Iterator<Pair<IItem, MapleInventoryType>> iter = items.iterator();
         Pair<IItem, MapleInventoryType> pair;
         while (iter.hasNext()) {
@@ -303,6 +305,8 @@ public enum ItemLoader {
                 pse.setInt(25, equip.getPotential3());
                 pse.setInt(26, equip.getHpR());
                 pse.setInt(27, equip.getMpR());
+                pse.setInt(28, equip.getEquipLevel());
+                pse.setInt(29, equip.getEquipExp());
                 pse.executeUpdate();
             }
         }

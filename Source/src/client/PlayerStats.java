@@ -52,7 +52,7 @@ import tools.data.output.MaplePacketLittleEndianWriter;
 public class PlayerStats implements Serializable {
 
     private static final long serialVersionUID = -679541993413738569L;
-    
+
     private final transient WeakReference<MapleCharacter> chr;
     private final Map<Integer, Integer> setHandling = new HashMap<>();
     private final List<Equip> durabilityHandling = new ArrayList<>(), equipLevelHandling = new ArrayList<Equip>();
@@ -450,7 +450,7 @@ public class PlayerStats implements Serializable {
                 if (equip.getDurability() > 0) {
                     durabilityHandling.add((Equip) equip);
                 }
-                if (canEquipLevel && GameConstants.getMaxLevel(equip.getItemId()) > 0 && (GameConstants.getStatFromWeapon(equip.getItemId()) == null ? (equip.getEquipLevel() <= GameConstants.getMaxLevel(equip.getItemId())) : (equip.getEquipLevel() < GameConstants.getMaxLevel(equip.getItemId())))) {
+                if (GameConstants.getMaxLevel(equip.getItemId()) > 0 && (GameConstants.getStatFromWeapon(equip.getItemId()) == null ? (equip.getEquipLevel() <= GameConstants.getMaxLevel(equip.getItemId())) : (equip.getEquipLevel() < GameConstants.getMaxLevel(equip.getItemId())))) {
                     equipLevelHandling.add((Equip) equip);
                 }
             }
@@ -676,7 +676,7 @@ public class PlayerStats implements Serializable {
                 } else {
                     chra.cancelBuffStats(MapleBuffStat.DROP_RATE);
                     dropBuff = 100;
-                }                
+                }
             } else {
                 dropBuff *= buff.doubleValue() / 100.0;
             }
@@ -846,12 +846,12 @@ public class PlayerStats implements Serializable {
             if (eq.getEquipLevel() > lvlz) { //lvlup
                 for (int i = eq.getEquipLevel() - lvlz; i > 0; i--) {
                     //now for the equipment increments...
-                    final Map<Integer, Map<String, Integer>> inc = ii.getEquipIncrements(eq.getItemId());
+                    Map<Integer, Map<String, Integer>> inc = ii.getEquipIncrements(eq.getItemId());
                     if (inc != null && inc.containsKey(lvlz + i)) { //flair = 1
                         eq = ii.levelUpEquip(eq, inc.get(lvlz + i));
                     }
                     //UGH, skillz
-                    if (GameConstants.getStatFromWeapon(eq.getItemId()) == null) {
+                    if (GameConstants.getStatFromWeapon(eq.getItemId()) == null && GameConstants.getMaxLevel(eq.getItemId()) < (lvlz + i) && Math.random() < 0.1 && ii.getEquipSkills(eq.getItemId()) != null) {
                         final Map<Integer, List<Integer>> ins = ii.getEquipSkills(eq.getItemId());
                         if (ins != null && ins.containsKey(lvlz + i)) {
                             for (Integer z : ins.get(lvlz + i)) {

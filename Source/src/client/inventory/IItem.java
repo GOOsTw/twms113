@@ -39,6 +39,8 @@ public interface IItem extends Comparable<IItem> {
     MaplePet getPet();
 
     int getUniqueId();
+    
+    long getInventoryId();
 
     IItem copy();
 

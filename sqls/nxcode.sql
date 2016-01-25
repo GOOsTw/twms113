@@ -5,7 +5,7 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `nxcode`;
 CREATE TABLE `nxcode` (
-  `code` varchar(30) NOT NULL,
+  `code` varchar(20) NOT NULL,
   `valid` int(11) NOT NULL DEFAULT '1',
   `user` varchar(15) DEFAULT NULL,
   `type` int(11) NOT NULL DEFAULT '0',

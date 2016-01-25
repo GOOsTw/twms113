@@ -29,7 +29,7 @@ public class Item implements IItem, Serializable {
     private short position;
     private short quantity;
     private byte flag;
-    private long expiration = -1;
+    private long expiration = -1, inventoryitemid = 0;
     private MaplePet pet = null;
     private int uniqueid = -1;
     private String owner = "";
@@ -154,6 +154,11 @@ public class Item implements IItem, Serializable {
     @Override
     public final void setUniqueId(final int id) {
         this.uniqueid = id;
+    }
+    
+    @Override
+    public final long getInventoryId() { //this doesn't need to be 100% accurate, just different
+        return inventoryitemid;
     }
 
     @Override

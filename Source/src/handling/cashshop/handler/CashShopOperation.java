@@ -109,6 +109,9 @@ public class CashShopOperation {
         c.getPlayer().dropMessage(1, "儲值詳情請參見社團。");
         refreshCashShop(c);
     }
+    public static void randomes(final MapleClient c) {
+        refreshCashShop(c);
+    }
 
     public static void CouponCode(final String code, final MapleClient c) {
         boolean validcode = false;
