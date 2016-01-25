@@ -1,9 +1,12 @@
 
 /*
-	Name:  卷軸轉蛋機
-	Place: 轉蛋屋
+	Name:  弓箭手村楓葉轉蛋機
+	Place: 弓箭手村
 */
 
+importPackage(Packages.handling.world);
+importPackage(Packages.tools);
+importPackage(Packages.server);
 var status = -1;
 
 var requireItem = 5220000; /* 轉蛋券 */
@@ -26,8 +29,10 @@ function action(mode, _type, selection) {
                 if(gashapon != null) {
                     if (cm.canHold()) {
                         var gashaponItem = gashapon.generateReward();
+                        var item = MapleInventoryManipulator.addbyId_Gachapon(cm.getPlayer().getClient(), gashaponItem.getItemId(), 1);
                         if(gashaponItem != null) { 
-                            cm.gainItem(gashaponItem.getItemId(), 1);
+                            if(gashaponItem.canShowMsg())
+                                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[卷軸轉蛋機] " + cm.getPlayer().getName(), " : 被他從轉蛋屋的卷軸轉蛋機轉到了，大家恭喜他吧！", item, 3).getBytes());
                             cm.gainItem(requireItem, -1);
                             cm.sendOk("恭喜你轉到了#b#i" + gashaponItem.getItemId() + "##k。");
                         } else {
