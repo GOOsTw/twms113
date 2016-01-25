@@ -727,6 +727,12 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case MTS_TAB:
                 MTSOperation.MTSOperation(slea, c);
                 break;
+            case MTS_Recharge:
+                CashShopOperation.sendWebSite(c);
+                break;
+            case CS_Recharge:
+                CashShopOperation.sendWebSite(c);
+                break;     
             case DAMAGE_SUMMON:
                 slea.skip(4);
                 SummonHandler.DamageSummon(slea, c.getPlayer());

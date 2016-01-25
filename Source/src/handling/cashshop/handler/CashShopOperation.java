@@ -104,6 +104,11 @@ public class CashShopOperation {
         refreshCashShop(c);
         c.sendPacket(MTSCSPacket.sendShowWishList(c.getPlayer()));
     }
+    
+    public static void sendWebSite(final MapleClient c) {
+        c.getPlayer().dropMessage(1, "儲值詳情請參見社團。");
+        refreshCashShop(c);
+    }
 
     public static void CouponCode(final String code, final MapleClient c) {
         boolean validcode = false;
