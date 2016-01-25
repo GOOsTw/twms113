@@ -80,6 +80,7 @@ public class ChannelServer implements Serializable {
     private static String gatewayIP = "127.0.0.1";
     private static final short DEFAULT_PORT = 14000;
     private final int channel;
+    private final int world;
     private final String key;
     private int running_MerchantID = 0, flags = 0;
     private String serverMessage, serverName;
@@ -100,8 +101,9 @@ public class ChannelServer implements Serializable {
     private final boolean debugMode = false;
     private boolean GMItems;
 
-    private ChannelServer(final String key, final int channel) {
+    private ChannelServer(final String key, final int world, final int channel) {
         this.key = key;
+        this.world = world;
         this.channel = channel;
         mapFactory = new MapleMapFactory();
         mapFactory.setChannel(channel);
@@ -137,7 +139,7 @@ public class ChannelServer implements Serializable {
             adminOnly = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.admin", "false"));
             GMItems = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.gmitems", "false"));
             eventSM = new EventScriptManager(this, ServerProperties.getProperty("server.settings.events").split(","));
-            port = Short.parseShort(ServerProperties.getProperty("server.settings.channel" + channel + ".port", String.valueOf(DEFAULT_PORT + channel)));
+            port = Short.parseShort(ServerProperties.getProperty("server.settings.channel" + channel + ".port", String.valueOf(DEFAULT_PORT + channel + 100 * world)));
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -151,7 +153,7 @@ public class ChannelServer implements Serializable {
 
         acceptor = new NioSocketAcceptor();
 
-        this.serverHandler = new MapleServerHandler(channel, false);
+        this.serverHandler = new MapleServerHandler(world, channel, false);
         acceptor.setHandler(serverHandler);
         acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 30);
         acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new MapleCodecFactory()));
@@ -286,13 +288,17 @@ public class ChannelServer implements Serializable {
     public final String getIP() {
         return this.ip;
     }
-    
+
     public final String getGatewayIP() {
         return gatewayIP;
     }
 
     public final int getChannel() {
         return channel;
+    }
+
+    public final int getWorld() {
+        return this.world;
     }
 
     public final void setChannel(final int channel) {
@@ -631,24 +637,26 @@ public class ChannelServer implements Serializable {
         return new HashSet<>(instances.keySet());
     }
 
-    public static final ChannelServer newInstance(final String key, final int channel) {
-        return new ChannelServer(key, channel);
+    public static final ChannelServer newInstance(final String key, final int world, final int channel) {
+        return new ChannelServer(key, world, channel);
     }
 
     public static final ChannelServer getInstance(final int channel) {
         return instances.get(channel);
     }
 
-    public static final void startAllChannels() {
+    public static final void startAllChannels(final int worlds) {
         serverStartTime = System.currentTimeMillis();
 
         int count = Integer.parseInt(ServerProperties.getProperty("server.settings.channel.count", "0"));
-        for (int i = 0; i < count; i++) {
-            newInstance(ServerConstants.Channel_Key[i], i + 1).setup();
+        for (int i = 0; i < worlds; i++) {
+            for (int j = 0; j < count; j++) {
+                newInstance(ServerConstants.Channel_Key[i], i, j + 1).setup();
+            }
         }
     }
 
-    public static final void startChannel(final int channel) {
+    public static final void startChannel(final int world, final int channel) {
         serverStartTime = System.currentTimeMillis();
         for (int i = 0; i < Integer.parseInt(ServerProperties.getProperty("server.settings.channel.count", "0")); i++) {
             if (channel == i + 1) {

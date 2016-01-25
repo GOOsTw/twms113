@@ -77,7 +77,7 @@ public class LoginServer {
             acceptor.getFilterChain().addLast("codec", (IoFilter) new ProtocolCodecFilter(new MapleCodecFactory()));
 
             acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 30);
-            acceptor.setHandler(new MapleServerHandler(-1, false));
+            acceptor.setHandler(new MapleServerHandler(-1, -1, false));
             acceptor.bind(new InetSocketAddress(port));
             System.out.println("\n【登入伺服器】  - 監聽端口: " + Short.toString(port) + " \n");
 

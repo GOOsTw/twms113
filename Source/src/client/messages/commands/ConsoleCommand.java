@@ -314,14 +314,14 @@ public class ConsoleCommand {
                     csrv.closeAllMerchant();
                     csrv.shutdown();
                 }
-                ChannelServer.startAllChannels();
+                ChannelServer.startAllChannels(1);
                 System.out.println("所有頻道重新讀取成功");
             } else {
                 try {
                     final int channel = Integer.parseInt(splitted[1]);
                     ChannelServer csrv = ChannelServer.getInstance(channel);
                     csrv.closeAllMerchant();
-                    ChannelServer.startChannel(channel);
+                    ChannelServer.startChannel(1,channel);
                 } catch (Exception e) {
                     System.out.println("[指令用法] reloadChannle <頻道/all>");
                 }

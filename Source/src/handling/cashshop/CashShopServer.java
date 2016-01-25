@@ -62,7 +62,7 @@ public class CashShopServer {
         players = new PlayerStorage(-10);
         playersMTS = new PlayerStorage(-20);
         if (handler == null) {
-            handler = new MapleServerHandler(-1, true);
+            handler = new MapleServerHandler(-1, -1, true);
         }
         acceptor.setHandler(handler);
         try {
@@ -71,7 +71,6 @@ public class CashShopServer {
             System.out.println("購物商城    : 綁定端口 " + port);
         } catch (final Exception e) {
             System.err.println("[購物商城] 綁定端口 " + port + " 失敗");
-            e.printStackTrace();
             throw new RuntimeException("Binding failed.", e);
         }
     }

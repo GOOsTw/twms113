@@ -67,6 +67,7 @@ import tools.HexTool;
 public class MapleServerHandler extends IoHandlerAdapter implements MapleServerHandlerMBean {
 
     public static final boolean isLogPackets = true;
+    private int world = -1;
     private int channel = -1;
     private boolean isCashShop;
     private final List<String> blockedIP = new ArrayList<>();
@@ -179,7 +180,8 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         //ONLY FOR THE MBEAN
     }
 
-    public MapleServerHandler(final int channel, final boolean isCashShop) {
+    public MapleServerHandler(final int world, final int channel, final boolean isCashShop) {
+        this.world = world;
         this.channel = channel;
         this.isCashShop = isCashShop;
     }
@@ -255,6 +257,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 session);
 
         client.setChannel(channel);
+        client.setWorld(world);
 
         session.write(LoginPacket.getHello(ServerConstants.MAPLE_VERSION, ivSend, ivRecv));
         session.setAttribute(MapleClient.CLIENT_KEY, client);

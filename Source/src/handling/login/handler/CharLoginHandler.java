@@ -195,7 +195,6 @@ public class CharLoginHandler {
         final int userLimit = LoginServer.getUserLimit();
 
         c.setWorld(server);
-        //System.out.println("Client " + c.getSession().getRemoteAddress().toString().split(":")[0] + " is connecting to server " + server + " channel " + channel + "");
         c.setChannel(channel);
         c.setWorld(server);
 
@@ -203,7 +202,7 @@ public class CharLoginHandler {
         if (chars != null) {
             c.sendPacket(LoginPacket.getCharList(c.getSecondPassword() != null, chars, c.getCharacterSlots()));
         } else {
-            c.getSession().close();
+            c.getSession().close(true);
         }
     }
 

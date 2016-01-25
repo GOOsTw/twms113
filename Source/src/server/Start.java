@@ -83,7 +83,6 @@ public class Start {
         MapleQuest.initQuests();
         MapleLifeFactory.loadQuestCounts();
         GashaponFactory.getInstance().reloadGashapons();
-//        ItemMakerFactory.getInstance();
         MapleItemInformationProvider.getInstance().load();
         RandomRewards.getInstance();
         SkillFactory.getSkill(99999999);
@@ -93,10 +92,10 @@ public class Start {
         MapleFamilyBuff.getBuffEntry();
         MapleServerHandler.registerMBean();
         RankingWorker.getInstance().run();
-        // MTSStorage.load();
+        MTSStorage.load();
         CashItemFactory.getInstance().initialize();
         LoginServer.setup();
-        ChannelServer.startAllChannels();
+        ChannelServer.startAllChannels(1);
 
         System.out.println("【啟動中】 CashShop Items:::");
         CashShopServer.setup();

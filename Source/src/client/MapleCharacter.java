@@ -5252,6 +5252,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.maplepoints = maplepoints;
         ret.clone = true;
         ret.client.setChannel(this.client.getChannel());
+        ret.client.setWorld(this.client.getWorld());
         while (map.getCharacterById(ret.id) != null || client.getChannelServer().getPlayerStorage().getCharacterById(ret.id) != null) {
             ret.id++;
         }
