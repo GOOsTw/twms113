@@ -359,6 +359,21 @@ public class InternCommand {
         }
     }
 
+    public static class 清地板 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String[] splitted) {
+            c.getPlayer().dropMessage(5, "清除 " + c.getPlayer().getMap().getNumItems() + " 項物品");
+            c.getPlayer().getMap().removeDrops();
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("").toString();
+        }
+    }
+
     public static class Hide extends CommandExecute {
 
         @Override

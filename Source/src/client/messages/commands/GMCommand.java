@@ -441,59 +441,45 @@ public class GMCommand {
         }
     }
 
-    public static class CnGM extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String[] splitted) {
-            World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(5, "<GM聊天視窗>" + "頻道" + c.getPlayer().getClient().getChannel() + " [" + c.getPlayer().getName() + "] : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!cngm <訊息> - GM聊天").toString();
-        }
-    }
-
-    public static class ClearInv extends CommandExecute {
+    public static class 清理背包 extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             java.util.Map<Pair<Short, Short>, MapleInventoryType> eqs = new ArrayMap<>();
             switch (splitted[1]) {
-                case "all":
+                case "全部":
                     for (MapleInventoryType type : MapleInventoryType.values()) {
                         for (IItem item : c.getPlayer().getInventory(type)) {
                             eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), type);
                         }
                     }
                     break;
-                case "eqped":
+                case "身上裝備":
                     for (IItem item : c.getPlayer().getInventory(MapleInventoryType.EQUIPPED)) {
                         eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.EQUIPPED);
                     }
                     break;
-                case "eqp":
+                case "裝備":
                     for (IItem item : c.getPlayer().getInventory(MapleInventoryType.EQUIP)) {
                         eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.EQUIP);
                     }
                     break;
-                case "use":
+                case "消耗":
                     for (IItem item : c.getPlayer().getInventory(MapleInventoryType.USE)) {
                         eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.USE);
                     }
                     break;
-                case "setup":
+                case "裝飾":
                     for (IItem item : c.getPlayer().getInventory(MapleInventoryType.SETUP)) {
                         MapleInventoryType put = eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.SETUP);
                     }
                     break;
-                case "etc":
+                case "其他":
                     for (IItem item : c.getPlayer().getInventory(MapleInventoryType.ETC)) {
                         eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.ETC);
                     }
                     break;
-                case "cash":
+                case "現金":
                     for (IItem item : c.getPlayer().getInventory(MapleInventoryType.CASH)) {
                         eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.CASH);
                     }
@@ -509,7 +495,7 @@ public class GMCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!clearinv <all/eqped/eqp/use/setup/etc/cash> - 清理道具欄").toString();
+            return new StringBuilder().append("!清理背包 <全部/身上裝備/裝備/消耗/裝飾/其他/現金> - 清理道具欄").toString();
         }
     }
 }

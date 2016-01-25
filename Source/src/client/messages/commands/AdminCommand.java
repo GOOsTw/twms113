@@ -1174,9 +1174,9 @@ public class AdminCommand {
                 MapleCharacter chr = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
                 int itemamount = chr.getItemQuantity(item, true);
                 if (itemamount > 0) {
-                    c.getPlayer().dropMessage(6, chr.getName() + " has " + itemamount + " (" + item + ").");
+                    c.getPlayer().dropMessage(6, chr.getName() + " 有 " + itemamount + " (" + item + ").");
                 } else {
-                    c.getPlayer().dropMessage(6, chr.getName() + " doesn't have (" + item + ")");
+                    c.getPlayer().dropMessage(6, chr.getName() + " 並沒有 (" + item + ")");
                 }
             }
             return true;
@@ -2389,7 +2389,7 @@ public class AdminCommand {
                 } else {
                     c.getChannelServer().setCashRate(rate);
                 }
-                c.getPlayer().dropMessage(6, "Cash Rate has been changed to " + rate + "x");
+                c.getPlayer().dropMessage(6, "點數倍率已經改為 " + rate + "x");
             } else {
                 return false;
             }
