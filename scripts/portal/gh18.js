@@ -1,4 +1,6 @@
 function enter(pi) {
-    pi.playerMessage(5, "很抱歉，轉蛋屋暫時不開放!");
-    return false;
+    pi.playPortalSE();
+    pi.setPlayerVariable("gh", "01");
+    pi.saveLocation("MULUNG_TC")
+    pi.warp(749050400, "out00");
 }

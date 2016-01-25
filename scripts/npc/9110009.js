@@ -4,6 +4,9 @@
 	Place: 弓箭手村
 */
 
+importPackage(Packages.handling.world);
+importPackage(Packages.tools);
+importPackage(Packages.server);
 var status = -1;
 
 var requireItem = 5220040; /* 楓葉轉蛋券 */
@@ -18,7 +21,7 @@ function action(mode, _type, selection) {
 
     switch (status) {
         case 0:
-            cm.sendYesNo("你好，我是弓箭手村轉蛋機，請問你要轉蛋嗎？");
+            cm.sendYesNo("你好，我是弓箭手村楓葉轉蛋機，請問你要轉蛋嗎？");
             break;
         case 1: {
             if (cm.haveItem(requireItem)) {
@@ -26,8 +29,11 @@ function action(mode, _type, selection) {
                 if(gashapon != null) {
                     if (cm.canHold()) {
                         var gashaponItem = gashapon.generateReward();
+                        var item = MapleInventoryManipulator.addbyId_Gachapon(cm.getPlayer().getClient(), gashaponItem.getItemId(), 1);
                         if(gashaponItem != null) { 
-                            cm.gainItem(gashaponItem.getItemId(), 1);
+                            if(gashaponItem.canShowMsg())
+                                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[弓箭手村楓葉轉蛋機] " + cm.getPlayer().getName(), " : 被他從楓葉轉蛋機轉到了，大家恭喜他吧！", item, 3).getBytes());
+                            //cm.gainItem(gashaponItem.getItemId(), 1);
                             cm.gainItem(requireItem, -1);
                             cm.sendOk("恭喜你轉到了#b#i" + gashaponItem.getItemId() + "##k。");
                         } else {
