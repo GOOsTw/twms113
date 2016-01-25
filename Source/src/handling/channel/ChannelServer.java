@@ -98,7 +98,7 @@ public class ChannelServer implements Serializable {
     private int eventmap = -1;
     private final Map<MapleEventType, MapleEvent> events = new EnumMap<>(MapleEventType.class);
     private final boolean debugMode = false;
-    private boolean GMItems;
+    private boolean canUseGMItem;
 
     private ChannelServer(final String key, final int channel) {
         this.key = key;
@@ -135,7 +135,7 @@ public class ChannelServer implements Serializable {
             serverName = ServerProperties.getProperty("server.settings.serverName", "");
             flags = Integer.parseInt(ServerProperties.getProperty("server.settings.wflags", "0"));
             adminOnly = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.admin", "false"));
-            GMItems = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.gmitems", "false"));
+            canUseGMItem = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.gmitems", "false"));
             eventSM = new EventScriptManager(this, ServerProperties.getProperty("server.settings.events").split(","));
             port = Short.parseShort(ServerProperties.getProperty("server.settings.channel" + channel + ".port", String.valueOf(DEFAULT_PORT + channel)));
 
@@ -579,8 +579,8 @@ public class ChannelServer implements Serializable {
 
     }
 
-    public boolean CanGMItem() {
-        return GMItems;
+    public boolean canUseGMItem() {
+        return canUseGMItem;
     }
 
     public final static int getChannelCount() {

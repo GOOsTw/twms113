@@ -255,9 +255,11 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 session);
 
         client.setChannel(channel);
+        client.setWorld(0);
 
         session.write(LoginPacket.getHello(ServerConstants.MAPLE_VERSION, ivSend, ivRecv));
         session.setAttribute(MapleClient.CLIENT_KEY, client);
+        
         DateFormat dateFormat;
         dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();

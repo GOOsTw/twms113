@@ -566,7 +566,7 @@ public class MapleInventoryManipulator {
             itemChanged = true;
         }
 
-        if (GameConstants.isGMEquip(source.getItemId()) && !c.getPlayer().isGM() && !c.getChannelServer().CanGMItem()) {
+        if (GameConstants.isGMEquip(source.getItemId()) && !c.getPlayer().isGM() && !c.getChannelServer().canUseGMItem()) {
             c.getPlayer().dropMessage(1, "只有管理員能裝備這件道具。");
             c.getPlayer().removeAll(source.getItemId(), false);
             c.sendPacket(MaplePacketCreator.enableActions());
