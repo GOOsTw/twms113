@@ -263,16 +263,16 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         DateFormat dateFormat;
         dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-
-        String IP = address.split(":")[0].replace("/", "");
+        
+          String IP = address.split(":")[0].replace("/", "");
         String account = client.getAccountName();
         String charName = client.getPlayer() != null ? client.getPlayer().getName() : "";
         if (this.channel == -1) {
-            FilePrinter.print("Sessions/LoginServer.txt", "IP: " + IP  + " 帳號: " + account + " 時間: " + dateFormat.format(cal.getTime()), true);
+            FilePrinter.print("Sessions/LoginServer.txt", "IP: " + IP  + " 時間: " + dateFormat.format(cal.getTime()), true);
         } else if (this.isCashShop) {
-            FilePrinter.print("Sessions/CashShopServer.txt", "IP: " + IP  + " 帳號: " + account + (charName.equals("") ? "" :  "角色: ") + charName + " 時間: " + dateFormat.format(cal.getTime()), true);
+            FilePrinter.print("Sessions/CashShopServer.txt", "IP: " + IP  + " 帳號: " + charName + " 時間: " + dateFormat.format(cal.getTime()), true);
         } else {
-            FilePrinter.print("Sessions/ChannelServer.txt", "IP: " + IP  + " 帳號: " + account  + (charName.equals("") ? "" :  "角色: ") + " 頻道: " + this.channel + " 時間: " + dateFormat.format(cal.getTime()), true);
+            FilePrinter.print("Sessions/ChannelServer.txt", "IP: " + IP  + " 頻道: " + this.channel + " 時間: " + dateFormat.format(cal.getTime()), true);
         }
     }
 
