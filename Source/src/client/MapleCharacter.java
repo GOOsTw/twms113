@@ -2888,9 +2888,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 if (show) { // still show the expgain even if it's not there
                     client.sendPacket(MaplePacketCreator.GainEXPOthers(total, inChat, white));
                 }
-               if (total > 0) {
+               /*if (total > 0) {
                     stats.checkEquipLevels(this, total); //gms like
-                }
+                }*/
             }
         } catch (Exception e) {
             FilePrinter.printError("MapleCharacter.txt", e);
@@ -2961,7 +2961,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             if (show) { // still show the expgain even if it's not there
                 client.sendPacket(MaplePacketCreator.GainEXP_Monster(gain, white, partyinc, Class_Bonus_EXP, Equipment_Bonus_EXP, Premium_Bonus_EXP));
             }
-            stats.checkEquipLevels(this, total);
+            //stats.checkEquipLevels(this, total);
         }
     }
 
@@ -4844,6 +4844,13 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         long equipInvId = equipSlot.getItem(slot).getInventoryId(); // Get INVENTORYITEMID of the EQUIP item
         Equip equip = (Equip) equipSlot.findByInventoryId(equipInvId, equipId); // GENERATE the EQUIP item
         return equip.getEquipmentExp(); // Get the EQUIPMENT EXP from the EQUIP item
+    }
+        public int getEquipExpNeeded(byte slot) {
+        MapleInventory equipSlot = getInventory(MapleInventoryType.EQUIP); // Get EQUIP inventory
+        int equipId = equipSlot.getItem(slot).getItemId(); // Get ID of the EQUIP item
+        long equipInvId = equipSlot.getItem(slot).getInventoryId(); // Get INVENTORYITEMID of the EQUIP item
+        Equip equip = (Equip) equipSlot.findByInventoryId(equipInvId, equipId); // GENERATE the EQUIP item
+        return equip.getEquipExpNeeded(equip.getEquipmentLevel()); // Get the EQUIPMENT EXP NEEDED for the EQUIP item
     }
     /*public void setAchievementFinished(int id) {
      if (!finishedAchievements.contains(id)) {

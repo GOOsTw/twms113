@@ -180,10 +180,10 @@ public class PlayerCommand {
 
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
-            if (!c.getPlayer().getCheatTracker().GMSpam(300000, 3) && (!c.getPlayer().isGM())) { // 5 minutes.
+            if (!c.getPlayer().getCheatTracker().GMSpam(300000, 1) && (!c.getPlayer().isGM())) { // 5 minutes.
                 World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "『玩家』" + c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期" + getDayOfWeek()).getBytes());
             } else if (c.getPlayer().isGM()) {
-                World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "『管理員』" + c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期" + getDayOfWeek()).getBytes());
+                World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "『管理員』" + c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期" + getDayOfWeek()).getBytes());
             } else {
                 c.getPlayer().dropMessage(6, "為了防止瘋狂報時引響其他玩家，所以5分鐘只能使用一次。");
             }
@@ -362,7 +362,7 @@ public class PlayerCommand {
             if (c.getPlayer().isGM()) {
                 c.getPlayer().dropMessage(6, "因為你自己是GM所法使用此指令,可以嘗試!cngm <訊息> 來建立GM聊天頻道~");
             } else {
-                if (!c.getPlayer().getCheatTracker().GMSpam(1, 1)) { // 1 minutes.
+                if (!c.getPlayer().getCheatTracker().GMSpam(60000, 1)) { // 1 minutes.
                     boolean fake = false;
                     if (BlackConfig.getBlackList().containsKey(c.getAccID())) {
                         fake = true;

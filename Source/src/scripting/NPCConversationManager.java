@@ -875,6 +875,8 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             case 22:
                 sel.setOwner(getText());
                 break;
+            case 23:
+                sel.setEquipLevel(amount);
             default:
                 break;
         }

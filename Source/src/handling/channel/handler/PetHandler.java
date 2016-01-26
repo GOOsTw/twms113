@@ -242,7 +242,7 @@ public class PetHandler {
                 List<MapleMapItem> objects = chr.getMap().getAllItems();
                 for (MapleMapItem mapitem : objects) {
                     final Lock lock = mapitem.getLock();
-                    lock.lock();
+                    //lock.lock();
                     try {
                         if (mapitem.isPickedUp()) {
                             continue;
@@ -289,7 +289,7 @@ public class PetHandler {
                             }
                         }
                     } finally {
-                        lock.unlock();
+                        //lock.unlock();
                     }
                 }
             }

@@ -1552,7 +1552,7 @@ public final class MapleMap {
             }
         }, null);
     }
-    
+
     public final void spawnKite(final MapleKite Kite) {
         addMapObject(Kite);
         broadcastMessage(Kite.makeSpawnData());
@@ -1560,12 +1560,12 @@ public final class MapleMap {
 
             @Override
             public void run() {
-                removeMapObject(Kite);
                 broadcastMessage(Kite.makeDestroyData());
+                removeMapObject(Kite);
             }
         }, 1000 * 60 * 60);
     }
-    
+
     public final void spawnMist(final MapleMist mist, final int duration, boolean fake) {
         spawnAndAddRangedMapObject(mist, new DelayedPacketCreation() {
 
@@ -1732,7 +1732,7 @@ public final class MapleMap {
 
     public final void spawnAutoDrop(final int itemid, final Point pos) {
         IItem idrop;
-        
+
         final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
         if (GameConstants.getInventoryType(itemid) == MapleInventoryType.EQUIP) {
             idrop = ii.randomizeStats((Equip) ii.getEquipById(itemid));
@@ -2715,10 +2715,10 @@ public final class MapleMap {
                 mo.sendSpawnData(chr.getClient());
             }
         } else // monster left view range
-         if (mo.getType() != MapleMapObjectType.SUMMON && mo.getPosition().distanceSq(chr.getPosition()) > GameConstants.maxViewRangeSq()) {
-                chr.removeVisibleMapObject(mo);
-                mo.sendDestroyData(chr.getClient());
-            }
+        if (mo.getType() != MapleMapObjectType.SUMMON && mo.getPosition().distanceSq(chr.getPosition()) > GameConstants.maxViewRangeSq()) {
+            chr.removeVisibleMapObject(mo);
+            mo.sendDestroyData(chr.getClient());
+        }
     }
 
     public void moveMonster(MapleMonster monster, Point reportedPos) {

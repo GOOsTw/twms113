@@ -964,7 +964,6 @@ public class GameConstants {
     }
     public final static int[] goldrewards = {
         2340000, 1, // white scroll
-        2070018, 1, // balance fury 沒有的物品
         1402037, 1, // Rigbol Sword
         2290096, 1, // Maple Warrior 20
         2290049, 1, // Genesis 30
@@ -1072,7 +1071,6 @@ public class GameConstants {
         1442012, 3, // Sky snowboard
         1442018, 3, // Frozen Tuna
         1432010, 3, // Omega Spear
-        1432036, 1, // Fishing Pole 沒用的物品
         2000005, 10, // Power Elixir
         2000004, 10, // Elixir
         4280001, 4}; // Silver Box

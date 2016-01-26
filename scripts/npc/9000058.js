@@ -23,7 +23,7 @@ function action(mode, type, selection) {
         if (!cm.isQuestFinished(29933)) {
             NewPlayer();
         }
-        cm.sendSimple("開店可以擺飛鏢或彈丸哦~\r\n#b#L2#我要打開藍色小箱子#l\r\n#b#L3#當鋪裡的大蟾蜍錢包(100等以上才能領)解未來東京任務用#l\r\n#b#L4#我要騎銀色豬豬!!#l\r\n#b#L5#我要進行忍影瞬殺的任務(四轉盜賊限定)#l\r\n#b#L6#我要刪除銀或金寶箱空白道具(並且補償一次道具)#l\r\n#b#L7#我要完成燈泡不能接的任務#k");
+        cm.sendSimple("開店可以擺飛鏢或彈丸哦~\r\n#b#L2#我要打開藍色小箱子#l\r\n#b#L3#當鋪裡的大蟾蜍錢包(100等以上才能領)解未來東京任務用#l\r\n#b#L4#我要騎銀色豬豬!!#l\r\n#b#L5#我要進行忍影瞬殺的任務(四轉盜賊限定)#l\r\n#b#L7#我要完成燈泡不能接的任務#k");
     } else if (status == 1) {
         if (selection == 2) {
             if (cm.haveItem(4031307, 1) == true) {
@@ -68,23 +68,6 @@ function action(mode, type, selection) {
                 cm.dispose();
             } else {
                 cm.sendOk("這是跟盜賊有關的事情哦,或者你沒有達到120等");
-                cm.dispose();
-            }
-        } else if (selection == 6) {
-            if (cm.haveItem(2070018)) {
-                cm.removeAll(2070018);
-                cm.gainItem(5490000, 1);
-                cm.gainItem(4280000, 1);
-                cm.sendOk("恭喜你刪除完畢並補償了金寶箱");
-                cm.dispose();
-            } else if (cm.haveItem(1432036)) {
-                cm.removeAll(1432036);
-                cm.gainItem(5490001, 1);
-                cm.gainItem(4280001, 1);
-                cm.sendOk("恭喜你刪除完畢並補償了銀寶箱");
-                cm.dispose();
-            } else {
-                cm.sendOk("抱歉你沒有空白道具...");
                 cm.dispose();
             }
         } else if (selection == 7) {

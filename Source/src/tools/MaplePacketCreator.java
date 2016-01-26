@@ -2714,10 +2714,9 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static MaplePacket destroyKite(int oid) {
+    public static MaplePacket destroyKite(final int oid) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.DESTROY_KITE.getValue());
-        mplew.write(0);
         mplew.writeInt(oid);
 
         return mplew.getPacket();

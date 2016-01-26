@@ -857,8 +857,9 @@ public class PlayerStats implements Serializable {
                             for (Integer z : ins.get(lvlz + i)) {
                                 if (Math.random() < 0.1) { //10% chance dood
                                     final ISkill skil = SkillFactory.getSkill(z);
-                                    if (skil != null && skil.canBeLearnedBy(chr.getJob()) && chr.getSkillLevel(skil) < chr.getMasterLevel(skil)) { //dont go over masterlevel :D
+                                    if (skil != null && skil.canBeLearnedBy(chr.getJob())) { //dont go over masterlevel :D
                                         chr.changeSkillLevel(skil, (byte) (chr.getSkillLevel(skil) + 1), chr.getMasterLevel(skil));
+                                        chr.dropMessage(5, "Your skill has gained a levelup: " + skil.getName() + " +1");
                                     }
                                 }
                             }

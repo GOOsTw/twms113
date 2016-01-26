@@ -377,7 +377,6 @@ public class PacketHelper {
         } else {
             addExpirationTime(mplew, item.getExpiration());
             if (item.getType() == 1 && equip != null) {
-
                 mplew.write(equip.getUpgradeSlots());
                 mplew.write(equip.getLevel());
                 mplew.writeShort(equip.getStr());
@@ -397,11 +396,13 @@ public class PacketHelper {
                 mplew.writeShort(equip.getJump());
                 mplew.writeMapleAsciiString(equip.getOwner());
                 mplew.writeShort(equip.getFlag());
-                mplew.write(equip.getEquipLevel());
-                mplew.write(equip.getEquipExp());
-                mplew.write(equip.getLevel());
-                mplew.write(equip.getExpPercentage());
+                mplew.write(0);
+                mplew.write(equip.getEquipmentLevel()); //裝備成長等級
+                mplew.write(0);
                 mplew.writeShort(0);
+                mplew.write(equip.getEquipmentExp()); //裝備成長經驗
+                mplew.writeShort(0);
+
                 if (!hasUniqueId) {
                     mplew.writeLong(item.getUniqueId()); //some tracking ID
                 }
@@ -491,13 +492,15 @@ public class PacketHelper {
             mplew.writeShort(equip.getHands()); // hands
             mplew.writeShort(equip.getSpeed()); // speed
             mplew.writeShort(equip.getJump()); // jump
-            mplew.writeMapleAsciiString(equip.getOwner()); // owner name
-            mplew.writeShort(equip.getFlag()); //Item Flags
-            mplew.write(equip.getEquipLevel());
-            mplew.write(equip.getEquipExp());
-            mplew.write(equip.getLevel());
-            mplew.write(equip.getExpPercentage());
+            mplew.writeMapleAsciiString(equip.getOwner());
+            mplew.writeShort(equip.getFlag());
+            mplew.write(0);
+            mplew.write(equip.getEquipmentLevel()); //裝備成長等級
+            mplew.write(0);
             mplew.writeShort(0);
+            mplew.write(equip.getEquipmentExp()); //裝備成長經驗
+            mplew.writeShort(0);
+
             if (!isCash) {
                 mplew.writeLong(item.getUniqueId()); //some tracking ID
             }

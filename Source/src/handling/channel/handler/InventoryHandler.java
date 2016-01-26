@@ -92,13 +92,19 @@ public class InventoryHandler {
         final MapleInventoryType type = MapleInventoryType.getByType(slea.readByte()); //04
         final short src = slea.readShort();                                            //01 00
         final short dst = slea.readShort();                                            //00 00
-        final short quantity = slea.readShort();                                       //53 01
+        long checkq = slea.readShort();
+        final short quantity = (short)(int)checkq;                                       //53 01
 
         if (src < 0 && dst > 0) {
             MapleInventoryManipulator.unequip(c, src, dst);
         } else if (dst < 0) {
             MapleInventoryManipulator.equip(c, src, dst);
         } else if (dst == 0) {
+             if (checkq < 1 || c.getPlayer().getInventory(type).getItem(src) == null) {
+               c.sendPacket(MaplePacketCreator.enableActions());
+          //     World.Broadcast.broadcastGMMessage(CWvsContext.serverNotice(6, c.getPlayer().getName() + " --- Possibly attempting drop dupe! Go investigate"));
+                return;
+            }
             MapleInventoryManipulator.drop(c, type, src, quantity);
         } else {
             MapleInventoryManipulator.move(c, type, src, dst);
