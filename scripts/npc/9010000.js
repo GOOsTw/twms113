@@ -48,10 +48,9 @@ function action(mode, type, selection) {
         var empty = true;
         var selStr = "我是裝備素質重置GM\r\n\r\n 注意！！！！！ 我只能重置一次 ， 請確定所有裝備都已經脫下放入物品欄中。";
 
-        var inventory = cm.getInventory(invs[1]);
+        var inventory = cm.getInventory(invs[0]);
 
         for (var i = 0; i <= inventory.getSlotLimit(); i++) {
-            items.push(i);
             var item = inventory.getItem(i);
             if (item == null) {
                 continue;
@@ -60,6 +59,7 @@ function action(mode, type, selection) {
             if (!GameConstants.isEquip(itemid) || cm.isCash(itemid)) {
                 continue;
             }
+            items.push(i);
             empty = false;
             selStr += "#v" + itemid + "##t" + itemid + "##l\r\n";
         }
@@ -79,17 +79,18 @@ function action(mode, type, selection) {
         }
         cm.sendYesNo("確定都放入物品欄位了？");
     }  else if (status == 3) {
-        var inventory = cm.getInventory(invv);
+        var inventory = cm.getInventory(1);
+
         for(var i = 0; i < items.length; i++) {
-            var itemid = items[i];
-            var item = inventory.getItem(itemid);
-            cm.gainItem(itemid, -1);
-            cm.gainItem(itemid, 1);
+            var slot = items[i];
+            var item = inventory.getItem(slot); 
+            cm.gainItem(item.getItemId(), -1);
+            cm.gainItem(item.getItemId(), 1);
         }
         cm.setPlayerVariable('eqpfix', '1');
         cm.sendSimple("好了")
-
     } else if (status == 5) {
         cm.dispose();
     }
 }
+
