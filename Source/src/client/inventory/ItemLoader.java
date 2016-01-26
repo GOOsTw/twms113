@@ -133,8 +133,8 @@ public enum ItemLoader {
                     equip.setPotential3(rs.getShort("potential3"));
                     equip.setHpR(rs.getShort("hpR"));
                     equip.setMpR(rs.getShort("mpR"));
-                    equip.setEquipLevel(rs.getInt("EquipLevel"));
-                    equip.setEquipExp(rs.getInt("EquipExp"));
+                    equip.setEquipLevel(rs.getInt("equipLevel"));
+                    equip.setEquipExp(rs.getInt("equipExp"));
                     equip.setGiftFrom(rs.getString("sender"));
                     if (equip.getUniqueId() > -1) {
                         if (GameConstants.isEffectRing(rs.getInt("itemid"))) {
