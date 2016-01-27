@@ -200,7 +200,7 @@ public class PlayerHandler {
         c.sendPacket(MaplePacketCreator.enableActions());
         if (player != null && !player.isClone()) {
             if (!player.isGM() || c.getPlayer().isGM()) {
-          //      if (!player.getExcluded("") && player.getPet(0) != null) {
+                //      if (!player.getExcluded("") && player.getPet(0) != null) {
                 //         c.sendPacket(PetPacket.loadExceptionList(player.getId(), player.getPet(0).getUniqueId(), player.getExcluded()));
                 //     }
                 c.sendPacket(MaplePacketCreator.charInfo(player, c.getPlayer().getId() == objectid));
@@ -755,6 +755,19 @@ public class PlayerHandler {
             bulletCount *= 2;
         }
         int projectile = 0, visProjectile = 0;
+        if (attack.skill == 神槍手.寒霜噴射) {
+            if (!MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, 2332000, 1, false, true)) {
+                c.getPlayer().dropMessage(5, "您身上的寒冰膠囊不足");
+                c.sendPacket(MaplePacketCreator.enableActions());
+                return;
+            }
+        } else if (attack.skill == 神槍手.火焰噴射) {
+            if (!MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, 2331000, 1, false, true)) {
+                c.getPlayer().dropMessage(5, "您身上的火炎膠囊不足");
+                c.sendPacket(MaplePacketCreator.enableActions());
+                return;
+            }
+        }
         if (attack.AOE != 0 && chr.getBuffedValue(MapleBuffStat.SOULARROW) == null && attack.skill != 4111004) {
             if (chr.getInventory(MapleInventoryType.USE).getItem(attack.slot) == null) {
                 return;
