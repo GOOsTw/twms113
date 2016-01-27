@@ -92,7 +92,7 @@ public enum MonsterStatus implements Serializable {
     
     RISE_TOSS(32),
     //抵銷
-    NEUTRALISE(33, false),
+    NEUTRALISE(33, true),
     //弱點
     IMPRINT(34, false),
     //怪物炸彈

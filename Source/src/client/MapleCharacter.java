@@ -1322,17 +1322,13 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
         }
         if (con != null) {
-            try {
-                ItemLoader.INVENTORY.saveItems(listing, con, id);
-            } catch (SQLException ex) {
-                FilePrinter.printError("MapleCharacter.txt", ex, "[saveInventory]");
-            }
+
+            ItemLoader.INVENTORY.saveItems(listing, con, id);
+
         } else {
-            try {
+
                 ItemLoader.INVENTORY.saveItems(listing, id);
-            } catch (SQLException ex) {
-                FilePrinter.printError("MapleCharacter.txt", ex, "[saveInventory]");
-            }
+
         }
     }
 
@@ -2888,7 +2884,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 if (show) { // still show the expgain even if it's not there
                     client.sendPacket(MaplePacketCreator.GainEXPOthers(total, inChat, white));
                 }
-               /*if (total > 0) {
+                /*if (total > 0) {
                     stats.checkEquipLevels(this, total); //gms like
                 }*/
             }
@@ -4845,13 +4841,15 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         Equip equip = (Equip) equipSlot.findByInventoryId(equipInvId, equipId); // GENERATE the EQUIP item
         return equip.getEquipmentExp(); // Get the EQUIPMENT EXP from the EQUIP item
     }
-        public int getEquipExpNeeded(byte slot) {
+
+    public int getEquipExpNeeded(byte slot) {
         MapleInventory equipSlot = getInventory(MapleInventoryType.EQUIP); // Get EQUIP inventory
         int equipId = equipSlot.getItem(slot).getItemId(); // Get ID of the EQUIP item
         long equipInvId = equipSlot.getItem(slot).getInventoryId(); // Get INVENTORYITEMID of the EQUIP item
         Equip equip = (Equip) equipSlot.findByInventoryId(equipInvId, equipId); // GENERATE the EQUIP item
         return equip.getEquipExpNeeded(equip.getEquipmentLevel()); // Get the EQUIPMENT EXP NEEDED for the EQUIP item
     }
+
     /*public void setAchievementFinished(int id) {
      if (!finishedAchievements.contains(id)) {
      finishedAchievements.add(id);

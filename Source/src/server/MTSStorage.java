@@ -222,12 +222,8 @@ public class MTSStorage {
         if (isShutDown) {
             System.out.println("Saving MTS items...");
         }
-        try {
-            for (Entry<Integer, ArrayList<Pair<IItem, MapleInventoryType>>> ite : items.entrySet()) {
-                ItemLoader.MTS.saveItems(ite.getValue(), ite.getKey());
-            }
-        } catch (SQLException e) {
-            FilePrinter.printError("MTSStorage.txt", e, "saveBuyNow");
+        for (Entry<Integer, ArrayList<Pair<IItem, MapleInventoryType>>> ite : items.entrySet()) {
+            ItemLoader.MTS.saveItems(ite.getValue(), ite.getKey());
         }
         if (isShutDown) {
             System.out.println("Saving MTS carts...");

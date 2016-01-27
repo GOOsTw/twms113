@@ -401,7 +401,6 @@ public class PacketHelper {
                 mplew.write(0);
                 mplew.writeShort(0);
                 mplew.write(equip.getEquipmentExp()); //裝備成長經驗
-                mplew.writeShort(0);
 
                 if (!hasUniqueId) {
                     mplew.writeLong(item.getUniqueId()); //some tracking ID
