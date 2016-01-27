@@ -755,6 +755,7 @@ public class PlayerHandler {
             bulletCount *= 2;
         }
         int projectile = 0, visProjectile = 0;
+        String bulletItem = "";
         if (attack.skill == 神槍手.寒霜噴射) {
             if (!MapleInventoryManipulator.removeById(c, MapleInventoryType.USE, 2332000, 1, false, true)) {
                 c.getPlayer().dropMessage(5, "您身上的寒冰膠囊不足");
@@ -783,6 +784,10 @@ public class PlayerHandler {
                 visProjectile = projectile;
             }
             // Handle bulletcount
+            bulletItem = MapleItemInformationProvider.getInstance().getName(visProjectile);
+            if (chr.isAdmin()) {
+                chr.dropMessage(6, "消耗的 弓箭/鏢/彈丸 數量:" + bulletCount + " 使用著:" + bulletItem);
+            }
             if (chr.getBuffedValue(MapleBuffStat.SPIRIT_CLAW) == null) {
                 int bulletConsume = bulletCount;
                 if (effect != null && effect.getBulletConsume() != 0) {
