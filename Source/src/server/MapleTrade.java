@@ -256,7 +256,7 @@ public class MapleTrade {
             c.setTrade(new MapleTrade((byte) 0, c));
             c.getClient().sendPacket(MaplePacketCreator.getTradeStart(c.getClient(), c.getTrade(), (byte) 0));
         } else {
-            c.getClient().sendPacket(MaplePacketCreator.serverNotice(5, "You are already in a trade"));
+            c.getClient().sendPacket(MaplePacketCreator.serverNotice(5, "你已經在交易中。"));
         }
     }
 
