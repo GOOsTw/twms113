@@ -909,7 +909,7 @@ public class InventoryHandler {
             c.sendPacket(MaplePacketCreator.getShowItemGain(reward, (short) amount, true));
 
             if (GameConstants.gachaponRareItem(item.getItemId()) > 0) {
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + box + "] " + c.getPlayer().getName(), " : 從金寶箱中獲得", item, (byte) 2).getBytes());
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + box + "] " + c.getPlayer().getName(), " : 從[" + box + "]中獲得", item, (byte) 2).getBytes());
             }
         } else {
             chr.dropMessage(5, "請確認是否有銀鑰匙或者你身上的空間滿了.");
