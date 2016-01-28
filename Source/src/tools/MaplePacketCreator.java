@@ -307,7 +307,7 @@ public class MaplePacketCreator {
         }
         mplew.write(summon.getMovementType().getValue());
         mplew.write(summon.getSummonType()); // 0 = Summon can't attack - but puppets don't attack with 1 either ^.-
-        mplew.write(0/*animated ? 0 : 1*/);
+        mplew.write(animated ? 0 : 1);
 
         return mplew.getPacket();
     }

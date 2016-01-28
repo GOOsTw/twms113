@@ -172,8 +172,8 @@ public class FamilyPacket {
             gens = family.getGens();
             generations = family.getMemberSize();
         }
-        mplew.writeLong(gens);
-        mplew.writeInt(0);
+        mplew.writeLong(descendants);
+        mplew.writeInt(gens);
         mplew.writeInt(-1);
         mplew.writeInt(generations);
         if (family != null) {
