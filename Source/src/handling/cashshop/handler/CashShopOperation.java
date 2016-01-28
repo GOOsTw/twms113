@@ -371,7 +371,7 @@ public class CashShopOperation {
                     chr.getStorage().increaseSlots((byte) 4);
                     chr.getStorage().saveToDB();
                     //c.sendPacket(MTSCSPacket.increasedStorageSlots(chr.getStorage().getSlots()));
-                    chr.dropMessage(1, "欄位已經被擴充至 " + chr.getInventory(type).getSlotLimit() + " 格");
+                    chr.dropMessage(1, "欄位已經被擴充至 " + chr.getStorage().getSlots() + " 格");
                 } else {
                     //c.sendPacket(MTSCSPacket.sendCSFail(0xA4));
                     chr.dropMessage(1, "欄位無法再進行擴充");
