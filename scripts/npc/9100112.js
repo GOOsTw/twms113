@@ -29,7 +29,13 @@ function action(mode, type, selection) {
         cm.dispose();
         return;
     }
-
+    if (cm.getParty() == null) {
+        cm.sendOk("請組隊再來找我....");
+        cm.dispose();
+    } else if (!cm.isLeader()) {
+        cm.sendOk("請叫你的隊長來找我!");
+        cm.dispose();
+	}
     if (status == 0) {
         msg = "本NPC可以提供給您招收組隊人數\r\n#L1##r是，我要徵收組隊#l";
         cm.sendSimple(msg);
