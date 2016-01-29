@@ -9,6 +9,7 @@ var edit = false;
 var pt = 0;
 var selected = 0;
 var ppl = -1;
+var next = true;
 
 function start() {
     if (edit && !cm.getPlayer().isGM()) {
@@ -30,12 +31,17 @@ function action(mode, type, selection) {
         return;
     }
     if (cm.getParty() == null) {
-        cm.sendOk("請組隊再來找我....");
-        cm.dispose();
+        msg = "請組隊再來找我....";
+        next = false;
     } else if (!cm.isLeader()) {
-        cm.sendOk("請叫你的隊長來找我!");
-        cm.dispose();
+        msg = "請叫你的隊長來找我!";
+        next = false;
 	}
+	if (!next) {
+        cm.sendNext(msg);
+        cm.dispose();
+        return;
+    }
     if (status == 0) {
         msg = "本NPC可以提供給您招收組隊人數\r\n#L1##r是，我要徵收組隊#l";
         cm.sendSimple(msg);
