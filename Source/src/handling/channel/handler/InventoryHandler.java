@@ -911,7 +911,7 @@ public class InventoryHandler {
                     World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[恭喜] " + c.getPlayer().getName(), " : 從" + box + "抽到！", item, rareness).getBytes());
                 }
             } else {
-                chr.dropMessage(5, "你有一個欄位滿了，請空出來再打開"+box+"！");
+                chr.dropMessage(5, "你有一個欄位滿了，請空出來再打開" + box + "！");
                 c.sendPacket(MaplePacketCreator.enableActions());
             }
         } else {
@@ -1849,14 +1849,17 @@ public class InventoryHandler {
             case 5152105:
             case 5152106:
             case 5152107: {
+                int color = (itemId - 5152100) * 100;
                 if (c.getPlayer().getLevel() < 30) {
-                    c.getPlayer().dropMessage(5, "必須等級30級以上才可以使用.");
-                    break;
-                } else {
-                    NPCScriptManager.getInstance().start(c, 9209004);
-                    c.getPlayer().dropMessage(5, "開始使用日拋隱形眼鏡NPC。");
+                    c.getPlayer().dropMessage(1, "必須等級30級以上才可以使用.");
                     break;
                 }
+                if (color >= 0 && c.getPlayer().changeFace(color)) {
+                    used = true;
+                } else {
+                    c.getPlayer().dropMessage(1, "使用日拋隱形眼鏡出現錯誤。");
+                }
+                break;
             }
             /* 寵物技能 */
             case 5190001:
