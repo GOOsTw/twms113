@@ -1591,9 +1591,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         } else if ((face % 1000 >= 700) && (face % 1000 < 800)) {
             f = face - 700 + color;
         }
-        if (!MapleItemInformationProvider.getInstance().faceExists(f)) {
-            return false;
-        }
         face = f;
         updateSingleStat(MapleStat.FACE, face);
         equipChanged();

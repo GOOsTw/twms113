@@ -344,9 +344,10 @@ public class CashShopOperation {
                     if (chr.getCSPoints(useNX) >= 100 && chr.getInventory(type).getSlotLimit() < 89) {
                         chr.modifyCSPoints(useNX, -100, false);
                         chr.getInventory(type).addSlot((byte) 8);
-                        chr.dropMessage(1, "欄位已經被擴充至" + chr.getInventory(type).getSlotLimit());
-                    } else {
-                        c.sendPacket(MTSCSPacket.sendCSFail(0xA4));
+                        chr.dropMessage(1, "欄位已經被擴充至 " + chr.getInventory(type).getSlotLimit() + " 格");
+                    } else {                     
+                        //c.sendPacket(MTSCSPacket.sendCSFail(0xA4));
+                        chr.dropMessage(1, "欄位無法再進行擴充");
                     }
                 } else {
                     final MapleInventoryType type = MapleInventoryType.getByType(slea.readByte());
@@ -354,9 +355,10 @@ public class CashShopOperation {
                     if (chr.getCSPoints(useNX) >= 100 && chr.getInventory(type).getSlotLimit() < 93) {
                         chr.modifyCSPoints(useNX, -100, false);
                         chr.getInventory(type).addSlot((byte) 4);
-                        chr.dropMessage(1, "欄位已經被擴充至" + chr.getInventory(type).getSlotLimit());
+                        chr.dropMessage(1, "欄位已經被擴充至 " + chr.getInventory(type).getSlotLimit() + " 格");
                     } else {
-                        c.sendPacket(MTSCSPacket.sendCSFail(0xA4));
+                        //c.sendPacket(MTSCSPacket.sendCSFail(0xA4));
+                        chr.dropMessage(1, "欄位無法再進行擴充");
                     }
                 }
                 refreshCashShop(c);
@@ -369,9 +371,10 @@ public class CashShopOperation {
                     chr.getStorage().increaseSlots((byte) 4);
                     chr.getStorage().saveToDB();
                     //c.sendPacket(MTSCSPacket.increasedStorageSlots(chr.getStorage().getSlots()));
-                    chr.dropMessage(1, "倉庫欄位已經被擴充至" + chr.getStorage().getSlots());
+                    chr.dropMessage(1, "欄位已經被擴充至 " + chr.getStorage().getSlots() + " 格");
                 } else {
-                    c.sendPacket(MTSCSPacket.sendCSFail(0xA4));
+                    //c.sendPacket(MTSCSPacket.sendCSFail(0xA4));
+                    chr.dropMessage(1, "欄位無法再進行擴充");
                 }
                 refreshCashShop(c);
                 break;

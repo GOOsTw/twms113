@@ -93,16 +93,16 @@ public class InventoryHandler {
         final short src = slea.readShort();                                            //01 00
         final short dst = slea.readShort();                                            //00 00
         long checkq = slea.readShort();
-        final short quantity = (short)(int)checkq;                                       //53 01
+        final short quantity = (short) (int) checkq;                                       //53 01
 
         if (src < 0 && dst > 0) {
             MapleInventoryManipulator.unequip(c, src, dst);
         } else if (dst < 0) {
             MapleInventoryManipulator.equip(c, src, dst);
         } else if (dst == 0) {
-             if (checkq < 1 || c.getPlayer().getInventory(type).getItem(src) == null) {
-               c.sendPacket(MaplePacketCreator.enableActions());
-          //     World.Broadcast.broadcastGMMessage(CWvsContext.serverNotice(6, c.getPlayer().getName() + " --- Possibly attempting drop dupe! Go investigate"));
+            if (checkq < 1 || c.getPlayer().getInventory(type).getItem(src) == null) {
+                c.sendPacket(MaplePacketCreator.enableActions());
+                //     World.Broadcast.broadcastGMMessage(CWvsContext.serverNotice(6, c.getPlayer().getName() + " --- Possibly attempting drop dupe! Go investigate"));
                 return;
             }
             MapleInventoryManipulator.drop(c, type, src, quantity);
@@ -872,49 +872,53 @@ public class InventoryHandler {
         String box;
 
         switch (toUse.getItemId()) {
-            case 4280000: // Gold box
+            case 4280000: // 金寶箱
                 reward = RandomRewards.getInstance().getGoldBoxReward();
                 keyIDforRemoval = 5490000;
                 box = "金寶箱";
                 break;
-            case 4280001: // Silver box
+            case 4280001: // 銀寶箱
                 reward = RandomRewards.getInstance().getSilverBoxReward();
                 keyIDforRemoval = 5490001;
                 box = "銀寶箱";
                 break;
-            default: // Up to no good
+            default: // 沒東西
                 return;
         }
 
-        // Get the quantity
-        int amount = 1;
+        int amount = 1; // 得到的數量
+        String keyname = "";
+        keyname = MapleItemInformationProvider.getInstance().getName(keyIDforRemoval);
         switch (reward) {
             case 2000004:
-                amount = 200; // Elixir
+                amount = 200; // 特殊藥水
                 break;
             case 2000005:
-                amount = 100; // Power Elixir
+                amount = 100; // 超級藥水
                 break;
         }
         if (chr.getInventory(MapleInventoryType.CASH).countById(keyIDforRemoval) > 0) {
-            final IItem item = MapleInventoryManipulator.addbyId_Gachapon(c, reward, (short) amount);
+            if (chr.getInventory(MapleInventoryType.EQUIP).getNextFreeSlot() > -1 && chr.getInventory(MapleInventoryType.USE).getNextFreeSlot() > -1 && chr.getInventory(MapleInventoryType.SETUP).getNextFreeSlot() > -1 && chr.getInventory(MapleInventoryType.ETC).getNextFreeSlot() > -1) {
 
-            if (item == null) {
-                chr.dropMessage(5, "請確認是否有金鑰匙或者你身上的空間滿了.");
+                final IItem item = MapleInventoryManipulator.addbyId_Gachapon(c, reward, (short) amount);
+                final byte rareness = GameConstants.gachaponRareItem(item.getItemId());
+
+                MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.ETC, (byte) slot, (short) 1, true);
+                MapleInventoryManipulator.removeById(c, MapleInventoryType.CASH, keyIDforRemoval, 1, true, false);
+                c.sendPacket(MaplePacketCreator.getShowItemGain(reward, (short) amount, true));
+
+                if (rareness > 0) {
+                    World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[恭喜] " + c.getPlayer().getName(), " : 從" + box + "抽到！", item, rareness).getBytes());
+                }
+            } else {
+                chr.dropMessage(5, "你有一個欄位滿了，請空出來再打開" + box + "！");
                 c.sendPacket(MaplePacketCreator.enableActions());
-                return;
-            }
-            MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.ETC, (byte) slot, (short) 1, true);
-            MapleInventoryManipulator.removeById(c, MapleInventoryType.CASH, keyIDforRemoval, 1, true, false);
-            c.sendPacket(MaplePacketCreator.getShowItemGain(reward, (short) amount, true));
-
-            if (GameConstants.gachaponRareItem(item.getItemId()) > 0) {
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + box + "] " + c.getPlayer().getName(), " : 從金寶箱中獲得", item, (byte) 2).getBytes());
             }
         } else {
-            chr.dropMessage(5, "請確認是否有銀鑰匙或者你身上的空間滿了.");
+            chr.dropMessage(5, "請確認是否有" + keyname);
             c.sendPacket(MaplePacketCreator.enableActions());
         }
+
     }
 
     @SuppressWarnings("empty-statement")
@@ -1845,14 +1849,17 @@ public class InventoryHandler {
             case 5152105:
             case 5152106:
             case 5152107: {
+                int color = (itemId - 5152100) * 100;
                 if (c.getPlayer().getLevel() < 30) {
-                    c.getPlayer().dropMessage(5, "必須等級30級以上才可以使用.");
-                    break;
-                } else {
-                    NPCScriptManager.getInstance().start(c, 9209004);
-                    c.getPlayer().dropMessage(5, "開始使用日拋隱形眼鏡NPC。");
+                    c.getPlayer().dropMessage(1, "必須等級30級以上才可以使用.");
                     break;
                 }
+                if (color >= 0 && c.getPlayer().changeFace(color)) {
+                    used = true;
+                } else {
+                    c.getPlayer().dropMessage(1, "使用日拋隱形眼鏡出現錯誤。");
+                }
+                break;
             }
             /* 寵物技能 */
             case 5190001:
