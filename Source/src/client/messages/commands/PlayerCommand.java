@@ -15,10 +15,14 @@ import server.maps.MapleMap;
 import java.util.Arrays;
 import tools.StringUtil;
 import handling.world.World;
+import java.awt.Point;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import server.Timer;
+import server.life.MapleLifeFactory;
+import server.life.OverrideMonsterStats;
 import server.maps.SavedLocationType;
 import tools.FilePrinter;
 
@@ -225,6 +229,50 @@ public class PlayerCommand {
         }
     }
 
+    public static class dpm extends CommandExecute {
+
+        @Override
+        public boolean execute(final MapleClient c, String[] splitted) {
+            if (!c.getPlayer().isTestingDPS()) {
+                c.getPlayer().toggleTestingDPS();
+                c.getPlayer().dropMessage(5,"請持續攻擊怪物1分鐘，來測試您的每秒輸出！");
+                final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
+                int distance = ((c.getPlayer().getJob() >= 300 && c.getPlayer().getJob() < 413) || (c.getPlayer().getJob() >= 1300 && c.getPlayer().getJob() < 1500) || (c.getPlayer().getJob() >= 520 && c.getPlayer().getJob() < 600)) ? 125 : 50;
+                Point p = new Point(c.getPlayer().getPosition().x - distance, c.getPlayer().getPosition().y);
+                mm.setBelongTo(c.getPlayer());
+                final long newhp = Long.MAX_VALUE;
+                OverrideMonsterStats overrideStats = new OverrideMonsterStats();
+                overrideStats.setOHp(newhp);
+                mm.setHp(newhp);
+                mm.setOverrideStats(overrideStats);
+                c.getPlayer().getMap().spawnMonsterOnGroundBelow(mm, p);
+                Timer.EventTimer.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        long health = mm.getHp();
+                        c.getPlayer().getMap().killMonster1(mm);
+                        long dps = (newhp - health) / 15;
+                        if (dps > c.getPlayer().getDPS()) {
+                            c.getPlayer().dropMessage(6,"你的DPM是 " + dps + ". 這是一個新的紀錄！");
+                            c.getPlayer().setDPS(dps);
+                            c.getPlayer().savePlayer();
+                            c.getPlayer().toggleTestingDPS();
+                        } else {
+                            c.getPlayer().dropMessage(6,"你的DPM是 " + dps + ". 您目前的紀錄是 " + c.getPlayer().getDPS() + ".");
+                            c.getPlayer().toggleTestingDPS();
+                        }
+                    }
+                }, 60000);
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("").toString();
+        }
+    }
+
     public static class expfix extends CommandExecute {
 
         @Override
@@ -397,7 +445,7 @@ public class PlayerCommand {
 
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
-            c.getPlayer().dropNPC("\t\t #i3994014##i3994018##i3994070##i3994061##i3994005##i3991038##i3991004#\r\t\t\t\t\t\t #i3994078##i3991040#\t\t\r\n\t\t\t #i3991018##i3994083##i3994072##i3994061##i4001126#\r\n\t\t#fMob/0100101.img/move/1##b 親愛的： #h \r\n #fMob/0100101.img/move/1##k\r\r\n\t\t#fMob/0130101.img/move/1##g[以下是玩家指令]#k#fMob/0130101.img/move/1#\r\n\t  #r▇▇▆▅▄▃▂#d萬用指令區#r▂▃▄▅▆▇▇\r\n\t\t#b@查看/@ea#k - #r<解除異常+查看當前狀態>#k\r\n\t\t#b@怪物/@mob#k - #r<查看身邊怪物訊息>#k\r\n\t\t#b@存檔/@save#k - #r<存檔>#k\r\n\t\t#b@卡圖/@car#k - #r<卡圖修復>#k\r\n\t\t#b@CGM <訊息>#k - #r<傳送訊息給GM>#k\r\n\t\t#b@expfix#k - #r<修復經驗假死>#k\r\n\t\t#b@time#k - #r<報時系統>#k\r\n\t\t#b@在線人數#k - #r<查詢當前伺服器人數>#k\r\n\t  #g▇▇▆▅▄▃▂#dNPＣ指令區#g▂▃▄▅▆▇▇\r\n\t\t#b@丟裝/@DropCash#k - #r<丟棄點裝>#k\r\n\t\t#b@萬能/@npc#k - #r<工具箱>#k\r\n\t\t#b@猜拳/@pk#k - #r<小遊戲>#k\r\n\t\t#b@event#k - #r<參加活動>#k\r\n\t\t#b@bspq#k - #r<BOSSPQ兌換NPC>#k");
+            c.getPlayer().dropNPC("\t\t #i3994014##i3994018##i3994070##i3994061##i3994005##i3991038##i3991004#\r\t\t\t\t\t\t #i3994078##i3991040#\t\t\r\n\t\t\t #i3991018##i3994083##i3994072##i3994061##i4001126#\r\n\t\t#fMob/0100101.img/move/1##b 親愛的： #h \r\n #fMob/0100101.img/move/1##k\r\r\n\t\t#fMob/0130101.img/move/1##g[以下是玩家指令]#k#fMob/0130101.img/move/1#\r\n\t  #r▇▇▆▅▄▃▂#d萬用指令區#r▂▃▄▅▆▇▇\r\n\t\t#b@查看/@ea#k - #r<解除異常+查看當前狀態>#k\r\n\t\t#b@怪物/@mob#k - #r<查看身邊怪物訊息>#k\r\n\t\t#b@存檔/@save#k - #r<存檔>#k\r\n\t\t#b@卡圖/@car#k - #r<卡圖修復>#k\r\n\t\t#b@CGM <訊息>#k - #r<傳送訊息給GM>#k\r\n\t\t#b@expfix#k - #r<修復經驗假死>#k\r\n\t\t#b@time#k - #r<報時系統>#k\r\n\t\t#b@在線人數#k - #r<查詢當前伺服器人數>#k\r\n\t\t#b@dpm#k - #r<測試每分鐘平均傷害>#k\r\n\t  #g▇▇▆▅▄▃▂#dNPＣ指令區#g▂▃▄▅▆▇▇\r\n\t\t#b@丟裝/@DropCash#k - #r<丟棄點裝>#k\r\n\t\t#b@萬能/@npc#k - #r<工具箱>#k\r\n\t\t#b@猜拳/@pk#k - #r<小遊戲>#k\r\n\t\t#b@event#k - #r<參加活動>#k\r\n\t\t#b@bspq#k - #r<BOSSPQ兌換NPC>#k");
             return true;
         }
 

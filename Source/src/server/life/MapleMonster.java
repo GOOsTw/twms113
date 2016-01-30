@@ -100,6 +100,9 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     private boolean shouldDropItem = false;
     private long lastAbsorbMP;
 
+    private int belongsTo = -1;
+    private long endBelong;
+
     //獲得怪物ID 怪物能力值
     public MapleMonster(final int id, final MapleMonsterStats stats) {
         super(id);
@@ -556,7 +559,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
          if (killer != null && stats.isBoss()) {
          killer.finishAchievement(18);
          }*/
- /* 召喚小弟囉 */
+        /* 召喚小弟囉 */
         this.spawnRevives(getMap());
 
         /**
@@ -1196,8 +1199,9 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 for (MonsterStatus stat : stats) {
                     MapleMonster.this.getStati().remove(stat);
                 }
-                if(delay > 0)
-                MapleMonster.this.getMap().decApplyedStatusMonster();
+                if (delay > 0) {
+                    MapleMonster.this.getMap().decApplyedStatusMonster();
+                }
             }
         };
         BuffTimer.getInstance().schedule(cancelMonsterStatusTask, 250 * delay);
@@ -1870,5 +1874,54 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             listener.monsterKilled();
         }
         listener = null;
+    }
+
+    public boolean getBelongsToSomeone() {
+        return belongsTo != -1 && endBelong > System.currentTimeMillis();
+    }
+
+    public int getBelongsTo() {
+        return belongsTo;
+    }
+
+    public long getBelongTimeLeft() {
+        if (getBelongsToSomeone()) {
+            return endBelong - System.currentTimeMillis();
+        } else {
+            return 0;
+        }
+    }
+
+    public boolean getCanBelong() {
+        return belongsTo == -1;
+    }
+
+    public void expireAntiKS() {
+        belongsTo = -2;
+        //endBelong = System.currentTimeMillis();
+    }
+
+    public boolean isBoss() {
+        return stats.isBoss();
+    }
+
+    public void setBelongsTo(MapleCharacter chr) { //Only let it be controlled once.
+        if (belongsTo != -1) {
+            return;
+        }
+        if (isBoss()) {
+            belongsTo = -2;
+            return;
+        }
+        belongsTo = chr.getId();
+        endBelong = System.currentTimeMillis() + 30000; //30 seconds for the person to kill it.
+    }
+
+    public boolean belongsToSomeone() {
+        return belongsTo != -1;
+    }
+
+    public void setBelongTo(MapleCharacter chr) {
+        belongsTo = chr.getId();
     }
 }
