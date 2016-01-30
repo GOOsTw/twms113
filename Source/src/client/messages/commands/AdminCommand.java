@@ -2168,7 +2168,7 @@ public class AdminCommand {
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             World.toggleMegaphoneMuteState();
-            c.getPlayer().dropMessage(6, "Megaphone state : " + (c.getChannelServer().getMegaphoneMuteState() ? "Enabled" : "Disabled"));
+            c.getPlayer().dropMessage(6, "廣播禁用 : " + (c.getChannelServer().getMegaphoneMuteState() ? "啟用" : "關閉"));
             return true;
         }
 
