@@ -623,7 +623,8 @@ public class MapleInventoryManipulator {
             c.getPlayer().startFairySchedule(true, true);
         }
         if (GameConstants.isTimelessItem(source.getItemId())) {
-        c.getPlayer().dropMessage(5,"穿上永恆系列裝備後請換頻。");
+            //c.getPlayer().dropMessage(5, "穿上永恆系列裝備後請換頻。");
+            c.getPlayer().reloadC();
         }
         //1112413, 1112414, 1112405 (Lilin's Ring)
         source = (Equip) c.getPlayer().getInventory(MapleInventoryType.EQUIP).getItem(src);
