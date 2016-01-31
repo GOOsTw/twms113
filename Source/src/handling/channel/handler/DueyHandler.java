@@ -60,8 +60,9 @@ public class DueyHandler {
         final byte operation = slea.readByte();
 
         switch (operation) {
-            case 1: { // Start Duey, 13 digit AS
-                final String AS13Digit = slea.readMapleAsciiString();
+            case 1: { 
+                //第二組密碼
+                final String _2ndpassword = slea.readMapleAsciiString();
                 //		int unk = slea.readInt(); // Theres an int here, value = 1
                 //  9 = error
                 final int conv = c.getPlayer().getConversation();
@@ -71,11 +72,11 @@ public class DueyHandler {
                 }
                 break;
             }
-            case 3: { // Send Item
+            case 3: { // 寄送
                 if (c.getPlayer().getConversation() != 2) {
                     return;
                 }
-                final byte inventId = slea.readByte();
+                final byte slot = slea.readByte();
                 final short itemPos = slea.readShort();
                 final short amount = slea.readShort();
                 final int mesos = slea.readInt();
@@ -85,24 +86,14 @@ public class DueyHandler {
                 final int finalcost = mesos + GameConstants.getTaxAmount(mesos) + (quickdelivery ? 0 : 5000);
 
                 if (mesos >= 0 && mesos <= 100000000 && c.getPlayer().getMeso() >= finalcost) {
-                    final int accid = MapleCharacterUtil.getIdByName(recipient);
+                    final int accid = MapleCharacterUtil.getAccIdByName(recipient);
                     if (accid != -1) {
                         if (accid != c.getAccID()) {
                             boolean recipientOn = false;
                             MapleClient rClient = null;
-                            /*        try {
-                             int channel = c.getChannelServer().getWorldInterface().find(recipient);
-                             if (channel > -1) {
-                             recipientOn = true;
-                             ChannelServer rcserv = ChannelServer.getInstance(channel);
-                             rClient = rcserv.getPlayerStorage().getCharacterByName(recipient).getClient();
-                             }
-                             } catch (RemoteException re) {
-                             c.getChannelServer().reconnectWorld();
-                             }*/
 
-                            if (inventId > 0) {
-                                final MapleInventoryType inv = MapleInventoryType.getByType(inventId);
+                            if (slot > 0) {
+                                final MapleInventoryType inv = MapleInventoryType.getByType(slot);
                                 final IItem item = c.getPlayer().getInventory(inv).getItem((byte) itemPos);
                                 if (item == null) {
                                     c.sendPacket(MaplePacketCreator.sendDuey((byte) 17, null)); // Unsuccessfull

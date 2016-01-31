@@ -1,6 +1,4 @@
 function start() {
-    cm.sendOk("目前宅配功能尚未開放。。。");
-    cm.safeDispose();
+	cm.openDuey();
+	cm.dispose();
 }
-
-function action(mode, type, selection) {}

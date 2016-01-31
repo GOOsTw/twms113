@@ -96,6 +96,27 @@ public class MapleCharacterUtil {
         }
         return -1;
     }
+    
+     public static final int getAccIdByName(final String name) {
+        Connection con = DatabaseConnection.getConnection();
+
+        final int id;
+        try (PreparedStatement ps = con.prepareStatement("SELECT accountid FROM characters WHERE name = ?")) {
+            ps.setString(1, name);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    rs.close();
+                    ps.close();
+                    return -1;
+                }
+                id = rs.getInt("accountid");
+            }
+            return id;
+        } catch (SQLException e) {
+            System.err.println("error 'getIdByName' " + e);
+        }
+        return -1;
+     }
 
     public static final boolean PromptPoll(final int accountid) {
         PreparedStatement ps = null;
