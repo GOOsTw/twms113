@@ -47,7 +47,7 @@ public class CharacterTransfer implements Externalizable {
             mount_itemid, mount_exp, points, vpoints, marriageId,
             familyid, seniorid, junior1, junior2, currentrep, totalrep, expression, constellation, blood, month, day, battleshipHP, gachexp;
     public byte channel, dojoRecord, gender, gmLevel, guildrank, alliancerank, clonez, fairyExp, buddysize, world, initialSpawnPoint, skinColor, mount_level, mount_Fatigue, subcategory;
-    public long lastfametime, TranferTime;
+    public long lastfametime, TranferTime, dps;
     public String name, accountname, BlessOfFairy, chalkboard, charmessage, prefix;
     public short level, fame, str, dex, int_, luk, maxhp, maxmp, hp, mp, remainingAp, hpApUsed, job;
     public Object inventorys, skillmacro, storage, cs;
@@ -123,6 +123,7 @@ public class CharacterTransfer implements Externalizable {
         this.battleshipHP = chr.currentBattleshipHP();
         this.prefix = chr.getPrefix();
         this.gachexp = chr.getGachExp();
+        this.dps = chr.getDPS();
         boolean uneq = false;
         for (int i = 0; i < this.petStore.length; i++) {
             final MaplePet pet = chr.getPet(i);
@@ -281,6 +282,7 @@ public class CharacterTransfer implements Externalizable {
         this.battleshipHP = in.readInt();
         this.prefix = in.readUTF();
         this.gachexp = in.readInt();
+        this.dps = in.readLong();
 
         final int mbooksize = in.readShort();
         for (int i = 0; i < mbooksize; i++) {
@@ -439,6 +441,7 @@ public class CharacterTransfer implements Externalizable {
         out.writeInt(this.day);
         out.writeUTF(this.prefix);
         out.writeInt(this.gachexp);
+        out.writeLong(this.dps);
 
         out.writeShort(this.mbook.size());
         for (Map.Entry<Integer, Integer> ms : this.mbook.entrySet()) {

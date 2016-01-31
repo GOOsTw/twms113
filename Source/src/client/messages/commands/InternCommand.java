@@ -197,16 +197,20 @@ public class InternCommand {
                 MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
 
                 if (victim != null) {
-                    if (victim.getGMLevel() > 3) {
+                    if (c.getPlayer().getGMLevel() < victim.getGMLevel()) {
                         c.getPlayer().dropMessage(5, "你不能查看比你高權限的人!");
                     } else {
                         c.getPlayer().dropMessage(5, "此玩家狀態:");
-                        c.getPlayer().dropMessage(5, "等級: " + victim.getLevel() + "職業: " + victim.getJob() + "名聲: " + victim.getFame());
+                        c.getPlayer().dropMessage(5, "等級: " + victim.getLevel() + " 職業: " + victim.getJob() + " 名聲: " + victim.getFame());
                         c.getPlayer().dropMessage(5, "地圖: " + victim.getMapId() + " - " + victim.getMap().getMapName());
+                        c.getPlayer().dropMessage(5, "目前HP: " + victim.getStat().getHp() + " 目前MP: " + victim.getStat().getMp());
+                        c.getPlayer().dropMessage(5, "最大HP: " + victim.getStat().getMaxHp() + " 最大MP: " + victim.getStat().getMaxMp());
                         c.getPlayer().dropMessage(5, "力量: " + victim.getStat().getStr() + "  ||  敏捷: " + victim.getStat().getDex() + "  ||  智力: " + victim.getStat().getInt() + "  ||  幸運: " + victim.getStat().getLuk());
-                        c.getPlayer().dropMessage(5, "擁有 " + victim.getMeso() + " 楓幣.");
-                        c.getPlayer().dropMessage(5, "擁有 " + victim.getCSPoints(1) + " GASH " + victim.getCSPoints(2) + " 楓葉點數 ");
-                        c.getPlayer().dropMessage(5, "延遲 " + victim.getClient().getLatency());
+                        c.getPlayer().dropMessage(5, "物理攻擊: " + victim.getStat().getTotalWatk() + "  ||  魔法攻擊: " + victim.getStat().getTotalMagic());
+                        c.getPlayer().dropMessage(5, "DPM: " + victim.getDPS());
+                        c.getPlayer().dropMessage(5, "經驗倍率: " + victim.getStat().expBuff + " 金錢倍率: " + victim.getStat().mesoBuff + " 掉寶倍率: " + victim.getStat().dropBuff);
+                        c.getPlayer().dropMessage(5, "擁有 " + victim.getCSPoints(1) + " GASH " + victim.getCSPoints(2) + " 楓葉點數 " + victim.getMeso() + " 楓幣　");
+                        c.getPlayer().dropMessage(5, "對伺服器延遲: " + victim.getClient().getLatency());
                     }
                 } else {
                     c.getPlayer().dropMessage(5, "找不到此玩家.");
@@ -329,7 +333,6 @@ public class InternCommand {
             try {
                 target = c.getChannelServer().getMapFactory().getMap(mapid);
             } catch (Exception ex) {
-                c.getPlayer().dropMessage(6, "出問題了 " + ex.getMessage());
             }
             if (target == null) {
                 c.getPlayer().dropMessage(6, "地圖不存在");
@@ -341,7 +344,7 @@ public class InternCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!warp 	玩家名稱 <地圖ID> - 移動到某個地圖或某個玩家所在的地方").toString();
+            return new StringBuilder().append("!warp 玩家名稱 <地圖ID> - 移動到某個地圖或某個玩家所在的地方").toString();
         }
     }
 

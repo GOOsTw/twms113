@@ -2821,6 +2821,7 @@ CREATE TABLE `characters` (
   `beans` int(11) NOT NULL DEFAULT '0',
   `prefix` varchar(255) DEFAULT '',
   `gachexp` int(11) NOT NULL DEFAULT '0',
+  `dps` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `accountid` (`accountid`),
   KEY `party` (`party`),
