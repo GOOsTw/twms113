@@ -183,6 +183,10 @@ public abstract class AbstractPlayerInteraction {
         return getWarpMap(map);
     }
 
+    public final void cancelChalkboard() {
+        c.getPlayer().setChalkboard(null);
+    }
+
     public final MapleMap getMap_Instanced(final int map) {
         return c.getPlayer().getEventInstance() == null ? getMap(map) : c.getPlayer().getEventInstance().getMapInstance(map);
     }

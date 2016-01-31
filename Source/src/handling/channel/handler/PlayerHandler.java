@@ -1125,6 +1125,9 @@ public class PlayerHandler {
             } else if (!MapConstants.CanUseMesoCard(chr.getMapId()) && (chr.getBuffSource(MapleBuffStat.MESO_RATE) == 2382005 || chr.getBuffSource(MapleBuffStat.MESO_RATE) == 2382016)) {
                 chr.cancelBuffStats(MapleBuffStat.MESO_RATE);
             }
+            if (!MapConstants.isEventMap(chr.getMapId()) || !MapConstants.isBlackFM(chr.getMapId())) {
+                chr.setChalkboard(null);
+            }
             if (targetid != -1 && !chr.isAlive()) {
                 chr.setStance(0);
                 if (chr.getEventInstance() != null && chr.getEventInstance().revivePlayer(chr) && chr.isAlive()) {

@@ -67,6 +67,7 @@ function action(mode, type, selection) {
                     if (cm.haveItem(4031017)) {
                         cm.removeAll(4031017);
                     }
+					cm.cancelChalkboard();
                     cm.saveReturnLocation("EVENT");
                     cm.getPlayer().setChalkboard(null);
                     cm.warp(cm.getChannelServer().getEvent(), cm.getChannelServer().getEvent() == 109080000 || cm.getChannelServer().getEvent() == 109080010 ? 0 : "join00");

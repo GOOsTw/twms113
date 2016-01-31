@@ -472,10 +472,16 @@ public class MaplePacketCreator {
 
     public static MaplePacket getAvatarMega(MapleCharacter chr, int channel, int itemId, String message, boolean ear) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
+        final IItem medal = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -21);
+        String medalname = "";
+        if (medal != null) {
+            medalname += "<" + MapleItemInformationProvider.getInstance().getName(medal.getItemId()) + "> ";
+        } else {
+            medalname = "";
+        }
         mplew.writeShort(SendPacketOpcode.AVATAR_MEGA.getValue());
         mplew.writeInt(itemId);
-        mplew.writeMapleAsciiString(chr.getName());
+        mplew.writeMapleAsciiString(medalname + chr.getName());
         mplew.writeMapleAsciiString(message);
         mplew.writeInt(channel - 1); // channel
         mplew.write(ear ? 1 : 0);

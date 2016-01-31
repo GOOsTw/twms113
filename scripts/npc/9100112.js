@@ -60,7 +60,7 @@ function action(mode, type, selection) {
         ppl = selection;
         pqname = getPQMap(cm.getPlayer());
         cm.sendNext("已發出去公告了，請等人來吧。");
-        cm.worldMessage("『組隊招募公告<頻道: " + cm.getClient().getChannel() + ">』：玩家" + cm.getChar().getName() + " 組隊任務:" + pqname + " 缺了:" + ppl + " 人");
+        cm.worldMessage("『組隊招募公告<頻道: " + cm.getClient().getChannel() + ">』：玩家: " + cm.getChar().getName() + " 組隊任務:" + pqname + " 缺了:" + ppl + " 人");
         cm.dispose();
     }
 }
@@ -90,7 +90,7 @@ function getPQMap(chr) {
 			pqname ="金勾海賊王";
 			break;
         case 910000000:
-            pqname = "自由市場";
+            pqname = "BOSSPQ";
             break;
     }
     return pqname;
