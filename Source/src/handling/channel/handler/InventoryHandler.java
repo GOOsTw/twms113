@@ -2267,6 +2267,9 @@ public class InventoryHandler {
                 c.sendPacket(MaplePacketCreator.enableActions());
             }
         } finally {
+            if (c.getPlayer().isAdmin()) {
+                c.getPlayer().dropMessage(6,"撿_ItemId: "+mapitem.getItem().getItemId() + " ItemName: "+ MapleItemInformationProvider.getInstance().getName(mapitem.getItem().getItemId()));
+            }
             lock.unlock();
         }
     }

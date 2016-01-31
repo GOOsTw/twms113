@@ -79,7 +79,7 @@ public class AramiaFireWorks {
     }
 
     private void startEvent(final MapleMap map) {
-        map.startMapEffect("雪人大大出現啦", 5120000);
+        map.startMapEffect("巨大的雪人出現了！", 5120000);
 
         EventTimer.getInstance().schedule(new Runnable() {
 
@@ -147,7 +147,7 @@ public class AramiaFireWorks {
     }
 
     private void startSun(final MapleMap map) {
-        map.startMapEffect("The tree is bursting with sunshine!", 5121010);
+        map.startMapEffect("陽光正在綻放！", 5121010);
         for (int i = 0; i < 3; i++) {
             EventTimer.getInstance().schedule(new Runnable() {
 
@@ -215,7 +215,7 @@ public class AramiaFireWorks {
     }
 
     private final void startDec(final MapleMap map) {
-        map.startMapEffect("The tree is bursting with snow!", 5120000);
+        map.startMapEffect("聖誕樹正在綻放！", 5120000);
         for (int i = 0; i < 3; i++) {
             EventTimer.getInstance().schedule(new Runnable() {
 
