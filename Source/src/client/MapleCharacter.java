@@ -124,6 +124,7 @@ import server.MapleInventoryManipulator;
 import server.Timer.BuffTimer;
 import server.Timer.EtcTimer;
 import server.Timer.MapTimer;
+import server.life.MapleLifeFactory;
 import server.life.MobSkill;
 import server.life.PlayerNPC;
 import server.maps.Event_PyramidSubway;
@@ -5455,6 +5456,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
         if (res == 1) {
             dropMessage(5, "角色保存成功！");
+        }
+        if (client.getPlayer().isTestingDPS()) {
+            final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
+            map.Killdpm(true);
+            client.getPlayer().toggleTestingDPS();
+            client.getPlayer().dropMessage(5, "已停止當前的DPM測試。");
         }
 
         if (channel == client.getChannel() || toch == null || toch.isShutdown()) {

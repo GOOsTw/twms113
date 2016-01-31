@@ -233,36 +233,45 @@ public class PlayerCommand {
 
         @Override
         public boolean execute(final MapleClient c, String[] splitted) {
-            if (!c.getPlayer().isTestingDPS()) {
-                c.getPlayer().toggleTestingDPS();
-                c.getPlayer().dropMessage(5,"請持續攻擊怪物1分鐘，來測試您的每秒輸出！");
-                final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
-                int distance = ((c.getPlayer().getJob() >= 300 && c.getPlayer().getJob() < 413) || (c.getPlayer().getJob() >= 1300 && c.getPlayer().getJob() < 1500) || (c.getPlayer().getJob() >= 520 && c.getPlayer().getJob() < 600)) ? 125 : 50;
-                Point p = new Point(c.getPlayer().getPosition().x - distance, c.getPlayer().getPosition().y);
-                mm.setBelongTo(c.getPlayer());
-                final long newhp = Long.MAX_VALUE;
-                OverrideMonsterStats overrideStats = new OverrideMonsterStats();
-                overrideStats.setOHp(newhp);
-                mm.setHp(newhp);
-                mm.setOverrideStats(overrideStats);
-                c.getPlayer().getMap().spawnMonsterOnGroundBelow(mm, p);
-                Timer.EventTimer.getInstance().schedule(new Runnable() {
-                    @Override
-                    public void run() {
-                        long health = mm.getHp();
-                        c.getPlayer().getMap().killMonster1(mm);
-                        long dps = (newhp - health) / 15;
-                        if (dps > c.getPlayer().getDPS()) {
-                            c.getPlayer().dropMessage(6,"你的DPM是 " + dps + ". 這是一個新的紀錄！");
-                            c.getPlayer().setDPS(dps);
-                            c.getPlayer().savePlayer();
-                            c.getPlayer().toggleTestingDPS();
-                        } else {
-                            c.getPlayer().dropMessage(6,"你的DPM是 " + dps + ". 您目前的紀錄是 " + c.getPlayer().getDPS() + ".");
-                            c.getPlayer().toggleTestingDPS();
+            if (c.getPlayer().getMapId() == 100000000 && c.getPlayer().getLevel() >= 70 && !c.getPlayer().isGM()) {
+                if (!c.getPlayer().isTestingDPS()) {
+                    c.getPlayer().toggleTestingDPS();
+                    c.getPlayer().dropMessage(5, "請持續攻擊怪物1分鐘，來測試您的每秒輸出！");
+                    final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
+                    int distance = ((c.getPlayer().getJob() >= 300 && c.getPlayer().getJob() < 413) || (c.getPlayer().getJob() >= 1300 && c.getPlayer().getJob() < 1500) || (c.getPlayer().getJob() >= 520 && c.getPlayer().getJob() < 600)) ? 125 : 50;
+                    Point p = new Point(c.getPlayer().getPosition().x - distance, c.getPlayer().getPosition().y);
+                    mm.setBelongTo(c.getPlayer());
+                    final long newhp = Long.MAX_VALUE;
+                    OverrideMonsterStats overrideStats = new OverrideMonsterStats();
+                    overrideStats.setOHp(newhp);
+                    mm.setHp(newhp);
+                    mm.setOverrideStats(overrideStats);
+                    c.getPlayer().getMap().spawnMonsterOnGroundBelow(mm, p);
+                    final MapleMap nowMap = c.getPlayer().getMap();
+                    Timer.EventTimer.getInstance().schedule(new Runnable() {
+                        @Override
+                        public void run() {
+                            long health = mm.getHp();
+                            nowMap.killMonster1(mm);
+                            long dps = (newhp - health) / 15;
+                            if (dps > c.getPlayer().getDPS()) {
+                                c.getPlayer().dropMessage(6, "你的DPM是 " + dps + ". 這是一個新的紀錄！");
+                                c.getPlayer().setDPS(dps);
+                                c.getPlayer().savePlayer();
+                                c.getPlayer().toggleTestingDPS();
+                            } else {
+                                c.getPlayer().dropMessage(6, "你的DPM是 " + dps + ". 您目前的紀錄是 " + c.getPlayer().getDPS() + ".");
+                                c.getPlayer().toggleTestingDPS();
+                            }
                         }
-                    }
-                }, 60000);
+                    }, 60000);
+                } else {
+                    c.getPlayer().dropMessage(5, "請先把你的這回DPM測試完畢。");
+                    return true;
+                }
+            } else {
+                c.getPlayer().dropMessage(5, "只能在弓箭手村測試DPM，並且等級符合70以上。");
+                return true;
             }
             return true;
         }

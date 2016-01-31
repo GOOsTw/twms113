@@ -48,6 +48,7 @@ import server.MaplePortal;
 import server.Randomizer;
 import server.Timer.CloneTimer;
 import server.events.MapleSnowball.MapleSnowballs;
+import server.life.MapleLifeFactory;
 import server.life.MapleMonster;
 import server.life.MobAttackInfo;
 import server.life.MobAttackInfoFactory;
@@ -1127,6 +1128,12 @@ public class PlayerHandler {
             }
             if (!MapConstants.isEventMap(chr.getMapId()) || !MapConstants.isBlackFM(chr.getMapId())) {
                 chr.setChalkboard(null);
+            }
+            if (chr.isTestingDPS()) {
+                final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
+                chr.getMap().Killdpm(true);
+                chr.toggleTestingDPS();
+                chr.dropMessage(5, "已停止當前的DPM測試。");
             }
             if (targetid != -1 && !chr.isAlive()) {
                 chr.setStance(0);

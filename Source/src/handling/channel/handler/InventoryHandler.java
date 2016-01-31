@@ -971,6 +971,12 @@ public class InventoryHandler {
                             } else if (!MapConstants.CanUseMesoCard(c.getPlayer().getMapId()) && (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382005) || (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382016)) {
                                 c.getPlayer().cancelBuffStats(MapleBuffStat.MESO_RATE);
                             }
+                            if (c.getPlayer().isTestingDPS()) {
+                                final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
+                                c.getPlayer().getMap().Killdpm(true);
+                                c.getPlayer().toggleTestingDPS();
+                                c.getPlayer().dropMessage(5, "已停止當前的DPM測試。");
+                            }
                             c.getPlayer().changeMap(target, target.getPortal(0));
                             used = true;
                         }
@@ -2039,6 +2045,21 @@ public class InventoryHandler {
                 used = true;
                 break;
             }
+            case 5042000: { //豫園高級瞬移之石
+                MapleMap map;
+                map = c.getChannelServer().getMapFactory().getMap(701000200);
+                c.getPlayer().changeMap(map, map.getPortal(0));
+                used = true;
+                break;
+            }
+            case 5042001: { //不夜城高級瞬移之石
+                MapleMap map;
+                map = c.getChannelServer().getMapFactory().getMap(741000000);
+                c.getPlayer().changeMap(map, map.getPortal(0));
+                used = true;
+                break;
+            }
+            
             /* 黑板 */
             case 5370000:
             case 5370001: {
@@ -2178,6 +2199,7 @@ public class InventoryHandler {
         if (used) {
             MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.CASH, slot, (short) 1, false, true);
         }
+
         c.sendPacket(MaplePacketCreator.enableActions());
         if (cc) {
             if (!c.getPlayer().isAlive() || c.getPlayer().getEventInstance() != null || FieldLimitType.ChannelSwitch.check(c.getPlayer().getMap().getFieldLimit())) {
@@ -2268,7 +2290,7 @@ public class InventoryHandler {
             }
         } finally {
             if (c.getPlayer().isAdmin()) {
-                c.getPlayer().dropMessage(6,"撿_ItemId: "+mapitem.getItem().getItemId() + " ItemName: "+ MapleItemInformationProvider.getInstance().getName(mapitem.getItem().getItemId()));
+                c.getPlayer().dropMessage(6, "撿_ItemId: " + mapitem.getItem().getItemId() + " ItemName: " + MapleItemInformationProvider.getInstance().getName(mapitem.getItem().getItemId()));
             }
             lock.unlock();
         }
@@ -2622,6 +2644,12 @@ public class InventoryHandler {
                     } else if (!MapConstants.CanUseMesoCard(c.getPlayer().getMapId()) && (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382005) || (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382016)) {
                         c.getPlayer().cancelBuffStats(MapleBuffStat.MESO_RATE);
                     }
+                    if (c.getPlayer().isTestingDPS()) {
+                        final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
+                        c.getPlayer().getMap().Killdpm(true);
+                        c.getPlayer().toggleTestingDPS();
+                        c.getPlayer().dropMessage(5, "已停止當前的DPM測試。");
+                    }
                     c.getPlayer().changeMap(target, target.getPortal(0));
                     used = true;
                 }
@@ -2637,6 +2665,12 @@ public class InventoryHandler {
                             c.getPlayer().cancelBuffStats(MapleBuffStat.DROP_RATE);
                         } else if (!MapConstants.CanUseMesoCard(c.getPlayer().getMapId()) && (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382005) || (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382016)) {
                             c.getPlayer().cancelBuffStats(MapleBuffStat.MESO_RATE);
+                        }
+                        if (c.getPlayer().isTestingDPS()) {
+                            final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
+                            c.getPlayer().getMap().Killdpm(true);
+                            c.getPlayer().toggleTestingDPS();
+                            c.getPlayer().dropMessage(5, "已停止當前的DPM測試。");
                         }
                         c.getPlayer().changeMap(victim.getMap(), victim.getMap().findClosestSpawnpoint(victim.getPosition()));
                         used = true;
