@@ -223,7 +223,7 @@ public class MapleStatEffect implements Serializable {
                     break;
                 case 9001004: // 終極隱藏
                     ret.duration = 60 * 120 * 1000;
-                    statups.add(new Pair<>(MapleBuffStat.DARKSIGHT, ret.x));
+                    statups.add(new Pair<>(MapleBuffStat.GM_HIDE, ret.x));
                     break;
                 case 13101006://風影漫步
                     statups.add(new Pair<>(MapleBuffStat.WIND_WALK, ret.x));
