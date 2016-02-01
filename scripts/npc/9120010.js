@@ -162,7 +162,7 @@ function action(mode, type, selection) {
         itemSet = (Math.floor(Math.random() * reward.length));
         prizeItem = reward[itemSet][0];
         prizeQuantity = reward[itemSet][1];
-        if (!cm.canHold(prizeItem)) {
+        if (!cm.canHold()) {
             cm.sendNext("什麼？我不能給你獎勵，確保你的道具欄有無滿。");
         } else if (checkQuantity(requiredItem) >= 100) { // check they have >= 100 in Inventory
             cm.gainItem(requiredItem, -100);

@@ -84,7 +84,8 @@ function action(mode, type, selection) {
         for(var i = 0; i < items.length; i++) {
             var slot = items[i];
             var item = inventory.getItem(slot); 
-            cm.gainItem(item.getItemId(), -1);
+            cm.removeSlot(1, slot, 1);
+            //cm.gainItem(item.getItemId(), -1);
             cm.gainItem(item.getItemId(), 1);
         }
         cm.setPlayerVariable('eqpfix', '1');
