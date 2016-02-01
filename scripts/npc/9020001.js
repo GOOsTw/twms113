@@ -320,6 +320,9 @@ function rectanglestages(cm) {
                 }
             }
         } else {
+            if(eim == null) {
+                eim = cm.getChar().getEventInstance();
+            }
             var complete = eim.getProperty(curMap.toString() + "stageclear");
             if (complete != null) {
                 var target = eim.getMapInstance(103000800 + curMap);
@@ -330,7 +333,8 @@ function rectanglestages(cm) {
         }
     } else { // Not leader
         if (status == 0) {
-            var complete = eim.getProperty(curMap.toString() + "stageclear");
+            
+           var complete = eim.getProperty(curMap.toString() + "stageclear");
             if (complete != null) {
                 cm.dispose();
                 //		cm.sendNext("Please hurry on to the next stage, the portal opened!");
