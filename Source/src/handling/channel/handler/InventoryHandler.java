@@ -2033,11 +2033,12 @@ public class InventoryHandler {
             case 5201001:  //小鋼珠盒子(500)
             case 5201002: { //小鋼珠盒子(3000)
                 int ss = 0;
-                if (c.getPlayer().haveItem(5201001)) {
-                    ss = 500;
-                    c.getPlayer().gainBeans(ss);
-                } else if (c.getPlayer().haveItem(5201002)) {
-                    ss = 3000;
+                if (itemId == 5201001 || itemId == 5201002) {
+                    if (itemId == 5201001) {
+                        ss = 500;
+                    } else if (itemId == 5201002) {
+                        ss = 3000;
+                    }
                     c.getPlayer().gainBeans(ss);
                 }
                 c.getPlayer().reloadC();
@@ -2045,21 +2046,22 @@ public class InventoryHandler {
                 used = true;
                 break;
             }
-            case 5042000: { //豫園高級瞬移之石
-                MapleMap map;
-                map = c.getChannelServer().getMapFactory().getMap(701000200);
-                c.getPlayer().changeMap(map, map.getPortal(0));
-                used = true;
-                break;
-            }
+            case 5042000: //豫園高級瞬移之石
             case 5042001: { //不夜城高級瞬移之石
                 MapleMap map;
-                map = c.getChannelServer().getMapFactory().getMap(741000000);
-                c.getPlayer().changeMap(map, map.getPortal(0));
-                used = true;
-                break;
+                if (itemId == 5042000 || itemId == 5042001) {
+                    if (itemId == 5042000) {
+                        map = c.getChannelServer().getMapFactory().getMap(701000200);
+                        c.getPlayer().changeMap(map, map.getPortal(0));
+                    } else if (itemId == 5042001) {
+                        map = c.getChannelServer().getMapFactory().getMap(741000000);
+                        c.getPlayer().changeMap(map, map.getPortal(0));
+                    }
+                    used = true;
+                    break;
+                }
             }
-            
+
             /* 黑板 */
             case 5370000:
             case 5370001: {

@@ -417,6 +417,9 @@ public class MapleInventoryManipulator {
                 case AramiaFireWorks.DEC_ID:
                     c.getPlayer().dropMessage(5, "你已經獲得了一個 聖誕樹裝飾， 可以透過 @joyce 指令到幸福村來裝飾聖誕樹。");
                     break;
+                case AramiaFireWorks.XIANG_ID:
+                    c.getPlayer().dropMessage(5, "你已經獲得了一個 香爐， 可以到不夜城尋找龍山寺師父對話。");
+                    break;                
             }
         }
         c.getPlayer().havePartyQuest(item.getItemId());

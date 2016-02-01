@@ -20,7 +20,7 @@ function action(mode, type, selection) {
             cm.sendNext("Status of Powder Keg Collection \n\r #B" + cm.getKegs() + "# \n\r If we collect them all, we can start the firework...");
             cm.safeDispose();
         } else if (selection == 0) {
-            cm.sendGetNumber("Did you bring the powder keg with you? Then, please give me the #bPowder Keg#k you have.  I will make a nice firecracker.  How many are you willing to give me? \n\r #b< Number of Powder Keg in inventory : 0 >#k", 0, 0, 1000);
+            cm.sendGetNumber("Did you bring the powder keg with you? Then, please give me the #bPowder Keg#k you have.  I will make a nice firecracker.  How many are you willing to give me? \n\r #b< Number of Powder Keg in inventory : 0 >#k", 0, 0, 10000);
         }
     } else if (status == 3) {
         var num = selection;

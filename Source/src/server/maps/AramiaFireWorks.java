@@ -31,15 +31,15 @@ import tools.MaplePacketCreator;
 
 public class AramiaFireWorks {
 
-    public final static int KEG_ID = 4031875, SUN_ID = 4001246, DEC_ID = 4001473;
-    public final static int MAX_KEGS = 10000, MAX_SUN = 14000, MAX_DEC = 18000;
+    public final static int KEG_ID = 4031875, SUN_ID = 4001246, DEC_ID = 4001473, XIANG_ID = 4000516;
+    public final static int MAX_KEGS = 5000, MAX_SUN = 14000, MAX_DEC = 18000;
     private short kegs = 0;
     private short sunshines = MAX_SUN / 6; //start at 1/6 then go from that
     private short decorations = MAX_DEC / 6;
     private static final AramiaFireWorks instance = new AramiaFireWorks();
-    private static final int[] arrayMob = {9400708};
-    private static final int[] arrayX = {-115};
-    private static final int[] arrayY = {154};
+    private static final int[] arrayMob = {9410066};
+    private static final int[] arrayX = {-255};
+    private static final int[] arrayY = {340};
     private static final int[] array_X = {720, 180, 630, 270, 360, 540, 450, 142,
         142, 218, 772, 810, 848, 232, 308, 142};
     private static final int[] array_Y = {1234, 1234, 1174, 1234, 1174, 1174, 1174, 1260,
@@ -52,6 +52,9 @@ public class AramiaFireWorks {
 
     public final void giveKegs(final MapleCharacter c, final int kegs) {
         this.kegs += kegs;
+        if (this.kegs < 4999) {
+            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "<頻道 " + c.getClient().getChannel() + "> " + "不夜城新年活動進度目前是5000/"+this.kegs+"！！").getBytes());
+        }
         if (this.kegs >= MAX_KEGS) {
             this.kegs = 0;
             broadcastEvent(c);
@@ -59,7 +62,7 @@ public class AramiaFireWorks {
     }
 
     private void broadcastServer(final MapleCharacter c, final int itemid) {
-        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, itemid, "<頻道 " + c.getClient().getChannel() + "> " + "弓箭手村邱比特公園即將開始發射煙火!"/*c.getMap().getMapName() + " : The amount of {" + MapleItemInformationProvider.getInstance().getName(itemid) + "} has reached the limit!"*/).getBytes());
+        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, itemid, "<頻道 " + c.getClient().getChannel() + "> " + "不夜城新年活動即將開始舉辦怪物大遊行！！").getBytes());
     }
 
     public final short getKegsPercentage() {
@@ -67,19 +70,20 @@ public class AramiaFireWorks {
     }
 
     private void broadcastEvent(final MapleCharacter c) {
-//        broadcastServer(c, KEG_ID);
-        // Henesys Park
+        // 不夜城新年活動
+        broadcastServer(c, XIANG_ID);
+
         EventTimer.getInstance().schedule(new Runnable() {
 
             @Override
             public final void run() {
-                startEvent(c.getClient().getChannelServer().getMapFactory().getMap(209080000));
+                startEvent(c.getClient().getChannelServer().getMapFactory().getMap(741000000));
             }
         }, 10000);
     }
 
     private void startEvent(final MapleMap map) {
-        map.startMapEffect("巨大的雪人出現了！", 5120000);
+        map.startMapEffect("可以進行新年活動的表演了！！", 5121020);
 
         EventTimer.getInstance().schedule(new Runnable() {
 

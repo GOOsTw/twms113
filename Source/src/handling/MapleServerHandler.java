@@ -803,8 +803,8 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case REPAIR_ALL:
                 NPCHandler.repairAll(c);
                 break;
-            case GAME_POLL:
-                UserInterfaceHandler.InGamePoll(slea, c);
+            case XMAS_SURPRISE:
+                UserInterfaceHandler.XMASSurprise(slea, c);
                 break;
             case OWL:
                 InventoryHandler.Owl(slea, c);

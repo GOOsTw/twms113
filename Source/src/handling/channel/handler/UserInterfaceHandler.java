@@ -37,17 +37,7 @@ public class UserInterfaceHandler {
         }
     }
 
-    public static final void InGamePoll(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-        if (ServerConstants.PollEnabled) {
-            c.getPlayer().updateTick(slea.readInt());
-            final int selection = slea.readInt();
-
-            if (selection >= 0 && selection <= ServerConstants.Poll_Answers.length) {
-                if (MapleCharacterUtil.SetPoll(c.getAccID(), selection)) {
-                    c.sendPacket(MaplePacketCreator.getPollReply("Thank you."));
-                    //idk what goes here lol
-                }
-            }
-        }
+    public static final void XMASSurprise(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+        c.getPlayer().dropMessage(1,"月光寶盒尚未開放。");
     }
 }
