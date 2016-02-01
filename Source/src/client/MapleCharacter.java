@@ -124,6 +124,7 @@ import server.MapleInventoryManipulator;
 import server.Timer.BuffTimer;
 import server.Timer.EtcTimer;
 import server.Timer.MapTimer;
+import server.life.MapleLifeFactory;
 import server.life.MobSkill;
 import server.life.PlayerNPC;
 import server.maps.Event_PyramidSubway;
@@ -207,6 +208,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private static final int[] ariantroomslot = new int[3]; // 沙漠競技場PQ
     private long askmastertime, askdualtime;
     public int master = 0, apprentice = 0;
+    private boolean testingdps = false;
+    private long dps;
 
     private MapleCharacter(final boolean ChannelServer) {
         this.setStance(0);
@@ -371,6 +374,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.buddylist = new BuddyList(ct.buddysize);
         ret.subcategory = ct.subcategory;
         ret.prefix = ct.prefix;
+        ret.dps = ct.dps;
 
         if (isChannel) {
             final MapleMapFactory mapFactory = ChannelServer.getInstance(client.getChannel()).getMapFactory();
@@ -534,6 +538,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ret.day = rs.getInt("day");
             ret.prefix = rs.getString("prefix");
             ret.gachexp = rs.getInt("gachexp");
+            ret.dps = rs.getLong("dps");
 
             if (channelserver) {
                 MapleMapFactory mapFactory = ChannelServer.getInstance(client.getChannel()).getMapFactory();
@@ -1006,7 +1011,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         try {
             con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             con.setAutoCommit(false);
-            ps = con.prepareStatement("UPDATE characters SET level = ?, fame = ?, str = ?, dex = ?, luk = ?, `int` = ?, exp = ?, hp = ?, mp = ?, maxhp = ?, maxmp = ?, sp = ?, ap = ?, gm = ?, skincolor = ?, gender = ?, job = ?, hair = ?, face = ?, map = ?, meso = ?, hpApUsed = ?, spawnpoint = ?, party = ?, buddyCapacity = ?, monsterbookcover = ?, dojo_pts = ?, dojoRecord = ?, pets = ?, subcategory = ?, marriageId = ?, currentrep = ?, totalrep = ?, charmessage = ?, expression = ?, constellation = ?, blood = ?, month = ?, day = ?, beans = ?, prefix = ?, gachexp = ?, name = ? WHERE id = ?");
+            ps = con.prepareStatement("UPDATE characters SET level = ?, fame = ?, str = ?, dex = ?, luk = ?, `int` = ?, exp = ?, hp = ?, mp = ?, maxhp = ?, maxmp = ?, sp = ?, ap = ?, gm = ?, skincolor = ?, gender = ?, job = ?, hair = ?, face = ?, map = ?, meso = ?, hpApUsed = ?, spawnpoint = ?, party = ?, buddyCapacity = ?, monsterbookcover = ?, dojo_pts = ?, dojoRecord = ?, pets = ?, subcategory = ?, marriageId = ?, currentrep = ?, totalrep = ?, charmessage = ?, expression = ?, constellation = ?, blood = ?, month = ?, day = ?, beans = ?, prefix = ?, gachexp = ?, dps = ?, name = ? WHERE id = ?");
             ps.setInt(1, level);
             ps.setShort(2, fame);
             ps.setShort(3, stats.getStr());
@@ -1084,8 +1089,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.setInt(40, beans);
             ps.setString(41, prefix);
             ps.setInt(42, gachexp);
-            ps.setString(43, name);
-            ps.setInt(44, id);
+            ps.setLong(43, dps);
+            ps.setString(44, name);
+            ps.setInt(45, id);
             if (ps.executeUpdate() < 1) {
 
                 ps.close();
@@ -1327,7 +1333,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
         } else {
 
-                ItemLoader.INVENTORY.saveItems(listing, id);
+            ItemLoader.INVENTORY.saveItems(listing, id);
 
         }
     }
@@ -2882,8 +2888,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     client.sendPacket(MaplePacketCreator.GainEXPOthers(total, inChat, white));
                 }
                 /*if (total > 0) {
-                    stats.checkEquipLevels(this, total); //gms like
-                }*/
+                 stats.checkEquipLevels(this, total); //gms like
+                 }*/
             }
         } catch (Exception e) {
             FilePrinter.printError("MapleCharacter.txt", e);
@@ -4505,27 +4511,27 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (beholderBuffSchedule != null) {
             beholderBuffSchedule.cancel(false);
         }
-        /* ISkill bHealing = SkillFactory.getSkill(1320008);
-         final int bHealingLvl = getSkillLevel(bHealing);
-         final int berserkLvl = getSkillLevel(SkillFactory.getSkill(1320006));
+        ISkill bHealing = SkillFactory.getSkill(1320008);
+        final int bHealingLvl = getSkillLevel(bHealing);
+        final int berserkLvl = getSkillLevel(SkillFactory.getSkill(1320006));
 
-         if (bHealingLvl > 0) {
-         final MapleStatEffect healEffect = bHealing.getEffect(bHealingLvl);
-         int healInterval = healEffect.getX() * 1000;
-         beholderHealingSchedule = BuffTimer.getInstance().register(new Runnable() {
+        if (bHealingLvl > 0) {
+            final MapleStatEffect healEffect = bHealing.getEffect(bHealingLvl);
+            int healInterval = healEffect.getX() * 1000;
+            beholderHealingSchedule = BuffTimer.getInstance().register(new Runnable() {
 
-         @Override
-         public void run() {
-         int remhppercentage = (int) Math.ceil((getStat().getHp() * 100.0) / getStat().getMaxHp());
-         if (berserkLvl == 0 || remhppercentage >= berserkLvl + 10) {
-         addHP(healEffect.getHp());
-         }
-         client.sendPacket(MaplePacketCreator.showOwnBuffEffect(1321007, 2));
-         map.broadcastMessage(MaplePacketCreator.summonSkill(getId(), 1321007, 5));
-         map.broadcastMessage(MapleCharacter.this, MaplePacketCreator.showBuffeffect(getId(), 1321007, 2), false);
-         }
-         }, healInterval, healInterval);
-         }*/
+                @Override
+                public void run() {
+                    int remhppercentage = (int) Math.ceil((getStat().getHp() * 100.0) / getStat().getMaxHp());
+                    if (berserkLvl == 0 || remhppercentage >= berserkLvl + 10) {
+                        addHP(healEffect.getHp());
+                    }
+                    //client.sendPacket(MaplePacketCreator.showOwnBuffEffect(1321007, 2));
+                    //map.broadcastMessage(MaplePacketCreator.summonSkill(getId(), 1321007, 5));
+                    //map.broadcastMessage(MapleCharacter.this, MaplePacketCreator.showBuffeffect(getId(), 1321007, 2), false);
+                }
+            }, healInterval, healInterval);
+        }
         ISkill bBuff = SkillFactory.getSkill(1320009);
         final int bBuffLvl = getSkillLevel(bBuff);
         if (bBuffLvl > 0) {
@@ -4730,6 +4736,26 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
     }
 
+    public void toggleTestingDPS() {
+        this.testingdps = !testingdps;
+    }
+
+    public boolean isTestingDPS() {
+        return testingdps;
+    }
+
+    public void savePlayer() {
+        saveToDB(false, false);
+    }
+
+    public void setDPS(long newdps) {
+        dps = newdps;
+    }
+
+    public long getDPS() {
+        return dps;
+    }
+
     public IMaplePlayerShop getPlayerShop() {
         return playerShop;
     }
@@ -4879,7 +4905,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
      break;
      }
      }*/
-
     public boolean getCanTalk() {
         return this.canTalk;
     }
@@ -5431,6 +5456,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
         if (res == 1) {
             dropMessage(5, "角色保存成功！");
+        }
+        if (client.getPlayer().isTestingDPS()) {
+            final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
+            map.Killdpm(true);
+            client.getPlayer().toggleTestingDPS();
+            client.getPlayer().dropMessage(5, "已停止當前的DPM測試。");
         }
 
         if (channel == client.getChannel() || toch == null || toch.isShutdown()) {

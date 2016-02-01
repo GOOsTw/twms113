@@ -971,6 +971,12 @@ public class InventoryHandler {
                             } else if (!MapConstants.CanUseMesoCard(c.getPlayer().getMapId()) && (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382005) || (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382016)) {
                                 c.getPlayer().cancelBuffStats(MapleBuffStat.MESO_RATE);
                             }
+                            if (c.getPlayer().isTestingDPS()) {
+                                final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
+                                c.getPlayer().getMap().Killdpm(true);
+                                c.getPlayer().toggleTestingDPS();
+                                c.getPlayer().dropMessage(5, "已停止當前的DPM測試。");
+                            }
                             c.getPlayer().changeMap(target, target.getPortal(0));
                             used = true;
                         }
@@ -1961,7 +1967,7 @@ public class InventoryHandler {
             case 5240025:
             case 5240026:
             case 5240027:
-            case 5240028: { // Pet food
+            case 5240028: { // 寵物食品
                 MaplePet pet = c.getPlayer().getPet(0);
                 if (pet == null) {
                     break;
@@ -2002,8 +2008,7 @@ public class InventoryHandler {
                 used = true;
                 break;
             }
-            /* 智慧貓頭鷹 */
-            case 5230000: {// owl of minerva
+            case 5230000: { // 智慧貓頭鷹
                 final int itemSearch = slea.readInt();
                 final List<HiredMerchant> hms = c.getChannelServer().searchMerchant(itemSearch);
                 if (hms.size() > 0) {
@@ -2015,12 +2020,8 @@ public class InventoryHandler {
                 break;
             }
 
-            case 5281001:
-            /*花香*/
-
-            case 5280001: // Gas Skill
-            /*毒屁*/
-            case 5281000: {
+            case 5281001: //花香        
+            case 5281000: { //毒屁
                 Rectangle bounds = new Rectangle((int) c.getPlayer().getPosition().getX(), (int) c.getPlayer().getPosition().getY(), 1, 1);
                 MapleMist mist = new MapleMist(bounds, c.getPlayer());
                 c.getPlayer().getMap().spawnMist(mist, 10000, true);
@@ -2029,23 +2030,56 @@ public class InventoryHandler {
                 used = true;
                 break;
             }
+            case 5201001:  //小鋼珠盒子(500)
+            case 5201002: { //小鋼珠盒子(3000)
+                int ss = 0;
+                if (itemId == 5201001 || itemId == 5201002) {
+                    if (itemId == 5201001) {
+                        ss = 500;
+                    } else if (itemId == 5201002) {
+                        ss = 3000;
+                    }
+                    c.getPlayer().gainBeans(ss);
+                }
+                c.getPlayer().reloadC();
+                c.getPlayer().dropMessage(1, "小鋼珠已新增" + ss + "顆");
+                used = true;
+                break;
+            }
+            case 5042000: //豫園高級瞬移之石
+            case 5042001: { //不夜城高級瞬移之石
+                MapleMap map;
+                if (itemId == 5042000 || itemId == 5042001) {
+                    if (itemId == 5042000) {
+                        map = c.getChannelServer().getMapFactory().getMap(701000200);
+                        c.getPlayer().changeMap(map, map.getPortal(0));
+                    } else if (itemId == 5042001) {
+                        map = c.getChannelServer().getMapFactory().getMap(741000000);
+                        c.getPlayer().changeMap(map, map.getPortal(0));
+                    }
+                    used = true;
+                    break;
+                }
+            }
+
             /* 黑板 */
             case 5370000:
             case 5370001: {
-                if (c.getPlayer().getMapId() / 1000000 == 109) {
-                    c.getPlayer().dropMessage(1, "請勿在活動地圖使用黑板");
+                if (MapConstants.isEventMap(c.getPlayer().getMapId())) {
+                    c.getPlayer().dropMessage(1, "請勿在活動地圖使用黑板！");
                 } else {
                     c.getPlayer().setChalkboard(slea.readMapleAsciiString());
                 }
                 break;
             }
-            case 5390000: // Diablo Messenger
-            case 5390001: // Cloud 9 Messenger
-            case 5390002: // Loveholic Messenger
-            case 5390003: // New Year Megassenger 1
-            case 5390004: // New Year Megassenger 2
-            case 5390005: // Cute Tiger Messenger
-            case 5390006: { // Tiger Roar's Messenger
+
+            case 5390000: // 怒火心情喇叭
+            case 5390001: // 白雲朵朵心情喇叭
+            case 5390002: // 戀愛心情喇叭
+            case 5390003: // 福到運到心情喇叭
+            case 5390004: // 喜氣洋洋心情喇叭
+            case 5390005: // 微笑太陽
+            case 5390006: { // 怒吼老虎喇叭
                 if (c.getPlayer().getLevel() < 10) {
                     c.getPlayer().dropMessage(5, "必須等級10級以上才可以使用.");
                     break;
@@ -2056,11 +2090,6 @@ public class InventoryHandler {
                 }
                 if (!c.getChannelServer().getMegaphoneMuteState()) {
                     final String text = slea.readMapleAsciiString();
-                    final StringBuilder sb = new StringBuilder();
-                    addMedalString(c.getPlayer(), sb);
-                    sb.append(c.getPlayer().getName());
-                    sb.append(" : ");
-                    sb.append(text);
                     if (text.length() > 55) {
                         break;
                     }
@@ -2094,7 +2123,7 @@ public class InventoryHandler {
                 break;
             }
 
-            case 5450000: { // Mu Mu the Travelling Merchant
+            case 5450000: { // 地攤商人妙妙
                 for (int i : GameConstants.blockedMaps) {
                     if (c.getPlayer().getMapId() == i) {
                         c.getPlayer().dropMessage(5, "你不能在這張地圖裡使用，如果卡住請使用 @ea 來解卡。");
@@ -2172,6 +2201,7 @@ public class InventoryHandler {
         if (used) {
             MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.CASH, slot, (short) 1, false, true);
         }
+
         c.sendPacket(MaplePacketCreator.enableActions());
         if (cc) {
             if (!c.getPlayer().isAlive() || c.getPlayer().getEventInstance() != null || FieldLimitType.ChannelSwitch.check(c.getPlayer().getMap().getFieldLimit())) {
@@ -2261,6 +2291,9 @@ public class InventoryHandler {
                 c.sendPacket(MaplePacketCreator.enableActions());
             }
         } finally {
+            if (c.getPlayer().isAdmin()) {
+                c.getPlayer().dropMessage(6, "撿_ItemId: " + mapitem.getItem().getItemId() + " ItemName: " + MapleItemInformationProvider.getInstance().getName(mapitem.getItem().getItemId()));
+            }
             lock.unlock();
         }
     }
@@ -2613,6 +2646,12 @@ public class InventoryHandler {
                     } else if (!MapConstants.CanUseMesoCard(c.getPlayer().getMapId()) && (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382005) || (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382016)) {
                         c.getPlayer().cancelBuffStats(MapleBuffStat.MESO_RATE);
                     }
+                    if (c.getPlayer().isTestingDPS()) {
+                        final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
+                        c.getPlayer().getMap().Killdpm(true);
+                        c.getPlayer().toggleTestingDPS();
+                        c.getPlayer().dropMessage(5, "已停止當前的DPM測試。");
+                    }
                     c.getPlayer().changeMap(target, target.getPortal(0));
                     used = true;
                 }
@@ -2628,6 +2667,12 @@ public class InventoryHandler {
                             c.getPlayer().cancelBuffStats(MapleBuffStat.DROP_RATE);
                         } else if (!MapConstants.CanUseMesoCard(c.getPlayer().getMapId()) && (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382005) || (c.getPlayer().getBuffSource(MapleBuffStat.MESO_RATE) == 2382016)) {
                             c.getPlayer().cancelBuffStats(MapleBuffStat.MESO_RATE);
+                        }
+                        if (c.getPlayer().isTestingDPS()) {
+                            final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
+                            c.getPlayer().getMap().Killdpm(true);
+                            c.getPlayer().toggleTestingDPS();
+                            c.getPlayer().dropMessage(5, "已停止當前的DPM測試。");
                         }
                         c.getPlayer().changeMap(victim.getMap(), victim.getMap().findClosestSpawnpoint(victim.getPosition()));
                         used = true;

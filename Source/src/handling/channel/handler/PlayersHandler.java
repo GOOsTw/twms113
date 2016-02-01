@@ -26,6 +26,7 @@ import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import client.MapleStat;
 import client.anticheat.CheatingOffense;
+import client.inventory.ItemFlag;
 import constants.GameConstants;
 import scripting.ReactorScriptManager;
 import server.events.MapleCoconut;
@@ -37,6 +38,7 @@ import server.maps.MapleDoor;
 import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
 import server.maps.MapleReactor;
+import tools.ArrayMap;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -288,7 +290,7 @@ public class PlayersHandler {
                     tt.setFollowId(0);
                     c.getPlayer().setFollowId(0);
                 }
-                c.sendPacket(MaplePacketCreator.serverNotice(1, "You are too far away."));
+                c.sendPacket(MaplePacketCreator.serverNotice(1, "你還太淺！"));
             }
         } else {
             c.getPlayer().setFollowId(0);
@@ -296,8 +298,33 @@ public class PlayersHandler {
     }
 
     public static void UnlockItem(final SeekableLittleEndianAccessor slea, final MapleClient c) { //封印之鎖解除鑰匙 ID:2051000
-        c.getPlayer().dropMessage(1, "要解鎖物品找GM。");
-        c.sendPacket(MaplePacketCreator.enableActions());
+        //95 00 | 01 00 | 02 00 | 02 00
+        short Itemsize = slea.readShort();
+        short _type = slea.readShort();
+        short slot = slea.readShort();
+
+        final MapleInventoryType type = MapleInventoryType.getByType((byte) _type);
+        final IItem item = c.getPlayer().getInventory(type).getItem(slot);
+
+        boolean add = false;
+        final int UnlockItem = 2051000;
+        java.util.Map<IItem, MapleInventoryType> eqs = new ArrayMap<>();
+        if (ItemFlag.LOCK.check(item.getFlag())) {
+            item.setFlag((byte) (item.getFlag() - ItemFlag.LOCK.getValue()));
+            add = true;
+            c.getPlayer().reloadC();
+            c.getPlayer().dropMessage(1, "已經解鎖！");
+        } else if (ItemFlag.UNTRADEABLE.check(item.getFlag())) {
+            item.setFlag((byte) (item.getFlag() - ItemFlag.UNTRADEABLE.getValue()));
+            add = true;
+            c.getPlayer().reloadC();
+            c.getPlayer().dropMessage(1, "已經解鎖！");
+        }
+        if (add) {
+            eqs.put(item, type);
+            MapleInventoryManipulator.removeById(c.getPlayer().getClient(), MapleInventoryType.USE, UnlockItem, 1, false, false);
+        }
+        add = false;
     }
 
     public static void Solomon(final SeekableLittleEndianAccessor slea, final MapleClient c) {
@@ -352,8 +379,9 @@ public class PlayersHandler {
                 return;
             }
             c.getPlayer().setMarriageItemId(itemid);
-            if(chr != null)
+            if (chr != null) {
                 chr.getClient().sendPacket(MaplePacketCreator.sendEngagementRequest(c.getPlayer().getName(), c.getPlayer().getId()));
+            }
             //1112300 + (itemid - 2240004)
         } else if (mode == 1) {
             c.getPlayer().setMarriageItemId(0);

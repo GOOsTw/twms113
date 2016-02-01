@@ -192,6 +192,13 @@ public class DamageParse {
                 }
                 overallAttackCount = 0; // Tracking of Shadow Partner additional damage.
                 Integer eachd;
+                if (monster.belongsToSomeone()) {
+                    if (monster.getBelongsTo() != player.getId() && !player.isGM()) {
+                        totDamage = 0;
+                        player.dropMessage(1, "這怪物是屬於別人的，請勿幫忙！");
+                        return;
+                    }
+                }
                 for (Pair<Integer, Boolean> eachde : oned.attack) {
                     eachd = eachde.left;
                     overallAttackCount++;
@@ -530,6 +537,13 @@ public class DamageParse {
                     }
                 }
                 overallAttackCount = 0;
+                if (monster.belongsToSomeone()) {
+                    if (monster.getBelongsTo() != player.getId() && !player.isGM()) {
+                        totDamage = 0;
+                        player.dropMessage(1, "這怪物是屬於別人的，請勿幫忙！");
+                        return;
+                    }
+                }
                 Integer eachd;
                 for (Pair<Integer, Boolean> eachde : oned.attack) {
                     eachd = eachde.left;

@@ -150,10 +150,10 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     USE_MAGNIFY_GLASS,
     USE_POTENTIAL_SCROLL,
     USE_EQUIP_SCROLL,
-    GAME_POLL,
+    //GAME_POLL,
     OWL,
     OWL_WARP,
-    //XMAS_SURPRISE, //header -> uniqueid(long) is entire structure
+    XMAS_SURPRISE, //header -> uniqueid(long) is entire structure
     USE_OWL_MINERVA,
     RPS_GAME,
     UPDATE_QUEST,

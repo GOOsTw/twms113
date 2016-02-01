@@ -201,7 +201,7 @@ public class MapleInventoryManipulator {
                 c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.ADD, nEquip)));
                 //c.sendPacket(MaplePacketCreator.addInventorySlot(type, nEquip));
             } else {
-                throw new InventoryException("Trying to create equip with non-one quantity");
+                throw new RuntimeException("正嘗試創造一個非量的裝備.....");
             }
         }
         c.getPlayer().havePartyQuest(itemId);
@@ -301,7 +301,7 @@ public class MapleInventoryManipulator {
                 c.getPlayer().havePartyQuest(item.getItemId());
                 return item;
             } else {
-                throw new InventoryException("Trying to create equip with non-one quantity");
+                throw new RuntimeException("正嘗試創造一個非量的裝備.....");
             }
         }
         return null;
@@ -399,7 +399,7 @@ public class MapleInventoryManipulator {
                 c.sendPacket(MaplePacketCreator.modifyInventory(true, new ModifyInventory(ModifyInventory.Types.ADD, item)));
                 //c.sendPacket(MaplePacketCreator.addInventorySlot(type, item, true));
             } else {
-                throw new RuntimeException("Trying to create equip with non-one quantity");
+                throw new RuntimeException("正嘗試創造一個非量的裝備.....");
             }
         }
         if (item.getQuantity() >= 50 && GameConstants.isUpgradeScroll(item.getItemId())) {
@@ -409,14 +409,17 @@ public class MapleInventoryManipulator {
         if (before == 0) {
             switch (item.getItemId()) {
                 case AramiaFireWorks.KEG_ID:
-                    c.getPlayer().dropMessage(5, "You have gained a Powder Keg, you can give this in to Aramia of Henesys.");
+                    c.getPlayer().dropMessage(5, "你已經獲得了一個 永恆的雪花， 可以到弓箭手村尋找阿拉米亞對話。");
                     break;
                 case AramiaFireWorks.SUN_ID:
-                    c.getPlayer().dropMessage(5, "You have gained a Warm Sun, you can give this in to Maple Tree Hill through @joyce.");
+                    c.getPlayer().dropMessage(5, "你已經獲得了一個 溫暖陽光， 可以透過 @joyce 指令到楓葉樹下裝飾楓樹。");
                     break;
                 case AramiaFireWorks.DEC_ID:
-                    c.getPlayer().dropMessage(5, "You have gained a Tree Decoration, you can give this in to White Christmas Hill through @joyce.");
+                    c.getPlayer().dropMessage(5, "你已經獲得了一個 聖誕樹裝飾， 可以透過 @joyce 指令到幸福村來裝飾聖誕樹。");
                     break;
+                case AramiaFireWorks.XIANG_ID:
+                    c.getPlayer().dropMessage(5, "你已經獲得了一個 香爐， 可以到不夜城尋找龍山寺師父對話。");
+                    break;                
             }
         }
         c.getPlayer().havePartyQuest(item.getItemId());
@@ -548,6 +551,9 @@ public class MapleInventoryManipulator {
                 mods.add(new ModifyInventory(ModifyInventory.Types.UPDATE, initialTarget));
             }
         } else {
+            if (c.getPlayer().isAdmin()) {
+                c.getPlayer().dropMessage(6, "移_src:" + src + " dst:" + dst + " ItemId:" + source.getItemId()+ " ItemName:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
+            }
             mods.add(new ModifyInventory(ModifyInventory.Types.MOVE, source, src));
         }
         c.sendPacket(MaplePacketCreator.modifyInventory(true, mods));
@@ -623,7 +629,7 @@ public class MapleInventoryManipulator {
             c.getPlayer().startFairySchedule(true, true);
         }
         if (GameConstants.isTimelessItem(source.getItemId())) {
-        c.getPlayer().dropMessage(5,"穿上永恆系列裝備後請換頻。");
+            c.getPlayer().dropMessage(5, "穿上永恆系列裝備後請換頻。");
         }
         //1112413, 1112414, 1112405 (Lilin's Ring)
         source = (Equip) c.getPlayer().getInventory(MapleInventoryType.EQUIP).getItem(src);
@@ -648,7 +654,9 @@ public class MapleInventoryManipulator {
         if (c.getPlayer().getBuffedValue(MapleBuffStat.BOOSTER) != null && isWeapon(source.getItemId())) {
             c.getPlayer().cancelBuffStats(MapleBuffStat.BOOSTER);
         }
-
+        if (c.getPlayer().isAdmin()) {
+            c.getPlayer().dropMessage(6, "穿_src:" + src + " dst:" + dst + " ItemId:" + source.getItemId()+ " ItemName:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
+        }
         mods.add(new ModifyInventory(2, source, src));
         c.sendPacket(MaplePacketCreator.modifyInventory(true, mods));
         c.getPlayer().equipChanged();
@@ -689,6 +697,9 @@ public class MapleInventoryManipulator {
             target.setPosition(src);
             c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).addFromDB(target);
         }
+        if (c.getPlayer().isAdmin()) {
+            c.getPlayer().dropMessage(6, "脫_src:" + src + " dst:" + dst + " ItemId:" + source.getItemId()+ " ItemName:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
+        }
         c.sendPacket(MaplePacketCreator.modifyInventory(true, Collections.singletonList(new ModifyInventory(2, source, src))));
         c.getPlayer().equipChanged();
     }
@@ -710,7 +721,9 @@ public class MapleInventoryManipulator {
             c.sendPacket(MaplePacketCreator.enableActions());
             return false;
         }
-
+        if (c.getPlayer().isAdmin()) {
+            c.getPlayer().dropMessage(6, "丟_src:" + src + " type:" + type + " ItemId:" + source.getItemId()+ " ItemName:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
+        }
         final byte flag = source.getFlag();
         if (quantity > source.getQuantity()) {
             c.sendPacket(MaplePacketCreator.enableActions());
@@ -751,6 +764,7 @@ public class MapleInventoryManipulator {
             if (src < 0) {
                 c.getPlayer().equipChanged();
             }
+
             if (ii.isDropRestricted(source.getItemId()) || ii.isAccountShared(source.getItemId())) {
                 if (ItemFlag.KARMA_EQ.check(flag)) {
                     source.setFlag((byte) (flag - ItemFlag.KARMA_EQ.getValue()));

@@ -66,7 +66,7 @@ public class MapConstants {
             case 222020100:
             case 222020200:
             case 222020300:
-              return true;
+                return true;
         }
         return false;
     }
@@ -111,6 +111,10 @@ public class MapConstants {
                 return true;
         }
         return false;
+    }
+
+    public static boolean isBlackFM(final int mapid) {
+        return mapid >= 910000001 && mapid < 910000022;
     }
 
     public static boolean isEventMap(final int mapid) {

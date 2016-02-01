@@ -37,38 +37,20 @@ public class MapleFamilyBuff {
 
     //todo; read from somewhere
 
-    private static final int event = 11; //numevents
+    private static final int event = 2; //numevents
     // 0=tele, 1=summ, 2=drop, 3=exp, 4=both
     // questrecords used for time: 190000 to 190010
-    private static final int[] type = {0, 1, 2, 3, 4, 2, 3, 2, 3, 2, 3};
-    private static final int[] duration = {0, 0, 15, 15, 30, 15, 15, 30, 30, 30, 30};
-    private static final int[] effect = {0, 0, 150, 150, 200, 200, 200, 200, 200, 200, 200};
-    private static final int[] rep = {0, 0, 300, 500, 700, 800, 1000, 1200, 1500, 2000, 2500, 4000, 5000}; //70% of normal in gms O_O
+    private static final int[] type = {0, 1};
+    private static final int[] duration = {0, 0};
+    private static final int[] effect = {0, 0};
+    private static final int[] rep = {0, 0}; //70% of normal in gms O_O
     private static final String[] name = {
             "立刻移動至家族成員",
-            "立刻召喚家族成員",
-            "我的掉寶率1.5倍(15 分鐘)",
-            "我的經驗值1.5倍(15分鐘)",
-            "家族成員的團結(30分鐘)",
-            "我的掉寶率 2倍(15分鐘)",
-            "我的經驗值2倍(15分鐘)",
-            "我的掉寶率2倍(30分鐘)",
-            "我的經驗值2倍(30分鐘)",
-            "我的隊伍掉寶率2倍",
-            "我的隊伍經驗值2倍"
+            "立刻召喚家族成員"
         };
 
     private static final String[] desc = {"[對象] 自己\n[效果] 移動到想要的上線家族成員所在地圖。",
-            "[對象] 1個家族對象\n[效果] 召喚指定的上線家族成員到自己所在的地圖。",
-            "[對象] 自己\n[時間] 15 分鐘.\n[效果] 獵捕怪物的掉寶率提升 #c1.5倍#\n* 如果有使用其他加倍這效果將無效.",
-            "[對象] 自己\n[時間] 15 分鐘.\n[效果] 獵捕怪物的經驗值提升 #c1.5倍#\n* 如果有使用其他加倍這效果將無效.",
-            "[對象] 至少有6個成員以上在線上\n[時間] 30 分鐘　\n[效果] 獵捕怪物的掉寶率和經驗值提升 #c2倍#\n* 如果有使用其他加倍這效果將無效.",
-            "[對象] 自己\n[時間] 15 分鐘.\n[效果] 獵捕怪物的掉寶率提升 #c2倍#\n* 如果有使用其他加倍這效果將無效.",
-            "[對象] 自己\n[時間] 15 分鐘.\n[效果] 獵捕怪物的經驗值提升 #c2倍#\n* 如果有使用其他加倍這效果將無效.",
-            "[對象] 自己\n[時間] 30 分鐘.\n[效果] 獵捕怪物的掉寶率提升 #c2倍#\n* 如果有使用其他加倍這效果將無效.",
-            "[對象] 自己\n[時間] 30 分鐘.\n[效果] 獵捕怪物的經驗值提升 #c2倍#\n* 如果有使用其他加倍這效果將無效.",
-            "[對象] 我的隊伍\n[時間] 30 分鐘.\n[效果] 同一張地圖內的所屬隊伍成員掉寶率提升 #c2倍#\n* 如果有使用其他加倍這效果將無效.",
-            "[對象] 我的隊伍\n[時間] 30 分鐘.\n[效果] 同一張地圖內的所屬隊伍成員經驗值提升 #c2倍#\n* 如果有使用其他加倍這效果將無效."
+            "[對象] 1個家族對象\n[效果] 召喚指定的上線家族成員到自己所在的地圖。"
         };
 
     private final static List<MapleFamilyBuffEntry> buffEntries;
