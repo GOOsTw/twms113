@@ -17,6 +17,8 @@ import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
 import handling.world.CharacterTransfer;
 import handling.world.World;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import server.CashItemFactory;
@@ -104,11 +106,12 @@ public class CashShopOperation {
         refreshCashShop(c);
         c.sendPacket(MTSCSPacket.sendShowWishList(c.getPlayer()));
     }
-    
+
     public static void sendWebSite(final MapleClient c) {
         c.getPlayer().dropMessage(1, "儲值詳情請參見社團。");
         refreshCashShop(c);
     }
+
     public static void randomes(final MapleClient c) {
         refreshCashShop(c);
     }
@@ -345,7 +348,7 @@ public class CashShopOperation {
                         chr.modifyCSPoints(useNX, -100, false);
                         chr.getInventory(type).addSlot((byte) 8);
                         chr.dropMessage(1, "欄位已經被擴充至 " + chr.getInventory(type).getSlotLimit() + " 格");
-                    } else {                     
+                    } else {
                         //c.sendPacket(MTSCSPacket.sendCSFail(0xA4));
                         chr.dropMessage(1, "欄位無法再進行擴充");
                     }

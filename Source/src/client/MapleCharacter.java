@@ -4703,7 +4703,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.close();
             return ret_count;
         } catch (Exception Ex) {
-            //log.error("Error while read bosslog.", Ex);
             return -1;
         }
     }
@@ -4718,7 +4717,41 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.executeUpdate();
             ps.close();
         } catch (Exception Ex) {
-            //   log.error("Error while insert bosslog.", Ex);
+        }
+    }
+
+    public int getBossACLog(String bossid) {
+        Connection con1 = DatabaseConnection.getConnection();
+        try {
+            int ret_count;
+            PreparedStatement ps;
+            ps = con1.prepareStatement("select count(*) from bosslog2 where accountid = ? and bossid = ? and lastattempt >= subtime(current_timestamp, '1 0:0:0.0')");
+            ps.setInt(1, accountid);
+            ps.setString(2, bossid);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    ret_count = rs.getInt(1);
+                } else {
+                    ret_count = -1;
+                }
+            }
+            ps.close();
+            return ret_count;
+        } catch (Exception Ex) {
+            return -1;
+        }
+    }
+
+    public void setBossACLog(String bossid) {
+        Connection con1 = DatabaseConnection.getConnection();
+        try {
+            PreparedStatement ps;
+            ps = con1.prepareStatement("insert into bosslog2 (accountid, bossid) values (?,?)");
+            ps.setInt(1, accountid);
+            ps.setString(2, bossid);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception Ex) {
         }
     }
 

@@ -25,7 +25,6 @@ public class FilePrinter {
     public static final String HorntailLog = "HorntailLog.txt";
     public static final String PinkbeanLog = "PinkbeanLog.txt";
     public static final String ZakumLog = "ZakumLog";
-    
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
     private static final String FILE_PATH = "logs/" + sdf.format(Calendar.getInstance().getTime()) + "/";// + sdf.format(Calendar.getInstance().getTime()) + "/"

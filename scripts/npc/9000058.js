@@ -23,7 +23,7 @@ function action(mode, type, selection) {
         if (!cm.isQuestFinished(29933)) {
             NewPlayer();
         }
-        cm.sendSimple("開店可以擺飛鏢或彈丸哦~\r\n#b#L2#我要打開藍色小箱子#l\r\n#b#L3#當鋪裡的大蟾蜍錢包(100等以上才能領)解未來東京任務用#l\r\n#b#L4#我要騎銀色豬豬!!#l\r\n#b#L5#我要進行忍影瞬殺的任務(四轉盜賊限定)#l\r\n#b#L7#我要完成燈泡不能接的任務#k");
+        cm.sendSimple("歡迎來到啾咪谷~\r\n#b#L2#我要打開藍色小箱子#l\r\n#b#L4#我要解銀色鬃毛任務#l\r\n#b#L7#我要完成燈泡不能接的任務#l\r\n#b#L6#我要抽月光寶盒#k");
     } else if (status == 1) {
         if (selection == 2) {
             if (cm.haveItem(4031307, 1) == true) {
@@ -35,14 +35,6 @@ function action(mode, type, selection) {
                 cm.sendOk("#b檢查一下背包有沒有藍色禮物盒哦");
                 cm.dispose();
             }
-        } else if (selection == 3) {
-            var level = cm.getPlayerStat("LVL");
-            if (level >= 100) {
-                cm.gainItem(5252002, 1);
-            } else {
-                cm.sendOk("你的等級還不夠。");
-            }
-            cm.dispose();
         } else if (selection == 4) {
             var level = cm.getPlayerStat("LVL");
             if (cm.haveItem(4000264, 400) && cm.haveItem(4000266, 400) && cm.haveItem(4000267, 400) && (level >= 120)) {
@@ -57,19 +49,9 @@ function action(mode, type, selection) {
                 cm.sendOk("請檢查一下背包有沒有金色皮革４００個、木頭肩護帶４００個、骷髏肩護帶４００個,或者是你等級不夠");
             }
             cm.dispose();
-        } else if (selection == 5) {
-            if (cm.getPlayerStat("LVL") >= 120 && cm.getJob() == 412) {
-                cm.warp(910300000, 3);
-                cm.spawnMonster(9300088, 6, -572, -1894)
-                cm.dispose();
-            } else if (cm.getJob() == 422) {
-                cm.warp(910300000, 3);
-                cm.spawnMonster(9300088, 6, -572, -1894)
-                cm.dispose();
-            } else {
-                cm.sendOk("這是跟盜賊有關的事情哦,或者你沒有達到120等");
-                cm.dispose();
-            }
+		} else if (selection == 6) {
+			cm.dispose();
+			cm.openNpc(9330022);
         } else if (selection == 7) {
             if (cm.getQuestStatus(29507) == 1) {
                 cm.gainItem(1142082, 1);

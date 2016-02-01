@@ -1324,7 +1324,7 @@ public class InventoryHandler {
                 }
                 break;
             }
-            case 5060000: { // Item Tag
+            case 5060000: { // 刻名道具
                 final IItem item = c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).getItem(slea.readByte());
 
                 if (item != null && item.getOwner().equals("")) {
@@ -1337,6 +1337,8 @@ public class InventoryHandler {
                     if (change) {
                         item.setOwner(c.getPlayer().getName());
                         c.getPlayer().forceReAddItem(item, MapleInventoryType.EQUIPPED);
+                        c.getPlayer().reloadC();
+                        c.getPlayer().dropMessage(5,"刻名成功！");
                         used = true;
                     }
                 }
