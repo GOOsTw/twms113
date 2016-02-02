@@ -656,29 +656,32 @@ public class PlayerStats implements Serializable {
         }
         buff = chra.getBuffedValue(MapleBuffStat.DROP_RATE);
         if (buff != null) {
-            if (chra.getBuffSource(MapleBuffStat.DROP_RATE) == 2382040) {
-                if (MapConstants.CanUseDropCard(chra.getMapId())) {
+            switch (chra.getBuffSource(MapleBuffStat.DROP_RATE)) {
+                case 2382040:
+                    if (MapConstants.CanUseDropCard(chra.getMapId())) {
+                        dropBuff *= buff.doubleValue() / 100.0;
+                    } else {
+                        chra.cancelBuffStats(MapleBuffStat.DROP_RATE);
+                        dropBuff = 100;
+                    }   break;
+                case 2383006:
+                case 2383010:
+                    if (MapConstants.CanUseDropCard1(chra.getMapId())) {
+                        dropBuff *= buff.doubleValue() / 100.0;
+                    } else {
+                        chra.cancelBuffStats(MapleBuffStat.DROP_RATE);
+                        dropBuff = 100;
+                    }   break;
+                case 2382028:
+                    if (MapConstants.CanUseDropCard2(chra.getMapId())) {
+                        dropBuff *= buff.doubleValue() / 100.0;
+                    } else {
+                        chra.cancelBuffStats(MapleBuffStat.DROP_RATE);
+                        dropBuff = 100;
+                    }   break;
+                default:
                     dropBuff *= buff.doubleValue() / 100.0;
-                } else {
-                    chra.cancelBuffStats(MapleBuffStat.DROP_RATE);
-                    dropBuff = 100;
-                }
-            } else if (chra.getBuffSource(MapleBuffStat.DROP_RATE) == 2383006 || chra.getBuffSource(MapleBuffStat.DROP_RATE) == 2383010) {
-                if (MapConstants.CanUseDropCard1(chra.getMapId())) {
-                    dropBuff *= buff.doubleValue() / 100.0;
-                } else {
-                    chra.cancelBuffStats(MapleBuffStat.DROP_RATE);
-                    dropBuff = 100;
-                }
-            } else if (chra.getBuffSource(MapleBuffStat.DROP_RATE) == 2382028) {
-                if (MapConstants.CanUseDropCard2(chra.getMapId())) {
-                    dropBuff *= buff.doubleValue() / 100.0;
-                } else {
-                    chra.cancelBuffStats(MapleBuffStat.DROP_RATE);
-                    dropBuff = 100;
-                }
-            } else {
-                dropBuff *= buff.doubleValue() / 100.0;
+                    break;
             }
         }
         buff = chra.getBuffedValue(MapleBuffStat.ACASH_RATE);

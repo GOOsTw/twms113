@@ -250,7 +250,7 @@ public class PlayerCommand {
                     @Override
                     public void run() {
                         long health = mm.getHp();
-                        c.getPlayer().getMap().killMonster1(mm);
+                        c.getPlayer().getMap().killMonster(mm.getObjectId());
                         long dps = (newhp - health) / 15;
                         if (dps > c.getPlayer().getDPS()) {
                             c.getPlayer().dropMessage(6,"你的DPM是 " + dps + ". 這是一個新的紀錄！");

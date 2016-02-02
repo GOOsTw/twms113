@@ -27,7 +27,7 @@
         /*  29: 33 */ MapleData skill = stringProvider.getData("Skill.img");
         /*  30: 34 */ MapleData npc = stringProvider.getData("Npc.img");
         /*  31:    */
-        /*  32: 36 */ String output = args[0];
+        /*  32: 36 */ String output = "xxx";
         /*  33:    */
         /*  34: 38 */ File outputDir = new File(output);
         /*  35: 39 */ File cashTxt = new File(output + "\\Cash.txt");

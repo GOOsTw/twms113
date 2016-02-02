@@ -45,7 +45,7 @@ public class LoginServer {
 
     private static String ip = "127.0.0.1";
     private static short port = 8484;
-    private static IoAcceptor acceptor;
+    private static NioSocketAcceptor acceptor;
     private static Map<Integer, Integer> load = new HashMap<>();
     private static String serverName, eventMessage;
     private static byte flag;
@@ -80,6 +80,7 @@ public class LoginServer {
 
             acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 30);
             acceptor.setHandler(new MapleServerHandler(-1, false));
+            acceptor.getSessionConfig().setTcpNoDelay(true);
             acceptor.bind(new InetSocketAddress(ip, port));
             System.out.println("\n【登入伺服器】  - 監聽端口: " + Short.toString(port) + " \n");
 

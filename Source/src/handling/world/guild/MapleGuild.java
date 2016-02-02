@@ -295,6 +295,7 @@ public class MapleGuild implements java.io.Serializable {
 
     /**
      * 取得徽章
+     *
      * @return 徽章
      */
     public final int getLogo() {
@@ -303,6 +304,7 @@ public class MapleGuild implements java.io.Serializable {
 
     /**
      * 設定徽章
+     *
      * @param l 徽章
      */
     public final void setLogo(final int l) {
@@ -311,6 +313,7 @@ public class MapleGuild implements java.io.Serializable {
 
     /**
      * 取得徽章顏色
+     *
      * @return 徽章顏色
      */
     public final int getLogoColor() {
@@ -319,6 +322,7 @@ public class MapleGuild implements java.io.Serializable {
 
     /**
      * 設定徽章顏色
+     *
      * @param c 徽章顏色
      */
     public final void setLogoColor(final int c) {
@@ -327,7 +331,8 @@ public class MapleGuild implements java.io.Serializable {
 
     /**
      * 取得徽章徽章背景
-     * @return 徽章背景 
+     *
+     * @return 徽章背景
      */
     public final int getLogoBG() {
         return logoBG;
@@ -335,6 +340,7 @@ public class MapleGuild implements java.io.Serializable {
 
     /**
      * 設定徽章背景
+     *
      * @param bg 徽章背景
      */
     public final void setLogoBG(final int bg) {
@@ -343,6 +349,7 @@ public class MapleGuild implements java.io.Serializable {
 
     /**
      * 取得徽章背景顏色
+     *
      * @return 徽章背景顏色
      */
     public final int getLogoBGColor() {
@@ -351,16 +358,17 @@ public class MapleGuild implements java.io.Serializable {
 
     /**
      * 設定徽章背景顏色
+     *
      * @param bgColor 背景顏色
      */
     public final void setLogoBGColor(final int bgColor) {
         logoBGColor = bgColor;
     }
 
-    
     /**
      * 取得公會公告
-     * @return 公會公告 
+     *
+     * @return 公會公告
      */
     public final String getNotice() {
         if (notice == null) {
@@ -371,6 +379,7 @@ public class MapleGuild implements java.io.Serializable {
 
     /**
      * 取得公會名稱
+     *
      * @return 公會名稱
      */
     public final String getName() {
@@ -379,13 +388,13 @@ public class MapleGuild implements java.io.Serializable {
 
     /**
      * 取得公會最大容量
+     *
      * @return 公會容量
      */
     public final int getCapacity() {
         return capacity;
     }
 
-    
     public final int getSignature() {
         return signature;
     }
@@ -555,12 +564,16 @@ public class MapleGuild implements java.io.Serializable {
             if (members.size() >= capacity) {
                 return 0;
             }
-            for (int i = members.size() - 1; i >= 0; i--) {
-                if (members.get(i).getGuildRank() < 5 || members.get(i).getName().compareTo(mgc.getName()) < 0) {
-                    members.add(i + 1, mgc);
-                    bDirty = true;
+            boolean exist = false;
+            for (MapleGuildCharacter c : members) {
+                if (c.getId() == mgc.getId()) {
+                    exist = true;
                     break;
                 }
+            }
+            if (!exist) {
+                members.add(mgc);
+                bDirty = true;
             }
         } finally {
             wL.unlock();
