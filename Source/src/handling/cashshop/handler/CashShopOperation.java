@@ -108,7 +108,7 @@ public class CashShopOperation {
     }
 
     public static void sendWebSite(final MapleClient c) {
-        c.getPlayer().dropMessage(1, "儲值詳情請參見社團。");
+        c.sendPacket(MTSCSPacket.sendWEB(c));
         refreshCashShop(c);
     }
 

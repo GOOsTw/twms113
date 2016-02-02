@@ -132,6 +132,13 @@ public class MTSCSPacket {
 
         return mplew.getPacket();
     }
+    
+    public static MaplePacket sendWEB(MapleClient c) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+        
+        mplew.writeShort(SendPacketOpcode.CS_WEB.getValue());
+        return mplew.getPacket();
+    }
 
     public static MaplePacket useWheel(byte charmsleft) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
