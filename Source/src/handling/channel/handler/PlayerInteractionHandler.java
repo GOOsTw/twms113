@@ -51,8 +51,8 @@ public class PlayerInteractionHandler {
             DENY_TRADE = 0x03,
             VISIT = 0x04,
             CHAT = 0x06,
-            離開 = 0x0A,
-            開啟商店 = 0x0B,
+            EXIT = 0x0A,
+            OPEN = 0x0B,
             SET_ITEMS = 0x0E,
             SET_MESO = 0x0F,
             CONFIRM_TRADE = 0x10,
@@ -88,13 +88,10 @@ public class PlayerInteractionHandler {
             SELECT_CARD = 0x41;
 
     public static final void PlayerInteraction(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
-
         if (chr == null) {
             return;
         }
-
         final byte action = slea.readByte();
-
         switch (action) { // Mode
 
             case CREATE: {
@@ -252,7 +249,7 @@ public class PlayerInteractionHandler {
                 }
                 break;
             }
-            case 離開: {
+            case EXIT: {
                 if (chr.getTrade() != null) {
                     MapleTrade.cancelTrade(chr.getTrade(), chr.getClient());
                 } else {
@@ -271,7 +268,7 @@ public class PlayerInteractionHandler {
                 }
                 break;
             }
-            case 開啟商店: {
+            case OPEN: {
 
                 final IMaplePlayerShop shop = chr.getPlayerShop();
                 if (shop == null) {
@@ -428,8 +425,8 @@ public class PlayerInteractionHandler {
                     c.sendPacket(MaplePacketCreator.enableActions());
                     return;
                 }
-                if ((tobuy.bundles < quantity) || ((tobuy.bundles % quantity != 0) && (GameConstants.isEquip(tobuy.item.getItemId()))) 
-                    || (chr.getMeso() - check2 > 2147483647L) || (shop.getMeso() + check2 < 0L) || (shop.getMeso() + check2 > 2147483647L)) { // 這是更好的方法來檢查.
+                if ((tobuy.bundles < quantity) || ((tobuy.bundles % quantity != 0) && (GameConstants.isEquip(tobuy.item.getItemId())))
+                        || (chr.getMeso() - check2 > 2147483647L) || (shop.getMeso() + check2 < 0L) || (shop.getMeso() + check2 > 2147483647L)) { // 這是更好的方法來檢查.
                     c.getPlayer().dropMessage(1, "您攜帶的楓幣超過(2147483647)無法購買商品，請將多餘的楓幣存入倉庫。"); // 仿正服.
                     c.sendPacket(MaplePacketCreator.enableActions());
                     return;
@@ -659,7 +656,7 @@ public class PlayerInteractionHandler {
                     } else {
                         game.getMCOwner().getClient().sendPacket(PlayerShopPacket.getMiniGameRequestREDO());
                     }
-                    game.setRequestedTie(game.getVisitorSlot(chr));
+                    //game.setRequestedTie(game.getVisitorSlot(chr));
                 }
                 break;
             }
@@ -670,16 +667,19 @@ public class PlayerInteractionHandler {
                     if (game.isOpen()) {
                         break;
                     }
-                    //     if (game.getRequestedTie() > -1 && game.getRequestedTie() != game.getVisitorSlot(chr)) {
-                    if (slea.readByte() > 0) {
-                        ips.broadcastToVisitors(PlayerShopPacket.getMiniGameSkip1(ips.getVisitorSlot(chr)));
-                        game.nextLoser();
-                    } else {
-                        game.broadcastToVisitors(PlayerShopPacket.getMiniGameDenyTie());
+                    if (game.getRequestedTie() > -1 && game.getRequestedTie() != game.getVisitorSlot(chr)) {
+                        if (slea.readByte() > 0) {
+                            ips.broadcastToVisitors(PlayerShopPacket.getMiniGameSkip1(ips.getVisitorSlot(chr)));
+                            game.nextLoser();
+                            game.setOpen(true);
+                            game.update();
+                            game.checkExitAfterGame();
+                        } else {
+                            game.broadcastToVisitors(PlayerShopPacket.getMiniGameDenyTie());
+                        }
+                        game.setRequestedTie(-1);
                     }
-                    game.setRequestedTie(-1);
                 }
-                //}
                 break;
             }
             case SKIP: {

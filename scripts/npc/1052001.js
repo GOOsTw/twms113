@@ -27,6 +27,16 @@ function action(mode, type, selection) {
     else
         status--;
     if (status == 0) {
+		if (cm.getQuestStatus(6141) == 1) {
+            var dd = cm.getEventManager("DLPracticeField");
+            if (dd != null) {
+                dd.startInstance(cm.getPlayer());
+				cm.safeDispose();
+            } else {
+                cm.sendOk("未知的錯誤。");
+				cm.dispose();
+            }
+        }
         if (cm.getJob() == 0) {
             if (cm.getPlayer().getLevel() >= 10) {
                 cm.sendNext("你要轉職成為一位 #r盜賊#k ?");

@@ -41,6 +41,8 @@ import handling.world.World;
 import handling.world.guild.MapleGuild;
 import java.util.Collection;
 import server.ServerProperties;
+import server.life.MapleLifeFactory;
+import server.life.MapleMonster;
 import server.maps.FieldLimitType;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
@@ -63,7 +65,12 @@ public class InterServerHandler {
         if (res == 1) {
             chr.dropMessage(5, "角色保存成功！");
         }
-
+            if (chr.isTestingDPS()) {
+                final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
+                chr.getMap().Killdpm(true);
+                chr.toggleTestingDPS();
+                chr.dropMessage(5, "已停止當前的DPM測試。");
+            }
         final ChannelServer ch = ChannelServer.getInstance(c.getChannel());
 
         chr.changeRemoval();

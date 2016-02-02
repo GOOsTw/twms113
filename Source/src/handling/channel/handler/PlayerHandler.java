@@ -48,6 +48,7 @@ import server.MaplePortal;
 import server.Randomizer;
 import server.Timer.CloneTimer;
 import server.events.MapleSnowball.MapleSnowballs;
+import server.life.MapleLifeFactory;
 import server.life.MapleMonster;
 import server.life.MobAttackInfo;
 import server.life.MobAttackInfoFactory;
@@ -1128,6 +1129,12 @@ public class PlayerHandler {
             if (!MapConstants.isEventMap(chr.getMapId()) || !MapConstants.isBlackFM(chr.getMapId())) {
                 chr.setChalkboard(null);
             }
+            if (chr.isTestingDPS()) {
+                final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
+                chr.getMap().Killdpm(true);
+                chr.toggleTestingDPS();
+                chr.dropMessage(5, "已停止當前的DPM測試。");
+            }
             if (targetid != -1 && !chr.isAlive()) {
                 chr.setStance(0);
                 if (chr.getEventInstance() != null && chr.getEventInstance().revivePlayer(chr) && chr.isAlive()) {
@@ -1144,7 +1151,7 @@ public class PlayerHandler {
                     final MapleMap to = chr.getMap().getReturnMap();
                     chr.changeMap(to, to.getPortal(0));
                 } else {
-                    c.sendPacket(MTSCSPacket.useWheel((byte) (chr.getInventory(MapleInventoryType.CASH).countById(5510000) - 1)));
+                    //c.sendPacket(MTSCSPacket.useWheel((byte) (chr.getInventory(MapleInventoryType.CASH).countById(5510000) - 1)));
                     chr.getStat().setHp((chr.getStat().getMaxHp() / 100) * 40);
                     MapleInventoryManipulator.removeById(c, MapleInventoryType.CASH, 5510000, 1, true, false);
 

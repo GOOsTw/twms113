@@ -66,10 +66,10 @@ public class MaplePlayerShop extends AbstractPlayerStore {
                         }
                     }
                 } else {
-                    c.getPlayer().dropMessage(1, "Your inventory is full.");
+                    c.getPlayer().dropMessage(1, "你的裝備欄已經滿了。");
                 }
             } else {
-                c.getPlayer().dropMessage(1, "You do not have enough mesos.");
+                c.getPlayer().dropMessage(1, "你沒有足夠的楓幣。");
                 //}
             }
             getMCOwner().getClient().sendPacket(PlayerShopPacket.shopItemUpdate(this));
@@ -80,11 +80,11 @@ public class MaplePlayerShop extends AbstractPlayerStore {
     public byte getShopType() {
         return IMaplePlayerShop.PLAYER_SHOP;
     }
-
+    
     @Override
     public void closeShop(boolean saveItems, boolean remove) {
         MapleCharacter owner = getMCOwner();
-        removeAllVisitors(10, 1);
+        removeAllVisitors(3, 1);
         getMap().removeMapObject(this);
 
         for (MaplePlayerShopItem items : getItems()) {
@@ -101,7 +101,7 @@ public class MaplePlayerShop extends AbstractPlayerStore {
         }
         owner.setPlayerShop(null);
         update();
-        getMCOwner().getClient().sendPacket(PlayerShopPacket.shopErrorMessage(10, 1));
+        getMCOwner().getClient().sendPacket(PlayerShopPacket.shopErrorMessage(3, 1));
     }
 
     public void banPlayer(String name) {

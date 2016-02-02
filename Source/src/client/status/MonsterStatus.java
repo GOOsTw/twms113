@@ -89,10 +89,9 @@ public enum MonsterStatus implements Serializable {
     MAGIC_DAMAGE_REFLECT(30),
     //
     SUMMON(31, true),
-    
     RISE_TOSS(32),
     //抵銷
-    NEUTRALISE(33, false),
+    NEUTRALISE(32, false),
     //弱點
     IMPRINT(34, false),
     //怪物炸彈
@@ -111,12 +110,10 @@ public enum MonsterStatus implements Serializable {
     //另一個咬擊[178-完成]
     ANOTHER_BITE(45),
     MBS46(46),
-    
     //三角進攻
     TRIANGULATION(47),
     //減益爆炸
     STING_EXPLOSION(48),
-    
     MBS49(49),
     MBS50(50),
     MBS51(51),
@@ -130,10 +127,8 @@ public enum MonsterStatus implements Serializable {
     MBS59(59),
     MBS60(60, false),
     MBS61(61),
-    BLEED(62, false),    
-    MBS63(63, false),
-    
-    ;
+    BLEED(62, false),
+    MBS63(63, false),;
     static final long serialVersionUID = 0L;
     private final int i;
     private final int position;
@@ -155,13 +150,12 @@ public enum MonsterStatus implements Serializable {
     }
 
     public int getPosition() {
-        return  position;
+        return position;
     }
 
-     public boolean isEmpty() {
+    public boolean isEmpty() {
         return end;
     }
-    
 
     public long getValue() {
         return i;

@@ -158,16 +158,15 @@ function playerDead(eim, player) {
 }
 
 function playerRevive(eim, player) {
+    player.addHP(50);
+    player.changeMap(eim.getMapInstance(returnmap), eim.getMapInstance(returnmap).getPortal(0));
+	eim.broadcastPlayerMsg(5, player.getName() + " 因為死亡離開了BOSSPQ");
     return true;
-    // Happens when player's revived.
-    // @Param : returns true/false
 }
 
 function playerDisconnected(eim, player) {
-    return 0;
-    // return 0 - Deregister player normally + Dispose instance if there are zero player left
-    // return x that is > 0 - Deregister player normally + Dispose instance if there x player or below
-    // return x that is < 0 - Deregister player normally + Dispose instance if there x player or below, if it's leader = boot all
+	player.setMap(eim.getMapInstance(returnmap));
+	eim.broadcastPlayerMsg(5, player.getName() + " 離開了BOSSPQ");
 }
 
 function monsterValue(eim, mobid) {

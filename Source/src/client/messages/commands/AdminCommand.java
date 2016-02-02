@@ -604,6 +604,31 @@ public class AdminCommand {
         }
     }
 
+    public static class openNpc extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            int npcid = 0;
+            try {
+                npcid = Integer.parseInt(splitted[1]);
+            } catch (NumberFormatException ex) {
+                return false;
+            }
+            MapleNPC npc = MapleLifeFactory.getNPC(npcid);
+            if (npc != null && !npc.getName().equalsIgnoreCase("MISSINGNO")) {
+                NPCScriptManager.getInstance().start(c, Integer.parseInt(splitted[1]));
+            } else {
+                c.getPlayer().dropMessage(5, "此NPC ID不存在");
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!openNpc [npcID] - 呼叫NPC").toString();
+        }
+    }
+
     public static class Shop extends CommandExecute {
 
         @Override
@@ -625,7 +650,7 @@ public class AdminCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!shop - 開啟商店").toString();
+            return new StringBuilder().append("!shop [ShopID] - 開啟商店").toString();
         }
     }
 
@@ -2936,8 +2961,8 @@ public class AdminCommand {
             return new StringBuilder().append("!reloadCS - 重新載入購物商城").toString();
         }
     }
-    
-       public static class ReloadGashapon extends CommandExecute {
+
+    public static class ReloadGashapon extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {

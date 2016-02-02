@@ -124,6 +124,7 @@ import server.MapleInventoryManipulator;
 import server.Timer.BuffTimer;
 import server.Timer.EtcTimer;
 import server.Timer.MapTimer;
+import server.life.MapleLifeFactory;
 import server.life.MobSkill;
 import server.life.PlayerNPC;
 import server.maps.Event_PyramidSubway;
@@ -4702,7 +4703,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.close();
             return ret_count;
         } catch (Exception Ex) {
-            //log.error("Error while read bosslog.", Ex);
             return -1;
         }
     }
@@ -4717,7 +4717,41 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.executeUpdate();
             ps.close();
         } catch (Exception Ex) {
-            //   log.error("Error while insert bosslog.", Ex);
+        }
+    }
+
+    public int getBossACLog(String bossid) {
+        Connection con1 = DatabaseConnection.getConnection();
+        try {
+            int ret_count;
+            PreparedStatement ps;
+            ps = con1.prepareStatement("select count(*) from bosslog2 where accountid = ? and bossid = ? and lastattempt >= subtime(current_timestamp, '1 0:0:0.0')");
+            ps.setInt(1, accountid);
+            ps.setString(2, bossid);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    ret_count = rs.getInt(1);
+                } else {
+                    ret_count = -1;
+                }
+            }
+            ps.close();
+            return ret_count;
+        } catch (Exception Ex) {
+            return -1;
+        }
+    }
+
+    public void setBossACLog(String bossid) {
+        Connection con1 = DatabaseConnection.getConnection();
+        try {
+            PreparedStatement ps;
+            ps = con1.prepareStatement("insert into bosslog2 (accountid, bossid) values (?,?)");
+            ps.setInt(1, accountid);
+            ps.setString(2, bossid);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception Ex) {
         }
     }
 
@@ -5455,6 +5489,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
         if (res == 1) {
             dropMessage(5, "角色保存成功！");
+        }
+        if (client.getPlayer().isTestingDPS()) {
+            final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
+            map.Killdpm(true);
+            client.getPlayer().toggleTestingDPS();
+            client.getPlayer().dropMessage(5, "已停止當前的DPM測試。");
         }
 
         if (channel == client.getChannel() || toch == null || toch.isShutdown()) {
