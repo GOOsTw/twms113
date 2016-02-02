@@ -65,12 +65,13 @@ public class InterServerHandler {
         if (res == 1) {
             chr.dropMessage(5, "角色保存成功！");
         }
-            if (chr.isTestingDPS()) {
-                final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
+        if (chr.isTestingDPS()) {
+            final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
+            if(chr.getMap() != null)
                 chr.getMap().Killdpm(true);
-                chr.toggleTestingDPS();
-                chr.dropMessage(5, "已停止當前的DPM測試。");
-            }
+            chr.toggleTestingDPS();
+            chr.dropMessage(5, "已停止當前的DPM測試。");
+        }
         final ChannelServer ch = ChannelServer.getInstance(c.getChannel());
 
         chr.changeRemoval();
@@ -186,13 +187,12 @@ public class InterServerHandler {
             FilePrinter.printError(FilePrinter.LoginError, e);
         }
         c.sendPacket(FamilyPacket.getFamilyData());
-        
-        
+
         player.sendMacros();
         player.showNote();
         player.updatePartyMemberHP();
         player.startFairySchedule(false);
-        player.baseSkills(); 
+        player.baseSkills();
 
         c.sendPacket(MaplePacketCreator.getKeymap(player.getKeyLayout()));
 
