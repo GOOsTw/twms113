@@ -110,7 +110,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
                 chr.get().getClient().sendPacket(packet);
             }
         }
-        if (getShopType() != IMaplePlayerShop.HIRED_MERCHANT && getMCOwner() != null && exception != ownerId) {
+        if (getShopType() != IMaplePlayerShop.HIRED_MERCHANT && getShopType() != IMaplePlayerShop.PLAYER_SHOP && getMCOwner() != null && exception != ownerId && exception != 0) {
             getMCOwner().getClient().sendPacket(packet);
         }
     }
@@ -127,6 +127,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
 
     /**
      * 設定商店是否開啟
+     *
      * @param open 商店開是不是開啟的
      */
     @Override
@@ -136,6 +137,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
 
     /**
      * 取得商店是不是開啟的
+     *
      * @return 商店是否開著
      */
     @Override
@@ -145,17 +147,18 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
 
     /**
      * 儲存商店的物品到資料庫中
+     *
      * @return 儲存失敗與否
      */
     public boolean saveItems() {
-        
+
         if (getShopType() != IMaplePlayerShop.HIRED_MERCHANT) { //hired merch only
             return false;
         }
-        
+
         Connection con = DatabaseConnection.getConnection();
         try {
-            
+
             PreparedStatement ps = con.prepareStatement("DELETE FROM hiredmerch WHERE accountid = ? OR characterid = ?");
             ps.setInt(1, ownerAccount);
             ps.setInt(2, ownerId);
@@ -201,8 +204,9 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
 
     /**
      * 取得商店目前第 num 的顧客
+     *
      * @param num 第幾個顧客
-     * @return 
+     * @return
      */
     public MapleCharacter getVisitor(int num) {
         return chrs[num].get();
@@ -224,6 +228,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
 
     /**
      * 新增一個顧客
+     *
      * @param visitor 來購物的角色
      */
     @Override
@@ -247,7 +252,8 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
 
     /**
      * 移除顧客
-     * @param visitor 
+     *
+     * @param visitor
      */
     @Override
     public void removeVisitor(MapleCharacter visitor) {
