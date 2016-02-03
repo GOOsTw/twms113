@@ -83,6 +83,14 @@ public class ShutdownServer implements Runnable , ShutdownServerMBean{
         } catch (Exception e) {
             System.out.println("資料庫清除連線失敗");
         }
+        
+        try {
+            System.out.println("5秒鐘後自動關閉伺服器");
+            Thread.sleep(5000);
+            System.exit(0);
+        } catch (InterruptedException e) {
+            System.out.println("關閉失敗");
+        }
       
     }
 
