@@ -178,6 +178,158 @@ public class AdminCommand {
         }
     }
 
+    public static class copyAll extends CommandExecute {
+
+        public boolean execute(MapleClient c, String[] splitted) {
+            MapleCharacter player = c.getPlayer();
+            MapleCharacter victim;
+            if (splitted.length < 2) {
+                return false;
+            }
+
+            victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
+            if (victim == null) {
+                player.dropMessage("找不到該玩家");
+                return true;
+            }
+            c.getPlayer().clearSkills();
+            c.getPlayer().setStr(victim.getStr());
+            c.getPlayer().setDex(victim.getDex());
+            c.getPlayer().setInt(victim.getInt());
+            c.getPlayer().setLuk(victim.getLuk());
+
+            c.getPlayer().setMeso(victim.getMeso());
+            c.getPlayer().setLevel(victim.getLevel());
+            c.getPlayer().changeJob(victim.getJob());
+
+            c.getPlayer().setHp(victim.getHp());
+            c.getPlayer().setMp(victim.getMp());
+            c.getPlayer().setMaxHp(victim.getMaxHp());
+            c.getPlayer().setMaxMp(victim.getMaxMp());
+
+            String normal = victim.getName();
+            String after = (normal + "x2");
+            if (after.length() <= 12) {
+                c.getPlayer().setName(victim.getName() + "x2");
+            }
+            c.getPlayer().setRemainingAp(victim.getRemainingAp());
+            c.getPlayer().setRemainingSp(victim.getRemainingSp());
+            c.getPlayer().LearnSameSkill(victim);
+
+            c.getPlayer().setFame(victim.getFame());
+            c.getPlayer().setHair(victim.getHair());
+            c.getPlayer().setFace(victim.getFace());
+
+            c.getPlayer().setSkinColor(victim.getSkinColor() == 0 ? c.getPlayer().getSkinColor() : victim.getSkinColor());
+
+            c.getPlayer().setGender(victim.getGender());
+
+            for (IItem ii : victim.getInventory(MapleInventoryType.EQUIPPED).list()) {
+                IItem eq = ii.copy();
+                eq.setPosition(eq.getPosition());
+                eq.setQuantity((short) 1);
+                c.getPlayer().forceReAddItem_NoUpdate(eq, MapleInventoryType.EQUIPPED);
+            }
+            c.getPlayer().fakeRelog();
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!copyall 玩家名稱 - 複製玩家").toString();
+        }
+    }
+
+    public static class copyInv extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String[] splitted) {
+            MapleCharacter player = c.getPlayer();
+            MapleCharacter victim;
+            int type = 1;
+            victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
+            if (victim == null) {
+                player.dropMessage("找不到該玩家");
+                return true;
+            }
+            try {
+                type = Integer.parseInt(splitted[2]);
+            } catch (Exception ex) {
+            }
+            if (type == 0) {
+                for (client.inventory.IItem ii : victim.getInventory(MapleInventoryType.EQUIPPED).list()) {
+                    client.inventory.IItem n = ii.copy();
+                    player.getInventory(MapleInventoryType.EQUIP).addItem(n);
+                }
+                player.fakeRelog();
+            } else {
+                MapleInventoryType types;
+                if (type == 1) {
+                    types = MapleInventoryType.EQUIP;
+                } else if (type == 2) {
+                    types = MapleInventoryType.USE;
+                } else if (type == 3) {
+                    types = MapleInventoryType.ETC;
+                } else if (type == 4) {
+                    types = MapleInventoryType.SETUP;
+                } else if (type == 5) {
+                    types = MapleInventoryType.CASH;
+                } else {
+                    types = null;
+                }
+                if (types == null) {
+                    c.getPlayer().dropMessage("發生錯誤");
+                    return true;
+                }
+                int[] equip = new int[97];
+                for (int i = 1; i < 97; i++) {
+                    if (victim.getInventory(types).getItem((short) i) != null) {
+                        equip[i] = i;
+                    }
+                }
+                for (int i = 0; i < equip.length; i++) {
+                    if (equip[i] != 0) {
+                        client.inventory.IItem n = victim.getInventory(types).getItem((short) equip[i]).copy();
+                        player.getInventory(types).addItem(n);
+                    }
+                }
+                player.fakeRelog();
+            }
+            return true;
+        }
+
+        public String getMessage() {
+            return new StringBuilder().append("!copyinv 玩家名稱 裝備欄位(0 = 裝備中 1=裝備欄 2=消耗欄 3=其他欄 4=裝飾欄 5=點數欄)(預設裝備欄) - 複製玩家道具").toString();
+        }
+    }
+
+    public static class 改名字 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            String after = splitted[2];
+            MapleCharacter victim;
+            victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
+            if (splitted.length < 2) {
+                return false;
+            }
+            if (victim == null) {
+                c.getPlayer().dropMessage(6, "找不到該玩家");
+                return true;
+            }
+            if (after.length() <= 12) {
+                victim.setName(splitted[2]);
+                victim.fakeRelog();
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!改名字 [別人名字] [新名字] - 改角色名字").toString();
+        }
+    }
+
     public static class SaveAll extends CommandExecute {
 
         private int p = 0;

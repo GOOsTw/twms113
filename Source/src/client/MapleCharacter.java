@@ -1910,6 +1910,93 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         //System.out.println("Effect deregistered. Effect: " + effect.getSourceId());
     }
 
+    /* 繼承函數 */
+    public final void clearSkills() {
+        for (ISkill skil : SkillFactory.getAllSkills()) {
+            changeSkillLevel(skil, (byte) 0, (byte) 0);
+        }
+    }
+
+    public final void LearnSameSkill(MapleCharacter victim) {
+        for (ISkill skil : SkillFactory.getAllSkills()) {
+            if (victim.getSkillLevel(skil) > 0) {
+                changeSkillLevel(skil, victim.getSkillLevel(skil), victim.getMasterLevel(skil));
+            }
+        }
+    }
+
+    public int getStr() {
+        return getStat().getStr();
+    }
+
+    public int getInt() {
+        return getStat().getInt();
+    }
+
+    public int getLuk() {
+        return getStat().getLuk();
+    }
+
+    public int getDex() {
+        return getStat().getDex();
+    }
+
+    public int getHp() {
+        return getStat().getHp();
+    }
+
+    public int getMp() {
+        return getStat().getMp();
+    }
+
+    public int getMaxHp() {
+        return getStat().getMaxHp();
+    }
+
+    public int getMaxMp() {
+        return getStat().getMaxMp();
+    }
+
+    public void setHp(int amount) {
+        getStat().setHp(amount);
+    }
+
+    public void setMp(int amount) {
+        getStat().setMp(amount);
+    }
+
+    public void setMaxHp(int amount) {
+        getStat().setMaxHp((short) amount);
+    }
+
+    public void setMaxMp(int amount) {
+        getStat().setMaxMp((short) amount);
+    }
+
+    public void setStr(int str) {
+        stats.str = (short) str;
+        stats.recalcLocalStats(false);
+    }
+
+    public void setLuk(int luk) {
+        stats.luk = (short) luk;
+        stats.recalcLocalStats(false);
+    }
+
+    public void setDex(int dex) {
+        stats.dex = (short) dex;
+        stats.recalcLocalStats(false);
+    }
+
+    public void setInt(int int_) {
+        stats.int_ = (short) int_;
+        stats.recalcLocalStats(false);
+    }
+
+    public void setMeso(int mesos) {
+        meso = mesos;
+    }
+
     public void cancelBuffStats(MapleBuffStat... stat) {
         List<MapleBuffStat> buffStatList = Arrays.asList(stat);
         unRegisterBuffStats(buffStatList);
@@ -4376,7 +4463,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void setLevel(final short level) {
-        this.level = (short) (level - 1);
+        this.level = (short) (level);
     }
 
     public void sendNote(String to, String msg) {
