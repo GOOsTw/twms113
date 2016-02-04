@@ -16,3 +16,4 @@ http://puu.sh/jmoZx/158ec24af8.jpg
 某技能會導致parseMovement錯誤
 經驗值椅子待修復
 冰風暴+致命毒霧會斷線 
+海盜槍神海盜船(5221006)放了會MapleStory會整個Crash  
