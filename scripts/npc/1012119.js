@@ -26,7 +26,7 @@ function action(mode, type, selection) {
     } else if (status == 1) {
 		if (selection < 0 || selection >= num) {
 			cm.dispose();
-		} else if (cm.getPlayer().getLevel >= 20) {
+		} else if (cm.getPlayer().getLevel() >= 20) {
             cm.sendNext("二十等以後無法使用唷。");
             cm.dispose();
 		} else if (cm.getPlayerCount(map + selection) >= maxp) {

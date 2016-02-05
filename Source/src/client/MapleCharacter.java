@@ -57,6 +57,7 @@ import java.io.Serializable;
 import client.anticheat.CheatTracker;
 import client.inventory.Equip;
 import client.inventory.ModifyInventory;
+import constants.MapConstants;
 import constants.ServerConstants;
 import database.DatabaseConnection;
 import database.DatabaseException;
@@ -3332,6 +3333,60 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return ret.masterlevel;
     }
 
+    public void DoLevelMap() {
+        boolean warp = false;
+        int Return_Map = 0;
+        switch (getMapId()) {
+            case 910060000:
+            case 910060001:
+            case 910060002:
+            case 910060003:
+            case 910060004:
+                warp = true;
+                Return_Map = 100010000;
+                break;
+            case 910220000:
+            case 910220001:
+            case 910220002:
+            case 910220003:
+            case 910220004:
+                warp = true;
+                Return_Map = 101040000;
+                break;
+            case 910310000:
+            case 910310001:
+            case 910310002:
+            case 910310003:
+            case 910310004:
+                warp = true;
+                Return_Map = 103010000;
+                break;
+            case 912030000:
+            case 912030001:
+            case 912030002:
+            case 912030003:
+            case 912030004:
+                warp = true;
+                Return_Map = 120010000;
+                break;
+            case 910120000:
+            case 910120001:
+            case 910120002:
+            case 910120003:
+            case 910120004:
+                warp = true;
+                Return_Map = 100040000;
+                break;
+        }
+        if (warp) {
+            MapleMap warpMap = client.getChannelServer().getMapFactory().getMap(Return_Map);
+            if (warpMap != null) {
+                changeMap(warpMap, warpMap.getPortal(0));
+                dropMessage("由於你的等級超過20，已經不符合新手需求，將把您傳出訓練場。");
+            }
+        }
+    }
+
     public void levelUp() {
         if (GameConstants.isKOC(job)) {
             if (level <= 70) {
@@ -3344,7 +3399,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
         int maxhp = stats.getMaxHp();
         int maxmp = stats.getMaxMp();
-
+        if (level >= 19) {
+            DoLevelMap();
+        }
         if (job == 0 || job == 1000 || job == 2000 || job == 2001 || job == 3000) { // Beginner
             maxhp += Randomizer.rand(12, 16);
             maxmp += Randomizer.rand(10, 12);
@@ -3901,6 +3958,18 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             removePet(pet, shiftLeft);
             client.sendPacket(PetPacket.petStatUpdate(this));
             client.sendPacket(MaplePacketCreator.enableActions());
+        }
+    }
+
+    public final void unequips() {
+        MapleInventory equipped = client.getPlayer().getInventory(MapleInventoryType.EQUIPPED);
+        MapleInventory equip = client.getPlayer().getInventory(MapleInventoryType.EQUIP);
+        List<Short> ids = new LinkedList<>();
+        for (IItem item : equipped.list()) {
+            ids.add(item.getPosition());
+        }
+        for (short id : ids) {
+            MapleInventoryManipulator.unequip(client, id, equip.getNextFreeSlot());
         }
     }
 
@@ -4463,6 +4532,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void setLevel(final short level) {
+        this.level = (short) (level - 1);
+    }
+
+    public void setLevel1(final short level) {
         this.level = (short) (level);
     }
 
