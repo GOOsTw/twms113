@@ -11,6 +11,7 @@ import tools.FilePrinter;
 import tools.MaplePacketCreator;
 import tools.StringUtil;
 import client.messages.commands.BlackConfig;
+import handling.login.LoginServer;
 
 public class InternCommand {
 
@@ -222,6 +223,26 @@ public class InternCommand {
         @Override
         public String getMessage() {
             return new StringBuilder().append("!spy <玩家名字>> - 觀察玩家").toString();
+        }
+    }
+
+    public static class 精靈商人訊息 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            boolean hh = c.getPlayer().get精靈商人訊息();
+            if (hh) {
+                c.getPlayer().get精靈商人訊息(false);
+            } else {
+                c.getPlayer().get精靈商人訊息(true);
+            }
+            hh = c.getPlayer().get精靈商人訊息();
+            c.getPlayer().dropMessage(6, "[精靈商人購買訊息] " + (hh ? "開啟" : "關閉"));
+            return true;
+        }
+
+        public String getMessage() {
+            return new StringBuilder().append("!hmcheck  - 商人購買訊息開關").toString();
         }
     }
 

@@ -199,7 +199,7 @@ public abstract class MapleEvent {
                 for (int i : e.mapid) {
                     if (chr.getMapId() == i) {
                         e.startEvent();
-                        chr.dropMessage(5, String.valueOf(t) + " 活動開始");
+                        chr.getMap().broadcastMessage(MaplePacketCreator.serverNotice(5, String.valueOf(t) + " 活動開始。"));
                     }
                 }
             }

@@ -211,6 +211,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public int master = 0, apprentice = 0;
     private boolean testingdps = false;
     private long dps;
+    private boolean 精靈商人購買開關 = false;
 
     private MapleCharacter(final boolean ChannelServer) {
         this.setStance(0);
@@ -3252,6 +3253,14 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
     }
 
+    public void get精靈商人訊息(boolean xx) {
+        精靈商人購買開關 = xx;
+    }
+
+    public boolean get精靈商人訊息() {
+        return 精靈商人購買開關;
+    }
+
     public void checkMonsterAggro(MapleMonster monster) {
         if (clone || monster == null) {
             return;
@@ -4398,6 +4407,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             this.ItemVac.interrupt();
             itemVacs = false;
         }
+    }
+
+    public void dropMessage(boolean tt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public static enum FameStatus {
@@ -6252,6 +6265,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public String getPrefix() {
         return prefix;
+    }
+
+    public final boolean canHold(final int itemid) {
+        return getInventory(GameConstants.getInventoryType(itemid)).getNextFreeSlot() > -1;
     }
 
     public void gainItem(int code, int amount) {

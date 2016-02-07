@@ -48,6 +48,8 @@ import server.life.MapleMonster;
 public class ReactorActionManager extends AbstractPlayerInteraction {
 
     private final MapleReactor reactor;
+    public static final boolean OPEN = true;
+    public static final boolean CLOSE = false;
 
     public ReactorActionManager(MapleClient c, MapleReactor reactor) {
         super(c);
@@ -158,6 +160,14 @@ public class ReactorActionManager extends AbstractPlayerInteraction {
         for (int i = 0; i < qty; i++) {
             reactor.getMap().spawnFakeMonsterOnGroundBelow(MapleLifeFactory.getMonster(id), pos);
         }
+    }
+
+    public void closePortal(int mapid, String pName) {
+        getClient().getChannelServer().getMapFactory().getMap(mapid).getPortal(pName).setPortalState(CLOSE);
+    }
+
+    public void openPortal(int mapid, String pName) {
+        getClient().getChannelServer().getMapFactory().getMap(mapid).getPortal(pName).setPortalState(OPEN);
     }
 
     public void killAll() {

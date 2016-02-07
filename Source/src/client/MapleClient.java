@@ -722,6 +722,7 @@ public class MapleClient {
                     case 541020800: //scar/targa
                     case 551030200: //krexel
                     case 220080001: //pap
+                    case 501030105: // 六手邪神
                         player.getMap().addDisconnected(player.getId());
                         break;
                 }
