@@ -55,6 +55,10 @@ public class MapleTrade {
         cancel(c, 0);
     }
 
+    public final void cancel1(final MapleClient c) {
+        cancel(c, 1);
+    }
+
     public final void cancel(final MapleClient c, final int unsuccessful) {
         if (items != null) { // just to be on the safe side...
             for (final IItem item : items) {
@@ -264,13 +268,19 @@ public class MapleTrade {
         if (c1 == null || c1.getTrade() == null) {
             return;
         }
+        if (c2.getGMLevel() > c1.getGMLevel()) {
+            c1.getTrade().cancel1(c1.getClient());
+            c1.setTrade(null);
+            c1.getClient().sendPacket(MaplePacketCreator.serverNotice(5, "無法跟管理員進行交易。"));
+            return;
+        }
         if (c2 != null && c2.getTrade() == null) {
             c2.setTrade(new MapleTrade((byte) 1, c2));
             c2.getTrade().setPartner(c1.getTrade());
             c1.getTrade().setPartner(c2.getTrade());
             c2.getClient().sendPacket(MaplePacketCreator.getTradeInvite(c1));
         } else {
-            c1.getClient().sendPacket(MaplePacketCreator.serverNotice(5, c2.getName() + "忙碌中"));
+            c1.getClient().sendPacket(MaplePacketCreator.serverNotice(5, c2.getName() + "忙碌中。"));
         }
     }
 
