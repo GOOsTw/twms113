@@ -207,7 +207,7 @@ function action(mode, type, selection) {
     } else if (status == 4) { //bribe
         if (cm.getPlayer().getMeso() < 300000000) {
             cm.sendNext("你好像沒有足夠的楓幣來支付，請檢查一下再來。");
-        } else if (!cm.canHold(4001017, 5)) {
+        } else if (cm.canHold(4001017)) {
             cm.sendNext("你好像沒有足夠的背包空間，請檢查一下再來。");
         } else {
             cm.gainItem(4001017, 5);
