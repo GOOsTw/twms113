@@ -3467,11 +3467,11 @@ public class MaplePacketCreator {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.BBS_OPERATION.getValue());
-        mplew.write(6);
+        mplew.write(0x6);
 
         if (bbs == null) {
             mplew.write(0);
-            mplew.writeLong(0);
+            mplew.writeLong(0L);
             return mplew.getPacket();
         }
         int threadCount = bbs.size();
@@ -3482,23 +3482,18 @@ public class MaplePacketCreator {
                 break;
             }
         }
-        final int ret = (notice == null ? 0 : 1);
-        mplew.write(ret);
-        if (notice != null) { //has a notice
+        mplew.write(notice == null ? 0 : 1);
+        if (notice != null) {
             addThread(mplew, notice);
-            threadCount--; //one thread didn't count (because it's a notice)
         }
-        if (threadCount < start) { //seek to the thread before where we start
-            //uh, we're trying to start at a place past possible
+        if (threadCount < start) {
             start = 0;
         }
-        //each page has 10 threads, start = page # in packet but not here
         mplew.writeInt(threadCount);
-        final int pages = Math.min(10, threadCount - start);
+        int pages = Math.min(10, threadCount - start);
         mplew.writeInt(pages);
-
         for (int i = 0; i < pages; i++) {
-            addThread(mplew, bbs.get(start + i + ret)); //because 0 = notice
+            addThread(mplew, bbs.get(start + i));
         }
         return mplew.getPacket();
     }

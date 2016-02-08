@@ -18,6 +18,7 @@ import client.inventory.MapleRing;
 import client.inventory.ModifyInventory;
 import client.messages.CommandProcessorUtil;
 import constants.GameConstants;
+import database.DatabaseConnection;
 import handling.MaplePacket;
 import handling.RecvPacketOpcode;
 import handling.SendPacketOpcode;
@@ -77,6 +78,10 @@ import java.util.concurrent.ScheduledFuture;
 import scripting.NPCScriptManager;
 import server.ServerProperties;
 import handling.login.LoginServer;
+import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import server.CashItemFactory;
 import server.FishingRewardFactory;
 import server.Timer;
@@ -1627,6 +1632,95 @@ public class AdminCommand {
         @Override
         public String getMessage() {
             return new StringBuilder().append("!killmap - 殺掉所有玩家").toString();
+        }
+    }
+
+    public static class 取消補助 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            for (MapleCharacter map : c.getPlayer().getMap().getCharactersThreadsafe()) {
+                if (map != null && !map.isGM()) {
+                    map.cancelAllBuffs();
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!取消補助 - 清理地圖上玩家的Buff").toString();
+        }
+    }
+
+    public static class 收起寵物 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            for (MapleCharacter map : c.getPlayer().getMap().getCharactersThreadsafe()) {
+                if (map != null && !map.isGM()) {
+                    map.unequipAllPets();
+                    map.dropMessage(5, "系統已幫您收起寵物。");
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!收起寵物 - 清理地圖上玩家的Buff").toString();
+        }
+    }
+
+    public static class 加入公會 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length != 2) {
+                return false;
+            }
+            com.mysql.jdbc.Connection dcon = (com.mysql.jdbc.Connection) DatabaseConnection.getConnection();
+            try {
+                com.mysql.jdbc.PreparedStatement ps = (com.mysql.jdbc.PreparedStatement) dcon.prepareStatement("SELECT guildid FROM guilds WHERE name = ?");
+                ps.setString(1, splitted[1]);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    if (c.getPlayer().getGuildId() > 0) {
+                        try {
+                            World.Guild.leaveGuild(c.getPlayer().getMGC());
+                        } catch (Exception e) {
+                            c.sendPacket(MaplePacketCreator.serverNotice(5, "無法連接到世界伺服器，請稍後再嘗試。"));
+                            return false;
+                        }
+                        c.sendPacket(MaplePacketCreator.showGuildInfo(null));
+
+                        c.getPlayer().setGuildId(0);
+                        c.getPlayer().saveGuildStatus();
+                    }
+                    c.getPlayer().setGuildId(rs.getInt("guildid"));
+                    c.getPlayer().setGuildRank((byte) 2); // 副會長
+                    try {
+                        World.Guild.addGuildMember(c.getPlayer().getMGC());
+                    } catch (Exception e) {
+                    }
+                    c.sendPacket(MaplePacketCreator.showGuildInfo(c.getPlayer()));
+                    c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.removePlayerFromMap(c.getPlayer().getId()), false);
+                    c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.spawnPlayerMapobject(c.getPlayer()), false);
+                    c.getPlayer().saveGuildStatus();
+                } else {
+                    c.getPlayer().dropMessage(6,"公會名稱不存在。");
+                }
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!加入公會 [公會名字] - 強制加入公會").toString();
         }
     }
 
