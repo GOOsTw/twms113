@@ -1014,7 +1014,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             con.setAutoCommit(false);
             ps = con.prepareStatement("UPDATE characters SET level = ?, fame = ?, str = ?, dex = ?, luk = ?, `int` = ?, exp = ?, hp = ?, mp = ?, maxhp = ?, maxmp = ?, sp = ?, ap = ?, gm = ?, skincolor = ?, gender = ?, job = ?, hair = ?, face = ?, map = ?, meso = ?, hpApUsed = ?, spawnpoint = ?, party = ?, buddyCapacity = ?, monsterbookcover = ?, dojo_pts = ?, dojoRecord = ?, pets = ?, subcategory = ?, marriageId = ?, currentrep = ?, totalrep = ?, charmessage = ?, expression = ?, constellation = ?, blood = ?, month = ?, day = ?, beans = ?, prefix = ?, gachexp = ?, dps = ?, name = ? WHERE id = ?");
-            ps.setInt(1, level);
+            if (gmLevel < 1 && level > 199) {
+                ps.setInt(1, GameConstants.isKOC(job) ? 120 : 200);
+            } else {
+                ps.setInt(1, level);
+            }
             ps.setShort(2, fame);
             ps.setShort(3, stats.getStr());
             ps.setShort(4, stats.getDex());
@@ -2942,7 +2946,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         try {
             int prevexp = getExp();
             int needed = GameConstants.getExpNeededForLevel(level);
-            if (level >= 200 || (GameConstants.isKOC(job) && level >= 120)) {
+            if (GameConstants.isKOC(job) && level >= 120) {
+                setExp(0);
+            }
+            if (level >= 200) {
                 if (exp + total > needed) {
                     setExp(needed);
                 } else {
@@ -3014,7 +3021,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             total = Integer.MAX_VALUE;
         }
         int needed = GameConstants.getExpNeededForLevel(level);
-        if (level >= 200 || (GameConstants.isKOC(job) && level >= 120)) {
+        if (GameConstants.isKOC(job) && level >= 120) {
+            return;
+        }
+        if (level >= 200) {
             if (exp + total > needed) {
                 setExp(needed);
             } else {
@@ -3493,6 +3503,18 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
             sb.append(getName());
             sb.append(" 達到了等級200級！請大家一起恭喜他！");
+            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, sb.toString()).getBytes());
+        }
+        if (GameConstants.isKOC(job) && level == 120 && !isGM()) {
+            final StringBuilder sb = new StringBuilder("[恭喜] ");
+            final IItem medal = getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -21);
+            if (medal != null) { // Medal
+                sb.append("<");
+                sb.append(MapleItemInformationProvider.getInstance().getName(medal.getItemId()));
+                sb.append("> ");
+            }
+            sb.append(getName());
+            sb.append(" 達到了皇家騎士團峰頂等級120級！請大家一起恭喜他！");
             World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, sb.toString()).getBytes());
         }
 

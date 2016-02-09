@@ -116,7 +116,7 @@ public class NPCScriptManager extends AbstractScriptManager {
     }
 
     public final void startQuest(final MapleClient c, final int npc, final int quest) {
-        if (!MapleQuest.getInstance(quest).canStart(c.getPlayer(), null)) {
+        if (!MapleQuest.getInstance(quest).canStart(c.getPlayer(), npc)) {
             return;
         }
         final Lock lock = c.getNPCLock();
