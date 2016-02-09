@@ -1185,11 +1185,20 @@ public class World {
                         guild.setAllianceId(0);
                         guild.broadcast(MaplePacketCreator.disbandAlliance(allianceid));
                     } else {
-                        guild.broadcast(MaplePacketCreator.serverNotice(5, "[" + g_.getName() + "] Guild has left the alliance."));
+                        MapleCharacter chr = null;
+                        for (MapleGuildCharacter MGC : guild.getMembers()) {
+                            if (MGC.getAllianceRank() == 1) {
+                                chr = ChannelServer.getInstance(MGC.getChannel()).getPlayerStorage().getCharacterById(MGC.getId());
+                                chr.reloadC();
+                                chr.dropMessage(1, "公會聯盟長請在驅除一次退出的聯盟\r\n或者重新登入遊戲即可變更公會聯盟狀態。");
+                            }
+                        }
+                        guild.broadcast(MaplePacketCreator.serverNotice(5, "[" + g_.getName() + "] 公會已經離開了" + alliance.getName() + "聯盟。"));
                         guild.broadcast(MaplePacketCreator.changeGuildInAlliance(alliance, g_, false));
                         guild.broadcast(MaplePacketCreator.removeGuildFromAlliance(alliance, g_, expelled));
+                        guild.broadcast(MaplePacketCreator.getAllianceUpdate(alliance));
+                        alliances.remove(allianceid);
                     }
-
                 }
             }
 

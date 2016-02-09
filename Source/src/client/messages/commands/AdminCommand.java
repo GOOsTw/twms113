@@ -1002,6 +1002,26 @@ public class AdminCommand {
         }
     }
 
+    public static class LevelUpTo extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            while (c.getPlayer().getLevel() < Integer.parseInt(splitted[1])) {
+                if (c.getPlayer().getLevel() < 255) {
+                    c.getPlayer().levelUp();
+                    c.getPlayer().setExp(0);
+                    c.getPlayer().updateSingleStat(MapleStat.EXP, c.getPlayer().getExp());
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!levelupto [等級數量] - 等級上升").toString();
+        }
+    }
+
     public static class UnlockInv extends CommandExecute {
 
         @Override
@@ -1708,7 +1728,7 @@ public class AdminCommand {
                     c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.spawnPlayerMapobject(c.getPlayer()), false);
                     c.getPlayer().saveGuildStatus();
                 } else {
-                    c.getPlayer().dropMessage(6,"公會名稱不存在。");
+                    c.getPlayer().dropMessage(6, "公會名稱不存在。");
                 }
                 rs.close();
                 ps.close();

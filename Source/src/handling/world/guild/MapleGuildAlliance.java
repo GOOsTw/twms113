@@ -268,9 +268,15 @@ public class MapleGuildAlliance implements java.io.Serializable {
     }
 
     public boolean removeGuild(final int guildid, final boolean expelled) {
+        return removeGuild(guildid, expelled, false);
+    }
+
+    public boolean removeGuild(final int guildid, final boolean expelled, final boolean isNull) {
         for (int i = 0; i < getNoGuilds(); i++) {
             if (guilds[i] == guildid) {
-                broadcast(null, guildid, GAOp.DISBAND, expelled);
+                if (!isNull) {
+                    broadcast(null, guildid, GAOp.DISBAND, expelled);
+                }
                 if (i > 0 && i != getNoGuilds() - 1) { // if guild isnt the last guild.. damnit
                     for (int x = i + 1; x < getNoGuilds(); x++) {
                         if (guilds[x] > 0) {
@@ -283,7 +289,7 @@ public class MapleGuildAlliance implements java.io.Serializable {
                 } else {
                     guilds[i] = -1;
                 }
-                if (i == 0) { //leader guild.. FUCK THIS ALLIANCE! xD
+                if (i == 0) { //leader guild.
                     return disband();
                 } else {
                     broadcast(MaplePacketCreator.getAllianceUpdate(this));
@@ -333,7 +339,7 @@ public class MapleGuildAlliance implements java.io.Serializable {
         guilds[g] = guilds[0];
         guilds[0] = oldGuild;
         if (leaderName != null) {
-            broadcast(MaplePacketCreator.serverNotice(5, leaderName + " has become the leader of the alliance."));
+            broadcast(MaplePacketCreator.serverNotice(5, leaderName + " 已經成為公會聯盟會長。"));
         }
         broadcast(MaplePacketCreator.changeAllianceLeader(allianceid, leaderid, c));
         broadcast(MaplePacketCreator.updateAllianceLeader(allianceid, leaderid, c));

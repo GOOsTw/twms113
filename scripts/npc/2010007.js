@@ -24,6 +24,9 @@ function action(mode, type, selection) {
             if (cm.getPlayerStat("GID") > 0) {
                 cm.sendOk("你不能創建一個新的工會.");
                 cm.dispose();
+			} else if (cm.getPlayer().getLevel() < 30 && !cm.getPlayer().isGM()) {
+				cm.sendOk("你的等級尚未滿30級無法創建公會。");
+				cm.dispose();
             } else
                 cm.sendYesNo("創建公會需要 #b500,000 楓幣#k, 你確定要創建公會嗎?");
         } else if (selection == 1) {
