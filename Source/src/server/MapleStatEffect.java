@@ -25,6 +25,7 @@ import client.SkillFactory;
 import client.PlayerStats;
 import client.status.MonsterStatus;
 import client.status.MonsterStatusEffect;
+import constants.SkillType.*;
 import handling.channel.ChannelServer;
 import provider.MapleData;
 import provider.MapleDataTool;
@@ -254,8 +255,6 @@ public class MapleStatEffect implements Serializable {
                 case 3201004://無形之箭
                 case 2311002://時空門
                 case 13101003://無形之箭
-                case 33101003://無形之箭
-                case 8001:
                     statups.add(new Pair<>(MapleBuffStat.SOULARROW, ret.x));
                     break;
                 case 1211006: //寒冰之棍
@@ -302,12 +301,7 @@ public class MapleStatEffect implements Serializable {
                 case 14101002:
                 case 15101002:
                 case 21001003: // 神速之矛
-                case 22141002: // Magic Booster
                 case 4301002:
-                case 32101005:
-                case 33001003:
-                case 35101006:
-                case 35001003: //TEMP.BOOSTER
                     statups.add(new Pair<>(MapleBuffStat.BOOSTER, ret.x));
                     break;
                 case 5121009:
@@ -331,11 +325,6 @@ public class MapleStatEffect implements Serializable {
 
                 case 1301007: // hyper body
                 case 9001008:
-                case 8003:
-                case 10008003:
-                case 20008003:
-                case 20018003:
-                case 30008003:
                     statups.add(new Pair<>(MapleBuffStat.MAXHP, ret.x));
                     statups.add(new Pair<>(MapleBuffStat.MAXMP, ret.y));
                     break;
@@ -353,25 +342,20 @@ public class MapleStatEffect implements Serializable {
                     break;
                 case 5211006: // Homing Beacon
                 case 5220011: // Bullseye
-                case 22151002: //killer wings
                     ret.duration = 60 * 120000;
                     statups.add(new Pair<>(MapleBuffStat.HOMING_BEACON, ret.x));
                     break;
-                case 1011: // Berserk fury
+                case 1011: // 地火天爆
                 case 10001011:
                 case 20001011:
-                case 20011011:
-                case 30001011:
                     statups.add(new Pair<>(MapleBuffStat.BERSERK_FURY, 1));
                     break;
                 case 1010:
-                case 10001010:// Invincible Barrier
+                case 10001010:// 金剛不壞
                 case 20001010:
-                case 20011010:
-                case 30001010:
                     statups.add(new Pair<>(MapleBuffStat.DIVINE_BODY, 1));
                     break;
-                case 1311006: //dragon roar
+                case 1311006: //龍咆哮
                     ret.hpR = -ret.x / 100.0;
                     statups.add(new Pair<>(MapleBuffStat.DRAGON_ROAR, ret.y));
                     break;
@@ -386,7 +370,7 @@ public class MapleStatEffect implements Serializable {
                 case 1311008: // dragon blood
                     statups.add(new Pair<>(MapleBuffStat.DRAGONBLOOD, ret.x));
                     break;
-                case 1121000: // maple warrior, all classes
+                case 1121000: // 全部職業-楓葉祝福
                 case 1221000:
                 case 1321000:
                 case 2121000:
@@ -398,25 +382,14 @@ public class MapleStatEffect implements Serializable {
                 case 4221000:
                 case 5121000:
                 case 5221000:
-                case 21121000: // Aran - Maple Warrior
-                case 22171000:
-                case 4341000:
-                case 32121007:
-                case 33121007:
-                case 35121007:
+                case 21121000:
                     statups.add(new Pair<>(MapleBuffStat.MAPLE_WARRIOR, ret.x));
                     break;
                 case 15111006: //閃光擊
                     statups.add(new Pair<>(MapleBuffStat.SPARK, ret.x));
                     break;
-                case 3121002: // sharp eyes bow master
-                case 3221002: // sharp eyes marksmen
-                case 33121004:
-                case 8002:
-                case 10008002:
-                case 20008002:
-                case 20018002:
-                case 30008002:
+                case 3121002: // 箭神-會心之眼
+                case 3221002: // 神射手-會心之眼
                     statups.add(new Pair<>(MapleBuffStat.SHARP_EYES, ret.x << 8 | ret.y));
                     break;
                 case 21111001: // 精準擊退
@@ -429,11 +402,7 @@ public class MapleStatEffect implements Serializable {
                     statups.add(new Pair<>(MapleBuffStat.ARAN_COMBO, 100));
                     break;
                 case 21100005: // 連環吸血
-                case 32101004:
                     statups.add(new Pair<>(MapleBuffStat.COMBO_DRAIN, ret.x));
-                    break;
-                case 22181003: //soul stone
-                    statups.add(new Pair<>(MapleBuffStat.SOUL_STONE, 1));
                     break;
                 case 4001002: // disorder
                 case 14001002: // cygnus disorder
@@ -461,16 +430,7 @@ public class MapleStatEffect implements Serializable {
                 case 5121007: // Barrage
                 case 5201004: // pirate blank shot
                 case 4121008: // Ninja Storm
-                case 22151001:
                 case 4201004: //steal, new
-                case 33101001:
-                case 33101002:
-                case 32111010:
-                case 32121004:
-                case 33111002:
-                case 33121002:
-                case 35101003:
-                case 35111015:
                 case 5111002: //energy blast
                 case 15101005:
                 case 4331005:
@@ -481,7 +441,6 @@ public class MapleStatEffect implements Serializable {
                     break;
                 case 4221003:
                 case 4121003:
-                case 33121005:
                     monsterStatus.put(MonsterStatus.SHOWDOWN, ret.x);
                     monsterStatus.put(MonsterStatus.MDEF, ret.x);
                     monsterStatus.put(MonsterStatus.WDEF, ret.x);
@@ -494,14 +453,12 @@ public class MapleStatEffect implements Serializable {
                 case 5211005: // Ice Splitter
                 case 2121006: // Paralyze
                 case 21120006: // Tempest
-                case 22121000:
                     monsterStatus.put(MonsterStatus.FREEZE, 1);
                     ret.duration *= 2; // freezing skills are a little strange
                     break;
                 case 2101003: // fp slow
                 case 2201003: // il slow
                 case 12101001:
-                case 22141003: // Slow
                     monsterStatus.put(MonsterStatus.SPEED, ret.x);
                     break;
                 case 2101005: // poison breath
@@ -509,7 +466,6 @@ public class MapleStatEffect implements Serializable {
                 case 2121003: // ice demon
                 case 2221003: // fire demon
                 case 3111003: //inferno, new
-                case 22161002: //phantom imprint
                     monsterStatus.put(MonsterStatus.POISON, 1);
                     break;
                 case 4121004: // Ninja ambush
@@ -519,20 +475,16 @@ public class MapleStatEffect implements Serializable {
                 case 2311005:
                     monsterStatus.put(MonsterStatus.DOOM, 1);
                     break;
-
                 case 4341006:
                 case 3111002: // puppet ranger
                 case 3211002: // puppet sniper
                 case 13111004: // puppet cygnus
                 case 5211001: // Pirate octopus summon
                 case 5220002: // wrath of the octopi
-                case 33111003:
                     statups.add(new Pair<>(MapleBuffStat.PUPPET, 1));
                     break;
                 case 3211005: // golden eagle
                 case 3111005: // golden hawk
-                case 33111005:
-                case 35111002:
                     statups.add(new Pair<>(MapleBuffStat.SUMMON, 1));
                     monsterStatus.put(MonsterStatus.STUN, 1);
                     break;
@@ -553,15 +505,6 @@ public class MapleStatEffect implements Serializable {
                 case 13001004:
                 case 14001005:
                 case 15001004:
-                case 35111001:
-                case 35111010:
-                case 35111009:
-                case 35111005: //TEMP
-                case 35111004: //TEMP
-                //case 35111011: //TEMP
-                case 35121009:
-                //case 35121010: //TEMP
-                case 35121011:
                     statups.add(new Pair<>(MapleBuffStat.SUMMON, 1));
                     break;
                 case 2311003: // hs
@@ -589,23 +532,12 @@ public class MapleStatEffect implements Serializable {
                 case 1221002:
                 case 1321002: // Stance
                 case 21121003: // Aran - Freezing Posture
-                case 32121005:
                     statups.add(new Pair<>(MapleBuffStat.STANCE, (int) ret.prop));
                     break;
                 case 1005: // Echo of Hero
                 case 10001005: // Cygnus Echo
                 case 20001005: // Aran
-                case 20011005: // Evan
-                case 30001005:
                     statups.add(new Pair<>(MapleBuffStat.ECHO_OF_HERO, ret.x));
-                    break;
-                case 1026: // Soaring
-                case 10001026: // Soaring
-                case 20001026: // Soaring
-                case 20011026: // Soaring
-                case 30001026:
-                    ret.duration = 60 * 120 * 1000; //because it seems to dispel asap.
-                    statups.add(new Pair<>(MapleBuffStat.SOARING, 1));
                     break;
                 case 2121002: // mana reflection
                 case 2221002:
@@ -620,16 +552,16 @@ public class MapleStatEffect implements Serializable {
                     monsterStatus.put(MonsterStatus.SPEED, ret.x);
                     break;
                 case 3221006: // Blind
-                case 33111004:
                     statups.add(new Pair<>(MapleBuffStat.BLIND, ret.x));
                     monsterStatus.put(MonsterStatus.ACC, ret.x);
                     break;
-                case 33121006: //feline berserk
-                    statups.add(new Pair<>(MapleBuffStat.MAXHP, ret.x));
-                    statups.add(new Pair<>(MapleBuffStat.WATK, ret.y));//temp
-                    //statups.add(new Pair<>(MapleBuffStat.DASH_SPEED, ret.z));
+                case 冒險之技.宇宙船:
+                case 冒險之技.雪吉拉騎士:
+                case 貴族.宇宙船:
+                case 貴族.雪吉拉騎士:
+                case 傳說.雪吉拉騎士:
+                    statups.add(new Pair<>(MapleBuffStat.MONSTER_RIDING, Integer.valueOf(sourceid)));
                     break;
-
                 default:
                     break;
             }
