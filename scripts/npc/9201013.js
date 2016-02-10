@@ -11,6 +11,10 @@ function action(mode, type, selection) {
         status--;
     }
     if (status == 0) {
+		if (cm.getPlayer().getGender() != 0) {
+			cm.sendOk("請妳另外一半來找我預約。");
+			cm.dispose();
+		}
         cm.sendYesNo("你想要預定一個婚禮？？");
     } else if (status == 1) {
         if (cm.getPlayer().getMarriageId() <= 0) {
@@ -19,13 +23,17 @@ function action(mode, type, selection) {
             cm.sendOk("請空出一些其他欄。。");
         } else if (!cm.haveItem(5251004, 1) && !cm.haveItem(5251005, 1) && !cm.haveItem(5251006, 1)) {
             cm.sendOk("請先從購物商場買預約票。");
-        } else {
+		} else {
             var chr = cm.getMap().getCharacterById(cm.getPlayer().getMarriageId());
             if (chr == null) {
                 cm.sendOk("確保你的伴侶在地圖上。");
                 cm.dispose();
                 return;
-            }
+            } else if (!chr.haveItem(4213000) && !chr.haveItem(4213001)) {
+				cm.sendOk("另外一半好像還沒做好本分所以不能預約。");
+				cm.dispose();
+                return;
+			}
             var marr = cm.getQuestRecord(160001);
             var data = marr.getCustomData();
             if (data == null) {

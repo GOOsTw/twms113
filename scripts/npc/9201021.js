@@ -29,6 +29,7 @@ function action(mode, type, selection) {
         var dat = parseInt(cm.getQuestRecord(160002).getCustomData());
         var chr = cm.getMap().getCharacterById(cm.getPlayer().getMarriageId());
         var map = cm.getMap(680000401);
+		if (cm.getMonsterCount(680000400) <= 0) {
         if (cm.getPlayer().getMarriageId() > 0 && chr != null) {
             cm.getPlayer().changeMap(map, map.getPortal(0));
             chr.changeMap(map, map.getPortal(0));
@@ -39,17 +40,17 @@ function action(mode, type, selection) {
         } else {
             cm.dispose();
         }
+		} else {
+			cm.sendOk("請先把地圖上的怪物給消滅。");
+			cm.dispose();
+			return;
+		}
     }
     if (cm.getMapId() == 680000401 && cm.getQuestRecord(160002).getCustomData() != null) {
         var dat = parseInt(cm.getQuestRecord(160002).getCustomData());
-        //	    if (status == 0) {
-        //	    	cm.sendYesNo("你要回去嗎?");
-        //	    } else {
         cm.warpMap(680000500, 0);
         cm.dispose();
-        //	    }
         return;
-        //	}
     }
     if (status == 0) {
         cm.sendYesNo("你確定要離開婚禮會場嗎? 離開了就近不來了喔");

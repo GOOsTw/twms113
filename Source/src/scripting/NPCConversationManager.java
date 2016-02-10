@@ -1326,7 +1326,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public final void doWeddingEffect(final Object ch) {
         final MapleCharacter chr = (MapleCharacter) ch;
-        getMap().broadcastMessage(MaplePacketCreator.yellowChat(getPlayer().getName() + ", 你願意承認接納 " + chr.getName() + " 做你的妻子，誠實遵照上帝的誡命，和她生活在一起，無論在什麼環境，願意終生養她、愛惜她、安慰她、尊重她、保護她，以至奉召歸主？？"));
+        getMap().broadcastMessage(MaplePacketCreator.yellowChat(getPlayer().getName() + ", 妳願意承認 " + chr.getName() + " 做妳的丈夫，誠實遵照上帝的誡命，和他生活在一起，無論在什麼環境願順服他、愛惜他、安慰他、尊重他保護他，以致奉召歸主？？"));
         CloneTimer.getInstance().schedule(new Runnable() {
 
             @Override
@@ -1334,7 +1334,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
                 if (chr == null || getPlayer() == null) {
                     warpMap(680000500, 0);
                 } else {
-                    getMap().broadcastMessage(MaplePacketCreator.yellowChat(chr.getName() + ", 妳願意承認 " + getPlayer().getName() + " 做妳的丈夫，誠實遵照上帝的誡命，和他生活在一起，無論在什麼環境願順服他、愛惜他、安慰他、尊重他保護他，以致奉召歸主？？"));
+                    getMap().broadcastMessage(MaplePacketCreator.yellowChat(chr.getName() + ", 你願意承認接納 " + getPlayer().getName() + " 做你的妻子，誠實遵照上帝的誡命，和她生活在一起，無論在什麼環境，願意終生養她、愛惜她、安慰她、尊重她、保護她，以至奉召歸主？？"));
                 }
             }
         }, 10000);

@@ -355,9 +355,13 @@ public class PlayersHandler {
         if (mode == 0) {
             final String name = slea.readMapleAsciiString();
             final int itemid = slea.readInt();
-            final int newItemId = 1112300 + (itemid - 2240004);
+            final int newItemId = 4210000 + (itemid - 2240004);
             final MapleCharacter chr = c.getChannelServer().getPlayerStorage().getCharacterByName(name);
             int errcode = 0;
+            if (chr.getGender() == 0) {
+                c.getPlayer().dropMessage(1,"不能跟同性結婚。");
+                return;
+            }
             if (c.getPlayer().getMarriageId() > 0) {
                 errcode = 0x17;
             } else if (chr == null) {
@@ -396,7 +400,7 @@ public class PlayersHandler {
                 return;
             }
             if (accepted) {
-                final int newItemId = 1112300 + (chr.getMarriageItemId() - 2240004);
+                final int newItemId = 4210000 + (chr.getMarriageItemId() - 2240004);
                 if (!MapleInventoryManipulator.checkSpace(c, newItemId, 1, "") || !MapleInventoryManipulator.checkSpace(chr.getClient(), newItemId, 1, "")) {
                     c.sendPacket(MaplePacketCreator.sendEngagement((byte) 0x15, 0, null, null));
                     c.sendPacket(MaplePacketCreator.enableActions());

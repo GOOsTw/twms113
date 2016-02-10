@@ -423,6 +423,32 @@ public class GMCommand {
         }
     }
 
+    public static class WarpMap extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String[] splitted) {
+            try {
+                final MapleMap target = c.getChannelServer().getMapFactory().getMap(Integer.parseInt(splitted[1]));
+                if (target == null) {
+                    c.getPlayer().dropMessage(6, "地圖不存在。");
+                    return false;
+                }
+                final MapleMap from = c.getPlayer().getMap();
+                for (MapleCharacter chr : from.getCharactersThreadsafe()) {
+                    chr.changeMap(target, target.getPortal(0));
+                }
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!WarpMap [地圖代碼] - 把地圖上的人全部傳到那張地圖").toString();
+        }
+    }
+
     public static class Level extends CommandExecute {
 
         @Override

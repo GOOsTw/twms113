@@ -1349,7 +1349,35 @@ public class AdminCommand {
 
     }
 
-    public static class Marry extends CommandExecute {
+    public static class 離婚 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 1) {
+                return false;
+            }
+            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
+            if (victim == null) {
+                c.getPlayer().dropMessage(6, "玩家必須上線");
+                return false;
+            } else if (victim.getMarriageId() != 1) {
+                c.getPlayer().dropMessage(6, victim.getName() + "離婚失敗！");
+                return false;
+            }
+            victim.setMarriageId(0);
+            victim.reloadC();
+            victim.dropMessage(5, "離婚成功！");
+            c.getPlayer().dropMessage(6, victim.getName() + "離婚成功！");
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!離婚 <玩家名稱> - 離婚").toString();
+        }
+    }
+
+    public static class 結婚 extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
@@ -1389,7 +1417,7 @@ public class AdminCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!marry <玩家名稱> <戒指ID> - 結婚").toString();
+            return new StringBuilder().append("!結婚 <玩家名稱> <戒指ID> - 結婚").toString();
         }
     }
 
@@ -1662,6 +1690,7 @@ public class AdminCommand {
             for (MapleCharacter map : c.getPlayer().getMap().getCharactersThreadsafe()) {
                 if (map != null && !map.isGM()) {
                     map.cancelAllBuffs();
+                    map.dropMessage(5,"系統已幫您把所有BUFF取消。");
                 }
             }
             return true;

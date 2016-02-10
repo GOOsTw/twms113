@@ -7,7 +7,7 @@
 var status = -1;
 
 function start() {
-    cm.sendSimple("啊~今天真是個好日子！這世界太美好了~！你不覺得這世界充滿了愛嗎？滿溢婚禮村的愛意都流淌到這裡來了~！ \n\r #b#L0# 我想回去結婚小鎮.#l \r\n #L1#我已經結婚了我想要領戀愛之心~");
+    cm.sendSimple("您想回去#m680000000#了嗎?? \n\r #b#L0# 我想回去結婚小鎮.#l \r\n #L1#我已經結婚了我想要領戀愛之心~");
 }
 
 function action(mode, type, selection) {
@@ -20,7 +20,15 @@ function action(mode, type, selection) {
     if (status == 0) {
         switch (selection) {
             case 0:
-                cm.sendNext("哦！ 多麼美好的一天！ 這個世界是多麼的美好〜！這個世界似乎是充滿愛的，不是嗎？我可以從這裡感受到愛的精神填補了婚禮!");
+				if (cm.haveItem(4213000) && cm.haveItem(4213001)) {
+					cm.gainItem(4213000,-1);
+					cm.gainItem(4213001,-1);
+					cm.warp(680000000, 0);
+					cm.dispose();
+				} else {
+					cm.warp(680000000, 0);
+					cm.dispose();
+				}
                 break;
             case 1:
                 var marr = cm.getQuestRecord(160001);
@@ -41,12 +49,5 @@ function action(mode, type, selection) {
                 cm.dispose();
                 break;
         }
-    } else if (status == 1) {
-        cm.sendYesNo("你曾經去過的婚禮村莊？這是一個了不起的地方，愛情是無極限的。恩愛夫妻可以結婚還有，如何浪漫它是什麼？如果你想在那裡，我會告訴你的方式.");
-    } else if (status == 2) {
-        cm.sendNext("你做了一個正確的決定！你可以感受到愛的精神在婚禮村發揮到淋漓盡致。當你想回來，你的目的地將在這裡，所以不要擔心.");
-    } else if (status == 3) {
-        cm.warp(680000000, 0);
-        cm.dispose();
     }
 }
