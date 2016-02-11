@@ -176,7 +176,7 @@ public class ChannelServer implements Serializable {
 
         System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 儲存角色資料...");
 
-        //getPlayerStorage().disconnectAll();
+        getPlayerStorage().disconnectAll();
 
         System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 解除端口綁定中...");
 
@@ -184,7 +184,6 @@ public class ChannelServer implements Serializable {
             if (acceptor != null) {
                 Iterator<IoSession> iterator = acceptor.getManagedSessions().values().iterator();
                 while (iterator.hasNext()) {
-
                     iterator.next().close(true);
                 }
                 acceptor.unbind(new InetSocketAddress(port));
