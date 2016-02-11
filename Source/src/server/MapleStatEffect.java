@@ -95,7 +95,7 @@ public class MapleStatEffect implements Serializable {
         ret.expinc = MapleDataTool.getInt("expinc", source, 0);
         ret.exp = MapleDataTool.getInt("exp", source, 0);
         ret.morphId = MapleDataTool.getInt("morph", source, 0);
-        ret.fatigue = MapleDataTool.getInt("incFatigue", source, 0);
+        ret.fatigue = MapleDataTool.getInt("Fatigue", source, 0);
         ret.cp = MapleDataTool.getInt("cp", source, 0);
         ret.nuffSkill = MapleDataTool.getInt("nuffSkill", source, 0);
         ret.mobCount = (byte) MapleDataTool.getInt("mobCount", source, 1);
