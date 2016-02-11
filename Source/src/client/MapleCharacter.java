@@ -211,7 +211,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public int master = 0, apprentice = 0;
     private boolean testingdps = false;
     private long dps;
-    private boolean 精靈商人購買開關 = false;
+    private boolean 精靈商人購買開關 = false, 玩家私聊1 = false, 玩家私聊2 = false, 玩家私聊3 = false;
 
     private MapleCharacter(final boolean ChannelServer) {
         this.setStance(0);
@@ -3269,6 +3269,30 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public boolean get精靈商人訊息() {
         return 精靈商人購買開關;
+    }
+
+    public void get玩家私聊1(boolean xx) {
+        玩家私聊1 = xx;
+    }
+
+    public boolean get玩家私聊1() {
+        return 玩家私聊1;
+    }
+
+    public void get玩家私聊2(boolean xx) {
+        玩家私聊2 = xx;
+    }
+
+    public boolean get玩家私聊2() {
+        return 玩家私聊2;
+    }
+
+    public void get玩家私聊3(boolean xx) {
+        玩家私聊3 = xx;
+    }
+
+    public boolean get玩家私聊3() {
+        return 玩家私聊3;
     }
 
     public void checkMonsterAggro(MapleMonster monster) {

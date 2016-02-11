@@ -49,7 +49,7 @@ public class MapleStatEffect implements Serializable {
     private byte mastery, mhpR, mmpR, mobCount, attackCount, bulletCount;
     private short hp, mp, watk, matk, wdef, mdef, acc, avoid, hands, speed, jump, mpCon, hpCon, damage, prop, ehp, emp, ewatk, ewdef, emdef;
     private double hpR, mpR;
-    private int duration, sourceid, moveTo, x, y, z, itemCon, itemConNo, bulletConsume, moneyCon, cooldown, morphId = 0, expinc, exp;
+    private int duration, sourceid, moveTo, x, y, z, itemCon, itemConNo, bulletConsume, moneyCon, cooldown, morphId = 0, expinc, exp, fatigue;
     private boolean overTime, skill, partyBuff = true;
     private List<Pair<MapleBuffStat, Integer>> statups;
     private Map<MonsterStatus, Integer> monsterStatus;
@@ -95,6 +95,7 @@ public class MapleStatEffect implements Serializable {
         ret.expinc = MapleDataTool.getInt("expinc", source, 0);
         ret.exp = MapleDataTool.getInt("exp", source, 0);
         ret.morphId = MapleDataTool.getInt("morph", source, 0);
+        ret.fatigue = MapleDataTool.getInt("incFatigue", source, 0);
         ret.cp = MapleDataTool.getInt("cp", source, 0);
         ret.nuffSkill = MapleDataTool.getInt("nuffSkill", source, 0);
         ret.mobCount = (byte) MapleDataTool.getInt("mobCount", source, 1);
@@ -740,6 +741,9 @@ public class MapleStatEffect implements Serializable {
             if (isMonsterBuff()) {
                 applyMonsterBuff(applyfrom);
             }
+        }
+        if (this.getFatigue() != 0) {
+            applyto.getMount().setFatigue((byte) (applyto.getMount().getTiredness() + this.getFatigue()));
         }
         final SummonMovementType summonMovementType = getSummonMovementType();
         if (summonMovementType != null) {
@@ -1665,6 +1669,9 @@ public class MapleStatEffect implements Serializable {
                 return 1003;
         }
         return morphId;
+    }
+        private int getFatigue() {
+        return fatigue;
     }
 
     public final boolean isDivineBody() {

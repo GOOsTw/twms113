@@ -29,7 +29,9 @@ import java.sql.SQLException;
 import java.io.Serializable;
 
 import database.DatabaseConnection;
+import java.util.concurrent.ScheduledFuture;
 import server.Randomizer;
+import server.Timer;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
 
@@ -43,6 +45,7 @@ public class MapleMount implements Serializable {
     private transient boolean changed = false;
     private long lastFatigue = 0;
     private final transient WeakReference<MapleCharacter> owner;
+    private ScheduledFuture<?> tirednessSchedule;
 
     public MapleMount(MapleCharacter owner, int id, int skillid, byte fatigue, byte level, int exp) {
         this.itemid = id;
@@ -114,20 +117,31 @@ public class MapleMount implements Serializable {
     }
 
     public void increaseFatigue() {
+        final MapleCharacter chr = owner.get();
         changed = true;
         this.fatigue++;
-        if (fatigue > 100 && owner.get() != null) {
+        chr.getMap().broadcastMessage(MaplePacketCreator.updateMount(chr, false));
+        if (fatigue > 99) {
+            this.fatigue = 95;
             owner.get().cancelEffectFromBuffStat(MapleBuffStat.MONSTER_RIDING);
         }
-        update();
     }
 
     public final boolean canTire(long now) {
         return lastFatigue > 0 && lastFatigue + 30000 < now;
     }
 
+    public long getTiredness() {
+        return lastFatigue;
+    }
+
     public void startSchedule() {
-        lastFatigue = System.currentTimeMillis();
+        this.tirednessSchedule = Timer.MapTimer.getInstance().register(new Runnable() {
+            @Override
+            public void run() {
+                increaseFatigue();
+            }
+        }, 5 * 60000);
     }
 
     public void cancelSchedule() {
@@ -146,13 +160,5 @@ public class MapleMount implements Serializable {
             e = Randomizer.nextInt(28) + 25 / 2;
         }
         setExp(exp + e);
-    }
-
-    public void update() {
-        final MapleCharacter chr = owner.get();
-        if (chr != null) {
-//	    cancelSchedule();
-            chr.getMap().broadcastMessage(MaplePacketCreator.updateMount(chr, false));
-        }
     }
 }

@@ -137,6 +137,8 @@ function action(mode, type, selection) {
         if (cm.getMeso() < cost * qty) {
             complete = false;
             cm.sendOk("糟糕...你的錢好像不夠哦...");
+			cm.dispose();
+			return;
         } else {
             if (mats instanceof Array) {
                 for (var i = 0; complete && i < mats.length; i++) {
@@ -152,7 +154,10 @@ function action(mode, type, selection) {
         }
 
         if (!complete) {
+			complete = false;
             cm.sendOk("糟糕!? 你的材料好像不夠哦...這樣子我就不能幫你製作了,請重新確認一下");
+			cm.dispose();
+			return;
         } if (!cm.canHold()) {
             cm.sendOk("請確認道具欄是否有空間");
         } else {
