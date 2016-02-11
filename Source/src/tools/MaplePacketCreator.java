@@ -183,7 +183,6 @@ public class MaplePacketCreator {
 
         for (final Pair<MapleStat, Integer> statupdate : mystats) {
             value = statupdate.getLeft().getValue();
-
             if (value >= 1) {
                 if (value == 0x1) {
                     mplew.writeShort(statupdate.getRight().shortValue());
@@ -226,7 +225,9 @@ public class MaplePacketCreator {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.SET_FIELD.getValue());
         mplew.writeInt(chr.getClient().getChannel() - 1);
-        mplew.writeInt(0x2); // Count
+        mplew.write(0x2); // Count
+        mplew.write(0x0);
+        mplew.writeShort(0);
         mplew.writeInt(to.getId());
         mplew.write(spawnPoint);
         mplew.writeShort(chr.getStat().getHp());
@@ -849,36 +850,129 @@ public class MaplePacketCreator {
         }
 
         List<Pair<Integer, Integer>> buffvalue = new ArrayList<>();
-        Long fbuffmask = 0xFFFC0000000000L; //becomes F8000000 after bb?
-        mplew.writeLong(fbuffmask);
 
-        Long buffmask = 0L;
+        int[] mask = new int[4];
 
-        if (chr.getBuffedValue(MapleBuffStat.DARKSIGHT) != null && !chr.isHidden()) {
-            buffmask |= 0x40000000000L;//MapleBuffStat.DARKSIGHT.getOldValue();
+        if (chr.getBuffedValue(MapleBuffStat.GHOST_MORPH) != null) {
+            mask[MapleBuffStat.GHOST_MORPH.getPosition()] |= MapleBuffStat.GHOST_MORPH.getValue();
         }
-        if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
-            buffmask |= 0x20000000000000L;//MapleBuffStat.COMBO.getOldValue();
+
+        if (chr.getBuffedValue(MapleBuffStat.WEAKEN) != null) {
+            mask[MapleBuffStat.WEAKEN.getPosition()] |= MapleBuffStat.WEAKEN.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.WEAKEN), 2));
+        }
+
+        if (chr.getBuffedValue(MapleBuffStat.SPEED) != null) { // BUFF_7 BF5268
+            mask[MapleBuffStat.SPEED.getPosition()] |= MapleBuffStat.SPEED.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.SPEED), 0));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.SUMMON) != null || chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
+            mask[MapleBuffStat.COMBO.getPosition()] |= MapleBuffStat.COMBO.getValue();
             buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.COMBO), 0));
         }
+        if (chr.getBuffedValue(MapleBuffStat.WK_CHARGE) != null) {
+            mask[MapleBuffStat.WK_CHARGE.getPosition()] |= MapleBuffStat.WK_CHARGE.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.WK_CHARGE), 2));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.STUN) != null) {
+            mask[MapleBuffStat.STUN.getPosition()] |= MapleBuffStat.STUN.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.STUN), 2));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.DARKNESS) != null) {
+            mask[MapleBuffStat.DARKNESS.getPosition()] |= MapleBuffStat.DARKNESS.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.DARKNESS), 2));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.SEAL) != null) {
+            mask[MapleBuffStat.SEAL.getPosition()] |= MapleBuffStat.SEAL.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.SEAL), 2));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.HP_LOSS_GUARD) != null) {
+            mask[MapleBuffStat.SEAL.getPosition()] |= MapleBuffStat.HP_LOSS_GUARD.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.HP_LOSS_GUARD), 2));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.ARIANT_COSS_IMU) != null) {
+            mask[MapleBuffStat.ARIANT_COSS_IMU.getPosition()] |= MapleBuffStat.ARIANT_COSS_IMU.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.ARIANT_COSS_IMU), 2));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.POISON) != null) {
+            mask[MapleBuffStat.POISON.getPosition()] |= MapleBuffStat.POISON.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.POISON), 1));
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.POISON), 2));
+        }
         if (chr.getBuffedValue(MapleBuffStat.SHADOWPARTNER) != null) {
-            buffmask |= 0x400000000000000L;//MapleBuffStat.SHADOWPARTNER.getOldValue();
+            mask[MapleBuffStat.SHADOWPARTNER.getPosition()] |= MapleBuffStat.SHADOWPARTNER.getValue();
+        }
+        if (chr.getBuffedValue(MapleBuffStat.DARKSIGHT) != null) {
+            mask[MapleBuffStat.DARKSIGHT.getPosition()] |= MapleBuffStat.DARKSIGHT.getValue();
         }
         if (chr.getBuffedValue(MapleBuffStat.SOULARROW) != null) {
-            buffmask |= 0x1000000000000L;//MapleBuffStat.SOULARROW.getOldValue();
-        }
-        if (chr.getBuffedValue(MapleBuffStat.DIVINE_BODY) != null) {
-            buffmask |= 0x10000000;//MapleBuffStat.DIVINE_BODY.getOldValue();
-        }
-        if (chr.getBuffedValue(MapleBuffStat.BERSERK_FURY) != null) {
-            buffmask |= 0x8000000;//MapleBuffStat.BERSERK_FURY.getOldValue();
+            mask[MapleBuffStat.SOULARROW.getPosition()] |= MapleBuffStat.SOULARROW.getValue();
         }
         if (chr.getBuffedValue(MapleBuffStat.MORPH) != null) {
-            buffmask |= 0x2;//MapleBuffStat.MORPH.getOldValue();
+            mask[MapleBuffStat.MORPH.getPosition()] |= MapleBuffStat.MORPH.getValue();
             buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.MORPH), 1));
         }
+        if (chr.getBuffedValue(MapleBuffStat.GHOST_MORPH) != null) {
+            mask[MapleBuffStat.GHOST_MORPH.getPosition()] |= MapleBuffStat.GHOST_MORPH.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.GHOST_MORPH), 1));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.DRAGON_ROAR) != null) {
+            mask[MapleBuffStat.DRAGON_ROAR.getPosition()] |= MapleBuffStat.DRAGON_ROAR.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.DRAGON_ROAR), 2));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.SPIRIT_CLAW) != null) {
+            mask[MapleBuffStat.SPIRIT_CLAW.getPosition()] |= MapleBuffStat.SPIRIT_CLAW.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.SPIRIT_CLAW), 2));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.ZOMBIFY) != null) {
+            mask[MapleBuffStat.ZOMBIFY.getPosition()] |= MapleBuffStat.ZOMBIFY.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.ZOMBIFY), 2));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.CURSE) != null) {
+            mask[MapleBuffStat.CURSE.getPosition()] |= MapleBuffStat.CURSE.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.CURSE), 2));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.DIVINE_BODY) != null) {
+            mask[MapleBuffStat.DIVINE_BODY.getPosition()] |= MapleBuffStat.DIVINE_BODY.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.DIVINE_BODY), 2));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.BUFF_51) != null) {
+            mask[MapleBuffStat.BUFF_51.getPosition()] |= MapleBuffStat.BUFF_51.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.BUFF_51), 2));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.MESO_RATE) != null) {
+            mask[MapleBuffStat.MESO_RATE.getPosition()] |= MapleBuffStat.MESO_RATE.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.MESO_RATE), 2));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.EXPRATE) != null) {
+            mask[MapleBuffStat.EXPRATE.getPosition()] |= MapleBuffStat.EXPRATE.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.EXPRATE), 2));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.ACASH_RATE) != null) {
+            mask[MapleBuffStat.ACASH_RATE.getPosition()] |= MapleBuffStat.ACASH_RATE.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.ACASH_RATE), 2));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.GM_HIDE) != null) {
+            mask[MapleBuffStat.GM_HIDE.getPosition()] |= MapleBuffStat.GM_HIDE.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.GM_HIDE), 2));
+        }
+        if (chr.getBuffedValue(MapleBuffStat.BUFF_57) != null) {
+            mask[MapleBuffStat.BUFF_57.getPosition()] |= MapleBuffStat.BUFF_57.getValue();
+        }
+        if (chr.getBuffedValue(MapleBuffStat.BUFF_58) != null) {
+            mask[MapleBuffStat.BUFF_58.getPosition()] |= MapleBuffStat.BUFF_58.getValue();
+        }
+        if (chr.getBuffedValue(MapleBuffStat.ELEMENT_RESET) != null) {
+            mask[MapleBuffStat.ELEMENT_RESET.getPosition()] |= MapleBuffStat.ELEMENT_RESET.getValue();
+        }
+        if (chr.getBuffedValue(MapleBuffStat.BUFF_71) != null) {
+            mask[MapleBuffStat.BUFF_71.getPosition()] |= MapleBuffStat.BUFF_71.getValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.BUFF_71), 2));
+        }
+        
+        for(int i = 0 ;i < mask.length;i++)
+            mplew.writeInt(mask[i]);
 
-        mplew.writeLong(buffmask);
         for (Pair<Integer, Integer> i : buffvalue) {
             switch (i.right) {
                 case 0:

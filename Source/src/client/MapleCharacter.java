@@ -1743,7 +1743,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
         int clonez = 0;
         for (Pair<MapleBuffStat, Integer> statup : statups) {
-            if (statup.getLeft() == MapleBuffStat.ILLUSION) {
+            if (statup.getLeft() == MapleBuffStat.BUFF_58) {
                 clonez = statup.getRight();
             }
             int value = statup.getRight();
@@ -1819,7 +1819,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                         dragonBloodSchedule.cancel(false);
                         dragonBloodSchedule = null;
                     }
-                } else if (stat == MapleBuffStat.ILLUSION) {
+                } else if (stat == MapleBuffStat.BUFF_58) {
                     disposeClones();
                     clonez = true;
                 }
@@ -5296,8 +5296,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.totalrep = totalrep;
         ret.stats = stats;
         ret.effects.putAll(effects);
-        if (ret.effects.get(MapleBuffStat.ILLUSION) != null) {
-            ret.effects.remove(MapleBuffStat.ILLUSION);
+        if (ret.effects.get(MapleBuffStat.BUFF_58) != null) {
+            ret.effects.remove(MapleBuffStat.BUFF_58);
         }
         if (ret.effects.get(MapleBuffStat.SUMMON) != null) {
             ret.effects.remove(MapleBuffStat.SUMMON);

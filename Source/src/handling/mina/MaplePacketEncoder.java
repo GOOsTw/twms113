@@ -55,11 +55,6 @@ public class MaplePacketEncoder implements ProtocolEncoder {
                 send_crypto.crypt(unencrypted);
                 System.arraycopy(header, 0, ret, 0, 4);
                 System.arraycopy(unencrypted, 0, ret, 4, unencrypted.length);
-                if(crypt) {
-                    for(int i = 0 ; i < ret.length ; i++) {
-                        ret[i] ^= 0x0C;
-                    }
-                }
                 out.write(IoBuffer.wrap(ret));
             } finally {
                 mutex.unlock();
