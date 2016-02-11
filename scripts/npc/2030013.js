@@ -1,4 +1,4 @@
-var status = -1;
+﻿var status = -1;
 
 function start() {
     if (cm.getPlayer().getClient().getChannel() != 4 && cm.getPlayer().getClient().getChannel() != 5) {

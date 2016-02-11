@@ -1,5 +1,4 @@
-﻿
-var status = -1;
+﻿var status = -1;
 var map = 910310000;
 var num = 5;
 var maxp = 5;
@@ -22,6 +21,9 @@ function action(mode, type, selection) {
         cm.sendSimple(selStr);
     } else if (status == 1) {
         if (selection < 0 || selection >= num) {
+            cm.dispose();
+        } else if (cm.getPlayer().getLevel() >= 20) {
+            cm.sendNext("二十等以後無法使用唷。");
             cm.dispose();
         } else if (cm.getPlayerCount(map + selection) >= maxp) {
             cm.sendNext("這個培育中心已經滿人，請稍後再嘗試!");

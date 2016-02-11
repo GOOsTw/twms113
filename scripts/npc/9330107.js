@@ -39,6 +39,9 @@ function action(mode, type, selection) {
         }
     } else if (status == 3) {
         var num = selection;
+		if (num == 0) {
+			cm.sendOk("嗚嗚小兄弟您居然欺騙我。。。\r\n請不要欺騙我。。。");
+		}
         if (!cm.haveItem(4000516)) {
             cm.sendOk("嗚嗚小兄弟您居然欺騙我。。。\r\n請不要欺騙我。。。");
         } else if (cm.haveItem(4000516, num)) {

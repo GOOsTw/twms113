@@ -18,6 +18,7 @@ var status;
 var mapId = 211042300;
 var stage;
 var teethmode;
+var High = 500000;
 
 function start() {
     status = -1;
@@ -57,7 +58,7 @@ function action(mode, type, selection) {
                 if (cm.haveItem(4001109)) {
                     cm.sendSimple("好。。。我看你們有充分的資格，你想挑戰那一階段？ #b\r\n#L0#廢礦調查 (第一階段)#l\r\n#L1#殘暴炎魔迷宮調查 (第二階段)#l\r\n#L2#治煉邀請 (第三階段)#l\r\n#L3#進去打殘暴炎魔#l\r\n#L4#跳過任務 (需要花錢)#l");
                 } else {
-                    cm.sendSimple("好。。。我看你們有充分的資格，你想挑戰那一階段？ #b\r\n#L0#廢礦調查 (第一階段)#l\r\n#L1#殘暴炎魔迷宮調查 (第二階段)#l\r\n#L2#治煉邀請 (第三階段)#l\r\n#L4#跳過任務 (需要花錢)#l");
+                    cm.sendSimple("好。。。我看你們有充分的資格，你想挑戰那一階段？ #b\r\n#L0#廢礦調查 (第一階段)#l\r\n#L1#殘暴炎魔迷宮調查 (第二階段)#l\r\n#L2#治煉邀請 (第三階段)#l\r\n#L4#跳過任務 (需要花錢)#l\r\n#L5#購買火焰之眼");
                 }
             }
             if (cm.getQuestStatus(100201) == 2) { // They're done the quests
@@ -171,7 +172,10 @@ function action(mode, type, selection) {
                 cm.sendYesNo("你想收買我？哈哈，可以啊！但你必須給我 #e3,000,000#n 楓幣，我就可以讓你直接跳過任務。");
                 status = 3;
             }
-        }
+        } else if (selection == 5) {
+			cm.sendGetNumber("請問您要買多少個#i4001017##t4001017#呢??\r\n1顆:50萬", 1, 1, 1000);
+			status = 5;
+		}
     } else if (status == 2) {
         if (stage == 1) {
             cm.warp(280020000, 0); // Breath of Lava I
@@ -203,7 +207,7 @@ function action(mode, type, selection) {
     } else if (status == 4) { //bribe
         if (cm.getPlayer().getMeso() < 300000000) {
             cm.sendNext("你好像沒有足夠的楓幣來支付，請檢查一下再來。");
-        } else if (!cm.canHold(4001017, 5)) {
+        } else if (cm.canHold(4001017)) {
             cm.sendNext("你好像沒有足夠的背包空間，請檢查一下再來。");
         } else {
             cm.gainItem(4001017, 5);
@@ -215,6 +219,21 @@ function action(mode, type, selection) {
             cm.gainMeso(-3000000);
         }
         cm.dispose();
+	} else if (status == 6) {
+		zkfk = selection;
+		cm.sendYesNo("這些#i4001017# 花您 " + zkfk * High + " 楓幣, 請問您確定要購買嗎??");
+	} else if (status == 7) {
+		if (cm.canHold(4001017)) {
+        if (cm.getMeso() >= zkfk * High) {
+            cm.gainItem(4001017, zkfk);
+            cm.gainMeso(-(zkfk * High));
+            cm.sendOk("感謝你購買了 #i4001017# x"+zkfk+" 花您 " + zkfk * High + " 楓幣，謝謝惠顧歡迎下次再來~~");
+        } else {
+            cm.sendOk("您沒有足夠的楓幣!");
+        }
+		} else {
+			cm.sendOk("你的其他欄好像滿了哦0.0");
+		}
     } else {
         cm.dispose();
     }

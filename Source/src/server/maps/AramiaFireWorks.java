@@ -52,9 +52,9 @@ public class AramiaFireWorks {
 
     public final void giveKegs(final MapleCharacter c, final int kegs) {
         this.kegs += kegs;
-        if (this.kegs < 4999) {
+        /*if (this.kegs < 4999) {
             World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "<頻道 " + c.getClient().getChannel() + "> " + "不夜城新年活動進度目前是5000/"+this.kegs+"！！").getBytes());
-        }
+        }*/
         if (this.kegs >= MAX_KEGS) {
             this.kegs = 0;
             broadcastEvent(c);

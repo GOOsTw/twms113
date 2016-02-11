@@ -62,7 +62,6 @@ function action(mode, type, selection) {
             cm.forceCompleteQuest(8248);
             cm.forceCompleteQuest(8249);
             cm.forceCompleteQuest(8510);
-            cm.forceCompleteQuest(20527);
             cm.forceCompleteQuest(50246);
             cm.sendOk("完成任務。");
             cm.dispose();

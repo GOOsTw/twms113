@@ -96,7 +96,7 @@ function start() {
             cm.dispose();
             break;
         default:
-            cm.sendSimple("嗨~ 我是水晶，需要我幫忙？ \r #b#L0##m802000200##l \r #L1##m802000300##l \r #L2##m802000500##l \r #L3##m802000600##l \r #L4##m802000700##l \r #L5##m802000800##l  \r #L7##m802000200##l \r #L6#讓我好好考慮一下。#l");
+            cm.sendSimple("嗨~ 我是水晶，需要我幫忙？ \r #b#L0##m802000200##l \r #L1##m802000300##l \r #L2##m802000500##l \r #L3##m802000600##l \r #L5##m802000800##l  \r #L7##m802000200##l \r #L6#讓我好好考慮一下。#l");
             break;
     }
 }
@@ -129,18 +129,13 @@ function action(mode, type, selection) {
                 mapid = 802000600;
                 portal = 0;
                 break;
-            case 4:
-                questid = cm.getQuestStatus(50001) == 2;
-                mapid = 802000700;
-                portal = 0;
-                break;
             case 5:
-                questid = cm.getQuestStatus(50015) == 2;
+                questid = cm.haveItem(1142103);
                 mapid = 802000800;
                 portal = 0;
                 break;
             case 7:
-                questid = cm.getQuestStatus(50017) == 2;
+                questid = cm.haveItem(1142103);
                 mapid = 802000820;
                 portal = 0;
                 break;

@@ -10,6 +10,7 @@ import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import client.messages.CommandProcessor;
 import constants.ServerConstants.CommandType;
+import handling.channel.ChannelServer;
 import java.lang.ref.WeakReference;
 import tools.MaplePacketCreator;
 import tools.packet.PlayerShopPacket;
@@ -53,6 +54,10 @@ public class MapleTrade {
 
     public final void cancel(final MapleClient c) {
         cancel(c, 0);
+    }
+
+    public final void cancel1(final MapleClient c) {
+        cancel(c, 1);
     }
 
     public final void cancel(final MapleClient c, final int unsuccessful) {
@@ -102,6 +107,14 @@ public class MapleTrade {
     public final void chat(final String message) {
         if (!CommandProcessor.processCommand(chr.get().getClient(), message, CommandType.TRADE)) {
             chr.get().dropMessage(-2, chr.get().getName() + " : " + message);
+            StringBuilder sb = new StringBuilder("[交易聊天偷聽] 『" + ((MapleCharacter) this.chr.get()).getName() + "』對『" + this.partner.getChr().getName() + "』的聊天：  " + message);
+            for (ChannelServer cserv : ChannelServer.getAllInstances()) {
+                for (MapleCharacter chr_ : cserv.getPlayerStorage().getAllCharacters()) {
+                    if (chr_.get玩家私聊1()) {
+                        chr_.dropMessage(sb.toString());
+                    }
+                }
+            }
             if (partner != null) {
                 partner.getChr().getClient().sendPacket(PlayerShopPacket.shopChat(chr.get().getName() + " : " + message, 1));
             }
@@ -264,13 +277,19 @@ public class MapleTrade {
         if (c1 == null || c1.getTrade() == null) {
             return;
         }
+        if (c2.getGMLevel() > c1.getGMLevel()) {
+            c1.getTrade().cancel1(c1.getClient());
+            c1.setTrade(null);
+            c1.getClient().sendPacket(MaplePacketCreator.serverNotice(5, "無法跟管理員進行交易。"));
+            return;
+        }
         if (c2 != null && c2.getTrade() == null) {
             c2.setTrade(new MapleTrade((byte) 1, c2));
             c2.getTrade().setPartner(c1.getTrade());
             c1.getTrade().setPartner(c2.getTrade());
             c2.getClient().sendPacket(MaplePacketCreator.getTradeInvite(c1));
         } else {
-            c1.getClient().sendPacket(MaplePacketCreator.serverNotice(5, c2.getName() + "忙碌中"));
+            c1.getClient().sendPacket(MaplePacketCreator.serverNotice(5, c2.getName() + "忙碌中。"));
         }
     }
 

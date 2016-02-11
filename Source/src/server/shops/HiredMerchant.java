@@ -28,11 +28,13 @@ import client.MapleCharacter;
 import client.MapleClient;
 import server.MapleItemInformationProvider;
 import handling.channel.ChannelServer;
+import static handling.world.World.Broadcast.broadcastGMMessage;
 import java.util.LinkedList;
 import java.util.List;
 import server.MapleInventoryManipulator;
 import server.Timer.EtcTimer;
 import server.maps.MapleMapObjectType;
+import tools.FilePrinter;
 import tools.MaplePacketCreator;
 import tools.packet.PlayerShopPacket;
 
@@ -87,6 +89,7 @@ public class HiredMerchant extends AbstractPlayerStore {
         final short perbundle = newItem.getQuantity();
         final int theQuantity = (pItem.price * quantity);
         newItem.setQuantity((short) (quantity * perbundle));
+        MapleCharacter Owner = getMCOwnerWorld();
 
         byte flag = newItem.getFlag();
 
@@ -95,47 +98,33 @@ public class HiredMerchant extends AbstractPlayerStore {
         } else if (ItemFlag.KARMA_USE.check(flag)) {
             newItem.setFlag((byte) (flag - ItemFlag.KARMA_USE.getValue()));
         }
-
-        /*if (MapleInventoryManipulator.checkSpace(c, newItem.getItemId(), newItem.getQuantity(), newItem.getOwner()) && MapleInventoryManipulator.addFromDrop(c, newItem, false)) {
-         pItem.bundles -= quantity; // Number remaining in the store
-         bought.add(new BoughtItem(newItem.getItemId(), quantity, (pItem.price * quantity), c.getPlayer().getName()));
-
-         final int gainmeso = getMeso() + (pItem.price * quantity);
-         setMeso(gainmeso - GameConstants.EntrustedStoreTax(gainmeso));
-         c.getPlayer().gainMeso(-pItem.price * quantity, false);
-         saveItems();
-         } else {
-         c.getPlayer().dropMessage(1, "Your inventory is full.");
-         c.sendPacket(MaplePacketCreator.enableActions());
-         }
-         }*/
-        /* if (MapleInventoryManipulator.checkSpace(c, newItem.getItemId(), newItem.getQuantity(), newItem.getOwner())) {
-         final int gainmeso = getMeso() + theQuantity - GameConstants.EntrustedStoreTax(theQuantity);
-         if (gainmeso > 0) {
-         setMeso(gainmeso);
-         pItem.bundles -= quantity; // Number remaining in the store
-         MapleInventoryManipulator.addFromDrop(c, newItem, false);
-         bought.add(new BoughtItem(newItem.getItemId(), quantity, theQuantity, c.getPlayer().getName()));
-         c.getPlayer().gainMeso(-theQuantity, false);
-         saveItems();
-         MapleCharacter chr = getMCOwnerWorld();
-         if (chr != null) {
-         chr.dropMessage(-5, "物品 " + MapleItemInformationProvider.getInstance().getName(newItem.getItemId()) + " (" + perbundle + ") x " + quantity + " 已從精靈商店賣出. 還剩下 " + pItem.bundles + "個");
-         }
-         } else {
-         c.getPlayer().dropMessage(1, "拍賣家有太多錢了.");
-         c.sendPacket(MaplePacketCreator.enableActions());
-         }
-         } else {
-         c.getPlayer().dropMessage(1, "您的背包滿了.");
-         c.sendPacket(MaplePacketCreator.enableActions());
-         }*/
+        if (!c.getPlayer().canHold(newItem.getItemId())) {
+            c.getPlayer().dropMessage(1, "您的背包滿了，請檢查您的背包！");
+            c.sendPacket(MaplePacketCreator.enableActions());
+            return;
+        }
         if (MapleInventoryManipulator.addFromDrop(c, newItem, false)) {
             pItem.bundles -= quantity; // Number remaining in the store
 
             final int gainmeso = getMeso() + (pItem.price * quantity);
             setMeso(gainmeso - GameConstants.EntrustedStoreTax(gainmeso));
             c.getPlayer().gainMeso(-pItem.price * quantity, false);
+            FilePrinter.print("HiredMerchantBuyLog.txt", "角色名字:" + c.getPlayer().getName() + " 從: " + getOwnerName() + " 的精靈商人購買了" + MapleItemInformationProvider.getInstance().getName(newItem.getItemId()) + " (" + newItem.getItemId() + ") x" + quantity + " 單個價錢為 : " + pItem.price + " 購買時間:" + FilePrinter.getLocalDateString());
+            for (ChannelServer cserv : ChannelServer.getAllInstances()) {
+                for (MapleCharacter chr : cserv.getPlayerStorage().getAllCharacters()) {
+                    if (chr.get精靈商人訊息()) {
+                        String msg = "[精靈商人] 主人:" + getOwnerName() + " 道具: " + MapleItemInformationProvider.getInstance().getName(newItem.getItemId()) + " (" + perbundle + ") × " + quantity + " 已被玩家:" + c.getPlayer().getName() + " 購買，還剩下：" + pItem.bundles + " 個";
+                        broadcastGMMessage(MaplePacketCreator.serverNotice(6, msg).getBytes());
+                    }
+                }
+            }
+            if (Owner != null) {
+                if (pItem.bundles < 1) {
+                    Owner.dropMessage(5, "道具: " + MapleItemInformationProvider.getInstance().getName(newItem.getItemId()) + " (" + perbundle + ") × " + quantity + " 已被其他玩家購買完畢了，請補貨0.0");
+                    return;
+                }
+                Owner.dropMessage(5, "道具: " + MapleItemInformationProvider.getInstance().getName(newItem.getItemId()) + " (" + perbundle + ") × " + quantity + " 已被其他玩家購買，還剩下：" + pItem.bundles + " 個");
+            }
         } else {
             c.getPlayer().dropMessage(1, "您的背包滿了，請檢查您的背包！");
             c.sendPacket(MaplePacketCreator.enableActions());

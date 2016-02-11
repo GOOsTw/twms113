@@ -10,13 +10,33 @@ function action(mode, type, selection) {
         }
         status--;
     }
+	if (cm.getPlayer().getGender() == 0 && cm.getPlayer().getMarriageId() > 0 && cm.getMapId() == 680000000) {
+		cm.sendOk("在結婚前一定要先請你的另外一半來找我。");
+		cm.dispose();
+		return;
+	} else if (cm.getPlayer().getGender() == 1 && cm.getPlayer().getMarriageId() > 0 && cm.getMapId() == 680000000) {
+		if (!cm.haveItem(4213001)) {
+			cm.sendOk("恭喜妳結婚了這是給妳的#i4213001#，然後到左邊找下#p9201037#跟他們那對熱戀的夫妻立下愛的誓約。");
+			cm.gainItem(4213001,1);
+			cm.dispose();
+		} else {
+			cm.sendOk("妳好像已經有了#i4213001#。")
+			cm.dispose();
+			return;
+		}
+	}
     if (cm.getMapId() != 680000210) {
         cm.sendOk("如果你想有一個婚禮，請與我說話的幫手。");
         cm.dispose();
         return;
     }
     if (status == 0) {
-        cm.sendYesNo("你想要結婚了？");
+		if (cm.getPlayer().getGender() == 1 && cm.haveItem(4213001) && cm.haveItem(4213000)) {
+			cm.sendYesNo("妳想要結婚了？");
+		} else {
+			cm.sendOk("滾吧！結婚女方最大！！");
+			cm.dispose();
+		}
     } else if (status == 1) {
 
         var marr = cm.getQuestRecord(160001);

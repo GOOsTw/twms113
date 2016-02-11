@@ -19,5 +19,7 @@ function action(mode, type, selection) {
             cm.getMap(501030104).resetReactors();
         }
         cm.dispose();
+    } else {
+        cm.dispose();
     }
 }

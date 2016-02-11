@@ -1,4 +1,4 @@
-/*
+﻿/*
 	NPC Name: 		Commander Grauda
 	Description: 		Quest - Elliminate Dunas Squad
 */
@@ -12,7 +12,7 @@ function start(mode, type, selection) {
             status++;
         }
         if (status == 0) {
-            qm.sendNext("Okay, so you are going to the battle as well. Thanks... Just letting you know, the enemy is probably more powerful than anything you've ever faced, Are you ready?");
+            qm.sendNext("好了，你即將挑戰它了！謝謝……。只是讓你知道，敵人可能是非常強大的。你準備好了嗎？");
         } else if (status == 1) {
             qm.warp(802000409, 0);
             //qm.forceStartQuest();
@@ -21,4 +21,5 @@ function start(mode, type, selection) {
     }
 }
 
-function end(mode, type, selection) {}
+function end(mode, type, selection) {
+}

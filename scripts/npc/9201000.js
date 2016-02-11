@@ -20,10 +20,10 @@ function action(mode, type, selection) {
             cm.dispose();
         }
         if (cm.getPlayer().getMarriageId() > 0) {
-            cm.sendNext("恭喜你結婚！！");
+            cm.sendNext("想要訂婚??那請把你另外一半給甩掉吧！！");
             cm.dispose();
         } else {
-            cm.sendSimple("嗨，我可以為您做什麼？？\r\n#b#L0#做一個月光戒指#l\r\n#L1#做一個星光戒指#l\r\n#L2#做一個金心戒指#l\r\n#L3#做一個鑽石戒指#l#k");
+            cm.sendSimple("我販賣的戒指總共有4種。你想要買哪種戒指呢？ 挑選她喜歡的戒指吧！。\r\n#b#L0##i2240004##t2240004##l\r\n#L1##i2240007##t2240007##l\r\n#L2##i2240010##t2240010##l\r\n#L3##i2240013##t2240013##l#k");
         }
     } else if (status == 1) {
         firstSelection = selection;
@@ -73,7 +73,6 @@ function action(mode, type, selection) {
                     cm.gainItem(mats[i], -1);
                 }
                 cm.gainItem(2240004 + (firstSelection * 3) + secondSelection, 1);
-                cm.gainItem(5251006, 1);
             }
         }
         cm.dispose();

@@ -139,11 +139,12 @@ public class GuildHandler {
         switch (operation) {
 
             case CREATE: {
+                int cost = 500000;
                 if (c.getPlayer().getGuildId() > 0 || c.getPlayer().getMapId() != 200000301) {
-                    c.getPlayer().dropMessage(1, "你不能在創建一個新的公會.");
+                    c.getPlayer().dropMessage(1, "無法建立公會\\r\\n已經有公會或不在英雄之殿");
                     return;
-                } else if (c.getPlayer().getMeso() < 500000) {
-                    c.getPlayer().dropMessage(1, "你的楓幣不夠,無法創建公會");
+                } else if (c.getPlayer().getMeso() < cost) {
+                    c.getPlayer().dropMessage(1, "你沒有足夠的楓幣建立公會。目前建立公會需要: " + cost + " 的楓幣。");
                     return;
                 }
                 final String guildName = slea.readMapleAsciiString();
@@ -160,16 +161,15 @@ public class GuildHandler {
                     return;
                 }
 
-                c.getPlayer().gainMeso(-500000, true, false, true);
+                c.getPlayer().gainMeso(-cost, true, false, true);
                 c.getPlayer().setGuildId(guildId);
                 c.getPlayer().setGuildRank((byte) 1);
                 c.getPlayer().saveGuildStatus();
-                c.sendPacket(MaplePacketCreator.showGuildInfo(c.getPlayer()));
-
                 World.Guild.setGuildMemberOnline(c.getPlayer().getMGC(), true, c.getChannel());
+                c.sendPacket(MaplePacketCreator.showGuildInfo(c.getPlayer()));
+                World.Guild.gainGP(c.getPlayer().getGuildId(), 500);
                 c.getPlayer().dropMessage(1, "恭喜你成功創建一個公會.");
                 respawnPlayer(c.getPlayer());
-
                 break;
             }
 

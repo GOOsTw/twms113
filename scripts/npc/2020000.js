@@ -186,6 +186,8 @@ function action(mode, type, selection) {
         if (cm.getMeso() < cost * qty) {
             complete = false;
             cm.sendNext("抱歉我只接受楓幣.");
+			cm.dispose();
+			return;
         } else {
             if (mats instanceof Array) {
                 for (var i = 0; complete && i < mats.length; i++) {
@@ -201,7 +203,10 @@ function action(mode, type, selection) {
         }
 
         if (!complete) {
+			complete = false;
             cm.sendOk("很抱歉由於你的材料不足，所以我不想幫你做了。");
+			cm.dispose();
+			return;
         } if (!cm.canHold()) {
             cm.sendOk("請確認道具欄是否有空間");
         } else {

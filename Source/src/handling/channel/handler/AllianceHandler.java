@@ -90,7 +90,7 @@ public class AllianceHandler {
                 inviteid = World.Guild.getInvitedId(c.getPlayer().getGuildId());
                 if (inviteid > 0) {
                     if (!World.Alliance.addGuildToAlliance(inviteid, c.getPlayer().getGuildId())) {
-                        c.getPlayer().dropMessage(5, "An error occured when adding guild.");
+                        c.getPlayer().dropMessage(5, "加入公會時出錯。");
                     }
                     World.Guild.setInvitedId(c.getPlayer().getGuildId(), 0);
                 }
@@ -108,14 +108,14 @@ public class AllianceHandler {
                 }
                 if (c.getPlayer().getAllianceRank() <= 2 && (c.getPlayer().getAllianceRank() == 1 || c.getPlayer().getGuildId() == gid)) {
                     if (!World.Alliance.removeGuildFromAlliance(gs.getAllianceId(), gid, c.getPlayer().getGuildId() != gid)) {
-                        c.getPlayer().dropMessage(5, "An error occured when removing guild.");
+                        c.getPlayer().dropMessage(5, "移除公會時出錯。");
                     }
                 }
                 break;
             case 7: //change leader
                 if (c.getPlayer().getAllianceRank() == 1 && leaderid == c.getPlayer().getId()) {
                     if (!World.Alliance.changeAllianceLeader(gs.getAllianceId(), slea.readInt())) {
-                        c.getPlayer().dropMessage(5, "An error occured when changing leader.");
+                        c.getPlayer().dropMessage(5, "未知聯盟盟主時發生錯誤。");
                     }
                 }
                 break;
@@ -131,7 +131,7 @@ public class AllianceHandler {
             case 9:
                 if (c.getPlayer().getAllianceRank() <= 2) {
                     if (!World.Alliance.changeAllianceRank(gs.getAllianceId(), slea.readInt(), slea.readByte())) {
-                        c.getPlayer().dropMessage(5, "An error occured when changing rank.");
+                        c.getPlayer().dropMessage(5, "改變階級時發生錯誤。");
                     }
                 }
                 break;
@@ -145,7 +145,7 @@ public class AllianceHandler {
                 }
                 break;
             default:
-                System.out.println("Unhandled GuildAlliance op: " + op + ", \n" + slea.toString());
+                System.out.println("未處理的公會聯盟包頭: " + op + ", \n" + slea.toString());
                 break;
         }
         //c.sendPacket(MaplePacketCreator.enableActions());
@@ -158,7 +158,7 @@ public class AllianceHandler {
             if (newAlliance > 0) {
                 final MapleCharacter chr = c.getChannelServer().getPlayerStorage().getCharacterById(newAlliance);
                 if (chr != null) {
-                    chr.dropMessage(5, gs.getName() + " Guild has rejected the Guild Union invitation.");
+                    chr.dropMessage(5, gs.getName() + " 公會拒絕了聯盟邀請。");
                 }
                 World.Guild.setInvitedId(c.getPlayer().getGuildId(), 0);
             }

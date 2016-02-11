@@ -524,6 +524,42 @@ public abstract class AbstractPlayerInteraction {
         return getMap(mapid).getCurrentPartyId();
     }
 
+    public int getBossLog(String bossid) {
+        return getPlayer().getBossLog(bossid);
+    }
+
+    public void setBossLog(String bossid) {
+        getPlayer().setBossLog(bossid);
+    }
+
+    public void setPartyBossLog(String bossid) {
+        MapleParty party = getPlayer().getParty();
+        for (MaplePartyCharacter pc : party.getMembers()) {
+            MapleCharacter chr = World.getStorage(this.getChannelNumber()).getCharacterById(pc.getId());
+            if (chr != null) {
+                chr.setBossLog(bossid);
+            }
+        }
+    }
+
+    public int getBossACLog(String bossid) {
+        return getPlayer().getBossACLog(bossid);
+    }
+
+    public void setBossACLog(String bossid) {
+        getPlayer().setBossACLog(bossid);
+    }
+
+    public void setPartyBossACLog(String bossid) {
+        MapleParty party = getPlayer().getParty();
+        for (MaplePartyCharacter pc : party.getMembers()) {
+            MapleCharacter chr = World.getStorage(this.getChannelNumber()).getCharacterById(pc.getId());
+            if (chr != null) {
+                chr.setBossACLog(bossid);
+            }
+        }
+    }
+
     public final boolean isLeader() {
         if (getParty() == null) {
             return false;

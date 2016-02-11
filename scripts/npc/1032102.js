@@ -21,7 +21,7 @@ function action(mode, type, selection) {
         else
             status--;
         if (status == 0) {
-            cm.sendSimple("您好，我是#p1032102# 有什麼我可以幫您的嗎？？ \r\n#r#L0#我要升級寶貝龍寵物#l#k\r\n#g#L1#我要升級我的機器人#l#k\r\n#b#L2#我要復活我的寵物#l#k\r\n#L3#我想要得到三寵技能#l#k");
+            cm.sendSimple("您好，我是#p1032102# 有什麼我可以幫您的嗎？？ \r\n#r#L0#我要升級寶貝龍寵物#l#k\r\n#g#L1#我要升級我的機器人#l#k\r\n#b#L2#我要復活我的寵物#l#k\r\n#L3#我想要得到三寵技能#l#k\r\n#L4##d我要解坎特的提議#l#k");
         } else if (status == 1) {
             if (selection == 0) {
                 var currentpet = null;
@@ -128,6 +128,26 @@ function action(mode, type, selection) {
                     cm.sendOk("很抱歉我需要#t5380000# 15個。");
                     cm.dispose();
                 }
+			} else if (selection == 4) {
+				if (cm.getQuestStatus(3083) == 2 && cm.getQuestStatus(3096) == 2) {
+					cm.sendOk("你已經完成過任務了。");
+					cm.dispose();
+				}
+				if (cm.haveItem(4031274,1) && cm.haveItem(4031275,1) && cm.haveItem(4031276,1) && cm.haveItem(4031277,1)&& cm.haveItem(4031278,1)) {
+					cm.removeAll(4031274);
+					cm.removeAll(4031275);
+					cm.removeAll(4031276);
+					cm.removeAll(4031277);
+					cm.removeAll(4031278);
+					cm.forceCompleteQuest(3083);
+					cm.forceCompleteQuest(3096);
+					cm.gainExp(3000);
+					cm.sendOk("完成坎特的提議。");
+					cm.dispose();
+				} else {
+					cm.sendOk("我需要#i4031274# x1、#i4031275# x1 、 #i4031276# x1 、 #i4031277# x1 、 #i4031278# 麻煩準備好再來找我。");
+					cm.dispose();
+				}
             } else if (selection == 2) { //revive	
                 var inv = cm.getInventory(5);
                 var pets = cm.getPlayer().getPets(); //includes non-summon

@@ -6,6 +6,7 @@
 package client.messages.commands;
 
 import client.MapleCharacter;
+import client.MapleClient;
 import database.DatabaseConnection;
 import handling.RecvPacketOpcode;
 import handling.SendPacketOpcode;
@@ -19,6 +20,7 @@ import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import scripting.NPCScriptManager;
 import scripting.PortalScriptManager;
 import scripting.ReactorScriptManager;
 import server.CashItemFactory;
@@ -90,6 +92,48 @@ public class ConsoleCommand {
         }
     }
 
+    public static class CrucialTime extends ConsoleCommandExecute {
+
+        protected static ScheduledFuture<?> ts = null;
+
+        public int execute(String[] splitted) {
+            if (splitted.length < 1) {
+                return 0;
+            }
+            if (ts != null) {
+                ts.cancel(false);
+                System.out.println("原定的關鍵時刻已取消");
+            }
+            int minutesLeft = 0;
+            try {
+                minutesLeft = Integer.parseInt(splitted[1]);
+            } catch (NumberFormatException ex) {
+                return 0;
+            }
+            if (minutesLeft > 0) {
+                ts = Timer.EventTimer.getInstance().schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (ChannelServer cserv : ChannelServer.getAllInstances()) {
+                            for (MapleCharacter mch : cserv.getPlayerStorage().getAllCharacters()) {
+                                if (mch.getLevel() >= 29) {
+                                    NPCScriptManager.getInstance().start(mch.getClient(), 9010010);
+                                }
+                            }
+                        }
+                        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "關鍵時刻開放囉，沒有30等以上的玩家是得不到的。").getBytes());
+                        ts.cancel(false);
+                        ts = null;
+                    }
+                }, minutesLeft * 60000);
+                System.out.println("關鍵時刻預定已完成");
+            } else {
+                System.out.println("設定的時間必須 > 0");
+            }
+            return 1;
+        }
+    }
+
     public static class ShutdownTime extends ConsoleCommandExecute {
 
         private int minutesLeft = 0;
@@ -157,7 +201,7 @@ public class ConsoleCommand {
                 try {
                     rate = Integer.parseInt(splitted[1]);
                 } catch (Exception ex) {
-                    
+
                 }
                 if (splitted[2].equalsIgnoreCase("all")) {
                     for (ChannelServer cserv : ChannelServer.getAllInstances()) {
@@ -180,11 +224,11 @@ public class ConsoleCommand {
         @Override
         public int execute(String[] splitted) {
             if (splitted.length > 2) {
-                 int rate = 1;
+                int rate = 1;
                 try {
                     rate = Integer.parseInt(splitted[1]);
                 } catch (Exception ex) {
-                    
+
                 }
                 if (splitted.length > 2 && splitted[2].equalsIgnoreCase("all")) {
                     for (ChannelServer cserv : ChannelServer.getAllInstances()) {
@@ -207,11 +251,11 @@ public class ConsoleCommand {
         @Override
         public int execute(String[] splitted) {
             if (splitted.length > 2) {
-                 int rate = 1;
+                int rate = 1;
                 try {
                     rate = Integer.parseInt(splitted[1]);
                 } catch (Exception ex) {
-                    
+
                 }
                 if (splitted[2].equalsIgnoreCase("all")) {
                     for (ChannelServer cserv : ChannelServer.getAllInstances()) {
@@ -234,7 +278,7 @@ public class ConsoleCommand {
         @Override
         public int execute(String[] splitted) {
             if (splitted.length > 2) {
-                 int rate = 1;
+                int rate = 1;
                 try {
                     rate = Integer.parseInt(splitted[1]);
                 } catch (Exception ex) {
@@ -371,10 +415,19 @@ public class ConsoleCommand {
             System.out.println("-------------------------");
             System.out.println("shutdown 關閉伺服器");
             System.out.println("shotdowntime <時間> 倒數關閉服務器");
+            System.out.println("CrucialTime <時間> 關鍵時刻");
             System.out.println("reloadchannel 重新載入頻道");
             System.out.println("reloadmap 重新載入地圖");
             System.out.println("Info 查看伺服器狀況");
             System.out.println("AutoReg 自動註冊開關");
+            System.out.println("-------------------------");
+            System.out.println("ReloadEvents 重新載入副本事件");
+            System.out.println("ReloadFishing 重新載入釣魚獎勵");
+            System.out.println("ReloadCS 重新載入購物商城物品");
+            System.out.println("ReloadShops 重新載入商店設定");
+            System.out.println("ReloadPortals 重新載入門口腳本");
+            System.out.println("ReloadDrops 重新載入掉落物品");
+            System.out.println("ReloadOps 重新載入封包包頭");
             System.out.println("-------------------------");
             System.out.println("online 線上玩家");
             System.out.println("say 伺服器說話");
@@ -441,8 +494,7 @@ public class ConsoleCommand {
             return 1;
         }
     }
-    
-    
+
     public static class ReloadOps extends ConsoleCommandExecute {
 
         @Override
@@ -451,8 +503,7 @@ public class ConsoleCommand {
             RecvPacketOpcode.reloadValues();
             return 1;
         }
-        
-       
+
     }
 
     public static class ReloadDrops extends ConsoleCommandExecute {
@@ -463,8 +514,7 @@ public class ConsoleCommand {
             ReactorScriptManager.getInstance().clearDrops();
             return 1;
         }
-        
-        
+
     }
 
     public static class ReloadPortals extends ConsoleCommandExecute {
@@ -483,9 +533,9 @@ public class ConsoleCommand {
             MapleShopFactory.getInstance().clear();
             return 1;
         }
-        
+
     }
-    
+
     public static class ReloadCS extends ConsoleCommandExecute {
 
         @Override
@@ -493,9 +543,9 @@ public class ConsoleCommand {
             CashItemFactory.getInstance().clearItems();
             return 1;
         }
-        
+
     }
-    
+
     public static class ReloadFishing extends ConsoleCommandExecute {
 
         @Override
@@ -503,9 +553,9 @@ public class ConsoleCommand {
             FishingRewardFactory.getInstance().reloadItems();
             return 1;
         }
-        
+
     }
-     
+
     public static class ReloadEvents extends ConsoleCommandExecute {
 
         @Override
@@ -515,8 +565,7 @@ public class ConsoleCommand {
             }
             return 1;
         }
-        
-    }
 
+    }
 
 }

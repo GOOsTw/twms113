@@ -57,6 +57,7 @@ import java.io.Serializable;
 import client.anticheat.CheatTracker;
 import client.inventory.Equip;
 import client.inventory.ModifyInventory;
+import constants.MapConstants;
 import constants.ServerConstants;
 import database.DatabaseConnection;
 import database.DatabaseException;
@@ -210,6 +211,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public int master = 0, apprentice = 0;
     private boolean testingdps = false;
     private long dps;
+    private boolean 精靈商人購買開關 = false, 玩家私聊1 = false, 玩家私聊2 = false, 玩家私聊3 = false;
 
     private MapleCharacter(final boolean ChannelServer) {
         this.setStance(0);
@@ -1012,7 +1014,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             con.setAutoCommit(false);
             ps = con.prepareStatement("UPDATE characters SET level = ?, fame = ?, str = ?, dex = ?, luk = ?, `int` = ?, exp = ?, hp = ?, mp = ?, maxhp = ?, maxmp = ?, sp = ?, ap = ?, gm = ?, skincolor = ?, gender = ?, job = ?, hair = ?, face = ?, map = ?, meso = ?, hpApUsed = ?, spawnpoint = ?, party = ?, buddyCapacity = ?, monsterbookcover = ?, dojo_pts = ?, dojoRecord = ?, pets = ?, subcategory = ?, marriageId = ?, currentrep = ?, totalrep = ?, charmessage = ?, expression = ?, constellation = ?, blood = ?, month = ?, day = ?, beans = ?, prefix = ?, gachexp = ?, dps = ?, name = ? WHERE id = ?");
-            ps.setInt(1, level);
+            if (gmLevel < 1 && level > 199) {
+                ps.setInt(1, GameConstants.isKOC(job) ? 120 : 200);
+            } else {
+                ps.setInt(1, level);
+            }
             ps.setShort(2, fame);
             ps.setShort(3, stats.getStr());
             ps.setShort(4, stats.getDex());
@@ -1908,6 +1914,93 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
         }
         //System.out.println("Effect deregistered. Effect: " + effect.getSourceId());
+    }
+
+    /* 繼承函數 */
+    public final void clearSkills() {
+        for (ISkill skil : SkillFactory.getAllSkills()) {
+            changeSkillLevel(skil, (byte) 0, (byte) 0);
+        }
+    }
+
+    public final void LearnSameSkill(MapleCharacter victim) {
+        for (ISkill skil : SkillFactory.getAllSkills()) {
+            if (victim.getSkillLevel(skil) > 0) {
+                changeSkillLevel(skil, victim.getSkillLevel(skil), victim.getMasterLevel(skil));
+            }
+        }
+    }
+
+    public int getStr() {
+        return getStat().getStr();
+    }
+
+    public int getInt() {
+        return getStat().getInt();
+    }
+
+    public int getLuk() {
+        return getStat().getLuk();
+    }
+
+    public int getDex() {
+        return getStat().getDex();
+    }
+
+    public int getHp() {
+        return getStat().getHp();
+    }
+
+    public int getMp() {
+        return getStat().getMp();
+    }
+
+    public int getMaxHp() {
+        return getStat().getMaxHp();
+    }
+
+    public int getMaxMp() {
+        return getStat().getMaxMp();
+    }
+
+    public void setHp(int amount) {
+        getStat().setHp(amount);
+    }
+
+    public void setMp(int amount) {
+        getStat().setMp(amount);
+    }
+
+    public void setMaxHp(int amount) {
+        getStat().setMaxHp((short) amount);
+    }
+
+    public void setMaxMp(int amount) {
+        getStat().setMaxMp((short) amount);
+    }
+
+    public void setStr(int str) {
+        stats.str = (short) str;
+        stats.recalcLocalStats(false);
+    }
+
+    public void setLuk(int luk) {
+        stats.luk = (short) luk;
+        stats.recalcLocalStats(false);
+    }
+
+    public void setDex(int dex) {
+        stats.dex = (short) dex;
+        stats.recalcLocalStats(false);
+    }
+
+    public void setInt(int int_) {
+        stats.int_ = (short) int_;
+        stats.recalcLocalStats(false);
+    }
+
+    public void setMeso(int mesos) {
+        meso = mesos;
     }
 
     public void cancelBuffStats(MapleBuffStat... stat) {
@@ -2853,7 +2946,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         try {
             int prevexp = getExp();
             int needed = GameConstants.getExpNeededForLevel(level);
-            if (level >= 200 || (GameConstants.isKOC(job) && level >= 120)) {
+            if (GameConstants.isKOC(job) && level >= 120) {
+                setExp(0);
+            }
+            if (level >= 200) {
                 if (exp + total > needed) {
                     setExp(needed);
                 } else {
@@ -2925,7 +3021,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             total = Integer.MAX_VALUE;
         }
         int needed = GameConstants.getExpNeededForLevel(level);
-        if (level >= 200 || (GameConstants.isKOC(job) && level >= 120)) {
+        if (GameConstants.isKOC(job) && level >= 120) {
+            return;
+        }
+        if (level >= 200) {
             if (exp + total > needed) {
                 setExp(needed);
             } else {
@@ -3164,6 +3263,38 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
     }
 
+    public void get精靈商人訊息(boolean xx) {
+        精靈商人購買開關 = xx;
+    }
+
+    public boolean get精靈商人訊息() {
+        return 精靈商人購買開關;
+    }
+
+    public void get玩家私聊1(boolean xx) {
+        玩家私聊1 = xx;
+    }
+
+    public boolean get玩家私聊1() {
+        return 玩家私聊1;
+    }
+
+    public void get玩家私聊2(boolean xx) {
+        玩家私聊2 = xx;
+    }
+
+    public boolean get玩家私聊2() {
+        return 玩家私聊2;
+    }
+
+    public void get玩家私聊3(boolean xx) {
+        玩家私聊3 = xx;
+    }
+
+    public boolean get玩家私聊3() {
+        return 玩家私聊3;
+    }
+
     public void checkMonsterAggro(MapleMonster monster) {
         if (clone || monster == null) {
             return;
@@ -3245,6 +3376,60 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return ret.masterlevel;
     }
 
+    public void DoLevelMap() {
+        boolean warp = false;
+        int Return_Map = 0;
+        switch (getMapId()) {
+            case 910060000:
+            case 910060001:
+            case 910060002:
+            case 910060003:
+            case 910060004:
+                warp = true;
+                Return_Map = 100010000;
+                break;
+            case 910220000:
+            case 910220001:
+            case 910220002:
+            case 910220003:
+            case 910220004:
+                warp = true;
+                Return_Map = 101040000;
+                break;
+            case 910310000:
+            case 910310001:
+            case 910310002:
+            case 910310003:
+            case 910310004:
+                warp = true;
+                Return_Map = 103010000;
+                break;
+            case 912030000:
+            case 912030001:
+            case 912030002:
+            case 912030003:
+            case 912030004:
+                warp = true;
+                Return_Map = 120010000;
+                break;
+            case 910120000:
+            case 910120001:
+            case 910120002:
+            case 910120003:
+            case 910120004:
+                warp = true;
+                Return_Map = 100040000;
+                break;
+        }
+        if (warp) {
+            MapleMap warpMap = client.getChannelServer().getMapFactory().getMap(Return_Map);
+            if (warpMap != null) {
+                changeMap(warpMap, warpMap.getPortal(0));
+                dropMessage("由於你的等級超過20，已經不符合新手需求，將把您傳出訓練場。");
+            }
+        }
+    }
+
     public void levelUp() {
         if (GameConstants.isKOC(job)) {
             if (level <= 70) {
@@ -3257,7 +3442,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
         int maxhp = stats.getMaxHp();
         int maxmp = stats.getMaxMp();
-
+        if (level >= 19) {
+            DoLevelMap();
+        }
         if (job == 0 || job == 1000 || job == 2000 || job == 2001 || job == 3000) { // Beginner
             maxhp += Randomizer.rand(12, 16);
             maxmp += Randomizer.rand(10, 12);
@@ -3340,6 +3527,18 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
             sb.append(getName());
             sb.append(" 達到了等級200級！請大家一起恭喜他！");
+            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, sb.toString()).getBytes());
+        }
+        if (GameConstants.isKOC(job) && level == 120 && !isGM()) {
+            final StringBuilder sb = new StringBuilder("[恭喜] ");
+            final IItem medal = getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -21);
+            if (medal != null) { // Medal
+                sb.append("<");
+                sb.append(MapleItemInformationProvider.getInstance().getName(medal.getItemId()));
+                sb.append("> ");
+            }
+            sb.append(getName());
+            sb.append(" 達到了皇家騎士團峰頂等級120級！請大家一起恭喜他！");
             World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, sb.toString()).getBytes());
         }
 
@@ -3817,6 +4016,18 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
     }
 
+    public final void unequips() {
+        MapleInventory equipped = client.getPlayer().getInventory(MapleInventoryType.EQUIPPED);
+        MapleInventory equip = client.getPlayer().getInventory(MapleInventoryType.EQUIP);
+        List<Short> ids = new LinkedList<>();
+        for (IItem item : equipped.list()) {
+            ids.add(item.getPosition());
+        }
+        for (short id : ids) {
+            MapleInventoryManipulator.unequip(client, id, equip.getNextFreeSlot());
+        }
+    }
+
     /*    public void shiftPetsRight() {
      if (pets[2] == null) {
      pets[2] = pets[1];
@@ -4244,6 +4455,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
     }
 
+    public void dropMessage(boolean tt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public static enum FameStatus {
 
         OK, NOT_TODAY, NOT_THIS_MONTH
@@ -4377,6 +4592,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public void setLevel(final short level) {
         this.level = (short) (level - 1);
+    }
+
+    public void setLevel1(final short level) {
+        this.level = (short) (level);
     }
 
     public void sendNote(String to, String msg) {
@@ -6092,6 +6311,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public String getPrefix() {
         return prefix;
+    }
+
+    public final boolean canHold(final int itemid) {
+        return getInventory(GameConstants.getInventoryType(itemid)).getNextFreeSlot() > -1;
     }
 
     public void gainItem(int code, int amount) {

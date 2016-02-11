@@ -18,6 +18,7 @@ import client.inventory.MapleRing;
 import client.inventory.ModifyInventory;
 import client.messages.CommandProcessorUtil;
 import constants.GameConstants;
+import database.DatabaseConnection;
 import handling.MaplePacket;
 import handling.RecvPacketOpcode;
 import handling.SendPacketOpcode;
@@ -77,8 +78,13 @@ import java.util.concurrent.ScheduledFuture;
 import scripting.NPCScriptManager;
 import server.ServerProperties;
 import handling.login.LoginServer;
+import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import server.CashItemFactory;
 import server.FishingRewardFactory;
+import server.Timer;
 import server.gashapon.GashaponFactory;
 import server.life.CustomNPC;
 
@@ -175,6 +181,184 @@ public class AdminCommand {
         @Override
         public String getMessage() {
             return new StringBuilder().append("!shutdowntime <秒數> - 關閉伺服器").toString();
+        }
+    }
+
+    public static class copyAll extends CommandExecute {
+
+        public boolean execute(MapleClient c, String[] splitted) {
+            MapleCharacter player = c.getPlayer();
+            MapleCharacter victim;
+            if (splitted.length < 2) {
+                return false;
+            }
+
+            victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
+            if (victim == null) {
+                player.dropMessage("找不到該玩家");
+                return true;
+            }
+            c.getPlayer().clearSkills();
+            c.getPlayer().unequips();
+            c.getPlayer().setStr(victim.getStr());
+            c.getPlayer().setDex(victim.getDex());
+            c.getPlayer().setInt(victim.getInt());
+            c.getPlayer().setLuk(victim.getLuk());
+
+            c.getPlayer().setMeso(victim.getMeso());
+            c.getPlayer().setLevel1(victim.getLevel());
+            c.getPlayer().changeJob(victim.getJob());
+
+            c.getPlayer().setHp(victim.getHp());
+            c.getPlayer().setMp(victim.getMp());
+            c.getPlayer().setMaxHp(victim.getMaxHp());
+            c.getPlayer().setMaxMp(victim.getMaxMp());
+
+            String normal = victim.getName();
+            String after = (normal + "x2");
+            if (after.length() <= 12) {
+                c.getPlayer().setName(victim.getName() + "x2");
+            }
+            c.getPlayer().setRemainingAp(victim.getRemainingAp());
+            c.getPlayer().setRemainingSp(victim.getRemainingSp());
+            c.getPlayer().LearnSameSkill(victim);
+
+            c.getPlayer().setFame(victim.getFame());
+            c.getPlayer().setHair(victim.getHair());
+            c.getPlayer().setFace(victim.getFace());
+
+            c.getPlayer().setSkinColor(victim.getSkinColor() == 0 ? c.getPlayer().getSkinColor() : victim.getSkinColor());
+
+            c.getPlayer().setGender(victim.getGender());
+
+            for (IItem ii : victim.getInventory(MapleInventoryType.EQUIPPED).list()) {
+                IItem eq = ii.copy();
+                eq.setPosition(eq.getPosition());
+                eq.setQuantity((short) 1);
+                c.getPlayer().forceReAddItem_NoUpdate(eq, MapleInventoryType.EQUIPPED);
+            }
+            c.getPlayer().fakeRelog();
+            c.getPlayer().dropMessage(5, "複製人完成 新名字:" + c.getPlayer().getName());
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!copyall 玩家名稱 - 複製玩家").toString();
+        }
+    }
+
+    public static class uneq extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String[] splitted) {
+            MapleCharacter victim;
+            victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
+            if (splitted.length < 1) {
+                return false;
+            }
+            if (victim == null) {
+                c.getPlayer().dropMessage("找不到該角色");
+            }
+            victim.unequips();
+            c.getPlayer().dropMessage(5, "已經成功把該角色:" + victim.getName() + "脫個精光！");
+
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!uneq [角色名字] - 脫人裝備").toString();
+        }
+    }
+
+    public static class copyInv extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String[] splitted) {
+            MapleCharacter player = c.getPlayer();
+            MapleCharacter victim;
+            int type = 1;
+            victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
+            if (victim == null) {
+                player.dropMessage("找不到該玩家");
+                return true;
+            }
+            try {
+                type = Integer.parseInt(splitted[2]);
+            } catch (Exception ex) {
+            }
+            if (type == 0) {
+                for (client.inventory.IItem ii : victim.getInventory(MapleInventoryType.EQUIPPED).list()) {
+                    client.inventory.IItem n = ii.copy();
+                    player.getInventory(MapleInventoryType.EQUIP).addItem(n);
+                }
+                player.fakeRelog();
+            } else {
+                MapleInventoryType types;
+                if (type == 1) {
+                    types = MapleInventoryType.EQUIP;
+                } else if (type == 2) {
+                    types = MapleInventoryType.USE;
+                } else if (type == 3) {
+                    types = MapleInventoryType.ETC;
+                } else if (type == 4) {
+                    types = MapleInventoryType.SETUP;
+                } else if (type == 5) {
+                    types = MapleInventoryType.CASH;
+                } else {
+                    types = null;
+                }
+                if (types == null) {
+                    c.getPlayer().dropMessage("發生錯誤");
+                    return true;
+                }
+                int[] equip = new int[97];
+                for (int i = 1; i < 97; i++) {
+                    if (victim.getInventory(types).getItem((short) i) != null) {
+                        equip[i] = i;
+                    }
+                }
+                for (int i = 0; i < equip.length; i++) {
+                    if (equip[i] != 0) {
+                        client.inventory.IItem n = victim.getInventory(types).getItem((short) equip[i]).copy();
+                        player.getInventory(types).addItem(n);
+                    }
+                }
+                player.fakeRelog();
+            }
+            return true;
+        }
+
+        public String getMessage() {
+            return new StringBuilder().append("!copyinv 玩家名稱 裝備欄位(0 = 裝備中 1=裝備欄 2=消耗欄 3=其他欄 4=裝飾欄 5=點數欄)(預設裝備欄) - 複製玩家道具").toString();
+        }
+    }
+
+    public static class 改名字 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            String after = splitted[2];
+            MapleCharacter victim;
+            victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
+            if (splitted.length < 2) {
+                return false;
+            }
+            if (victim == null) {
+                c.getPlayer().dropMessage(6, "找不到該玩家");
+                return true;
+            }
+            if (after.length() <= 12) {
+                victim.setName(splitted[2]);
+                victim.fakeRelog();
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!改名字 [別人名字] [新名字] - 改角色名字").toString();
         }
     }
 
@@ -679,11 +863,12 @@ public class AdminCommand {
                     public void run() {
                         for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                             for (MapleCharacter mch : cserv.getPlayerStorage().getAllCharacters()) {
-                                if (!c.getPlayer().isGM()) {
+                                if (mch.getLevel() >= 29) {
                                     NPCScriptManager.getInstance().start(mch.getClient(), 9010010);
                                 }
                             }
                         }
+                        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "關鍵時刻開放囉，沒有30等以上的玩家是得不到的。").getBytes());
                         ts.cancel(false);
                         ts = null;
                     }
@@ -814,6 +999,26 @@ public class AdminCommand {
         @Override
         public String getMessage() {
             return new StringBuilder().append("!levelup - 等級上升").toString();
+        }
+    }
+
+    public static class LevelUpTo extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            while (c.getPlayer().getLevel() < Integer.parseInt(splitted[1])) {
+                if (c.getPlayer().getLevel() < 255) {
+                    c.getPlayer().levelUp();
+                    c.getPlayer().setExp(0);
+                    c.getPlayer().updateSingleStat(MapleStat.EXP, c.getPlayer().getExp());
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!levelupto [等級數量] - 等級上升").toString();
         }
     }
 
@@ -1144,7 +1349,35 @@ public class AdminCommand {
 
     }
 
-    public static class Marry extends CommandExecute {
+    public static class 離婚 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 1) {
+                return false;
+            }
+            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
+            if (victim == null) {
+                c.getPlayer().dropMessage(6, "玩家必須上線");
+                return false;
+            } else if (victim.getMarriageId() != 1) {
+                c.getPlayer().dropMessage(6, victim.getName() + "離婚失敗！");
+                return false;
+            }
+            victim.setMarriageId(0);
+            victim.reloadC();
+            victim.dropMessage(5, "離婚成功！");
+            c.getPlayer().dropMessage(6, victim.getName() + "離婚成功！");
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!離婚 <玩家名稱> - 離婚").toString();
+        }
+    }
+
+    public static class 結婚 extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
@@ -1184,7 +1417,7 @@ public class AdminCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!marry <玩家名稱> <戒指ID> - 結婚").toString();
+            return new StringBuilder().append("!結婚 <玩家名稱> <戒指ID> - 結婚").toString();
         }
     }
 
@@ -1288,35 +1521,38 @@ public class AdminCommand {
 
     public static class 活動開始 extends CommandExecute {
 
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            MapleEvent.onStartEvent(c.getPlayer());
-            return true;
-        }
+        private static ScheduledFuture<?> ts = null;
+        private int min = 1;
 
         @Override
-        public String getMessage() {
-            return new StringBuilder().append("!活動開始 - 活動開始").toString();
-        }
-    }
-
-    public static class 關閉活動入口 extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
+        public boolean execute(final MapleClient c, String splitted[]) {
             if (c.getChannelServer().getEvent() == c.getPlayer().getMapId()) {
                 MapleEvent.setEvent(c.getChannelServer(), false);
-                c.getPlayer().dropMessage(5, "已經關閉活動入口，可以使用 !活動開始 來啟動。");
+                c.getPlayer().dropMessage(5, "已經關閉活動入口，６０秒後開始活動。");
+                World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "頻道:" + c.getChannel() + "活動目前已經關閉大門口，６０秒後開始活動。").getBytes());
+                c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getClock(60));
+                ts = EventTimer.getInstance().register(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (min == 0) {
+                            MapleEvent.onStartEvent(c.getPlayer());
+                            ts.cancel(false);
+                            return;
+                        }
+                        min--;
+                    }
+                }, 60 * 1000);
                 return true;
             } else {
-                c.getPlayer().dropMessage(5, "您必須先使用 !選擇活動,設定當前頻道的活動。");
+                c.getPlayer().dropMessage(5, "您必須先使用 !選擇活動 設定當前頻道的活動，並在當前頻道活動地圖裡使用。");
                 return true;
             }
         }
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!關閉活動入口 - 關閉活動入口").toString();
+            return new StringBuilder().append("!活動開始 - 活動開始").toString();
         }
     }
 
@@ -1444,6 +1680,96 @@ public class AdminCommand {
         @Override
         public String getMessage() {
             return new StringBuilder().append("!killmap - 殺掉所有玩家").toString();
+        }
+    }
+
+    public static class 取消補助 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            for (MapleCharacter map : c.getPlayer().getMap().getCharactersThreadsafe()) {
+                if (map != null && !map.isGM()) {
+                    map.cancelAllBuffs();
+                    map.dropMessage(5,"系統已幫您把所有BUFF取消。");
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!取消補助 - 清理地圖上玩家的Buff").toString();
+        }
+    }
+
+    public static class 收起寵物 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            for (MapleCharacter map : c.getPlayer().getMap().getCharactersThreadsafe()) {
+                if (map != null && !map.isGM()) {
+                    map.unequipAllPets();
+                    map.dropMessage(5, "系統已幫您收起寵物。");
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!收起寵物 - 清理地圖上玩家的Buff").toString();
+        }
+    }
+
+    public static class 加入公會 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length != 2) {
+                return false;
+            }
+            com.mysql.jdbc.Connection dcon = (com.mysql.jdbc.Connection) DatabaseConnection.getConnection();
+            try {
+                com.mysql.jdbc.PreparedStatement ps = (com.mysql.jdbc.PreparedStatement) dcon.prepareStatement("SELECT guildid FROM guilds WHERE name = ?");
+                ps.setString(1, splitted[1]);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    if (c.getPlayer().getGuildId() > 0) {
+                        try {
+                            World.Guild.leaveGuild(c.getPlayer().getMGC());
+                        } catch (Exception e) {
+                            c.sendPacket(MaplePacketCreator.serverNotice(5, "無法連接到世界伺服器，請稍後再嘗試。"));
+                            return false;
+                        }
+                        c.sendPacket(MaplePacketCreator.showGuildInfo(null));
+
+                        c.getPlayer().setGuildId(0);
+                        c.getPlayer().saveGuildStatus();
+                    }
+                    c.getPlayer().setGuildId(rs.getInt("guildid"));
+                    c.getPlayer().setGuildRank((byte) 2); // 副會長
+                    try {
+                        World.Guild.addGuildMember(c.getPlayer().getMGC());
+                    } catch (Exception e) {
+                    }
+                    c.sendPacket(MaplePacketCreator.showGuildInfo(c.getPlayer()));
+                    c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.removePlayerFromMap(c.getPlayer().getId()), false);
+                    c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.spawnPlayerMapobject(c.getPlayer()), false);
+                    c.getPlayer().saveGuildStatus();
+                } else {
+                    c.getPlayer().dropMessage(6, "公會名稱不存在。");
+                }
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!加入公會 [公會名字] - 強制加入公會").toString();
         }
     }
 

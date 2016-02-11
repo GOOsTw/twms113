@@ -11,6 +11,10 @@ import tools.FilePrinter;
 import tools.MaplePacketCreator;
 import tools.StringUtil;
 import client.messages.commands.BlackConfig;
+import database.DatabaseConnection;
+import handling.login.LoginServer;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class InternCommand {
 
@@ -222,6 +226,86 @@ public class InternCommand {
         @Override
         public String getMessage() {
             return new StringBuilder().append("!spy <玩家名字>> - 觀察玩家").toString();
+        }
+    }
+
+    public static class 精靈商人訊息 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            boolean hh = c.getPlayer().get精靈商人訊息();
+            if (hh) {
+                c.getPlayer().get精靈商人訊息(false);
+            } else {
+                c.getPlayer().get精靈商人訊息(true);
+            }
+            hh = c.getPlayer().get精靈商人訊息();
+            c.getPlayer().dropMessage(6, "[精靈商人購買訊息] " + (hh ? "開啟" : "關閉"));
+            return true;
+        }
+
+        public String getMessage() {
+            return new StringBuilder().append("!精靈商人訊息  - 商人購買訊息開關").toString();
+        }
+    }
+
+    public static class 玩家私聊1 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            boolean hack1 = c.getPlayer().get玩家私聊1();
+            if (hack1) {
+                c.getPlayer().get玩家私聊1(false);
+            } else {
+                c.getPlayer().get玩家私聊1(true);
+            }
+            hack1 = c.getPlayer().get玩家私聊1();
+            c.getPlayer().dropMessage(6, "[玩家私聊1] " + (hack1 ? "開啟" : "關閉"));
+            return true;
+        }
+
+        public String getMessage() {
+            return new StringBuilder().append("!玩家私聊1  - 玩家普通.交易聊天偷聽開關").toString();
+        }
+    }
+
+    public static class 玩家私聊2 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            boolean hack2 = c.getPlayer().get玩家私聊2();
+            if (hack2) {
+                c.getPlayer().get玩家私聊2(false);
+            } else {
+                c.getPlayer().get玩家私聊2(true);
+            }
+            hack2 = c.getPlayer().get玩家私聊2();
+            c.getPlayer().dropMessage(6, "[玩家私聊2] " + (hack2 ? "開啟" : "關閉"));
+            return true;
+        }
+
+        public String getMessage() {
+            return new StringBuilder().append("!玩家私聊2  - 玩家好友.組隊.密語聊天偷聽開關").toString();
+        }
+    }
+
+    public static class 玩家私聊3 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            boolean hack2 = c.getPlayer().get玩家私聊3();
+            if (hack2) {
+                c.getPlayer().get玩家私聊3(false);
+            } else {
+                c.getPlayer().get玩家私聊3(true);
+            }
+            hack2 = c.getPlayer().get玩家私聊3();
+            c.getPlayer().dropMessage(6, "[玩家私聊3] " + (hack2 ? "開啟" : "關閉"));
+            return true;
+        }
+
+        public String getMessage() {
+            return new StringBuilder().append("!玩家私聊3  - 玩家公會.家族聊天偷聽開關").toString();
         }
     }
 

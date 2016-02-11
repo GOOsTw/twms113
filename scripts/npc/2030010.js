@@ -8,7 +8,10 @@ function start() {
 
 function action(mode, type, selection) {
     if (mode == 1) {
-        cm.warp(211042200);
+		if (cm.getMonsterCount(280030000) <= 0) {
+			cm.getMap(211042300).resetReactors();
+		}
+        cm.warp(211042300);
     }
     cm.dispose();
 }

@@ -48,7 +48,7 @@ public class HiredMerchantHandler {
 
     public static final void UseHiredMerchant(final SeekableLittleEndianAccessor slea, final MapleClient c) {
 
-        if (c.getPlayer().getMap().allowPersonalShop()) {
+        if (c.getPlayer().getMap().allowPersonalShop() && c.getPlayer().getMap() != null) {
             final byte state = checkExistance(c.getPlayer().getAccountID(), c.getPlayer().getId());
 
             switch (state) {
