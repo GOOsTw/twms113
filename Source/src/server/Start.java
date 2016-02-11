@@ -83,7 +83,7 @@ public class Start {
         MapleQuest.initQuests();
         MapleLifeFactory.loadQuestCounts();
         GashaponFactory.getInstance().reloadGashapons();
-        ItemMakerFactory.getInstance();
+        //ItemMakerFactory.getInstance();
         MapleItemInformationProvider.getInstance().load();
         RandomRewards.getInstance();
         SkillFactory.getSkill(99999999);
