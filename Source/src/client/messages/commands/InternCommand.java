@@ -17,19 +17,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class InternCommand {
-    
+
     public static ServerConstants.PlayerGMRank getPlayerLevelRequired() {
         return ServerConstants.PlayerGMRank.INTERN;
     }
-    
+
     public static class Ban extends CommandExecute {
-        
+
         protected boolean hellban = false;
-        
+
         private String getCommand() {
             return "Ban";
         }
-        
+
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             if (splitted.length < 3) {
@@ -56,24 +56,24 @@ public class InternCommand {
                     c.getPlayer().dropMessage(6, "[" + getCommand() + "] 封鎖失敗 " + splitted[1]);
                 }
             }
-            
+
             return true;
         }
-        
+
         @Override
         public String getMessage() {
             return new StringBuilder().append("!ban <玩家> <原因> - 封鎖玩家").toString();
         }
     }
-    
+
     public static class UnBan extends CommandExecute {
-        
+
         protected boolean hellban = false;
-        
+
         private String getCommand() {
             return "UnBan";
         }
-        
+
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
@@ -106,15 +106,15 @@ public class InternCommand {
             }
             return true;
         }
-        
+
         @Override
         public String getMessage() {
             return new StringBuilder().append("!unban <玩家> - 解鎖玩家").toString();
         }
     }
-    
+
     public static class 加黑單 extends CommandExecute {
-        
+
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
@@ -138,15 +138,15 @@ public class InternCommand {
             FilePrinter.print("PlayerBlackList.txt", "\r\n  " + FilePrinter.getLocalDateString() + " GM :" + c.getPlayer().getName() + " 在回報系統黑單了 " + input);
             return true;
         }
-        
+
         @Override
         public String getMessage() {
             return new StringBuilder().append("!黑單 <玩家名稱> - 將玩家設定為無法回報的黑名單").toString();
         }
     }
-    
+
     public static class ChangeChanel extends CommandExecute {
-        
+
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
@@ -160,46 +160,46 @@ public class InternCommand {
             }
             return true;
         }
-        
+
         @Override
         public String getMessage() {
             return new StringBuilder().append("!changechannel <頻道> - 更換頻道").toString();
         }
     }
-    
+
     public static class DC extends CommandExecute {
-        
+
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
-            
+
             if (splitted.length < 2) {
                 return false;
             }
-            
+
             int level = 0;
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
-            
+
             if (victim != null) {
                 victim.getClient().disconnect(true, false);
             }
             return true;
         }
-        
+
         @Override
         public String getMessage() {
             return new StringBuilder().append("!dc <玩家> - 讓玩家斷線").toString();
         }
     }
-    
+
     public static class spy extends CommandExecute {
-        
+
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
                 c.getPlayer().dropMessage(6, "使用規則: ");
             } else {
                 MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
-                
+
                 if (victim != null) {
                     if (c.getPlayer().getGMLevel() < victim.getGMLevel()) {
                         c.getPlayer().dropMessage(5, "你不能查看比你高權限的人!");
@@ -222,15 +222,15 @@ public class InternCommand {
             }
             return true;
         }
-        
+
         @Override
         public String getMessage() {
             return new StringBuilder().append("!spy <玩家名字>> - 觀察玩家").toString();
         }
     }
-    
+
     public static class 精靈商人訊息 extends CommandExecute {
-        
+
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             boolean hh = c.getPlayer().get精靈商人訊息();
@@ -243,14 +243,14 @@ public class InternCommand {
             c.getPlayer().dropMessage(6, "[精靈商人購買訊息] " + (hh ? "開啟" : "關閉"));
             return true;
         }
-        
+
         public String getMessage() {
             return new StringBuilder().append("!精靈商人訊息  - 商人購買訊息開關").toString();
         }
     }
-    
+
     public static class 玩家私聊1 extends CommandExecute {
-        
+
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             boolean hack1 = c.getPlayer().get玩家私聊1();
@@ -263,14 +263,14 @@ public class InternCommand {
             c.getPlayer().dropMessage(6, "[玩家私聊1] " + (hack1 ? "開啟" : "關閉"));
             return true;
         }
-        
+
         public String getMessage() {
             return new StringBuilder().append("!玩家私聊1  - 玩家普通.交易聊天偷聽開關").toString();
         }
     }
-    
+
     public static class 玩家私聊2 extends CommandExecute {
-        
+
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             boolean hack2 = c.getPlayer().get玩家私聊2();
@@ -283,14 +283,14 @@ public class InternCommand {
             c.getPlayer().dropMessage(6, "[玩家私聊2] " + (hack2 ? "開啟" : "關閉"));
             return true;
         }
-        
+
         public String getMessage() {
             return new StringBuilder().append("!玩家私聊2  - 玩家好友.組隊.密語聊天偷聽開關").toString();
         }
     }
-    
+
     public static class 玩家私聊3 extends CommandExecute {
-        
+
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             boolean hack2 = c.getPlayer().get玩家私聊3();
@@ -303,14 +303,14 @@ public class InternCommand {
             c.getPlayer().dropMessage(6, "[玩家私聊3] " + (hack2 ? "開啟" : "關閉"));
             return true;
         }
-        
+
         public String getMessage() {
             return new StringBuilder().append("!玩家私聊3  - 玩家公會.家族聊天偷聽開關").toString();
         }
     }
-    
+
     public static class online extends CommandExecute {
-        
+
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             int total = 0;
@@ -346,32 +346,32 @@ public class InternCommand {
             }
             c.getPlayer().dropMessage(6, new StringBuilder().append("當前伺服器總計線上人數: ").append(totalOnline).append("個").toString());
             c.getPlayer().dropMessage(6, "-------------------------------------------------------------------------------------");
-            
+
             return true;
         }
-        
+
         @Override
         public String getMessage() {
             return new StringBuilder().append("!online - 查看線上人數").toString();
         }
     }
-    
+
     public static class WhereAmI extends CommandExecute {
-        
+
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().dropMessage(5, "目前地圖 " + c.getPlayer().getMap().getId() + "座標 (" + String.valueOf(c.getPlayer().getPosition().x) + " , " + String.valueOf(c.getPlayer().getPosition().y) + ")");
             return true;
         }
-        
+
         @Override
         public String getMessage() {
             return new StringBuilder().append("!whereami - 目前地圖").toString();
         }
     }
-    
+
     public static class Warp extends CommandExecute {
-        
+
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
@@ -389,7 +389,7 @@ public class InternCommand {
                 doMap(c, mapid);
                 return true;
             }
-            
+
             MapleCharacter victim = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(splitted[1]);
             if (victim != null) {
                 if (splitted.length == 2) {
@@ -411,7 +411,7 @@ public class InternCommand {
             }
             return true;
         }
-        
+
         public boolean doMap(MapleClient c, int mapid) {
             MapleMap target = null;
             try {
@@ -425,93 +425,66 @@ public class InternCommand {
             }
             return true;
         }
-        
+
         @Override
         public String getMessage() {
             return new StringBuilder().append("!warp 玩家名稱 <地圖ID> - 移動到某個地圖或某個玩家所在的地方").toString();
         }
     }
-    
-    public static class checkdpm extends CommandExecute {
-        
-        @Override
-        public boolean execute(MapleClient c, String[] splitted) {
-            /*if (splitted.length < 1) {
-                return false;
-            }*/
-            try {
-                //int num = Integer.parseInt(splitted[2]);
-                com.mysql.jdbc.Connection dcon = (com.mysql.jdbc.Connection) DatabaseConnection.getConnection();
-                com.mysql.jdbc.PreparedStatement ps = (com.mysql.jdbc.PreparedStatement) dcon.prepareStatement("SELECT dpm, level, name FROM characters WHERE gm < 1 ORDER BY dpm desc LIMIT 30");
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
-                    c.getPlayer().dropMessage(5, "NAME: " + rs.getString("name") + " Level:" + rs.getInt("level") + " DPM: " + rs.getString("dpm"));
-                }
-            } catch (SQLException e) {
-                return false;
-            }
-            return true;
-        }
-        
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!checkdpm <結束值> - 確認玩家dpm排行榜").toString();
-        }
-    }
-    
+
     public static class CnGM extends CommandExecute {
-        
+
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(5, "<GM聊天視窗>" + "頻道" + c.getPlayer().getClient().getChannel() + " [" + c.getPlayer().getName() + "] : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
             return true;
         }
-        
+
         @Override
         public String getMessage() {
             return new StringBuilder().append("!cngm <訊息> - GM聊天").toString();
         }
     }
-    
+
     public static class 清地板 extends CommandExecute {
-        
+
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             c.getPlayer().dropMessage(5, "清除 " + c.getPlayer().getMap().getNumItems() + " 項物品");
             c.getPlayer().getMap().removeDrops();
             return true;
         }
-        
+
         @Override
         public String getMessage() {
             return new StringBuilder().append("").toString();
         }
     }
-    
+
     public static class Hide extends CommandExecute {
-        
+
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             SkillFactory.getSkill(9001004).getEffect(1).applyTo(c.getPlayer());
             c.getPlayer().dropMessage(6, "管理員隱藏 = 開啟 \r\n 解除請輸入!unhide");
             return true;
         }
-        
+
         @Override
         public String getMessage() {
             return new StringBuilder().append("!hide - 隱藏").toString();
         }
     }
-    
+
     public static class UnHide extends CommandExecute {
-        
+
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             c.getPlayer().dispelBuff(9001004);
             c.getPlayer().dropMessage(6, "管理員隱藏 = 關閉 \r\n 開啟請輸入!hide");
             return true;
         }
-        
+
         @Override
         public String getMessage() {
             return new StringBuilder().append("!unhide - 解除隱藏").toString();
