@@ -3832,6 +3832,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return stats.getHp() > 0;
     }
 
+	public static boolean isAdv(final int job) {
+        return job >= 0 && job < 1000;
+    }
+	
     public boolean isKOC(final int job) {
         return job >= 1000 && job < 2000;
     }

@@ -303,9 +303,10 @@ public class DamageParse {
                     // effects
                     switch (attack.skill) {
 
-                        case SkillType.刺客.吸血術: //drain
-                        case SkillType.暗夜行者2.吸血: //吸血
-                        case SkillType.格鬥家.損人利己: { // Energy Drain
+                        case SkillType.刺客.吸血術:
+                        case SkillType.暗夜行者2.吸血:
+                        case SkillType.格鬥家.損人利己:
+                        case SkillType.閃雷悍將3.損人利己: {
                             int getHP = ((int) Math.min(monster.getMobMaxHp(), Math.min(((int) ((double) totDamage * (double) theSkill.getEffect(player.getSkillLevel(theSkill)).getX() / 100.0)), stats.getMaxHp() / 2)));
                             stats.setHp(stats.getHp() + getHP, true);
                             break;
@@ -356,7 +357,7 @@ public class DamageParse {
                             }
                             break;
                         }
-                        case SkillType.俠盜.妙手術:{  //妙手術
+                        case SkillType.俠盜.妙手術: {  //妙手術
                             monster.handleSteal(player);
                             break;
                         }
