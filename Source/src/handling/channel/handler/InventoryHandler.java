@@ -973,7 +973,7 @@ public class InventoryHandler {
                             }
                             if (c.getPlayer().isTestingDPS()) {
                                 final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
-                                c.getPlayer().getMap().Killdpm(true);
+                                c.getPlayer().getMap().killMonster1(mm);
                                 c.getPlayer().toggleTestingDPS();
                                 c.getPlayer().dropMessage(5, "已停止當前的DPM測試。");
                             }
@@ -2650,7 +2650,7 @@ public class InventoryHandler {
                     }
                     if (c.getPlayer().isTestingDPS()) {
                         final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
-                        c.getPlayer().getMap().Killdpm(true);
+                        c.getPlayer().getMap().killMonster1(mm);
                         c.getPlayer().toggleTestingDPS();
                         c.getPlayer().dropMessage(5, "已停止當前的DPM測試。");
                     }
@@ -2672,7 +2672,7 @@ public class InventoryHandler {
                         }
                         if (c.getPlayer().isTestingDPS()) {
                             final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
-                            c.getPlayer().getMap().Killdpm(true);
+                            c.getPlayer().getMap().killMonster1(mm);
                             c.getPlayer().toggleTestingDPS();
                             c.getPlayer().dropMessage(5, "已停止當前的DPM測試。");
                         }

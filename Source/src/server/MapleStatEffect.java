@@ -630,7 +630,7 @@ public class MapleStatEffect implements Serializable {
             applyfrom.getClient().sendPacket(MaplePacketCreator.enableActions());
             return false; //not working
         } else if (sourceid == 33101004 && applyfrom.getMap().isTown()) {
-            applyfrom.dropMessage(5, "You may not use this skill in towns.");
+            applyfrom.dropMessage(5, "你不能在城鎮里使用這個技能。");
             applyfrom.getClient().sendPacket(MaplePacketCreator.enableActions());
             return false; //not supposed to
         }

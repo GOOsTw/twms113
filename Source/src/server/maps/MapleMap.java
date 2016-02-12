@@ -569,20 +569,6 @@ public final class MapleMap {
         }
     }
 
-    public void Killdpm(final boolean animate) {
-        List<MapleMapObject> monsters = getMapObjectsInRange(new Point(0, 0), Double.POSITIVE_INFINITY, Arrays.asList(MapleMapObjectType.MONSTER));
-        for (MapleMapObject monstermo : monsters) {
-            MapleMonster monster = (MapleMonster) monstermo;
-            if (monster.getId() == 9001007) {
-                spawnedMonstersOnMap.decrementAndGet();
-                monster.setHp(0);
-                broadcastMessage(MobPacket.killMonster(monster.getObjectId(), animate ? 1 : 0));
-                removeMapObject(monster);
-                monster.killed();
-            }
-        }
-    }
-
     public void removeMonster(final MapleMonster monster) {
         if (monster == null) {
             return;

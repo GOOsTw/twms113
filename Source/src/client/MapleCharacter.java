@@ -3832,10 +3832,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return stats.getHp() > 0;
     }
 
-	public static boolean isAdv(final int job) {
+    public static boolean isAdv(final int job) {
         return job >= 0 && job < 1000;
     }
-	
+
     public boolean isKOC(final int job) {
         return job >= 1000 && job < 2000;
     }
@@ -5715,7 +5715,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
         if (client.getPlayer().isTestingDPS()) {
             final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
-            map.Killdpm(true);
+            map.killMonster1(mm);
             client.getPlayer().toggleTestingDPS();
             client.getPlayer().dropMessage(5, "已停止當前的DPM測試。");
         }

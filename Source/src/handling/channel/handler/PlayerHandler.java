@@ -1131,7 +1131,7 @@ public class PlayerHandler {
             }
             if (chr.isTestingDPS()) {
                 final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
-                chr.getMap().Killdpm(true);
+                chr.getMap().killMonster1(mm);
                 chr.toggleTestingDPS();
                 chr.dropMessage(5, "已停止當前的DPM測試。");
             }
