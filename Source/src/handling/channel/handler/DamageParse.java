@@ -532,7 +532,7 @@ public class DamageParse {
                 totDamageToOneMonster = 0;
                 monsterstats = monster.getStats();
                 fixeddmg = monsterstats.getFixedDamage();
-                if (!Tempest && !player.isGM()) {
+                if (!Tempest) {
                     if (!monster.isBuffed(MonsterStatus.DAMAGE_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_DAMAGE_REFLECT)) {
                         MaxDamagePerHit = calculateMaxMagicDamagePerHit(player, theSkill, monster, monsterstats, stats, element, CriticalDamage, maxDamagePerHit);
                     } else {

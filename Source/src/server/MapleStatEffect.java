@@ -639,6 +639,9 @@ public class MapleStatEffect implements Serializable {
         int mpchange = calcMPChange(applyfrom, primary);
 
         final PlayerStats stat = applyto.getStat();
+        if (isSkillMorph()) {
+            this.statups = Collections.singletonList(new Pair<>(MapleBuffStat.MORPH, getMorph(applyto)));
+        }
         if (primary) {
             if (itemConNo != 0 && !applyto.isClone()) {
                 MapleInventoryManipulator.removeById(applyto.getClient(), GameConstants.getInventoryType(itemCon), itemCon, itemConNo, false, true);
@@ -1347,6 +1350,10 @@ public class MapleStatEffect implements Serializable {
 
     private boolean isEnergyCharge() {
         return skill && (sourceid == 5110001 || sourceid == 15100004);
+    }
+
+    private boolean isSkillMorph() {
+        return skill && (sourceid == 打手.偽裝術 || sourceid == 格鬥家.鬥神附體 || sourceid == 拳霸.鬥神降世 || sourceid == 破風使者3.阿爾法 || sourceid == 閃雷悍將3.鬥神附體);
     }
 
     private boolean isMonsterBuff() {
