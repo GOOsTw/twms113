@@ -23,6 +23,7 @@ import client.inventory.MapleInventoryType;
 import client.MapleStat;
 import client.SkillFactory;
 import client.PlayerStats;
+import client.Skill;
 import client.status.MonsterStatus;
 import client.status.MonsterStatusEffect;
 import constants.SkillType.*;
@@ -747,7 +748,7 @@ public class MapleStatEffect implements Serializable {
         }
         final SummonMovementType summonMovementType = getSummonMovementType();
         if (summonMovementType != null) {
-            final MapleSummon tosummon = new MapleSummon(applyfrom, this, new Point(pos == null ? applyfrom.getPosition() : pos), summonMovementType);
+            MapleSummon tosummon = new MapleSummon(applyfrom, this, new Point(pos == null ? applyfrom.getPosition() : pos), summonMovementType);
             if (!tosummon.isPuppet()) {
                 applyfrom.getCheatTracker().resetSummonAttack();
             }
@@ -756,9 +757,6 @@ public class MapleStatEffect implements Serializable {
             tosummon.addHP((short) x);
             if (isBeholder()) {
                 tosummon.addHP((short) 1);
-            }
-            if (sourceid == 4341006) {
-                applyfrom.cancelEffectFromBuffStat(MapleBuffStat.MIRROR_IMAGE);
             }
         } else if (isMagicDoor()) { // Magic Door
             MapleDoor door = new MapleDoor(applyto, new Point(applyto.getPosition()), sourceid); // Current Map door
@@ -1670,7 +1668,8 @@ public class MapleStatEffect implements Serializable {
         }
         return morphId;
     }
-        private int getFatigue() {
+
+    private int getFatigue() {
         return fatigue;
     }
 
@@ -1720,19 +1719,9 @@ public class MapleStatEffect implements Serializable {
         switch (sourceid) {
             case 3211002: // puppet sniper
             case 3111002: // puppet ranger
-            case 33111003:
             case 13111004: // puppet cygnus
             case 5211001: // octopus - pirate
             case 5220002: // advanced octopus - pirate
-            case 4341006:
-            case 35111002:
-            case 35111005: //TEMP
-            case 35111004: //TEMP
-            //case 35111011: //TEMP
-            case 35121009:
-            //case 35121010: //TEMP
-            case 35121011:
-                //case 4111007: //TEMP
                 return SummonMovementType.STATIONARY;
             case 3211005: // golden eagle
             case 3111005: // golden hawk
