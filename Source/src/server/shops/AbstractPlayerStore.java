@@ -110,7 +110,9 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
                 chr.get().getClient().sendPacket(packet);
             }
         }
-        if (getShopType() != IMaplePlayerShop.HIRED_MERCHANT && getShopType() != IMaplePlayerShop.PLAYER_SHOP && getMCOwner() != null && exception != ownerId && exception != 0) {
+        if (getShopType() != IMaplePlayerShop.HIRED_MERCHANT && getShopType() != IMaplePlayerShop.PLAYER_SHOP && getMCOwner() != null) {
+            getMCOwner().getClient().sendPacket(packet);
+        } else if (getShopType() == IMaplePlayerShop.PLAYER_SHOP) {
             getMCOwner().getClient().sendPacket(packet);
         }
     }
