@@ -1742,6 +1742,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             prepareDragonBlood(effect);
         } else if (effect.isBerserk()) {
             checkBerserk();
+        } else if (effect.isMonsterRiding_()) {
+           getMount().startSchedule();
         } else if (effect.isBeholder()) {
             prepareBeholderEffect();
         }

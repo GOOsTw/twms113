@@ -453,7 +453,6 @@ public class PlayerHandler {
             return;
         }
         final ISkill skill = SkillFactory.getSkill(sourceid);
-
         if (skill.isChargeSkill()) {
             chr.setKeyDownSkill_Time(0);
             chr.getMap().broadcastMessage(chr, MaplePacketCreator.skillCancel(chr, sourceid), false);

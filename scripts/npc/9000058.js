@@ -23,7 +23,7 @@ function action(mode, type, selection) {
         if (!cm.isQuestFinished(29933)) {
             NewPlayer();
         }
-        cm.sendSimple("歡迎來到啾咪谷~\r\n#b#L2#我要打開藍色小箱子#l\r\n#b#L7#我要完成燈泡不能接的任務#l\r\n#b#L6#我要抽月光寶盒#k");
+        cm.sendSimple("歡迎來到啾咪谷~\r\n#b#L2#我要打開藍色小箱子#l\r\n#b#L6#我要抽月光寶盒#k");
     } else if (status == 1) {
         if (selection == 2) {
             if (cm.haveItem(4031307, 1) == true) {
@@ -38,19 +38,11 @@ function action(mode, type, selection) {
 		} else if (selection == 6) {
 			cm.dispose();
 			cm.openNpc(9330022);
-        } else if (selection == 7) {
             if (cm.getQuestStatus(29507) == 1) {
                 cm.gainItem(1142082, 1);
                 cm.forceCompleteQuest(29507);
                 cm.sendOk("完成任務。");
             }
-            cm.forceCompleteQuest(3083);
-            cm.forceCompleteQuest(8248);
-            cm.forceCompleteQuest(8249);
-            cm.forceCompleteQuest(8510);
-            cm.forceCompleteQuest(50246);
-            cm.sendOk("完成任務。");
-            cm.dispose();
         }
     }
 }

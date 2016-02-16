@@ -32,7 +32,7 @@ import database.DatabaseConnection;
 import java.util.concurrent.ScheduledFuture;
 import server.MapleStatEffect;
 import server.Randomizer;
-import server.Timer.BuffTimer;
+import server.Timer.MapTimer;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
 
@@ -125,6 +125,7 @@ public class MapleMount implements Serializable {
         if (fatigue > 99) {
             this.fatigue = 95;
             owner.get().cancelEffectFromBuffStat(MapleBuffStat.MONSTER_RIDING);
+            owner.get().dropMessage(5, "由於騎寵疲憊了..所以自己先回去了。");
         }
     }
 
@@ -136,17 +137,26 @@ public class MapleMount implements Serializable {
         return lastFatigue;
     }
 
+    public int i = 0;
+
     public void startSchedule() {
-        this.tirednessSchedule = BuffTimer.getInstance().register(new Runnable() {
+        this.changed = true;
+        
+        this.tirednessSchedule = MapTimer.getInstance().register(new Runnable() {
             @Override
             public void run() {
-                increaseFatigue();
+                if (i != 0) {
+                    increaseFatigue();
+                    owner.get().dropMessage(5, "騎寵目前疲勞值:" + fatigue);
+                }
+                i++;
             }
         }, 5 * 60000);
     }
 
     public void cancelSchedule() {
         if (this.tirednessSchedule != null) {
+            i=0;
             this.tirednessSchedule.cancel(false);
         }
     }

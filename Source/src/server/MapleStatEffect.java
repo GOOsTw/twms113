@@ -642,10 +642,6 @@ public class MapleStatEffect implements Serializable {
         if (isSkillMorph()) {
             this.statups = Collections.singletonList(new Pair<>(MapleBuffStat.MORPH, getMorph(applyto)));
         }
-        if (sourceid == 1004 || sourceid == 1001004 || sourceid == 20001004) {
-            applyfrom.getMount().startSchedule();
-            applyfrom.getClient().sendPacket(MaplePacketCreator.enableActions());
-        }
         if (primary) {
             if (itemConNo != 0 && !applyto.isClone()) {
                 MapleInventoryManipulator.removeById(applyto.getClient(), GameConstants.getInventoryType(itemCon), itemCon, itemConNo, false, true);
