@@ -258,8 +258,7 @@ public class InternCommand {
             if (splitted.length < 2) {
                 return false;
             }
-
-            int level = 0;
+            
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
 
             if (victim != null) {
@@ -392,6 +391,64 @@ public class InternCommand {
         }
     }
 
+    public static class GMinfo extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            boolean GMinfo = c.getPlayer().getGMinfo();
+            if (GMinfo) {
+                c.getPlayer().getGMinfo(false);
+            } else {
+                c.getPlayer().getGMinfo(true);
+            }
+            GMinfo = c.getPlayer().getGMinfo();
+            c.getPlayer().dropMessage(6, "[GMinfo] " + (GMinfo ? "開啟" : "關閉"));
+            return true;
+        }
+
+        public String getMessage() {
+            return new StringBuilder().append("!GMinfo  - 讓普通人可以開GM個人資訊").toString();
+        }
+    }
+
+    public static class 聊天稱號開關 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            boolean ChatTitle = c.getPlayer().getCTitle();
+            if (ChatTitle) {
+                c.getPlayer().getCTitle(false);
+            } else {
+                c.getPlayer().getCTitle(true);
+            }
+            ChatTitle = c.getPlayer().getCTitle();
+            c.getPlayer().dropMessage(6, "[聊天稱號開關] " + (ChatTitle ? "開啟" : "關閉"));
+            return true;
+        }
+
+        public String getMessage() {
+            return new StringBuilder().append("!聊天稱號開關  - 聊天稱號開關").toString();
+        }
+    }
+
+    public static class 聊天稱號設定 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 1) {
+                return false;
+            }
+            String ChatTtitle = "";
+            ChatTtitle = splitted[1];
+            c.getPlayer().setChatTitle(ChatTtitle);
+            c.getPlayer().dropMessage(6, "[聊天稱號開關] 設定成功");
+            return true;
+        }
+
+        public String getMessage() {
+            return new StringBuilder().append("!聊天稱號設定  - 聊天稱號開關").toString();
+        }
+    }
 
     public static class online extends CommandExecute {
 

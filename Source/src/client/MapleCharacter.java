@@ -138,7 +138,7 @@ import tools.packet.PlayerShopPacket;
 public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Serializable {
 
     private static final long serialVersionUID = 845748950829L;
-    private String name, chalktext, BlessOfFairy_Origin, charmessage, prefix;
+    private String name, chalktext, BlessOfFairy_Origin, charmessage, prefix, chattitle;
     private long lastCombo, lastfametime, keydown_skill;
     private byte dojoRecord, gmLevel, gender, initialSpawnPoint, skinColor, guildrank = 5, allianceRank = 5, world, fairyExp = 10, numClones, subcategory, fairyHour = 1; // Make this a quest record, TODO : Transfer it somehow with the current data
     private short level, mulung_energy, combo, availableCP, totalCP, fame, hpmpApUsed, job, remainingAp;
@@ -211,7 +211,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public int master = 0, apprentice = 0;
     private boolean testingdps = false;
     private long dps;
-    private boolean 精靈商人購買開關 = false, 玩家私聊1 = false, 玩家私聊2 = false, 玩家私聊3 = false;
+    private boolean 精靈商人購買開關 = false, 玩家私聊1 = false, 玩家私聊2 = false, 玩家私聊3 = false, GMinfo = false, 聊天稱號 = false;
 
     private MapleCharacter(final boolean ChannelServer) {
         this.setStance(0);
@@ -332,7 +332,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.stats.maxmp = ct.maxmp;
         ret.stats.hp = ct.hp;
         ret.stats.mp = ct.mp;
-
+        
         ret.chalktext = ct.chalkboard;
         ret.exp = ct.exp;
         ret.hpmpApUsed = ct.hpApUsed;
@@ -3293,6 +3293,30 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public boolean get玩家私聊3() {
         return 玩家私聊3;
+    }
+
+    public void getGMinfo(boolean xx) {
+        GMinfo = xx;
+    }
+
+    public boolean getGMinfo() {
+        return GMinfo;
+    }
+
+    public void getCTitle(boolean xx) {
+        聊天稱號 = xx;
+    }
+
+    public boolean getCTitle() {
+        return 聊天稱號;
+    }
+
+    public void setChatTitle(String text) {
+        this.chattitle = text;
+    }
+
+    public String getChatTitle() {
+        return chattitle;
     }
 
     public void checkMonsterAggro(MapleMonster monster) {

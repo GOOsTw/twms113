@@ -200,7 +200,7 @@ public class PlayerHandler {
         final MapleCharacter player = c.getPlayer().getMap().getCharacterById(objectid);
         c.sendPacket(MaplePacketCreator.enableActions());
         if (player != null && !player.isClone()) {
-            if (!player.isGM() || c.getPlayer().isGM()) {
+            if (!player.isGM() || c.getPlayer().isGM() || player.getGMinfo()) {
                 //      if (!player.getExcluded("") && player.getPet(0) != null) {
                 //         c.sendPacket(PetPacket.loadExceptionList(player.getId(), player.getPet(0).getUniqueId(), player.getExcluded()));
                 //     }
