@@ -790,6 +790,10 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void showmeso() {
         c.sendPacket(MaplePacketCreator.showmesoRanks(npc, MapleGuildRanking.getInstance().getMesoRank()));
     }
+    
+    public void showdpm() {
+        c.sendPacket(MaplePacketCreator.showdpmRanks(npc, MapleGuildRanking.getInstance().getDpmRank()));
+    }
 
     public boolean removePlayerFromInstance() {
         if (c.getPlayer().getEventInstance() != null) {

@@ -3529,6 +3529,26 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
+    public static MaplePacket showdpmRanks(int npcid, List<MapleGuildRanking.dpmRankingInfo> all) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.GUILD_OPERATION.getValue());
+        mplew.write(0x49);
+        mplew.writeInt(npcid);
+        mplew.writeInt(all.size());
+
+        for (MapleGuildRanking.dpmRankingInfo info : all) {
+            mplew.writeMapleAsciiString(info.getName());
+            mplew.writeInt(((Long) (info.getdps())).intValue());
+            mplew.writeInt(info.getStr());
+            mplew.writeInt(info.getDex());
+            mplew.writeInt(info.getInt());
+            mplew.writeInt(info.getLuk());
+        }
+
+        return mplew.getPacket();
+    }
+
     public static MaplePacket showmesoRanks(int npcid, List<MapleGuildRanking.mesoRankingInfo> all) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 

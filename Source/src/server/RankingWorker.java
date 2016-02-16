@@ -64,12 +64,20 @@ public class RankingWorker {
             con = DatabaseConnection.getConnection();
             updateRanking();
         } catch (Exception ex) {
-            System.err.println("Could not update rankings");
+            System.err.println("無法更新排名");
         }
         //System.out.println("排行啟動完成 :::"); //keep
     }
 
-    private void updateRanking() throws Exception {
+    public final void updateRanking1() {
+        try {
+            updateRanking();
+        } catch (Exception ex) {
+            System.err.println("無法更新排名");
+        }
+    }
+
+    public void updateRanking() throws Exception {
         StringBuilder sb = new StringBuilder("SELECT c.id, c.job, c.exp, c.level, c.name, c.jobRank, c.jobRankMove, c.rank, c.rankMove");
         sb.append(", a.lastlogin AS lastlogin, a.loggedin FROM characters AS c LEFT JOIN accounts AS a ON c.accountid = a.id WHERE c.gm = 0 AND a.banned = 0 ");
         sb.append("ORDER BY c.level DESC , c.exp DESC , c.fame DESC , c.meso DESC , c.rank ASC");
@@ -82,7 +90,8 @@ public class RankingWorker {
             for (int i : jobCommands.values()) {
                 rankMap.put(i, 0); //job to rank
                 rankings.put(i, new ArrayList<RankingInformation>());
-            }   while (rs.next()) {
+            }
+            while (rs.next()) {
                 int job = rs.getInt("job");
                 if (!rankMap.containsKey(job / 100)) { //not supported.
                     continue;
@@ -98,29 +107,29 @@ public class RankingWorker {
                 ps.setInt(4, rs.getInt("rank") - rank);
                 ps.setInt(5, rs.getInt("id"));
                 ps.addBatch();
-            }   ps.executeBatch(); //Batch update should be faster.
+            }
+            ps.executeBatch(); //Batch update should be faster.
         }
         ps.close();
     }
 
     public final void loadJobCommands() {
         //messy, cleanup
-        jobCommands.put("all", -1);
-        jobCommands.put("beginner", 0);
-        jobCommands.put("warrior", 1);
-        jobCommands.put("magician", 2);
-        jobCommands.put("bowman", 3);
-        jobCommands.put("thief", 4);
-        jobCommands.put("pirate", 5);
-//        jobCommands.put("nobless", 10);
-//        jobCommands.put("soulmaster", 11);
-//        jobCommands.put("flamewizard", 12);
-//        jobCommands.put("windbreaker", 13);
-//        jobCommands.put("nightwalker", 14);
-//        jobCommands.put("striker", 15);
-//        jobCommands.put("legend", 20);
-//        jobCommands.put("aran", 21);
-//        jobCommands.put("evan", 22);
+        jobCommands.put("全部", -1);
+        jobCommands.put("初新者", 0);
+        jobCommands.put("劍士", 1);
+        jobCommands.put("法師", 2);
+        jobCommands.put("弓箭手", 3);
+        jobCommands.put("盜賊", 4);
+        jobCommands.put("海盜", 5);
+        jobCommands.put("貴族", 10);
+        jobCommands.put("聖魂騎士", 11);
+        jobCommands.put("烈焰巫師", 12);
+        jobCommands.put("破風使者", 13);
+        jobCommands.put("暗夜行者", 14);
+        jobCommands.put("閃雷悍將", 15);
+        jobCommands.put("傳說", 20);
+        jobCommands.put("狂狼勇士", 21);
         //taking out resistance from here for now
     }
 

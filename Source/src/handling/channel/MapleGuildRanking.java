@@ -35,6 +35,7 @@ public class MapleGuildRanking {
     private final List<GuildRankingInfo> ranks = new LinkedList<>();
     private final List<levelRankingInfo> ranks1 = new LinkedList<>();
     private final List<mesoRankingInfo> ranks2 = new LinkedList<>();
+    private final List<dpmRankingInfo> ranks3 = new LinkedList<>();
 
     public static MapleGuildRanking getInstance() {
         return instance;
@@ -61,6 +62,13 @@ public class MapleGuildRanking {
         return ranks2;
     }
 
+    public List<dpmRankingInfo> getDpmRank() {
+        if (ranks3.isEmpty()) {
+            showdpmRank();
+        }
+        return ranks3;
+    }
+
     private void reload() {
         ranks.clear();
 
@@ -79,7 +87,7 @@ public class MapleGuildRanking {
 
                 ranks.add(rank);
             }
-
+            ps.close();
             rs.close();
         } catch (SQLException e) {
             System.err.println("Error handling guildRanking");
@@ -115,7 +123,7 @@ public class MapleGuildRanking {
 
         Connection con = DatabaseConnection.getConnection();
         ResultSet rs;
-        try (PreparedStatement ps = con.prepareStatement("SELECT *, ( chr.meso + s.meso ) as money FROM `characters` as chr , `storages` as s WHERE chr.gm < 1  AND s.accountid = chr.id ORDER BY money DESC LIMIT 20")) {
+        try (PreparedStatement ps = con.prepareStatement("SELECT *, ( chr.meso + s.meso ) as money FROM `characters` as chr , `storages` as s WHERE s.accountid = chr.accountid ORDER BY money DESC LIMIT 20")) {
             rs = ps.executeQuery();
             while (rs.next()) {
                 final mesoRankingInfo rank2 = new mesoRankingInfo(
@@ -127,11 +135,35 @@ public class MapleGuildRanking {
                         rs.getInt("luk"));
                 ranks2.add(rank2);
             }
-
+            ps.close();
             rs.close();
         } catch (SQLException e) {
             System.err.println("未能顯示財產排行");
             e.printStackTrace();
+        }
+    }
+
+    private void showdpmRank() {
+        ranks3.clear();
+        try {
+            Connection con = DatabaseConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM characters WHERE gm < 1 ORDER BY `dps` DESC LIMIT 20");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                final dpmRankingInfo rank3 = new dpmRankingInfo(
+                        rs.getString("name"),
+                        rs.getLong("dps"),
+                        rs.getInt("str"),
+                        rs.getInt("dex"),
+                        rs.getInt("int"),
+                        rs.getInt("luk"));
+                ranks3.add(rank3);
+            }
+            ps.close();
+            rs.close();
+        } catch (SQLException e) {
+            System.err.println("未能顯示等級排行");
         }
     }
 
@@ -195,6 +227,46 @@ public class MapleGuildRanking {
 
         public int getLevel() {
             return level;
+        }
+
+        public int getStr() {
+            return str;
+        }
+
+        public int getDex() {
+            return dex;
+        }
+
+        public int getInt() {
+            return _int;
+        }
+
+        public int getLuk() {
+            return luk;
+        }
+    }
+
+    public static class dpmRankingInfo {
+
+        private final String name;
+        private final int str, dex, _int, luk;
+        private final long dps;
+
+        public dpmRankingInfo(String name, long dps, int str, int dex, int intt, int luk) {
+            this.name = name;
+            this.dps = dps;
+            this.str = str;
+            this.dex = dex;
+            this._int = intt;
+            this.luk = luk;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public long getdps() {
+            return dps;
         }
 
         public int getStr() {
