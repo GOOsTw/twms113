@@ -195,7 +195,7 @@ public class MapleStatEffect implements Serializable {
         ret.moveTo = MapleDataTool.getInt("moveTo", source, -1);
 
         Map<MonsterStatus, Integer> monsterStatus = new EnumMap<>(MonsterStatus.class);
-        if (ret.overTime && ret.getSummonMovementType() == null) {
+        if (ret.overTime && ret.getSummonMovementType() == null && !ret.isEnergyCharge()) {
             addBuffStatPairToListIfNotZero(statups, MapleBuffStat.WATK, Integer.valueOf(ret.watk));
             addBuffStatPairToListIfNotZero(statups, MapleBuffStat.WDEF, Integer.valueOf(ret.wdef));
             addBuffStatPairToListIfNotZero(statups, MapleBuffStat.MATK, Integer.valueOf(ret.matk));
@@ -1348,7 +1348,7 @@ public class MapleStatEffect implements Serializable {
         }
     }
 
-    private boolean isEnergyCharge() {
+    public boolean isEnergyCharge() {
         return skill && (sourceid == 5110001 || sourceid == 15100004);
     }
 

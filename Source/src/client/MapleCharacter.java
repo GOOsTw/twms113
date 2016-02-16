@@ -2034,7 +2034,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (!isHidden()) {
             final LinkedList<MapleBuffStatValueHolder> allBuffs = new LinkedList<>(effects.values());
             for (MapleBuffStatValueHolder mbsvh : allBuffs) {
-                if (mbsvh.effect.isSkill() && mbsvh.schedule != null && !mbsvh.effect.isMorph()) {
+                if (mbsvh.effect.isSkill() && mbsvh.schedule != null && !mbsvh.effect.isMorph() && !mbsvh.effect.isEnergyCharge()) {
                     cancelEffect(mbsvh.effect, false, mbsvh.startTime);
                 }
             }
