@@ -332,7 +332,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.stats.maxmp = ct.maxmp;
         ret.stats.hp = ct.hp;
         ret.stats.mp = ct.mp;
-        
+
         ret.chalktext = ct.chalkboard;
         ret.exp = ct.exp;
         ret.hpmpApUsed = ct.hpApUsed;
@@ -1742,8 +1742,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             prepareDragonBlood(effect);
         } else if (effect.isBerserk()) {
             checkBerserk();
-        } else if (effect.isMonsterRiding_()) {
-            getMount().startSchedule();
         } else if (effect.isBeholder()) {
             prepareBeholderEffect();
         }

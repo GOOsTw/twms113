@@ -30,8 +30,9 @@ import java.io.Serializable;
 
 import database.DatabaseConnection;
 import java.util.concurrent.ScheduledFuture;
+import server.MapleStatEffect;
 import server.Randomizer;
-import server.Timer;
+import server.Timer.BuffTimer;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
 
@@ -136,7 +137,7 @@ public class MapleMount implements Serializable {
     }
 
     public void startSchedule() {
-        this.tirednessSchedule = Timer.MapTimer.getInstance().register(new Runnable() {
+        this.tirednessSchedule = BuffTimer.getInstance().register(new Runnable() {
             @Override
             public void run() {
                 increaseFatigue();
@@ -145,7 +146,9 @@ public class MapleMount implements Serializable {
     }
 
     public void cancelSchedule() {
-        lastFatigue = 0;
+        if (this.tirednessSchedule != null) {
+            this.tirednessSchedule.cancel(false);
+        }
     }
 
     public void increaseExp() {
