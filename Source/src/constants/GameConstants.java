@@ -414,8 +414,6 @@ public class GameConstants {
             case 1020:
             case 10001020:
             case 20001020:
-            case 20011020:
-            case 30001020:
                 return true;
         }
         return false;

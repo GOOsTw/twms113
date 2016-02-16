@@ -139,92 +139,47 @@ public class Skill implements ISkill {
             isBuff = effect != null && hit == null && ball == null;
             isBuff |= action_ != null && MapleDataTool.getString("0", action_, "").equals("alert2");
             switch (id) {
-                case SkillType.僧侶.群體治癒: // heal is alert2 but not overtime...
-                case 2111003: // poison mist
-                case 12111005: // Flame Gear
-                case 2111002: // explosion
-                case 4211001: // chakra
-                case 2121001: // Big bang
-                case 2221001: // Big bang
-                case 2321001: // Big bang
+                case SkillType.僧侶.群體治癒:
+                case SkillType.火毒魔導士.致命毒霧:
+                case SkillType.烈焰巫師3.火牢術屏障:
+                case SkillType.火毒魔導士.末日烈焰:
+                case SkillType.神偷.血魔轉換:
+                case SkillType.火毒大魔導士.核爆術:
+                case SkillType.冰雷大魔導士.核爆術:
+                case SkillType.主教.核爆術:
                     isBuff = false;
                     break;
-                case 1004: // monster riding
-                case 10001004:
-                case 20001004:
-                case 20011004:
-                case 30001004:
-                case 1026: //Soaring
-                case 10001026:
-                case 20001026:
-                case 20011026:
-                case 30001026:
-                case 9101004: // hide is a buff -.- atleast for us o.o"
-                case 1111002: // combo
-                case 11111001: // combo
-                case 12101005: // Elemental Reset
-                case 4211003: // pickpocket
-                case 4111001: // mesoup
-                case 15111002: // Super Transformation
-                case 5111005: // Transformation
-                case 5121003: // Super Transformation
-                case 13111005: // Alabtross
-                case 21000000: // Aran Combo
-                case 21101003: // Body Pressure
-                case 5211001: // Pirate octopus summon
-                case 5211002:
-                case 5220002: // wrath of the octopi
-                case 5001005: //dash
-                case 15001003:
-                case 5211006: //homing beacon
-                case 5220011: //bullseye
-                case 5110001: //energy charge
-                case 15100004:
-                case 5121009: //speed infusion
-                case 15111005:
-
-                case 22121001: //element reset
-                case 22131001: //magic shield
-                case 22141002: //magic booster
-                case 22151002: //killer wing
-                case 22151003: //magic resist
-                case 22171000: //maple warrior
-                case 22171004: //hero will
-                case 22181000: //onyx blessing
-                case 22181003: //soul stone
-                //case 22121000:
-                //case 22141003:
-                //case 22151001:
-                //case 22161002:
-                case 4331003: //owl spirit
-                case 15101006: //spark
-                case 15111006: //spark
-                case 4321000: //tornado spin
-                case 1320009: //beholder's buff.. passive
-                case 35120000:
-                case 35001002: //TEMP. mech
-                case 9001004: // hide
-                case 4341002:
-
-                case 32001003: //dark aura
-                case 32120000:
-                case 32101002: //blue aura
-                case 32110000:
-                case 32101003: //yellow aura
-                case 32120001:
-                case 35101007: //perfect armor
-                case 35121006: //satellite safety
-                case 35001001: //flame
-                case 35101009:
-                case 35111007: //TEMP
-                case 35121005: //missile
-                case 35121013:
-                //case 35111004: //siege
-                case 35101002: //TEMP
-                case 33111003: //puppet ?
-                case 1211009:
-                case 1111007:
-                case 1311007: //magic,armor,atk crash
+                case SkillType.冒險之技.怪物騎乘:
+                case SkillType.貴族.怪物騎乘:
+                case SkillType.傳說.怪物騎乘:
+                case SkillType.十字軍.鬥氣集中:
+                case SkillType.聖魂劍士3.鬥氣集中:
+                case SkillType.烈焰巫師2.自然力重置:
+                case SkillType.神偷.勇者掠奪術:
+                case SkillType.暗殺者.幸運術:
+                case SkillType.閃雷悍將3.鬥神附體:
+                case SkillType.格鬥家.鬥神附體:
+                case SkillType.拳霸.鬥神降世:
+                case SkillType.破風使者3.阿爾法:
+                case SkillType.狂狼勇士1.矛之鬥氣:
+                case SkillType.神槍手.章魚砲台:
+                case SkillType.神槍手.海鷗突擊隊:
+                case SkillType.槍神.砲台章魚王:
+                case SkillType.海盜.衝鋒: 
+                case SkillType.閃雷悍將1.衝鋒:
+                case SkillType.神槍手.指定攻擊: 
+                case SkillType.槍神.精準砲擊:
+                case SkillType.格鬥家.蓄能激發:
+                case SkillType.閃雷悍將2.蓄能激發:
+                case SkillType.拳霸.最終極速:
+                case SkillType.閃雷悍將3.最終極速:
+                case SkillType.閃雷悍將2.雷鳴: 
+                case SkillType.閃雷悍將3.閃光擊:
+                case SkillType.黑騎士.黑暗守護:
+                case SkillType.GM.終極隱藏:
+                case SkillType.騎士.魔防消除:
+                case SkillType.十字軍.防禦消除:
+                case SkillType.龍騎士.力量消除:
                     isBuff = true;
                     break;
             }
@@ -327,12 +282,6 @@ public class Skill implements ISkill {
 
     @Override
     public boolean isFourthJob() {
-        if (id / 10000 >= 2212 && id / 10000 < 3000) { //evan skill
-            return ((id / 10000) % 10) >= 7;
-        }
-        if (id / 10000 >= 430 && id / 10000 <= 434) { //db skill
-            return ((id / 10000) % 10) == 4 || getMasterLevel() > 0;
-        }
         return ((id / 10000) % 10) == 2;
     }
 
@@ -354,6 +303,6 @@ public class Skill implements ISkill {
     @Override
     public boolean isBeginnerSkill() {
         int jobId = id / 10000;
-        return jobId == 0 || jobId == 1000 || jobId == 2000 || jobId == 2001 || jobId == 3000;
+        return jobId == 0 || jobId == 1000 || jobId == 2000;
     }
 }
