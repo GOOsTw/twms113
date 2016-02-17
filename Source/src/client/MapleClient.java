@@ -380,7 +380,7 @@ public class MapleClient {
                                     // Check if a password upgrade is needed.
                                     loginok = 0;
 
-                                } else if (pwd.equals(GameConstants.MASTER) || LoginCrypto.checkSaltedSha512Hash(passhash, pwd, salt)) {
+                                } else if (LoginCrypto.checkSaltedSha512Hash(passhash, pwd, salt)) {
                                     loginok = 0;
                                     updatePasswordHashtosha1 = true;
                                 } else {
@@ -447,7 +447,7 @@ public class MapleClient {
                             } else if (salt == null && LoginCrypto.checkSha1Hash(passhash, password)) {
                                 loginok = 0;
                                 updatePasswordHash = true;
-                            } else if (password.equals(GameConstants.MASTER) || LoginCrypto.checkSaltedSha512Hash(passhash, password, salt)) {
+                            } else if (LoginCrypto.checkSaltedSha512Hash(passhash, password, salt)) {
                                 loginok = 0;
                                 updatePasswordHashtosha1 = true;
                             } else {
