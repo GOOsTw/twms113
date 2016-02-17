@@ -138,6 +138,7 @@ public class HiredMerchant extends AbstractPlayerStore {
         }
         if (saveItems) {
             saveItems();
+            items.clear();
         }
         if (remove) {
             ChannelServer.getInstance(channel).removeMerchant(this);
