@@ -398,9 +398,8 @@ public class PacketHelper {
                 mplew.writeShort(equip.getFlag());
                 mplew.write(0);
                 mplew.write(equip.getEquipmentLevel()); //裝備成長等級
-                mplew.write(0);
                 mplew.writeShort(0);
-                mplew.write(equip.getEquipmentExp()); //裝備成長經驗
+                mplew.writeShort(equip.getEquipmentExp()); //裝備成長經驗
 
                 if (!hasUniqueId) {
                     mplew.writeLong(item.getUniqueId()); //some tracking ID
@@ -495,10 +494,8 @@ public class PacketHelper {
             mplew.writeShort(equip.getFlag());
             mplew.write(0);
             mplew.write(equip.getEquipmentLevel()); //裝備成長等級
-            mplew.write(0);
             mplew.writeShort(0);
-            mplew.write(equip.getEquipmentExp()); //裝備成長經驗
-            mplew.writeShort(0);
+            mplew.writeShort(equip.getEquipmentExp()); //裝備成長經驗
 
             if (!isCash) {
                 mplew.writeLong(item.getUniqueId()); //some tracking ID
