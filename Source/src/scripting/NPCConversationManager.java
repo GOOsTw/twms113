@@ -431,7 +431,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         c.getPlayer().setConversation(4);
         c.getPlayer().getStorage().sendStorage(c, npc);
     }
-
+    
     public void openShop(int id) {
         MapleShopFactory.getInstance().getShop(id).sendShop(c);
     }
