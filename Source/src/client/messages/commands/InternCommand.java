@@ -255,7 +255,7 @@ public class InternCommand {
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
 
-            if (splitted.length < 2) {
+            if (splitted.length < 1) {
                 return false;
             }
             

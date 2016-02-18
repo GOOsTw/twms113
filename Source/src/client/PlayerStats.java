@@ -862,7 +862,7 @@ public class PlayerStats implements Serializable {
                                     final ISkill skil = SkillFactory.getSkill(z);
                                     if (skil != null && skil.canBeLearnedBy(chr.getJob())) { //dont go over masterlevel :D
                                         chr.changeSkillLevel(skil, (byte) (chr.getSkillLevel(skil) + 1), chr.getMasterLevel(skil));
-                                        chr.dropMessage(5, "Your skill has gained a levelup: " + skil.getName() + " +1");
+                                        chr.dropMessage(5, "你的技能等級已經升級: " + skil.getName() + " +1");
                                     }
                                 }
                             }
@@ -875,8 +875,8 @@ public class PlayerStats implements Serializable {
         }
         if (changed) {
             chr.equipChanged();
-            chr.getClient().sendPacket(MaplePacketCreator.showItemLevelupEffect());
-            chr.getMap().broadcastMessage(chr, MaplePacketCreator.showForeignItemLevelupEffect(chr.getId()), false);
+            //chr.getClient().sendPacket(MaplePacketCreator.showItemLevelupEffect());
+            //chr.getMap().broadcastMessage(chr, MaplePacketCreator.showForeignItemLevelupEffect(chr.getId()), false);
         }
         return changed;
     }

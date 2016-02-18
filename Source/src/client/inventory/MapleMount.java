@@ -118,15 +118,14 @@ public class MapleMount implements Serializable {
     }
 
     public void increaseFatigue() {
-        final MapleCharacter chr = owner.get();
         changed = true;
         this.fatigue++;
-        chr.getMap().broadcastMessage(MaplePacketCreator.updateMount(chr, false));
-        if (fatigue > 99) {
+        if (fatigue > 99 && owner.get() != null) {
             this.fatigue = 95;
             owner.get().cancelEffectFromBuffStat(MapleBuffStat.MONSTER_RIDING);
             owner.get().dropMessage(5, "由於騎寵疲憊了..所以自己先回去了。");
         }
+        update();
     }
 
     public final boolean canTire(long now) {
@@ -141,7 +140,7 @@ public class MapleMount implements Serializable {
 
     public void startSchedule() {
         this.changed = true;
-        
+
         this.tirednessSchedule = MapTimer.getInstance().register(new Runnable() {
             @Override
             public void run() {
@@ -156,7 +155,7 @@ public class MapleMount implements Serializable {
 
     public void cancelSchedule() {
         if (this.tirednessSchedule != null) {
-            i=0;
+            i = 0;
             this.tirednessSchedule.cancel(false);
         }
     }
@@ -173,5 +172,12 @@ public class MapleMount implements Serializable {
             e = Randomizer.nextInt(28) + 25 / 2;
         }
         setExp(exp + e);
+    }
+
+    public void update() {
+        final MapleCharacter chr = owner.get();
+        if (chr != null) {
+            chr.getMap().broadcastMessage(MaplePacketCreator.updateMount(chr, false));
+        }
     }
 }

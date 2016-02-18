@@ -1150,7 +1150,6 @@ public class GameConstants {
             case 1072363:
             case 1072364:
             case 1072365:
-
             case 1302086:
             case 1312038:
             case 1322061:
@@ -1168,8 +1167,6 @@ public class GameConstants {
             case 1472071:
             case 1482024:
             case 1492025:
-
-            case 1342012:
                 return true;
             default:
                 return false;
@@ -1178,7 +1175,7 @@ public class GameConstants {
 
     public static boolean isTimelessItem(int itemId) {
         switch (itemId) {
-            case 1032031: //shield earring, but technically
+            case 1032031:
             case 1102172:
             case 1002776:
             case 1002777:
@@ -1343,7 +1340,6 @@ public class GameConstants {
                 case 1472078:
                 case 1482036:
                     return 1;
-
                 case 1072376:
                     return 2;
             }
