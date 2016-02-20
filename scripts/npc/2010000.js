@@ -206,10 +206,10 @@ function action(mode, type, selection) {
         reward = eQuestPrizes[lastSelection];
         prizeItem = reward[itemSet][0];
         prizeQuantity = reward[itemSet][1];
-        if (!cm.haveItem(requiredItem, 100)) {
+		if (!cm.canHold()) {
+			cm.sendNext("你的道具攔似乎滿了，請清空一些不要的東西再來找我交易一次謝謝。");
+		} else if (!cm.haveItem(requiredItem, 100)) {
             cm.sendOk("嗯... 你確定你有 #b100個 #t" + requiredItem + "##k? 如果有請定你道具攔是不是滿了....");
-        } else if (!cm.canHold(prizeItem)) {
-            cm.sendNext("你的道具攔似乎滿了，請清空一些不要的東西再來找我交易一次謝謝。");
         } else {
             cm.gainItem(requiredItem, -100);
             cm.gainExp(500);
