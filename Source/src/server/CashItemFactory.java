@@ -83,8 +83,12 @@ public class CashItemFactory {
     }
  
     public final int getSnByItemItd(int itemid) {
-        int sn = itemIdToSN.get(itemid);
-        return sn;
+        for (Map.Entry<Integer, CashItemInfo> ci : itemStats.entrySet()) {
+            if (ci.getValue().getId() == itemid) {
+                return ci.getValue().getSN();
+            }
+        }
+        return 0;
     }
 
     public final CashItemInfo getItem(int sn) {
