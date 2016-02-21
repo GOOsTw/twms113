@@ -571,9 +571,6 @@ public class MapleStatEffect implements Serializable {
         if (ret.isMonsterRiding()) {
             statups.add(new Pair<>(MapleBuffStat.MONSTER_RIDING, 1));
         }
-        if (ret.isMorph() || ret.isPirateMorph()) {
-            statups.add(new Pair<>(MapleBuffStat.MORPH, ret.getMorph()));
-        }
         ret.monsterStatus = monsterStatus;
         statups.trimToSize();
         ret.statups = statups;
@@ -630,9 +627,6 @@ public class MapleStatEffect implements Serializable {
         int mpchange = calcMPChange(applyfrom, primary);
 
         final PlayerStats stat = applyto.getStat();
-        if (isSkillMorph()) {
-            this.statups = Collections.singletonList(new Pair<>(MapleBuffStat.MORPH, getMorph(applyto)));
-        }
         if (primary) {
             if (itemConNo != 0 && !applyto.isClone()) {
                 MapleInventoryManipulator.removeById(applyto.getClient(), GameConstants.getInventoryType(itemCon), itemCon, itemConNo, false, true);
@@ -1088,6 +1082,7 @@ public class MapleStatEffect implements Serializable {
             default:
                 if (isMorph() || isPirateMorph()) {
                     final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.MORPH, Integer.valueOf(getMorph(applyto))));
+                    localstatups.add(new Pair<>(MapleBuffStat.MORPH, Integer.valueOf(getMorph(applyto))));
                     applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveForeignBuff(applyto.getId(), stat, this), false);
                 } else if (isMonsterRiding()) {
                     final int mountid = parseMountInfo(applyto, sourceid);
@@ -1307,10 +1302,6 @@ public class MapleStatEffect implements Serializable {
 
     public boolean isEnergyCharge() {
         return skill && (sourceid == 格鬥家.蓄能激發 || sourceid == 閃雷悍將2.蓄能激發);
-    }
-
-    private boolean isSkillMorph() {
-        return skill && (sourceid == 打手.偽裝術 || sourceid == 格鬥家.鬥神附體 || sourceid == 拳霸.鬥神降世 || sourceid == 破風使者3.阿爾法 || sourceid == 閃雷悍將3.鬥神附體);
     }
 
     private boolean isMonsterBuff() {
