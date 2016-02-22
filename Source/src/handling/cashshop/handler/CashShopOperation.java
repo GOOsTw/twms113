@@ -478,10 +478,11 @@ public class CashShopOperation {
                 refreshCashShop(c);
                 break;
             }
+
             case 26: { // sell cash tiem
+                CashItemInfo Citem = null;
                 Item real = null;
                 int sn = 0, prize = 0, Item_prize = 0;
-                long uniqueid = 0;
                 String secondPassword = slea.readMapleAsciiString().toLowerCase();
                 if (c.getSecondPassword() != null) {
                     if (secondPassword == null) { // 確認是否外掛
@@ -497,18 +498,22 @@ public class CashShopOperation {
                     }
                     for (int i = 0; i < chr.getCashInventory().getInventory().size(); i++) {
                         IItem temp = chr.getCashInventory().getInventory().get(i);
-                        if (temp.getUniqueId() == uniqueid) {
+                        if (temp != null && temp.getQuantity() > 0 && temp.getUniqueId() > 0) {
                             IItem item_ = temp.copy();
                             sn = CashItemFactory.getInstance().getSnByItemItd(item_.getItemId());
-                            final CashItemInfo cItem = CashItemFactory.getInstance().getItem(sn);
-                            Item_prize = cItem.getPrice();
-                            prize = (int) Math.round(Item_prize * 0.3);
+                            CashItemInfo cItem = CashItemFactory.getInstance().getItem(sn);
+                            prize = (int) (Math.random()* 6)+1;
                         }
+                    }
+                    if (prize <= 0 || sn <= 0) {
+                        c.sendPacket(MTSCSPacket.sendCSFail(0xB1));
+                        refreshCashShop(c);
+                        return;
                     }
                     IItem item = c.getPlayer().getCashInventory().findByCashId((int) slea.readLong());
                     c.getPlayer().getCashInventory().removeFromInventory(item);
                     chr.modifyCSPoints(2, prize, true);
-                    chr.dropMessage(1,"已經成功回收商品獲利:"+prize);
+                    chr.dropMessage(1, "已經成功回收商品獲利:" + prize);
                 }
                 refreshCashShop(c);
                 break;
