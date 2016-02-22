@@ -13,6 +13,8 @@ import tools.StringUtil;
 import client.messages.commands.BlackConfig;
 import database.DatabaseConnection;
 import handling.login.LoginServer;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -228,6 +230,53 @@ public class InternCommand {
         }
     }
 
+    public static class BanStatus extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String[] splitted) {
+            if (splitted.length < 2) {
+                return false;
+            }
+            String name = splitted[1];
+            int acid = 0;
+            boolean banned = false;
+            String reason = null;
+            try {
+                Connection con = DatabaseConnection.getConnection();
+                PreparedStatement ps;
+                ps = con.prepareStatement("SELECT * FROM characters WHERE name = ?");
+                ps.setString(1, name);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        acid = rs.getInt("accountid");
+                    }
+                }
+
+                ps = con.prepareStatement("SELECT * FROM accounts WHERE id = ?");
+                ps.setInt(1, acid);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        banned = rs.getInt("banned") == 1 || rs.getInt("banned") == 2;
+                        reason = rs.getString("banreason");
+                    }
+                }
+                ps.close();
+            } catch (Exception e) {
+            }
+            if (reason == null) {
+                reason = "無";
+            }
+            String show = "玩家	" + name + "帳號ID: " + acid + "是否被封鎖: " + (banned ? "是" : "否") + ", 原因: " + reason;
+            c.getPlayer().dropMessage(show);
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!BanStatus <玩家名稱> - 查看玩家是否被封鎖及原因").toString();
+        }
+    }
+
     public static class ChangeChanel extends CommandExecute {
 
         @Override
@@ -258,7 +307,7 @@ public class InternCommand {
             if (splitted.length < 1) {
                 return false;
             }
-            
+
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
 
             if (victim != null) {

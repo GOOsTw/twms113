@@ -217,7 +217,7 @@ public class MapleStatEffect implements Serializable {
         }
         if (skill) { // hack because we can't get from the datafile...
             switch (sourceid) {
-                case 2001002:  //魔力之盾
+                case 2001002:  //魔心防禦
                 case 12001001: //魔心防禦
                     statups.add(new Pair<>(MapleBuffStat.MAGIC_GUARD, ret.x));
                     break;
