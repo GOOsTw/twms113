@@ -427,7 +427,6 @@ public class CashShopOperation {
             case 14: {
                 int uniqueid = (int) slea.readLong();
                 MapleInventoryType type = MapleInventoryType.getByType(slea.readByte());
-
                 IItem item = c.getPlayer().getInventory(type).findByUniqueId(uniqueid);
                 if (item != null && item.getQuantity() > 0 && item.getUniqueId() > 0 && c.getPlayer().getCashInventory().getItemsSize() < 100) {
                     IItem item_ = item.copy();
@@ -438,14 +437,12 @@ public class CashShopOperation {
                     }
                     item_.setPosition((byte) 0);
                     c.getPlayer().getCashInventory().addToInventory(item_);
-                    //warning: this d/cs
                     c.sendPacket(MTSCSPacket.confirmToCSInventory(item, c.getAccID(), sn));
                 } else {
                     c.sendPacket(MTSCSPacket.sendCSFail(0xB1));
                 }
                 refreshCashShop(c);
                 break;
-
             }
 
             case 32: { //1 meso
@@ -478,6 +475,46 @@ public class CashShopOperation {
                 }
                 chr.gainMeso(-item.getPrice(), false);
                 c.sendPacket(MTSCSPacket.showBoughtCSQuestItem(item.getPrice(), (short) item.getCount(), pos, item.getId()));
+                refreshCashShop(c);
+                break;
+            }
+
+            case 26: { // sell cash tiem
+                CashItemInfo Citem = null;
+                Item real = null;
+                int sn = 0, prize = 0, Item_prize = 0;
+                String secondPassword = slea.readMapleAsciiString().toLowerCase();
+                if (c.getSecondPassword() != null) {
+                    if (secondPassword == null) { // 確認是否外掛
+                        c.getPlayer().dropMessage(1, "請輸入密碼。");
+                        refreshCashShop(c);
+                        return;
+                    } else {
+                        if (!c.check2ndPassword(secondPassword)) { // 第二密碼錯誤
+                            c.getPlayer().dropMessage(1, "密碼錯誤。");
+                            refreshCashShop(c);
+                            return;
+                        }
+                    }
+                    for (int i = 0; i < chr.getCashInventory().getInventory().size(); i++) {
+                        IItem temp = chr.getCashInventory().getInventory().get(i);
+                        if (temp != null && temp.getQuantity() > 0 && temp.getUniqueId() > 0) {
+                            IItem item_ = temp.copy();
+                            sn = CashItemFactory.getInstance().getSnByItemItd(item_.getItemId());
+                            CashItemInfo cItem = CashItemFactory.getInstance().getItem(sn);
+                            prize = (int) (Math.random()* 6)+1;
+                        }
+                    }
+                    if (prize <= 0 || sn <= 0) {
+                        c.sendPacket(MTSCSPacket.sendCSFail(0xB1));
+                        refreshCashShop(c);
+                        return;
+                    }
+                    IItem item = c.getPlayer().getCashInventory().findByCashId((int) slea.readLong());
+                    c.getPlayer().getCashInventory().removeFromInventory(item);
+                    chr.modifyCSPoints(2, prize, true);
+                    chr.dropMessage(1, "已經成功回收商品獲利:" + prize);
+                }
                 refreshCashShop(c);
                 break;
             }

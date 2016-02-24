@@ -45,25 +45,51 @@ public class ChatHandler {
 
             if (chr.getCanTalk() || chr.isStaff()) {
                 MapleMap map = c.getPlayer().getMap();
+                String gg = "";
                 if (c.getPlayer().gmLevel() == 5 && !chr.isHidden()) {
+                    if (c.getPlayer().getCTitle()) {
+                        gg = c.getPlayer().getChatTitle();
+                    } else {
+                        gg = "<超級管理員>";
+                    }
                     chr.getCheatTracker().checkMsg();
-                    map.broadcastMessage(MaplePacketCreator.yellowChat("<超級管理員> " + c.getPlayer().getName() + ": " + text));
+                    map.broadcastMessage(MaplePacketCreator.yellowChat(gg + " " + c.getPlayer().getName() + ": " + text));
                     map.broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
                 } else if (c.getPlayer().gmLevel() == 4 && !chr.isHidden()) {
+                    if (c.getPlayer().getCTitle()) {
+                        gg = c.getPlayer().getChatTitle();
+                    } else {
+                        gg = "<領導者>";
+                    }
                     chr.getCheatTracker().checkMsg();
-                    map.broadcastMessage(MaplePacketCreator.yellowChat("<領導者>" + c.getPlayer().getName() + ": " + text));
+                    map.broadcastMessage(MaplePacketCreator.yellowChat(gg + " " + c.getPlayer().getName() + ": " + text));
                     map.broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
                 } else if (c.getPlayer().gmLevel() == 3 && !chr.isHidden()) {
+                    if (c.getPlayer().getCTitle()) {
+                        gg = c.getPlayer().getChatTitle();
+                    } else {
+                        gg = "<管理員>";
+                    }
                     chr.getCheatTracker().checkMsg();
-                    map.broadcastMessage(MaplePacketCreator.yellowChat("<管理員>" + c.getPlayer().getName() + ": " + text));
+                    map.broadcastMessage(MaplePacketCreator.yellowChat(gg + " " + c.getPlayer().getName() + ": " + text));
                     map.broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
                 } else if (c.getPlayer().gmLevel() == 2 && !chr.isHidden()) {
+                    if (c.getPlayer().getCTitle()) {
+                        gg = c.getPlayer().getChatTitle();
+                    } else {
+                        gg = "<巡察員>";
+                    }
                     chr.getCheatTracker().checkMsg();
-                    map.broadcastMessage(MaplePacketCreator.yellowChat("<巡察員>" + c.getPlayer().getName() + ": " + text));
+                    map.broadcastMessage(MaplePacketCreator.yellowChat(gg + " " + c.getPlayer().getName() + ": " + text));
                     map.broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
                 } else if (c.getPlayer().gmLevel() == 1 && !chr.isHidden()) {
+                    if (c.getPlayer().getCTitle()) {
+                        gg = c.getPlayer().getChatTitle();
+                    } else {
+                        gg = "<新實習生>";
+                    }
                     chr.getCheatTracker().checkMsg();
-                    map.broadcastMessage(MaplePacketCreator.yellowChat("<新實習生>" + c.getPlayer().getName() + ": " + text));
+                    map.broadcastMessage(MaplePacketCreator.yellowChat(gg + " " + c.getPlayer().getName() + ": " + text));
                     map.broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
                 } else {
                     StringBuilder sb;
@@ -123,7 +149,7 @@ public class ChatHandler {
                     break;
                 }
                 World.Party.partyChat(chr.getParty().getId(), chattext, chr.getName());
-                sb = new StringBuilder("[組隊聊天偷聽]『隊長 "+chr.getParty().getLeader().getName()+"』 玩家『" + chr.getName() + "』地圖『" + chr.getMapId() + "』：  " + chattext);
+                sb = new StringBuilder("[組隊聊天偷聽]『隊長 " + chr.getParty().getLeader().getName() + "』 玩家『" + chr.getName() + "』地圖『" + chr.getMapId() + "』：  " + chattext);
                 for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                     for (MapleCharacter chr_ : cserv.getPlayerStorage().getAllCharacters()) {
                         if (chr_.get玩家私聊2()) {

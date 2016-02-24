@@ -12,6 +12,7 @@ function start() {
     var nextmap33 = cm.getMapFactory().getMap(108010100);
     var nextmap44 = cm.getMapFactory().getMap(108010400);
     var nextmap55 = cm.getMapFactory().getMap(108010500);
+	if (cm.getPlayer().getLevel() >= 70) {
     if (cm.canHold(4031059)) {
         if (!(cm.haveItem(4031059))) {
             if (nextmap1.mobCount() > 0 && nextmap1.playerCount() == 0 && nextmap11.playerCount() == 0) {
@@ -68,5 +69,8 @@ function start() {
     } else {
         cm.sendOk("請確認是否有足夠的空間。");
     }
+	} else {
+		cm.sendOk("等級好像不正確。");
+	}
     cm.dispose();
 }

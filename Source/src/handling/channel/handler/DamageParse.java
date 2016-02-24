@@ -104,7 +104,7 @@ public class DamageParse {
         if (attack.hits > 0 && attack.targets > 0) {
             // Don't ever do this. it's too expensive.
             if (!player.getStat().checkEquipDurabilitys(player, -1)) { //i guess this is how it works ?
-                player.dropMessage(5, "An item has run out of durability but has no inventory room to go to.");
+                player.dropMessage(5, "該道具耐久度已耗盡，但是背包沒有多餘的空間，而無法繼續下一步。");
                 return;
             } //lol
         }
@@ -303,9 +303,10 @@ public class DamageParse {
                     // effects
                     switch (attack.skill) {
 
-                        case SkillType.刺客.吸血術: //drain
-                        case SkillType.暗夜行者2.吸血: //吸血
-                        case SkillType.格鬥家.損人利己: { // Energy Drain
+                        case SkillType.刺客.吸血術:
+                        case SkillType.暗夜行者2.吸血:
+                        case SkillType.格鬥家.損人利己:
+                        case SkillType.閃雷悍將3.損人利己: {
                             int getHP = ((int) Math.min(monster.getMobMaxHp(), Math.min(((int) ((double) totDamage * (double) theSkill.getEffect(player.getSkillLevel(theSkill)).getX() / 100.0)), stats.getMaxHp() / 2)));
                             stats.setHp(stats.getHp() + getHP, true);
                             break;
@@ -356,7 +357,7 @@ public class DamageParse {
                             }
                             break;
                         }
-                        case SkillType.俠盜.妙手術:{  //妙手術
+                        case SkillType.俠盜.妙手術: {  //妙手術
                             monster.handleSteal(player);
                             break;
                         }
@@ -473,7 +474,7 @@ public class DamageParse {
         }
         if (attack.hits > 0 && attack.targets > 0) {
             if (!player.getStat().checkEquipDurabilitys(player, -1)) { //i guess this is how it works ?
-                player.dropMessage(5, "An item has run out of durability but has no inventory room to go to.");
+                player.dropMessage(5, "該道具耐久度已耗盡，但是背包沒有多餘的空間，而無法繼續下一步。");
                 return;
             } //lol
         }
@@ -500,7 +501,7 @@ public class DamageParse {
         double maxDamagePerHit;
         if (attack.skill == SkillType.僧侶.群體治癒) {
             maxDamagePerHit = 30000;
-        } else if (attack.skill == 1000 || attack.skill == 10001000 || attack.skill == 20001000 || attack.skill == 20011000 || attack.skill == 30001000) {
+        } else if (attack.skill == 1000 || attack.skill == 10001000 || attack.skill == 20001000) {
             maxDamagePerHit = 40;
         } else if (GameConstants.isPyramidSkill(attack.skill)) {
             maxDamagePerHit = 1;
@@ -531,7 +532,7 @@ public class DamageParse {
                 totDamageToOneMonster = 0;
                 monsterstats = monster.getStats();
                 fixeddmg = monsterstats.getFixedDamage();
-                if (!Tempest && !player.isGM()) {
+                if (!Tempest) {
                     if (!monster.isBuffed(MonsterStatus.DAMAGE_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_DAMAGE_REFLECT)) {
                         MaxDamagePerHit = calculateMaxMagicDamagePerHit(player, theSkill, monster, monsterstats, stats, element, CriticalDamage, maxDamagePerHit);
                     } else {
@@ -645,7 +646,7 @@ public class DamageParse {
         final int MinAccuracy = mobstats.getEva() * (dLevel * 2 + 51) / 120;
         // FullAccuracy = Avoid * (dLevel * 2 + 51) / 50
 
-        if (MinAccuracy > Accuracy && skill.getId() != 1000 && skill.getId() != 10001000 && skill.getId() != 20001000 && skill.getId() != 20011000 && skill.getId() != 30001000 && !GameConstants.isPyramidSkill(skill.getId())) { // miss :P or HACK :O
+        if (MinAccuracy > Accuracy && skill.getId() != 1000 && skill.getId() != 10001000 && skill.getId() != 20001000 && !GameConstants.isPyramidSkill(skill.getId())) { // miss :P or HACK :O
             return 0;
         }
         double elemMaxDamagePerMob;
@@ -750,8 +751,6 @@ public class DamageParse {
                 case 1020:
                 case 10001020:
                 case 20001020:
-                case 20011020:
-                case 30001020:
                     maximumDamageToMonster = 1;
                     defined = true;
                     break;
@@ -774,8 +773,6 @@ public class DamageParse {
                 case 1009: // Bamboo Trust
                 case 10001009:
                 case 20001009:
-                case 20011009:
-                case 30001009:
                     defined = true;
                     maximumDamageToMonster = (monster.getStats().isBoss() ? monster.getMobMaxHp() / 30 * 100 : monster.getMobMaxHp());
                     break;
@@ -948,11 +945,9 @@ public class DamageParse {
         ret.skill = lea.readInt();
         lea.skip(12); // ORDER [4] bytes on v.79, [4] bytes on v.80, [1] byte on v.82
         switch (ret.skill) {
-            case 2121001: // Big Bang
+            case 2121001: // 三大法核爆術
             case 2221001:
             case 2321001:
-            case 22121000: //breath
-            case 22151001:
                 ret.charge = lea.readInt();
                 break;
             default:

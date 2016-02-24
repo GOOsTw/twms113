@@ -39,147 +39,13 @@ public class GameConstants {
             case 21120009:
             case 21120010:
                 return 21120002;
-            case 4321001:
-                return 4321000;
-            case 32120055: // 鬥王杖擊(2擊)
-                return 32120052; // 鬥王杖擊
-            case 33101006:
-            case 33101007:
-                return 33101005;
-            case 33101008:
-                return 33101004;
-            case 35101009:
-            case 35101010:
-                return 35100008;
-            case 35111009:
-            case 35111010:
-                return 35111001;
-            case 35121013:
-                return 35111004;
-            case 35121011:
-                return 35121009;
-            case 32001007:
-            case 32001008:
-            case 32001009:
-            case 32001010:
-            case 32001011:
-                return 32001001;
-            case 5300007:
-                return 5301001;
-            case 5320011:
-                return 5321004;
-            case 23101007:
-                return 23101001;
-            case 23111010:
-            case 23111009:
-                return 23111008;
-            case 31001006:
-            case 31001007:
-            case 31001008:
-                return 31000004;
-            case 30010183:
-            case 30010184:
-            case 30010186:
-                return 30010110;
-            case 31010004:
-            case 31010005:
-            case 31010006:
-            case 31010007:
-                return 31011000; //超越 : 十文字斬
-            case 31201007:
-            case 31201008:
-            case 31201009:
-            case 31201010:
-                return 31201000; //超越：惡魔風暴
-            case 31211007:
-            case 31211008:
-            case 31211009:
-            case 31211010:
-                return 31211000; //超越：月光斬
-            case 31221009:
-            case 31221010:
-            case 31221011:
-            case 31221012:
-                return 31221000; //超越 : 逆十文字斬
-            case 5710012:
-                return 5711002;
-            case 5701012:
-            case 5710020:
-                return 5701011;
-            case 31121010:
-                return 31121000;
             case 5211015:
             case 5211016:
                 return 5211011;
-            case 24111008:
-                return 24111006;
-            case 24121010:
-                return 24121003;
             case 5001008:
                 return 5200010;
             case 5001009:
                 return 5101004;
-            case 41001005:
-            case 41001004:
-                return 41001000;
-            case 41001006:
-            case 41001007:
-            case 41001008:
-                return 41001002;
-            case 41101009:
-            case 41101008:
-                return 41101000;
-            case 41111012:
-            case 41111011:
-                return 41111000;
-            case 41120013:
-            case 41120012:
-            case 41120011:
-                return 41121000;
-            case 42001006:
-            case 42001005:
-                return 42001000;
-            case 42001007:
-                return 42001002;
-            case 42100010:
-                return 42101001;
-            //Zero:
-            case 101000102:
-                return 101000101;
-            case 101000202:
-                return 101000201;
-            case 101100202:
-                return 101100201;
-            case 101110201:
-                return 101110200;
-            case 101110204:
-                return 101110203;
-            case 101120101:
-                return 101120100;
-            case 101120103:
-                return 101120102;
-            case 101120105:
-            case 101120106:
-                return 101120104;
-            case 101120203:
-                return 101120202;
-            case 101120205:
-            case 101120206:
-                return 101120204;
-            case 101120200:
-                return 101121200;
-            case 112000001:
-            case 112000002:
-                return 112000000;
-            case 112120001:
-            case 112120002:
-            case 112120003:
-                return 112120000;
-            case 131001001:
-            case 131001002:
-            case 131001003:
-            case 131001013:
-                return 131001000;
         }
         return id;
     }
@@ -223,7 +89,6 @@ public class GameConstants {
     public static final int OMOK_SCORE = 122200;
     public static final int MATCH_SCORE = 122210;
     public static final int[] blockedSkills = {4341003};
-    public static final String MASTER = "%&HYGEomgLOL";
     public static final String[] RESERVED = {"Rental"};
 
     public static int getExpNeededForLevel(final int level) {
@@ -296,6 +161,10 @@ public class GameConstants {
 
     public static boolean isJobFamily(final int baseJob, final int currentJob) {
         return currentJob >= baseJob && currentJob / 100 == baseJob / 100;
+    }
+    
+    public static boolean isAdv(final int job) {
+        return job >= 0 && job < 1000;
     }
 
     public static boolean isKOC(final int job) {
@@ -410,8 +279,6 @@ public class GameConstants {
             case 1020:
             case 10001020:
             case 20001020:
-            case 20011020:
-            case 30001020:
                 return true;
         }
         return false;
@@ -1283,7 +1150,6 @@ public class GameConstants {
             case 1072363:
             case 1072364:
             case 1072365:
-
             case 1302086:
             case 1312038:
             case 1322061:
@@ -1301,8 +1167,6 @@ public class GameConstants {
             case 1472071:
             case 1482024:
             case 1492025:
-
-            case 1342012:
                 return true;
             default:
                 return false;
@@ -1311,7 +1175,7 @@ public class GameConstants {
 
     public static boolean isTimelessItem(int itemId) {
         switch (itemId) {
-            case 1032031: //shield earring, but technically
+            case 1032031:
             case 1102172:
             case 1002776:
             case 1002777:
@@ -1476,7 +1340,6 @@ public class GameConstants {
                 case 1472078:
                 case 1482036:
                     return 1;
-
                 case 1072376:
                     return 2;
             }

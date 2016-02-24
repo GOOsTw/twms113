@@ -138,7 +138,7 @@ import tools.packet.PlayerShopPacket;
 public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Serializable {
 
     private static final long serialVersionUID = 845748950829L;
-    private String name, chalktext, BlessOfFairy_Origin, charmessage, prefix;
+    private String name, chalktext, BlessOfFairy_Origin, charmessage, prefix, chattitle;
     private long lastCombo, lastfametime, keydown_skill;
     private byte dojoRecord, gmLevel, gender, initialSpawnPoint, skinColor, guildrank = 5, allianceRank = 5, world, fairyExp = 10, numClones, subcategory, fairyHour = 1; // Make this a quest record, TODO : Transfer it somehow with the current data
     private short level, mulung_energy, combo, availableCP, totalCP, fame, hpmpApUsed, job, remainingAp;
@@ -211,7 +211,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public int master = 0, apprentice = 0;
     private boolean testingdps = false;
     private long dps;
-    private boolean 精靈商人購買開關 = false, 玩家私聊1 = false, 玩家私聊2 = false, 玩家私聊3 = false;
+    private boolean 精靈商人購買開關 = false, 玩家私聊1 = false, 玩家私聊2 = false, 玩家私聊3 = false, GMinfo = false, 聊天稱號 = false;
 
     private MapleCharacter(final boolean ChannelServer) {
         this.setStance(0);
@@ -1743,13 +1743,13 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         } else if (effect.isBerserk()) {
             checkBerserk();
         } else if (effect.isMonsterRiding_()) {
-            getMount().startSchedule();
+           getMount().startSchedule();
         } else if (effect.isBeholder()) {
             prepareBeholderEffect();
         }
         int clonez = 0;
         for (Pair<MapleBuffStat, Integer> statup : statups) {
-            if (statup.getLeft() == MapleBuffStat.ILLUSION) {
+            if (statup.getLeft() == MapleBuffStat.BUFF_58) {
                 clonez = statup.getRight();
             }
             int value = statup.getRight();
@@ -1825,7 +1825,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                         dragonBloodSchedule.cancel(false);
                         dragonBloodSchedule = null;
                     }
-                } else if (stat == MapleBuffStat.ILLUSION) {
+                } else if (stat == MapleBuffStat.BUFF_58) {
                     disposeClones();
                     clonez = true;
                 }
@@ -2034,7 +2034,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (!isHidden()) {
             final LinkedList<MapleBuffStatValueHolder> allBuffs = new LinkedList<>(effects.values());
             for (MapleBuffStatValueHolder mbsvh : allBuffs) {
-                if (mbsvh.effect.isSkill() && mbsvh.schedule != null && !mbsvh.effect.isMorph()) {
+                if (mbsvh.effect.isSkill() && mbsvh.schedule != null && !mbsvh.effect.isMorph() && !mbsvh.effect.isEnergyCharge()) {
                     cancelEffect(mbsvh.effect, false, mbsvh.startTime);
                 }
             }
@@ -3295,6 +3295,30 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return 玩家私聊3;
     }
 
+    public void getGMinfo(boolean xx) {
+        GMinfo = xx;
+    }
+
+    public boolean getGMinfo() {
+        return GMinfo;
+    }
+
+    public void getCTitle(boolean xx) {
+        聊天稱號 = xx;
+    }
+
+    public boolean getCTitle() {
+        return 聊天稱號;
+    }
+
+    public void setChatTitle(String text) {
+        this.chattitle = text;
+    }
+
+    public String getChatTitle() {
+        return chattitle;
+    }
+
     public void checkMonsterAggro(MapleMonster monster) {
         if (clone || monster == null) {
             return;
@@ -3830,6 +3854,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public boolean isAlive() {
         return stats.getHp() > 0;
+    }
+
+    public static boolean isAdv(final int job) {
+        return job >= 0 && job < 1000;
     }
 
     public boolean isKOC(final int job) {
@@ -5515,8 +5543,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.totalrep = totalrep;
         ret.stats = stats;
         ret.effects.putAll(effects);
-        if (ret.effects.get(MapleBuffStat.ILLUSION) != null) {
-            ret.effects.remove(MapleBuffStat.ILLUSION);
+        if (ret.effects.get(MapleBuffStat.BUFF_58) != null) {
+            ret.effects.remove(MapleBuffStat.BUFF_58);
         }
         if (ret.effects.get(MapleBuffStat.SUMMON) != null) {
             ret.effects.remove(MapleBuffStat.SUMMON);
@@ -5711,7 +5739,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
         if (client.getPlayer().isTestingDPS()) {
             final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
-            map.Killdpm(true);
+            map.killMonster1(mm);
             client.getPlayer().toggleTestingDPS();
             client.getPlayer().dropMessage(5, "已停止當前的DPM測試。");
         }

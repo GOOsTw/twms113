@@ -307,12 +307,26 @@ public class PlayerCommand {
 
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
-            int channelOnline = c.getChannelServer().getConnectedClients();
-            int totalOnline = 0;
-            for (ChannelServer cserv : ChannelServer.getAllInstances()) {
-                totalOnline += cserv.getConnectedClients();
+            java.util.Map<Integer, Integer> connected = World.getConnected();
+            StringBuilder conStr = new StringBuilder("當前伺服器總計: \r\n\r\n");
+            boolean first = true;
+            for (int i : connected.keySet()) {
+                if (!first) {
+                    conStr.append(" ");
+                } else {
+                    first = false;
+                }
+                if (i == 0) {
+                    conStr.append("\r\n");
+                    conStr.append(connected.get(i)+"人");
+                } else {
+                    conStr.append("當前"+i+"頻道 \r\n");
+                    conStr.append(": ");
+                    conStr.append(connected.get(i));
+                    conStr.append("人");
+                }
             }
-            c.getPlayer().dropMessage(6, new StringBuilder().append("當前").append(c.getChannel()).append("頻道: ").append(channelOnline).append("人   ").append("當前伺服器總計線上人數: ").append(totalOnline).append("個").toString());
+            c.getPlayer().dropMessage(6, conStr.toString());
             return true;
         }
 

@@ -299,14 +299,11 @@ public class MaplePacketCreator {
         mplew.write(summon.getSkillLevel()); //idk but nexon sends 1 for octo, so we'll leave it
 
         mplew.writePos(summon.getPosition());
-        mplew.write(summon.getSkill() == 32111006 || summon.getSkill() == 33101005 ? 5 : 4); //reaper = 5?
-        if (summon.getSkill() == 35121003 && summon.getOwner().getMap() != null) {
-            mplew.writeShort(summon.getOwner().getMap().getFootholds().findBelow(summon.getPosition()).getId());
-        } else {
-            mplew.writeShort(0);
-        }
-        mplew.write(summon.getMovementType().getValue());
-        mplew.write(summon.getSummonType()); // 0 = Summon can't attack - but puppets don't attack with 1 either ^.-
+        
+        mplew.write(4); //reaper = 5?
+        mplew.writeShort(0);
+        mplew.write(summon.getMovementType().getValue()); // 0 = don't move, 1 = follow (4th mage summons?), 2/4 = only tele follow, 3 = bird follow
+        mplew.write(summon.isPuppet() ? 0 : 1); // 0 = Summon can't attack - but puppets don't attack with 1 either ^.-
         mplew.write(animated ? 0 : 1);
 
         return mplew.getPacket();
@@ -3526,6 +3523,26 @@ public class MaplePacketCreator {
             mplew.writeLong(PacketHelper.getKoreanTimestamp(reply.timestamp));
             mplew.writeMapleAsciiString(reply.content);
         }
+        return mplew.getPacket();
+    }
+
+    public static MaplePacket showdpmRanks(int npcid, List<MapleGuildRanking.dpmRankingInfo> all) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.GUILD_OPERATION.getValue());
+        mplew.write(0x49);
+        mplew.writeInt(npcid);
+        mplew.writeInt(all.size());
+
+        for (MapleGuildRanking.dpmRankingInfo info : all) {
+            mplew.writeMapleAsciiString(info.getName());
+            mplew.writeInt(((Long) (info.getdps())).intValue());
+            mplew.writeInt(info.getStr());
+            mplew.writeInt(info.getDex());
+            mplew.writeInt(info.getInt());
+            mplew.writeInt(info.getLuk());
+        }
+
         return mplew.getPacket();
     }
 

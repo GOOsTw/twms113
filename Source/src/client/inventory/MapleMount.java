@@ -30,8 +30,9 @@ import java.io.Serializable;
 
 import database.DatabaseConnection;
 import java.util.concurrent.ScheduledFuture;
+import server.MapleStatEffect;
 import server.Randomizer;
-import server.Timer;
+import server.Timer.EventTimer;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
 
@@ -117,14 +118,14 @@ public class MapleMount implements Serializable {
     }
 
     public void increaseFatigue() {
-        final MapleCharacter chr = owner.get();
         changed = true;
         this.fatigue++;
-        chr.getMap().broadcastMessage(MaplePacketCreator.updateMount(chr, false));
-        if (fatigue > 99) {
+        if (fatigue > 99 && owner.get() != null) {
             this.fatigue = 95;
             owner.get().cancelEffectFromBuffStat(MapleBuffStat.MONSTER_RIDING);
+            owner.get().dropMessage(5, "由於騎寵疲憊了..所以自己先回去了。");
         }
+        update();
     }
 
     public final boolean canTire(long now) {
@@ -135,17 +136,28 @@ public class MapleMount implements Serializable {
         return lastFatigue;
     }
 
+    public int i = 0;
+
     public void startSchedule() {
-        this.tirednessSchedule = Timer.MapTimer.getInstance().register(new Runnable() {
+        this.changed = true;
+
+        this.tirednessSchedule = EventTimer.getInstance().register(new Runnable() {
             @Override
             public void run() {
-                increaseFatigue();
+                if (i != 0) {
+                    increaseFatigue();
+                    owner.get().dropMessage(5, "騎寵目前疲勞值:" + fatigue);
+                }
+                i++;
             }
         }, 5 * 60000);
     }
 
     public void cancelSchedule() {
-        lastFatigue = 0;
+        if (this.tirednessSchedule != null) {
+            i = 0;
+            this.tirednessSchedule.cancel(false);
+        }
     }
 
     public void increaseExp() {
@@ -160,5 +172,12 @@ public class MapleMount implements Serializable {
             e = Randomizer.nextInt(28) + 25 / 2;
         }
         setExp(exp + e);
+    }
+
+    public void update() {
+        final MapleCharacter chr = owner.get();
+        if (chr != null) {
+            chr.getMap().broadcastMessage(MaplePacketCreator.updateMount(chr, false));
+        }
     }
 }

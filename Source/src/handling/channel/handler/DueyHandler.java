@@ -60,17 +60,29 @@ public class DueyHandler {
         final byte operation = slea.readByte();
 
         switch (operation) {
-            case 1: { 
-                //第二組密碼
+            case 1: {
                 final String _2ndpassword = slea.readMapleAsciiString();
-                //		int unk = slea.readInt(); // Theres an int here, value = 1
-                //  9 = error
-                final int conv = c.getPlayer().getConversation();
+                if (c.getSecondPassword() != null) {
+                    if (_2ndpassword == null) { // 確認是否封包掛
+                        c.getPlayer().dropMessage(1, "請輸入密碼。");
+                        c.getPlayer().setConversation(0);
+                        return;
+                    } else {
+                        if (!c.check2ndPassword(_2ndpassword)) { // 錯誤密碼
+                            c.getPlayer().dropMessage(1, "密碼錯誤。");
+                            c.getPlayer().setConversation(0);
+                            return;
+                        }
+                        //  int unk = slea.readInt(); // Theres an int here, value = 1
+                        //  9 = error
+                        final int conv = c.getPlayer().getConversation();
 
-                if (conv == 2) { // Duey
-                    c.sendPacket(MaplePacketCreator.sendDuey((byte) 10, loadItems(c.getPlayer())));
+                        if (conv == 2) { // Duey
+                            c.sendPacket(MaplePacketCreator.sendDuey((byte) 10, loadItems(c.getPlayer())));
+                        }
+                        break;
+                    }
                 }
-                break;
             }
             case 3: { // 寄送
                 if (c.getPlayer().getConversation() != 2) {
@@ -206,7 +218,7 @@ public class DueyHandler {
                 ps.setLong(4, System.currentTimeMillis());
                 ps.setInt(5, isOn ? 0 : 1);
                 ps.setInt(6, 3);
-                
+
                 ps.executeUpdate();
             }
 
@@ -226,10 +238,10 @@ public class DueyHandler {
                 ps.setInt(3, mesos);
                 ps.setLong(4, System.currentTimeMillis());
                 ps.setInt(5, isOn ? 0 : 1);
-                
+
                 ps.setInt(6, item.getType());
                 ps.executeUpdate();
-                
+
                 try (ResultSet rs = ps.getGeneratedKeys()) {
                     if (rs.next()) {
                         ItemLoader.DUEY.saveItems(Collections.singletonList(new Pair<>(item, GameConstants.getInventoryType(item.getItemId()))), rs.getInt(1));
@@ -289,10 +301,10 @@ public class DueyHandler {
                 return null;
             }
         } catch (SQLException se) {
-	    FilePrinter.printError("DueyHandler.txt", se, "loadSingleItem");
+            FilePrinter.printError("DueyHandler.txt", se, "loadSingleItem");
             return null;
         }
-        
+
     }
 
     public static final void reciveMsg(final MapleClient c, final int recipientId) {

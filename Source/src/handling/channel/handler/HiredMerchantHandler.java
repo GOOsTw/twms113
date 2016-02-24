@@ -54,7 +54,6 @@ public class HiredMerchantHandler {
             switch (state) {
                 case 1:
                     c.getPlayer().dropMessage(1, "請先去找富蘭德里領取你之前擺的東西");
-                    // "(第二組密碼隨便打)");
                     break;
                 case 0:
                     boolean merch = World.hasMerchant(c.getPlayer().getAccountID());
@@ -90,10 +89,10 @@ public class HiredMerchantHandler {
             return -1;
         }
     }
+
     public static final void handleRemote(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         //尚未處理精靈商人遠端遙控器
     }
-    
 
     public static final void MerchantItemStore(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         if (c.getPlayer() == null) {
@@ -103,46 +102,58 @@ public class HiredMerchantHandler {
 
         switch (operation) {
             case 20: {
-                slea.readMapleAsciiString();
-
-                final int conv = c.getPlayer().getConversation();
-                boolean merch = World.hasMerchant(c.getPlayer().getAccountID());
-                if (merch) {
-                    c.getPlayer().dropMessage(1, "請關閉商店後在試一次.");
-                    c.getPlayer().setConversation(0);
-                } else if (conv == 3) { // Hired Merch
-                    final MerchItemPackage pack = loadItemFromDatabase(c.getPlayer().getId(), c.getPlayer().getAccountID());
-                    if (pack == null) {
-                        c.getPlayer().dropMessage(1, "你沒有在這邊置放道具!");
+                final String _2ndpw = slea.readMapleAsciiString();
+                if (c.getSecondPassword() != null) {
+                    if (_2ndpw == null) { // 確認是否封包掛
+                        c.getPlayer().dropMessage(1, "請輸入密碼。");
                         c.getPlayer().setConversation(0);
-                    } else if ((c.getPlayer().getMeso() + pack.getMesos()) >= 2147483647) {
-                        c.getPlayer().dropMessage(1, "由於你身上的楓幣可能滿了，請將多餘的楓幣存入倉庫。");
-                        c.getPlayer().setConversation(0);
-                    } else if (pack.getItems().size() <= 0) { //error fix for complainers.
-                        if (!check(c.getPlayer(), pack)) {
-                            c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x21));
+                        return;
+                    } else {
+                        if (!c.check2ndPassword(_2ndpw)) { // 錯誤密碼
+                            c.getPlayer().dropMessage(1, "密碼錯誤。");
+                            c.getPlayer().setConversation(0);
                             return;
                         }
-                        if (deletePackage(c.getPlayer().getId(), c.getPlayer().getAccountID(), pack.getPackageid())) {
-                            if (pack.getMesos() > 0) {
-                                c.getPlayer().dropMessage(1, "你已經從精靈商人領取了" + pack.getMesos() + "楓幣");
-                                FilePrinter.print("HiredMerchantLog.txt", "角色名字:" + c.getPlayer().getName() + " 從精靈商人取回楓幣: " + pack.getMesos() + " 取回時間:" + FilePrinter.getLocalDateString());
-                                c.getPlayer().setConversation(0);
-                            }
-                            for (IItem item : pack.getItems()) {
-                                MapleInventoryManipulator.addFromDrop(c, item, false);
-                            }
-                            c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x1d));
+                        final int conv = c.getPlayer().getConversation();
+                        boolean merch = World.hasMerchant(c.getPlayer().getAccountID());
+                        if (merch) {
+                            c.getPlayer().dropMessage(1, "請關閉商店後在試一次.");
                             c.getPlayer().setConversation(0);
-                        } else {
-                            c.getPlayer().dropMessage(1, "未知的錯誤");
+                        } else if (conv == 3) { // Hired Merch
+                            final MerchItemPackage pack = loadItemFromDatabase(c.getPlayer().getId(), c.getPlayer().getAccountID());
+                            if (pack == null) {
+                                c.getPlayer().dropMessage(1, "你沒有在這邊置放道具!");
+                                c.getPlayer().setConversation(0);
+                            } else if ((c.getPlayer().getMeso() + pack.getMesos()) >= 2147483647) {
+                                c.getPlayer().dropMessage(1, "由於你身上的楓幣可能滿了，請將多餘的楓幣存入倉庫。");
+                                c.getPlayer().setConversation(0);
+                            } else if (pack.getItems().size() <= 0) { //error fix for complainers.
+                                if (!check(c.getPlayer(), pack)) {
+                                    c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x21));
+                                    return;
+                                }
+                                if (deletePackage(c.getPlayer().getId(), c.getPlayer().getAccountID(), pack.getPackageid())) {
+                                    if (pack.getMesos() > 0) {
+                                        c.getPlayer().dropMessage(1, "你已經從精靈商人領取了" + pack.getMesos() + "楓幣");
+                                        FilePrinter.print("HiredMerchantLog.txt", "角色名字:" + c.getPlayer().getName() + " 從精靈商人取回楓幣: " + pack.getMesos() + " 取回時間:" + FilePrinter.getLocalDateString());
+                                        c.getPlayer().setConversation(0);
+                                    }
+                                    for (IItem item : pack.getItems()) {
+                                        MapleInventoryManipulator.addFromDrop(c, item, false);
+                                    }
+                                    c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x1d));
+                                    c.getPlayer().setConversation(0);
+                                } else {
+                                    c.getPlayer().dropMessage(1, "未知的錯誤");
+                                }
+                            } else {
+                                c.sendPacket(PlayerShopPacket.merchItemStore_ItemData(pack));
+                                FilePrinter.print("HiredMerchantLog.txt", "角色名字:" + c.getPlayer().getName() + " 從精靈商人取回楓幣: " + pack.getMesos() + " 和" + pack.getItems().size() + "件物品 取回時間:" + FilePrinter.getLocalDateString());
+                            }
                         }
-                    } else {
-                        c.sendPacket(PlayerShopPacket.merchItemStore_ItemData(pack));
-                        FilePrinter.print("HiredMerchantLog.txt", "角色名字:" + c.getPlayer().getName() + " 從精靈商人取回楓幣: " + pack.getMesos() + " 和" + pack.getItems().size() + "件物品 取回時間:" + FilePrinter.getLocalDateString());
+                        break;
                     }
                 }
-                break;
             }
             case 25: { // Request take out iteme
                 if (c.getPlayer().getConversation() != 3) {

@@ -420,178 +420,6 @@ public class AdminCommand {
         }
     }
 
-    public static class HellBan extends Ban {
-
-        public HellBan() {
-            hellban = true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!hellban <玩家名稱> <原因> - hellban").toString();
-        }
-    }
-
-    public static class Ban extends CommandExecute {
-
-        protected boolean hellban = false;
-
-        private String getCommand() {
-            if (hellban) {
-                return "HellBan";
-            } else {
-                return "Ban";
-            }
-        }
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            if (splitted.length < 3) {
-                return false;
-            }
-            StringBuilder sb = new StringBuilder(c.getPlayer().getName());
-            sb.append(" 鎖定原因 ").append(splitted[1]).append(": ").append(StringUtil.joinStringFrom(splitted, 2));
-            MapleCharacter target = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
-            if (target != null) {
-                if (c.getPlayer().getGMLevel() > target.getGMLevel() || c.getPlayer().isAdmin()) {
-                    sb.append(" (IP: ").append(target.getClient().getSessionIPAddress()).append(")");
-                    if (target.ban(sb.toString(), c.getPlayer().isAdmin(), false, hellban)) {
-                        c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功鎖定了 " + splitted[1] + ".");
-                    } else {
-                        c.getPlayer().dropMessage(6, "[" + getCommand() + "] 封鎖失敗.");
-                    }
-                } else {
-                    c.getPlayer().dropMessage(6, "[" + getCommand() + "] 不能封鎖GM...");
-
-                }
-            } else if (MapleCharacter.ban(splitted[1], sb.toString(), false, c.getPlayer().isAdmin() ? 250 : c.getPlayer().getGMLevel(), splitted[0].equals("!hellban"))) {
-                c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功離線鎖定 " + splitted[1] + ".");
-            } else {
-                c.getPlayer().dropMessage(6, "[" + getCommand() + "] Failed to ban " + splitted[1]);
-            }
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!ban <玩家名稱> <原因> - 封鎖玩家").toString();
-        }
-    }
-
-    public static class UnHellBan extends UnBan {
-
-        public UnHellBan() {
-            hellban = true;
-        }
-    }
-
-    public static class UnBan extends CommandExecute {
-
-        protected boolean hellban = false;
-
-        private String getCommand() {
-            if (hellban) {
-                return "UnHellBan";
-            } else {
-                return "UnBan";
-            }
-        }
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            if (splitted.length < 2) {
-                return false;
-            }
-            byte ret;
-            if (hellban) {
-                ret = MapleClient.unHellban(splitted[1]);
-            } else {
-                ret = MapleClient.unban(splitted[1]);
-            }
-            if (ret == -2) {
-                c.getPlayer().dropMessage(6, "[" + getCommand() + "] SQL 錯誤");
-            } else if (ret == -1) {
-                c.getPlayer().dropMessage(6, "[" + getCommand() + "] 目標玩家不存在");
-            } else {
-                c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功解除鎖定");
-            }
-            byte ret_ = MapleClient.unbanIPMacs(splitted[1]);
-            if (ret_ == -2) {
-                c.getPlayer().dropMessage(6, "[" + getCommand() + "] SQL 錯誤.");
-            } else if (ret_ == -1) {
-                c.getPlayer().dropMessage(6, "[" + getCommand() + "] 角色不存在.");
-            } else if (ret_ == 0) {
-                c.getPlayer().dropMessage(6, "[" + getCommand() + "] No IP or Mac with that character exists!");
-            } else if (ret_ == 1) {
-                c.getPlayer().dropMessage(6, "[" + getCommand() + "] IP或Mac已解鎖其中一個.");
-            } else if (ret_ == 2) {
-                c.getPlayer().dropMessage(6, "[" + getCommand() + "] IP以及Mac已成功解鎖.");
-            }
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!unban <玩家名稱> - 解鎖玩家").toString();
-        }
-    }
-
-    public static class UnbanIP extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            if (splitted.length < 2) {
-                return false;
-            }
-            byte ret_ = MapleClient.unbanIPMacs(splitted[1]);
-            if (ret_ == -2) {
-                c.getPlayer().dropMessage(6, "[unbanip] SQL 錯誤.");
-            } else if (ret_ == -1) {
-                c.getPlayer().dropMessage(6, "[unbanip] 角色不存在.");
-            } else if (ret_ == 0) {
-                c.getPlayer().dropMessage(6, "[unbanip] No IP or Mac with that character exists!");
-            } else if (ret_ == 1) {
-                c.getPlayer().dropMessage(6, "[unbanip] IP或Mac已解鎖其中一個.");
-            } else if (ret_ == 2) {
-                c.getPlayer().dropMessage(6, "[unbanip] IP以及Mac已成功解鎖.");
-            }
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!unbanip <玩家名稱> - 解鎖玩家").toString();
-        }
-    }
-
-    public static class TempBan extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            final MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
-            final int reason = Integer.parseInt(splitted[2]);
-            final int numDay = Integer.parseInt(splitted[3]);
-
-            final Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DATE, numDay);
-            final DateFormat df = DateFormat.getInstance();
-
-            if (victim == null) {
-                c.getPlayer().dropMessage(6, "[tempban] 找不到目標角色");
-
-            } else {
-                victim.tempban("由" + c.getPlayer().getName() + "暫時鎖定了", cal, reason, true);
-                c.getPlayer().dropMessage(6, "[tempban] " + splitted[1] + " 已成功被暫時鎖定至 " + df.format(cal.getTime()));
-            }
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!tempban <玩家名稱> - 暫時鎖定玩家").toString();
-        }
-    }
-
     public static class Kill extends CommandExecute {
 
         @Override
@@ -1190,56 +1018,6 @@ public class AdminCommand {
         @Override
         public String getMessage() {
             return new StringBuilder().append("!unlockinv <全部/已裝備道具/武器/消耗/裝飾/其他/特殊> - 解鎖道具").toString();
-        }
-    }
-
-    public static class Item extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            final int itemId = Integer.parseInt(splitted[1]);
-            final short quantity = (short) CommandProcessorUtil.getOptionalIntArg(splitted, 2, 1);
-
-            if (!c.getPlayer().isAdmin()) {
-                for (int i : GameConstants.itemBlock) {
-                    if (itemId == i) {
-                        c.getPlayer().dropMessage(5, "很抱歉，此物品您的GM等級無法呼叫.");
-                        return true;
-                    }
-                }
-            }
-
-            MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-            if (GameConstants.isPet(itemId)) {
-                c.getPlayer().dropMessage(5, "請從商城購買寵物.");
-            } else if (!ii.itemExists(itemId)) {
-                c.getPlayer().dropMessage(5, itemId + " - 物品不存在");
-            } else {
-                IItem item;
-                byte flag = 0;
-                flag |= ItemFlag.LOCK.getValue();
-
-                if (GameConstants.getInventoryType(itemId) == MapleInventoryType.EQUIP) {
-                    item = ii.randomizeStats((Equip) ii.getEquipById(itemId));
-                    item.setFlag(flag);
-
-                } else {
-                    item = new client.inventory.Item(itemId, (byte) 0, quantity, (byte) 0);
-                    if (GameConstants.getInventoryType(itemId) != MapleInventoryType.USE) {
-                        item.setFlag(flag);
-                    }
-                }
-                item.setOwner(c.getPlayer().getName());
-                item.setGMLog(c.getPlayer().getName());
-
-                MapleInventoryManipulator.addbyItem(c, item);
-            }
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!item <道具ID> - 取得道具").toString();
         }
     }
 
@@ -3455,7 +3233,7 @@ public class AdminCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!warphere 把所有玩家傳送到這裡").toString();
+            return new StringBuilder().append("!WarpAllHere 把所有玩家傳送到這裡").toString();
         }
     }
 
@@ -3511,7 +3289,7 @@ public class AdminCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!map <mapid|charname> [portal] - 傳送到某地圖/人").toString();
+            return new StringBuilder().append("!map <mapid> [portal] - 傳送到某地圖").toString();
         }
     }
 

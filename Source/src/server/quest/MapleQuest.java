@@ -274,6 +274,21 @@ public class MapleQuest implements Serializable {
 
             c.getClient().sendPacket(MaplePacketCreator.showSpecialEffect(9)); // Quest completion
             c.getMap().broadcastMessage(c, MaplePacketCreator.showSpecialEffect(c.getId(), 9), false);
+        } else if (checkNPCOnMap(c, npc) || canComplete(c, npc)) {
+            for (MapleQuestAction a : completeActs) {
+                if (!a.checkEnd(c, selection)) {
+                    return;
+                }
+            }
+            forceComplete(c, npc);
+            for (MapleQuestAction a : completeActs) {
+                a.runEnd(c, selection);
+            }
+            // we save forfeits only for logging purposes, they shouldn't matter anymore
+            // completion time is set by the constructor
+
+            c.getClient().sendPacket(MaplePacketCreator.showSpecialEffect(9)); // Quest completion
+            c.getMap().broadcastMessage(c, MaplePacketCreator.showSpecialEffect(c.getId(), 9), false);
         }
     }
 

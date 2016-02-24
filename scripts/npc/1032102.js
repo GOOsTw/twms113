@@ -121,9 +121,22 @@ function action(mode, type, selection) {
                 }
             } else if (selection == 3) {
                 if (cm.haveItem(5380000, 15)) {
-                    cm.teachSkill(0000008, 1, 1);
-                    cm.sendOk("已經學會囉！！");
-                    cm.dispose();
+					if (cm.getPlayer().isKOC()) {
+						cm.teachSkill(10000018, 1, 1);
+						cm.gainItem(5380000, -15);
+						cm.sendOk("已經學會囉！！");
+						cm.dispose();
+					} else if (cm.getPlayer().isAran()) {
+						cm.teachSkill(20000024, 1, 1);
+						cm.gainItem(5380000, -15);
+						cm.sendOk("已經學會囉！！");
+						cm.dispose();
+					} else {
+						cm.teachSkill(0000008, 1, 1);
+						cm.gainItem(5380000, -15);
+						cm.sendOk("已經學會囉！！");
+						cm.dispose();
+					}
                 } else {
                     cm.sendOk("很抱歉我需要#t5380000# 15個。");
                     cm.dispose();

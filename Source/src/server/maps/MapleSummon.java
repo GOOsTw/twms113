@@ -99,8 +99,6 @@ public class MapleSummon extends AbstractAnimatedMapleMapObject {
             case 3111002:
             case 3211002:
             case 13111004:
-            case 4341006:
-            case 33111003:
                 return true;
         }
         return false;
@@ -135,19 +133,6 @@ public class MapleSummon extends AbstractAnimatedMapleMapObject {
             case 13001004:
             case 14001005:
             case 15001004:
-            case 33111005:
-            case 35111001:
-            case 35111010:
-            case 35111009:
-            case 35111002: //pre-bb = 35111002, 35111004(amp?), 35111005(accel)
-            case 35111005: //TEMP
-            case 35111004: //TEMP
-            //case 35111011: //TEMP
-            case 35121009:
-            //case 35121010: //TEMP
-            case 35121011:
-            //case 4111007: //TEMP
-            case 32111006:
                 return true;
         }
         return false;
@@ -164,14 +149,6 @@ public class MapleSummon extends AbstractAnimatedMapleMapObject {
         switch (skill) {
             case 1321007:
                 return 2;
-            case 35111001: //satellite.
-            case 35111009:
-            case 35111010:
-                return 3;
-            case 35121009: //bots n. tots
-                return 4;
-            //case 4111007: //TEMP
-            //	return 6; //TEMP
         }
         return 1;
     }

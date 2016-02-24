@@ -431,7 +431,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         c.getPlayer().setConversation(4);
         c.getPlayer().getStorage().sendStorage(c, npc);
     }
-
+    
     public void openShop(int id) {
         MapleShopFactory.getInstance().getShop(id).sendShop(c);
     }
@@ -789,6 +789,10 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void showmeso() {
         c.sendPacket(MaplePacketCreator.showmesoRanks(npc, MapleGuildRanking.getInstance().getMesoRank()));
+    }
+    
+    public void showdpm() {
+        c.sendPacket(MaplePacketCreator.showdpmRanks(npc, MapleGuildRanking.getInstance().getDpmRank()));
     }
 
     public boolean removePlayerFromInstance() {

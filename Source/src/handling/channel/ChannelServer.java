@@ -68,6 +68,7 @@ import server.events.MapleOxQuiz;
 import server.events.MapleSnowball;
 import server.events.MapleJewel;
 import server.life.CustomNPC;
+import server.maps.MapleMapObject;
 import tools.CollectionUtil;
 import tools.ConcurrentEnumMap;
 
@@ -176,7 +177,7 @@ public class ChannelServer implements Serializable {
 
         System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 儲存角色資料...");
 
-        //getPlayerStorage().disconnectAll();
+        getPlayerStorage().disconnectAll();
 
         System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 解除端口綁定中...");
 
@@ -184,7 +185,6 @@ public class ChannelServer implements Serializable {
             if (acceptor != null) {
                 Iterator<IoSession> iterator = acceptor.getManagedSessions().values().iterator();
                 while (iterator.hasNext()) {
-
                     iterator.next().close(true);
                 }
                 acceptor.unbind(new InetSocketAddress(port));
@@ -352,17 +352,29 @@ public class ChannelServer implements Serializable {
         return false;
     }
 
-    public final void closeAllMerchant() {
+    public final int closeAllMerchant() {
+        int ret = 0;
         merchLock.writeLock().lock();
         try {
-            final Iterator<HiredMerchant> merchants_ = merchants.values().iterator();
+            final Iterator<Map.Entry<Integer, HiredMerchant>> merchants_ = merchants.entrySet().iterator();
             while (merchants_.hasNext()) {
-                merchants_.next().closeShop(true, false);
+                HiredMerchant hm = merchants_.next().getValue();
+                hm.closeShop(true, false);
+                hm.getMap().removeMapObject(hm);
                 merchants_.remove();
+                ret++;
             }
         } finally {
             merchLock.writeLock().unlock();
         }
+        //hacky
+        for (int i = 910000001; i <= 910000022; i++) {
+            for (MapleMapObject mmo : mapFactory.getMap(i).getAllHiredMerchantsThreadsafe()) {
+                ((HiredMerchant) mmo).closeShop(true, false);
+                ret++;
+            }
+        }
+        return ret;
     }
 
     public final int addMerchant(final HiredMerchant hMerchant) {

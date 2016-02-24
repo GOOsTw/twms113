@@ -59,6 +59,7 @@ public class PlayerInteractionHandler {
             TRADE_SOMETHING = 0x12,
             PLAYER_SHOP_ADD_ITEM = 0x13,
             BUY_ITEM_PLAYER_SHOP = 0x14,
+            KICK_Player = 0x19,
             MERCHANT_EXIT = 0x1B, //is this also updated
             ADD_ITEM = 0x1E,
             BUY_ITEM_STORE = 0x1F,
@@ -101,10 +102,10 @@ public class PlayerInteractionHandler {
                     MapleTrade.startTrade(chr);
                 } else if (createType == 1 || createType == 2 || createType == 4 || createType == 5) {
                     /* 商店 */
-                    if (createType == 4 && !chr.isAdmin()) { //not hired merch... blocked playershop
+                    /*if (createType == 4 && !chr.isAdmin()) { //not hired merch... blocked playershop
                         c.sendPacket(MaplePacketCreator.enableActions());
                         return;
-                    }
+                    }*/
                     if (!chr.getMap().getMapObjectsInRange(chr.getPosition(), 20000, Arrays.asList(MapleMapObjectType.SHOP, MapleMapObjectType.HIRED_MERCHANT)).isEmpty()) {
                         chr.dropMessage(1, "你不能在這裡開店");
                         c.sendPacket(MaplePacketCreator.enableActions());
@@ -249,6 +250,14 @@ public class PlayerInteractionHandler {
                 }
                 break;
             }
+            case KICK_Player: {
+                //c.getPlayer().dropMessage(1,"123");
+                final IMaplePlayerShop ips = chr.getPlayerShop();
+                if (ips != null) {
+                    ips.removeAllVisitors(5, 1); //no msg
+                }
+                break;
+            }
             case EXIT: {
                 if (chr.getTrade() != null) {
                     MapleTrade.cancelTrade(chr.getTrade(), chr.getClient());
@@ -269,7 +278,6 @@ public class PlayerInteractionHandler {
                 break;
             }
             case OPEN: {
-
                 final IMaplePlayerShop shop = chr.getPlayerShop();
                 if (shop == null) {
                     break;
@@ -566,7 +574,7 @@ public class PlayerInteractionHandler {
                     if (!((MapleMiniGame) ips).isOpen()) {
                         break;
                     }
-                    ips.removeAllVisitors(3, 1); //no msg
+                    ips.removeAllVisitors(5, 1); //no msg
                 }
                 break;
             }

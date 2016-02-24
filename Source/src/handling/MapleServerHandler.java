@@ -377,6 +377,10 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
     public static final void handlePacket(final RecvPacketOpcode header, final SeekableLittleEndianAccessor slea, final MapleClient c, final boolean cs) throws Exception {
         switch (header) {
+            case TOBY_SHIELD_START: {
+                
+                break;
+            }
             case PONG:
                 c.pongReceived();
                 break;

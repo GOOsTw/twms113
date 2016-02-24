@@ -200,7 +200,7 @@ public class PlayerHandler {
         final MapleCharacter player = c.getPlayer().getMap().getCharacterById(objectid);
         c.sendPacket(MaplePacketCreator.enableActions());
         if (player != null && !player.isClone()) {
-            if (!player.isGM() || c.getPlayer().isGM()) {
+            if (!player.isGM() || c.getPlayer().isGM() || player.getGMinfo()) {
                 //      if (!player.getExcluded("") && player.getPet(0) != null) {
                 //         c.sendPacket(PetPacket.loadExceptionList(player.getId(), player.getPet(0).getUniqueId(), player.getExcluded()));
                 //     }
@@ -449,11 +449,12 @@ public class PlayerHandler {
     }
 
     public static final void CancelBuffHandler(final int sourceid, final MapleCharacter chr) {
-        if (chr == null) {
+        if ((chr == null) || (chr.getMap() == null)) {
             return;
         }
+        
         final ISkill skill = SkillFactory.getSkill(sourceid);
-
+        
         if (skill.isChargeSkill()) {
             chr.setKeyDownSkill_Time(0);
             chr.getMap().broadcastMessage(chr, MaplePacketCreator.skillCancel(chr, sourceid), false);
@@ -1131,7 +1132,7 @@ public class PlayerHandler {
             }
             if (chr.isTestingDPS()) {
                 final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
-                chr.getMap().Killdpm(true);
+                chr.getMap().killMonster1(mm);
                 chr.toggleTestingDPS();
                 chr.dropMessage(5, "已停止當前的DPM測試。");
             }
