@@ -28,7 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import provider.MapleData;
 import provider.MapleDataEntity;
-import provider.WzXML.MapleDataType;
+import provider.wzxml.MapleDataType;
 
 public class MapleCustomQuestData implements MapleData, Serializable {
 

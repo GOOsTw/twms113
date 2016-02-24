@@ -33,7 +33,7 @@ import provider.MapleDataFileEntry;
 import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;
 import provider.MapleDataTool;
-import provider.WzXML.MapleDataType;
+import provider.wzxml.MapleDataType;
 import server.ServerProperties;
 import tools.Pair;
 import tools.StringUtil;

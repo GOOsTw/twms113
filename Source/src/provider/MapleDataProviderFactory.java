@@ -21,7 +21,7 @@
 package provider;
 
 import java.io.File;
-import provider.WzXML.XMLWZFile;
+import provider.wzxml.XMLWZFile;
 import server.ServerProperties;
 
 public class MapleDataProviderFactory {

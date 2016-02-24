@@ -22,7 +22,7 @@ package provider;
 
 import java.util.List;
 
-import provider.WzXML.MapleDataType;
+import provider.wzxml.MapleDataType;
 
 public interface MapleData extends MapleDataEntity, Iterable<MapleData> {
 

@@ -23,7 +23,7 @@ package provider;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
-import provider.WzXML.MapleDataType;
+import provider.wzxml.MapleDataType;
 
 public class MapleDataTool {
 
