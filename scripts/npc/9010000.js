@@ -1,4 +1,4 @@
-/*var status = 0;
+var status = 0;
 
 function start() {
     cm.sendYesNo("嗨，我是#p9010000# 想要和你的朋友在這個服留下美好的照片嗎？？");
@@ -17,13 +17,13 @@ function action(mode, type, selection) {
         cm.warp(970000000, 0);
         cm.dispose();
     }
-}*/
+}
 /* 
  * NPC   : Dev Doll
  * Map   : GMMAP
  */
 
-importPackage(java.lang);
+/*importPackage(java.lang);
 importPackage(Packages.constants);
 
 var status = 0;
@@ -94,4 +94,4 @@ function action(mode, type, selection) {
         cm.dispose();
     }
 }
-
+*/

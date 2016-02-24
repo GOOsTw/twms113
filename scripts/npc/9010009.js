@@ -26,8 +26,4 @@ Duey
 function start() {
 	cm.openDuey();
 	cm.dispose();
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 4995c11bd1d02e540350a378571185bd289e0054
