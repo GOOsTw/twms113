@@ -31,13 +31,13 @@ import tools.FilePrinter;
  * @author Emilyx3
  */
 public class PlayerCommand {
-
+    
     public static PlayerGMRank getPlayerLevelRequired() {
         return PlayerGMRank.NORMAL;
     }
-
+    
     public abstract static class OpenNPCCommand extends CommandExecute {
-
+        
         protected int npc = -1;
         private static final int[] npcs = { //Ish yur job to make sure these are in order and correct ;(
             9010017,
@@ -45,7 +45,7 @@ public class PlayerCommand {
             9000058,
             9330082,
             9209002};
-
+        
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             if (npc != 1 && c.getPlayer().getMapId() != 910000000) { //drpcash can use anywhere
@@ -72,97 +72,97 @@ public class PlayerCommand {
             return true;
         }
     }
-
+    
     public static class 丟裝 extends DropCash {
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@丟裝 - 呼叫清除現金道具npc").toString();
         }
     }
-
+    
     public static class DropCash extends OpenNPCCommand {
-
+        
         public DropCash() {
             npc = 0;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@dropbash - 呼叫清除現金道具npc").toString();
         }
-
+        
     }
-
+    
     public static class event extends OpenNPCCommand {
-
+        
         public event() {
             npc = 1;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@event - 呼叫活動npc").toString();
         }
     }
-
+    
     public static class npc extends 萬能 {
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@npc - 呼叫萬能npc").toString();
         }
     }
-
+    
     public static class 萬能 extends OpenNPCCommand {
-
+        
         public 萬能() {
             npc = 2;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@萬能 - 呼叫萬能npc").toString();
         }
     }
-
+    
     public static class bspq extends OpenNPCCommand {
-
+        
         public bspq() {
             npc = 3;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@bspq - 呼叫Boss挑戰npc").toString();
         }
     }
-
+    
     public static class pk extends 猜拳 {
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@pk - 呼叫猜拳npc").toString();
         }
     }
-
+    
     public static class 猜拳 extends OpenNPCCommand {
-
+        
         public 猜拳() {
             npc = 4;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@猜拳 - 呼叫猜拳npc").toString();
         }
     }
-
+    
     public static class save extends 存檔 {
     }
-
+    
     public static class 存檔 extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             int res = c.getPlayer().saveToDB(true, true);
@@ -173,15 +173,15 @@ public class PlayerCommand {
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@save - 存檔").toString();
         }
     }
-
+    
     public static class time extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             if (!c.getPlayer().getCheatTracker().GMSpam(300000, 1) && (!c.getPlayer().isGM())) { // 5 minutes.
@@ -193,12 +193,12 @@ public class PlayerCommand {
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@time - 目前時間").toString();
         }
-
+        
         public static String getDayOfWeek() {
             int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
             String dd = String.valueOf(dayOfWeek);
@@ -228,9 +228,9 @@ public class PlayerCommand {
             return dd;
         }
     }
-
+    
     public static class dpm extends CommandExecute {
-
+        
         @Override
         public boolean execute(final MapleClient c, String[] splitted) {
             if (c.getPlayer().getMapId() == 100000000 && c.getPlayer().getLevel() >= 70 || !c.getPlayer().isGM()) {
@@ -263,7 +263,7 @@ public class PlayerCommand {
                                 c.getPlayer().dropMessage(6, "你的DPM是 " + dps + ". 您目前的紀錄是 " + c.getPlayer().getDPS() + ".");
                                 c.getPlayer().toggleTestingDPS();
                             }
-
+                            
                         }
                     }, 60000);
                 } else {
@@ -276,15 +276,15 @@ public class PlayerCommand {
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("").toString();
         }
     }
-
+    
     public static class expfix extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             c.getPlayer().setExp(0);
@@ -292,19 +292,19 @@ public class PlayerCommand {
             c.getPlayer().dropMessage(5, "經驗修復完成");
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@expfix - 經驗歸零").toString();
         }
     }
-
+    
     public static class 在線人數 extends online {
-
+        
     }
-
+    
     public static class online extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             java.util.Map<Integer, Integer> connected = World.getConnected();
@@ -318,9 +318,9 @@ public class PlayerCommand {
                 }
                 if (i == 0) {
                     conStr.append("\r\n");
-                    conStr.append(connected.get(i)+"人");
+                    conStr.append(connected.get(i) + "人");
                 } else {
-                    conStr.append("當前"+i+"頻道 \r\n");
+                    conStr.append("當前" + i + "頻道 \r\n");
                     conStr.append(": ");
                     conStr.append(connected.get(i));
                     conStr.append("人");
@@ -329,23 +329,23 @@ public class PlayerCommand {
             c.getPlayer().dropMessage(6, conStr.toString());
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@online - 查看線上人數").toString();
         }
     }
-
+    
     public static class 查看 extends ea {
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@查看 - 解卡").toString();
         }
     }
-
+    
     public static class ea extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             NPCScriptManager.getInstance().dispose(c);
@@ -353,26 +353,27 @@ public class PlayerCommand {
             c.getPlayer().dropMessage(1, "解卡完畢.");
             c.getPlayer().dropMessage(6, "經驗值倍率 " + (Math.round(c.getPlayer().getEXPMod()) * 100) * Math.round(c.getPlayer().getStat().expBuff / 100.0) + "%, 掉寶倍率 " + (Math.round(c.getPlayer().getDropMod()) * 100) * Math.round(c.getPlayer().getStat().dropBuff / 100.0) + "%, 楓幣倍率 " + Math.round(c.getPlayer().getStat().mesoBuff / 100.0) * 100 + "%");
             c.getPlayer().dropMessage(6, "目前剩餘 " + c.getPlayer().getCSPoints(1) + " GASH " + c.getPlayer().getCSPoints(2) + " 楓葉點數 ");
+            c.getPlayer().dropMessage(6, "已使用:" + c.getPlayer().getHpMpApUsed() + " 張能力重置捲");
             c.getPlayer().dropMessage(6, "當前延遲 " + c.getPlayer().getClient().getLatency() + " 毫秒");
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@ea - 解卡").toString();
         }
     }
-
+    
     public static class 怪物 extends mob {
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@怪物 - 查看怪物狀態").toString();
         }
     }
-
+    
     public static class mob extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             MapleMonster monster = null;
@@ -387,26 +388,26 @@ public class PlayerCommand {
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@mob - 查看怪物狀態").toString();
         }
     }
-
+    
     public static class 卡圖 extends stocked {
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@卡圖 - 解除卡圖").toString();
         }
     }
-
+    
     public static class stocked extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
-
+            
             if (MapConstants.isCar(c.getPlayer().getMapId())) {
                 c.getPlayer().clearSavedLocation(SavedLocationType.MONSTER_CARNIVAL);
                 MapleMap map = c.getChannelServer().getMapFactory().getMap(100000000);
@@ -417,15 +418,15 @@ public class PlayerCommand {
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@stocked - 解除卡圖").toString();
         }
     }
-
+    
     public static class CGM extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             if (splitted[1].length() == 0) {
@@ -450,33 +451,33 @@ public class PlayerCommand {
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@cgm - 跟GM回報").toString();
         }
     }
-
+    
     public static class 幫助 extends help {
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@幫助 - 幫助").toString();
         }
     }
-
+    
     public static class help extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             c.getPlayer().dropNPC("\t\t #i3994014##i3994018##i3994070##i3994061##i3994005##i3991038##i3991004#\r\t\t\t\t\t\t #i3994078##i3991040#\t\t\r\n\t\t#i3991035##i3994067##i3994079##i3994071##i3994002##i3994012##i3994077#\r\n\t\t#fMob/0100101.img/move/1##b 親愛的： #h \r\n #fMob/0100101.img/move/1##k\r\r\n\t\t#fMob/0130101.img/move/1##g[以下是玩家指令]#k#fMob/0130101.img/move/1#\r\n\t  #d▇▇▆▅▄▃▂#r萬用指令區#d▂▃▄▅▆▇▇\r\n\t\t#b@查看/@ea#k - #r<解除異常+查看當前狀態>#k\r\n\t\t#b@怪物/@mob#k - #r<查看身邊怪物訊息>#k\r\n\t\t#b@存檔/@save#k - #r<存檔>#k\r\n\t\t#b@卡圖/@car#k - #r<卡圖修復>#k\r\n\t\t#b@CGM <訊息>#k - #r<傳送訊息給GM>#k\r\n\t\t#b@expfix#k - #r<修復經驗假死>#k\r\n\t\t#b@time#k - #r<報時系統>#k\r\n\t\t#b@在線人數#k - #r<查詢當前伺服器人數>#k\r\n\t\t#b@dpm#k - #r<測試每分鐘平均傷害>#k\r\n\t  #g▇▇▆▅▄▃▂#dNPＣ指令區#g▂▃▄▅▆▇▇\r\n\t\t#b@丟裝/@DropCash#k - #r<丟棄點裝>#k\r\n\t\t#b@萬能/@npc#k - #r<工具箱>#k\r\n\t\t#b@猜拳/@pk#k - #r<小遊戲>#k\r\n\t\t#b@event#k - #r<參加活動>#k\r\n\t\t#b@bspq#k - #r<BOSSPQ兌換NPC>#k");
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("@help - 幫助").toString();
         }
     }
-
+    
 }
