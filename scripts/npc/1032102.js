@@ -189,9 +189,9 @@ function action(mode, type, selection) {
                 cm.sendOk("我需要 #v5180000##i5180000#.");
             } else {
                 theitems[selection].setExpiration(cm.getCurrentTime() + (45 * 24 * 60 * 60 * 1000));
-                cm.getPlayer().fakeRelog();
-                cm.sendOk("你的寵物已延長45天壽命 請好好對待他");
                 cm.gainItem(5180000, -1);
+				cm.getPlayer().fakeRelog();
+				cm.sendOk("你的寵物已延長45天壽命 請好好對待他");
             }
             cm.dispose();
         }
