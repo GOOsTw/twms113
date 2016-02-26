@@ -336,6 +336,7 @@ public class InternCommand {
                         c.getPlayer().dropMessage(5, "你不能查看比你高權限的人!");
                     } else {
                         c.getPlayer().dropMessage(5, "此玩家狀態:");
+                        c.getPlayer().dropMessage(5, "帳號ID:" + victim.getAccountID() + " 角色ID:" + victim.getId());
                         c.getPlayer().dropMessage(5, "等級: " + victim.getLevel() + " 職業: " + victim.getJob() + " 名聲: " + victim.getFame());
                         c.getPlayer().dropMessage(5, "地圖: " + victim.getMapId() + " - " + victim.getMap().getMapName());
                         c.getPlayer().dropMessage(5, "目前HP: " + victim.getStat().getHp() + " 目前MP: " + victim.getStat().getMp());
@@ -343,6 +344,7 @@ public class InternCommand {
                         c.getPlayer().dropMessage(5, "力量: " + victim.getStat().getStr() + "  ||  敏捷: " + victim.getStat().getDex() + "  ||  智力: " + victim.getStat().getInt() + "  ||  幸運: " + victim.getStat().getLuk());
                         c.getPlayer().dropMessage(5, "物理攻擊: " + victim.getStat().getTotalWatk() + "  ||  魔法攻擊: " + victim.getStat().getTotalMagic());
                         c.getPlayer().dropMessage(5, "DPM: " + victim.getDPS());
+                        c.getPlayer().dropMessage(6, "已使用:" + victim.getHpMpApUsed() + " 張能力重置捲");
                         c.getPlayer().dropMessage(5, "經驗倍率: " + victim.getStat().expBuff + " 金錢倍率: " + victim.getStat().mesoBuff + " 掉寶倍率: " + victim.getStat().dropBuff);
                         c.getPlayer().dropMessage(5, "擁有 " + victim.getCSPoints(1) + " GASH " + victim.getCSPoints(2) + " 楓葉點數 " + victim.getMeso() + " 楓幣　");
                         c.getPlayer().dropMessage(5, "對伺服器延遲: " + victim.getClient().getLatency());

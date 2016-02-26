@@ -1024,7 +1024,13 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
 
         final MonsterStatus status = statusEff.getStatus();
-
+        if (status == MonsterStatus.FREEZE) {
+            switch (getId()) {
+                case 9400253:
+                case 9400254:
+                    return;
+            }
+        }
         if (stats.isNoDoom() && status == MonsterStatus.DOOM) {
             return;
         }
