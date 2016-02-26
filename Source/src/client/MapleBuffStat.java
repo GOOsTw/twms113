@@ -444,9 +444,9 @@ public enum MapleBuffStat implements Serializable {
     // 終極之弓
     FINALATTACK(63),
     // 自然力重置     
-    ELEMENT_RESET(64),
+    ELEMENT_RESET(65),
     // 風影漫步
-    WIND_WALK(65),
+    WIND_WALK(64),
     // 矛之鬥氣
     ARAN_COMBO(66), //68
     // 連環吸血

@@ -133,6 +133,7 @@ import server.maps.MapleFoothold;
 import server.movement.LifeMovementFragment;
 import tools.ConcurrentEnumMap;
 import tools.FilePrinter;
+import tools.HexTool;
 import tools.packet.PlayerShopPacket;
 
 public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Serializable {
@@ -1743,7 +1744,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         } else if (effect.isBerserk()) {
             checkBerserk();
         } else if (effect.isMonsterRiding_()) {
-           getMount().startSchedule();
+            getMount().startSchedule();
         } else if (effect.isBeholder()) {
             prepareBeholderEffect();
         }
@@ -1770,7 +1771,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
         stats.recalcLocalStats();
         if (this.isAdmin()) {
-            this.dropMessage("[BUFF 註冊] 來源 :" + effect.getName() + "(" + effect.getSourceId() + ")");
+            this.dropMessage(6, "[系統提示] 使用了 BUFF 來源 :" + effect.getName() + "(" + effect.getSourceId() + ")");
+            for (Pair<MapleBuffStat, Integer> buf :  statups) {
+                this.dropMessage(6, "[系統提示] " + buf.getLeft().toString() + "(0x" + HexTool.toString(buf.getLeft().getValue()) + ")");
+            }
         }
     }
 

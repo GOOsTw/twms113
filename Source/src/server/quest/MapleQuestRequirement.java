@@ -84,6 +84,7 @@ public class MapleQuestRequirement implements Serializable {
             case interval:
             case mbmin:
             case lvmax:
+            case infoex:
             case lvmin: {
                 intStore = MapleDataTool.getInt(data, -1);
                 break;
