@@ -443,10 +443,10 @@ public enum MapleBuffStat implements Serializable {
     ARIANT_COSS_IMU2(62), // no idea, seems the same
     // 終極之弓
     FINALATTACK(63),
+   // 風影漫步
+    WIND_WALK(64),
     // 自然力重置     
-    ELEMENT_RESET(64),
-    // 風影漫步
-    WIND_WALK(65),
+    ELEMENT_RESET(65),
     // 矛之鬥氣
     ARAN_COMBO(66), //68
     // 連環吸血

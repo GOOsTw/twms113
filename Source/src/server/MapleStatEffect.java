@@ -272,8 +272,7 @@ public class MapleStatEffect implements Serializable {
                 case 15101006://雷鳴
                     statups.add(new Pair<>(MapleBuffStat.WK_CHARGE, ret.x));
                     break;
-                case 12101005:
-                case 22121001: // Elemental Reset
+                case 12101005:// 自然力重置
                     statups.add(new Pair<>(MapleBuffStat.ELEMENT_RESET, ret.x));
                     break;
                 case 3121008:
@@ -622,6 +621,15 @@ public class MapleStatEffect implements Serializable {
     public final boolean applyTo(final MapleCharacter applyfrom, final MapleCharacter applyto, final boolean primary, final Point pos, int newDuration) {
         if (isHeal() && (applyfrom.getMapId() == 749040100 || applyto.getMapId() == 749040100)) {
             return false; //z
+            //} else if (isSoaring() && !applyfrom.getMap().canSoar()) {
+            //	return false;
+        } else if (sourceid == 4341006 && applyfrom.getBuffedValue(MapleBuffStat.MIRROR_IMAGE) == null) {
+            applyfrom.getClient().sendPacket(MaplePacketCreator.enableActions());
+            return false; //not working
+        } else if (sourceid == 33101004 && applyfrom.getMap().isTown()) {
+            applyfrom.dropMessage(5, "你不能在村莊裡使用這個技能。");
+            applyfrom.getClient().sendPacket(MaplePacketCreator.enableActions());
+            return false; //not supposed to
         }
         int hpchange = calcHPChange(applyfrom, primary);
         int mpchange = calcMPChange(applyfrom, primary);
@@ -821,29 +829,35 @@ public class MapleStatEffect implements Serializable {
         return false;
     }
 
+    private boolean isSoulStone() {
+        return skill && sourceid == 22181003;
+    }
+
     private void applyBuff(final MapleCharacter applyfrom, int newDuration) {
-        if (applyfrom.getParty() != null) {
-            int membrs = 0;
-            for (MapleCharacter chr : applyfrom.getMap().getCharactersThreadsafe()) {
-                if (chr.getParty() != null && chr.getParty().equals(applyfrom.getParty()) && chr.isAlive()) {
-                    membrs++;
-                }
-            }
-            List<MapleCharacter> awarded = new ArrayList<MapleCharacter>();
-            while (awarded.size() < Math.min(membrs, y)) {
+        if (isSoulStone()) {
+            if (applyfrom.getParty() != null) {
+                int membrs = 0;
                 for (MapleCharacter chr : applyfrom.getMap().getCharactersThreadsafe()) {
-                    if (chr.isAlive() && chr.getParty().equals(applyfrom.getParty()) && !awarded.contains(chr) && Randomizer.nextInt(y) == 0) {
-                        awarded.add(chr);
+                    if (chr.getParty() != null && chr.getParty().equals(applyfrom.getParty()) && chr.isAlive()) {
+                        membrs++;
                     }
                 }
+
+                List<MapleCharacter> awarded = new ArrayList<MapleCharacter>();
+                while (awarded.size() < Math.min(membrs, y)) {
+                    for (MapleCharacter chr : applyfrom.getMap().getCharactersThreadsafe()) {
+                        if (chr.isAlive() && chr.getParty().equals(applyfrom.getParty()) && !awarded.contains(chr) && Randomizer.nextInt(y) == 0) {
+                            awarded.add(chr);
+                        }
+                    }
+                }
+                for (MapleCharacter chr : awarded) {
+                    applyTo(applyfrom, chr, false, null, newDuration);
+                    chr.getClient().sendPacket(MaplePacketCreator.showOwnBuffEffect(sourceid, 2));
+                    chr.getMap().broadcastMessage(chr, MaplePacketCreator.showBuffeffect(chr.getId(), sourceid, 2), false);
+                }
             }
-            for (MapleCharacter chr : awarded) {
-                applyTo(applyfrom, chr, false, null, newDuration);
-                chr.getClient().sendPacket(MaplePacketCreator.showOwnBuffEffect(sourceid, 2));
-                chr.getMap().broadcastMessage(chr, MaplePacketCreator.showBuffeffect(chr.getId(), sourceid, 2), false);
-            }
-        }
-        if (isPartyBuff() && (applyfrom.getParty() != null || isGmBuff())) {
+        } else if (isPartyBuff() && (applyfrom.getParty() != null || isGmBuff())) {
             final Rectangle bounds = calculateBoundingBox(applyfrom.getPosition(), applyfrom.isFacingLeft());
             final List<MapleMapObject> affecteds = applyfrom.getMap().getMapObjectsInRect(bounds, Arrays.asList(MapleMapObjectType.PLAYER));
 

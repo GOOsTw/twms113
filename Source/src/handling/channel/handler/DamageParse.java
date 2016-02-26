@@ -532,7 +532,7 @@ public class DamageParse {
                 totDamageToOneMonster = 0;
                 monsterstats = monster.getStats();
                 fixeddmg = monsterstats.getFixedDamage();
-                if (!Tempest) {
+                if (!Tempest && !player.isGM()) {
                     if (!monster.isBuffed(MonsterStatus.DAMAGE_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_IMMUNITY) && !monster.isBuffed(MonsterStatus.MAGIC_DAMAGE_REFLECT)) {
                         MaxDamagePerHit = calculateMaxMagicDamagePerHit(player, theSkill, monster, monsterstats, stats, element, CriticalDamage, maxDamagePerHit);
                     } else {
@@ -731,7 +731,7 @@ public class DamageParse {
         if (player.getMapId() / 1000000 == 914) { //aran
             return 199999;
         }
-        List<Element> elements = new ArrayList<Element>();
+        List<Element> elements = new ArrayList<>();
         boolean defined = false;
         if (theSkill != null) {
             elements.add(theSkill.getElement());
@@ -816,7 +816,10 @@ public class DamageParse {
             elements.add(Element.LIGHTING);
         }
         double elementalMaxDamagePerMonster = maximumDamageToMonster;
-
+        
+        if (player.getBuffedValue(MapleBuffStat.ELEMENT_RESET) != null) {
+            elements.clear();
+        }
         if (elements.size() > 0) {
             double elementalEffect;
 
