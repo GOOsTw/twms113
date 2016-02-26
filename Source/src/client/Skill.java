@@ -155,6 +155,7 @@ public class Skill implements ISkill {
                 case SkillType.十字軍.鬥氣集中:
                 case SkillType.聖魂劍士3.鬥氣集中:
                 case SkillType.烈焰巫師2.自然力重置:
+                case SkillType.狂狼勇士2.強化連擊:
                 case SkillType.神偷.勇者掠奪術:
                 case SkillType.暗殺者.幸運術:
                 case SkillType.閃雷悍將3.鬥神附體:

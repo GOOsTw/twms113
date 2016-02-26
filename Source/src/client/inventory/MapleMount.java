@@ -120,6 +120,9 @@ public class MapleMount implements Serializable {
     public void increaseFatigue() {
         changed = true;
         this.fatigue++;
+        if (owner.get() != null && owner.get().getMap() != null) {
+            owner.get().getMap().broadcastMessage(MaplePacketCreator.updateMount(owner.get(), false));
+        }
         if (fatigue > 99 && owner.get() != null) {
             this.fatigue = 95;
             owner.get().cancelEffectFromBuffStat(MapleBuffStat.MONSTER_RIDING);
