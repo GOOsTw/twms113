@@ -383,16 +383,16 @@ public class CashShopOperation {
                 break;
             }
 
-            case 8: {
-                slea.readByte();
+            case 8: { //角色擴充
+                byte nxcheck = (byte) (slea.readByte() +1);
                 CashItemInfo item = CashItemFactory.getInstance().getItem(slea.readInt());
                 int slots = c.getCharacterSlots();
-                if (item == null || c.getPlayer().getCSPoints(1) < item.getPrice() || slots > 15) {
+                if (item == null || c.getPlayer().getCSPoints(nxcheck) < item.getPrice() || slots > 15) {
                     c.sendPacket(MTSCSPacket.sendCSFail(0));
                     refreshCashShop(c);
                     return;
                 }
-                c.getPlayer().modifyCSPoints(1, -item.getPrice(), false);
+                c.getPlayer().modifyCSPoints(nxcheck, -item.getPrice(), false);
                 if (c.gainCharacterSlot()) {
                     c.sendPacket(MTSCSPacket.increasedStorageSlots(slots + 1));
                 } else {
@@ -502,7 +502,7 @@ public class CashShopOperation {
                             IItem item_ = temp.copy();
                             sn = CashItemFactory.getInstance().getSnByItemItd(item_.getItemId());
                             CashItemInfo cItem = CashItemFactory.getInstance().getItem(sn);
-                            prize = (int) (Math.random()* 6)+1;
+                            prize = (int) (Math.random() * 6) + 1;
                         }
                     }
                     if (prize <= 0 || sn <= 0) {
