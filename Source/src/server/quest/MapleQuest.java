@@ -251,6 +251,20 @@ public class MapleQuest implements Serializable {
             } else {
                 NPCScriptManager.getInstance().endQuest(c.getClient(), npc, getId(), true);
             }
+        } else if (autoStart && canStart(c, npc)) {
+            for (MapleQuestAction a : startActs) {
+                if (!a.checkEnd(c, null)) { //just in case
+                    return;
+                }
+            }
+            for (MapleQuestAction a : startActs) {
+                a.runStart(c, null);
+            }
+            if (!customend) {
+                forceStart(c, npc, null);
+            } else {
+                NPCScriptManager.getInstance().endQuest(c.getClient(), npc, getId(), true);
+            }        
         }
     }
 
