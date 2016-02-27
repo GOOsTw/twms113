@@ -397,7 +397,7 @@ public class CharLoginHandler {
         if (c.getIdleTask() != null) {
             c.getIdleTask().cancel(true);
         }
-        c.updateLoginState(MapleClient.LOGIN_SERVER_TRANSITION, c.getSessionIPAddress());
+        //c.updateLoginState(MapleClient.LOGIN_SERVER_TRANSITION, c.getSessionIPAddress());
 
         byte[] ip = {127, 0, 0, 1};
         try {

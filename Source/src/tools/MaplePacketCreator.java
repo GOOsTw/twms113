@@ -291,10 +291,11 @@ public class MaplePacketCreator {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.SPAWN_SUMMON.getValue());
+        
         mplew.writeInt(summon.getOwnerId());
-
         mplew.writeInt(summon.getObjectId());
         mplew.writeInt(summon.getSkill());
+        
         mplew.write(summon.getOwnerLevel());
         mplew.write(summon.getSkillLevel()); //idk but nexon sends 1 for octo, so we'll leave it
 
