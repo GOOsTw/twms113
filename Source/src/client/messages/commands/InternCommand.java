@@ -462,6 +462,26 @@ public class InternCommand {
         }
     }
 
+    public static class GM聊天 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            boolean GMChat = c.getPlayer().getGMChat();
+            if (GMChat) {
+                c.getPlayer().getGMChat(false);
+            } else {
+                c.getPlayer().getGMChat(true);
+            }
+            GMChat = c.getPlayer().getGMChat();
+            c.getPlayer().dropMessage(6, "[GM聊天開關] " + (GMChat ? "開啟" : "關閉"));
+            return true;
+        }
+
+        public String getMessage() {
+            return new StringBuilder().append("!GM聊天 - GM聊天").toString();
+        }
+    }
+
     public static class 聊天稱號開關 extends CommandExecute {
 
         @Override

@@ -46,6 +46,11 @@ public class ChatHandler {
             if (chr.getCanTalk() || chr.isStaff()) {
                 MapleMap map = c.getPlayer().getMap();
                 String gg = "";
+                if (c.getPlayer().getGMChat()) {
+                    chr.getCheatTracker().checkMsg();
+                    map.broadcastGMMessage(chr, MaplePacketCreator.getChatText(chr.getId(), text, c.getPlayer().isGM(), unk), true);
+                    return;
+                }
                 if (c.getPlayer().gmLevel() == 5 && !chr.isHidden()) {
                     if (c.getPlayer().getCTitle()) {
                         gg = c.getPlayer().getChatTitle();

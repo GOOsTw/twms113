@@ -212,7 +212,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public int master = 0, apprentice = 0;
     private boolean testingdps = false;
     private long dps;
-    private boolean 精靈商人購買開關 = false, 玩家私聊1 = false, 玩家私聊2 = false, 玩家私聊3 = false, GMinfo = false, 聊天稱號 = false;
+    private boolean 精靈商人購買開關 = false, 玩家私聊1 = false, 玩家私聊2 = false, 玩家私聊3 = false, GMinfo = false, 聊天稱號 = false, GM聊天 = false;
 
     private MapleCharacter(final boolean ChannelServer) {
         this.setStance(0);
@@ -318,6 +318,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (!isChannel) {
             ret.client.setChannel(ct.channel);
         }
+        ret.GM聊天 = ct.GM聊天;
         ret.id = ct.characterid;
         ret.name = ct.name;
         ret.level = ct.level;
@@ -1772,7 +1773,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         stats.recalcLocalStats();
         if (this.isAdmin()) {
             this.dropMessage(6, "[系統提示] 使用了 BUFF 來源 :" + effect.getName() + "(" + effect.getSourceId() + ")");
-            for (Pair<MapleBuffStat, Integer> buf :  statups) {
+            for (Pair<MapleBuffStat, Integer> buf : statups) {
                 this.dropMessage(6, "[系統提示] " + buf.getLeft().toString() + "(0x" + HexTool.toString(buf.getLeft().getValue()) + ")");
             }
         }
@@ -3313,6 +3314,14 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public boolean getCTitle() {
         return 聊天稱號;
+    }
+
+    public void getGMChat(boolean xx) {
+        GM聊天 = xx;
+    }
+
+    public boolean getGMChat() {
+        return GM聊天;
     }
 
     public void setChatTitle(String text) {

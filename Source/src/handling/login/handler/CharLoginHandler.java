@@ -214,8 +214,13 @@ public class CharLoginHandler {
 
     public static final void handleCreateCharacter(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         final String name = slea.readMapleAsciiString();
+        if (name.contains("Admin") || name.contains("admin") || name.contains("GameMaster") || name.contains("gamemaster")) {
+            c.sendPacket(MaplePacketCreator.serverNotice(1, "這個名字是非法的喔，請在想一個新名字。"));
+            c.sendPacket(LoginPacket.getLoginFailed(1));
+            return;
+        }
         final int JobType = slea.readInt(); // 1 = Adventurer, 0 = Cygnus, 2 = Aran
-        
+
         final int face = slea.readInt();
         final int hair = slea.readInt();
         final int hairColor = 0;

@@ -61,11 +61,13 @@ public class CharacterTransfer implements Externalizable {
     public Map<Integer, String> InfoQuest = new LinkedHashMap<>();
     public final Map<Integer, SkillEntry> Skills = new LinkedHashMap<>(); // Skillid instead of Skill.java, as it's huge. Cant be transporting Skill.java and MapleStatEffect.java
     public long giveCSpointsLasttime = 0;
+    public boolean GM聊天;
 
     public CharacterTransfer() {
     }
 
     public CharacterTransfer(final MapleCharacter chr) {
+        this.GM聊天 = chr.getGMChat();
         this.characterid = chr.getId();
         this.accountid = chr.getAccountID();
         this.accountname = chr.getClient().getAccountName();
@@ -199,6 +201,7 @@ public class CharacterTransfer implements Externalizable {
 
     @Override
     public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
+        this.GM聊天 = in.readBoolean();
         this.characterid = in.readInt();
         this.accountid = in.readInt();
         this.accountname = in.readUTF();
@@ -359,6 +362,7 @@ public class CharacterTransfer implements Externalizable {
 
     @Override
     public void writeExternal(final ObjectOutput out) throws IOException {
+        out.writeBoolean(this.GM聊天);
         out.writeInt(this.characterid);
         out.writeInt(this.accountid);
         out.writeUTF(this.accountname);
