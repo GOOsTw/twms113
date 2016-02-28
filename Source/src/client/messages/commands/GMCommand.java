@@ -30,27 +30,27 @@ import tools.StringUtil;
  * @author Emilyx3
  */
 public class GMCommand {
-
+    
     public static PlayerGMRank getPlayerLevelRequired() {
         return PlayerGMRank.GM;
     }
-
+    
     public static class HellBan extends Ban {
-
+        
         public HellBan() {
             hellban = true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("!hellban <玩家名稱> <原因> - hellban").toString();
         }
     }
-
+    
     public static class Ban extends CommandExecute {
-
+        
         protected boolean hellban = false;
-
+        
         private String getCommand() {
             if (hellban) {
                 return "HellBan";
@@ -58,7 +58,7 @@ public class GMCommand {
                 return "Ban";
             }
         }
-
+        
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             if (splitted.length < 3) {
@@ -77,7 +77,7 @@ public class GMCommand {
                     }
                 } else {
                     c.getPlayer().dropMessage(6, "[" + getCommand() + "] 不能封鎖GM...");
-
+                    
                 }
             } else if (MapleCharacter.ban(splitted[1], sb.toString(), false, c.getPlayer().isAdmin() ? 250 : c.getPlayer().getGMLevel(), splitted[0].equals("!hellban"))) {
                 c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功離線鎖定 " + splitted[1] + ".");
@@ -86,24 +86,24 @@ public class GMCommand {
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("!ban <玩家名稱> <原因> - 封鎖玩家").toString();
         }
     }
-
+    
     public static class UnHellBan extends UnBan {
-
+        
         public UnHellBan() {
             hellban = true;
         }
     }
-
+    
     public static class UnBan extends CommandExecute {
-
+        
         protected boolean hellban = false;
-
+        
         private String getCommand() {
             if (hellban) {
                 return "UnHellBan";
@@ -111,7 +111,7 @@ public class GMCommand {
                 return "UnBan";
             }
         }
-
+        
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             if (splitted.length < 2) {
@@ -144,15 +144,15 @@ public class GMCommand {
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("!unban <玩家名稱> - 解鎖玩家").toString();
         }
     }
-
+    
     public static class UnbanIP extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             if (splitted.length < 2) {
@@ -172,95 +172,95 @@ public class GMCommand {
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("!unbanip <玩家名稱> - 解鎖玩家").toString();
         }
     }
-
+    
     public static class TempBan extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             final MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             final int reason = Integer.parseInt(splitted[2]);
             final int numDay = Integer.parseInt(splitted[3]);
-
+            
             final Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DATE, numDay);
             final DateFormat df = DateFormat.getInstance();
-
+            
             if (victim == null) {
                 c.getPlayer().dropMessage(6, "[tempban] 找不到目標角色");
-
+                
             } else {
                 victim.tempban("由" + c.getPlayer().getName() + "暫時鎖定了", cal, reason, true);
                 c.getPlayer().dropMessage(6, "[tempban] " + splitted[1] + " 已成功被暫時鎖定至 " + df.format(cal.getTime()));
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("!tempban <玩家名稱> - 暫時鎖定玩家").toString();
         }
     }
-
+    
     public static class DC extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
-
+            
             if (splitted.length < 2) {
                 return false;
             }
-
+            
             int level = 0;
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
-
+            
             if (victim != null) {
                 victim.getClient().disconnect(true, false);
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("!dc <玩家> - 讓玩家斷線").toString();
         }
     }
-
+    
     public static class Job extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().changeJob(Integer.parseInt(splitted[1]));
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("!job <職業代碼> - 更換職業").toString();
         }
     }
-
+    
     public static class maxmeso extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             c.getPlayer().gainMeso(Integer.MAX_VALUE - c.getPlayer().getMeso(), true);
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("!maxmeso - 楓幣滿").toString();
         }
     }
-
+    
     public static class mesos extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             if (splitted.length < 2) {
@@ -269,15 +269,15 @@ public class GMCommand {
             c.getPlayer().gainMeso(Integer.parseInt(splitted[1]), true);
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("!mesos <需要的數量> - 得到楓幣").toString();
         }
     }
-
+    
     public static class Drop extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             final int itemId = Integer.parseInt(splitted[1]);
@@ -290,27 +290,27 @@ public class GMCommand {
             } else {
                 IItem toDrop;
                 if (GameConstants.getInventoryType(itemId) == MapleInventoryType.EQUIP) {
-
+                    
                     toDrop = ii.randomizeStats((Equip) ii.getEquipById(itemId));
                 } else {
                     toDrop = new client.inventory.Item(itemId, (byte) 0, (short) quantity, (byte) 0);
                 }
                 toDrop.setOwner(c.getPlayer().getName());
                 toDrop.setGMLog(c.getPlayer().getName());
-
+                
                 c.getPlayer().getMap().spawnItemDrop(c.getPlayer(), c.getPlayer(), toDrop, c.getPlayer().getPosition(), true, true);
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("!dropitem <道具ID> - 掉落道具").toString();
         }
     }
-
+    
     public static class Notice extends CommandExecute {
-
+        
         private static int getNoticeType(String typestring) {
             switch (typestring) {
                 case "n":
@@ -328,7 +328,7 @@ public class GMCommand {
             }
             return -1;
         }
-
+        
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             int joinmod = 1;
@@ -344,7 +344,7 @@ public class GMCommand {
                     range = 2;
                     break;
             }
-
+            
             int tfrom = 2;
             if (range == -1) {
                 range = 2;
@@ -369,7 +369,7 @@ public class GMCommand {
                 return false;
             }
             sb.append(StringUtil.joinStringFrom(splitted, joinmod));
-
+            
             MaplePacket packet = MaplePacketCreator.serverNotice(type, sb.toString());
             if (range == 0) {
                 c.getPlayer().getMap().broadcastMessage(packet);
@@ -380,15 +380,15 @@ public class GMCommand {
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("!notice <n|p|l|nv|v|b> <m|c|w> <message> - 公告").toString();
         }
     }
-
+    
     public static class Yellow extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             int range = -1;
@@ -416,23 +416,23 @@ public class GMCommand {
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("!yellow <m|c|w> <message> - 黃色公告").toString();
         }
     }
-
+    
     public static class Y extends Yellow {
     }
-
+    
     public static class Item extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             final int itemId = Integer.parseInt(splitted[1]);
             final short quantity = (short) CommandProcessorUtil.getOptionalIntArg(splitted, 2, 1);
-
+            
             if (!c.getPlayer().isAdmin()) {
                 for (int i : GameConstants.itemBlock) {
                     if (itemId == i) {
@@ -441,12 +441,12 @@ public class GMCommand {
                     }
                 }
             }
-
+            
             MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
             if (GameConstants.isPet(itemId)) {
                 MaplePet pet = MaplePet.createPet(itemId, MapleInventoryIdentifier.getInstance());
                 if (pet != null) {
-                    MapleInventoryManipulator.addById(c, itemId, (short)1, c.getPlayer().getName(), pet, 45);
+                    MapleInventoryManipulator.addById(c, itemId, (short) 1, c.getPlayer().getName(), pet, 45);
                 }
             } else if (!ii.itemExists(itemId)) {
                 c.getPlayer().dropMessage(5, itemId + " - 物品不存在");
@@ -454,11 +454,11 @@ public class GMCommand {
                 IItem item;
                 byte flag = 0;
                 flag |= ItemFlag.LOCK.getValue();
-
+                
                 if (GameConstants.getInventoryType(itemId) == MapleInventoryType.EQUIP) {
                     item = ii.randomizeStats((Equip) ii.getEquipById(itemId));
                     item.setFlag(flag);
-
+                    
                 } else {
                     item = new client.inventory.Item(itemId, (byte) 0, quantity, (byte) 0);
                     if (GameConstants.getInventoryType(itemId) != MapleInventoryType.USE) {
@@ -467,20 +467,20 @@ public class GMCommand {
                 }
                 item.setOwner(c.getPlayer().getName());
                 item.setGMLog(c.getPlayer().getName());
-
+                
                 MapleInventoryManipulator.addbyItem(c, item);
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("!item <道具ID> - 取得道具").toString();
         }
     }
-
+    
     public static class WarpHere extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
@@ -490,7 +490,7 @@ public class GMCommand {
                 int ch = World.Find.findChannel(splitted[1]);
                 if (ch < 0) {
                     c.getPlayer().dropMessage(5, "找不到");
-
+                    
                 } else {
                     victim = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(splitted[1]);
                     c.getPlayer().dropMessage(5, "正在把玩家傳到這來");
@@ -504,15 +504,15 @@ public class GMCommand {
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("!warphere 把玩家傳送到這裡").toString();
         }
     }
-
+    
     public static class WarpMap extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
             try {
@@ -530,15 +530,15 @@ public class GMCommand {
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("!WarpMap [地圖代碼] - 把地圖上的人全部傳到那張地圖").toString();
         }
     }
-
+    
     public static class Level extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             c.getPlayer().setLevel(Short.parseShort(splitted[1]));
@@ -548,15 +548,15 @@ public class GMCommand {
             }
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("!level [等級] - 更改等級").toString();
         }
     }
-
+    
     public static class 清理背包 extends CommandExecute {
-
+        
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             java.util.Map<Pair<Short, Short>, MapleInventoryType> eqs = new ArrayMap<>();
@@ -604,9 +604,10 @@ public class GMCommand {
             for (Entry<Pair<Short, Short>, MapleInventoryType> eq : eqs.entrySet()) {
                 MapleInventoryManipulator.removeFromSlot(c, eq.getValue(), eq.getKey().left, eq.getKey().right, false, false);
             }
+            c.getPlayer().dropMessage(5, "已經清除" + splitted[1] + "欄。");
             return true;
         }
-
+        
         @Override
         public String getMessage() {
             return new StringBuilder().append("!清理背包 <全部/身上裝備/裝備/消耗/裝飾/其他/現金> - 清理道具欄").toString();

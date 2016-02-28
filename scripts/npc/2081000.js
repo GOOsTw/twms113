@@ -29,29 +29,32 @@ function action(mode, type, selection) {
         status--;
     }
     if (status == 0) {
-        cm.sendSimple("你找我有事嗎？\r\n#L0##b魔法種子#k#l\r\n#L1##b為了神木村的行動#k#l");
+        cm.sendSimple("你找我有事嗎？\r\n#L0##b魔法種子#k#l\r\n#L1##b為了神木村的行動#k#l\r\n#L2##b做四轉材料");
     } else if (status == 1) {
         section = selection;
         if (section == 0) {
             cm.sendSimple("需要我幫助你？？\r\n#L0##b我想跟你買一些 #t4031346#.#k#l");
         } else if (section == 1) {
             cm.sendNext("更好的建設村落是村長的職責。所以需要更多更好的道具。你能為了村落捐獻出在神木村附近收集到的道具嗎？");
-        } else {
-            if (cm.isQuestActive(3759)) {
-                if (cm.haveItem(4032531)) {
-                    cm.sendNext("Dragon Moss Extract...? I already gave you that!");
-                } else {
-                    cm.sendNext("Dragon Moss Extract...Ah, I see. I will give it to you in this situation.");
-                    cm.gainItem(4032531, 1);
-                }
-            } else {
-                cm.sendNext("考慮好再來找我。");
-            }
-            cm.dispose();
+		} else if (section == 2) {
+			cm.sendNext("您需要為您的四轉做準備嗎?? 我需要#t4031348#。");
         }
     } else if (status == 2) {
         if (section == 0) {
             cm.sendGetNumber("#b#t4031346##k 需要買多少個？？", 1, 1, 99);
+		} else if (section == 2) {
+			if (cm.canHold()) {
+			if (cm.haveItem(4031348)) {
+				status = 3;
+				cm.sendNext("你已經有了#t4031348#，那麼現在我要用我的神奇魔法把#t4031348#變成四轉所需的道具。");
+			} else {
+				cm.sendNext("請到玩具城44F找NPC購買#t4031348#。");
+				cm.safeDispose();
+			}
+			} else {
+				cm.sendNext("請檢查你的裝備欄是否滿了。");
+				cm.safeDispose();
+			}
         } else {
             for (var i = 0; i < itemID.length; i++) {
                 menu += "\r\n#L" + i + "##b#t" + itemID[i] + "##k#l";
@@ -89,6 +92,16 @@ function action(mode, type, selection) {
                 cm.gainMeso(-cost);
             }
             cm.safeDispose();
+		} else if (section == 2) {
+			if (cm.haveItem(4031348)) { //2nd check need item
+				cm.gainItem(4031348,-1);
+				cm.gainItem(4031860,1);
+				cm.gainItem(4031861,1);
+				cm.sendOk("恭喜你已經獲得#t4031860# x1 #t4031861# x1");
+			} else {
+				cm.sendOk("您貌似沒有#t4031348# 0.0");
+			}
+			cm.safeDispose();
         } else {
             count = selection;
             cm.sendYesNo("你確定你想贊助 #b" + count + " #t" + itemID[temp] + "##k?");

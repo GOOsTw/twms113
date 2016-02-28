@@ -51,8 +51,8 @@ function action(mode, type, selection) {
             cm.sendOk("你的技能點數還沒點完..");
             cm.dispose();
             return;
-        } else if (!cm.haveItem(4031348, 1)) {
-            cm.sendOk("我需要#t4031348# 1張。");
+        } else if (!cm.haveItem(4031860) || !cm.haveItem(4031861)) {
+            cm.sendOk("我需要#t4031860# x1 #t4031861# x1。");
             cm.dispose();
             return;
         } else {
@@ -64,21 +64,24 @@ function action(mode, type, selection) {
                     cm.teachSkill(2121001, 0, 10);
                     cm.teachSkill(2121006, 0, 10);
                     cm.teachSkill(2121002, 0, 10);
-                    cm.gainItem(4031348, -1);
+                    cm.gainItem(4031860, -1);
+					cm.gainItem(4031861, -1);
                     cm.sendNext("恭喜你轉職為 #b大魔島士#k.我送你一些神秘小禮物^^");
                 } else if (cm.getJob() == 221) {
                     cm.changeJob(222);
                     cm.teachSkill(2221001, 0, 10);
                     cm.teachSkill(2221006, 0, 10);
                     cm.teachSkill(2221002, 0, 10);
-                    cm.gainItem(4031348, -1);
+                    cm.gainItem(4031860, -1);
+					cm.gainItem(4031861, -1);
                     cm.sendNext("恭喜你轉職為 #b大魔島士#k.我送你一些神秘小禮物^^");
                 } else {
                     cm.changeJob(232);
                     cm.teachSkill(2321001, 0, 10);
                     cm.teachSkill(2321005, 0, 10);
                     cm.teachSkill(2321002, 0, 10);
-                    cm.gainItem(4031348, -1);
+                    cm.gainItem(4031860, -1);
+					cm.gainItem(4031861, -1);
                     cm.sendNext("恭喜你轉職為 #b主教#k.我送你一些神秘小禮物^^");
                 }
             } else {
