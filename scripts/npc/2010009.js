@@ -63,7 +63,7 @@ function action(mode, type, selection) {
                 cm.sendOk("你不能創建一個公會聯盟，直到你有自己的公會。");
                 cm.dispose();
             } else if (partymembers.get(1).getGuildId() <= 0 || partymembers.get(1).getGuildRank() > 1) {
-                cm.sendOk("你的成員似乎沒有自己的工會。");
+                cm.sendOk("你的成員似乎沒有自己的公會。");
                 cm.dispose();
             } else {
                 var gs = cm.getGuild(cm.getPlayer().getGuildId());

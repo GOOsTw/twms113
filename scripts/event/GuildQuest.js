@@ -125,7 +125,7 @@ function changedMap(eim, player, mapid) {
     if (mapid < 990000000 || mapid > 990002000) {
         eim.unregisterPlayer(player);
         if (player.getName().equals(eim.getProperty("leader"))) { //check for party leader
-            disposePlayerBelow(eim, 100, 990001100, "由於領導者離開，所以工會任務整個將關閉。");
+            disposePlayerBelow(eim, 100, 990001100, "由於領導者離開，所以公會任務整個將關閉。");
         } else {
             if (disposePlayerBelow(eim, 0, 0, "")) {
                 em.setProperty("started", "false");
@@ -138,10 +138,10 @@ function playerDisconnected(eim, player) {
     eim.unregisterPlayer(player);
     if (player.getName().equals(eim.getProperty("leader"))) { //check for party leader
         //boot all players and end
-        disposePlayerBelow(eim, 100, 990001100, "由於領導者斷線，所以工會任務整個將關閉。");
+        disposePlayerBelow(eim, 100, 990001100, "由於領導者斷線，所以公會任務整個將關閉。");
     } else {
         if (!em.getProperty("state").equals("0")) {
-            disposePlayerBelow(eim, 5, 990001100, "由於沒有足夠的玩家，所以工會任務將整個關閉。");
+            disposePlayerBelow(eim, 5, 990001100, "由於沒有足夠的玩家，所以公會任務將整個關閉。");
         }
     }
 }
@@ -155,7 +155,7 @@ function disbandParty(eim) { //ignore for GQ
 function playerExit(eim, player) {
     eim.unregisterPlayer(player);
     if (!em.getProperty("state").equals("0")) {
-        disposePlayerBelow(eim, 5, 990001100, "由於沒有足夠的玩家，所以工會任務將整個關閉。");
+        disposePlayerBelow(eim, 5, 990001100, "由於沒有足夠的玩家，所以公會任務將整個關閉。");
     }
 }
 

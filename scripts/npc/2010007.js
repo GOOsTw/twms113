@@ -22,7 +22,7 @@ function action(mode, type, selection) {
         sel = selection;
         if (selection == 0) {
             if (cm.getPlayerStat("GID") > 0) {
-                cm.sendOk("你不能創建一個新的工會.");
+                cm.sendOk("你不能創建一個新的公會.");
                 cm.dispose();
 			} else if (cm.getPlayer().getLevel() < 30 && !cm.getPlayer().isGM()) {
 				cm.sendOk("你的等級尚未滿30級無法創建公會。");
