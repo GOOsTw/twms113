@@ -136,6 +136,16 @@ public class MapleInventory implements Iterable<IItem>, Serializable {
         item.setPosition(slotId);
         return slotId;
     }
+ 
+    public short addItem1(IItem item) {
+        short slotId = getNextFreeSlot1();
+        if (slotId < 0) {
+            return -1;
+        }
+        inventory.put(slotId, item);
+        item.setPosition(slotId);
+        return slotId;
+    }
 
     public void addFromDB(IItem item) {
         if (item.getPosition() < 0 && !type.equals(MapleInventoryType.EQUIPPED)) {
@@ -152,7 +162,7 @@ public class MapleInventory implements Iterable<IItem>, Serializable {
         Item source = (Item) inventory.get(sSlot);
         Item target = (Item) inventory.get(dSlot);
         if (source == null) {
-            throw new InventoryException("Trying to move empty slot");
+            throw new InventoryException("嘗試移動空的欄位。");
         }
         if (target == null) {
             source.setPosition(dSlot);
@@ -230,6 +240,15 @@ public class MapleInventory implements Iterable<IItem>, Serializable {
             }
         }
         return -1;
+    }
+   
+    public short getNextFreeSlot1() {
+        for (short i = 1; i <= slotLimit; i++) {
+            if (!inventory.keySet().contains(i)) {
+                return i;
+            }
+        }
+        return 1;
     }
 
     public short getNumFreeSlot() {

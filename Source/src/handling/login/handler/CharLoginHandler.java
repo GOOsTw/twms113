@@ -215,8 +215,7 @@ public class CharLoginHandler {
     public static final void handleCreateCharacter(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         final String name = slea.readMapleAsciiString();
         final int JobType = slea.readInt(); // 1 = Adventurer, 0 = Cygnus, 2 = Aran
-
-        final short db = 0; //whether dual blade = 1 or adventurer = 0
+        
         final int face = slea.readInt();
         final int hair = slea.readInt();
         final int hairColor = 0;
@@ -328,30 +327,26 @@ public class CharLoginHandler {
 
         //blue/red pots
         switch (JobType) {
-            case 0: // Cygnus
+            case 0: // 皇家騎士團
                 newchar.setQuestAdd(MapleQuest.getInstance(20022), (byte) 1, "1");
                 newchar.setQuestAdd(MapleQuest.getInstance(20010), (byte) 1, null); //>_>_>_> ugh
-
                 newchar.setQuestAdd(MapleQuest.getInstance(20000), (byte) 1, null); //>_>_>_> ugh
                 newchar.setQuestAdd(MapleQuest.getInstance(20015), (byte) 1, null); //>_>_>_> ugh
                 newchar.setQuestAdd(MapleQuest.getInstance(20020), (byte) 1, null); //>_>_>_> ugh
 
-                newchar.getInventory(MapleInventoryType.ETC).addItem(new Item(4161047, (byte) 0, (short) 1, (byte) 0));
+                newchar.getInventory(MapleInventoryType.ETC).addItem1(new Item(4161047, (byte) 0, (short) 1, (byte) 0));
                 break;
-            case 1: // Adventurer
-                newchar.getInventory(MapleInventoryType.ETC).addItem(new Item(4161001, (byte) 0, (short) 1, (byte) 0));
+            case 1: // 冒險者
+                newchar.getInventory(MapleInventoryType.ETC).addItem1(new Item(4161001, (byte) 0, (short) 1, (byte) 0));
                 break;
-            case 2: // Aran
+            case 2: // 狂狼勇士
                 newchar.setSkinColor((byte) 11);
-                newchar.getInventory(MapleInventoryType.ETC).addItem(new Item(4161048, (byte) 0, (short) 1, (byte) 0));
-                break;
-            case 3: //Evan
-                newchar.getInventory(MapleInventoryType.ETC).addItem(new Item(4161052, (byte) 0, (short) 1, (byte) 0));
+                newchar.getInventory(MapleInventoryType.ETC).addItem1(new Item(4161048, (byte) 0, (short) 1, (byte) 0));
                 break;
         }
 
         if (MapleCharacterUtil.canCreateChar(name) && !LoginInformationProvider.getInstance().isForbiddenName(name)) {
-            MapleCharacter.saveNewCharToDB(newchar, JobType, JobType == 1 && db == 0);
+            MapleCharacter.saveNewCharToDB(newchar, JobType, JobType == 1);
             c.sendPacket(LoginPacket.addNewCharEntry(newchar, true));
             c.createdChar(newchar.getId());
         } else {

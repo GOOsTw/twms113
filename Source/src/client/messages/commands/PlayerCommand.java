@@ -4,6 +4,8 @@ import constants.GameConstants;
 import constants.ServerConstants.PlayerGMRank;
 import client.MapleClient;
 import client.MapleStat;
+import client.inventory.Item;
+import client.inventory.MapleInventoryType;
 import constants.MapConstants;
 import handling.channel.ChannelServer;
 import scripting.NPCScriptManager;

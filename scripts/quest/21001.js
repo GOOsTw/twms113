@@ -1,5 +1,4 @@
-﻿
-var status = -1;
+﻿var status = -1;
 
 function start(mode, type, selection) {
     if (mode == 1) {
@@ -32,15 +31,6 @@ function end(mode, type, selection) {
             qm.sendNext("孩子呢？ 倘若您救了那些孩子，就快點讓他們上來吧！");
             qm.dispose();
             return;
-        } else if (status == 8) { // watching the introduction
-            if (qm.haveItem(4001271)) {
-                qm.gainItem(4001271, -1);
-            }
-            qm.MovieClipIntroUI(true);
-            qm.forceCompleteQuest();
-            qm.warp(914090010, 0);
-            qm.dispose();
-            return;
         }
         status--;
     }
@@ -60,14 +50,13 @@ function end(mode, type, selection) {
         qm.sendNextPrevS("絕對不行！", 3);
     } else if (status == 7) {
         qm.sendNextPrevS("赫麗娜，您先去維多利亞島吧！我絕對不會死心的，我們後會有期。我要和同伴們一起去對付黑魔法師！", 3);
-    } else if (status == 8) {
-        qm.sendYesNo("請問您想跳過動畫嗎？");
-    } else if (status == 9) { // Not watching
+    } else if (status == 8) { // 強制看動畫
         if (qm.haveItem(4001271)) {
             qm.gainItem(4001271, -1);
         }
+		qm.MovieClipIntroUI(true);
         qm.forceCompleteQuest();
-        qm.warp(140090000, 0);
+        qm.warp(914090010, 0);
         qm.dispose();
     }
 }

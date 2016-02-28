@@ -1405,6 +1405,47 @@ public class AdminCommand {
         }
     }
 
+    public static class RemoveItemOff extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 2) {
+                return false;
+            }
+            com.mysql.jdbc.Connection dcon = (com.mysql.jdbc.Connection) DatabaseConnection.getConnection();
+            try {
+                int id = 0, quantity = 0;
+                String name = splitted[2];
+                com.mysql.jdbc.PreparedStatement ps = (com.mysql.jdbc.PreparedStatement) dcon.prepareStatement("select * from characters where name = ?");
+                ps.setString(1, name);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        id = rs.getInt("id");
+                    }
+                }
+                if (id == 0) {
+                    c.getPlayer().dropMessage(5, "角色不存在資料庫。");
+                    return false;
+                }
+                com.mysql.jdbc.PreparedStatement ps2 = (com.mysql.jdbc.PreparedStatement) dcon.prepareStatement("delete from inventoryitems WHERE itemid = ? and characterid = ?");
+                ps2.setInt(1, Integer.parseInt(splitted[1]));
+                ps2.setInt(2, id);
+                ps2.executeUpdate();
+                c.getPlayer().dropMessage(6, "所有ID為 " + splitted[1] + " 的道具" + quantity + "已經從 " + name + " 身上被移除了");
+                ps.close();
+                ps2.close();
+                return true;
+            } catch (SQLException e) {
+                return false;
+            }
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!removeitem <物品ID> <角色名稱> - 移除玩家身上的道具").toString();
+        }
+    }
+
     public static class LockItem extends CommandExecute {
 
         @Override
@@ -1468,7 +1509,7 @@ public class AdminCommand {
             for (MapleCharacter map : c.getPlayer().getMap().getCharactersThreadsafe()) {
                 if (map != null && !map.isGM()) {
                     map.cancelAllBuffs();
-                    map.dropMessage(5,"系統已幫您把所有BUFF取消。");
+                    map.dropMessage(5, "系統已幫您把所有BUFF取消。");
                 }
             }
             return true;
