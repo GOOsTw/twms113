@@ -321,16 +321,21 @@ public class DamageParse {
                             stats.setHp(remainingHP > 1 ? 1 : remainingHP);
                             break;
                         }
-
-                        case SkillType.暗影神偷.瞬步連擊: // Boomerang Stab
-                        case SkillType.暗影神偷.致命暗殺: // Assasinate
-                        case SkillType.神偷.落葉斬: // Assulter
-                        case SkillType.俠盜.迴旋斬: // Savage Blow
-                        case SkillType.盜賊.詛咒術: // Disorder
-                        case SkillType.盜賊.劈空斬: // Double Stab
-                        case SkillType.夜使者.三飛閃: // Triple Throw
-                        case SkillType.暗殺者.風魔手裏劍: // Avenger
-                        case SkillType.盜賊.雙飛斬: {
+                        
+                        case SkillType.盜賊.雙飛斬:
+                        case SkillType.盜賊.詛咒術:
+                        case SkillType.盜賊.劈空斬:
+                        case SkillType.暗殺者.風魔手裏劍:
+                        case SkillType.夜使者.三飛閃:
+                        case SkillType.俠盜.迴旋斬:
+                        case SkillType.神偷.落葉斬:
+                        case SkillType.神偷.分身術:
+                        case SkillType.暗影神偷.瞬步連擊:
+                        case SkillType.暗影神偷.致命暗殺:
+                        case SkillType.暗夜行者1.詛咒術:
+                        case SkillType.暗夜行者1.雙飛斬:
+                        case SkillType.暗夜行者3.風魔手裏劍:
+                        case SkillType.暗夜行者3.三飛閃: {
                             if (player.hasBuffedValue(MapleBuffStat.WK_CHARGE) && !monster.getStats().isBoss()) {
                                 MapleStatEffect eff = player.getStatForBuff(MapleBuffStat.WK_CHARGE);
                                 if (eff != null) {
@@ -343,16 +348,16 @@ public class DamageParse {
                                 if ((eff != null) && (eff.makeChanceResult()) && (!monster.isBuffed(MonsterStatus.NEUTRALISE))) {
                                     monster.applyStatus(player, new MonsterStatusEffect(MonsterStatus.NEUTRALISE, 1, eff.getSourceId(), null, false), false, eff.getX() * 1000, true, eff);
                                 }
-                                int[] skills = {SkillType.夜使者.飛毒殺, SkillType.暗影神偷.飛毒殺, SkillType.暗夜行者3.飛毒殺};
-                                for (int i : skills) {
-                                    final ISkill skill = SkillFactory.getSkill(i);
-                                    if (player.getSkillLevel(skill) > 0) {
-                                        final MapleStatEffect venomEffect = skill.getEffect(player.getSkillLevel(skill));
-                                        if (venomEffect.makeChanceResult()) {
-                                            monster.applyStatus(player, new MonsterStatusEffect(MonsterStatus.POISON, 1, i, null, false), true, venomEffect.getDuration(), true, venomEffect);
-                                        }
-                                        break;
+                            }
+                            int[] skills = {SkillType.夜使者.飛毒殺, SkillType.暗影神偷.飛毒殺, SkillType.暗夜行者3.飛毒殺};
+                            for (int i : skills) {
+                                final ISkill skill = SkillFactory.getSkill(i);
+                                if (player.getSkillLevel(skill) > 0) {
+                                    final MapleStatEffect venomEffect = skill.getEffect(player.getSkillLevel(skill));
+                                    if (venomEffect.makeChanceResult()) {
+                                        monster.applyStatus(player, new MonsterStatusEffect(MonsterStatus.POISON, 1, i, null, false), true, venomEffect.getDuration(), true, venomEffect);
                                     }
+                                    break;
                                 }
                             }
                             break;
@@ -816,7 +821,7 @@ public class DamageParse {
             elements.add(Element.LIGHTING);
         }
         double elementalMaxDamagePerMonster = maximumDamageToMonster;
-        
+
         if (player.getBuffedValue(MapleBuffStat.ELEMENT_RESET) != null) {
             elements.clear();
         }

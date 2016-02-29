@@ -18,7 +18,7 @@ function action(mode, type, selection) {
             if (!cm.isLeader() || cm.getPlayer().getEventInstance() == null) {
                 cm.sendOk("請找隊長來找我談話。");
             } else {
-                //calculate letters needed
+                //計算出所需的字母
                 var letters = cm.getPlayer().getEventInstance().getProperty("answer");
                 var needed = Array(letters.length);
                 var done = 0;
@@ -52,7 +52,7 @@ function action(mode, type, selection) {
                             break;
                         }
                     }
-                    if (num == 0 && cm.haveItem(i, 1)) { //this letter is not in the answer at all
+                    if (num == 0 && cm.haveItem(i, 1)) { //這些都不是在回答內
                         lettersNot++;
                     }
                 }
@@ -60,7 +60,7 @@ function action(mode, type, selection) {
                     cm.sendNext("你有字母但是你回答了 #e錯誤的答案！#n");
                 } else if (done != needed.length) {
                     cm.sendNext("你回答了 #e錯誤的答案！#n");
-                } else { //correct
+                } else { //正確
                     for (var i = 3994059; i < 3994085; i++) {
                         cm.givePartyItems(i, 0, true);
                     }

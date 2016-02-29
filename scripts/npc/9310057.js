@@ -1,5 +1,5 @@
 var rewards = Array(2000005, 1140001, 1141001, 2100005, 2100006, 2100007, 2100008, 2101000, 2101001);
-var expires = Array(-1, 10, 30, 30, 30, 30, 30, 60, 60);
+var expires = Array(-1, 30, 30, 30, 30, 30, 30, 60, 60);
 var quantity = Array(5, 1, 1, 1, 1, 1, 1, 1, 1);
 var needed = Array(30, 60, 60, 25, 30, 35, 40, 45, 50, 55);
 var gender = Array(2, 0, 1, 2, 2, 2, 2, 2, 2);
@@ -50,7 +50,7 @@ function action(mode, type, selection) {
                     cm.warp(702090400, 0);
                     cm.dispose();
                 } else if (selection == 1) {
-                    var selStr = "第一個勳章是男的,第二個勳章是女的 \r\n\r\n#b";
+                    var selStr = "第一個勳章是男的,第二個勳章是女的 都30天\r\n\r\n#b";
                     for (var i = 0; i < rewards.length; i++) {
                         selStr += "#L" + i + "##v" + rewards[i] + "##t" + rewards[i] + "# x " + quantity[i] + " #r(" + needed[i] + " 乖寶寶印章)#b#l\r\n";
                     }

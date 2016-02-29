@@ -32,6 +32,7 @@ public class MapleSummon extends AbstractAnimatedMapleMapObject {
         this.skillLevel = skill.getLevel();
         this.movementType = movementType;
         setPosition(pos);
+        setStance(owner.getStance());
         try {
             this.fh = owner.getMap().getFootholds().findBelow(pos).getId();
         } catch (NullPointerException e) {

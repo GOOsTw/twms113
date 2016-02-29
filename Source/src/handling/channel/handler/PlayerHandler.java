@@ -544,8 +544,16 @@ public class PlayerHandler {
                 break;
             default:
                 Point pos = null;
-                if (slea.available() == 7) {
+                if ((slea.available() == 5L) || (slea.available() == 7L)) {
                     pos = slea.readPos();
+                    boolean faceLeft = slea.readByte() == 0;
+                    int stance = chr.getStance();
+                    if (faceLeft) {
+                        stance &= 0xFE;
+                    } else {
+                        stance |= 1;
+                    }
+                    chr.setStance(stance);
                 }
                 if (effect.isMagicDoor()) { // Mystic Door
                     if (!FieldLimitType.MysticDoor.check(chr.getMap().getFieldLimit())) {

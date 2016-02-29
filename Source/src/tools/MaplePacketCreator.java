@@ -291,17 +291,20 @@ public class MaplePacketCreator {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.SPAWN_SUMMON.getValue());
-        
+
         mplew.writeInt(summon.getOwnerId());
         mplew.writeInt(summon.getObjectId());
         mplew.writeInt(summon.getSkill());
-        
+
         mplew.write(summon.getOwnerLevel());
         mplew.write(summon.getSkillLevel()); //idk but nexon sends 1 for octo, so we'll leave it
 
         mplew.writePos(summon.getPosition());
-        
-        mplew.write(4); //reaper = 5?
+        if (summon.isPuppet()) {
+            mplew.write(summon.isFacingLeft() ? 4 : 5);
+        } else {
+            mplew.write(summon.isFacingLeft() ? 5 : 4);
+        }
         mplew.writeShort(0);
         mplew.write(summon.getMovementType().getValue()); // 0 = don't move, 1 = follow (4th mage summons?), 2/4 = only tele follow, 3 = bird follow
         mplew.write(summon.isPuppet() ? 0 : 1); // 0 = Summon can't attack - but puppets don't attack with 1 either ^.-
