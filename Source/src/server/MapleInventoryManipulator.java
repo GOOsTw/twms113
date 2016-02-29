@@ -419,7 +419,7 @@ public class MapleInventoryManipulator {
                     break;
                 case AramiaFireWorks.XIANG_ID:
                     c.getPlayer().dropMessage(5, "你已經獲得了一個 香爐， 可以到不夜城尋找龍山寺師父對話。");
-                    break;                
+                    break;
             }
         }
         c.getPlayer().havePartyQuest(item.getItemId());
@@ -552,7 +552,7 @@ public class MapleInventoryManipulator {
             }
         } else {
             if (c.getPlayer().isAdmin()) {
-                c.getPlayer().dropMessage(6, "移_src:" + src + " dst:" + dst + " ItemId:" + source.getItemId()+ " ItemName:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
+                c.getPlayer().dropMessage(6, "移_src:" + src + " dst:" + dst + " ItemId:" + source.getItemId() + " ItemName:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
             }
             mods.add(new ModifyInventory(ModifyInventory.Types.MOVE, source, src));
         }
@@ -652,7 +652,7 @@ public class MapleInventoryManipulator {
             c.getPlayer().cancelBuffStats(MapleBuffStat.BOOSTER);
         }
         if (c.getPlayer().isAdmin()) {
-            c.getPlayer().dropMessage(6, "穿_src:" + src + " dst:" + dst + " ItemId:" + source.getItemId()+ " ItemName:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
+            c.getPlayer().dropMessage(6, "穿_src:" + src + " dst:" + dst + " ItemId:" + source.getItemId() + " ItemName:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
         }
         mods.add(new ModifyInventory(2, source, src));
         c.sendPacket(MaplePacketCreator.modifyInventory(true, mods));
@@ -695,7 +695,7 @@ public class MapleInventoryManipulator {
             c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).addFromDB(target);
         }
         if (c.getPlayer().isAdmin()) {
-            c.getPlayer().dropMessage(6, "脫_src:" + src + " dst:" + dst + " ItemId:" + source.getItemId()+ " ItemName:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
+            c.getPlayer().dropMessage(6, "脫_src:" + src + " dst:" + dst + " ItemId:" + source.getItemId() + " ItemName:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
         }
         c.sendPacket(MaplePacketCreator.modifyInventory(true, Collections.singletonList(new ModifyInventory(2, source, src))));
         c.getPlayer().equipChanged();
@@ -707,6 +707,7 @@ public class MapleInventoryManipulator {
 
     public static boolean drop(final MapleClient c, MapleInventoryType type, final short src, short quantity, final boolean npcInduced) {
         final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+        final Point dropPos = new Point(c.getPlayer().getPosition());
         if (src < 0) {
             type = MapleInventoryType.EQUIPPED;
         }
@@ -719,9 +720,17 @@ public class MapleInventoryManipulator {
             return false;
         }
         if (c.getPlayer().isAdmin()) {
-            c.getPlayer().dropMessage(6, "丟_src:" + src + " type:" + type + " ItemId:" + source.getItemId()+ " ItemName:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
+            c.getPlayer().dropMessage(6, "丟_src:" + src + " type:" + type + " ItemId:" + source.getItemId() + " ItemName:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
         }
         final byte flag = source.getFlag();
+
+        // exitem can't drop handling here
+        if (GameConstants.exitem(source.getItemId()) && source.getQuantity() == 0) {
+            c.getPlayer().getInventory(type).removeSlot(src);
+            c.sendPacket(MaplePacketCreator.dropInventoryItem((src < 0 ? MapleInventoryType.EQUIP : type), src));
+            c.getPlayer().getMap().disappearingItemDrop(c.getPlayer(), c.getPlayer(), source, dropPos);
+            return true;
+        }
         if (quantity > source.getQuantity()) {
             c.sendPacket(MaplePacketCreator.enableActions());
             return false;
@@ -730,7 +739,7 @@ public class MapleInventoryManipulator {
             c.sendPacket(MaplePacketCreator.enableActions());
             return false;
         }
-        final Point dropPos = new Point(c.getPlayer().getPosition());
+
         c.getPlayer().getCheatTracker().checkDrop();
         if (quantity < source.getQuantity() && !GameConstants.isRechargable(source.getItemId())) {
             final IItem target = source.copy();

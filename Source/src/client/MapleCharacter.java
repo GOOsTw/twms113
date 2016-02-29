@@ -1749,6 +1749,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         } else if (effect.isBeholder()) {
             prepareBeholderEffect();
         }
+        // 解決 聖魂劍士放鬥氣 再放靈魂 鬥氣沒效果
+        if (effect.getSourceId() == 11001004 && effect.getSourceId() == 11111001 || effect.getSourceId() == 11110005) {
+            dispelSkill(11001004);
+        }
         int clonez = 0;
         for (Pair<MapleBuffStat, Integer> statup : statups) {
             if (statup.getLeft() == MapleBuffStat.BUFF_58) {
@@ -2949,6 +2953,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public void gainExp(final int total, final boolean show, final boolean inChat, final boolean white) {
         try {
+            expirationTask(true, false);
             int prevexp = getExp();
             int needed = GameConstants.getExpNeededForLevel(level);
             if (GameConstants.isKOC(job) && level >= 120) {
@@ -3014,6 +3019,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void gainExpMonster(final int gain, final boolean show, final boolean white, final byte pty, int Class_Bonus_EXP, int Equipment_Bonus_EXP, int Premium_Bonus_EXP) {
+        expirationTask(true, false);
         int total = gain + Class_Bonus_EXP + Equipment_Bonus_EXP + Premium_Bonus_EXP;
         int partyinc = 0;
         int prevexp = getExp();
@@ -3131,10 +3137,14 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public final void expirationTask() {
-        expirationTask(true);
+        expirationTask(false);
     }
-
+    
     public final void expirationTask(boolean pending) {
+        expirationTask(false, pending);
+    }
+    
+    public final void expirationTask(boolean packet, boolean pending) {
         if (pending) {
             if (pendingExpiration != null) {
                 for (Integer z : pendingExpiration) {
@@ -3176,7 +3186,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         for (final Pair<MapleInventoryType, IItem> itemz : toberemove) {
             item = itemz.getRight();
             ret.add(item.getItemId());
-            getInventory(itemz.getLeft()).removeItem(item.getPosition(), item.getQuantity(), false);
+            if (packet) {
+                getInventory(itemz.getLeft()).removeItem(item.getPosition(), item.getQuantity(), false, this);
+            } else {
+                getInventory(itemz.getLeft()).removeItem(item.getPosition(), item.getQuantity(), false);
+            }
         }
         for (final IItem itemz : tobeunlock) {
             itemz.setExpiration(-1);
@@ -5746,7 +5760,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         final ChannelServer toch = ChannelServer.getInstance(channel);
 
         int res = this.saveToDB(false, false);
-
+        expirationTask(true, false);
         if (res == 1) {
             dropMessage(5, "角色保存成功！");
         }

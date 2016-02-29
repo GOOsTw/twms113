@@ -24,6 +24,7 @@ function cancelSchedule() {
 function start() {
     scheduleNew();
     em.getChannelServer().saveAll();
+	em.broadcastYellowMsg("[系統公告] 自動存檔完畢。");
     var iter = em.getInstances().iterator();
     while (iter.hasNext()) {
         var eim = iter.next();

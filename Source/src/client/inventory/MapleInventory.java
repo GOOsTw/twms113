@@ -20,6 +20,7 @@
  */
 package client.inventory;
 
+import client.MapleCharacter;
 import constants.GameConstants;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +30,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.io.Serializable;
+import server.MapleItemInformationProvider;
+import tools.MaplePacketCreator;
 
 public class MapleInventory implements Iterable<IItem>, Serializable {
 
@@ -136,7 +139,7 @@ public class MapleInventory implements Iterable<IItem>, Serializable {
         item.setPosition(slotId);
         return slotId;
     }
- 
+
     public short addItem1(IItem item) {
         short slotId = getNextFreeSlot1();
         if (slotId < 0) {
@@ -202,6 +205,10 @@ public class MapleInventory implements Iterable<IItem>, Serializable {
     }
 
     public void removeItem(short slot, short quantity, boolean allowZero) {
+        removeItem(slot, quantity, allowZero, null);
+    }
+
+    public void removeItem(short slot, short quantity, boolean allowZero, MapleCharacter chr) {
         IItem item = inventory.get(slot);
         if (item == null) { // TODO is it ok not to throw an exception here?
             return;
@@ -212,6 +219,10 @@ public class MapleInventory implements Iterable<IItem>, Serializable {
         }
         if (item.getQuantity() == 0 && !allowZero) {
             removeSlot(slot);
+        }
+        if (chr != null) {
+            chr.getClient().sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.REMOVE, item)));
+            chr.dropMessage(5, "加值道具[" + MapleItemInformationProvider.getInstance().getName(item.getItemId()) + "]因到期而消失了。");
         }
     }
 
@@ -241,7 +252,7 @@ public class MapleInventory implements Iterable<IItem>, Serializable {
         }
         return -1;
     }
-   
+
     public short getNextFreeSlot1() {
         for (short i = 1; i <= slotLimit; i++) {
             if (!inventory.keySet().contains(i)) {

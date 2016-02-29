@@ -105,6 +105,14 @@ public class GameConstants {
                 || skillId == 2111007 || skillId == 2211007 || skillId == 2311007 || skillId == 32121003 || skillId == 35121005 || skillId == 35111004 || skillId == 35121013 || skillId == 35121003 || skillId == 22150004 || skillId == 22181004 || skillId == 11101002 || skillId == 51100002 || skillId == 13101002 || skillId == 24121000 || skillId == 112001008 || skillId == 22161005 || skillId == 22161005;
     }
 
+    public static boolean exitem(int itemid) {
+        switch (itemid) {
+            case 2070015:
+            return true;
+        }
+        return false;
+    }
+    
     public static boolean isMarrigeRing(int itemid) {
         switch (itemid) {
             case 1112300:

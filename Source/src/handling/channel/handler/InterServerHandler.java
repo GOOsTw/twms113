@@ -89,6 +89,7 @@ public class InterServerHandler {
 
         chr.getMap().removePlayer(chr);
         c.sendPacket(MaplePacketCreator.getChannelChange(CashShopServer.getGatewayIP().split(":")[0], Integer.parseInt(CashShopServer.getGatewayIP().split(":")[1])));
+        c.getPlayer().expirationTask(true, false);
         c.setPlayer(null);
         c.setReceiving(false);
     }
@@ -206,7 +207,7 @@ public class InterServerHandler {
             player.getBuddylist().put(new BuddyEntry(pendingBuddyRequest.getName(), pendingBuddyRequest.getCharacterId(), "ETC", -1, false, pendingBuddyRequest.getLevel(), pendingBuddyRequest.getJob()));
             c.sendPacket(MaplePacketCreator.requestBuddylistAdd(pendingBuddyRequest.getCharacterId(), pendingBuddyRequest.getName(), pendingBuddyRequest.getLevel(), pendingBuddyRequest.getJob()));
         }
-        player.expirationTask();
+        //player.expirationTask();
         if (player.getJob() == 132) { // DARKKNIGHT
             player.checkBerserk();
         }

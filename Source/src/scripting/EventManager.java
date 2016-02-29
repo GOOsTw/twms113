@@ -318,7 +318,7 @@ public class EventManager {
         final MapleMap tomap = getMapFactory().getMap(to);
         final MapleMap frommap = getMapFactory().getMap(from);
         List<MapleCharacter> list = frommap.getCharactersThreadsafe();
-        if (tomap != null  && list != null && frommap.getCharactersSize() > 0) {
+        if (tomap != null && list != null && frommap.getCharactersSize() > 0) {
             for (MapleMapObject mmo : list) {
                 ((MapleCharacter) mmo).changeMap(tomap, tomap.getPortal(0));
             }
@@ -340,7 +340,7 @@ public class EventManager {
     public MapleMonster getMonster(final int id) {
         return MapleLifeFactory.getMonster(id);
     }
-    
+
     public void broadcastYellowMsg(final String msg) {
         getChannelServer().broadcastPacket(MaplePacketCreator.yellowChat(msg));
     }
