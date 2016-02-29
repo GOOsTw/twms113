@@ -396,6 +396,23 @@ public class EventManager {
         return true;
     }
 
+    public int online() {
+        Connection con = DatabaseConnection.getConnection();
+        PreparedStatement ps;
+        ResultSet re;
+        int count = 0;
+        try {
+            ps = con.prepareStatement("SELECT count(*) as cc FROM accounts WHERE loggedin = 2");
+            re = ps.executeQuery();
+            while (re.next()) {
+                count = re.getInt("cc");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(EventInstanceManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return count;
+    }
+
     public void setWorldEvent() {
         for (int i = 0; i < eventChannel.length; i++) {
 //            eventChannel[i] = 1; //2-8

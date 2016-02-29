@@ -286,7 +286,7 @@ public class ChannelServer implements Serializable {
     public final String getIP() {
         return this.ip;
     }
-    
+
     public final String getGatewayIP() {
         return gatewayIP;
     }
@@ -585,12 +585,10 @@ public class ChannelServer implements Serializable {
                 }
 
             } catch (Exception e) {
-
             }
         }
-
     }
-
+    
     public boolean canUseGMItem() {
         return canUseGMItem;
     }
