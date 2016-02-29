@@ -258,12 +258,12 @@ public class StatsHandling {
 
         for (int i : GameConstants.blockedSkills) {
             if (skill.getId() == i) {
-                chr.dropMessage(1, "You may not add this skill.");
+                chr.dropMessage(1, "你不能學習這個技能。");
                 return;
             }
         }
 
-        if ((remainingSp > 0 && curLevel + 1 <= maxlevel) && skill.canBeLearnedBy(chr.getJob())) {
+        if ((remainingSp > 0 && curLevel + 1 <= maxlevel) && skill.canBeLearnedBy(chr.getJob()) || isBeginnerSkill) {
             if (!isBeginnerSkill) {
                 final int skillbook = GameConstants.getSkillBookForSkill(skillid);
                 chr.setRemainingSp(chr.getRemainingSp(skillbook) - 1, skillbook);
