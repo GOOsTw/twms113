@@ -153,7 +153,7 @@ public enum ItemLoader {
                 item.setExpiration(rs.getLong("expiredate"));
                 item.setGMLog(rs.getString("GM_Log"));
                 item.setGiftFrom(rs.getString("sender"));
-                if (GameConstants.isPet(item.getItemId())) {
+                if (GameConstants.寵物(item.getItemId())) {
                     if (item.getUniqueId() > -1) {
                         MaplePet pet = MaplePet.loadFromDb(item.getItemId(), item.getUniqueId(), item.getPosition());
                         if (pet != null) {

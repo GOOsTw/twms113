@@ -40,7 +40,7 @@ public class AttackInfo {
     public boolean real = true;
 
     public final MapleStatEffect getAttackEffect(final MapleCharacter chr, int skillLevel, final ISkill skill_) {
-        if (GameConstants.isMulungSkill(skill) || GameConstants.isPyramidSkill(skill)) {
+        if (GameConstants.武陵道場技能(skill) || GameConstants.isPyramidSkill(skill)) {
             skillLevel = 1;
         } else if (skillLevel <= 0) {
             return null;

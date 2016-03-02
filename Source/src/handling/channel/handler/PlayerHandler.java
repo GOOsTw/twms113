@@ -82,7 +82,7 @@ public class PlayerHandler {
     }
 
     public static void ChangeMonsterBookCover(final int bookid, final MapleClient c, final MapleCharacter chr) {
-        if (bookid == 0 || GameConstants.isMonsterCard(bookid)) {
+        if (bookid == 0 || GameConstants.怪物卡(bookid)) {
             chr.setMonsterBookCover(bookid);
             chr.getMonsterBook().updateCard(c, bookid);
         }
@@ -493,11 +493,11 @@ public class PlayerHandler {
         final ISkill skill = SkillFactory.getSkill(skillid);
 
         if (chr.getSkillLevel(skill) <= 0 || chr.getSkillLevel(skill) != skillLevel) {
-            if (!GameConstants.isMulungSkill(skillid) && !GameConstants.isPyramidSkill(skillid)) {
+            if (!GameConstants.武陵道場技能(skillid) && !GameConstants.isPyramidSkill(skillid)) {
                 //c.getSession().close();
                 return;
             }
-            if (GameConstants.isMulungSkill(skillid)) {
+            if (GameConstants.武陵道場技能(skillid)) {
                 if (chr.getMapId() / 10000 != 92502) {
                     //AutobanManager.getInstance().autoban(c, "Using Mu Lung dojo skill out of dojo maps.");
                     return;
@@ -829,7 +829,7 @@ public class PlayerHandler {
                 break;
             default:
                 if (projectileWatk != 0) {
-                    basedamage = statst.calculateMaxBaseDamage(statst.getTotalWatk() + projectileWatk);
+                    basedamage = statst.calculateMaxBaseDamage(statst.getTotalMagic(), statst.getTotalWatk() + projectileWatk);
                 } else {
                     basedamage = statst.getCurrentMaxBaseDamage();
                 }

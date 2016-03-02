@@ -90,19 +90,19 @@ public class MapleShop {
         
         if (item != null && item.getPrice() > 0 && item.getReqItem() == 0) {
             
-            final int price = GameConstants.isRechargable(itemId) ? item.getPrice() : (item.getPrice() * quantity);
+            final int price = GameConstants.可充值道具(itemId) ? item.getPrice() : (item.getPrice() * quantity);
             
             if (price >= 0 && c.getPlayer().getMeso() >= price) {
                 if (MapleInventoryManipulator.checkSpace(c, itemId, quantity, "")) {
                     
                     c.getPlayer().gainMeso(-price, false);
                     
-                    if (GameConstants.isPet(itemId)) {
+                    if (GameConstants.寵物(itemId)) {
                         MapleInventoryManipulator.addById(c, itemId, quantity, "", MaplePet.createPet(itemId, MapleInventoryIdentifier.getInstance()), -1);
                     } else {
                         MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
 
-                        if (GameConstants.isRechargable(itemId)) {
+                        if (GameConstants.可充值道具(itemId)) {
                             quantity = ii.getSlotMax(c, item.getItemId());
                         }
 
@@ -116,12 +116,12 @@ public class MapleShop {
         } else if (item != null && item.getReqItem() > 0 && quantity == 1 && c.getPlayer().haveItem(item.getReqItem(), item.getReqItemQ(), false, true)) {
             if (MapleInventoryManipulator.checkSpace(c, itemId, quantity, "")) {
                 MapleInventoryManipulator.removeById(c, GameConstants.getInventoryType(item.getReqItem()), item.getReqItem(), item.getReqItemQ(), false, false);
-                if (GameConstants.isPet(itemId)) {
+                if (GameConstants.寵物(itemId)) {
                     MapleInventoryManipulator.addById(c, itemId, quantity, "", MaplePet.createPet(itemId, MapleInventoryIdentifier.getInstance()), -1);
                 } else {
                     MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
 
-                    if (GameConstants.isRechargable(itemId)) {
+                    if (GameConstants.可充值道具(itemId)) {
                         quantity = ii.getSlotMax(c, item.getItemId());
                     }
                     MapleInventoryManipulator.addById(c, itemId, quantity);
@@ -142,7 +142,7 @@ public class MapleShop {
             return;
         }
 
-        if (GameConstants.isThrowingStar(item.getItemId()) || GameConstants.isBullet(item.getItemId())) {
+        if (GameConstants.飛鏢(item.getItemId()) || GameConstants.子彈(item.getItemId())) {
             quantity = item.getQuantity();
         }
         if (quantity < 0) {
@@ -157,10 +157,10 @@ public class MapleShop {
         if (ii.cantSell(item.getItemId())) {
             return;
         }
-        if (quantity <= iQuant &&  ( iQuant > 0 || GameConstants.isRechargable(item.getItemId()) ) ) {
+        if (quantity <= iQuant &&  ( iQuant > 0 || GameConstants.可充值道具(item.getItemId()) ) ) {
             MapleInventoryManipulator.removeFromSlot(c, type, slot, quantity, false);
             double price;
-            if (GameConstants.isThrowingStar(item.getItemId()) || GameConstants.isBullet(item.getItemId())) {
+            if (GameConstants.飛鏢(item.getItemId()) || GameConstants.子彈(item.getItemId())) {
                 price = ii.getWholePrice(item.getItemId()) / (double) ii.getSlotMax(c, item.getItemId());
             } else {
                 price = ii.getPrice(item.getItemId());
@@ -176,7 +176,7 @@ public class MapleShop {
     public void recharge(final MapleClient c, final byte slot) {
         final IItem item = c.getPlayer().getInventory(MapleInventoryType.USE).getItem(slot);
 
-        if (item == null || (!GameConstants.isThrowingStar(item.getItemId()) && !GameConstants.isBullet(item.getItemId()))) {
+        if (item == null || (!GameConstants.飛鏢(item.getItemId()) && !GameConstants.子彈(item.getItemId()))) {
             return;
         }
         final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
@@ -232,7 +232,7 @@ public class MapleShop {
             rs = ps.executeQuery();
             List<Integer> recharges = new ArrayList<>(rechargeableItems);
             while (rs.next()) {
-                if (GameConstants.isThrowingStar(rs.getInt("itemid")) || GameConstants.isBullet(rs.getInt("itemid"))) {
+                if (GameConstants.飛鏢(rs.getInt("itemid")) || GameConstants.子彈(rs.getInt("itemid"))) {
                     MapleShopItem starItem = new MapleShopItem((short) 1, rs.getInt("itemid"), rs.getInt("price"), rs.getInt("reqitem"), rs.getInt("reqitemq"));
                     ret.addItem(starItem);
                     if (rechargeableItems.contains(starItem.getItemId())) {

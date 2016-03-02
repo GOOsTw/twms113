@@ -292,7 +292,7 @@ public class GameConstants {
         return false;
     }
 
-    public static boolean isMulungSkill(final int skill) {
+    public static boolean 武陵道場技能(final int skill) {
         switch (skill) {
             case 1009:
             case 1010:
@@ -314,40 +314,40 @@ public class GameConstants {
         return false;
     }
 
-    public static boolean isThrowingStar(final int itemId) {
+    public static boolean 飛鏢(final int itemId) {
         return itemId / 10000 == 207;
     }
 
-    public static boolean isBullet(final int itemId) {
+    public static boolean 子彈(final int itemId) {
         return itemId / 10000 == 233;
     }
 
-    public static boolean isRechargable(final int itemId) {
-        return isThrowingStar(itemId) || isBullet(itemId);
+    public static boolean 可充值道具(final int itemId) {
+        return 飛鏢(itemId) || 子彈(itemId);
     }
 
-    public static boolean isOverall(final int itemId) {
+    public static boolean 套服(final int itemId) {
         return itemId / 10000 == 105;
     }
 
-    public static boolean isPet(final int itemId) {
+    public static boolean 寵物(final int itemId) {
         return itemId / 10000 == 500;
     }
 
-    public static boolean isArrowForCrossBow(final int itemId) {
+    public static boolean 弩弓箭(final int itemId) {
         return itemId >= 2061000 && itemId < 2062000;
     }
 
-    public static boolean isArrowForBow(final int itemId) {
+    public static boolean 弓箭(final int itemId) {
         return itemId >= 2060000 && itemId < 2061000;
     }
 
-    public static boolean isMagicWeapon(final int itemId) {
+    public static boolean 魔法武器(final int itemId) {
         final int s = itemId / 10000;
         return s == 137 || s == 138;
     }
 
-    public static boolean isWeapon(final int itemId) {
+    public static boolean 武器(final int itemId) {
         return itemId >= 1300000 && itemId < 1500000;
     }
 
@@ -359,55 +359,55 @@ public class GameConstants {
         return MapleInventoryType.getByType(type);
     }
 
-    public static MapleWeaponType getWeaponType(final int itemId) {
+   public static MapleWeaponType 武器種類(final int itemId) {
         int cat = itemId / 10000;
         cat = cat % 100;
         switch (cat) {
             case 30:
-                return MapleWeaponType.SWORD1H;
+                return MapleWeaponType.單手劍;
             case 31:
-                return MapleWeaponType.AXE1H;
+                return MapleWeaponType.單手斧;
             case 32:
-                return MapleWeaponType.BLUNT1H;
+                return MapleWeaponType.單手棍;
             case 33:
-                return MapleWeaponType.DAGGER;
+                return MapleWeaponType.短劍;
             case 34:
-                return MapleWeaponType.KATARA;
+                return MapleWeaponType.雙刀;
             case 37:
-                return MapleWeaponType.WAND;
+                return MapleWeaponType.長杖;
             case 38:
-                return MapleWeaponType.STAFF;
+                return MapleWeaponType.短杖;
             case 40:
-                return MapleWeaponType.SWORD2H;
+                return MapleWeaponType.雙手劍;
             case 41:
-                return MapleWeaponType.AXE2H;
+                return MapleWeaponType.雙手斧;
             case 42:
-                return MapleWeaponType.BLUNT2H;
+                return MapleWeaponType.雙手棍;
             case 43:
-                return MapleWeaponType.SPEAR;
+                return MapleWeaponType.矛;
             case 44:
-                return MapleWeaponType.POLE_ARM;
+                return MapleWeaponType.槍;
             case 45:
-                return MapleWeaponType.BOW;
+                return MapleWeaponType.弓;
             case 46:
-                return MapleWeaponType.CROSSBOW;
+                return MapleWeaponType.弩;
             case 47:
-                return MapleWeaponType.CLAW;
+                return MapleWeaponType.拳套;
             case 48:
-                return MapleWeaponType.KNUCKLE;
+                return MapleWeaponType.指虎;
             case 49:
-                return MapleWeaponType.GUN;
+                return MapleWeaponType.火槍;
         }
-        return MapleWeaponType.NOT_A_WEAPON;
+        return MapleWeaponType.沒有武器;
     }
 
-    public static boolean isShield(final int itemId) {
+    public static boolean 盾(final int itemId) {
         int cat = itemId / 10000;
         cat = cat % 100;
         return cat == 9;
     }
 
-    public static boolean isEquip(final int itemId) {
+    public static boolean 裝備(final int itemId) {
         return itemId / 1000000 == 1;
     }
 
@@ -447,25 +447,25 @@ public class GameConstants {
         return false;
     }
 
-    public static boolean isTwoHanded(final int itemId) {
-        switch (getWeaponType(itemId)) {
-            case AXE2H:
-            case GUN:
-            case KNUCKLE:
-            case BLUNT2H:
-            case BOW:
-            case CLAW:
-            case CROSSBOW:
-            case POLE_ARM:
-            case SPEAR:
-            case SWORD2H:
+   public static boolean 雙手武器(final int itemId) {
+        switch (武器種類(itemId)) {
+            case 雙手斧:
+            case 火槍:
+            case 指虎:
+            case 雙手棍:
+            case 弓:
+            case 拳套:
+            case 弩:
+            case 槍:
+            case 矛:
+            case 雙手劍:
                 return true;
             default:
                 return false;
         }
     }
 
-    public static boolean isTownScroll(final int id) {
+    public static boolean 回村卷軸(final int id) {
         return id >= 2030000 && id < 2040000;
     }
 
@@ -473,7 +473,7 @@ public class GameConstants {
         return id >= 2040000 && id < 2050000;
     }
 
-    public static boolean isGun(final int id) {
+    public static boolean 火槍(final int id) {
         return id >= 1492000 && id < 1500000;
     }
 
@@ -485,7 +485,7 @@ public class GameConstants {
         return id / 10000 == 210;
     }
 
-    public static boolean isMonsterCard(final int id) {
+    public static boolean 怪物卡(final int id) {
         return id / 10000 == 238;
     }
 
@@ -1732,9 +1732,9 @@ public class GameConstants {
     public static boolean optionTypeFits(final int optionType, final int itemId) {
         switch (optionType) {
             case 10: //weapon
-                return isWeapon(itemId);
+                return 武器(itemId);
             case 11: //any armor
-                return !isWeapon(itemId);
+                return !武器(itemId);
             case 20: //shield??????????
                 return itemId / 10000 == 109; //just a gues
             case 21: //pet equip?????????

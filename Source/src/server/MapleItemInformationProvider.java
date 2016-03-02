@@ -244,16 +244,16 @@ public class MapleItemInformationProvider {
 
     public final boolean isTwoHanded(int itemId) {
         switch (getWeaponType(itemId)) {
-            case AXE2H:
-            case BLUNT2H:
-            case BOW:
-            case CLAW:
-            case CROSSBOW:
-            case POLE_ARM:
-            case SPEAR:
-            case SWORD2H:
-            case GUN:
-            case KNUCKLE:
+            case 雙手斧:
+            case 雙手棍:
+            case 弓:
+            case 拳套:
+            case 弩:
+            case 槍:
+            case 矛:
+            case 雙手劍:
+            case 火槍:
+            case 指虎:
                 return true;
             default:
                 return false;
@@ -271,9 +271,9 @@ public class MapleItemInformationProvider {
 
     public MapleWeaponType getWeaponType(int itemId) {
         int cat = (itemId / 10000) % 100;
-        MapleWeaponType[] type = {MapleWeaponType.SWORD1H, MapleWeaponType.AXE1H, MapleWeaponType.BLUNT1H, MapleWeaponType.DAGGER, MapleWeaponType.NOT_A_WEAPON, MapleWeaponType.NOT_A_WEAPON, MapleWeaponType.NOT_A_WEAPON, MapleWeaponType.WAND, MapleWeaponType.STAFF, MapleWeaponType.NOT_A_WEAPON, MapleWeaponType.SWORD2H, MapleWeaponType.AXE2H, MapleWeaponType.BLUNT2H, MapleWeaponType.SPEAR, MapleWeaponType.POLE_ARM, MapleWeaponType.BOW, MapleWeaponType.CROSSBOW, MapleWeaponType.CLAW, MapleWeaponType.KNUCKLE, MapleWeaponType.GUN};
+        MapleWeaponType[] type = {MapleWeaponType.單手劍, MapleWeaponType.單手斧, MapleWeaponType.單手棍, MapleWeaponType.短劍, MapleWeaponType.沒有武器, MapleWeaponType.沒有武器, MapleWeaponType.沒有武器, MapleWeaponType.長杖, MapleWeaponType.短杖, MapleWeaponType.沒有武器, MapleWeaponType.雙手劍, MapleWeaponType.雙手斧, MapleWeaponType.雙手棍, MapleWeaponType.矛, MapleWeaponType.槍, MapleWeaponType.弓, MapleWeaponType.弩, MapleWeaponType.拳套, MapleWeaponType.指虎, MapleWeaponType.火槍};
         if (cat < 30 || cat > 49) {
-            return MapleWeaponType.NOT_A_WEAPON;
+            return MapleWeaponType.沒有武器;
         }
         return type[cat - 30];
     }
@@ -385,9 +385,10 @@ public class MapleItemInformationProvider {
 
     /**
      * returns the maximum of items in one slot
+     *
      * @param c
      * @param itemId
-     * @return 
+     * @return
      */
     public final short getSlotMax(final MapleClient c, final int itemId) {
         if (slotMaxCache.containsKey(itemId)) {
@@ -557,7 +558,7 @@ public class MapleItemInformationProvider {
                 }
             }
         } catch (NullPointerException e) {
-            
+
         }
         return nEquip;
     }
@@ -650,7 +651,7 @@ public class MapleItemInformationProvider {
         ret.put("equipTradeBlock", MapleDataTool.getInt("equipTradeBlock", info, 0));
         ret.put("durability", MapleDataTool.getInt("durability", info, -1));
 
-        if (GameConstants.isMagicWeapon(itemId)) {
+        if (GameConstants.魔法武器(itemId)) {
             ret.put("elemDefault", MapleDataTool.getInt("elemDefault", info, 100));
             ret.put("incRMAS", MapleDataTool.getInt("incRMAS", info, 100)); // Poison
             ret.put("incRMAF", MapleDataTool.getInt("incRMAF", info, 100)); // Fire
@@ -818,13 +819,13 @@ public class MapleItemInformationProvider {
                             if (nEquip.getLuk() > 0 || Randomizer.nextInt(50) == 1) { //1/50
                                 nEquip.setLuk((short) (nEquip.getLuk() + Randomizer.nextInt(5)));
                             }
-                            if (nEquip.getWatk() > 0 && GameConstants.isWeapon(nEquip.getItemId())) {
+                            if (nEquip.getWatk() > 0 && GameConstants.武器(nEquip.getItemId())) {
                                 nEquip.setWatk((short) (nEquip.getWatk() + Randomizer.nextInt(5)));
                             }
                             if (nEquip.getWdef() > 0 || Randomizer.nextInt(40) == 1) { //1/40
                                 nEquip.setWdef((short) (nEquip.getWdef() + Randomizer.nextInt(5)));
                             }
-                            if (nEquip.getMatk() > 0 && GameConstants.isWeapon(nEquip.getItemId())) {
+                            if (nEquip.getMatk() > 0 && GameConstants.武器(nEquip.getItemId())) {
                                 nEquip.setMatk((short) (nEquip.getMatk() + Randomizer.nextInt(5)));
                             }
                             if (nEquip.getMdef() > 0 || Randomizer.nextInt(40) == 1) { //1/40

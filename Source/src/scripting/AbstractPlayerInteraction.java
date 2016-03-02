@@ -446,7 +446,7 @@ public abstract class AbstractPlayerInteraction {
             if (!MapleInventoryManipulator.checkSpace(cg, id, quantity, "")) {
                 return;
             }
-            if (type.equals(MapleInventoryType.EQUIP) && !GameConstants.isThrowingStar(id) && !GameConstants.isBullet(id)) {
+            if (type.equals(MapleInventoryType.EQUIP) && !GameConstants.飛鏢(id) && !GameConstants.子彈(id)) {
                 final Equip item = (Equip) (randomStats ? ii.randomizeStats((Equip) ii.getEquipById(id)) : ii.getEquipById(id));
                 if (period > 0) {
                     item.setExpiration(System.currentTimeMillis() + (period * 24 * 60 * 60 * 1000));

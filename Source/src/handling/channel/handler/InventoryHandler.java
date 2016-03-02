@@ -427,22 +427,22 @@ public class InventoryHandler {
         if (GameConstants.isTablet(scroll.getItemId())) {
             switch (scroll.getItemId() % 1000 / 100) {
                 case 0: //1h
-                    if (GameConstants.isTwoHanded(toScroll.getItemId()) || !GameConstants.isWeapon(toScroll.getItemId())) {
+                    if (GameConstants.雙手武器(toScroll.getItemId()) || !GameConstants.武器(toScroll.getItemId())) {
                         return false;
                     }
                     break;
                 case 1: //2h
-                    if (!GameConstants.isTwoHanded(toScroll.getItemId()) || !GameConstants.isWeapon(toScroll.getItemId())) {
+                    if (!GameConstants.雙手武器(toScroll.getItemId()) || !GameConstants.武器(toScroll.getItemId())) {
                         return false;
                     }
                     break;
                 case 2: //armor
-                    if (GameConstants.isAccessory(toScroll.getItemId()) || GameConstants.isWeapon(toScroll.getItemId())) {
+                    if (GameConstants.isAccessory(toScroll.getItemId()) || GameConstants.武器(toScroll.getItemId())) {
                         return false;
                     }
                     break;
                 case 3: //accessory
-                    if (!GameConstants.isAccessory(toScroll.getItemId()) || GameConstants.isWeapon(toScroll.getItemId())) {
+                    if (!GameConstants.isAccessory(toScroll.getItemId()) || GameConstants.武器(toScroll.getItemId())) {
                         return false;
                     }
                     break;

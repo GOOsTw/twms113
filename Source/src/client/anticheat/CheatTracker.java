@@ -57,10 +57,10 @@ public class CheatTracker {
 
     private int lastTickCount = 0, tickSame = 0;
     private long lastASmegaTime = 0;
-    private long[] lastTime = new long[6];
+    private final long[] lastTime = new long[6];
 
     public CheatTracker(final MapleCharacter chr) {
-        this.chr = new WeakReference<MapleCharacter>(chr);
+        this.chr = new WeakReference<>(chr);
         invalidationTask = CheatTimer.getInstance().register(new InvalidationTask(), 60000);
         takingDamageSince = System.currentTimeMillis();
     }

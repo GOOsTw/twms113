@@ -57,6 +57,7 @@ public class MapleStatEffect implements Serializable {
     private Point lt, rb;
     private int expBuff, itemup, mesoup, cashup, berserk, illusion, booster, berserk2, cp, nuffSkill;
     private byte level;
+    private int range = 0;
 //    private List<Pair<Integer, Integer>> randomMorph;
     private List<MapleDisease> cureDebuffs;
 
@@ -149,6 +150,7 @@ public class MapleStatEffect implements Serializable {
         ret.speed = (short) MapleDataTool.getInt("speed", source, 0);
         ret.jump = (short) MapleDataTool.getInt("jump", source, 0);
         ret.expBuff = MapleDataTool.getInt("expBuff", source, 0);
+        ret.range = MapleDataTool.getInt("range", source, 0);
         ret.cashup = MapleDataTool.getInt("cashBuff", source, 0);
         ret.itemup = MapleDataTool.getInt("itemupbyitem", source, 0);
         ret.mesoup = MapleDataTool.getInt("mesoupbyitem", source, 0);
@@ -683,7 +685,7 @@ public class MapleStatEffect implements Serializable {
         if (expinc != 0) {
             applyto.gainExp(expinc, true, true, false);
 //            applyto.getClient().sendPacket(MaplePacketCreator.showSpecialEffect(19));
-        } else if (GameConstants.isMonsterCard(sourceid)) {
+        } else if (GameConstants.怪物卡(sourceid)) {
             applyto.getMonsterBook().addCard(applyto.getClient(), sourceid);
         } else if (isSpiritClaw() && !applyto.isClone()) {
             MapleInventory use = applyto.getInventory(MapleInventoryType.USE);
@@ -691,7 +693,7 @@ public class MapleStatEffect implements Serializable {
             for (int i = 0; i < use.getSlotLimit(); i++) { // impose order...
                 item = use.getItem((byte) i);
                 if (item != null) {
-                    if (GameConstants.isThrowingStar(item.getItemId()) && item.getQuantity() >= 200) {
+                    if (GameConstants.飛鏢(item.getItemId()) && item.getQuantity() >= 200) {
                         MapleInventoryManipulator.removeById(applyto.getClient(), MapleInventoryType.USE, item.getItemId(), 200, false, true);
                         break;
                     }
@@ -1099,14 +1101,14 @@ public class MapleStatEffect implements Serializable {
                     localstatups.add(new Pair<>(MapleBuffStat.MORPH, getMorph(applyto)));
                     applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveForeignBuff(applyto.getId(), stat, this), false);
                 } else if (isMonsterRiding()) {
-                     localDuration = 2100000000;
+                    localDuration = 2100000000;
                     final int mountid = parseMountInfo(applyto, sourceid);
                     final int mountid2 = parseMountInfo_Pure(applyto, sourceid);
                     if (mountid != 0 && mountid2 != 0) {
                         final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.MONSTER_RIDING, 0));
                         applyto.cancelEffectFromBuffStat(MapleBuffStat.POWERGUARD);
                         applyto.cancelEffectFromBuffStat(MapleBuffStat.MANA_REFLECTION);
-                      applyto.getClient().getSession().write(MaplePacketCreator.giveMount(mountid2, sourceid, stat));
+                        applyto.getClient().getSession().write(MaplePacketCreator.giveMount(mountid2, sourceid, stat));
                         applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.showMonsterRiding(applyto.getId(), stat, mountid, sourceid), false);
                     } else {
                         return;
@@ -1757,5 +1759,10 @@ public class MapleStatEffect implements Serializable {
                 realTarget.cancelEffect(effect, false, startTime);
             }
         }
+
+    }
+
+    public final int getRange() {
+        return range;
     }
 }

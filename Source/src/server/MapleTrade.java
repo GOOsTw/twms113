@@ -152,7 +152,7 @@ public class MapleTrade {
     public final boolean setItems(final MapleClient c, final IItem item, byte targetSlot, final int quantity) {
         int target = getNextTargetSlot();
         final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-        if (target == -1 || GameConstants.isPet(item.getItemId()) || isLocked() || (GameConstants.getInventoryType(item.getItemId()) == MapleInventoryType.CASH && quantity != 1) || (GameConstants.getInventoryType(item.getItemId()) == MapleInventoryType.EQUIP && quantity != 1)) {
+        if (target == -1 || GameConstants.寵物(item.getItemId()) || isLocked() || (GameConstants.getInventoryType(item.getItemId()) == MapleInventoryType.CASH && quantity != 1) || (GameConstants.getInventoryType(item.getItemId()) == MapleInventoryType.EQUIP && quantity != 1)) {
             return false;
         }
         final byte flag = item.getFlag();
@@ -167,7 +167,7 @@ public class MapleTrade {
             }
         }
         IItem tradeItem = item.copy();
-        if (GameConstants.isThrowingStar(item.getItemId()) || GameConstants.isBullet(item.getItemId())) {
+        if (GameConstants.飛鏢(item.getItemId()) || GameConstants.子彈(item.getItemId())) {
             tradeItem.setQuantity(item.getQuantity());
             MapleInventoryManipulator.removeFromSlot(c, GameConstants.getInventoryType(item.getItemId()), item.getPosition(), item.getQuantity(), true);
         } else {

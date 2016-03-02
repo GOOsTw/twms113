@@ -240,7 +240,7 @@ public class ItemMakerHandler {
         } else {
             throw new RuntimeException("Invalid Item Maker type" + level);
         }
-        if (GameConstants.isWeapon(itemid) || GameConstants.isOverall(itemid)) {
+        if (GameConstants.武器(itemid) || GameConstants.套服(itemid)) {
             all[1] = Randomizer.rand(5, 11);
         } else {
             all[1] = Randomizer.rand(3, 7);

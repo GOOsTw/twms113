@@ -349,7 +349,7 @@ public class Equip extends Item implements IEquip, Serializable {
             return 0;
         }
         //aproximate value
-        if (GameConstants.isWeapon(getItemId())) {
+        if (GameConstants.武器(getItemId())) {
             return itemEXP / WEAPON_RATIO;
         } else {
             return itemEXP / ARMOR_RATIO;

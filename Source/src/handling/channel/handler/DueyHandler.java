@@ -120,7 +120,7 @@ public class DueyHandler {
                                     final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
                                     if (!ii.isDropRestricted(item.getItemId()) && !ii.isAccountShared(item.getItemId())) {
                                         if (addItemToDB(item, amount, mesos, c.getPlayer().getName(), accid, recipientOn)) {
-                                            if (GameConstants.isThrowingStar(item.getItemId()) || GameConstants.isBullet(item.getItemId())) {
+                                            if (GameConstants.飛鏢(item.getItemId()) || GameConstants.子彈(item.getItemId())) {
                                                 MapleInventoryManipulator.removeFromSlot(c, inv, (byte) itemPos, item.getQuantity(), true);
                                             } else {
                                                 MapleInventoryManipulator.removeFromSlot(c, inv, (byte) itemPos, amount, true, false);

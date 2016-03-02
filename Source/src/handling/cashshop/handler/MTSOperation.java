@@ -55,11 +55,11 @@ public class MTSOperation {
 //                slea.skip(4); //skip the quantity int, equips are always 1
             } else {
                 slea.readShort(); //flag
-                if (GameConstants.isThrowingStar(itemid) || GameConstants.isBullet(itemid)) {
+                if (GameConstants.飛鏢(itemid) || GameConstants.子彈(itemid)) {
                     slea.skip(8);//recharge ID thing
                 }
                 slot = (byte) slea.readInt();
-                if (GameConstants.isThrowingStar(itemid) || GameConstants.isBullet(itemid)) {
+                if (GameConstants.飛鏢(itemid) || GameConstants.子彈(itemid)) {
                     quantity = stars; //this is due to stars you need to use the entire quantity, not specified
                     slea.skip(4); //so just skip the quantity int
                 } else {

@@ -319,7 +319,7 @@ public class PlayerInteractionHandler {
                 final byte targetSlot = slea.readByte();
 
                 if (chr.getTrade() != null && item != null) {
-                    if ((quantity <= item.getQuantity() && quantity >= 0) || GameConstants.isThrowingStar(item.getItemId()) || GameConstants.isBullet(item.getItemId())) {
+                    if ((quantity <= item.getQuantity() && quantity >= 0) || GameConstants.飛鏢(item.getItemId()) || GameConstants.子彈(item.getItemId())) {
                         chr.getTrade().setItems(c, item, targetSlot, quantity);
                     }
                 }
@@ -386,7 +386,7 @@ public class PlayerInteractionHandler {
                         if (bundles_perbundle >= 50 && GameConstants.isUpgradeScroll(ivItem.getItemId())) {
                             c.setMonitored(true); //hack check
                         }
-                        if (GameConstants.isThrowingStar(ivItem.getItemId()) || GameConstants.isBullet(ivItem.getItemId())) {
+                        if (GameConstants.飛鏢(ivItem.getItemId()) || GameConstants.子彈(ivItem.getItemId())) {
                             // Ignore the bundles
                             short quantity = ivItem.getQuantity();
                             MapleInventoryManipulator.removeFromSlot(c, type, slot, ivItem.getQuantity(), true);
@@ -433,7 +433,7 @@ public class PlayerInteractionHandler {
                     c.sendPacket(MaplePacketCreator.enableActions());
                     return;
                 }
-                if ((tobuy.bundles < quantity) || ((tobuy.bundles % quantity != 0) && (GameConstants.isEquip(tobuy.item.getItemId())))
+                if ((tobuy.bundles < quantity) || ((tobuy.bundles % quantity != 0) && (GameConstants.裝備(tobuy.item.getItemId())))
                         || (chr.getMeso() - check2 > 2147483647L) || (shop.getMeso() + check2 < 0L) || (shop.getMeso() + check2 > 2147483647L)) { // 這是更好的方法來檢查.
                     c.getPlayer().dropMessage(1, "您攜帶的楓幣超過(2147483647)無法購買商品，請將多餘的楓幣存入倉庫。"); // 仿正服.
                     c.sendPacket(MaplePacketCreator.enableActions());

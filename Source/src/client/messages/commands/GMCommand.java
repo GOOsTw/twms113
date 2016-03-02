@@ -283,7 +283,7 @@ public class GMCommand {
             final int itemId = Integer.parseInt(splitted[1]);
             final short quantity = (short) CommandProcessorUtil.getOptionalIntArg(splitted, 2, 1);
             MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-            if (GameConstants.isPet(itemId)) {
+            if (GameConstants.寵物(itemId)) {
                 c.getPlayer().dropMessage(5, "寵物請到購物商城購買.");
             } else if (!ii.itemExists(itemId)) {
                 c.getPlayer().dropMessage(5, itemId + " - 物品不存在");
@@ -443,7 +443,7 @@ public class GMCommand {
             }
             
             MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-            if (GameConstants.isPet(itemId)) {
+            if (GameConstants.寵物(itemId)) {
                 MaplePet pet = MaplePet.createPet(itemId, MapleInventoryIdentifier.getInstance());
                 if (pet != null) {
                     MapleInventoryManipulator.addById(c, itemId, (short) 1, c.getPlayer().getName(), pet, 45);

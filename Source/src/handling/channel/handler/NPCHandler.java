@@ -229,7 +229,7 @@ public class NPCHandler {
                     MapleInventoryType type = GameConstants.getInventoryType(itemId);
                     IItem item = chr.getInventory(type).getItem(slot).copy();
 
-                    if (GameConstants.isPet(item.getItemId())) {
+                    if (GameConstants.寵物(item.getItemId())) {
                         c.sendPacket(MaplePacketCreator.enableActions());
                         return;
                     }
@@ -238,7 +238,7 @@ public class NPCHandler {
                         c.sendPacket(MaplePacketCreator.enableActions());
                         return;
                     }
-                    if (item.getItemId() == itemId && (item.getQuantity() >= quantity || GameConstants.isThrowingStar(itemId) || GameConstants.isBullet(itemId))) {
+                    if (item.getItemId() == itemId && (item.getQuantity() >= quantity || GameConstants.飛鏢(itemId) || GameConstants.子彈(itemId))) {
                         if (ii.isDropRestricted(item.getItemId())) {
                             if (ItemFlag.KARMA_EQ.check(flag)) {
                                 item.setFlag((byte) (flag - ItemFlag.KARMA_EQ.getValue()));
@@ -249,7 +249,7 @@ public class NPCHandler {
                                 return;
                             }
                         }
-                        if (GameConstants.isThrowingStar(itemId) || GameConstants.isBullet(itemId)) {
+                        if (GameConstants.飛鏢(itemId) || GameConstants.子彈(itemId)) {
                             quantity = item.getQuantity();
                         }
                         chr.gainMeso(-100, false, true, false);

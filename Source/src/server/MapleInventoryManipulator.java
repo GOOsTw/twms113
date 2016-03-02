@@ -65,7 +65,7 @@ public class MapleInventoryManipulator {
 
     public static int getUniqueId(int itemId, MaplePet pet) {
         int uniqueid = -1;
-        if (GameConstants.isPet(itemId)) {
+        if (GameConstants.寵物(itemId)) {
             if (pet != null) {
                 uniqueid = pet.getUniqueId();
             } else {
@@ -110,7 +110,7 @@ public class MapleInventoryManipulator {
         if (!type.equals(MapleInventoryType.EQUIP)) {
             final short slotMax = ii.getSlotMax(c, itemId);
             final List<IItem> existing = c.getPlayer().getInventory(type).listById(itemId);
-            if (!GameConstants.isRechargable(itemId)) {
+            if (!GameConstants.可充值道具(itemId)) {
                 if (existing.size() > 0) { // first update all existing slots to slotMax
                     Iterator<IItem> i = existing.iterator();
                     while (quantity > 0) {
@@ -156,7 +156,7 @@ public class MapleInventoryManipulator {
                         }
                         c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.ADD, nItem)));
                         //c.sendPacket(MaplePacketCreator.addInventorySlot(type, nItem));
-                        if (GameConstants.isRechargable(itemId) && quantity == 0) {
+                        if (GameConstants.可充值道具(itemId) && quantity == 0) {
                             break;
                         }
                     } else {
@@ -224,7 +224,7 @@ public class MapleInventoryManipulator {
             short slotMax = ii.getSlotMax(c, itemId);
             final List<IItem> existing = c.getPlayer().getInventory(type).listById(itemId);
 
-            if (!GameConstants.isRechargable(itemId)) {
+            if (!GameConstants.可充值道具(itemId)) {
                 IItem nItem = null;
                 boolean recieved = false;
 
@@ -264,7 +264,7 @@ public class MapleInventoryManipulator {
                         recieved = true;
                         c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.ADD, nItem)));
                         //c.sendPacket(MaplePacketCreator.addInventorySlot(type, nItem));
-                        if (GameConstants.isRechargable(itemId) && quantity == 0) {
+                        if (GameConstants.可充值道具(itemId) && quantity == 0) {
                             break;
                         }
                     } else {
@@ -326,7 +326,7 @@ public class MapleInventoryManipulator {
         if (!type.equals(MapleInventoryType.EQUIP)) {
             final short slotMax = ii.getSlotMax(c, item.getItemId());
             final List<IItem> existing = c.getPlayer().getInventory(type).listById(item.getItemId());
-            if (!GameConstants.isRechargable(item.getItemId())) {
+            if (!GameConstants.可充值道具(item.getItemId())) {
                 if (quantity <= 0) { //wth
                     c.sendPacket(MaplePacketCreator.getInventoryFull());
                     c.sendPacket(MaplePacketCreator.showItemUnavailable());
@@ -450,7 +450,7 @@ public class MapleInventoryManipulator {
             c.sendPacket(MaplePacketCreator.enableActions());
             return false;
         }
-        if (quantity <= 0 && !GameConstants.isRechargable(itemid)) {
+        if (quantity <= 0 && !GameConstants.可充值道具(itemid)) {
             return false;
         }
         final MapleInventoryType type = GameConstants.getInventoryType(itemid);
@@ -460,7 +460,7 @@ public class MapleInventoryManipulator {
         if (!type.equals(MapleInventoryType.EQUIP)) {
             final short slotMax = ii.getSlotMax(c, itemid);
             final List<IItem> existing = c.getPlayer().getInventory(type).listById(itemid);
-            if (!GameConstants.isRechargable(itemid)) {
+            if (!GameConstants.可充值道具(itemid)) {
                 if (existing.size() > 0) { // first update all existing slots to slotMax
                     for (IItem eItem : existing) {
                         final short oldQ = eItem.getQuantity();
@@ -497,7 +497,7 @@ public class MapleInventoryManipulator {
         }
         final IItem item = c.getPlayer().getInventory(type).getItem(slot);
         if (item != null) {
-            final boolean allowZero = consume && GameConstants.isRechargable(item.getItemId());
+            final boolean allowZero = consume && GameConstants.可充值道具(item.getItemId());
             c.getPlayer().getInventory(type).removeItem(slot, quantity, allowZero);
             if (item.getQuantity() == 0 && !allowZero) {
                 c.sendPacket(MaplePacketCreator.modifyInventory(fromDrop, new ModifyInventory(ModifyInventory.Types.REMOVE, item)));
@@ -542,7 +542,7 @@ public class MapleInventoryManipulator {
         short slotMax = ii.getSlotMax(c, source.getItemId());
         c.getPlayer().getInventory(type).move(src, dst, slotMax);
         final List<ModifyInventory> mods = new ArrayList<>();
-        if (!type.equals(MapleInventoryType.EQUIP) && initialTarget != null && initialTarget.getItemId() == source.getItemId() && !GameConstants.isRechargable(source.getItemId())) {
+        if (!type.equals(MapleInventoryType.EQUIP) && initialTarget != null && initialTarget.getItemId() == source.getItemId() && !GameConstants.可充值道具(source.getItemId())) {
             if ((olddstQ + oldsrcQ) > slotMax) {
                 mods.add(new ModifyInventory(ModifyInventory.Types.UPDATE, source));
                 mods.add(new ModifyInventory(ModifyInventory.Types.UPDATE, initialTarget));
@@ -715,7 +715,7 @@ public class MapleInventoryManipulator {
             return false;
         }
         final IItem source = c.getPlayer().getInventory(type).getItem(src);
-        if (/*quantity < 0 || */source == null || (!npcInduced && GameConstants.isPet(source.getItemId())) /*|| (quantity == 0 && !GameConstants.isRechargable(source.getItemId()))*/) {
+        if (/*quantity < 0 || */source == null || (!npcInduced && GameConstants.寵物(source.getItemId())) /*|| (quantity == 0 && !GameConstants.isRechargable(source.getItemId()))*/) {
             c.sendPacket(MaplePacketCreator.enableActions());
             return false;
         }
@@ -741,7 +741,7 @@ public class MapleInventoryManipulator {
         }
 
         c.getPlayer().getCheatTracker().checkDrop();
-        if (quantity < source.getQuantity() && !GameConstants.isRechargable(source.getItemId())) {
+        if (quantity < source.getQuantity() && !GameConstants.可充值道具(source.getItemId())) {
             final IItem target = source.copy();
             target.setQuantity(quantity);
             source.setQuantity((short) (source.getQuantity() - quantity));
@@ -758,7 +758,7 @@ public class MapleInventoryManipulator {
                     c.getPlayer().getMap().disappearingItemDrop(c.getPlayer(), c.getPlayer(), target, dropPos);
                 }
             } else {
-                if (GameConstants.isPet(source.getItemId()) || ItemFlag.UNTRADEABLE.check(flag)) {
+                if (GameConstants.寵物(source.getItemId()) || ItemFlag.UNTRADEABLE.check(flag)) {
                     c.getPlayer().getMap().disappearingItemDrop(c.getPlayer(), c.getPlayer(), target, dropPos);
                 } else {
                     c.getPlayer().getMap().spawnItemDrop(c.getPlayer(), c.getPlayer(), target, dropPos, true, true);
@@ -782,7 +782,7 @@ public class MapleInventoryManipulator {
                     c.getPlayer().getMap().disappearingItemDrop(c.getPlayer(), c.getPlayer(), source, dropPos);
                 }
             } else {
-                if (GameConstants.isPet(source.getItemId()) || ItemFlag.UNTRADEABLE.check(flag)) {
+                if (GameConstants.寵物(source.getItemId()) || ItemFlag.UNTRADEABLE.check(flag)) {
                     c.getPlayer().getMap().disappearingItemDrop(c.getPlayer(), c.getPlayer(), source, dropPos);
                 } else {
                     c.getPlayer().getMap().spawnItemDrop(c.getPlayer(), c.getPlayer(), source, dropPos, true, true);

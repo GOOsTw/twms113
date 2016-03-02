@@ -189,7 +189,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
                 if (pItems.item == null || pItems.bundles <= 0) {
                     continue;
                 }
-                if (pItems.item.getQuantity() <= 0 && !GameConstants.isRechargable(pItems.item.getItemId())) {
+                if (pItems.item.getQuantity() <= 0 && !GameConstants.可充值道具(pItems.item.getItemId())) {
                     continue;
                 }
                 item = pItems.item.copy();

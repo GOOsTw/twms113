@@ -417,7 +417,7 @@ public class PacketHelper {
                     mplew.writeInt(0);
                 }
 
-                if (GameConstants.isRechargable(item.getItemId())) {
+                if (GameConstants.可充值道具(item.getItemId())) {
                     mplew.writeInt(2);
                     mplew.writeShort(0x54);
                     mplew.write(0);
@@ -465,7 +465,7 @@ public class PacketHelper {
                 mplew.writeMapleAsciiString(item.getOwner());
                 mplew.writeShort(item.getFlag()); // flag
 
-                if (GameConstants.isRechargable(item.getItemId())) {
+                if (GameConstants.可充值道具(item.getItemId())) {
                     mplew.writeInt(2);
                     mplew.writeShort(0x54);
                     mplew.write(0);

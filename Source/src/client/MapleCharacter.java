@@ -3180,7 +3180,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             for (final IItem item : getInventory(inv)) {
                 expiration = item.getExpiration();
 
-                if (expiration != -1 && !GameConstants.isPet(item.getItemId()) && currenttime > expiration) {
+                if (expiration != -1 && !GameConstants.寵物(item.getItemId()) && currenttime > expiration) {
                     if (ItemFlag.LOCK.check(item.getFlag())) {
                         tobeunlock.add(item);
                     } else if (currenttime > expiration) {

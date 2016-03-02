@@ -171,7 +171,7 @@ public class MapleInventory implements Iterable<IItem>, Serializable {
             source.setPosition(dSlot);
             inventory.put(dSlot, source);
             inventory.remove(sSlot);
-        } else if (target.getItemId() == source.getItemId() && !GameConstants.isThrowingStar(source.getItemId()) && !GameConstants.isBullet(source.getItemId()) && target.getOwner().equals(source.getOwner()) && target.getExpiration() == source.getExpiration()) {
+        } else if (target.getItemId() == source.getItemId() && !GameConstants.飛鏢(source.getItemId()) && !GameConstants.子彈(source.getItemId()) && target.getOwner().equals(source.getOwner()) && target.getExpiration() == source.getExpiration()) {
             if (type.getType() == MapleInventoryType.EQUIP.getType() || type.getType() == MapleInventoryType.CASH.getType()) {
                 swap(target, source);
             } else if (source.getQuantity() + target.getQuantity() > slotMax) {

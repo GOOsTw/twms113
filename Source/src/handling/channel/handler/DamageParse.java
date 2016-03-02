@@ -72,7 +72,7 @@ public class DamageParse {
                 return;
             }
             /* 武陵道場技能 */
-            if (GameConstants.isMulungSkill(attack.skill)) {
+            if (GameConstants.武陵道場技能(attack.skill)) {
                 if (player.getMapId() / 10000 == 92502) {
                     player.mulungEnergyModify(false);
                 } else {
@@ -483,7 +483,7 @@ public class DamageParse {
                 return;
             } //lol
         }
-        if (GameConstants.isMulungSkill(attack.skill)) {
+        if (GameConstants.武陵道場技能(attack.skill)) {
             if (player.getMapId() / 10000 != 92502) {
                 //AutobanManager.getInstance().autoban(player.getClient(), "Using Mu Lung dojo skill out of dojo maps.");
                 return;
@@ -684,7 +684,7 @@ public class DamageParse {
 //      if (skill.isChargeSkill() && chr.getKeyDownSkill_Time() == 0) {
 //          return 1;
 //      }
-        elemMaxDamagePerMob += (elemMaxDamagePerMob * (mobstats.isBoss() ? stats.bossdam_r : stats.dam_r)) / 100;
+//        elemMaxDamagePerMob += (elemMaxDamagePerMob * (mobstats.isBoss() ? stats.bossdam_r : stats.dam_r)) / 100;
         switch (skill.getId()) {
             case SkillType.冒險之技.嫩寶丟擲術:
             case SkillType.貴族.嫩寶丟擲術:
