@@ -98,6 +98,22 @@ public class AdminCommand {
         return PlayerGMRank.ADMIN;
     }
 
+    public static class DEBUG extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (c.getPlayer() != null) {
+                c.getPlayer().setShowDebugInfo(!c.getPlayer().isShowDebugInfo());
+            }
+            return true;
+        }
+         @Override
+        public String getMessage() {
+            return new StringBuilder().append("!debbug - 顯示DEBUG訊息").toString();
+        }
+
+    }
+
     public static class SavePlayerShops extends CommandExecute {
 
         @Override

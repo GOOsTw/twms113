@@ -84,7 +84,7 @@ public class PortalScriptManager {
 
     public final void executePortalScript(final MaplePortal portal, final MapleClient c) {
         final PortalScript script = getPortalScript(portal.getScriptName());
-        if (c.getPlayer().isAdmin()) {
+        if (c.getPlayer().isShowDebugInfo()) {
             c.getPlayer().dropMessage("您已經建立與傳送門腳本: " + portal.getScriptName() + ".js 的關聯。");
         }
         if (script != null) {
@@ -92,10 +92,16 @@ public class PortalScriptManager {
                 script.enter(new PortalPlayerInteraction(c, portal));
             } catch (Exception e) {
                 System.err.println("進入傳送腳本失敗: " + portal.getScriptName() + ":" + e);
+                if (c.getPlayer().isShowDebugInfo()) {
+                    c.getPlayer().dropMessage("進入傳送腳本失敗 " + portal.getScriptName() + ".js 的關聯。");
+                }
             }
         } else {
             System.out.println("未處理的傳送腳本 " + portal.getScriptName() + " 所在地圖 " + c.getPlayer().getMapId());
             FilePrinter.printError("PortalScriptManager.txt", "未處理的傳送腳本 " + portal.getScriptName() + " 所在地圖 " + c.getPlayer().getMapId());
+            if (c.getPlayer().isShowDebugInfo()) {
+                    c.getPlayer().dropMessage("未處理的傳送腳本 " + portal.getScriptName() + ".js 的關聯。");
+                }
         }
     }
 

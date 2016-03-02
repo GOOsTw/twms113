@@ -961,12 +961,12 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             }
         }
         BuffTimer.schedule(cancelTask, duration);
-        if (con.isStaff() && MapleServerHandler.isDebugMode()) {
+        if (con.isShowDebugInfo()) {
             String bfn = "";
             for (Entry<MonsterStatus, Integer> z : effect.entrySet()) {
                 bfn += "[" + z.getKey().name() + "] ";
             }
-            //con.dropMessage(6, "開始 => 怪物施放狀態: 持續時間[" + duration + "] 開始時間[" + System.currentTimeMillis() + "] 狀態效果:" + bfn);
+            con.dropMessage(6, "開始 => 怪物施放狀態: 持續時間[" + duration + "] 開始時間[" + System.currentTimeMillis() + "] 狀態效果:" + bfn);
         }
     }
 
@@ -1149,8 +1149,8 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
 
         BuffTimer.schedule(cancelTask, aniTime * 2);
-        if (from.isStaff() && MapleServerHandler.isDebugMode()) {
-            ///from.dropMessage(6, "開始 => 給予怪物狀態: 持續時間[" + aniTime + "] 狀態效果[" + status.getStati().name() + "] 開始時間[" + System.currentTimeMillis() + "]");
+        if (from.isShowDebugInfo()) {
+            from.dropMessage(6, "開始 => 給予怪物狀態: 持續時間[" + aniTime + "] 狀態效果[" + status.name() + "] 開始時間[" + System.currentTimeMillis() + "]");
         }
         // 持續傷害的Buff
         if (statusEff.getStatus() == MonsterStatus.POISON || statusEff.getStatus() == MonsterStatus.NINJA_AMBUSH) {
@@ -1177,7 +1177,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     public final void cancelStatus(final Collection<MonsterStatus> stats, final int delay) {
         final List<MonsterStatusEffect> mses = new ArrayList<>();
         for (MonsterStatus stat : stats) {
-            if (stat == MonsterStatus.BLEED || stat == MonsterStatus.SUMMON) {
+            if (stat == MonsterStatus.SUMMON) {
                 return;
             }
             final MonsterStatusEffect mse = stati.get(stat);
@@ -1749,7 +1749,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     //自己加能力
     public void addEmpty() {
         for (MonsterStatus stat : MonsterStatus.values()) {
-            if (stat.isEmpty()) {
+            if (stat.isDefault()) {
                 stati.put(stat, new MonsterStatusEffect(stat, 0, 0, null, false));
             }
         }

@@ -795,7 +795,7 @@ public class PlayerHandler {
             }
             // Handle bulletcount
             bulletItem = MapleItemInformationProvider.getInstance().getName(visProjectile);
-            if (chr.isAdmin()) {
+            if (chr.isShowDebugInfo()) {
                 chr.dropMessage(6, "消耗的 弓箭/鏢/彈丸 數量:" + bulletCount + " 使用著:" + bulletItem);
             }
             if (chr.getBuffedValue(MapleBuffStat.SPIRIT_CLAW) == null) {

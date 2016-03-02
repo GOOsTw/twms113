@@ -591,7 +591,7 @@ public class SkillType {
         public final static int 魔力恢復 = 11110000;
         public final static int 鬥氣集中 = 11111001;
         public final static int 黑暗 = 11111002;
-        public final static int 氣絕 = 11111003;
+        public final static int 氣絕劍 = 11111003;
         public final static int 進階鬥氣 = 11110005;
         public final static int 雙連斬 = 11111004;
         public final static int 靈魂突刺 = 11111006;

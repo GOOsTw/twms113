@@ -2293,8 +2293,8 @@ public class InventoryHandler {
                 c.sendPacket(MaplePacketCreator.enableActions());
             }
         } finally {
-            if (c.getPlayer().isAdmin()) {
-                c.getPlayer().dropMessage(6, "撿_ItemId: " + mapitem.getItem().getItemId() + " ItemName: " + MapleItemInformationProvider.getInstance().getName(mapitem.getItem().getItemId()));
+            if (c.getPlayer().isShowDebugInfo()) {
+                c.getPlayer().dropMessage(6, "[拾取物品] 物品ID: " + mapitem.getItem().getItemId() + " 物品名稱: " + MapleItemInformationProvider.getInstance().getName(mapitem.getItem().getItemId()));
             }
             lock.unlock();
         }

@@ -213,6 +213,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private boolean testingdps = false;
     private long dps;
     private boolean 精靈商人購買開關 = false, 玩家私聊1 = false, 玩家私聊2 = false, 玩家私聊3 = false, GMinfo = false, 聊天稱號 = false, GM聊天 = false;
+    private boolean isShowDebugInfo = false;
 
     private MapleCharacter(final boolean ChannelServer) {
         this.setStance(0);
@@ -1775,7 +1776,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
         }
         stats.recalcLocalStats();
-        if (this.isAdmin()) {
+        if (this.isShowDebugInfo()) {
             this.dropMessage(6, "[系統提示] 使用了 BUFF 來源 :" + effect.getName() + "(" + effect.getSourceId() + ")");
             for (Pair<MapleBuffStat, Integer> buf : statups) {
                 this.dropMessage(6, "[系統提示] " + buf.getLeft().toString() + "(0x" + HexTool.toString(buf.getLeft().getValue()) + ")");
@@ -2508,6 +2509,14 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         invincible = invinc;
     }
 
+    public boolean isShowDebugInfo() {
+        return this.isShowDebugInfo;
+    }
+
+    public void setShowDebugInfo(boolean value) {
+        this.isShowDebugInfo = value;
+    }
+
     public boolean isInvincible() {
         return invincible;
     }
@@ -3139,11 +3148,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public final void expirationTask() {
         expirationTask(false);
     }
-    
+
     public final void expirationTask(boolean pending) {
         expirationTask(false, pending);
     }
-    
+
     public final void expirationTask(boolean packet, boolean pending) {
         if (pending) {
             if (pendingExpiration != null) {

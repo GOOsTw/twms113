@@ -551,8 +551,8 @@ public class MapleInventoryManipulator {
                 mods.add(new ModifyInventory(ModifyInventory.Types.UPDATE, initialTarget));
             }
         } else {
-            if (c.getPlayer().isAdmin()) {
-                c.getPlayer().dropMessage(6, "移_src:" + src + " dst:" + dst + " ItemId:" + source.getItemId() + " ItemName:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
+            if (c.getPlayer().isShowDebugInfo()) {
+                c.getPlayer().dropMessage(6, "[移動物品] 原始位置:" + src + " 目標位置t:" + dst + " 物品ID:" + source.getItemId() + " 物品名稱:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
             }
             mods.add(new ModifyInventory(ModifyInventory.Types.MOVE, source, src));
         }
@@ -651,8 +651,8 @@ public class MapleInventoryManipulator {
         if (c.getPlayer().getBuffedValue(MapleBuffStat.BOOSTER) != null && isWeapon(source.getItemId())) {
             c.getPlayer().cancelBuffStats(MapleBuffStat.BOOSTER);
         }
-        if (c.getPlayer().isAdmin()) {
-            c.getPlayer().dropMessage(6, "穿_src:" + src + " dst:" + dst + " ItemId:" + source.getItemId() + " ItemName:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
+        if (c.getPlayer().isShowDebugInfo()) {
+            c.getPlayer().dropMessage(6, "[穿戴物品] 原始位置:" + src + " 目標位置:" + dst + " 物品ID:" + source.getItemId() + " 物品名稱:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
         }
         mods.add(new ModifyInventory(2, source, src));
         c.sendPacket(MaplePacketCreator.modifyInventory(true, mods));
@@ -694,8 +694,8 @@ public class MapleInventoryManipulator {
             target.setPosition(src);
             c.getPlayer().getInventory(MapleInventoryType.EQUIPPED).addFromDB(target);
         }
-        if (c.getPlayer().isAdmin()) {
-            c.getPlayer().dropMessage(6, "脫_src:" + src + " dst:" + dst + " ItemId:" + source.getItemId() + " ItemName:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
+        if (c.getPlayer().isShowDebugInfo()) {
+            c.getPlayer().dropMessage(6, "[卸下裝備] 原始位置:" + src + " 目標位置:" + dst + " 物品ID:" + source.getItemId() + " 物品名稱:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
         }
         c.sendPacket(MaplePacketCreator.modifyInventory(true, Collections.singletonList(new ModifyInventory(2, source, src))));
         c.getPlayer().equipChanged();
@@ -720,7 +720,7 @@ public class MapleInventoryManipulator {
             return false;
         }
         if (c.getPlayer().isAdmin()) {
-            c.getPlayer().dropMessage(6, "丟_src:" + src + " type:" + type + " ItemId:" + source.getItemId() + " ItemName:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
+            c.getPlayer().dropMessage(6, "[丟棄物品] 原始位置:" + src + " 種類:" + type + " 物品ID:" + source.getItemId() + " 物品名稱:" + MapleItemInformationProvider.getInstance().getName(source.getItemId()));
         }
         final byte flag = source.getFlag();
 

@@ -151,8 +151,6 @@ public class MonsterStatusEffect {
                 return 2311005;
             case NINJA_AMBUSH: //not used
                 return 4121004;
-            case TRIANGULATION:
-                return 36110005;
         }
         return 0;
     }

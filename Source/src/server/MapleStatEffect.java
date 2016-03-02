@@ -674,9 +674,9 @@ public class MapleStatEffect implements Serializable {
             //short converting needs math.min cuz of overflow
             stat.setMp(stat.getMp() + mpchange);
 
-            hpmpupdate.add(new Pair<MapleStat, Integer>(MapleStat.MP, Integer.valueOf(stat.getMp())));
+            hpmpupdate.add(new Pair<>(MapleStat.MP, Integer.valueOf(stat.getMp())));
         }
-        hpmpupdate.add(new Pair<MapleStat, Integer>(MapleStat.HP, Integer.valueOf(stat.getHp())));
+        hpmpupdate.add(new Pair<>(MapleStat.HP, Integer.valueOf(stat.getHp())));
 
         applyto.getClient().sendPacket(MaplePacketCreator.updatePlayerStats(hpmpupdate, true, applyto.getJob()));
 
@@ -1095,16 +1095,18 @@ public class MapleStatEffect implements Serializable {
                 break;
             default:
                 if (isMorph() || isPirateMorph()) {
-                    final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.MORPH, Integer.valueOf(getMorph(applyto))));
-                    localstatups.add(new Pair<>(MapleBuffStat.MORPH, Integer.valueOf(getMorph(applyto))));
+                    final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.MORPH, getMorph(applyto)));
+                    localstatups.add(new Pair<>(MapleBuffStat.MORPH, getMorph(applyto)));
                     applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveForeignBuff(applyto.getId(), stat, this), false);
                 } else if (isMonsterRiding()) {
+                     localDuration = 2100000000;
                     final int mountid = parseMountInfo(applyto, sourceid);
                     final int mountid2 = parseMountInfo_Pure(applyto, sourceid);
                     if (mountid != 0 && mountid2 != 0) {
                         final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.MONSTER_RIDING, 0));
-                        applyto.getClient().sendPacket(MaplePacketCreator.cancelBuff(null));
-                        applyto.getClient().sendPacket(MaplePacketCreator.giveMount(mountid, sourceid, stat));
+                        applyto.cancelEffectFromBuffStat(MapleBuffStat.POWERGUARD);
+                        applyto.cancelEffectFromBuffStat(MapleBuffStat.MANA_REFLECTION);
+                      applyto.getClient().getSession().write(MaplePacketCreator.giveMount(mountid2, sourceid, stat));
                         applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.showMonsterRiding(applyto.getId(), stat, mountid, sourceid), false);
                     } else {
                         return;
@@ -1119,7 +1121,7 @@ public class MapleStatEffect implements Serializable {
                 }
                 break;
         }
-        if (!isMonsterRiding_()) {
+        if (!isMonsterRiding()) {
             applyto.cancelEffect(this, true, -1, localstatups);
         }
         // Broadcast effect to self
@@ -1507,7 +1509,7 @@ public class MapleStatEffect implements Serializable {
     }
 
     public final boolean isMonsterRiding_() {
-        return skill && (sourceid == 1004 || sourceid == 10001004 || sourceid == 20001004);
+        return skill && (sourceid == 1004 || sourceid == 10001004 || sourceid == 20001004 || sourceid == 20011004 || sourceid == 11004 || sourceid == 20021004 || sourceid == 80001000);
     }
 
     public final boolean isMonsterRiding() {

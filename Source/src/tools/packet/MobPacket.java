@@ -31,7 +31,9 @@ import handling.SendPacketOpcode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 import server.life.MapleMonster;
 import server.life.MobSkill;
@@ -254,7 +256,7 @@ public class MobPacket {
                     } else if (buff.getSkill() > 0) {
                         mplew.writeInt(buff.getSkill());
                     }
-                    mplew.writeShort(buff.getStatus().isEmpty() ? 0 : 1);
+                    mplew.writeShort(buff.getStatus().isDefault()? 0 : 1);
                 }
             }
         }
@@ -337,109 +339,66 @@ public class MobPacket {
     }
 
     public static void SingleProcessStatSet(MaplePacketLittleEndianWriter mplew, MonsterStatusEffect buff) {
-        Set<MonsterStatusEffect> ss = new HashSet<>();
+        List<MonsterStatusEffect> ss = new LinkedList<>();
         ss.add(buff);
         ProcessStatSet(mplew, ss);
     }
 
-    public static void EncodeTemporary(MaplePacketLittleEndianWriter mplew, Collection<MonsterStatusEffect> buffs) {
+    public static void EncodeTemporary(MaplePacketLittleEndianWriter mplew, List<MonsterStatusEffect> buffs) {
         Set<MonsterStatus> mobstat = new HashSet();
         writeMaskFromList(mplew, buffs);
+         Collections.sort(buffs, new Comparator<MonsterStatusEffect>() {
+            @Override
+            public int compare(final MonsterStatusEffect o1, final MonsterStatusEffect o2) {
+                int val1 = o1.getStatus().getOrder();
+                int val2 = o2.getStatus().getOrder();
+                return (val1 < val2 ? -1 : (val1 == val2 ? 0 : 1));
+            }
+        });
+        Collection<MonsterStatus> buffstatus = new LinkedList<>();
         for (MonsterStatusEffect buff : buffs) {
-            if (buff.getStatus() != MonsterStatus.SUMMON && buff.getStatus() != MonsterStatus.EMPTY && !mobstat.contains(buff.getStatus())) {
-                mplew.writeShort(buff.getX());
-                if (buff.getMobSkill() != null) {
-                    mplew.writeShort(buff.getMobSkill().getSkillId());
-                    mplew.writeShort(buff.getMobSkill().getSkillLevel());
-                } else {
-                    mplew.writeInt(buff.getSkill() > 0 ? buff.getSkill() : 0);
-                }
-                //mplew.writeShort(-1);
-                mplew.writeShort((short) ((buff.getCancelTask() - System.currentTimeMillis())));
+            buffstatus.add(buff.getStatus());
+            if (buff.getStatus() == MonsterStatus.DANAGED_ELEM_ATTR) {
+                continue;
             }
-            mobstat.add(buff.getStatus());
-        }
-        if (mobstat.contains(MonsterStatus.WDEF)) {
-            mplew.writeInt(0);
-        }
-        if (mobstat.contains(MonsterStatus.MDEF)) {
-            mplew.writeInt(0);
-        }
-        if (mobstat.contains(MonsterStatus.BLIND)) {
-            mplew.writeInt(0);
-        }
-        if (mobstat.contains(MonsterStatus.SEAL_SKILL)) {
-            mplew.writeInt(0);
-        }
-        if (mobstat.contains(MonsterStatus.BLIND) || mobstat.contains(MonsterStatus.SEAL_SKILL)) {
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-        }
-        if (mobstat.contains(MonsterStatus.HEAL_DAMAGE)) {
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-        }
-        if (mobstat.contains(MonsterStatus.MBS61)) {
-            mplew.writeInt(0);
-        }
-
-        if (mobstat.contains(MonsterStatus.MBS39)) {
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-        }
-        if (mobstat.contains(MonsterStatus.MBS42)) {
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-        }
-        if (mobstat.contains(MonsterStatus.SPEED)) {
-            mplew.write(0);
-        }
-        if (mobstat.contains(MonsterStatus.MBS51)) {
-            mplew.writeInt(0);
-        }
-        if (mobstat.contains(MonsterStatus.MBS54)) {
-            mplew.writeInt(0);
-        }
-        if (mobstat.contains(MonsterStatus.MBS56)) {
-            mplew.writeInt(0);
-        }
-        if (mobstat.contains(MonsterStatus.BLEED)) {
-            int v4 = 0;
-            int v23 = 0;
-            mplew.write(v4);
-            if (v4 > 0) {
-                do {
-                    mplew.writeInt(8695624);
-                    mplew.writeInt(80001431); // 技能ID
-                    mplew.writeInt(7100);
-                    mplew.writeInt(1000); // 延遲毫秒 : dotInterval * 1000
-                    mplew.writeInt(187277775);
-                    mplew.writeInt(16450);
-                    mplew.writeInt(15); // dotTime
+            if (buff.getStatus() == MonsterStatus.EMPTY) {
+                int result = 0;
+                mplew.writeInt(result);
+                for (int i = 0; i < result; ++i) {
                     mplew.writeInt(0);
-                    mplew.writeInt(1);
-                    mplew.writeInt(7100);
-                    ++v23;
-                } while (v23 < v4);
+                    mplew.writeInt(0);
+                    mplew.writeInt(0);
+                }
+                continue;
             }
+            mplew.writeShort(buff.getX());
+            if (buff.getMobSkill() != null) {
+                mplew.writeShort(buff.getMobSkill().getSkillId());
+                mplew.writeShort(buff.getMobSkill().getSkillLevel());
+            } else if (buff.getSkill() > 0) {
+                mplew.writeInt(buff.getSkill());
+            } else {
+                mplew.writeInt(0);
+            }
+            mplew.writeShort((short) ((buff.getCancelTask() - System.currentTimeMillis())));
         }
-        if (mobstat.contains(MonsterStatus.MBS63)) {
+        if (buffstatus.contains(MonsterStatus.WEAPON_DAMAGE_REFLECT)) {
+            mplew.writeInt(0);
+        }
+        if (buffstatus.contains(MonsterStatus.MAGIC_DAMAGE_REFLECT)) {
+            mplew.writeInt(0);
+        }
+        if (buffstatus.contains(MonsterStatus.WEAPON_DAMAGE_REFLECT)) {
+            mplew.writeInt(0);
+        }
+        if (buffstatus.contains(MonsterStatus.SUMMON)) {
             mplew.write(0);
             mplew.write(0);
-        }
-
-        if (mobstat.contains(MonsterStatus.MONSTER_BOMB)) {
-            mplew.writeInt(0);
-            mplew.writeInt(0);
-            mplew.writeInt(0);
         }
 
     }
 
-    public static void ProcessStatSet(MaplePacketLittleEndianWriter mplew, Collection<MonsterStatusEffect> buffs) {
+    public static void ProcessStatSet(MaplePacketLittleEndianWriter mplew, List<MonsterStatusEffect> buffs) {
         EncodeTemporary(mplew, buffs);
         mplew.writeShort(1);
         mplew.write(1);
