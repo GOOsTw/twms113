@@ -32,14 +32,13 @@ import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 import server.ServerProperties;
 
 public class MaplePacketEncoder implements ProtocolEncoder {
-    
+
     private static final boolean crypt = Boolean.parseBoolean(ServerProperties.getProperty("server.crypt", "false"));
 
     @Override
     public void encode(final org.apache.mina.core.session.IoSession session, final Object message, final ProtocolEncoderOutput out) throws Exception {
         final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
-        
-        
+
         if (client != null) {
             final MapleAESOFB send_crypto = client.getSendCrypto();
             final byte[] input = ((MaplePacket) message).getBytes();
@@ -59,12 +58,15 @@ public class MaplePacketEncoder implements ProtocolEncoder {
             } finally {
                 mutex.unlock();
             }
-//            System.arraycopy(unencrypted, 0, ret, 4, unencrypted.length);
-//            out.write(ByteBuffer.wrap(ret));
+            if (crypt) {
+                for (int i = 0; i < ret.length; i++) {
+                    ret[i] ^= 0x0C;
+                }
+            }
         } else {
             byte[] input = ((MaplePacket) message).getBytes();
-            if(crypt) {
-                for(int i = 0 ; i < input.length ; i++) {
+            if (crypt) {
+                for (int i = 0; i < input.length; i++) {
                     input[i] ^= 0x0C;
                 }
             }
