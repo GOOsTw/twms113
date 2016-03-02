@@ -33,9 +33,12 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
 import client.MapleClient;
+import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import server.MaplePortal;
+import tools.EncodingDetect;
 import tools.FilePrinter;
 
 public class PortalScriptManager {
@@ -52,26 +55,27 @@ public class PortalScriptManager {
         if (scripts.containsKey(scriptName)) {
             return scripts.get(scriptName);
         }
-
         final File scriptFile = new File("scripts/portal/" + scriptName + ".js");
         if (!scriptFile.exists()) {
             scripts.put(scriptName, null);
             return null;
         }
-
-        InputStreamReader fr = null;
+        InputStream in = null;
         final ScriptEngine portal = sef.getScriptEngine();
         try {
-            fr = new InputStreamReader(new FileInputStream(scriptFile), "utf-8");
-            CompiledScript compiled = ((Compilable) portal).compile(fr);
+            in = new FileInputStream(scriptFile);
+            BufferedReader bf = new BufferedReader(new InputStreamReader(in, EncodingDetect.getJavaEncode(scriptFile)));
+            //Java8
+            //String lines = "load('nashorn:mozilla_compat.js');" + bf.lines().collect(Collectors.joining(System.lineSeparator()));
+            CompiledScript compiled = ((Compilable) portal).compile(bf);
             compiled.eval();
         } catch (final Exception e) {
-            System.err.println("進入傳送腳本失敗: " + scriptName + ":" + e);
+            System.err.println("Error executing Portalscript: " + scriptName + ":" + e);
             FilePrinter.printError("PortalScriptManager.txt", e);
         } finally {
-            if (fr != null) {
+            if (in != null) {
                 try {
-                    fr.close();
+                    in.close();
                 } catch (final IOException e) {
                     System.err.println("ERROR CLOSING" + e);
                 }
@@ -81,6 +85,7 @@ public class PortalScriptManager {
         scripts.put(scriptName, script);
         return script;
     }
+
 
     public final void executePortalScript(final MaplePortal portal, final MapleClient c) {
         final PortalScript script = getPortalScript(portal.getScriptName());

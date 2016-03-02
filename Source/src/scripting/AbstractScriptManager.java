@@ -29,11 +29,14 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
 import client.MapleClient;
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import javax.script.ScriptException;
+import tools.EncodingDetect;
 import tools.FilePrinter;
 
 /**
@@ -49,12 +52,11 @@ public abstract class AbstractScriptManager {
     }
 
     protected Invocable getInvocable(String path, MapleClient c, boolean npc) {
-        InputStreamReader fr = null;
+        InputStream in = null;
         try {
             
             path = "scripts/" + path;
             ScriptEngine engine = null;
-
             if (c != null) {
                 engine = c.getScriptEngine(path);
             }
@@ -68,9 +70,11 @@ public abstract class AbstractScriptManager {
                 if (c != null) {
                     c.setScriptEngine(path, engine);
                 }
-                fr = new InputStreamReader(new FileInputStream(scriptFile), "utf-8");
-                
-                engine.eval(fr);
+                in = new FileInputStream(scriptFile);
+                BufferedReader bf = new BufferedReader(new InputStreamReader(in, EncodingDetect.getJavaEncode(scriptFile)));
+                //java8
+                //String lines = "load('nashorn:mozilla_compat.js');" + bf.lines().collect(Collectors.joining(System.lineSeparator()));
+                engine.eval(bf);
             } else if (c != null && npc) {
                 c.getPlayer().dropMessage(5, "你現在不能攻擊或不能跟npc對話,請在對話框打 @解卡/@ea 來解除異常狀態");
             }
@@ -80,8 +84,8 @@ public abstract class AbstractScriptManager {
             return null;
         } finally {
             try {
-                if (fr != null) {
-                    fr.close();
+                if (in != null) {
+                    in.close();
                 }
             } catch (IOException ignore) {
             }
