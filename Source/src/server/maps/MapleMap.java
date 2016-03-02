@@ -501,8 +501,8 @@ public final class MapleMap {
             if (de.itemId == mob.getStolen()) {
                 continue;
             }
-            //if (Randomizer.nextInt(999999) < (int) (de.chance * chServerrate * chr.getDropMod() * (chr.getStat().dropBuff / 100.0) * (showdown / 100.0))) {
-            if (Randomizer.nextInt(999999) < (int) (de.chance * chServerrate * chr.getDropMod() * chr.getStat().dropBuff / 100.0 * (showdown / 100.0))) {
+            double lastDrop = chr.getStat().realDropBuff - 100.0 <= 0 ? 100 : chr.getStat().realDropBuff - 100;
+            if (Randomizer.nextInt(999999) < (int) (de.chance * chServerrate * chr.getDropMod() * lastDrop / 100.0 * (showdown / 100.0))) {
                 if (mesoDropped && droptype != 3 && de.itemId == 0) { //not more than 1 sack of meso
                     continue;
                 }
@@ -2730,9 +2730,11 @@ public final class MapleMap {
                 mo.sendSpawnData(chr.getClient());
             }
         } else // monster left view range
-        if (mo.getType() != MapleMapObjectType.SUMMON && mo.getPosition().distanceSq(chr.getPosition()) > GameConstants.maxViewRangeSq()) {
-            chr.removeVisibleMapObject(mo);
-            mo.sendDestroyData(chr.getClient());
+        {
+            if (mo.getType() != MapleMapObjectType.SUMMON && mo.getPosition().distanceSq(chr.getPosition()) > GameConstants.maxViewRangeSq()) {
+                chr.removeVisibleMapObject(mo);
+                mo.sendDestroyData(chr.getClient());
+            }
         }
     }
 
