@@ -23,10 +23,11 @@ function action(mode, type, selection) {
 			cm.dispose();
 		return;
 	}
-
-    if (status == 0) {
-		cm.sendSimple("#b你好 #k#h  ##e  #b我是排名系統.#k\r\n#L0##r工會排名\n\#l\r\n#L1##g玩家排名\n\#l\r\n#L2##b楓幣排名#l\n\#l\r\n#L3##dDPM排名#l");
-	} else if (status == 1) {
+	switch (status) {
+		case 0:
+			cm.sendSimple("#b你好 #k#h  ##e  #b我是排名系統.#k\r\n#L0##r工會排名\n\#l\r\n#L1##g玩家排名\n\#l\r\n#L2##b楓幣排名#l\n\#l\r\n#L3##dDPM排名#l");
+		break;
+		case 1:
 		gg = selection;
 		switch(gg) {
 			case 0:
@@ -45,7 +46,8 @@ function action(mode, type, selection) {
 				cm.dispose();
 			break;
 		}
-	} else if (status == 2) {
+		break;
+		case 2:
 		gg = selection;
 		switch (gg) {
 			case 0:
@@ -67,7 +69,8 @@ function action(mode, type, selection) {
 				cm.sendSimple("#b你好 #k#h  ##e  #b我是排名系統.#k\r\n#L0##r工會排名\n\#l\r\n#L1##g玩家排名\n\#l\r\n#L2##b楓幣排名#l\n\#l\r\n#L3##dDPM排名#l");
 			return;
 		}
-	} else if (status == 3) {
+		break;
+		case 3:
 		gg = selection;
 		switch (gg) {
 			case 0:
@@ -95,7 +98,8 @@ function action(mode, type, selection) {
 				cm.sendSimple("親愛的 #k#h ##e #b您現在要查看哪個職業的排行榜#k \r\n#L0##b全部\n\#l\r\n#L1##g冒險家\n\#l\r\n#L2##r貴族#l\n\#l\r\n#L3##d傳說#l\n\#l\r\n#L4##k回上一頁#l");
 			return;
 		}
-	} else if (status == 4) {
+		break;
+		case 4:
 		gg = selection;
 		switch (gg) {
 			case 0:
@@ -123,5 +127,7 @@ function action(mode, type, selection) {
 				cm.sendSimple("親愛的 #k#h ##e #b您現在要查看哪個職業的排行榜#k \r\n#L0##b全部\n\#l\r\n#L1##g冒險家\n\#l\r\n#L2##r貴族#l\n\#l\r\n#L3##d傳說#l\n\#l\r\n#L4##k回上一頁#l");
 			return;
 		}
+		break;
 	}
+
 }
