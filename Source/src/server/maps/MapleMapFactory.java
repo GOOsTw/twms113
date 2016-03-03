@@ -487,7 +487,7 @@ public class MapleMapFactory {
             case 104000400: // Mano
                 mobtime = 2700;
                 monsterid = 2220000;
-                msg = "紅寶王大大出現了";
+                msg = "紅寶王出現了！";
                 pos1 = new Point(439, 185);
                 pos2 = new Point(301, -85);
                 pos3 = new Point(107, -355);
@@ -495,7 +495,7 @@ public class MapleMapFactory {
             case 101030404: // Stumpy
                 mobtime = 2700;
                 monsterid = 3220000;
-                msg = "樹妖王大大出現了";
+                msg = "樹妖王出現了！";
                 pos1 = new Point(867, 1282);
                 pos2 = new Point(810, 1570);
                 pos3 = new Point(838, 2197);
@@ -503,7 +503,7 @@ public class MapleMapFactory {
             case 110040000: // King Clang
                 mobtime = 1200;
                 monsterid = 5220001;
-                msg = "巨居蟹大大出現了";
+                msg = "巨居蟹出現了！";
                 pos1 = new Point(-355, 179);
                 pos2 = new Point(-1283, -113);
                 pos3 = new Point(-571, -593);
@@ -511,7 +511,7 @@ public class MapleMapFactory {
             case 250010304: // Tae Roon
                 mobtime = 2100;
                 monsterid = 7220000;
-                msg = "流浪熊大大出現了";
+                msg = "流浪熊出現了！";
                 pos1 = new Point(-210, 33);
                 pos2 = new Point(-234, 393);
                 pos3 = new Point(-654, 33);
@@ -519,7 +519,7 @@ public class MapleMapFactory {
             case 200010300: // Eliza
                 mobtime = 1200;
                 monsterid = 8220000;
-                msg = "艾莉傑大大出現了";
+                msg = "艾莉傑出現了！";
                 pos1 = new Point(665, 83);
                 pos2 = new Point(672, -217);
                 pos3 = new Point(-123, -217);
@@ -527,7 +527,7 @@ public class MapleMapFactory {
             case 250010503: // Ghost Priest
                 mobtime = 1800;
                 monsterid = 7220002;
-                msg = "喵仙怪人大大出現了";
+                msg = "喵仙怪人出現了！";
                 pos1 = new Point(-303, 543);
                 pos2 = new Point(227, 543);
                 pos3 = new Point(719, 543);
@@ -535,7 +535,7 @@ public class MapleMapFactory {
             case 222010310: // Old Fox
                 mobtime = 2700;
                 monsterid = 7220001;
-                msg = "九尾妖狐大大出現了";
+                msg = "九尾妖狐出現了！";
                 pos1 = new Point(-169, -147);
                 pos2 = new Point(-517, 93);
                 pos3 = new Point(247, 93);
@@ -543,7 +543,7 @@ public class MapleMapFactory {
             case 107000300: // Dale
                 mobtime = 1800;
                 monsterid = 6220000;
-                msg = "沼澤巨鱷大大出現了";
+                msg = "沼澤巨鱷出現了！";
                 pos1 = new Point(710, 118);
                 pos2 = new Point(95, 119);
                 pos3 = new Point(-535, 120);
@@ -551,7 +551,7 @@ public class MapleMapFactory {
             case 100040105: // Faust
                 mobtime = 1800;
                 monsterid = 5220002;
-                msg = "殭屍猴大大出現了";
+                msg = "殭屍猴出現了！";
                 pos1 = new Point(1000, 278);
                 pos2 = new Point(557, 278);
                 pos3 = new Point(95, 278);
@@ -575,7 +575,7 @@ public class MapleMapFactory {
             case 221040301: // Jeno
                 mobtime = 2400;
                 monsterid = 6220001;
-                msg = "葛雷金剛出現了";
+                msg = "葛雷金剛出現了！";
                 pos1 = new Point(-4134, 416);
                 pos2 = new Point(-4283, 776);
                 pos3 = new Point(-3292, 776);
@@ -583,7 +583,7 @@ public class MapleMapFactory {
             case 240040401: // Lev
                 mobtime = 7200;
                 monsterid = 8220003;
-                msg = "寒霜冰龍出現了";
+                msg = "寒霜冰龍出現了！";
                 pos1 = new Point(-15, 2481);
                 pos2 = new Point(127, 1634);
                 pos3 = new Point(159, 1142);
@@ -591,7 +591,7 @@ public class MapleMapFactory {
             case 260010201: // Dewu
                 mobtime = 3600;
                 monsterid = 3220001;
-                msg = "仙人長老出現了";
+                msg = "仙人長老出現了！";
                 pos1 = new Point(-215, 275);
                 pos2 = new Point(298, 275);
                 pos3 = new Point(592, 275);
@@ -599,7 +599,7 @@ public class MapleMapFactory {
             case 261030000: // Chimera
                 mobtime = 2700;
                 monsterid = 8220002;
-                msg = "奇美拉出現了";
+                msg = "奇美拉出現了！";
                 pos1 = new Point(-1094, -405);
                 pos2 = new Point(-772, -116);
                 pos3 = new Point(-108, 181);
@@ -607,7 +607,7 @@ public class MapleMapFactory {
             case 230020100: // Sherp
                 mobtime = 2700;
                 monsterid = 4220000;
-                msg = "火蚌殼出現了";
+                msg = "火蚌殼出現了！";
                 pos1 = new Point(-291, -20);
                 pos2 = new Point(-272, -500);
                 pos3 = new Point(-462, 640);
