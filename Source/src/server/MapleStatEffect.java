@@ -214,7 +214,7 @@ public class MapleStatEffect implements Serializable {
             addBuffStatPairToListIfNotZero(statups, MapleBuffStat.MESO_RATE, ret.mesoup * 200); // defaults to 2x
             addBuffStatPairToListIfNotZero(statups, MapleBuffStat.BERSERK_FURY, ret.berserk2);
             addBuffStatPairToListIfNotZero(statups, MapleBuffStat.BOOSTER, ret.booster);
-            addBuffStatPairToListIfNotZero(statups, MapleBuffStat.BUFF_58, ret.illusion);
+            addBuffStatPairToListIfNotZero(statups, MapleBuffStat.ILLUSION, ret.illusion);
 
         }
         if (skill) { // hack because we can't get from the datafile...

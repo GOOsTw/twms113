@@ -312,6 +312,294 @@ public enum MapleBuffStat implements Serializable {
     //MONSTER RIDER = 0x20000000
     //COMBAT ORDERS = 0x1000000
     //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
+//DICE = 0x100000, the roll is determined in the long-ass packet itself as buffedvalue
+    //ENERGY CHARGE = 0x400000
+    //teleport mastery = 0x800000
+    //PIRATE'S REVENGE = 0x4000000
+    //DASH = 0x8000000 and 0x10000000
+    //SPEED INFUSION = 0x40000000
+    //MONSTER RIDER = 0x20000000
+    //COMBAT ORDERS = 0x1000000
+    //物理攻擊力
     WATK(0),
     //物理防禦力
     WDEF(1),
@@ -415,9 +703,6 @@ public enum MapleBuffStat implements Serializable {
     UNKNOWN3(48),
     // 鬼魂變身
     GHOST_MORPH(49),
-    // 
-    ARIANT_COSS_IMU(50), // The white ball around you
-
     //
     BUFF_51(51),
     // 掉寶倍率
@@ -433,14 +718,13 @@ public enum MapleBuffStat implements Serializable {
     // 未知
     BUFF_57(57),
     // 龍魔島-四連殺
-    BUFF_58(58),
+    ILLUSION(58),
     // 狂暴戰魂
-    BERSERK_FURY(59),
+    BERSERK_FURY(50),
     // 金剛霸體
     DIVINE_BODY(60),
     // 閃光擊
     SPARK(61),
-    ARIANT_COSS_IMU2(62), // no idea, seems the same
     // 終極之弓
     FINALATTACK(63),
    // 風影漫步
