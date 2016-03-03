@@ -1106,8 +1106,8 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             @Override
             public final void run() {
                 if (statusEff.getPoisonDamage() != 0 && isAlive() && (hp - statusEff.getPoisonDamage()) > 1) {
-                    if (from.isStaff() && MapleServerHandler.isDebugMode()) {
-                        //from.dropMessage("執行 => 持續傷害: 傷害[" + status.getX() + "] 執行時間[" + System.currentTimeMillis() + "]");
+                    if (from.isShowDebugInfo()) {
+                        from.dropMessage(6, "執行 => 持續傷害: 傷害[" + statusEff.getX() + "] 執行時間[" + System.currentTimeMillis() + "]");
                     }
                     int dam = statusEff.getPoisonDamage();
                     if (dam >= hp) {
@@ -1119,7 +1119,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 }
             }
         };
-        final int delay = this.getMap().getApplyedStatusMonsterCount();
+       
         final BuffTimer BuffTimer = Timer.BuffTimer.getInstance();
         final Runnable cancelTask;
         cancelTask = new Runnable() {
@@ -1127,7 +1127,6 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             public final void run() {
                 if (isAlive()) {
                     if (getStati().containsKey(status)) {
-                        MapleMonster.this.cancelStatus(status, delay);
                     }
                 }
             }
@@ -1174,7 +1173,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
     }
 
-    public final void cancelStatus(final Collection<MonsterStatus> stats, final int delay) {
+    public final void cancelStatus(final Collection<MonsterStatus> stats) {
         final List<MonsterStatusEffect> mses = new ArrayList<>();
         for (MonsterStatus stat : stats) {
             if (stat == MonsterStatus.SUMMON) {
@@ -1205,24 +1204,14 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 for (MonsterStatus stat : stats) {
                     MapleMonster.this.getStati().remove(stat);
                 }
-                if (delay > 0) {
-                    MapleMonster.this.getMap().decApplyedStatusMonster();
-                }
+ 
             }
         };
-        BuffTimer.getInstance().schedule(cancelMonsterStatusTask, 250 * delay);
+        BuffTimer.getInstance().schedule(cancelMonsterStatusTask, 1);
     }
 
     public final void cancelStatus(final MonsterStatus stat) {
-        cancelStatus(Collections.singletonList(stat), 0);
-    }
-
-    public final void cancelStatus(final Collection<MonsterStatus> stats) {
-        cancelStatus(stats, 0);
-    }
-
-    public final void cancelStatus(final MonsterStatus stat, int delay) {
-        cancelStatus(Collections.singletonList(stat), delay);
+        cancelStatus(Collections.singletonList(stat));
     }
 
     public final void doPoison(final MonsterStatusEffect status, final WeakReference<MapleCharacter> weakChr) {
