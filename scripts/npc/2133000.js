@@ -44,7 +44,7 @@ function action(mode, type, selection) {
                 while (it.hasNext()) {
                     var cPlayer = it.next();
                     var ccPlayer = cm.getPlayer().getMap().getCharacterById(cPlayer.getId());
-                    if (ccPlayer == null || ccPlayer.getLevel() < 45 || ccPlayer.getJob() > 900 || ccPlayer.getLevel() > 55) {
+                    if (ccPlayer == null || ccPlayer.getLevel() < 45 || ccPlayer.getLevel() > 55) {
                         next = false;
                         break;
                     }
