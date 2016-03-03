@@ -1133,7 +1133,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         };
 
         final MapleCharacter con = getController();
-        if (true || status == MonsterStatus.POISON || status == MonsterStatus.VENOMOUS_WEAPON || status == MonsterStatus.FREEZE) {
+        if (status == MonsterStatus.POISON || status == MonsterStatus.VENOMOUS_WEAPON || status == MonsterStatus.FREEZE) {
             poisonsLock.writeLock().lock();
             try {
                 stati.put(status, statusEff);
