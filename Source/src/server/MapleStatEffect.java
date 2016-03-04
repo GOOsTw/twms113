@@ -778,11 +778,6 @@ public class MapleStatEffect implements Serializable {
             final Rectangle bounds = calculateBoundingBox(pos != null ? pos : new Point(applyfrom.getPosition()), applyfrom.isFacingLeft());
             final MapleMist mist = new MapleMist(bounds, applyfrom, this);
             applyfrom.getMap().spawnMist(mist, getDuration(), false);
-            /*} else if (isMist()) {
-             Rectangle bounds = calculateBoundingBox(applyfrom.getPosition(), applyfrom.isFacingLeft());
-             MapleMist mist = new MapleMist(bounds, applyfrom, this);
-             //applyfrom.getMap().spawnMist(mist, getDuration(), sourceid == 2111003, false);
-             applyfrom.getMap().spawnMist(mist, getDuration(), false);*/
 
         } else if (isTimeLeap()) { // Time Leap
             for (MapleCoolDownValueHolder i : applyto.getCooldowns()) {

@@ -3390,4 +3390,16 @@ public final class MapleMap {
     }
     private final AtomicInteger applyedMonsterCount = new AtomicInteger(0);
 
+    public final void decApplyedStatusMonster() {
+        applyedMonsterCount.decrementAndGet();
+    }
+
+    public final int incApplyedStatusMonsterCount() {
+        return applyedMonsterCount.incrementAndGet();
+    }
+    
+    public final int getApplyedStatusMonsterCount() {
+        return applyedMonsterCount.get();
+    }
+
 }

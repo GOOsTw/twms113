@@ -68,6 +68,7 @@ import handling.world.guild.MapleBBSThread;
 import handling.world.guild.MapleBBSThread.MapleBBSReply;
 import handling.world.guild.MapleGuildAlliance;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import server.MapleItemInformationProvider;
 import server.MapleShopItem;
 import server.MapleStatEffect;
@@ -870,6 +871,7 @@ public class MaplePacketCreator {
         }
         if (chr.getBuffedValue(MapleBuffStat.DIVINE_BODY) != null) {
             buffmask |= 0x10000000;//MapleBuffStat.DIVINE_BODY.getOldValue();
+            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.DIVINE_BODY), 2));
         }
         if (chr.getBuffedValue(MapleBuffStat.BERSERK_FURY) != null) {
             buffmask |= 0x8000000;//MapleBuffStat.BERSERK_FURY.getOldValue();
@@ -1855,6 +1857,93 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
+    public static void EncodeStatForRemote(MaplePacketLittleEndianWriter mplew, HashMap<MapleBuffStat, Integer> buffs) {
+
+        if (buffs.keySet().contains(MapleBuffStat.SPEED)) {
+            mplew.write(buffs.get(MapleBuffStat.SPEED).byteValue());
+        }
+        if (buffs.keySet().contains(MapleBuffStat.SUMMON)) {
+            mplew.write(buffs.get(MapleBuffStat.SUMMON).byteValue());
+        }
+        if (buffs.keySet().contains(MapleBuffStat.WK_CHARGE)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.WK_CHARGE));
+        }
+        if (buffs.keySet().contains(MapleBuffStat.STUN)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.STUN));
+        }
+        if (buffs.keySet().contains(MapleBuffStat.DARKNESS)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.DARKNESS));
+        }
+        if (buffs.keySet().contains(MapleBuffStat.SEAL)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.SEAL));
+        }
+        if (buffs.keySet().contains(MapleBuffStat.WEAKEN)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.WEAKEN));
+        }
+        if (buffs.keySet().contains(MapleBuffStat.CURSE)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.CURSE));
+        }
+        if (buffs.keySet().contains(MapleBuffStat.POISON)) {
+            mplew.writeShort(buffs.get(MapleBuffStat.POISON).shortValue());
+        }
+        if (buffs.keySet().contains(MapleBuffStat.POISON)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.POISON));
+        }
+        if (buffs.keySet().contains(MapleBuffStat.SHADOWPARTNER)) {
+        }
+        if (buffs.keySet().contains(MapleBuffStat.DARKSIGHT)) {
+        }
+        if (buffs.keySet().contains(MapleBuffStat.SOULARROW)) {
+        }
+        if (buffs.keySet().contains(MapleBuffStat.MORPH)) {
+            mplew.writeShort(buffs.get(MapleBuffStat.MORPH).shortValue());
+        }
+        if (buffs.keySet().contains(MapleBuffStat.GHOST_MORPH)) {
+            mplew.writeShort(buffs.get(MapleBuffStat.GHOST_MORPH).shortValue());
+        }
+        if (buffs.keySet().contains(MapleBuffStat.DRAGON_ROAR)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.DRAGON_ROAR));
+        }
+        if (buffs.keySet().contains(MapleBuffStat.SPIRIT_CLAW)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.SPIRIT_CLAW));
+        }
+
+        if (buffs.keySet().contains(MapleBuffStat.BERSERK_FURY)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.BERSERK_FURY));
+        }
+        if (buffs.keySet().contains(MapleBuffStat.DIVINE_BODY)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.DIVINE_BODY));
+        }
+        if (buffs.keySet().contains(MapleBuffStat.BUFF_51)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.BUFF_51));
+        }
+        if (buffs.keySet().contains(MapleBuffStat.MESO_RATE)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.MESO_RATE));
+        }
+        if (buffs.keySet().contains(MapleBuffStat.EXPRATE)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.EXPRATE));
+        }
+        if (buffs.keySet().contains(MapleBuffStat.ACASH_RATE)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.ACASH_RATE));
+        }
+        if (buffs.keySet().contains(MapleBuffStat.GM_HIDE)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.GM_HIDE));
+        }
+        if (buffs.keySet().contains(MapleBuffStat.BUFF_57)) {
+        }
+        if (buffs.keySet().contains(MapleBuffStat.ILLUSION)) {
+        }
+        if (buffs.keySet().contains(MapleBuffStat.WIND_WALK)) {
+        }
+        if (buffs.keySet().contains(MapleBuffStat.SOUL_STONE)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.SOUL_STONE));
+        }
+        mplew.write(0);
+        mplew.write(0);
+        mplew.write(0);
+        mplew.write(0);
+    }
+
     public static MaplePacket giveForeignBuff(int cid, List<Pair<MapleBuffStat, Integer>> statups, MapleStatEffect effect) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
@@ -1863,15 +1952,26 @@ public class MaplePacketCreator {
 
         writeBuffState2(mplew, statups);
 
+        HashMap<MapleBuffStat, Integer> buffs = new HashMap();
+
         for (Pair<MapleBuffStat, Integer> statup : statups) {
-            mplew.writeShort(statup.getRight().shortValue());
+            buffs.put(statup.getLeft(), statup.getRight());
+        }
+        EncodeStatForRemote(mplew, buffs);
+
+        /* for (Pair<MapleBuffStat, Integer> statup : statups) {
+            if (statup.getLeft() == MapleBuffStat.DIVINE_BODY) {
+                mplew.writeInt(statup.getRight());
+            } else {
+                mplew.writeShort(statup.getRight().shortValue());
+            }
         }
         mplew.writeShort(0); // same as give_buff
         if (effect.isMorph()) {
             mplew.write(0);
         }
         mplew.write(0);
-
+         */
         return mplew.getPacket();
     }
 

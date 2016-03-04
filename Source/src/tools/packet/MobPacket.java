@@ -371,7 +371,7 @@ public class MobPacket {
                 }
                 continue;
             }
-            mplew.writeShort(buff.getX());
+            mplew.writeShort(buff.getX()); 
             if (buff.getMobSkill() != null) {
                 mplew.writeShort(buff.getMobSkill().getSkillId());
                 mplew.writeShort(buff.getMobSkill().getSkillLevel());
@@ -400,9 +400,9 @@ public class MobPacket {
 
     public static void ProcessStatSet(MaplePacketLittleEndianWriter mplew, List<MonsterStatusEffect> buffs) {
         EncodeTemporary(mplew, buffs);
-        mplew.writeShort(1);
+        mplew.writeShort(2);
         mplew.write(1);
-        mplew.write(2);
+        mplew.write(1);
     }
 
     public static MaplePacket applyMonsterStatus(MapleMonster mons, MonsterStatusEffect ms) {
@@ -487,7 +487,8 @@ public class MobPacket {
                 mplew.writeInt(0);
             }
         }
-        mplew.writeInt(0);
+        mplew.write(2);
+        mplew.write(1);
         return mplew.getPacket();
     }
 

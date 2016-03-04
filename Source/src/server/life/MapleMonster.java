@@ -92,7 +92,6 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     private final EnumMap<MonsterStatus, MonsterStatusEffect> stati = new EnumMap<>(MonsterStatus.class);
     private final LinkedList<MonsterStatusEffect> poisons = new LinkedList<>();
     private final ReentrantReadWriteLock poisonsLock = new ReentrantReadWriteLock();
-    private final AtomicInteger waiteApplyedStatusCount = new AtomicInteger(0);
 
     private Map<Integer, Long> usedSkills;
     private int stolen = -1; //monster can only be stolen ONCE
@@ -559,7 +558,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
          if (killer != null && stats.isBoss()) {
          killer.finishAchievement(18);
          }*/
-        /* 召喚小弟囉 */
+ /* 召喚小弟囉 */
         this.spawnRevives(getMap());
 
         /**
@@ -913,7 +912,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     }
 
     public final void applyMonsterStatus(final MaplePacket packet) {
-        // int delay = waiteApplyedStatusCount.incrementAndGet() / 10;
+
         final MapleCharacter con = getController();
         if (con != null) {
             MapleMonster.this.map.broadcastMessage(con, packet, MapleMonster.this.getTruePosition());
@@ -921,7 +920,6 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         } else {
             MapleMonster.this.map.broadcastMessage(packet, MapleMonster.this.getTruePosition());
         }
-        //         MapleMonster.this.waiteApplyedStatusCount.decrementAndGet();
     }
 
     //套用怪物BUFF 判斷
@@ -1074,10 +1072,12 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             }
 
         }
-
-        long aniTime = duration;
+        final int reTime = 1000;
+        final long aniTime;
         if (skilz != null) {
-            aniTime += skilz.getAnimationTime();
+            aniTime = duration + skilz.getAnimationTime();
+        } else {
+            aniTime = duration;
         }
 
         statusEff.setCancelTask(aniTime);
@@ -1099,6 +1099,10 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             int dam = (int) (aniTime / 1000 * statusEff.getX() / 2);
             statusEff.setPoisonDamage(dam, from);
         }
+        
+         if (poison && getHp() <= 1) { 
+             return;
+         }
 
         final BuffTimer applyEffectTimer = Timer.BuffTimer.getInstance();
 
@@ -1114,12 +1118,13 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                         dam = (int) (hp - statusEff.getPoisonDamage());
                     }
                     damage(from, dam, false);
-                } else {
-                    // 其他
+                    applyEffectTimer.schedule(this, reTime); 
+                } else if (from.isShowDebugInfo()) {
+                    from.dropMessage(6, "結束 => 執行時間[" + System.currentTimeMillis() + "]");
                 }
             }
         };
-       
+
         final BuffTimer BuffTimer = Timer.BuffTimer.getInstance();
         final Runnable cancelTask;
         cancelTask = new Runnable() {
@@ -1127,6 +1132,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             public final void run() {
                 if (isAlive()) {
                     if (getStati().containsKey(status)) {
+                        MapleMonster.this.cancelStatus(status);
                     }
                 }
             }
@@ -1147,14 +1153,13 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             applyMonsterStatus(MobPacket.applyMonsterStatus(this, statusEff));
         }
 
-        BuffTimer.schedule(cancelTask, aniTime * 2);
+        BuffTimer.schedule(cancelTask, aniTime);
         if (from.isShowDebugInfo()) {
             from.dropMessage(6, "開始 => 給予怪物狀態: 持續時間[" + aniTime + "] 狀態效果[" + status.name() + "] 開始時間[" + System.currentTimeMillis() + "]");
         }
         // 持續傷害的Buff
         if (statusEff.getStatus() == MonsterStatus.POISON || statusEff.getStatus() == MonsterStatus.NINJA_AMBUSH) {
-            int reTime = 1000;
-            applyEffectTimer.register(applyEffectTask, reTime);
+            applyEffectTimer.schedule(applyEffectTask, reTime);
         }
 
     }
@@ -1190,6 +1195,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             mses.add(mse);
         }
 
+        final int delay = this.getMap().incApplyedStatusMonsterCount();
         final MapleCharacter con = getController();
         final Runnable cancelMonsterStatusTask;
         cancelMonsterStatusTask = new Runnable() {
@@ -1204,10 +1210,11 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 for (MonsterStatus stat : stats) {
                     MapleMonster.this.getStati().remove(stat);
                 }
- 
+                MapleMonster.this.getMap().decApplyedStatusMonster();
             }
         };
-        BuffTimer.getInstance().schedule(cancelMonsterStatusTask, 1);
+
+        BuffTimer.getInstance().schedule(cancelMonsterStatusTask, delay * 250);
     }
 
     public final void cancelStatus(final MonsterStatus stat) {

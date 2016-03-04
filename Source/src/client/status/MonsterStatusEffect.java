@@ -118,7 +118,6 @@ public class MonsterStatusEffect {
     }
 
     public final void cancelPoisonSchedule(MapleMonster mm) {
-        mm.doPoison(this, weakChr);
         this.poisonDamage = 0;
         this.weakChr = null;
     }
