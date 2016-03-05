@@ -101,7 +101,7 @@ public class MapleClient {
     private byte bannedReason = 1, gender = -1;
     public transient short loginAttempt = 0;
     private final transient List<Integer> allowedChar = new LinkedList<>();
-    private final transient Set<String> macs = new HashSet<>();
+    private transient String mac = "00-00-00-00-00-00";
     private final transient Map<String, ScriptEngine> engines = new HashMap<>();
     private transient ScheduledFuture<?> idleTask = null;
     private transient String secondPassword; // To be used only on login
@@ -237,74 +237,71 @@ public class MapleClient {
         return ret;
     }
 
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String macData) {
+        if (macData.equalsIgnoreCase("00-00-00-00-00-00") || macData.length() != 17) {
+            return;
+        }
+        mac = macData;
+    }
+
     public boolean hasBannedMac() {
-        if (macs.isEmpty()) {
+        if (mac.equalsIgnoreCase("00-00-00-00-00-00") || mac.length() != 17) {
             return false;
         }
         boolean ret = false;
-        int i;
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM macbans WHERE mac IN (");
-            for (i = 0; i < macs.size(); i++) {
-                sql.append("?");
-                if (i != macs.size() - 1) {
-                    sql.append(", ");
+        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT COUNT(*) FROM macbans WHERE mac = ?")) {
+            ps.setString(1, mac);
+            try (ResultSet rs = ps.executeQuery()) {
+                rs.next();
+                if (rs.getInt(1) > 0) {
+                    ret = true;
                 }
             }
-            sql.append(")");
-            try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
-                i = 0;
-                for (String mac : macs) {
-                    i++;
-                    ps.setString(i, mac);
-                }
-                try (ResultSet rs = ps.executeQuery()) {
-                    rs.next();
-                    if (rs.getInt(1) > 0) {
-                        ret = true;
-                    }
-                }
-            }
+            ps.close();
         } catch (SQLException ex) {
             System.err.println("Error checking mac bans" + ex);
         }
         return ret;
     }
 
-    public static final void banMacs(String[] macs) {
-        Connection con = DatabaseConnection.getConnection();
-        try {
-            List<String> filtered = new LinkedList<>();
-            PreparedStatement ps = con.prepareStatement("SELECT filter FROM macfilters");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                filtered.add(rs.getString("filter"));
-            }
-            rs.close();
-            ps.close();
+    public void banMacs() {
+        banMacs(mac);
+    }
 
-            ps = con.prepareStatement("INSERT INTO macbans (mac) VALUES (?)");
-            for (String mac : macs) {
-                boolean matched = false;
-                for (String filter : filtered) {
-                    if (mac.matches(filter)) {
-                        matched = true;
-                        break;
-                    }
-                }
-                if (!matched) {
-                    ps.setString(1, mac);
-                    try {
-                        ps.executeUpdate();
-                    } catch (SQLException e) {
-                        // can fail because of UNIQUE key, we dont care
-                    }
-                }
-            }
+    public static void banMacs(String macData) {
+        if (macData.equalsIgnoreCase("00-00-00-00-00-00") || macData.length() != 17) {
+            return;
+        }
+        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("INSERT INTO macbans (mac) VALUES (?)")) {
+            ps.setString(1, macData);
+            ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {
             System.err.println("Error banning MACs" + e);
+        }
+    }
+
+    public void updateMacs() {
+        updateMacs(mac);
+    }
+
+    public void updateMacs(String macData) {
+        if (macData.equalsIgnoreCase("00-00-00-00-00-00") || macData.length() != 17) {
+            return;
+        }
+        try {
+            Connection con = DatabaseConnection.getConnection();
+            try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET macs = ? WHERE id = ?")) {
+                ps.setString(1, macData);
+                ps.setInt(2, accountId);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            System.err.println("Error saving MACs" + e);
         }
     }
 
@@ -580,28 +577,6 @@ public class MapleClient {
             return -2;
         }
         return 0;
-    }
-
-    public void updateMacs(String macData) {
-        macs.addAll(Arrays.asList(macData.split(", ")));
-        StringBuilder newMacData = new StringBuilder();
-        Iterator<String> iter = macs.iterator();
-        while (iter.hasNext()) {
-            newMacData.append(iter.next());
-            if (iter.hasNext()) {
-                newMacData.append(", ");
-            }
-        }
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET macs = ? WHERE id = ?")) {
-                ps.setString(1, newMacData.toString());
-                ps.setInt(2, accountId);
-                ps.executeUpdate();
-            }
-        } catch (SQLException e) {
-            System.err.println("Error saving MACs" + e);
-        }
     }
 
     public void setAccID(int id) {
@@ -1122,10 +1097,6 @@ public class MapleClient {
             System.err.println("findAccIdForCharacterName SQL error");
         }
         return -1;
-    }
-
-    public final Set<String> getMacs() {
-        return Collections.unmodifiableSet(macs);
     }
 
     public final boolean isGm() {

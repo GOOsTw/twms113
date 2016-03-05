@@ -44,6 +44,7 @@ import server.quest.MapleQuest;
 import tools.MaplePacketCreator;
 import tools.packet.LoginPacket;
 import tools.KoreanDateUtil;
+import tools.StringUtil;
 import tools.data.input.SeekableLittleEndianAccessor;
 
 public class CharLoginHandler {
@@ -64,15 +65,21 @@ public class CharLoginHandler {
     }
 
     public static final void handleLogin(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-
-        if (slea.available() <= 4) {
-            c.getSession().close(true);
-            return;
-        }
-
         final String account = slea.readMapleAsciiString();
         final String password = slea.readMapleAsciiString();
 
+        int[] bytes = new int[6];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = slea.readByteAsInt();
+        }
+        StringBuilder sps = new StringBuilder();
+        for (int i = 0; i < bytes.length; i++) {
+            sps.append(StringUtil.getLeftPaddedStr(Integer.toHexString(bytes[i]).toUpperCase(), '0', 2));
+            sps.append("-");
+        }
+        String macData = sps.toString();
+        macData = macData.substring(0, macData.length() - 1);
+        c.setMac(macData);
         c.setAccountName(account);
         final boolean ipBan = c.hasBannedIP();
         final boolean macBan = c.hasBannedMac();
@@ -145,6 +152,7 @@ public class CharLoginHandler {
             }
 
             c.loginAttempt = 0;
+            c.updateMacs();
             LoginWorker.registerClient(c);
         }
     }

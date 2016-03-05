@@ -3806,11 +3806,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                                             psz.execute();
                                         }
                                     }
-                                    if (rsa.getString("macs") != null) {
-                                        String[] macData = rsa.getString("macs").split(", ");
-                                        if (macData.length > 0) {
-                                            MapleClient.banMacs(macData);
-                                        }
+                                    String macData = rsa.getString("macs");
+                                    if (macData != null) {
+                                        MapleClient.banMacs(macData);
                                     }
                                     if (hellban) {
                                         try (PreparedStatement pss = con.prepareStatement("UPDATE accounts SET banned = 1, banreason = ? WHERE email = ?" + (sessionIP == null ? "" : " OR SessionIP = ?"))) {
