@@ -169,7 +169,7 @@ function action(mode, type, selection) {
                 cm.sendOk("你已經完成了這個任務，進行此操作。");
                 cm.dispose();
             } else {
-                cm.sendYesNo("你想收買我？哈哈，可以啊！但你必須給我 #e3,000,000#n 楓幣，我就可以讓你直接跳過任務。");
+                cm.sendYesNo("你想收買我？哈哈，可以啊！但你必須給我 #e300,000,000#n 楓幣，我就可以讓你直接跳過任務。");
                 status = 3;
             }
         } else if (selection == 5) {
@@ -216,7 +216,7 @@ function action(mode, type, selection) {
             cm.forceCompleteQuest(7000);
             cm.completeQuest(100203);
             cm.sendOk("好了，祝你玩的愉快！");
-            cm.gainMeso(-3000000);
+            cm.gainMeso(-300000000);
         }
         cm.dispose();
 	} else if (status == 6) {
