@@ -1,16 +1,4 @@
-﻿
-/**
--- Odin JavaScript --------------------------------------------------------------------------------
-	Faito(Showa Exchange Quest) - Showa Town(801000300)
--- By ---------------------------------------------------------------------------------------------
-	Information
--- Version Info -----------------------------------------------------------------------------------
-	1.0 - First Version by Information
-	    - Base from Sean360 script, thanks
----------------------------------------------------------------------------------------------------
-**/
-
-var status = -1;
+﻿var status = -1;
 var eQuestChoices = new Array(4000064, 4000065, 4000066, 4000075, 4000077, 4000089, 4000090, 4000091, 4000092, 4000093, 4000094);
 
 var eQuestPrizes = new Array();
@@ -27,8 +15,7 @@ eQuestPrizes[0] = new Array([2000000, 1], // Red Potion
     [2000002, 10], // White Potion
     [2000002, 20], // White Potion
     [2022026, 15], // Yakisoba
-    [2022024, 15], // Takoyaki (Octopus Ball)
-    [1002393, 1]); // Pink Bandana
+    [2022024, 15]);
 eQuestPrizes[1] = new Array([2000006, 1], // Mana Elixir
     [2000002, 5], // White Potion
     [4020006, 2], // Topaz Ore
@@ -46,8 +33,7 @@ eQuestPrizes[2] = new Array([2000006, 1], // Mana Elixir
     [2000002, 10], // White Potion
     [2000003, 20], // Blue Potion
     [2000002, 20], // White Potion
-    [2022024, 15], // Takoyaki (Octopus Ball)
-    [1002393, 1]); // Pink Bandana
+    [2022024, 15]); // Pink Bandana
 eQuestPrizes[3] = new Array([2060003, 1000], // Red Arrow for Bow
     [4010004, 2], // Silver Ore
     [4010006, 2], // Gold Ore
@@ -58,9 +44,7 @@ eQuestPrizes[3] = new Array([2060003, 1000], // Red Arrow for Bow
     [2022019, 10], // Kinoko Ramen (Pig Bone)
     [2022019, 15], // Kinoko Ramen (Pig Bone)
     [2001002, 15], // Red Bean Sundae
-    [2001001, 15], // Ice Cream Pop
-    [1102040, 1], // Yellow Adventurer Cape
-    [1102043, 1]); // Brown Adventurer Cape
+    [2001001, 15]); // Brown Adventurer Cape
 eQuestPrizes[4] = new Array([2000003, 1], //Blue Potion
     [2022019, 5], // Kinoko Ramen (Pig Bone)
     [2000006, 5], // Mana Elixir
@@ -71,9 +55,7 @@ eQuestPrizes[4] = new Array([2000003, 1], //Blue Potion
     [2022019, 10], // Kinoko Ramen (Pig Bone)
     [2022019, 15], // Kinoko Ramen (Pig Bone)
     [2060003, 1000], // Red Arrow for Bow
-    [2061003, 1000], // Blue Arrow for Crossbow
-    [1082150, 1], // Grey Work Gloves
-    [1082149, 1]); // Brown Work Gloves
+    [2061003, 1000]); // Brown Work Gloves
 eQuestPrizes[5] = new Array([2000006, 1], // Mana Elixir
     [2000003, 5], // Blue Potion
     [2000002, 5], // White Potion
@@ -83,8 +65,7 @@ eQuestPrizes[5] = new Array([2000006, 1], // Mana Elixir
     [2000002, 15], // White Potion
     [2060003, 1000], // Red Arrow for Bow
     [2061003, 1000], // Blue Arrow for Crossbow
-    [2022026, 15], // Yakisoba
-    [1002395, 1]); // Purple Bandana
+    [2022026, 15]); // Purple Bandana
 eQuestPrizes[6] = new Array([2022019, 5], // Kinoko Ramen (Pig Bone)
     [2000006, 5], // Mana Elixir
     [4010003, 2], // Adamantium Ore
@@ -114,15 +95,13 @@ eQuestPrizes[8] = new Array([2022019, 5], // Kinoko Ramen (Pig Bone)
     [2022022, 10], // Tempura (Dish)
     [2022022, 15], // Tempura (Dish)
     [2001002, 15], // Red Bean Sundae
-    [2001001, 15], // Ice Cream Pop
-    [1102043, 1]); // Brown Adventurer Cape
+    [2001001, 15]); // Brown Adventurer Cape
 eQuestPrizes[9] = new Array([4010004, 5], // Silver Ore
     [2022019, 5], // Kinoko Ramen (Pig Bone)
     [2022022, 15], // Tempura (Dish)
     [2022019, 15], // Kinoko Ramen (Pig Bone)
     [2001002, 15], // Red Bean Sundae
-    [2001001, 15], // Ice Cream Pop
-    [1102043, 1]); // Brown Adventurer Cape
+    [2001001, 15]); // Brown Adventurer Cape
 eQuestPrizes[10] = new Array([2000006, 1], // Mana Elixir
     [4020008, 15], // Black Crystal Ore
     [2022018, 5], // Kinoko Ramen (Roasted Pork)
