@@ -1,8 +1,10 @@
 function enter(pi) {
+	var returnMap = pi.getSavedLocation("AMORIA");
+	if (returnMap < 0) {
+		returnMap = 100000000;
+	}
     pi.playPortalSE();
-    var map = pi.getSavedLocation("AMORIA");
-    if(map < 0)
-        map = 100000000;
-    pi.warp(map, 0);
-    pi.clearSavedLocation("AMORIA");
+	pi.clearSavedLocation("AMORIA");
+    pi.warp(returnMap, 0);
+    return true;
 }

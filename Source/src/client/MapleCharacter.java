@@ -82,6 +82,7 @@ import java.lang.ref.WeakReference;
 import java.sql.Statement;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.Timer;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
@@ -1850,6 +1851,15 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
         return clonez;
     }
+    public long lastMDTime;
+
+    public final boolean canUseMD() {
+        if (lastMDTime + 5000 > System.currentTimeMillis()) {
+            return false;
+        }
+        lastMDTime = System.currentTimeMillis();
+        return true;
+    }
 
     /**
      * @param effect
@@ -1877,20 +1887,25 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         final boolean clonez = unRegisterBuffStats(buffstats);
         if (effect.isMagicDoor()) {
             // remove for all on maps
-            if (!getDoors().isEmpty()) {
-                MapleDoor door = getDoors().iterator().next();
-                for (MapleCharacter chr : door.getTarget().getCharacters()) {
-                    door.sendDestroyData(chr.client);
+            if (canUseMD()) {
+                if (!getDoors().isEmpty()) {
+                    MapleDoor door = getDoors().iterator().next();
+                    for (MapleCharacter chr : door.getTarget().getCharacters()) {
+                        door.sendDestroyData(chr.client);
+                    }
+                    for (MapleCharacter chr : door.getTown().getCharacters()) {
+                        door.sendDestroyData(chr.client);
+                    }
+                    for (MapleDoor destroyDoor : getDoors()) {
+                        door.getTarget().removeMapObject(destroyDoor);
+                        door.getTown().removeMapObject(destroyDoor);
+                    }
+                    removeDoor();
+                    silentPartyUpdate();
                 }
-                for (MapleCharacter chr : door.getTown().getCharacters()) {
-                    door.sendDestroyData(chr.client);
-                }
-                for (MapleDoor destroyDoor : getDoors()) {
-                    door.getTarget().removeMapObject(destroyDoor);
-                    door.getTown().removeMapObject(destroyDoor);
-                }
-                removeDoor();
-                silentPartyUpdate();
+            } else {
+                dropMessage(5, "時空門取消失敗，請重新在施放一次時空門，並五秒後在取消時空門。");
+                return;
             }
         } else if (effect.isMonsterRiding_()) {
             getMount().cancelSchedule();
