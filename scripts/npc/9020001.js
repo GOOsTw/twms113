@@ -7,12 +7,12 @@ var status;
 var curMap;
 var playerStatus;
 var chatState;
-var questions = Array("請問法師一轉要幾等",
-    "請問盜賊一轉要幾等",
-    "請問法師轉職需要多少智力",
-    "請問弓箭手轉職需要多少敏捷",
-    "請問幾等才能進行二轉",
-    "請問劍士一轉要多少力量");
+var questions = Array("請問法師一轉要幾等?",
+    "請問盜賊一轉要幾等?",
+    "請問法師轉職需要多少智力?",
+    "請問弓箭手轉職需要多少敏捷?",
+    "請問幾等才能進行二轉?",
+    "請問劍士一轉要多少力量?");
 var qanswers = Array(8, 10, 20, 25, 30, 35);
 var party;
 var preamble;
@@ -144,7 +144,8 @@ function action(mode, type, selection) {
                         }
                     }
                     if (!enough) {
-                        cm.sendNext("我很抱歉，但是這是不正確的答案！請在您的給我的正確數量。");
+						var question = parseInt(eim.getProperty(qstring));
+                        cm.sendNext("我很抱歉，但是這是不正確的答案！請在您的給我的正確數量。\r\n再給一次題目:"+questions[question]);
                     }
                     cm.dispose();
                 }
@@ -172,6 +173,7 @@ function action(mode, type, selection) {
         if (stage5done == null) {
             if (playerStatus) { // Leader
                 var passes = cm.haveItem(4001008, 10);
+				if (cm.getMonsterCount(103000804) <= 0) {
                 if (passes) {
                     // Clear stage
                     cm.sendNext("恭喜過關！");
@@ -183,6 +185,9 @@ function action(mode, type, selection) {
                 } else { // Not done yet
                     cm.sendNext("歡迎來到最終階段你只要把通行證收集起來交給我就行了！");
                 }
+				} else { // Not Kill Map Monster
+					cm.sendOk("貌似還沒把地圖上的怪物清除乾淨");
+				}
                 cm.dispose();
             } else { // Members
                 cm.sendNext("歡迎來到最終階段~現在你只要把所有的通行證交給隊長就行了！");
@@ -313,7 +318,7 @@ function rectanglestages(cm) {
                             }
                             cm.sendNext(outstring);
                         } else {
-                            cm.sendNext("It looks like you haven't found the 3 " + nthobj + " just yet. Please think of a different combination of " + nthobj + ". Only 3 are allowed to " + nthverb + " on " + nthobj + ", and if you " + nthpos + " it may not count as an answer, so please keep that in mind. Keep going!");
+                            cm.sendNext("嗨，歡迎來到第 " + nthtext + " 階段. 在我旁邊，你會看到一些 " + nthobj + ", #b你需要三名隊員掛在上面猜我的答案，如果猜對就讓你過關，加油吧！ \r\n喔~對了不能#r" + nthpos + "不然會不能過關哦！");
                         }
                         cm.dispose();
                     }

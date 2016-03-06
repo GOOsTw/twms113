@@ -11,5 +11,6 @@ function enter(pi) {
         pi.playerMessage(5, "該洞口目前無法進入。");
     } else {
         pi.warp(103000804, "st00");
+		pi.removeAll(4001008);
     }
 }
