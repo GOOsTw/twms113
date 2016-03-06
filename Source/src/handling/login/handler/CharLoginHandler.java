@@ -85,37 +85,10 @@ public class CharLoginHandler {
         final boolean macBan = c.hasBannedMac();
         final boolean ban = ipBan || macBan;
 
-        if (LoginServer.autoRegister) {
-            if (AutoRegister.autoRegister && !AutoRegister.getAccountExists(account) && (!c.hasBannedIP() || !c.hasBannedMac())) {
-                if (password.equalsIgnoreCase("fixlogged")) {
-                    c.sendPacket(MaplePacketCreator.serverNotice(1, "這個密碼是解卡密碼，請換其他密碼。"));
-                    c.sendPacket(LoginPacket.getLoginFailed(1)); //Shows no message, used for unstuck the login button
-                    return;
-                }
-                if (account.length() >= 12) {
-                    c.sendPacket(MaplePacketCreator.serverNotice(1, "您的帳號長度太長了唷!\r\n請重新輸入."));
-                    c.getSession().write(LoginPacket.getLoginFailed(1)); //Shows no message, used for unstuck the login button
-                    return;
-                }
-                AutoRegister.createAccount(account, password, c.getSession().getRemoteAddress().toString());
-                if (AutoRegister.success && AutoRegister.ip) {
-                    c.sendPacket(MaplePacketCreator.serverNotice(1, "帳號創建成功,請重新登入!"));
-                    c.sendPacket(LoginPacket.getLoginFailed(1)); //Shows no message, used for unstuck the login button
-                    return;
-                } else if (!AutoRegister.ip) {
-                    c.sendPacket(MaplePacketCreator.serverNotice(1, "無法註冊過多的帳號密碼唷!"));
-                    c.sendPacket(LoginPacket.getLoginFailed(1)); //Shows no message, used for unstuck the login button
-                    AutoRegister.success = false;
-                    AutoRegister.ip = true;
-                    return;
-                }
-            }
-        }
-
         int loginok = c.login(account, password, ban);
         final Calendar tempbannedTill = c.getTempBanCalendar();
         String errorInfo = null;
-        
+
         if (loginok == 0 && ban && !c.isGm()) {
             //被封鎖IP或MAC的非GM角色成功登入處理
             loginok = 3;
@@ -135,13 +108,13 @@ public class CharLoginHandler {
                 } else if (account.length() >= 12) {
                     errorInfo = "您的帳號長度太長了唷!\r\n請重新輸入.";
                 } else {
-                    AutoRegister.createAccount(account, password, c.getSession().getRemoteAddress().toString());
-                    if (AutoRegister.success && AutoRegister.ip) {
+                    AutoRegister.createAccount(account, password, c.getSession().getRemoteAddress().toString(), macData);
+                    if (AutoRegister.success && AutoRegister.mac) {
                         errorInfo = "帳號創建成功,請重新登入!";
-                    } else if (!AutoRegister.ip) {
+                    } else if (!AutoRegister.mac) {
                         errorInfo = "無法註冊過多的帳號密碼唷!";
                         AutoRegister.success = false;
-                        AutoRegister.ip = true;
+                        AutoRegister.mac = true;
                     }
                 }
                 loginok = 1;
@@ -171,10 +144,9 @@ public class CharLoginHandler {
                 c.getSession().close(true);
             }
         } else {
-
-            /* Clear all connected client */
-            boolean check = false;
-
+            c.loginAttempt = 0;
+            c.updateMacs();
+            LoginWorker.registerClient(c);
             for (ChannelServer ch : ChannelServer.getAllInstances()) {
                 List<MapleCharacter> list = ch.getPlayerStorage().getAllCharactersThreadSafe();
                 for (MapleCharacter chr : list) {
@@ -187,10 +159,6 @@ public class CharLoginHandler {
                     }
                 }
             }
-
-            c.loginAttempt = 0;
-            c.updateMacs();
-            LoginWorker.registerClient(c);
         }
     }
 

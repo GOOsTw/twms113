@@ -198,6 +198,83 @@ public class InternCommand {
         }
     }
 
+    public static class BanMAC extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String[] splitted) {
+            if (splitted.length < 2) {
+                return false;
+            }
+            String mac = splitted[1];
+            if (c.banMacs(mac)) {
+                c.getPlayer().dropMessage("封鎖MAC [" + mac + "] 成功");
+                try {
+                    for (ChannelServer cs : ChannelServer.getAllInstances()) {
+                        for (MapleCharacter chr : cs.getPlayerStorage().getAllCharactersThreadSafe()) {
+                            if (chr.getClient().getMac().equals(mac)) {
+                                if (!chr.getClient().isGm()) {
+                                    chr.getClient().disconnect(true, false);
+                                    chr.getClient().getSession().close(true);
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception ex) {
+                }
+            } else {
+                c.getPlayer().dropMessage("封鎖MAC失敗，可能為格式錯誤或是長度錯誤 Ex: 00-00-00-00-00-00 ");
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!BanMAC <MAC> - 封鎖MAC ").toString();
+        }
+    }
+
+    public static class BanIP extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String[] splitted) {
+            if (splitted.length < 2) {
+                return false;
+            }
+            boolean error = false;
+            String IP = splitted[1];
+            try {
+                Connection con = DatabaseConnection.getConnection();
+                PreparedStatement ps;
+                ps = con.prepareStatement("INSERT INTO ipbans VALUES (DEFAULT, ?)");
+                ps.setString(1, IP);
+                ps.execute();
+                ps.close();
+            } catch (Exception ex) {
+                error = true;
+            }
+            try {
+                for (ChannelServer cs : ChannelServer.getAllInstances()) {
+                    for (MapleCharacter chr : cs.getPlayerStorage().getAllCharactersThreadSafe()) {
+                        if (chr.getClient().getSessionIPAddress().equals(IP)) {
+                            if (!chr.getClient().isGm()) {
+                                chr.getClient().disconnect(true, false);
+                                chr.getClient().getSession().close(true);
+                            }
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+            }
+            c.getPlayer().dropMessage("封鎖IP [" + IP + "] " + (error ? "成功 " : "失敗"));
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!BanIP <IP> - 封鎖IP ").toString();
+        }
+    }
+
     public static class 加黑單 extends CommandExecute {
 
         @Override

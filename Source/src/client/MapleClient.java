@@ -272,9 +272,9 @@ public class MapleClient {
         banMacs(mac);
     }
 
-    public static void banMacs(String macData) {
+    public static boolean banMacs(String macData) {
         if (macData.equalsIgnoreCase("00-00-00-00-00-00") || macData.length() != 17) {
-            return;
+            return false;
         }
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("INSERT INTO macbans (mac) VALUES (?)")) {
             ps.setString(1, macData);
@@ -282,7 +282,9 @@ public class MapleClient {
             ps.close();
         } catch (SQLException e) {
             System.err.println("Error banning MACs" + e);
+            return false;
         }
+        return true;
     }
 
     public void updateMacs() {

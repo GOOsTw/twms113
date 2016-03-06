@@ -6,13 +6,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Calendar;
 
 public class AutoRegister {
 
-    private static final int ACCOUNTS_PER_IP = 1;
+    private static final int ACCOUNTS_PER_MAC = 2;
     public static boolean autoRegister = true;
     public static boolean success = false;
-    public static boolean ip = true;
+    public static boolean mac = true;
 
     public static boolean getAccountExists(String login) {
         boolean accountExists = false;
@@ -30,7 +31,7 @@ public class AutoRegister {
         return accountExists;
     }
 
-    public static void createAccount(String login, String pwd, String eip) {
+    public static void createAccount(String login, String pwd, String eip, String macData) {
         String sockAddr = eip;
         Connection con;
 
@@ -43,17 +44,21 @@ public class AutoRegister {
 
         try {
             ResultSet rs;
-            try (PreparedStatement ipc = con.prepareStatement("SELECT SessionIP FROM accounts WHERE SessionIP = ?")) {
-                ipc.setString(1, "/" + sockAddr.substring(1, sockAddr.lastIndexOf(':')));
+            try (PreparedStatement ipc = con.prepareStatement("SELECT Macs FROM accounts WHERE macs = ?")) {
+                ipc.setString(1, macData);
                 rs = ipc.executeQuery();
-                if (rs.first() == false || rs.last() == true && rs.getRow() < ACCOUNTS_PER_IP) {
+                if (rs.first() == false || rs.last() == true && rs.getRow() < ACCOUNTS_PER_MAC) {
                     try {
                         try (PreparedStatement ps = con.prepareStatement("INSERT INTO accounts (name, password, email, birthday, macs, SessionIP) VALUES (?, ?, ?, ?, ?, ?)")) {
+                            Calendar c = Calendar.getInstance();
+                            int year = c.get(Calendar.YEAR);
+                            int month = c.get(Calendar.MONTH) + 1;
+                            int dayOfMonth = c.get(Calendar.DAY_OF_MONTH);
                             ps.setString(1, login);
                             ps.setString(2, LoginCrypto.hexSha1(pwd));
                             ps.setString(3, "autoregister@mail.com");
-                            ps.setString(4, "2008-04-07");
-                            ps.setString(5, "00-00-00-00-00-00");
+                            ps.setString(4, year + "-" + month + "-" + dayOfMonth);//Created day
+                            ps.setString(5, macData);
                             ps.setString(6, sockAddr.substring(1, sockAddr.lastIndexOf(':')));
                             ps.executeUpdate();
                         }
@@ -63,10 +68,10 @@ public class AutoRegister {
                         return;
                     }
                 }
-                if (rs.getRow() >= ACCOUNTS_PER_IP) {
-                    ip = false;
+                if (rs.getRow() >= ACCOUNTS_PER_MAC) {
+                    mac = false;
                 } else {
-                    ip = true;
+                    mac = true;
                 }
             }
             rs.close();
