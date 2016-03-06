@@ -189,7 +189,7 @@ function allMonstersDead(eim) {
         eim.broadcastPlayerMsg(6, "準備！下一隻的BOSS即將來臨。");
     } else {
         eim.saveBossQuest(15000);
-        eim.broadcastPlayerMsg(5, "恭喜整隊挑戰普通模式成功額外獲得500 點GASH。");
+        eim.broadcastPlayerMsg(5, "恭喜整隊挑戰地域模式成功額外獲得500 點GASH。");
         //eim.giveAchievement(22);
     }
     // When invoking unregisterMonster(MapleMonster mob) OR killed
