@@ -309,7 +309,7 @@ public class MapleQuestAction implements Serializable {
                         }
                     } else { // add items
                         if (MapleItemInformationProvider.getInstance().isPickupRestricted(id) && c.haveItem(id, 1, true, false)) {
-                            c.dropMessage(1, "你已經有了這個道具: " + MapleItemInformationProvider.getInstance().getName(id));
+                            c.dropMessage(1, "您已經有了任務相同的道具。");
                             return false;
                         }
                         switch (GameConstants.getInventoryType(id)) {
@@ -523,7 +523,7 @@ public class MapleQuestAction implements Serializable {
             ret.add(1100);
         }
         if ((encoded & 0x1000) != 0) {
-            ret.add(1200);
+           ret.add(1200);
         }
         if ((encoded & 0x2000) != 0) {
             ret.add(1300);
