@@ -292,10 +292,10 @@ public class PlayerHandler {
                 final int bouncedam_ = (Randomizer.nextInt(100) < chr.getStat().DAMreflect_rate ? chr.getStat().DAMreflect : 0) + (type == -1 && chr.getBuffedValue(MapleBuffStat.POWERGUARD) != null ? chr.getBuffedValue(MapleBuffStat.POWERGUARD) : 0);
                 if (bouncedam_ > 0 && attacker != null) {
                     long bouncedamage = (long) (damage * bouncedam_ / 100);
+                    chr.getMap().broadcastMessage(chr, MobPacket.damageMonster(oid, bouncedamage), chr.getPosition());
                     bouncedamage = Math.min(bouncedamage, attacker.getMobMaxHp() / 10);
                     attacker.damage(chr, bouncedamage, true);
                     damage -= bouncedamage;
-                    chr.getMap().broadcastMessage(chr, MobPacket.damageMonster(oid, bouncedamage), chr.getPosition());
                     is_pg = true;
                 }
             }

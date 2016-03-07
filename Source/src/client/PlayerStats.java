@@ -278,7 +278,7 @@ public class PlayerStats implements Serializable {
             watk = 30; //stars
         }
         StructPotentialItem pot;
-       dam_r = 100.0;
+        dam_r = 100.0;
         bossdam_r = 100.0;
         realExpBuff = 100.0;
         realCashBuff = 100.0;
@@ -686,6 +686,9 @@ public class PlayerStats implements Serializable {
                         dropBuff *= buff.doubleValue() / 100.0;
                         break;
                 }
+            } else if (chra.getBuffSource(MapleBuffStat.DROP_RATE) == 2022462) { // 封包傳回2倍，介紹寫50%
+                realDropBuff += 50;
+                dropBuff *= 150.0 / 100.0;
             } else {
                 realDropBuff += buff.doubleValue();
                 dropBuff *= buff.doubleValue() / 100.0;
@@ -704,11 +707,18 @@ public class PlayerStats implements Serializable {
                     mesoBuff *= buff.doubleValue() / 100.0;
                     realMesoBuff += buff.doubleValue();
                 }
+            } else if (chra.getBuffSource(MapleBuffStat.MESO_RATE) == 2022459) { // 封包傳回2倍，介紹寫30%
+                realMesoBuff += 30;
+                mesoBuff *= 130.0 / 100.0;
+            } else if (chra.getBuffSource(MapleBuffStat.MESO_RATE) == 2022460) { // 封包傳回2倍，介紹寫50%
+                realMesoBuff += 50;
+                mesoBuff *= 150.0 / 100.0;
             } else {
                 realMesoBuff += buff.doubleValue();
                 mesoBuff *= buff.doubleValue() / 100.0;
             }
         }
+
         buff = chra.getBuffedValue(MapleBuffStat.MESOUP);
         if (buff != null) {
             realMesoBuff += buff.doubleValue();

@@ -135,6 +135,8 @@ public class NPCHandler {
                 final int npc = slea.readInt();
                 if (npc == 0 && quest > 0) {
                     q.forceStart(chr, npc, null);
+                } else if (quest == 2001) {
+                    q.forceStart(chr, npc, null);               
                 } else if (!q.hasStartScript()) {
                     q.start(chr, npc);
                 }
@@ -267,7 +269,7 @@ public class NPCHandler {
             case 6: {
                 storage.arrange();
                 storage.update(c);
-             break;
+                break;
             }
             case 7: {
                 int meso = slea.readInt();

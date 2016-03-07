@@ -141,7 +141,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     private static final long serialVersionUID = 845748950829L;
     private String name, chalktext, BlessOfFairy_Origin, charmessage, prefix, chattitle;
-    private long lastCombo, lastfametime, keydown_skill;
+    private long lastCombo, lastfametime, keydown_skill, lastRecoveryTime;
     private byte dojoRecord, gmLevel, gender, initialSpawnPoint, skinColor, guildrank = 5, allianceRank = 5, world, fairyExp = 10, numClones, subcategory, fairyHour = 1; // Make this a quest record, TODO : Transfer it somehow with the current data
     private short level, mulung_energy, combo, availableCP, totalCP, fame, hpmpApUsed, job, remainingAp;
     private int accountid, id, meso, exp, hair, face, mapid, bookCover, dojo,
@@ -234,6 +234,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             mulung_energy = 0;
             combo = 0;
             keydown_skill = 0;
+            lastRecoveryTime = 0;
             smega = true;
             petStore = new byte[3];
             for (int i = 0; i < petStore.length; i++) {
@@ -1644,6 +1645,26 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return mbsvh == null ? null : mbsvh.effect;
     }
 
+    public void doRecovery() {
+        MapleStatEffect bloodEffect = getStatForBuff(MapleBuffStat.RECOVERY);
+        if (bloodEffect != null) {
+            prepareRecovery();
+            if (stats.getHp() >= stats.getCurrentMaxHp()) {
+                cancelEffectFromBuffStat(MapleBuffStat.RECOVERY);
+            } else {
+                healHP(bloodEffect.getX(), true);
+            }
+        }
+    }
+
+    public final boolean canRecover(long now) {
+        return lastRecoveryTime > 0 && lastRecoveryTime + 5000 < now;
+    }
+
+    private void prepareRecovery() {
+        lastRecoveryTime = System.currentTimeMillis();
+    }
+
     private void prepareDragonBlood(final MapleStatEffect bloodEffect) {
         if (dragonBloodSchedule != null) {
             dragonBloodSchedule.cancel(false);
@@ -1750,6 +1771,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             getMount().startSchedule();
         } else if (effect.isBeholder()) {
             prepareBeholderEffect();
+        } else if (effect.isRecovery()) {
+            prepareRecovery();
         }
         // 解決 聖魂劍士放鬥氣 再放靈魂 鬥氣沒效果
         if (effect.getSourceId() == 11001004 && effect.getSourceId() == 11111001 || effect.getSourceId() == 11110005) {
@@ -1836,6 +1859,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                         dragonBloodSchedule.cancel(false);
                         dragonBloodSchedule = null;
                     }
+                } else if (stat == MapleBuffStat.RECOVERY) {
+                    lastRecoveryTime = 0;
                 } else if (stat == MapleBuffStat.ILLUSION) {
                     disposeClones();
                     clonez = true;
@@ -2902,9 +2927,15 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void healHP(int delta) {
+        healHP(delta, false);
+    }
+
+    public void healHP(int delta, boolean Show) {
         addHP(delta);
-//        client.sendPacket(MaplePacketCreator.showOwnHpHealed(delta));
-//        getMap().broadcastMessage(this, MaplePacketCreator.showHpHealed(getId(), delta), false);
+        if (Show) {
+            client.sendPacket(MaplePacketCreator.showOwnHpHealed(delta));
+            getMap().broadcastMessage(this, MaplePacketCreator.showHpHealed(getId(), delta), false);
+        }
     }
 
     public void healMP(int delta) {
@@ -3908,7 +3939,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public boolean isAdv() {
         return job >= 0 && job < 1000;
     }
-    
+
     public boolean isKOC() {
         return job >= 1000 && job < 2000;
     }
@@ -4530,10 +4561,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             this.ItemVac.interrupt();
             itemVacs = false;
         }
-    }
-
-    public void dropMessage(boolean tt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public static enum FameStatus {

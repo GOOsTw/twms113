@@ -1431,12 +1431,17 @@ public class World {
                 }
             }
         }
-        if (hurt && chr.isAlive()) {
-            if (chr.getInventory(MapleInventoryType.EQUIPPED).findById(chr.getMap().getHPDecProtect()) == null) {
-                if (chr.getMapId() == 749040100 && chr.getInventory(MapleInventoryType.CASH).findById(5451000) == null) { //minidungeon
-                    chr.addHP(-chr.getMap().getHPDec());
-                } else if (chr.getMapId() != 749040100) {
-                    chr.addHP(-chr.getMap().getHPDec());
+        if (chr.isAlive()) {
+            if (chr.canRecover(now)) {
+                chr.doRecovery();
+            }
+            if (hurt) {
+                if (chr.getInventory(MapleInventoryType.EQUIPPED).findById(chr.getMap().getHPDecProtect()) == null) {
+                    if (chr.getMapId() == 749040100 && chr.getInventory(MapleInventoryType.CASH).findById(5451000) == null) { //minidungeon
+                        chr.addHP(-chr.getMap().getHPDec());
+                    } else if (chr.getMapId() != 749040100) {
+                        chr.addHP(-chr.getMap().getHPDec());
+                    }
                 }
             }
         }
