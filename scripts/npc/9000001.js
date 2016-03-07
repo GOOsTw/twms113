@@ -1,29 +1,3 @@
-/*
-    This file is part of the OdinMS Maple Story Server
-    Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
-               Matthias Butz <matze@odinms.de>
-               Jan Christian Meyer <vimes@odinms.de>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation version 3 as published by
-    the Free Software Foundation. You may not use, modify or distribute
-    this program under any other version of the GNU Affero General Public
-    License.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-/* Edited by: kevintjuh93
-    NPC Name:         Jean
-    Map(s):         Victoria Road : Lith Harbour (104000000)
-    Description:         Event Assistant
-*/
 var status = 0;
 var banMap = Array(109080000, 109080010, 109040000, 109030001, 109060000, 109010000);
 
@@ -56,7 +30,7 @@ function action(mode, type, selection) {
             cm.sendSimple("嗨... 你為什麼不跟我走？我想我的兄弟會與其他人...\r\n#L0##e1.#n#b 什麼樣的活動內容??#k#l\r\n#L1##e2.#n#b 介紹活動內容讓我認識..#k#l\r\n#L2##e3.#n#b 好了，我們走吧！#k#l");
         } else if (status == 3) {
             if (selection == 0) {
-                cm.sendNext("所有本月初，冒險島環球慶祝其三週年！全球機制將舉行驚喜GM活動在整個活動期間，所以留在你的腳趾，並確保參與活動的至少一個為偉大的獎品！");
+                cm.sendNext("所有本月初，楓之谷環球慶祝其三週年！全球機制將舉行驚喜GM活動在整個活動期間，所以留在你的腳趾，並確保參與活動的至少一個為偉大的獎品！");
                 cm.dispose();
             } else if (selection == 1) {
                 cm.sendSimple("有許多活動官則。這將幫助在你開始活動之前。好了...選擇你想了解的活動.. #b\r\n#L0# 爬繩子#l\r\n#L1# 終極忍耐#l\r\n#L2# 滾雪球#l\r\n#L3# 打果子#l\r\n#L6# 打瓶蓋#l\r\n#L4# 是非題大考驗#l\r\n#L5# 尋寶#l#k");

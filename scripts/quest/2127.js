@@ -36,9 +36,9 @@ function end(mode, type, selection) {
             }
 
         } else if (status == 1) {
-            qm.sendNextPrev("I have warned you.");
+            qm.sendNextPrev("我會想你的。");
         } else if (status == 2) {
-            qm.warp(260000000);
+            qm.warp(260000200);
             qm.forceCompleteQuest();
             qm.dispose();
         }
