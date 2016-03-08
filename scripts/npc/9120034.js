@@ -63,23 +63,23 @@ function action(mode, type, selection) {
         break;
     case 10:
         if (selection == 0) {
-            if (cm.haveItem(4032168, 1) && cm.haveItem(4032181, 2500) && cm.haveItem(4032171, 1) && cm.haveItem(2070006, 1) && (cm.getMeso() >= 150000000)) {
+            if (cm.haveItem(4032168, 1) && cm.haveItem(4032181, 2500) && cm.haveItem(4032171, 1) && cm.haveItem(2070006, 1) && (cm.getMeso() >= 500000000)) {
                 cm.gainItem(4032171, -1);
                 cm.gainItem(4032168, -1);
                 cm.gainItem(2070006, -1);
                 cm.gainItem(4032181, -2500);
-                cm.gainMeso(-150000000);
+                cm.gainMeso(-500000000);
                 cm.gainItem(2070019, 1);
             } else {
                 cm.sendNext("咦？你好像沒有必要的素材嘛？\r\n製造#t2070019#需要有#t4032168#、#t4032170#、#t02070006#1個、#t4032181#2,500片以及500,000,000金幣。");
             }
         } else {
-            if (cm.haveItem(4032168, 1) && cm.haveItem(4032181, 2500) && cm.haveItem(4032170, 1) && cm.haveItem(2330003, 1) && (cm.getMeso() >= 150000000)) {
+            if (cm.haveItem(4032168, 1) && cm.haveItem(4032181, 2500) && cm.haveItem(4032170, 1) && cm.haveItem(2330003, 1) && (cm.getMeso() >= 500000000)) {
                 cm.gainItem(4032170, -1);
                 cm.gainItem(4032168, -1);
                 cm.gainItem(2330003, -1);
                 cm.gainItem(4032181, -2500);
-                cm.gainMeso(-150000000);
+                cm.gainMeso(-500000000);
                 cm.gainItem(2330007, 1);
             } else {
                 cm.sendNext("咦？你好像沒有必要的素材嘛？\r\n製造#t2330007#需要有#t4032168#、#t4032171#、#t02330003#1個、#t4032181#2,500片以及500,000,000金幣。");
