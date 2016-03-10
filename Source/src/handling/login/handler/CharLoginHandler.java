@@ -82,7 +82,7 @@ public class CharLoginHandler {
         c.setMac(macData);
         c.setAccountName(account);
         final boolean ipBan = c.hasBannedIP();
-        final boolean macBan = c.hasBannedMac();
+        final boolean macBan = c.isBannedMac(macData);
         final boolean ban = ipBan || macBan;
 
         int loginok = c.login(account, password, ban);

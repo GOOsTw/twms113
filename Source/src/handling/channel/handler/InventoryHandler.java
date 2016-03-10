@@ -2284,7 +2284,7 @@ public class InventoryHandler {
                 if (mapitem.getItem().getQuantity() >= 50 && GameConstants.isUpgradeScroll(mapitem.getItem().getItemId())) {
                     c.setMonitored(true); //hack check
                 }
-                if (MapleInventoryManipulator.addFromDrop(c, mapitem.getItem(), true, mapitem.getDropper() instanceof MapleMonster)) {
+                if (MapleInventoryManipulator.addFromDrop(c, mapitem.getItem(), true, mapitem.getDropper() instanceof MapleMonster, false)) {
                     removeItem(chr, mapitem, ob);
                 }
             } else {
@@ -2371,8 +2371,9 @@ public class InventoryHandler {
                 if (mapitem.getItem().getQuantity() >= 50 && mapitem.getItemId() == 2340000) {
                     c.setMonitored(true); //hack check
                 }
-                MapleInventoryManipulator.addFromDrop(c, mapitem.getItem(), true, mapitem.getDropper() instanceof MapleMonster);
                 removeItemPet(chr, mapitem, petz);
+                MapleInventoryManipulator.addFromDrop(c, mapitem.getItem(), true, mapitem.getDropper() instanceof MapleMonster, true);
+                
             }
         } finally {
             lock.unlock();

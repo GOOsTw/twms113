@@ -289,6 +289,7 @@ public class NPCHandler {
                         }
                     }
                     storage.setMeso(storageMesos - meso);
+                    storage.saveToDB();
                     chr.gainMeso(meso, false, true, false);
                 } else {
                     AutobanManager.getInstance().addPoints(c, 1000, 0, "Trying to store or take out unavailable amount of mesos (" + meso + "/" + storage.getMeso() + "/" + c.getPlayer().getMeso() + ")");

@@ -282,7 +282,7 @@ public class PetHandler {
                                     //chr.getClient().setMonitored(true); //hack check
                                 }
 
-                                if (MapleInventoryManipulator.addFromDrop(chr.getClient(), mapitem.getItem(), true, mapitem.getDropper() instanceof MapleMonster)) {
+                                if (MapleInventoryManipulator.addFromDrop(chr.getClient(), mapitem.getItem(), true, mapitem.getDropper() instanceof MapleMonster, false)) {
 
                                     InventoryHandler.removeItemPet(chr, mapitem, slot);
                                 }

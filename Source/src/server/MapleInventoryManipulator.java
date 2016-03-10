@@ -182,28 +182,27 @@ public class MapleInventoryManipulator {
                 //c.sendPacket(MaplePacketCreator.addInventorySlot(type, nItem));
                 c.sendPacket(MaplePacketCreator.enableActions());
             }
-        } else {
-            if (quantity == 1) {
-                final IItem nEquip = ii.getEquipById(itemId);
-                if (owner != null) {
-                    nEquip.setOwner(owner);
-                }
-                nEquip.setUniqueId(uniqueid);
-                if (period > 0) {
-                    nEquip.setExpiration(System.currentTimeMillis() + (period * 24 * 60 * 60 * 1000));
-                }
-                newSlot = c.getPlayer().getInventory(type).addItem(nEquip);
-                if (newSlot == -1) {
-                    c.sendPacket(MaplePacketCreator.getInventoryFull());
-                    c.sendPacket(MaplePacketCreator.getShowInventoryFull());
-                    return -1;
-                }
-                c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.ADD, nEquip)));
-                //c.sendPacket(MaplePacketCreator.addInventorySlot(type, nEquip));
-            } else {
-                throw new RuntimeException("正嘗試創造一個非量的裝備.....");
+        } else if (quantity == 1) {
+            final IItem nEquip = ii.getEquipById(itemId);
+            if (owner != null) {
+                nEquip.setOwner(owner);
             }
+            nEquip.setUniqueId(uniqueid);
+            if (period > 0) {
+                nEquip.setExpiration(System.currentTimeMillis() + (period * 24 * 60 * 60 * 1000));
+            }
+            newSlot = c.getPlayer().getInventory(type).addItem(nEquip);
+            if (newSlot == -1) {
+                c.sendPacket(MaplePacketCreator.getInventoryFull());
+                c.sendPacket(MaplePacketCreator.getShowInventoryFull());
+                return -1;
+            }
+            c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.ADD, nEquip)));
+            //c.sendPacket(MaplePacketCreator.addInventorySlot(type, nEquip));
+        } else {
+            throw new RuntimeException("正嘗試創造一個非量的裝備.....");
         }
+
         c.getPlayer().havePartyQuest(itemId);
         return (byte) newSlot;
     }
@@ -288,30 +287,28 @@ public class MapleInventoryManipulator {
                 c.getPlayer().havePartyQuest(nItem.getItemId());
                 return nItem;
             }
-        } else {
-            if (quantity == 1) {
-                final IItem item = ii.randomizeStats((Equip) ii.getEquipById(itemId));
-                final short newSlot = c.getPlayer().getInventory(type).addItem(item);
-
-                if (newSlot == -1) {
-                    return null;
-                }
-                c.sendPacket(MaplePacketCreator.modifyInventory(true, new ModifyInventory(ModifyInventory.Types.ADD, item)));
-                //c.sendPacket(MaplePacketCreator.addInventorySlot(type, item, true));
-                c.getPlayer().havePartyQuest(item.getItemId());
-                return item;
-            } else {
-                throw new RuntimeException("正嘗試創造一個非量的裝備.....");
+        } else if (quantity == 1) {
+            final IItem item = ii.randomizeStats((Equip) ii.getEquipById(itemId));
+            final short newSlot = c.getPlayer().getInventory(type).addItem(item);
+            if (newSlot == -1) {
+                return null;
             }
+            c.sendPacket(MaplePacketCreator.modifyInventory(true, new ModifyInventory(ModifyInventory.Types.ADD, item)));
+            //c.sendPacket(MaplePacketCreator.addInventorySlot(type, item, true));
+            c.getPlayer().havePartyQuest(item.getItemId());
+            return item;
+        } else {
+            throw new InventoryException("正嘗試創造一個非量的裝備.....");
         }
+
         return null;
     }
 
     public static boolean addFromDrop(final MapleClient c, final IItem item, final boolean show) {
-        return addFromDrop(c, item, show, false);
+        return addFromDrop(c, item, show, false, false);
     }
 
-    public static boolean addFromDrop(final MapleClient c, IItem item, final boolean show, final boolean enhance) {
+    public static boolean addFromDrop(final MapleClient c, IItem item, final boolean show, final boolean enhance, final boolean isPetPickup) {
         final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
 
         if (ii.isPickupRestricted(item.getItemId()) && c.getPlayer().haveItem(item.getItemId(), 1, true, false)) {
@@ -342,8 +339,12 @@ public class MapleInventoryManipulator {
                                 final short newQ = (short) Math.min(oldQ + quantity, slotMax);
                                 quantity -= (newQ - oldQ);
                                 eItem.setQuantity(newQ);
-                                c.sendPacket(MaplePacketCreator.modifyInventory(true, new ModifyInventory(ModifyInventory.Types.UPDATE, eItem)));
-                                //c.sendPacket(MaplePacketCreator.updateInventorySlot(type, eItem, true));
+                                if (isPetPickup) {
+                                    c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.UPDATE, eItem)));
+                                } else {
+                                    c.sendPacket(MaplePacketCreator.modifyInventory(true, new ModifyInventory(ModifyInventory.Types.UPDATE, eItem)));
+                                    //c.sendPacket(MaplePacketCreator.updateInventorySlot(type, eItem, true));
+                                }
                             }
                         } else {
                             break;
@@ -384,24 +385,27 @@ public class MapleInventoryManipulator {
                 //c.sendPacket(MaplePacketCreator.addInventorySlot(type, nItem));
                 c.sendPacket(MaplePacketCreator.enableActions());
             }
-        } else {
-            if (quantity == 1) {
-                if (enhance) {
-                    item = checkEnhanced(item, c.getPlayer());
-                }
-                final short newSlot = c.getPlayer().getInventory(type).addItem(item);
+        } else if (quantity == 1) {
+            if (enhance) {
+                item = checkEnhanced(item, c.getPlayer());
+            }
+            final short newSlot = c.getPlayer().getInventory(type).addItem(item);
 
-                if (newSlot == -1) {
-                    c.sendPacket(MaplePacketCreator.getInventoryFull());
-                    c.sendPacket(MaplePacketCreator.getShowInventoryFull());
-                    return false;
-                }
+            if (newSlot == -1) {
+                c.sendPacket(MaplePacketCreator.getInventoryFull());
+                c.sendPacket(MaplePacketCreator.getShowInventoryFull());
+                return false;
+            }
+            if (isPetPickup) {
+                c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.ADD, item)));
+            } else {
                 c.sendPacket(MaplePacketCreator.modifyInventory(true, new ModifyInventory(ModifyInventory.Types.ADD, item)));
                 //c.sendPacket(MaplePacketCreator.addInventorySlot(type, item, true));
-            } else {
-                throw new RuntimeException("正嘗試創造一個非量的裝備.....");
             }
+        } else {
+            throw new RuntimeException("正嘗試創造一個非量的裝備.....");
         }
+
         if (item.getQuantity() >= 50 && GameConstants.isUpgradeScroll(item.getItemId())) {
 
 //            c.setMonitored(true);
@@ -757,12 +761,10 @@ public class MapleInventoryManipulator {
                 } else {
                     c.getPlayer().getMap().disappearingItemDrop(c.getPlayer(), c.getPlayer(), target, dropPos);
                 }
+            } else if (GameConstants.寵物(source.getItemId()) || ItemFlag.UNTRADEABLE.check(flag)) {
+                c.getPlayer().getMap().disappearingItemDrop(c.getPlayer(), c.getPlayer(), target, dropPos);
             } else {
-                if (GameConstants.寵物(source.getItemId()) || ItemFlag.UNTRADEABLE.check(flag)) {
-                    c.getPlayer().getMap().disappearingItemDrop(c.getPlayer(), c.getPlayer(), target, dropPos);
-                } else {
-                    c.getPlayer().getMap().spawnItemDrop(c.getPlayer(), c.getPlayer(), target, dropPos, true, true);
-                }
+                c.getPlayer().getMap().spawnItemDrop(c.getPlayer(), c.getPlayer(), target, dropPos, true, true);
             }
         } else {
             c.getPlayer().getInventory(type).removeSlot(src);
@@ -781,14 +783,13 @@ public class MapleInventoryManipulator {
                 } else {
                     c.getPlayer().getMap().disappearingItemDrop(c.getPlayer(), c.getPlayer(), source, dropPos);
                 }
+            } else if (GameConstants.寵物(source.getItemId()) || ItemFlag.UNTRADEABLE.check(flag)) {
+                c.getPlayer().getMap().disappearingItemDrop(c.getPlayer(), c.getPlayer(), source, dropPos);
             } else {
-                if (GameConstants.寵物(source.getItemId()) || ItemFlag.UNTRADEABLE.check(flag)) {
-                    c.getPlayer().getMap().disappearingItemDrop(c.getPlayer(), c.getPlayer(), source, dropPos);
-                } else {
-                    c.getPlayer().getMap().spawnItemDrop(c.getPlayer(), c.getPlayer(), source, dropPos, true, true);
-                }
+                c.getPlayer().getMap().spawnItemDrop(c.getPlayer(), c.getPlayer(), source, dropPos, true, true);
             }
         }
+
         return true;
     }
 }

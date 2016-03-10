@@ -248,7 +248,7 @@ public class MapleClient {
         mac = macData;
     }
 
-    public boolean hasBannedMac() {
+    public boolean isBannedMac(String mac) {
         if (mac.equalsIgnoreCase("00-00-00-00-00-00") || mac.length() != 17) {
             return false;
         }
@@ -328,7 +328,7 @@ public class MapleClient {
         return 0;
     }
 
-    public int fblogin(String login, String pwd, boolean ipMacBanned) {
+   /* public int fblogin(String login, String pwd, boolean ipMacBanned) {
         int loginok = 5;
         try {
             Connection con = DatabaseConnection.getConnection();
@@ -401,7 +401,7 @@ public class MapleClient {
             System.err.println("ERROR" + e);
         }
         return loginok;
-    }
+    }*/
 
     public int login(String account, String password, boolean isIPBanned) {
         int loginok = 5;
@@ -494,6 +494,7 @@ public class MapleClient {
             rs = ps.executeQuery();
             if (rs.next()) {
                 accountId = rs.getInt("id");
+                mac = rs.getString("macs");
                 secondPassword = rs.getString("2ndpassword");
                 gm = rs.getInt("gm") > 0;
                 bannedReason = rs.getByte("greason");

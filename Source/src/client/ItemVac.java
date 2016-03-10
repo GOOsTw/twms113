@@ -85,7 +85,7 @@ public class ItemVac extends Thread {
                         } else {
                             
                             if (MapleInventoryManipulator.checkSpace(c, this.item.getItemId(), this.item.getItem().getQuantity(), this.item.getItem().getOwner()) && !interrupted()) {
-                                MapleInventoryManipulator.addFromDrop(this.chr.getClient(), this.item.getItem(), true, this.item.getDropper() instanceof MapleMonster);
+                                MapleInventoryManipulator.addFromDrop(this.chr.getClient(), this.item.getItem(), true, this.item.getDropper() instanceof MapleMonster, false);
                                 InventoryHandler.removeItem(this.chr, this.item, this.object);
                                 this.wait(20);
                             }
