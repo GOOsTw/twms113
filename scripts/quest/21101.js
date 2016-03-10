@@ -9,11 +9,6 @@ function start(mode, type, selection) {
             qm.sendNext("#b(再考慮一下好了...)#k");
             qm.dispose();
             return;
-        } else if (status == 2) {
-            qm.MovieClipIntroUI(true);
-            qm.warp(914090100, 0);
-            qm.dispose();
-            return;
         }
         status--;
     }
@@ -38,10 +33,9 @@ function start(mode, type, selection) {
             qm.sendNextS("#b(好像想起什麼了...)#k", 3);
         }
     } else if (status == 2) {
-        qm.sendYesNoS("是否要跳過動畫？？", 1);
-    } else if (status == 3) {
-        qm.warp(140000000, 0)
-        qm.dispose();
+            qm.MovieClipIntroUI(true);
+            qm.warp(914090100, 0);
+			qm.dispose();
     }
 }
 
