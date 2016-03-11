@@ -107,6 +107,7 @@ public class MapleClient {
     private transient String secondPassword; // To be used only on login
     private final transient Lock mutex = new ReentrantLock(true);
     private final transient Lock npcMutex = new ReentrantLock();
+    private long lastNpcClick = 0;
     private final static Lock loginMutex = new ReentrantLock(true);
 
     public MapleClient(MapleAESOFB send, MapleAESOFB receive, IoSession session) {
@@ -1024,6 +1025,16 @@ public class MapleClient {
     public final void pongReceived() {
 
         lastPong = System.currentTimeMillis();
+    }
+    
+    public boolean canClickNPC() {
+        return lastNpcClick + 500 < System.currentTimeMillis();
+    }
+    public void setClickedNPC() {
+        lastNpcClick = System.currentTimeMillis();
+    }
+    public void removeClickedNPC() {
+        lastNpcClick = 0;
     }
 
     public final void sendPing() {

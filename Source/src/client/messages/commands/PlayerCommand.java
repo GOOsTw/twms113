@@ -349,6 +349,7 @@ public class PlayerCommand {
 
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
+            c.removeClickedNPC();
             NPCScriptManager.getInstance().dispose(c);
             c.sendPacket(MaplePacketCreator.enableActions());
             c.getPlayer().dropMessage(1, "解卡完畢.");

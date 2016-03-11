@@ -847,10 +847,11 @@ public abstract class AbstractPlayerInteraction {
     }
 
     public final void openNpc(final int id) {
-        NPCScriptManager.getInstance().start(getClient(), id);
+        openNpc(getClient(), id);
     }
 
     public final void openNpc(final MapleClient cg, final int id) {
+        cg.removeClickedNPC();
         NPCScriptManager.getInstance().start(cg, id);
     }
 

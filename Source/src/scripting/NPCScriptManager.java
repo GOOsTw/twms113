@@ -47,7 +47,7 @@ public class NPCScriptManager extends AbstractScriptManager {
             if (c.getPlayer().isGM()) {
                 c.getPlayer().dropMessage("[系統提示]您已經建立與NPC:" + npc + "的對話。");
             }
-            if (!cms.containsKey(c)) {
+            if (!cms.containsKey(c) && c.canClickNPC()) {
                 Invocable iv = getInvocable("npc/" + npc + ".js", c, true);
                 if (iv == null) {
 
@@ -65,6 +65,7 @@ public class NPCScriptManager extends AbstractScriptManager {
                 scriptengine.put("cm", cm);
                 scriptengine.put("npcid", npc);
                 c.getPlayer().setConversation(1);
+                c.setClickedNPC();
 
                 try {
                     iv.invokeFunction("start"); // Temporary until I've removed all of start
@@ -100,6 +101,7 @@ public class NPCScriptManager extends AbstractScriptManager {
                 if (cm.pendingDisposal) {
                     dispose(c);
                 } else {
+                    c.setClickedNPC();
                     cm.getIv().invokeFunction("action", mode, type, selection);
                 }
             } catch (final ScriptException | NoSuchMethodException e) {
@@ -122,7 +124,7 @@ public class NPCScriptManager extends AbstractScriptManager {
         final Lock lock = c.getNPCLock();
         lock.lock();
         try {
-            if (!cms.containsKey(c)) {
+            if (!cms.containsKey(c) && c.canClickNPC()) {
                 final Invocable iv = getInvocable("quest/" + quest + ".js", c, true);
                 if (iv == null) {
                     
@@ -135,6 +137,7 @@ public class NPCScriptManager extends AbstractScriptManager {
                 scriptengine.put("qm", cm);
 
                 c.getPlayer().setConversation(1);
+                c.setClickedNPC();
                 if (c.getPlayer().isGM()) {
                     c.getPlayer().dropMessage("[系統提示]您已經建立與任務腳本:" + quest + "的往來。");
                 }
@@ -163,6 +166,7 @@ public class NPCScriptManager extends AbstractScriptManager {
             if (cm.pendingDisposal) {
                 dispose(c);
             } else {
+                c.setClickedNPC();
                 cm.getIv().invokeFunction("start", mode, type, selection);
             }
         } catch (ScriptException | NoSuchMethodException e) {
@@ -185,7 +189,7 @@ public class NPCScriptManager extends AbstractScriptManager {
         //final NPCConversationManager cm = cms.get(c);
         lock.lock();
         try {
-            if (!cms.containsKey(c)) {
+            if (!cms.containsKey(c) && c.canClickNPC()) {
                 final Invocable iv = getInvocable("quest/" + quest + ".js", c, true);
                 if (iv == null) {
                     dispose(c);
@@ -197,6 +201,7 @@ public class NPCScriptManager extends AbstractScriptManager {
                 scriptengine.put("qm", cm);
 
                 c.getPlayer().setConversation(1);
+                c.setClickedNPC();
                 //System.out.println("NPCID started: " + npc + " endquest " + quest);
                 iv.invokeFunction("end", (byte) 1, (byte) 0, 0); // start it off as something
             } else {
@@ -225,6 +230,7 @@ public class NPCScriptManager extends AbstractScriptManager {
             if (cm.pendingDisposal) {
                 dispose(c);
             } else {
+                c.setClickedNPC();
                 cm.getIv().invokeFunction("end", mode, type, selection);
             }
         } catch (ScriptException | NoSuchMethodException e) {
