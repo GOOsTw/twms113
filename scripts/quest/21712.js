@@ -1,25 +1,25 @@
-var status = -1;
+﻿var status = -1;
 
 function start(mode, type, selection) {
     if (mode == 1) {
         status++;
     } else {
-        if (status == 2) {
-            qm.sendNext("You still don't understand what's going on? I'll explain it to you again if you talk to me one more time.");
+        if (status == 1) {
+            qm.sendNext("等你想要來幫助的時候，我會再次告訴你方法。");
             qm.dispose();
             return;
         }
         status--;
     }
     if (status == 0) {
-        qm.sendNext("#t4032315#... #rThis puppet is making a strange noise#k. You can't hear it with your ears, of course, since it can only be heard by the #o1210102#s. I believe it's this noise that changed the personality of the #o1210102#s.");
+        qm.sendNext("到現在為止所發現的娃娃結果,那裡面會發出只對怪物了解的獨特的聲音,那個聲音的關係怪物變越來越兇暴得.簡單說怪物變得原因就是娃娃.第一個情報有大該收集完成.去告知#b特魯#k");
     } else if (status == 1) {
-        qm.askAcceptDecline("The #o1210102#s that have been affected by the noise have turned cynical. They've started fighting the non-affected #o1210102#s, which has made all #o1210102#s prepare for combat. #bThe reason for all these changes in the #o1210102#s is this puppet#k! Do you understand?");
+        qm.askAcceptDecline("將 #o1210102#  異常的原因告知#b特魯#k，並完成了第一次情報收集。這段時間把精力放在升級和修煉吧。");
     } else if (status == 2) {
         qm.forceStartQuest();
-        qm.sendNextS("I wonder what triggered this in the first place. There is no way this puppet was naturally created, which means someone planned this. I should keep an eye on the #o1210102#s.", 9);
+        qm.sendNextS("我不知道擺在第一次觸發。有沒有辦法這個傀儡自然地產生，這意味著有人策劃這一點。我應該留意的 #o1210102#s.", 9);
     } else if (status == 3) {
-        qm.sendPrevS("#b(You were able to find out what caused the changes in the #o1210102#s. You should report to #p1002104# and deliver the information you''ve gathered.)#k", 2);
+        qm.sendPrevS("#b(你能找出是什麼原因造成的變化的 #o1210102#s. 你應該報告 #p1002104# 並提供你收集的信息。)#k", 2);
         qm.dispose();
     }
 }
