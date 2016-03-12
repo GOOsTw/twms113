@@ -5111,6 +5111,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void setDPS(long newdps) {
+        if (dps >= 2147483647) {
+            dps = 0;
+        }
         dps = newdps;
     }
 
