@@ -2434,7 +2434,7 @@ public final class MapleMap {
         broadcastMessage(source, packet, GameConstants.maxViewRangeSq(), rangedFrom);
     }
 
-    private void broadcastMessage(final MapleCharacter source, final MaplePacket packet, final double rangeSq, final Point rangedFrom) {
+     private void broadcastMessage(final MapleCharacter source, final MaplePacket packet, final double rangeSq, final Point rangedFrom) {
         charactersLock.readLock().lock();
         try {
             for (MapleCharacter chr : characters) {

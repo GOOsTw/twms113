@@ -1864,6 +1864,8 @@ public class MaplePacketCreator {
         }
         if (buffs.keySet().contains(MapleBuffStat.SUMMON)) {
             mplew.write(buffs.get(MapleBuffStat.SUMMON).byteValue());
+        } else if (buffs.keySet().contains(MapleBuffStat.COMBO)) {
+            mplew.write(buffs.get(MapleBuffStat.COMBO).byteValue());
         }
         if (buffs.keySet().contains(MapleBuffStat.WK_CHARGE)) {
             mplew.writeInt(buffs.get(MapleBuffStat.WK_CHARGE));
@@ -1893,6 +1895,7 @@ public class MaplePacketCreator {
         }
         if (buffs.keySet().contains(MapleBuffStat.DARKSIGHT)) {
         }
+
         if (buffs.keySet().contains(MapleBuffStat.SOULARROW)) {
         }
         if (buffs.keySet().contains(MapleBuffStat.MORPH)) {
