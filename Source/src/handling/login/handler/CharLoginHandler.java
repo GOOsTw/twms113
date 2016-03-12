@@ -59,9 +59,10 @@ public class CharLoginHandler {
     }
 
     public static final void handleLogout(final SeekableLittleEndianAccessor slea, MapleClient c) {
-        if (c.getLoginState() > 0) {
-            c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
-        }
+        String account = slea.readMapleAsciiString();
+        String IpAddress = c.getSessionIPAddress();
+        c.setAccountName(account);
+        c.logout();
     }
 
     public static final void handleLogin(final SeekableLittleEndianAccessor slea, final MapleClient c) {

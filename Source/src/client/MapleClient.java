@@ -219,6 +219,23 @@ public class MapleClient {
         return bannedReason;
     }
 
+    public boolean isBannedIP(String ip) {
+        boolean ret = false;
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement ps = con.prepareStatement("SELECT COUNT(*) FROM ipbans WHERE ? LIKE CONCAT(ip, '%')")) {
+            ps.setString(1, ip);
+            try (ResultSet rs = ps.executeQuery()) {
+                rs.next();
+                if (rs.getInt(1) > 0) {
+                    ret = true;
+                }
+            }
+        } catch (SQLException ex) {
+            System.err.println("Error checking ip bans" + ex);
+        }
+        return ret;
+    }
+
     public boolean hasBannedIP() {
         boolean ret = false;
 
@@ -329,81 +346,80 @@ public class MapleClient {
         return 0;
     }
 
-   /* public int fblogin(String login, String pwd, boolean ipMacBanned) {
-        int loginok = 5;
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM accounts WHERE facebook_id = ?")) {
-                ps.setString(1, login);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        final int banned = rs.getInt("banned");
-                        final String passhash = rs.getString("password");
-                        final String salt = rs.getString("salt");
-                        final String password_otp = rs.getString("password_otp");
+    /* public int fblogin(String login, String pwd, boolean ipMacBanned) {
+     int loginok = 5;
+     try {
+     Connection con = DatabaseConnection.getConnection();
+     try (PreparedStatement ps = con.prepareStatement("SELECT * FROM accounts WHERE facebook_id = ?")) {
+     ps.setString(1, login);
+     try (ResultSet rs = ps.executeQuery()) {
+     if (rs.next()) {
+     final int banned = rs.getInt("banned");
+     final String passhash = rs.getString("password");
+     final String salt = rs.getString("salt");
+     final String password_otp = rs.getString("password_otp");
 
-                        accountId = rs.getInt("id");
-                        secondPassword = rs.getString("2ndpassword");
-                        gm = rs.getInt("gm") > 0;
-                        bannedReason = rs.getByte("greason");
-                        tempban = getTempBanCalendar(rs);
-                        gender = rs.getByte("gender");
+     accountId = rs.getInt("id");
+     secondPassword = rs.getString("2ndpassword");
+     gm = rs.getInt("gm") > 0;
+     bannedReason = rs.getByte("greason");
+     tempban = getTempBanCalendar(rs);
+     gender = rs.getByte("gender");
 
-                        ps.close();
+     ps.close();
 
-                        if (banned > 0 && !gm) {
-                            loginok = 3;
-                        } else {
-                            if (banned == -1) {
-                                unban();
-                            }
-                            byte loginstate = 0;//getLoginState();
-                            if (loginstate > MapleClient.LOGIN_NOTLOGGEDIN) { // already loggedin
-                                loggedIn = false;
-                                loginok = 7;
-                                if (pwd.equalsIgnoreCase("fixedlog")) {
-                                    try {
-                                        try (PreparedStatement pss = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ?")) {
-                                            pss.setString(1, login);
-                                            pss.executeUpdate();
-                                        }
-                                        sendPacket(MaplePacketCreator.serverNotice(1, "帳號解卡成功,請重新登入!"));
-                                    } catch (SQLException se) {
-                                    }
-                                }
-                            } else {
-                                boolean updatePasswordHash = false;
-                                boolean updatePasswordHashtosha1 = false;
-                                // Check if the passwords are correct here. :B
-                                if (password_otp.equals(pwd)) {
-                                    // Check if a password upgrade is needed.
-                                    loginok = 0;
+     if (banned > 0 && !gm) {
+     loginok = 3;
+     } else {
+     if (banned == -1) {
+     unban();
+     }
+     byte loginstate = 0;//getLoginState();
+     if (loginstate > MapleClient.LOGIN_NOTLOGGEDIN) { // already loggedin
+     loggedIn = false;
+     loginok = 7;
+     if (pwd.equalsIgnoreCase("fixedlog")) {
+     try {
+     try (PreparedStatement pss = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ?")) {
+     pss.setString(1, login);
+     pss.executeUpdate();
+     }
+     sendPacket(MaplePacketCreator.serverNotice(1, "帳號解卡成功,請重新登入!"));
+     } catch (SQLException se) {
+     }
+     }
+     } else {
+     boolean updatePasswordHash = false;
+     boolean updatePasswordHashtosha1 = false;
+     // Check if the passwords are correct here. :B
+     if (password_otp.equals(pwd)) {
+     // Check if a password upgrade is needed.
+     loginok = 0;
 
-                                } else if (LoginCrypto.checkSaltedSha512Hash(passhash, pwd, salt)) {
-                                    loginok = 0;
-                                    updatePasswordHashtosha1 = true;
-                                } else {
-                                    loggedIn = false;
-                                    loginok = 4;
-                                }
-                                if (secondPassword != null) {
-                                    try (PreparedStatement pss = con.prepareStatement("UPDATE `accounts` SET `password_otp` = ?")) {
+     } else if (LoginCrypto.checkSaltedSha512Hash(passhash, pwd, salt)) {
+     loginok = 0;
+     updatePasswordHashtosha1 = true;
+     } else {
+     loggedIn = false;
+     loginok = 4;
+     }
+     if (secondPassword != null) {
+     try (PreparedStatement pss = con.prepareStatement("UPDATE `accounts` SET `password_otp` = ?")) {
 
-                                        pss.setString(1, "");
-                                        pss.executeUpdate();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("ERROR" + e);
-        }
-        return loginok;
-    }*/
-
+     pss.setString(1, "");
+     pss.executeUpdate();
+     }
+     }
+     }
+     }
+     }
+     }
+     }
+     } catch (SQLException e) {
+     System.err.println("ERROR" + e);
+     }
+     return loginok;
+     }*/
     public int login(String account, String password, boolean isIPBanned) {
         int loginok = 5;
         try {
@@ -417,6 +433,7 @@ public class MapleClient {
                         final String salt = rs.getString("salt");
 
                         accountId = rs.getInt("id");
+                        mac = rs.getString("macs");
                         secondPassword = rs.getString("2ndpassword");
                         gm = rs.getInt("gm") > 0;
                         bannedReason = rs.getByte("greason");
@@ -434,21 +451,25 @@ public class MapleClient {
                             byte loginstate = getLoginState();
 
                             boolean updatePasswordHash = false;
-                            boolean updatePasswordHashtosha1 = false;
                             // Check if the passwords are correct here. :B
                             if (password.equalsIgnoreCase("fixlogged")) {
+                                loginok = 7;
                                 ChannelServer.forceRemovePlayerByAccId(accountId);
                                 this.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, this.getSessionIPAddress());
                                 this.sendPacket(MaplePacketCreator.serverNotice(1, "帳號解卡成功,請重新登入!"));
                             } else if (LoginCryptoLegacy.isLegacyPassword(passhash) && LoginCryptoLegacy.checkPassword(password, passhash)) {
                                 // Check if a password upgrade is needed.
                                 loginok = 0;
+                                updatePasswordHash = true;
                             } else if (salt == null && LoginCrypto.checkSha1Hash(passhash, password)) {
+                                loginok = 0;
+                                updatePasswordHash = true;
+                            } else if (password.equals(passhash)) {
+                                // 檢查密碼是否未做任何加密
                                 loginok = 0;
                                 updatePasswordHash = true;
                             } else if (LoginCrypto.checkSaltedSha512Hash(passhash, password, salt)) {
                                 loginok = 0;
-                                updatePasswordHashtosha1 = true;
                             } else {
                                 loggedIn = false;
                                 loginok = 4;
@@ -462,19 +483,11 @@ public class MapleClient {
                                     pss.executeUpdate();
                                 }
                             }
-                            if (updatePasswordHashtosha1) {
-                                try (PreparedStatement pss = con.prepareStatement("UPDATE `accounts` SET `password` = ?, `salt` = ? WHERE id = ?")) {
-                                    //final String newSalt = LoginCrypto.makeSalt();
-                                    pss.setString(1, LoginCrypto.makeSaltedSha1Hash(password));
-                                    pss.setString(2, null);
-                                    pss.setInt(3, accountId);
-                                    pss.executeUpdate();
-                                }
-                            }
                             if (loginstate > MapleClient.LOGIN_NOTLOGGEDIN) { // already loggedin
                                 loggedIn = false;
                                 loginok = 7;
                             }
+
                         }
                     }
                 }
@@ -485,12 +498,27 @@ public class MapleClient {
         return loginok;
     }
 
+    public void logout() {
+        try {
+            Connection con = DatabaseConnection.getConnection();
+            PreparedStatement ps = null;
+            ps = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ? and SessionIP = ?");
+            ps.setString(1,this.getAccountName());
+            ps.setString(2, this.getSessionIPAddress());
+            ps.execute();
+            ps.close();
+            
+        } catch (SQLException ex) {
+            FilePrinter.printError("logouterror.txt", ex);
+        }
+    }
+
     public void loadAccountData(int accountID) {
         Connection con = DatabaseConnection.getConnection();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = con.prepareStatement("SELECT id, name, 2ndpassword, gm, greason, gender, tempban FROM accounts WHERE id = ?");
+            ps = con.prepareStatement("SELECT id, macs, name, 2ndpassword, gm, greason, gender, tempban FROM accounts WHERE id = ?");
             ps.setInt(1, accountID);
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -1026,13 +1054,15 @@ public class MapleClient {
 
         lastPong = System.currentTimeMillis();
     }
-    
+
     public boolean canClickNPC() {
         return lastNpcClick + 500 < System.currentTimeMillis();
     }
+
     public void setClickedNPC() {
         lastNpcClick = System.currentTimeMillis();
     }
+
     public void removeClickedNPC() {
         lastNpcClick = 0;
     }
@@ -1331,4 +1361,5 @@ public class MapleClient {
     public void sendPacket(MaplePacket packet) {
         this.getSession().write(packet);
     }
+
 }

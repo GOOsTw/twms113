@@ -50,8 +50,8 @@ public class LoginServer {
     private static String serverName, eventMessage;
     private static byte flag;
     private static int maxCharacters, userLimit, usersOn = 0;
-    private static boolean finishedShutdown = true, adminOnly = false;
-    public static boolean autoRegister = false;
+    private static boolean finishedShutdown = true;
+    public static boolean autoRegister = false, adminOnly = false;
 
     public static final void addChannel(final int channel) {
         load.put(channel, 0);

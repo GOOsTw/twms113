@@ -38,6 +38,7 @@ import client.anticheat.CheatingOffense;
 import client.status.MonsterStatus;
 import client.status.MonsterStatusEffect;
 import constants.SkillType;
+import handling.world.World;
 import java.util.Map;
 import server.AutobanManager;
 import server.MapleStatEffect;
@@ -203,6 +204,16 @@ public class DamageParse {
                     eachd = eachde.left;
                     overallAttackCount++;
 
+                    if (GameConstants.Novice_Skill(attack.skill)) {//新手技能
+                        if (eachd > 40) {
+                            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[封號系統] " + player.getName() + " 因為傷害異常而被永久停權。").getBytes());
+                            World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[封號系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 40 本次傷害 " + eachd + " 技能ID " + attack.skill).getBytes());
+                            player.ban(player.getName() + "傷害異常", true, true, false);
+                            player.getClient().getSession().close();
+                            return;
+                        }
+                    }
+
                     if (overallAttackCount - 1 == attackCount) { // Is a Shadow partner hit so let's divide it once
                         maxDamagePerHit = (maxDamagePerHit / 100) * ShdowPartnerAttackPercentage;
                     }
@@ -321,7 +332,7 @@ public class DamageParse {
                             stats.setHp(remainingHP > 1 ? 1 : remainingHP);
                             break;
                         }
-                        
+
                         case SkillType.盜賊.雙飛斬:
                         case SkillType.盜賊.詛咒術:
                         case SkillType.盜賊.劈空斬:
@@ -504,9 +515,9 @@ public class DamageParse {
         final PlayerStats stats = player.getStat();
 //	double minDamagePerHit;
         double maxDamagePerHit;
-        if (attack.skill == SkillType.僧侶.群體治癒) {
-            maxDamagePerHit = 30000;
-        } else if (attack.skill == 1000 || attack.skill == 10001000 || attack.skill == 20001000) {
+        //if (attack.skill == SkillType.僧侶.群體治癒) {
+        //  maxDamagePerHit = 30000;
+        if (attack.skill == 1000 || attack.skill == 10001000 || attack.skill == 20001000) {
             maxDamagePerHit = 40;
         } else if (GameConstants.isPyramidSkill(attack.skill)) {
             maxDamagePerHit = 1;
@@ -556,6 +567,15 @@ public class DamageParse {
                 for (Pair<Integer, Boolean> eachde : oned.attack) {
                     eachd = eachde.left;
                     overallAttackCount++;
+                    if (GameConstants.Novice_Skill(attack.skill)) {//新手技能
+                        if (eachd > 40) {
+                            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[封號系統] " + player.getName() + " 因為傷害異常而被永久停權。").getBytes());
+                            World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[封號系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 40 本次傷害 " + eachd + " 技能ID " + attack.skill).getBytes());
+                            player.ban("傷害異常", true, true, false);
+                            player.getClient().getSession().close();
+                            return;
+                        }
+                    }
                     if (fixeddmg != -1) {
                         eachd = monsterstats.getOnlyNoramlAttack() ? 0 : fixeddmg; // Magic is always not a normal attack
                     } else {

@@ -108,11 +108,11 @@ public class GameConstants {
     public static boolean exitem(int itemid) {
         switch (itemid) {
             case 2070015:
-            return true;
+                return true;
         }
         return false;
     }
-    
+
     public static boolean isMarrigeRing(int itemid) {
         switch (itemid) {
             case 1112300:
@@ -138,6 +138,16 @@ public class GameConstants {
             case 1112807:
             case 1112808:
             case 1112809:
+                return true;
+        }
+        return false;
+    }
+
+    public static boolean Novice_Skill(int skill) {
+        switch (skill) {
+            case 1000://嫩寶丟擲術
+            case 10001000:
+            case 20001000:
                 return true;
         }
         return false;
@@ -170,7 +180,7 @@ public class GameConstants {
     public static boolean isJobFamily(final int baseJob, final int currentJob) {
         return currentJob >= baseJob && currentJob / 100 == baseJob / 100;
     }
-    
+
     public static boolean isAdv(final int job) {
         return job >= 0 && job < 1000;
     }
@@ -359,7 +369,7 @@ public class GameConstants {
         return MapleInventoryType.getByType(type);
     }
 
-   public static MapleWeaponType 武器種類(final int itemId) {
+    public static MapleWeaponType 武器種類(final int itemId) {
         int cat = itemId / 10000;
         cat = cat % 100;
         switch (cat) {
@@ -447,7 +457,7 @@ public class GameConstants {
         return false;
     }
 
-   public static boolean 雙手武器(final int itemId) {
+    public static boolean 雙手武器(final int itemId) {
         switch (武器種類(itemId)) {
             case 雙手斧:
             case 火槍:

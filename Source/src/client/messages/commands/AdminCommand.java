@@ -107,7 +107,8 @@ public class AdminCommand {
             }
             return true;
         }
-         @Override
+
+        @Override
         public String getMessage() {
             return new StringBuilder().append("!debbug - 顯示DEBUG訊息").toString();
         }
@@ -530,6 +531,21 @@ public class AdminCommand {
 
         public String getMessage() {
             return new StringBuilder().append("!autoreg  - 自動註冊開關").toString();
+        }
+    }
+
+    public static class logindoor extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            LoginServer.adminOnly = !LoginServer.adminOnly;
+            c.getPlayer().dropMessage(0, "[logindoor] " + (LoginServer.adminOnly ? "開啟" : "關閉"));
+            System.out.println("[logindoor] " + (LoginServer.adminOnly ? "開啟" : "關閉"));
+            return true;
+        }
+
+        public String getMessage() {
+            return new StringBuilder().append("!logindoor  - 管理員登入模式開關").toString();
         }
     }
 

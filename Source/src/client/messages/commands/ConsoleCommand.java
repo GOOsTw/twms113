@@ -329,6 +329,16 @@ public class ConsoleCommand {
         }
     }
 
+    public static class logindoor extends ConsoleCommandExecute {
+
+        @Override
+        public int execute(String[] splitted) {
+            LoginServer.adminOnly = !LoginServer.adminOnly;
+            System.out.println("管理員登入模式狀態: " + (LoginServer.adminOnly ? "開啟" : "關閉"));
+            return 1;
+        }
+    }
+
     public static class serverMsg extends ConsoleCommandExecute {
 
         @Override
@@ -420,6 +430,7 @@ public class ConsoleCommand {
             System.out.println("reloadmap 重新載入地圖");
             System.out.println("Info 查看伺服器狀況");
             System.out.println("AutoReg 自動註冊開關");
+            System.out.println("logindoor 管理員登入模式開關");
             System.out.println("-------------------------");
             System.out.println("ReloadEvents 重新載入副本事件");
             System.out.println("ReloadFishing 重新載入釣魚獎勵");

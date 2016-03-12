@@ -459,6 +459,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.storage = (MapleStorage) ct.storage;
         ret.cs = (CashShop) ct.cs;
         client.setAccountName(ct.accountname);
+        client.setMac(ct.mac);
         ret.acash = ct.ACash;
         ret.maplepoints = ct.MaplePoints;
         ret.numClones = ct.clonez;
@@ -3759,6 +3760,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         try {
             Connection con = DatabaseConnection.getConnection();
             PreparedStatement ps = con.prepareStatement("UPDATE accounts SET banned = ?, banreason = ? WHERE id = ?");
+            PreparedStatement ps1 = con.prepareStatement("UPDATE accounts SET banned = ?, banreason = ? WHERE id = ?");
             ps.setInt(1, autoban ? 2 : 1);
             ps.setString(2, reason);
             ps.setInt(3, accountid);
@@ -3768,8 +3770,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             if (banIP) {
                 ps = con.prepareStatement("INSERT INTO ipbans VALUES (DEFAULT, ?)");
                 ps.setString(1, client.getSessionIPAddress());
+                ps1 = con.prepareStatement("INSERT INTO macbans VALUES (DEFAULT, ?)");
+                ps1.setString(1, client.getMac());
                 ps.execute();
                 ps.close();
+                ps1.execute();
+                ps1.close();
 
                 if (hellban) {
                     try (PreparedStatement psa = con.prepareStatement("SELECT * FROM accounts WHERE id = ?")) {
