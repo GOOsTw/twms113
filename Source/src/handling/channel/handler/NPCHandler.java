@@ -136,7 +136,7 @@ public class NPCHandler {
                 if (npc == 0 && quest > 0) {
                     q.forceStart(chr, npc, null);
                 } else if (quest == 2001) {
-                    q.forceStart(chr, npc, null);               
+                    q.forceStart(chr, npc, null);
                 } else if (!q.hasStartScript()) {
                     q.start(chr, npc);
                 }
@@ -211,24 +211,26 @@ public class NPCHandler {
                 }
                 break;
             }
-            case 5: { // Store
+            case 5: { // 倉庫處理
                 final byte slot = (byte) slea.readShort();
                 final int itemId = slea.readInt();
                 short quantity = slea.readShort();
+                MapleInventoryType type = GameConstants.getInventoryType(itemId);
                 final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
                 if (quantity < 1) {
-                    //AutobanManager.getInstance().autoban(c, "Trying to store " + quantity + " of " + itemId);
                     return;
                 }
                 if (storage.isFull()) {
                     c.sendPacket(MaplePacketCreator.getStorageFull());
                     return;
                 }
-
+                if (chr.getInventory(type).getItem(slot) == null) {
+                    c.sendPacket(MaplePacketCreator.enableActions());
+                    return;
+                }
                 if (chr.getMeso() < 100) {
-                    chr.dropMessage(1, "你沒有足夠的楓幣買這個道具.");
+                    chr.dropMessage(1, "你沒有足夠的楓幣放倉庫道具。");
                 } else {
-                    MapleInventoryType type = GameConstants.getInventoryType(itemId);
                     IItem item = chr.getInventory(type).getItem(slot).copy();
 
                     if (GameConstants.寵物(item.getItemId())) {
@@ -262,9 +264,9 @@ public class NPCHandler {
                         AutobanManager.getInstance().addPoints(c, 1000, 0, "Trying to store non-matching itemid (" + itemId + "/" + item.getItemId() + ") or quantity not in posession (" + quantity + "/" + item.getQuantity() + ")");
                         return;
                     }
+                    storage.sendStored(c, GameConstants.getInventoryType(itemId));
+                    break;
                 }
-                storage.sendStored(c, GameConstants.getInventoryType(itemId));
-                break;
             }
             case 6: {
                 storage.arrange();
