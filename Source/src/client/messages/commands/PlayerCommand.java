@@ -235,7 +235,7 @@ public class PlayerCommand {
 
         @Override
         public boolean execute(final MapleClient c, String[] splitted) {
-            if (c.getPlayer().getMapId() == 100000000 && c.getPlayer().getLevel() >= 70 || !c.getPlayer().isGM()) {
+            if ((c.getPlayer().getMapId() == 100000000 && c.getPlayer().getLevel() >= 70) ||  c.getPlayer().isGM()) {
                 if (!c.getPlayer().isTestingDPS()) {
                     c.getPlayer().toggleTestingDPS();
                     c.getPlayer().dropMessage(5, "請持續攻擊怪物1分鐘，來測試您的每秒輸出！");
