@@ -1448,6 +1448,7 @@ public class AdminCommand {
             try {
                 int id = 0, quantity = 0;
                 String name = splitted[2];
+                int item = Integer.parseInt(splitted[1]);
                 com.mysql.jdbc.PreparedStatement ps = (com.mysql.jdbc.PreparedStatement) dcon.prepareStatement("select * from characters where name = ?");
                 ps.setString(1, name);
                 try (ResultSet rs = ps.executeQuery()) {
@@ -1459,13 +1460,25 @@ public class AdminCommand {
                     c.getPlayer().dropMessage(5, "角色不存在資料庫。");
                     return false;
                 }
-                com.mysql.jdbc.PreparedStatement ps2 = (com.mysql.jdbc.PreparedStatement) dcon.prepareStatement("delete from inventoryitems WHERE itemid = ? and characterid = ?");
-                ps2.setInt(1, Integer.parseInt(splitted[1]));
-                ps2.setInt(2, id);
-                ps2.executeUpdate();
-                c.getPlayer().dropMessage(6, "所有ID為 " + splitted[1] + " 的道具" + quantity + "已經從 " + name + " 身上被移除了");
+                com.mysql.jdbc.PreparedStatement ps2 = (com.mysql.jdbc.PreparedStatement) dcon.prepareStatement("select * from inventoryitems WHERE itemid = ? and quantity");
+                ps2.setInt(1, item);
+                try (ResultSet rs = ps2.executeQuery()) {
+                    if (rs.next()) {
+                        quantity = rs.getInt("quantity");
+                    }
+                }
+                if (quantity == 0) {
+                    c.getPlayer().dropMessage(5, "物品不存在資料庫。");
+                    return false;
+                }
+                com.mysql.jdbc.PreparedStatement ps3 = (com.mysql.jdbc.PreparedStatement) dcon.prepareStatement("delete from inventoryitems WHERE itemid = ? and characterid = ?");
+                ps3.setInt(1, item);
+                ps3.setInt(2, id);
+                ps3.executeUpdate();
+                c.getPlayer().dropMessage(6, "ID為: " + item + " 的道具 數量: x" + quantity + "個已經從 " + name + " 身上被移除了");
                 ps.close();
                 ps2.close();
+                ps3.close();
                 return true;
             } catch (SQLException e) {
                 return false;
