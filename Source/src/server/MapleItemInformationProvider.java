@@ -53,6 +53,7 @@ public class MapleItemInformationProvider {
     protected final Map<Integer, Integer> monsterBookID = new HashMap<>();
     protected final Map<Integer, String> nameCache = new HashMap<>();
     protected final Map<Integer, String> descCache = new HashMap<>();
+    protected final Map<Integer, Short> petFlagInfo = new HashMap<>();
     protected final Map<Integer, String> msgCache = new HashMap<>();
     protected final Map<Integer, Map<String, Integer>> SkillStatsCache = new HashMap<>();
     protected final Map<Integer, Byte> consumeOnPickupCache = new HashMap<>();
@@ -1447,5 +1448,42 @@ public class MapleItemInformationProvider {
             return GameConstants.getInventoryType(itemId) == MapleInventoryType.CASH;
         }
         return GameConstants.getInventoryType(itemId) == MapleInventoryType.CASH || getEquipStats(itemId).get("cash") > 0;
+    }
+
+    public short getPetFlagInfo(int itemId) {
+        if (this.petFlagInfo.containsKey(itemId)) {
+            return (this.petFlagInfo.get(itemId));
+        }
+        short flag = 0;
+        if (itemId / 10000 != 500) {
+            return flag;
+        }
+        MapleData item = getItemData(itemId);
+        if (item == null) {
+            return flag;
+        }
+        if (MapleDataTool.getIntConvert("info/pickupItem", item, 0) > 0) {
+            flag = (short) (flag | 0x1);
+        }
+        if (MapleDataTool.getIntConvert("info/longRange", item, 0) > 0) {
+            flag = (short) (flag | 0x2);
+        }
+        if (MapleDataTool.getIntConvert("info/pickupAll", item, 0) > 0) {
+            flag = (short) (flag | 0x4);
+        }
+        if (MapleDataTool.getIntConvert("info/sweepForDrop", item, 0) > 0) {
+            flag = (short) (flag | 0x10);
+        }
+        if (MapleDataTool.getIntConvert("info/consumeHP", item, 0) > 0) {
+            flag = (short) (flag | 0x20);
+        }
+        if (MapleDataTool.getIntConvert("info/consumeMP", item, 0) > 0) {
+            flag = (short) (flag | 0x40);
+        }
+        if (MapleDataTool.getIntConvert("info/autoBuff", item, 0) > 0) {
+            flag = (short) (flag | 0x200);
+        }
+        this.petFlagInfo.put(itemId, flag);
+        return flag;
     }
 }
