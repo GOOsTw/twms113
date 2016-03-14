@@ -845,7 +845,7 @@ public class MapleStatEffect implements Serializable {
                     }
                 }
 
-                List<MapleCharacter> awarded = new ArrayList<MapleCharacter>();
+                List<MapleCharacter> awarded = new ArrayList<>();
                 while (awarded.size() < Math.min(membrs, y)) {
                     for (MapleCharacter chr : applyfrom.getMap().getCharactersThreadsafe()) {
                         if (chr.isAlive() && chr.getParty().equals(applyfrom.getParty()) && !awarded.contains(chr) && Randomizer.nextInt(y) == 0) {
@@ -1346,6 +1346,9 @@ public class MapleStatEffect implements Serializable {
     }
 
     private boolean isPartyBuff() {
+          if (lt == null || rb == null || !partyBuff) {
+            return isSoulStone();
+        }
         switch (sourceid) {
             case 1211003:
             case 1211004:
@@ -1357,7 +1360,14 @@ public class MapleStatEffect implements Serializable {
             case 1221004:
             case 11111007:
             case 12101005:
+            case 4311001:
+            case 4331003:
+            case 4341002:
+            case 35121005:
                 return false;
+        }
+        if (GameConstants.isNoDelaySkill(sourceid)) {
+            return false;
         }
         return true;
     }

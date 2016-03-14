@@ -157,7 +157,7 @@ public class Event_DojoAgent {
                             
                             
                             chr.setDojo(chr.getDojo() + point);
-                            chr.modifyCSPoints(2, points, true);
+                            chr.modifyCSPoints(2, cspoints, true);
                             chr.getClient().sendPacket(MaplePacketCreator.Mulung_Pts(point, chr.getDojo()));
                         }
                     }

@@ -92,7 +92,6 @@ public class MaplePet implements Serializable {
     private byte fullness = 100, level = 1, summoned = 0;
     private short inventorypos = 0, closeness = 0, flags = 0;
     private boolean changed = false;
-    private long expiration;
 
     private MaplePet(final int petitemid, final int uniqueid) {
         this.petitemid = petitemid;

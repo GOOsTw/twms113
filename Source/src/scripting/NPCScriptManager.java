@@ -127,7 +127,7 @@ public class NPCScriptManager extends AbstractScriptManager {
             if (!cms.containsKey(c) && c.canClickNPC()) {
                 final Invocable iv = getInvocable("quest/" + quest + ".js", c, true);
                 if (iv == null) {
-                    
+                    c.getPlayer().dropMessage(1, "此任務尚未建置，請通知管理員。\r\n任務編號: "+ quest );
                     dispose(c);
                     return;
                 }
