@@ -65,7 +65,7 @@ function action(mode, type, selection) {
                     cm.getPlayer().unequipPet(pet, true, false);
                     cm.gainItem(5380000, -1);
                     cm.removeSlot(5, slot, 1);
-                    cm.gainPet(after, name, level, closeness, fullness, flag);
+                    cm.gainPet(after, name, level, closeness, fullness, 45, flag);
                     cm.getPlayer().spawnPet(slot);
                     cm.sendOk("您的龍已經進化了！它曾經是一隻 #i" + id + "##t" + id + "#, 而現在是一隻 #i" + after + "##t" + after + "#!");
                     cm.dispose();
@@ -114,9 +114,9 @@ function action(mode, type, selection) {
                     cm.getPlayer().unequipPet(pet, true, false);
                     cm.gainItem(5380000, -1);
                     cm.removeSlot(5, slot, 1);
-                    cm.gainPet(after, name, level, closeness, fullness, flag);
+                    cm.gainPet(after, name, level, closeness, fullness, 45, flag);
                     cm.getPlayer().spawnPet(slot);
-                    cm.sendOk("您的龍已經進化了！它曾經是一隻 #i" + id + "##t" + id + "#, 而現在是一隻 #i" + after + "##t" + after + "#!");
+                    cm.sendOk("您的機器人已經進化了！它曾經是一隻 #i" + id + "##t" + id + "#, 而現在是一隻 #i" + after + "##t" + after + "#!");
                     cm.dispose();
                 }
             } else if (selection == 3) {
