@@ -1910,7 +1910,9 @@ public class MaplePacketCreator {
         if (buffs.keySet().contains(MapleBuffStat.SPIRIT_CLAW)) {
             mplew.writeInt(buffs.get(MapleBuffStat.SPIRIT_CLAW));
         }
-
+        if (buffs.keySet().contains(MapleBuffStat.ZOMBIFY)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.ZOMBIFY));
+        }
         if (buffs.keySet().contains(MapleBuffStat.BERSERK_FURY)) {
             mplew.writeInt(buffs.get(MapleBuffStat.BERSERK_FURY));
         }
@@ -1938,8 +1940,8 @@ public class MaplePacketCreator {
         }
         if (buffs.keySet().contains(MapleBuffStat.WIND_WALK)) {
         }
-        if (buffs.keySet().contains(MapleBuffStat.SOUL_STONE)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.SOUL_STONE));
+        if (buffs.keySet().contains(MapleBuffStat.BUFF_71)) {
+            mplew.writeInt(buffs.get(MapleBuffStat.BUFF_71));
         }
         mplew.write(0);
         mplew.write(0);
