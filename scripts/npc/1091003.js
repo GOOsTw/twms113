@@ -110,7 +110,10 @@ function action(mode, type, selection) {
         var pass = true;
 
         if (cm.getMeso() < cost * qty) {
-            cm.sendNext("抱歉我只接受楓幣.")
+			pass = false;
+            cm.sendNext("抱歉我只接受楓幣.");
+			cm.dispose();
+			return;
         } else {
             if (mats instanceof Array) {
                 for (var i = 0; pass && i < mats.length; i++) {
@@ -124,10 +127,14 @@ function action(mode, type, selection) {
                 pass = cm.haveItem(mats, matQty * qty);
             }
         }
-
-        if (pass == false)
+        if (!pass) {
+			pass = false;
             cm.sendOk("很抱歉由於你的材料不足，所以我不想幫你做了。");
-        else {
+			cm.dispose();
+			return;
+        } if (!cm.canHold()) {
+            cm.sendOk("請確認道具欄是否有空間");
+        } else {
             if (mats instanceof Array) {
                 for (var i = 0; i < mats.length; i++) {
                     cm.gainItem(mats[i], -matQty[i] * qty);
