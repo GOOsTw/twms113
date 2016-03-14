@@ -39,7 +39,7 @@ function action(mode, type, selection) {
 
                 }
                 for (var i = 0; i < hair_Colo_new.length; i++) {
-                    hair_Colo_new[i] = hair_Colo_new[i] + (hair % 10);
+                    hair_Colo_new[i] = Math.floor((hair_Colo_new[i]/10) *10) + (hair % 10);
                 }
                 cm.sendYesNo("注意!這是隨機，請問是否要使用 #b#t5150041##k?");
             }
