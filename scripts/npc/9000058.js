@@ -23,7 +23,7 @@ function action(mode, type, selection) {
         if (!cm.isQuestFinished(29933)) {
             NewPlayer();
         }
-        cm.sendSimple("歡迎來到啾咪谷~\r\n#b#L2#我要打開藍色小箱子#l\r\n#b#L6#我要抽月光寶盒#k");
+        cm.sendSimple("歡迎來到啾咪谷~\r\n#b#L2#我要打開藍色小箱子#l\r\n#b#L6#我要抽月光寶盒#l\r\n#b#L3#測試#k");
     } else if (status == 1) {
         if (selection == 2) {
             if (cm.haveItem(4031307, 1) == true) {
@@ -35,6 +35,9 @@ function action(mode, type, selection) {
                 cm.sendOk("#b檢查一下背包有沒有藍色禮物盒哦");
                 cm.dispose();
             }
+		} else if (selection == 3) {
+			cm.gainItemPeriod(1002419, 1, 0*1);
+			cm.dispose();
 		} else if (selection == 6) {
 			cm.dispose();
 			cm.openNpc(9330022);
@@ -49,7 +52,7 @@ function action(mode, type, selection) {
 
 function NewPlayer() {
     if (!cm.haveItem(5000007, 1, true, true) && cm.canHold(5000007, 1)) {
-        cm.gainPet(5000007, "黑色小豬", 1, 0, 100, 0);
+        cm.gainPet(5000007, "黑色小豬", 1, 0, 100, 45, 0);
     }
     if (!cm.haveItem(1002419, 1, true, true) && cm.canHold(1002419, 1)) {
         cm.gainItemPeriod(1002419, 1, 30);
