@@ -206,7 +206,7 @@ public class InternCommand {
                 return false;
             }
             String mac = splitted[1];
-            if (c.banMacs(mac)) {
+            if (c.banMac(mac)) {
                 c.getPlayer().dropMessage("封鎖MAC [" + mac + "] 成功");
                 try {
                     for (ChannelServer cs : ChannelServer.getAllInstances()) {

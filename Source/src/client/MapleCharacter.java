@@ -3731,12 +3731,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         try {
             Connection con = DatabaseConnection.getConnection();
 
-            PreparedStatement ps = con.prepareStatement("INSERT INTO ipbans VALUES (DEFAULT, ?)");
-            ps.setString(1, client.getSession().getRemoteAddress().toString().split(":")[0]);
-            ps.execute();
-            ps.close();
-
-            ps = con.prepareStatement("UPDATE accounts SET tempban = ?, banreason = ?, greason = ? WHERE id = ?");
+            PreparedStatement ps = con.prepareStatement("UPDATE accounts SET tempban = ?, banreason = ?, greason = ? WHERE id = ?");
             Timestamp TS = new Timestamp(duration.getTimeInMillis());
             ps.setTimestamp(1, TS);
             ps.setString(2, reason);
@@ -3768,14 +3763,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.close();
 
             if (banIP) {
-                ps = con.prepareStatement("INSERT INTO ipbans VALUES (DEFAULT, ?)");
-                ps.setString(1, client.getSessionIPAddress());
-                ps1 = con.prepareStatement("INSERT INTO macbans VALUES (DEFAULT, ?)");
-                ps1.setString(1, client.getMac());
-                ps.execute();
-                ps.close();
-                ps1.execute();
-                ps1.close();
+                
+                client.banIP();
+                client.banMac();
 
                 if (hellban) {
                     try (PreparedStatement psa = con.prepareStatement("SELECT * FROM accounts WHERE id = ?")) {
@@ -3845,7 +3835,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                                     }
                                     String macData = rsa.getString("macs");
                                     if (macData != null) {
-                                        MapleClient.banMacs(macData);
+                                        MapleClient.banMac(macData);
                                     }
                                     if (hellban) {
                                         try (PreparedStatement pss = con.prepareStatement("UPDATE accounts SET banned = 1, banreason = ? WHERE email = ?" + (sessionIP == null ? "" : " OR SessionIP = ?"))) {

@@ -146,7 +146,7 @@ public class CharLoginHandler {
             }
         } else {
             c.loginAttempt = 0;
-            c.updateMacs();
+            c.updateMac();
             LoginWorker.registerClient(c);
             for (ChannelServer ch : ChannelServer.getAllInstances()) {
                 List<MapleCharacter> list = ch.getPlayerStorage().getAllCharactersThreadSafe();

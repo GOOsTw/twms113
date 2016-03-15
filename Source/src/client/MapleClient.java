@@ -264,7 +264,7 @@ public class MapleClient {
             return;
         }
         mac = macData;
-        updateMacs(mac);
+        updateMac(mac);
     }
 
     public boolean isBannedMac(String mac) {
@@ -287,11 +287,11 @@ public class MapleClient {
         return ret;
     }
 
-    public void banMacs() {
-        banMacs(mac);
+    public void banMac() {
+        banMac(mac);
     }
 
-    public static boolean banMacs(String macData) {
+    public static boolean banMac(String macData) {
         if (macData.equalsIgnoreCase("00-00-00-00-00-00") || macData.length() != 17) {
             return false;
         }
@@ -306,23 +306,31 @@ public class MapleClient {
         return true;
     }
 
-    public void updateMacs() {
-        updateMacs(mac);
+    public void updateMac() {
+        updateMac(mac);
     }
 
-    public void updateMacs(String macData) {
+    public void updateMac(String macData) {
         if (macData.equalsIgnoreCase("00-00-00-00-00-00") || macData.length() != 17) {
             return;
         }
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET macs = ? WHERE id = ?")) {
-                ps.setString(1, macData);
-                ps.setInt(2, accountId);
-                ps.executeUpdate();
-            }
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET macs = ? WHERE id = ?")) {
+            ps.setString(1, macData);
+            ps.setInt(2, accountId);
+            ps.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Error saving MACs" + e);
+            System.err.println("Error ban MAC " + e);
+        }
+    }
+
+    public void banIP() {
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement ps = con.prepareStatement("INSERT INTO ipbans VALUES (DEFAULT, ?)")) {
+            ps.setString(1, getSession().getRemoteAddress().toString().split(":")[0]);
+            ps.execute();
+        } catch (SQLException e) {
+            System.err.println("Error ban ip " + e);
         }
     }
 
@@ -504,11 +512,11 @@ public class MapleClient {
             Connection con = DatabaseConnection.getConnection();
             PreparedStatement ps = null;
             ps = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ? and SessionIP = ?");
-            ps.setString(1,this.getAccountName());
+            ps.setString(1, this.getAccountName());
             ps.setString(2, this.getSessionIPAddress());
             ps.execute();
             ps.close();
-            
+
         } catch (SQLException ex) {
             FilePrinter.printError("logouterror.txt", ex);
         }
