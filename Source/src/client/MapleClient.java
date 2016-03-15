@@ -264,6 +264,7 @@ public class MapleClient {
             return;
         }
         mac = macData;
+        updateMacs(mac);
     }
 
     public boolean isBannedMac(String mac) {
