@@ -127,8 +127,11 @@ public class MovementParse {
                     break;
                 }
                 default:
-                    System.out.println("Kind movement: " + kind + ", Remaining : " + (numCommands - res.size()) + " New type of movement ID : " + command + ", packet : " + lea.toString(true));
-                    return null;
+                    byte newstate = lea.readByte();
+                    short duration = lea.readShort();
+                    StaticLifeMovement mov = new StaticLifeMovement(command, null, duration, newstate, 0);
+                    res.add(mov);
+                    break;
             }
         }
         if (numCommands != res.size()) {

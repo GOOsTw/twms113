@@ -208,12 +208,12 @@ public class MobSkill {
             case 114:
                 if (lt != null && rb != null && skill && monster != null) {
                     List<MapleMapObject> objects = getObjectsInRange(monster, MapleMapObjectType.MONSTER);
-                    final int healHP = (getX() / 1000) * (int) (950 + 1050 * Math.random());
+                    final int healHP = this.getHP();
                     for (MapleMapObject mons : objects) {
-                        ((MapleMonster) mons).heal(healHP, getY(), true);
+                        ((MapleMonster) mons).heal(healHP, 0, true);
                     }
                 } else if (monster != null) {
-                    monster.heal(getX(), getY(), true);
+                    monster.heal(this.getHP(), 0, true);
                 }
                 break;
             case 120:
