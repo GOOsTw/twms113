@@ -1007,8 +1007,13 @@ public abstract class AbstractPlayerInteraction {
         return MapleItemInformationProvider.getInstance().getName(id);
     }
 
-    public void gainPet(int id, String name, int level, int closeness, int fullness, long period, short flags) {
-        if (id > 5000200 || id < 5000000) {
+    public void gainPet(int id, String name, int level, int closeness, int fullness, int period) {
+        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+        gainPet(id, name, level, closeness, fullness, period, ii.getPetFlagInfo(id));
+    }
+
+    public void gainPet(int id, String name, int level, int closeness, int fullness, int period, short flags) {
+        if (!GameConstants.寵物(id)) {
             id = 5000000;
         }
         if (level > 30) {
@@ -1020,8 +1025,10 @@ public abstract class AbstractPlayerInteraction {
         if (fullness > 100) {
             fullness = 100;
         }
+        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
         try {
-            MapleInventoryManipulator.addById(c, id, (short) 1, "", MaplePet.createPet(id, name, level, closeness, fullness, MapleInventoryIdentifier.getInstance(), id == 5000054 ? (int) period : 0, flags), 45);
+            MaplePet pet = MaplePet.createPet(id, name, level, closeness, fullness, MapleInventoryIdentifier.getInstance(), ii.getPetLimitLife(id), flags);
+            MapleInventoryManipulator.addById(c, id, (short) 1, "", pet, period);
         } catch (NullPointerException ex) {
             ex.printStackTrace();
         }

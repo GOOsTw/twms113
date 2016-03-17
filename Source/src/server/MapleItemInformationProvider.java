@@ -54,6 +54,8 @@ public class MapleItemInformationProvider {
     protected final Map<Integer, String> nameCache = new HashMap<>();
     protected final Map<Integer, String> descCache = new HashMap<>();
     protected final Map<Integer, Short> petFlagInfo = new HashMap<>();
+    protected final Map<Integer, Integer> petLimitLifeInfo = new HashMap<>();
+    protected final Map<Integer, Integer> petLifeInfo = new HashMap<>();
     protected final Map<Integer, String> msgCache = new HashMap<>();
     protected final Map<Integer, Map<String, Integer>> SkillStatsCache = new HashMap<>();
     protected final Map<Integer, Byte> consumeOnPickupCache = new HashMap<>();
@@ -1450,12 +1452,38 @@ public class MapleItemInformationProvider {
         return GameConstants.getInventoryType(itemId) == MapleInventoryType.CASH || getEquipStats(itemId).get("cash") > 0;
     }
 
+    public int getPetLimitLife(int itemid) {
+        if (this.petLimitLifeInfo.containsKey(itemid)) {
+            return (this.petLimitLifeInfo.get(itemid));
+        }
+        if (!GameConstants.寵物(itemid)) {
+            return 0;
+        }
+        MapleData item = getItemData(itemid);
+        int limitLife = MapleDataTool.getIntConvert("info/limitedLife", item, 0);
+        this.petLimitLifeInfo.put(itemid, limitLife);
+        return limitLife;
+    }
+
+    public int getPetLife(int itemid) {
+        if (this.petLifeInfo.containsKey(itemid)) {
+            return (this.petLifeInfo.get(itemid));
+        }
+        if (!GameConstants.寵物(itemid)) {
+            return 0;
+        }
+        MapleData item = getItemData(itemid);
+        int life = MapleDataTool.getIntConvert("info/limitedLife", item, 0);
+        this.petLifeInfo.put(itemid, life);
+        return life;
+    }
+
     public short getPetFlagInfo(int itemId) {
         if (this.petFlagInfo.containsKey(itemId)) {
             return (this.petFlagInfo.get(itemId));
         }
         short flag = 0;
-        if (itemId / 10000 != 500) {
+        if (!GameConstants.寵物(itemId)) {
             return flag;
         }
         MapleData item = getItemData(itemId);

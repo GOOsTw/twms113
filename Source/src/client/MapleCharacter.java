@@ -5479,6 +5479,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public void spawnPet(byte slot, boolean lead, boolean broadcast) {
         final IItem item = getInventory(MapleInventoryType.CASH).getItem(slot);
+        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
         if (item == null || item.getItemId() > 5000100 || item.getItemId() < 5000000) {
             return;
         }
@@ -5487,7 +5488,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             case 5000028: {
                 final MaplePet pet = MaplePet.createPet(item.getItemId() + 1, MapleInventoryIdentifier.getInstance());
                 if (pet != null) {
-                    MapleInventoryManipulator.addById(client, item.getItemId() + 1, (short) 1, item.getOwner(), pet, 45);
+                    MapleInventoryManipulator.addById(client, item.getItemId() + 1, (short) 1, item.getOwner(), pet, ii.getPetLife(item.getItemId()));
                     MapleInventoryManipulator.removeFromSlot(client, MapleInventoryType.CASH, slot, (short) 1, false);
                 }
                 break;
