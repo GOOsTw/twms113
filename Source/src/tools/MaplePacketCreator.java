@@ -2311,11 +2311,11 @@ public class MaplePacketCreator {
     }
 
     public static MaplePacket showItemLevelupEffect() {
-        return showSpecialEffect(16);
+        return showSpecialEffect(0x0F);
     }
 
     public static MaplePacket showForeignItemLevelupEffect(int cid) {
-        return showSpecialEffect(cid, 16);
+        return showSpecialEffect(cid, 0x0F);
     }
 
     public static MaplePacket showSpecialEffect(int effect) {

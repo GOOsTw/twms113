@@ -3012,6 +3012,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             expirationTask(true, false);
             int prevexp = getExp();
             int needed = GameConstants.getExpNeededForLevel(level);
+            if (total > 0) {
+                stats.checkEquipLevels(this, total); //gms like
+            }
             if (GameConstants.isKOC(job) && level >= 120) {
                 setExp(0);
             }
@@ -3049,9 +3052,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 if (show) { // still show the expgain even if it's not there
                     client.sendPacket(MaplePacketCreator.GainEXPOthers(total, inChat, white));
                 }
-                /*if (total > 0) {
-                 stats.checkEquipLevels(this, total); //gms like
-                 }*/
             }
         } catch (Exception e) {
             FilePrinter.printError("MapleCharacter.txt", e);
@@ -3087,6 +3087,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (gain > 0 && total < gain) { //just in case
             total = Integer.MAX_VALUE;
         }
+        if (total > 0) {
+            stats.checkEquipLevels(this, total);
+        }
+
         int needed = GameConstants.getExpNeededForLevel(level);
         if (GameConstants.isKOC(job) && level >= 120) {
             return;
@@ -3126,7 +3130,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             if (show) { // still show the expgain even if it's not there
                 client.sendPacket(MaplePacketCreator.GainEXP_Monster(gain, white, partyinc, Class_Bonus_EXP, Equipment_Bonus_EXP, Premium_Bonus_EXP));
             }
-            //stats.checkEquipLevels(this, total);
         }
     }
 

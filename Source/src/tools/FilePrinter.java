@@ -27,6 +27,7 @@ public class FilePrinter {
     public static final String ZakumLog = "ZakumLog";
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+    private static final SimpleDateFormat sdf_ = new SimpleDateFormat("yyyy-MM-dd");
     private static final String FILE_PATH = "logs/" + sdf.format(Calendar.getInstance().getTime()) + "/";// + sdf.format(Calendar.getInstance().getTime()) + "/"
     private static final String ERROR = "error/";
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -74,6 +75,10 @@ public class FilePrinter {
             } catch (IOException ignore) {
             }
         }
+    }
+
+    public static String CurrentReadable_Date() {
+        return sdf_.format(Calendar.getInstance().getTime());
     }
 
     public static void printError(final String name, final String s) {
