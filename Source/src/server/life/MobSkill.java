@@ -138,19 +138,18 @@ public class MobSkill {
             case 101:
             case 111:
             case 151:
-                stop = monster.isBuffed(MonsterStatus.MAGIC_ATTACK_UP);
+                stop = monster.isBuffed(MonsterStatus.WEAPON_DEFENSE_UP);
                 break;
             case 102:
             case 112:
             case 152:
-                stop = monster.isBuffed(MonsterStatus.WEAPON_DEFENSE_UP);
+                stop = monster.isBuffed(MonsterStatus.MAGIC_ATTACK_UP);
                 break;
             case 103:
             case 113:
             case 153:
                 stop = monster.isBuffed(MonsterStatus.MAGIC_DEFENSE_UP);
                 break;
-            //154-157, don't stop it
             case 140:
             case 141:
             case 142:
@@ -181,12 +180,12 @@ public class MobSkill {
             case 101:
             case 111:
             case 151:
-                stats.put(MonsterStatus.MAGIC_ATTACK_UP, x);
+                stats.put(MonsterStatus.WEAPON_DEFENSE_UP, x);
                 break;
             case 102:
             case 112:
             case 152:
-                stats.put(MonsterStatus.WEAPON_DEFENSE_UP, x);
+                stats.put(MonsterStatus.MAGIC_ATTACK_UP, x);
                 break;
             case 103:
             case 113:
@@ -208,12 +207,12 @@ public class MobSkill {
             case 114:
                 if (lt != null && rb != null && skill && monster != null) {
                     List<MapleMapObject> objects = getObjectsInRange(monster, MapleMapObjectType.MONSTER);
-                    final int healHP = (getX() / 1000) * (int) (950 + 1050 * Math.random());
+                    final int healHP = this.getHP();
                     for (MapleMapObject mons : objects) {
-                        ((MapleMonster) mons).heal(healHP, getY(), true);
+                        ((MapleMonster) mons).heal(healHP, 0, true);
                     }
                 } else if (monster != null) {
-                    monster.heal(getX(), getY(), true);
+                    monster.heal(this.getHP(), 0, true);
                 }
                 break;
             case 120:
@@ -230,7 +229,7 @@ public class MobSkill {
             case 135:
             case 136:
             case 137:
-                disease = MapleDisease.getBySkill(skillId);
+                disease = MapleDisease.getByMobSkill(skillId);
                 break;
             case 127:
                 if (lt != null && rb != null && skill && monster != null && player != null) {
@@ -365,10 +364,10 @@ public class MobSkill {
         if (disease != null && player != null) {
             if (lt != null && rb != null && skill && monster != null) {
                 for (MapleCharacter chr : getPlayersInRange(monster, player)) {
-                    chr.giveDebuff(disease, this);
+                    chr.getDiseaseBuff(disease, this);
                 }
             } else {
-                player.giveDebuff(disease, this);
+                player.getDiseaseBuff(disease, this);
             }
         }
         if (monster != null) {

@@ -4,14 +4,21 @@
 
 var status = -1;
 var time = 1;
+var 活動關閉 = true;
 
 function action(mode, type, selection) {
+	var GM = cm.getPlayer().isGM();
     if (mode == 1) {
         status++;
     } else {
         cm.dispose();
         return;
     }
+	if (活動關閉 && !GM) {
+		cm.sendOk("過年活動已經結束了0.0");
+        cm.dispose();
+        return;
+	}
     if (status == 0) {
         cm.sendNext("您好！我是#p9330107#，目前我們正在舉辦新年活動，如果您施捨給我香爐祭拜神明，誠意夠的話神明將會給各位一個大大的驚喜來當作回報的。");
     } else if (status == 1) {

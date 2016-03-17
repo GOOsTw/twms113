@@ -63,6 +63,8 @@ public class InternCommand {
                     sb.append(" (IP: ").append(target.getClient().getSessionIPAddress()).append(")");
                     if (target.ban(sb.toString(), c.getPlayer().isAdmin(), false, hellban)) {
                         c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功鎖定了 " + splitted[1] + ".");
+                        target.getClient().getSession().close(true);
+                        target.getClient().disconnect(true, false);
                     } else {
                         c.getPlayer().dropMessage(6, "[" + getCommand() + "] 封鎖失敗.");
                     }
@@ -71,9 +73,9 @@ public class InternCommand {
                     
                 }
             } else if (MapleCharacter.ban(splitted[1], sb.toString(), false, c.getPlayer().isAdmin() ? 250 : c.getPlayer().getGMLevel(), splitted[0].equals("!hellban"))) {
-                c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功離線鎖定 " + splitted[1] + ".");
+                c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功離線鎖定 " + splitted[1]);
             } else {
-                c.getPlayer().dropMessage(6, "[" + getCommand() + "] Failed to ban " + splitted[1]);
+                c.getPlayer().dropMessage(6, "[" + getCommand() + "] 失敗離線鎖定 " + splitted[1]);
             }
             return true;
         }
@@ -206,7 +208,7 @@ public class InternCommand {
                 return false;
             }
             String mac = splitted[1];
-            if (c.banMacs(mac)) {
+            if (c.banMac(mac)) {
                 c.getPlayer().dropMessage("封鎖MAC [" + mac + "] 成功");
                 try {
                     for (ChannelServer cs : ChannelServer.getAllInstances()) {

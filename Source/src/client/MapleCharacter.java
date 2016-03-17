@@ -3012,6 +3012,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             expirationTask(true, false);
             int prevexp = getExp();
             int needed = GameConstants.getExpNeededForLevel(level);
+            if (total > 0) {
+                stats.checkEquipLevels(this, total); //gms like
+            }
             if (GameConstants.isKOC(job) && level >= 120) {
                 setExp(0);
             }
@@ -3049,9 +3052,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 if (show) { // still show the expgain even if it's not there
                     client.sendPacket(MaplePacketCreator.GainEXPOthers(total, inChat, white));
                 }
-                /*if (total > 0) {
-                 stats.checkEquipLevels(this, total); //gms like
-                 }*/
             }
         } catch (Exception e) {
             FilePrinter.printError("MapleCharacter.txt", e);
@@ -3087,6 +3087,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (gain > 0 && total < gain) { //just in case
             total = Integer.MAX_VALUE;
         }
+        if (total > 0) {
+            stats.checkEquipLevels(this, total);
+        }
+
         int needed = GameConstants.getExpNeededForLevel(level);
         if (GameConstants.isKOC(job) && level >= 120) {
             return;
@@ -3126,7 +3130,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             if (show) { // still show the expgain even if it's not there
                 client.sendPacket(MaplePacketCreator.GainEXP_Monster(gain, white, partyinc, Class_Bonus_EXP, Equipment_Bonus_EXP, Premium_Bonus_EXP));
             }
-            //stats.checkEquipLevels(this, total);
         }
     }
 
@@ -3731,12 +3734,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         try {
             Connection con = DatabaseConnection.getConnection();
 
-            PreparedStatement ps = con.prepareStatement("INSERT INTO ipbans VALUES (DEFAULT, ?)");
-            ps.setString(1, client.getSession().getRemoteAddress().toString().split(":")[0]);
-            ps.execute();
-            ps.close();
-
-            ps = con.prepareStatement("UPDATE accounts SET tempban = ?, banreason = ?, greason = ? WHERE id = ?");
+            PreparedStatement ps = con.prepareStatement("UPDATE accounts SET tempban = ?, banreason = ?, greason = ? WHERE id = ?");
             Timestamp TS = new Timestamp(duration.getTimeInMillis());
             ps.setTimestamp(1, TS);
             ps.setString(2, reason);
@@ -3768,14 +3766,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.close();
 
             if (banIP) {
-                ps = con.prepareStatement("INSERT INTO ipbans VALUES (DEFAULT, ?)");
-                ps.setString(1, client.getSessionIPAddress());
-                ps1 = con.prepareStatement("INSERT INTO macbans VALUES (DEFAULT, ?)");
-                ps1.setString(1, client.getMac());
-                ps.execute();
-                ps.close();
-                ps1.execute();
-                ps1.close();
+
+                client.banIP();
+                client.banMac();
 
                 if (hellban) {
                     try (PreparedStatement psa = con.prepareStatement("SELECT * FROM accounts WHERE id = ?")) {
@@ -3845,7 +3838,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                                     }
                                     String macData = rsa.getString("macs");
                                     if (macData != null) {
-                                        MapleClient.banMacs(macData);
+                                        MapleClient.banMac(macData);
                                     }
                                     if (hellban) {
                                         try (PreparedStatement pss = con.prepareStatement("UPDATE accounts SET banned = 1, banreason = ? WHERE email = ?" + (sessionIP == null ? "" : " OR SessionIP = ?"))) {
@@ -4650,12 +4643,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return diseases.keySet().contains(dis);
     }
 
-    public void giveDebuff(final MapleDisease disease, MobSkill skill) {
-        giveDebuff(disease, skill.getX(), skill.getDuration(), skill.getSkillId(), skill.getSkillLevel());
+    public void getDiseaseBuff(final MapleDisease disease, MobSkill skill) {
+        getDiseaseBuff(disease, skill.getX(), skill.getDuration(), skill.getSkillId(), skill.getSkillLevel());
     }
 
-    public void giveDebuff(final MapleDisease disease, int x, long duration, int skillid, int level) {
-        final List<Pair<MapleDisease, Integer>> debuff = Collections.singletonList(new Pair<>(disease, Integer.valueOf(x)));
+    public void getDiseaseBuff(final MapleDisease disease, int x, long duration, int skillid, int level) {
+        final List<Pair<MapleDisease, Integer>> debuff = Collections.singletonList(new Pair<>(disease, x));
 
         if (!hasDisease(disease) && diseases.size() < 2) {
             if (!(disease == MapleDisease.SEDUCE || disease == MapleDisease.STUN)) {
@@ -4663,7 +4656,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     return;
                 }
             }
-
             diseases.put(disease, new MapleDiseaseValueHolder(disease, System.currentTimeMillis(), duration));
             client.sendPacket(MaplePacketCreator.giveDebuff(debuff, skillid, level, (int) duration));
             map.broadcastMessage(this, MaplePacketCreator.giveForeignDebuff(id, debuff, skillid, level), false);
@@ -4682,9 +4674,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (hasDisease(debuff)) {
             long mask = debuff.getValue();
             boolean first = debuff.isFirst();
+            diseases.remove(debuff);
             client.sendPacket(MaplePacketCreator.cancelDebuff(mask, first));
             map.broadcastMessage(this, MaplePacketCreator.cancelForeignDebuff(id, mask, first), false);
-            diseases.remove(debuff);
         }
     }
 
@@ -4693,6 +4685,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         dispelDebuff(MapleDisease.DARKNESS);
         dispelDebuff(MapleDisease.POISON);
         dispelDebuff(MapleDisease.SEAL);
+        dispelDebuff(MapleDisease.STUN);
         dispelDebuff(MapleDisease.WEAKEN);
     }
 
@@ -5489,6 +5482,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public void spawnPet(byte slot, boolean lead, boolean broadcast) {
         final IItem item = getInventory(MapleInventoryType.CASH).getItem(slot);
+        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
         if (item == null || item.getItemId() > 5000100 || item.getItemId() < 5000000) {
             return;
         }
@@ -5497,7 +5491,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             case 5000028: {
                 final MaplePet pet = MaplePet.createPet(item.getItemId() + 1, MapleInventoryIdentifier.getInstance());
                 if (pet != null) {
-                    MapleInventoryManipulator.addById(client, item.getItemId() + 1, (short) 1, item.getOwner(), pet, 45);
+                    MapleInventoryManipulator.addById(client, item.getItemId() + 1, (short) 1, item.getOwner(), pet, ii.getPetLife(item.getItemId()));
                     MapleInventoryManipulator.removeFromSlot(client, MapleInventoryType.CASH, slot, (short) 1, false);
                 }
                 break;

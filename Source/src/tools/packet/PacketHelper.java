@@ -397,9 +397,8 @@ public class PacketHelper {
                 mplew.writeMapleAsciiString(equip.getOwner());
                 mplew.writeShort(equip.getFlag());
                 mplew.write(0);
-                mplew.write(equip.getEquipmentLevel()); //裝備成長等級
-                mplew.writeShort(0);
-                mplew.writeShort(equip.getEquipmentExp()); //裝備成長經驗
+                mplew.write(Math.max(equip.getBaseLevel(), equip.getEquipLevel())); // Item level
+                mplew.writeInt(equip.getEquipLevel()); // Item Exp... 10000000 = 100%
 
                 if (!hasUniqueId) {
                     mplew.writeLong(item.getUniqueId()); //some tracking ID
@@ -492,10 +491,9 @@ public class PacketHelper {
             mplew.writeShort(equip.getJump()); // jump
             mplew.writeMapleAsciiString(equip.getOwner());
             mplew.writeShort(equip.getFlag());
-            mplew.write(0);
-            mplew.write(equip.getEquipmentLevel()); //裝備成長等級
-            mplew.writeShort(0);
-            mplew.writeShort(equip.getEquipmentExp()); //裝備成長經驗
+            mplew.write(equip.getLevel());
+            mplew.write(equip.getExpPercentage());
+            mplew.writeInt(0);
 
             if (!isCash) {
                 mplew.writeLong(item.getUniqueId()); //some tracking ID

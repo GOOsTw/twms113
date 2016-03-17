@@ -1559,7 +1559,11 @@ public class MaplePacketCreator {
             if (pet.getSummoned()) {
                 mplew.write(pet.getUniqueId()); //o-o byte ?
                 mplew.writeInt(pet.getPetItemId()); // petid
-                mplew.writeMapleAsciiString(pet.getName());
+                if (pet.getName() == null) { //判斷寵物名字
+                    mplew.writeMapleAsciiString("沒有名字的寵物");
+                } else {
+                    mplew.writeMapleAsciiString(pet.getName());
+                }
                 mplew.write(pet.getLevel()); // pet level
                 mplew.writeShort(pet.getCloseness()); // pet closeness
                 mplew.write(pet.getFullness()); // pet fullness
@@ -2307,11 +2311,11 @@ public class MaplePacketCreator {
     }
 
     public static MaplePacket showItemLevelupEffect() {
-        return showSpecialEffect(16);
+        return showSpecialEffect(0x0F);
     }
 
     public static MaplePacket showForeignItemLevelupEffect(int cid) {
-        return showSpecialEffect(cid, 16);
+        return showSpecialEffect(cid, 0x0F);
     }
 
     public static MaplePacket showSpecialEffect(int effect) {

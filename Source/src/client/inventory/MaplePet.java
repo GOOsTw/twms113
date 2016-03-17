@@ -87,7 +87,7 @@ public class MaplePet implements Serializable {
     private static final long serialVersionUID = 9179541993413738569L;
     private String name;
     private final int uniqueid, petitemid;
-    private int Fh = 0, stance = 0, secondsLeft = 0;
+    private int Fh = 0, stance = 0, limitedLife = 0;
     private Point pos;
     private byte fullness = 100, level = 1, summoned = 0;
     private short inventorypos = 0, closeness = 0, flags = 0;
@@ -124,7 +124,7 @@ public class MaplePet implements Serializable {
                 ret.setCloseness(rs.getShort("closeness"));
                 ret.setLevel(rs.getByte("level"));
                 ret.setFullness(rs.getByte("fullness"));
-                ret.setSecondsLeft(rs.getInt("seconds"));
+                ret.setLimitedLife(rs.getInt("seconds"));
                 ret.setFlags(rs.getShort("flags"));
                 ret.changed = false;
             }
@@ -146,7 +146,7 @@ public class MaplePet implements Serializable {
             ps.setByte(2, level); // Set Level
             ps.setShort(3, closeness); // Set Closeness
             ps.setByte(4, fullness); // Set Fullness
-            ps.setInt(5, secondsLeft);
+            ps.setInt(5, limitedLife);
             ps.setShort(6, flags);
             ps.setInt(7, uniqueid); // Set ID
             ps.executeUpdate(); // Execute statement
@@ -158,10 +158,11 @@ public class MaplePet implements Serializable {
     }
 
     public static final MaplePet createPet(final int itemid, final int uniqueid) {
-        return createPet(itemid, MapleItemInformationProvider.getInstance().getName(itemid), 1, 0, 100, uniqueid, itemid == 5000054 ? 18000 : 0, (short) 0x1E7F);
+        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+        return createPet(itemid, MapleItemInformationProvider.getInstance().getName(itemid), 1, 0, 100, uniqueid, ii.getPetLimitLife(itemid), ii.getPetFlagInfo(itemid));
     }
 
-    public static final MaplePet createPet(int itemid, String name, int level, int closeness, int fullness, int uniqueid, int secondsLeft, short flag) {
+    public static final MaplePet createPet(int itemid, String name, int level, int closeness, int fullness, int uniqueid, int limitedLife, short flag) {
         if (uniqueid <= -1) { //wah
             uniqueid = MapleInventoryIdentifier.getInstance();
         }
@@ -172,7 +173,7 @@ public class MaplePet implements Serializable {
             pse.setByte(3, (byte) level);
             pse.setShort(4, (short) closeness);
             pse.setByte(5, (byte) fullness);
-            pse.setInt(6, secondsLeft);
+            pse.setInt(6, limitedLife);
             pse.setShort(7, flag); //flags
             pse.executeUpdate();
            
@@ -186,7 +187,7 @@ public class MaplePet implements Serializable {
         pet.setFullness(fullness);
         pet.setCloseness(closeness);
         pet.setFlags(flag);
-        pet.setSecondsLeft(secondsLeft);
+        pet.setLimitedLife(limitedLife);
 
         return pet;
     }
@@ -311,11 +312,11 @@ public class MaplePet implements Serializable {
     }
 
     public final int getSecondsLeft() {
-        return secondsLeft;
+        return limitedLife;
     }
 
-    public final void setSecondsLeft(int sl) {
-        this.secondsLeft = sl;
+    public final void setLimitedLife(int sl) {
+        this.limitedLife = sl;
         this.changed = true;
     }
 }

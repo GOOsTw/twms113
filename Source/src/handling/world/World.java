@@ -1414,7 +1414,7 @@ public class World {
             for (MaplePet pet : chr.getPets()) {
                 if (pet.getSummoned()) {
                     if (pet.getPetItemId() == 5000054 && pet.getSecondsLeft() > 0) {
-                        pet.setSecondsLeft(pet.getSecondsLeft() - 1);
+                        pet.setLimitedLife(pet.getSecondsLeft() - 1);
                         if (pet.getSecondsLeft() <= 0) {
                             chr.unequipPet(pet, true, true);
                             return;

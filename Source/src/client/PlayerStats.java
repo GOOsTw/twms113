@@ -863,7 +863,7 @@ public class PlayerStats implements Serializable {
         List<Equip> all = new ArrayList<>(equipLevelHandling);
         for (Equip eq : all) {
             int lvlz = eq.getEquipLevel();
-            eq.setItemEXP(eq.getItemEXP() + gain);
+            eq.setItemEXP(Math.min(eq.getItemEXP() + gain, Integer.MAX_VALUE));
 
             if (eq.getEquipLevel() > lvlz) { //lvlup
                 for (int i = eq.getEquipLevel() - lvlz; i > 0; i--) {

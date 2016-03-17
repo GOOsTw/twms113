@@ -256,7 +256,7 @@ public class MobPacket {
                     } else if (buff.getSkill() > 0) {
                         mplew.writeInt(buff.getSkill());
                     }
-                    mplew.writeShort(buff.getStatus().isDefault()? 0 : 1);
+                    mplew.writeShort(buff.getStatus().isDefault() ? 0 : 1);
                 }
             }
         }
@@ -276,12 +276,14 @@ public class MobPacket {
         mplew.writeShort(life.getPosition().x);
         mplew.writeShort(life.getPosition().y);
         mplew.write(life.getStance()); // Bitfield
-        mplew.writeShort(0); // FH
+        mplew.writeShort(life.getFh()); // FH
         mplew.writeShort(life.getFh()); // Origin FH
         mplew.write(life.isFake() ? 0xfc : newSpawn ? -2 : -1);
         mplew.write(life.getCarnivalTeam());
         mplew.writeInt(0);
-
+        if (life.getId() / 10000 == 961) {
+            mplew.writeAsciiString("");
+        }
         return mplew.getPacket();
     }
 
@@ -347,7 +349,7 @@ public class MobPacket {
     public static void EncodeTemporary(MaplePacketLittleEndianWriter mplew, List<MonsterStatusEffect> buffs) {
         Set<MonsterStatus> mobstat = new HashSet();
         writeMaskFromList(mplew, buffs);
-         Collections.sort(buffs, new Comparator<MonsterStatusEffect>() {
+        Collections.sort(buffs, new Comparator<MonsterStatusEffect>() {
             @Override
             public int compare(final MonsterStatusEffect o1, final MonsterStatusEffect o2) {
                 int val1 = o1.getStatus().getOrder();
@@ -371,7 +373,7 @@ public class MobPacket {
                 }
                 continue;
             }
-            mplew.writeShort(buff.getX()); 
+            mplew.writeShort(buff.getX());
             if (buff.getMobSkill() != null) {
                 mplew.writeShort(buff.getMobSkill().getSkillId());
                 mplew.writeShort(buff.getMobSkill().getSkillLevel());
