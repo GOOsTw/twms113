@@ -90,7 +90,7 @@ public enum MapleDisease implements Serializable {
         }
     }
 
-    public static final MapleDisease getBySkill(final int skill) {
+    public static final MapleDisease getByMobSkill(final int skill) {
         switch (skill) {
             case 120:
                 return SEAL;

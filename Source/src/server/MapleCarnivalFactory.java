@@ -30,11 +30,16 @@ public class MapleCarnivalFactory {
         if (!skills.isEmpty()) {
             return;
         }
-        
+
         System.out.println("【讀取中】 MapleCarnivalFactory:::");
-        
+
         for (MapleData z : dataRoot.getData("MCSkill.img")) {
-            skills.put(Integer.parseInt(z.getName()), new MCSkill(MapleDataTool.getInt("spendCP", z, 0), MapleDataTool.getInt("mobSkillID", z, 0), MapleDataTool.getInt("level", z, 0), MapleDataTool.getInt("target", z, 1) > 1));
+            int MCSkillId = Integer.parseInt(z.getName());
+            int spendCP = MapleDataTool.getInt("spendCP", z, 0);
+            int mobSkillID = MapleDataTool.getInt("mobSkillID", z, 0);
+            int level = MapleDataTool.getInt("level", z, 0);
+            boolean target = MapleDataTool.getInt("target", z, 1) > 1;
+            skills.put(MCSkillId, new MCSkill(spendCP, mobSkillID, level, target));
         }
         for (MapleData z : dataRoot.getData("MCGuardian.img")) {
             guardians.put(Integer.parseInt(z.getName()), new MCSkill(MapleDataTool.getInt("spendCP", z, 0), MapleDataTool.getInt("mobSkillID", z, 0), MapleDataTool.getInt("level", z, 0), true));
@@ -51,25 +56,25 @@ public class MapleCarnivalFactory {
 
     public static class MCSkill {
 
-        public int cpLoss, skillid, level;
+        public int cpLoss, mobSkillId, level;
         public boolean targetsAll;
 
         public MCSkill(int _cpLoss, int _skillid, int _level, boolean _targetsAll) {
-            cpLoss = _cpLoss;
-            skillid = _skillid;
-            level = _level;
-            targetsAll = _targetsAll;
+            this.cpLoss = _cpLoss;
+            this.mobSkillId = _skillid;
+            this.level = _level;
+            this.targetsAll = _targetsAll;
         }
 
-        public MobSkill getSkill() {
-            return MobSkillFactory.getMobSkill(skillid, 1); //level?
+        public MobSkill getMobSkill() {
+            return MobSkillFactory.getMobSkill(mobSkillId, level);
         }
 
         public MapleDisease getDisease() {
-            if (skillid <= 0) {
+            if (mobSkillId <= 0) {
                 return MapleDisease.getRandom();
             }
-            return MapleDisease.getBySkill(skillid);
+            return MapleDisease.getByMobSkill(mobSkillId);
         }
     }
 }

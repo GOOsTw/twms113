@@ -3763,7 +3763,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.close();
 
             if (banIP) {
-                
+
                 client.banIP();
                 client.banMac();
 
@@ -4640,12 +4640,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return diseases.keySet().contains(dis);
     }
 
-    public void giveDebuff(final MapleDisease disease, MobSkill skill) {
-        giveDebuff(disease, skill.getX(), skill.getDuration(), skill.getSkillId(), skill.getSkillLevel());
+    public void getDiseaseBuff(final MapleDisease disease, MobSkill skill) {
+        getDiseaseBuff(disease, skill.getX(), skill.getDuration(), skill.getSkillId(), skill.getSkillLevel());
     }
 
-    public void giveDebuff(final MapleDisease disease, int x, long duration, int skillid, int level) {
-        final List<Pair<MapleDisease, Integer>> debuff = Collections.singletonList(new Pair<>(disease, Integer.valueOf(x)));
+    public void getDiseaseBuff(final MapleDisease disease, int x, long duration, int skillid, int level) {
+        final List<Pair<MapleDisease, Integer>> debuff = Collections.singletonList(new Pair<>(disease, x));
 
         if (!hasDisease(disease) && diseases.size() < 2) {
             if (!(disease == MapleDisease.SEDUCE || disease == MapleDisease.STUN)) {
@@ -4653,7 +4653,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     return;
                 }
             }
-
             diseases.put(disease, new MapleDiseaseValueHolder(disease, System.currentTimeMillis(), duration));
             client.sendPacket(MaplePacketCreator.giveDebuff(debuff, skillid, level, (int) duration));
             map.broadcastMessage(this, MaplePacketCreator.giveForeignDebuff(id, debuff, skillid, level), false);
@@ -4672,9 +4671,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (hasDisease(debuff)) {
             long mask = debuff.getValue();
             boolean first = debuff.isFirst();
+            diseases.remove(debuff);
             client.sendPacket(MaplePacketCreator.cancelDebuff(mask, first));
             map.broadcastMessage(this, MaplePacketCreator.cancelForeignDebuff(id, mask, first), false);
-            diseases.remove(debuff);
         }
     }
 
@@ -4683,6 +4682,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         dispelDebuff(MapleDisease.DARKNESS);
         dispelDebuff(MapleDisease.POISON);
         dispelDebuff(MapleDisease.SEAL);
+        dispelDebuff(MapleDisease.STUN);
         dispelDebuff(MapleDisease.WEAKEN);
     }
 

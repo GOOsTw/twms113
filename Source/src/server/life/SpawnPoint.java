@@ -111,7 +111,7 @@ public class SpawnPoint extends Spawns {
                     final int num = Integer.parseInt(r.getName().substring(1, 2)); //00, 01, etc
                     final MCSkill skil = MapleCarnivalFactory.getInstance().getGuardian(num);
                     if (skil != null) {
-                        skil.getSkill().applyEffect(null, monster, false);
+                        skil.getMobSkill().applyEffect(null, monster, false);
                     }
                 }
             }

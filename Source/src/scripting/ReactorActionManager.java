@@ -194,7 +194,7 @@ public class ReactorActionManager extends AbstractPlayerInteraction {
         final MCSkill skil = MapleCarnivalFactory.getInstance().getGuardian(num);
         if (skil != null) {
             for (MapleMonster mons : getMap().getAllMonstersThreadsafe()) {
-                mons.dispelSkill(skil.getSkill());
+                mons.dispelSkill(skil.getMobSkill());
             }
         }
     }

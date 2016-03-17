@@ -714,10 +714,10 @@ public class MapleStatEffect implements Serializable {
                         if (skil.targetsAll || Randomizer.nextBoolean()) {
                             if (dis == null) {
                                 chr.dispel();
-                            } else if (skil.getSkill() == null) {
-                                chr.giveDebuff(dis, 1, 30000, MapleDisease.getByDisease(dis), 1);
+                            } else if (skil.getMobSkill() == null) {
+                                chr.getDiseaseBuff(dis, 1, 30000, MapleDisease.getByDisease(dis), 1);
                             } else {
-                                chr.giveDebuff(dis, skil.getSkill());
+                                chr.getDiseaseBuff(dis, skil.getMobSkill());
                             }
                             if (!skil.targetsAll) {
                                 break;

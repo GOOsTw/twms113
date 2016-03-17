@@ -3205,7 +3205,7 @@ public final class MapleMap {
             final MCSkill skil = MapleCarnivalFactory.getInstance().getGuardian(num);
             for (MapleMonster mons : getAllMonstersThreadsafe()) {
                 if (mons.getCarnivalTeam() == team) {
-                    skil.getSkill().applyEffect(null, mons, false);
+                    skil.getMobSkill().applyEffect(null, mons, false);
                 }
             }
         }

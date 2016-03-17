@@ -39,7 +39,7 @@ public class MobSkillFactory {
     private static final MapleData skillRoot = dataSource.getData("MobSkill.img");
 
     public static MobSkill getMobSkill(int skillId, int level) {
-        MobSkill ret = mobSkills.get(new Pair<>(Integer.valueOf(skillId), Integer.valueOf(level)));
+        MobSkill ret = mobSkills.get(new Pair<>(skillId, level));
         if (ret != null) {
             return ret;
         }
