@@ -167,7 +167,7 @@ public class MaplePet implements Serializable {
             uniqueid = MapleInventoryIdentifier.getInstance();
         }
         try ( // Commit to db first
-                PreparedStatement pse = DatabaseConnection.getConnection().prepareStatement("INSERT INTO pets (petid, name, level, closeness, fullness, seconds, flags) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+            PreparedStatement pse = DatabaseConnection.getConnection().prepareStatement("INSERT INTO pets (petid, name, level, closeness, fullness, seconds, flags) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
             pse.setInt(1, uniqueid);
             pse.setString(2, name);
             pse.setByte(3, (byte) level);
@@ -176,7 +176,7 @@ public class MaplePet implements Serializable {
             pse.setInt(6, limitedLife);
             pse.setShort(7, flag); //flags
             pse.executeUpdate();
-           
+
         } catch (final SQLException ex) {
             FilePrinter.printError("MaplePet.txt", ex, "createPet");
             return null;

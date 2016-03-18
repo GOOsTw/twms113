@@ -1007,6 +1007,11 @@ public abstract class AbstractPlayerInteraction {
         return MapleItemInformationProvider.getInstance().getName(id);
     }
 
+    public void gainPet(int id, String name, int level, int closeness, int fullness) {
+        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+        gainPet(id, name, level, closeness, fullness, ii.getPetLife(id), ii.getPetFlagInfo(id));
+    }
+
     public void gainPet(int id, String name, int level, int closeness, int fullness, int period) {
         MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
         gainPet(id, name, level, closeness, fullness, period, ii.getPetFlagInfo(id));

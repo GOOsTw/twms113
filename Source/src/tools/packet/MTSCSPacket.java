@@ -423,14 +423,6 @@ public class MTSCSPacket {
         mplew.writeAsciiString(sender, 15); //owner for the lulzlzlzl
         PacketHelper.addExpirationTime(mplew, expire);
         mplew.writeLong(0);
-        //if (isFirst && uniqueid > 0 && GameConstants.isEffectRing(itemid)) {
-        //	MapleRing ring = MapleRing.loadFromDb(uniqueid);
-        //	if (ring != null) { //or is this only for friendship rings, i wonder. and does isFirst even matter
-        //		mplew.writeMapleAsciiString(ring.getPartnerName());
-        //		mplew.writeInt(itemid);
-        //		mplew.writeShort(quantity);
-        //	}
-        //}
     }
 
     public static void addModCashItemInfo(MaplePacketLittleEndianWriter mplew, CashModInfo item) {

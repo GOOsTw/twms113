@@ -6,7 +6,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
@@ -23,12 +22,13 @@ import server.Timer.CheatTimer;
 import tools.MaplePacketCreator;
 import tools.StringUtil;
 import static constants.ServerConstants.BANTYPE_ENABLE;
+import java.util.EnumMap;
 
 public class CheatTracker {
 
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock rL = lock.readLock(), wL = lock.writeLock();
-    private final Map<CheatingOffense, CheatingOffenseEntry> offenses = new LinkedHashMap<CheatingOffense, CheatingOffenseEntry>();
+    private final Map<CheatingOffense, CheatingOffenseEntry> offenses = new EnumMap<>(CheatingOffense.class);
     private final WeakReference<MapleCharacter> chr;
 
     /**
@@ -77,16 +77,16 @@ public class CheatTracker {
          * 檢查客戶端傳回的攻擊時間
          */
         if (chr.get().getBuffedValue(MapleBuffStat.BOOSTER) != null) {
-            attackDelay = (short)(int)(attackDelay / 1.5);
+            attackDelay = (short) (int) (attackDelay / 1.5);
         }
         if (chr.get().getBuffedValue(MapleBuffStat.BODY_PRESSURE) != null) {
-            attackDelay = (short)(attackDelay / 6);
+            attackDelay = (short) (attackDelay / 6);
         }
         if (chr.get().getBuffedValue(MapleBuffStat.SPEED_INFUSION) != null) {
-            attackDelay = (short)(int)(attackDelay / 1.35);
+            attackDelay = (short) (int) (attackDelay / 1.35);
         }
         if (GameConstants.isAran(chr.get().getJob())) {
-              attackDelay = (short)(int)(attackDelay / 1.3);
+            attackDelay = (short) (int) (attackDelay / 1.3);
         }
         if ((tickCoint - lastAttackTickCount) < attackDelay) {
             registerOffense(CheatingOffense.攻擊速度過快_客戶端);
@@ -101,7 +101,6 @@ public class CheatTracker {
             registerOffense(CheatingOffense.攻擊速度過快_伺服器端);
         }
 
-//	System.out.println("Delay [" + skillId + "] = " + (tickcount - lastAttackTickCount) + ", " + (Server_ClientAtkTickDiff - STime_TC));
         /**
          * attackResetCount 如果正常攻擊多少次，就將檢測數值歸零
          */
@@ -332,10 +331,11 @@ public class CheatTracker {
 
         // 檢查是否該鎖定了
         if (offense.shouldAutoban(entry.getCount())) {
-
             final byte type = offense.getBanType();
             if (type == BANTYPE_ENABLE) {
-                AutobanManager.getInstance().autoban(cheater.getClient(), StringUtil.makeEnumHumanReadable(offense.name()), 1);
+                System.out.println(MapleCharacterUtil.makeMapleReadable(cheater.getName()) + "疑似使用外掛");
+                World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[封號系統] " + MapleCharacterUtil.makeMapleReadable(cheater.getName()) + " 偵測到 " + StringUtil.makeEnumHumanReadable(offense.name()) + (message == null ? "" : (" - " + message))).getBytes());
+                AutobanManager.getInstance().autoban(cheater.getClient(), StringUtil.makeEnumHumanReadable(offense.name()), 5000);
             } else if (type == BANTYPE_DC) {
                 cheater.getClient().disconnect(true, false);
             }
@@ -343,19 +343,6 @@ public class CheatTracker {
             return;
         }
 
-        switch (offense) {
-            case 魔法攻擊過高_1:
-            case 魔法攻擊過高_2:
-            case 攻擊過高_1:
-            case 攻擊過高_2:
-            case 攻擊距離過遠:
-            case 召喚獸攻擊距離過遠:
-            case 攻擊數值異常相同:
-                System.out.println(MapleCharacterUtil.makeMapleReadable(cheater.getName()) + "疑似使用外掛");
-                World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[封號系統] " + MapleCharacterUtil.makeMapleReadable(cheater.getName()) + " 偵測到 " + StringUtil.makeEnumHumanReadable(offense.name()) + (message == null ? "" : (" - " + message))).getBytes());
-                AutobanManager.getInstance().autoban(cheater.getClient(), StringUtil.makeEnumHumanReadable(offense.name()), offense.getPoints());
-                break;
-        }
         CheatingOffensePersister.getInstance().persistEntry(entry);
     }
 
@@ -406,7 +393,7 @@ public class CheatTracker {
 
     public final String getSummary() {
         final StringBuilder ret = new StringBuilder();
-        final List<CheatingOffenseEntry> offenseList = new ArrayList<CheatingOffenseEntry>();
+        final List<CheatingOffenseEntry> offenseList = new ArrayList<>();
         rL.lock();
         try {
             for (final CheatingOffenseEntry entry : offenses.values()) {
