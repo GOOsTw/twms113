@@ -1,4 +1,4 @@
-var passwords = new Array(5);
+﻿var passwords = new Array(5);
 var str;
 var selectn1;
 var selectn2;
@@ -31,9 +31,9 @@ function action(mode, type, selection) {
       cm.dispose();
 	  
 	}else if (a == 0){
-		cm.sendNext("���F���F�K�K�C�I�U�@�B���A�����Ѱ��K�X������B�J�C")
+		cm.sendNext("找到了找到了……。點下一步給你說明解除密碼的關鍵步驟。")
     }else if (a == 1){
-      cm.sendYesNo(" - �O�I�w�K�X����Ȼ����G\r\n\r\n�@�@�K�X��ѥ|�Ӥ����ƪ��Ʀr�զ��A�b��ܮؤ��̦���ܥ��T���Ʀr�A�K�X��N�|�Q���}�A�K�X�ꪺ�K�X�O��0~9�Ҳզ��A�åB�|�ӼƦr�������|���ơC\r\n\r\n#r#e����²���G#n#k\r\n�@�@�}�l�C����NPC�H���ͦ��K�X�A���a�|��o9���q��o�ձK�X�����|�A���a���Ӵ��ܨ̦����5�ӼƦr�A�զ��|��ƪ��K�X�A�T�{����|�o�촣�ܡG\r\n\r\n#r��#k���ܵ��׸̦��X�ӡA�Ʀr���T�B��m���T\r\n#r��#k���ܵ��׸̦��X�ӡA�Ʀr���T����m�����T\r\n\r\n#r#e�`�N�ƶ��G#n\r\n�@�p�����FNPC��ܡA����A���I��NPC�}�l�C���K�X�|���ܡC");
+      cm.sendYesNo(" - 保險庫密碼鎖任務說明：\r\n\r\n　　密碼鎖由四個不重複的數字組成，在對話框內依次選擇正確的數字，密碼鎖就會被打開，密碼鎖的密碼是由0~9所組成，並且四個數字之間不會重複。\r\n\r\n#r#e任務簡介：#n#k\r\n　　開始遊戲後NPC隨機生成密碼，玩家會獲得9次猜對這組密碼的機會，玩家按照提示依次選擇5個數字，組成四位數的密碼，確認之後會得到提示：\r\n\r\n#r★#k表示答案裡有幾個，數字正確且位置正確\r\n#r☆#k表示答案裡有幾個，數字正確但位置不正確\r\n\r\n#r#e注意事項：#n\r\n　如關閉了NPC對話，那麼再次點擊NPC開始遊戲密碼會改變。");
       for (var i = 0; i<5; i++) 
       {
         passwords[i] = Math.floor(Math.random()*10);
@@ -45,66 +45,66 @@ function action(mode, type, selection) {
         }
       }
 	  }else if (a == 2){
-      str = "�вq�q�ܮw�K�X���Ĥ@��Ʀr\r\n\r\n";
+      str = "請猜猜倉庫密碼的第一位數字\r\n\r\n";
       postrue = seltrue = 0;
       for (var i = 0; i < 10; i++) {
         str += "#L" + i + "#" + i;
       }
 	  if (cm.getPlayer().isGM()) {
-		  str += "#l\r\n\r\n#r��GM�����K�X�K�ߴ��ܡ�:"+passwords+"#k#l\r\n\r\n\r\n�w��ܪ��Ʀr�G\r\n#n�Ѿl���ơG#r" + unlock + "#k\r\n�O���G\r\n";
+		  str += "#l\r\n\r\n#r★GM本次密碼貼心提示☆:"+passwords+"#k#l\r\n\r\n\r\n已選擇的數字：\r\n#n剩餘次數：#r" + unlock + "#k\r\n記錄：\r\n";
 	  } else {
-		  str += "#l\r\n\r\n\r\n�w��ܪ��Ʀr�G\r\n#n�Ѿl���ơG#r" + unlock + "#k\r\n�O���G\r\n";
+		  str += "#l\r\n\r\n\r\n已選擇的數字：\r\n#n剩餘次數：#r" + unlock + "#k\r\n記錄：\r\n";
 	  }
       
       cm.sendSimple(str + str_unlocklog);
 	  }else if (a == 3){
-      str = "�вq�q�ܮw�K�X���ĤG��Ʀr\r\n\r\n";
+      str = "請猜猜倉庫密碼的第二位數字\r\n\r\n";
       selectn1 = selection;
       for (var i = 0; i < 10; i++) {
         if (i != selectn1)
           str += "#L" + i + "#" + i;
       }
       str += "#l";
-      selectlog = "\r\n\r\n\r\n�w��ܪ��Ʀr�G#r" + selectn1;
-      selectlog += "\r\n#k�Ѿl���ơG#r" + unlock + "#k\r\n�O���G\r\n";
+      selectlog = "\r\n\r\n\r\n已選擇的數字：#r" + selectn1;
+      selectlog += "\r\n#k剩餘次數：#r" + unlock + "#k\r\n記錄：\r\n";
       cm.sendSimple(str + selectlog + str_unlocklog);
 	  }else if (a == 4){
-      str = "�вq�q�ܮw�K�X���ĤT��Ʀr\r\n\r\n";
+      str = "請猜猜倉庫密碼的第三位數字\r\n\r\n";
       selectn2 = selection;
       for (var i = 0; i < 10; i++) {
         if (i != selectn1 && i != selectn2)
           str += "#L" + i + "#" + i;
       }
       str += "#l";
-      selectlog = "\r\n\r\n\r\n�w��ܪ��Ʀr�G#r" + selectn1 + " " + selectn2;
-      selectlog += "\r\n#k�Ѿl���ơG#r" + unlock + "#k\r\n�O���G\r\n";
+      selectlog = "\r\n\r\n\r\n已選擇的數字：#r" + selectn1 + " " + selectn2;
+      selectlog += "\r\n#k剩餘次數：#r" + unlock + "#k\r\n記錄：\r\n";
       cm.sendSimple(str + selectlog + str_unlocklog);
 	  }else if (a == 5){
-      str = "�вq�q�ܮw�K�X���ĥ|��Ʀr\r\n\r\n";
+      str = "請猜猜倉庫密碼的第四位數字\r\n\r\n";
       selectn3 = selection;
       for (var i = 0; i < 10; i++) {
         if (i != selectn1 && i != selectn2 && i != selectn3)
           str += "#L" + i + "#" + i;
       }
       str += "#l";
-      selectlog = "\r\n\r\n\r\n�w��ܪ��Ʀr�G#r" + selectn1 + " " + selectn2 + " " + selectn3;
-      selectlog += "\r\n#k�Ѿl���ơG#r" + unlock + "#k\r\n�O���G\r\n";
+      selectlog = "\r\n\r\n\r\n已選擇的數字：#r" + selectn1 + " " + selectn2 + " " + selectn3;
+      selectlog += "\r\n#k剩餘次數：#r" + unlock + "#k\r\n記錄：\r\n";
       cm.sendSimple(str + selectlog + str_unlocklog);
 	  }else if (a == 6){
-      str = "�вq�q�ܮw�K�X���Ĥ���Ʀr\r\n\r\n";
+      str = "請猜猜倉庫密碼的第五位數字\r\n\r\n";
       selectn4 = selection;
       for (var i = 0; i < 10; i++) {
         if (i != selectn1 && i != selectn2 && i != selectn3 && i != selectn4)
           str += "#L" + i + "#" + i;
       }
       str += "#l";
-      selectlog = "\r\n\r\n\r\n�w��ܪ��Ʀr�G#r" + selectn1 + " " + selectn2 + " " + selectn3 + " " + selectn4;
-      selectlog += "\r\n#k�Ѿl���ơG#r" + unlock + "#k\r\n�O���G\r\n";
+      selectlog = "\r\n\r\n\r\n已選擇的數字：#r" + selectn1 + " " + selectn2 + " " + selectn3 + " " + selectn4;
+      selectlog += "\r\n#k剩餘次數：#r" + unlock + "#k\r\n記錄：\r\n";
       cm.sendSimple(str + selectlog + str_unlocklog);
 	  }else if (a == 7){
       selectn5 = selection;
-      selectlog = "\t\t\t\t�T�w�H�o�ռƦr�}���? #r\r\n\r\n\t\t\t\t\t   " + selectn1 + " " + selectn2 + " " + selectn3 + " " + selectn4 + " " + selectn5;
-      selectlog += "\r\n#k�Ѿl���ơG#r" + unlock + "#k\r\n�O���G\r\n";
+      selectlog = "\t\t\t\t確定以這組數字開鎖麼? #r\r\n\r\n\t\t\t\t\t   " + selectn1 + " " + selectn2 + " " + selectn3 + " " + selectn4 + " " + selectn5;
+      selectlog += "\r\n#k剩餘次數：#r" + unlock + "#k\r\n記錄：\r\n";
       cm.sendYesNo(selectlog + str_unlocklog);
     }else if (a == 8){
       for (var i=0; i<5; i++){
@@ -136,26 +136,26 @@ function action(mode, type, selection) {
         }    
       }
 	  num++;
-		  unlocklog.push("��"+ num +"����ܪ��Ʀr�G" + selectn1 + selectn2 + selectn3 + selectn4 + selectn5 +"�@#r" + postrue + "��  " + seltrue + "��#k\r\n");
+		  unlocklog.push("第"+ num +"次選擇的數字：" + selectn1 + selectn2 + selectn3 + selectn4 + selectn5 +"　#r" + postrue + "★  " + seltrue + "☆#k\r\n");
       str_unlocklog = "";
       for (var i = 0; i < unlocklog.length; i++)
         str_unlocklog += unlocklog[i];
       if (postrue == 5) {
-        cm.sendNext("���ߧA,�}�ꦨ�\!\r\n\r\n�z���O���G\r\n" + str_unlocklog);
+        cm.sendNext("恭喜你,開鎖成功!\r\n\r\n您的記錄：\r\n" + str_unlocklog);
         cm.gainItem(5220040, 1);
-		cm.worldMessage("�y�O�I�c�K�X�z�G���ߪ��a:" + cm.getChar().getName() + " �ϥΤF"+num+"�����\�}�ҫO�I�c�K�X�ݨӬO�@�ӫܱj������F�H!!!");
+		cm.worldMessage("『保險箱密碼』：恭喜玩家:" + cm.getChar().getName() + " 使用了"+num+"次成功開啟保險箱密碼看來是一個很強的解鎖達人!!!");
       } else {
         unlock -= 1;
         if (unlock >= 0)
           a = 1;
-        cm.sendNext("�u���,�}�ꥢ��!");
+        cm.sendNext("真遺憾,開鎖失敗!");
       }
     }else if (a == 9){
       if (postrue != 5) {
-        cm.sendOk("�z���}����|�w�g�Χ��F~\r\n\r\n���T�K�X���G" + passwords + "\r\n�z���O���G\r\n" + str_unlocklog);
+        cm.sendOk("您的開鎖機會已經用完了~\r\n\r\n正確密碼為：" + passwords + "\r\n您的記錄：\r\n" + str_unlocklog);
         cm.dispose();
       } else {
-        cm.sendOk("�w��z�A�ӬD��~");
+        cm.sendOk("歡迎您再來挑戰~");
         cm.dispose();
       }
       
