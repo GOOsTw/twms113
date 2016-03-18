@@ -49,7 +49,7 @@ function action(mode, type, selection) {
 
 function NewPlayer() {
     if (!cm.haveItem(5000007, 1, true, true) && cm.canHold(5000007, 1)) {
-        cm.gainPet(5000007, "黑色小豬", 1, 0, 100, 45, 0);
+        cm.gainPet(5000007, "黑色小豬", 1, 0, 100, 0);
     }
     if (!cm.haveItem(1002419, 1, true, true) && cm.canHold(1002419, 1)) {
         cm.gainItemPeriod(1002419, 1, 30);
