@@ -20,7 +20,7 @@ function action(mode, type, selection) {
     }
 
     if (status == 0) {
-        if (!cm.isQuestFinished(29933)) {
+        if (!cm.isQuestFinished(29934)) {
             NewPlayer();
         }
         cm.sendSimple("歡迎來到啾咪谷~\r\n#b#L2#我要打開藍色小箱子#l\r\n#b#L6#我要抽月光寶盒#l");
@@ -49,7 +49,7 @@ function action(mode, type, selection) {
 
 function NewPlayer() {
     if (!cm.haveItem(5000007, 1, true, true) && cm.canHold(5000007, 1)) {
-        cm.gainPet(5000007, "黑色小豬", 1, 0, 100, 0);
+        cm.gainPet(5000007, "黑色小豬", 1, 0, 100, 45);
     }
     if (!cm.haveItem(1002419, 1, true, true) && cm.canHold(1002419, 1)) {
         cm.gainItemPeriod(1002419, 1, 30);
@@ -72,7 +72,7 @@ function NewPlayer() {
     if (!cm.haveItem(5170000, 1, true, true) && cm.canHold(5170000, 1)) {
         cm.gainItemPeriod(5170000, 1, 30);
     }
-    cm.forceCompleteQuest(29933); //完成新手獎勵
+    cm.forceCompleteQuest(29934); //完成新手獎勵
     cm.sendOk("歡迎來到楓之谷 請使用 @help/@幫助 了解各式指令\r\n\r\n\r\n遊戲愉快^^");
     cm.dispose();
     return;
