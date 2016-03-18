@@ -9,7 +9,7 @@ var selectlog;
 var postrue = 0;
 var seltrue = 0;
 var stars = "";
-var unlock = 2;
+var unlock = 3;
 var unlocklog = new Array("");
 var str_unlocklog = "";
 var num = 0;
@@ -153,15 +153,15 @@ function action(mode, type, selection) {
         cm.gainItem(it, 1);
 		cm.worldMessage("『保險箱密碼』：恭喜玩家:" + cm.getChar().getName() + " 使用了"+num+"次成功開啟保險箱密碼看來是一個很強的解鎖達人!!!");
       } else {
-        unlock -= 1;
-        if (unlock >= 0)
+        unlock -=1;
+        if (unlock >= 1)
           a = 1;
         cm.sendNext("真遺憾,開鎖失敗!");
       }
     }else if (a == 9){
       if (postrue != 5) {
         cm.sendOk("您的開鎖機會已經用完了~\r\n\r\n正確密碼為：" + passwords + "\r\n您的記錄：\r\n" + str_unlocklog);
-		cm.worldMessage("『保險箱密碼』：恭喜玩家:" + cm.getChar().getName() + " 使用完機會了並失敗開啟保險箱密碼看來給予一個獎勵死亡一次!!!");
+		//cm.worldMessage("『保險箱密碼』：恭喜玩家:" + cm.getChar().getName() + " 使用完機會了並失敗開啟保險箱密碼看來給予一個獎勵死亡一次!!!");
 		cm.getPlayer().setHp(0);
         cm.getPlayer().updateSingleStat(Packages.client.MapleStat.HP, 0);
         cm.dispose();
