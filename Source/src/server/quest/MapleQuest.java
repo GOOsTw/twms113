@@ -10,6 +10,7 @@ import java.util.Map;
 import client.MapleCharacter;
 import client.MapleQuestStatus;
 import java.util.ArrayList;
+import java.util.Collection;
 import scripting.NPCScriptManager;
 import provider.MapleData;
 import provider.MapleDataProvider;
@@ -184,7 +185,11 @@ public class MapleQuest implements Serializable {
         quests.clear();
         initQuests(); //test
     }
-
+    
+    public static Collection<MapleQuest> getAllInstances() {
+        return quests.values();
+    }
+    
     public static MapleQuest getInstance(int id) {
 
         MapleQuest ret = quests.get(id);

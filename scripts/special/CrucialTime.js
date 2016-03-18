@@ -1,5 +1,5 @@
 ﻿/* 
-關鍵時刻NPC
+	關鍵時刻NPC
 */
 
 function action(mode, type, selection) {

@@ -379,6 +379,20 @@ public class AdminCommand {
         }
     }
 
+    public static class 高級檢索 extends CommandExecute {
+
+        public boolean execute(MapleClient c, String[] splitted) {
+            c.removeClickedNPC();
+            NPCScriptManager.getInstance().start(c, 9010000, "AdvancedSearch");
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!高級檢索 - 各種功能檢索功能").toString();
+        }
+    }
+
     public static class SaveAll extends CommandExecute {
 
         private int p = 0;
@@ -651,18 +665,20 @@ public class AdminCommand {
     public static class openNpc extends CommandExecute {
 
         @Override
-        public boolean execute(MapleClient c, String splitted[]) {
+        public boolean execute(MapleClient c, String[] splitted) {
+            if (splitted.length < 2) {
+                return false;
+            }
             int npcid = 0;
             try {
                 npcid = Integer.parseInt(splitted[1]);
-            } catch (NumberFormatException ex) {
-                return false;
+            } catch (NumberFormatException asd) {
             }
             MapleNPC npc = MapleLifeFactory.getNPC(npcid);
             if (npc != null && !npc.getName().equalsIgnoreCase("MISSINGNO")) {
-                NPCScriptManager.getInstance().start(c, Integer.parseInt(splitted[1]));
+                NPCScriptManager.getInstance().start(c, npcid);
             } else {
-                c.getPlayer().dropMessage(5, "此NPC ID不存在");
+                c.getPlayer().dropMessage(6, "未知NPC");
             }
             return true;
         }
@@ -724,7 +740,7 @@ public class AdminCommand {
                         for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                             for (MapleCharacter mch : cserv.getPlayerStorage().getAllCharacters()) {
                                 if (mch.getLevel() >= 29) {
-                                    NPCScriptManager.getInstance().start(mch.getClient(), 9010010);
+                                    NPCScriptManager.getInstance().start(mch.getClient(), 9010010, "CrucialTime");
                                 }
                             }
                         }
@@ -843,42 +859,6 @@ public class AdminCommand {
         @Override
         public String getMessage() {
             return new StringBuilder().append("!給投票點 <數量> - 取得VPoint").toString();
-        }
-    }
-
-    public static class LevelUp extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            if (c.getPlayer().getLevel() < 200) {
-                c.getPlayer().gainExp(GameConstants.getExpNeededForLevel(c.getPlayer().getLevel()) + 1, true, false, true);
-            }
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!levelup - 等級上升").toString();
-        }
-    }
-
-    public static class LevelUpTo extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            while (c.getPlayer().getLevel() < Integer.parseInt(splitted[1])) {
-                if (c.getPlayer().getLevel() < 255) {
-                    c.getPlayer().levelUp();
-                    c.getPlayer().setExp(0);
-                    c.getPlayer().updateSingleStat(MapleStat.EXP, c.getPlayer().getExp());
-                }
-            }
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!levelupto [等級數量] - 等級上升").toString();
         }
     }
 

@@ -133,10 +133,10 @@ public class MapleLifeFactory {
             stats.setPhysicalDefense((short) MapleDataTool.getIntConvert("PDDamage", monsterInfoData, 0));
             stats.setMagicDefense((short) MapleDataTool.getIntConvert("MDDamage", monsterInfoData, 0));
             stats.setEva((short) MapleDataTool.getIntConvert("eva", monsterInfoData, 0));
-            if(!stats.isBoss()) {
-                stats.setHp(((Double)(stats.getHp() * ServerConstants.RATE_MONSTER_HP)).intValue());
+            if (!stats.isBoss()) {
+                stats.setHp(((Double) (stats.getHp() * ServerConstants.RATE_MONSTER_HP)).intValue());
             } else {
-                stats.setHp(((Double)(stats.getHp() * ServerConstants.RATE_BOSS_HP)).intValue());
+                stats.setHp(((Double) (stats.getHp() * ServerConstants.RATE_BOSS_HP)).intValue());
             }
             final boolean hideHP = MapleDataTool.getIntConvert("HPgaugeHide", monsterInfoData, 0) > 0 || MapleDataTool.getIntConvert("hideHP", monsterInfoData, 0) > 0;
             final MapleData selfd = monsterInfoData.getChildByPath("selfDestruction");
@@ -224,7 +224,7 @@ public class MapleLifeFactory {
                 hpdisplaytype = 3;
             }
             stats.setHPDisplayType(hpdisplaytype);
-            
+
             monsterStats.put(mid, stats);
         }
         return new MapleMonster(mid, stats);
@@ -267,5 +267,9 @@ public class MapleLifeFactory {
             return null;
         }
         return new MapleNPC(nid, name);
+    }
+
+    public static Map<Integer, String> getNPCNames() {
+        return npcNames;
     }
 }
