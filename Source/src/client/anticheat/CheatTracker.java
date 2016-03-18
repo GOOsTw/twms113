@@ -330,7 +330,7 @@ public class CheatTracker {
         entry.incrementCount();
 
         // 檢查是否該鎖定了
-        if (offense.shouldAutoban(entry.getCount())) {
+        if (offense.shouldAutoban(entry.getPoints())) {
             final byte type = offense.getBanType();
             if (type == BANTYPE_ENABLE) {
                 System.out.println(MapleCharacterUtil.makeMapleReadable(cheater.getName()) + "疑似使用外掛");
@@ -342,7 +342,6 @@ public class CheatTracker {
             putOffense(offense, entry);
             return;
         }
-
         CheatingOffensePersister.getInstance().persistEntry(entry);
     }
 

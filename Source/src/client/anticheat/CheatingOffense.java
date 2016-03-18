@@ -56,11 +56,11 @@ public enum CheatingOffense {
         return validityDuration;
     }
 
-    public final boolean shouldAutoban(final int count) {
+    public final boolean shouldAutoban(final int points) {
         if (maxPoints == -1) {
             return false;
         }
-        return count >= maxPoints;
+        return points >= maxPoints;
     }
 
     public final byte getBanType() {

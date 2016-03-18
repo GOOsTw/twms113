@@ -935,7 +935,6 @@ public class MapleStatEffect implements Serializable {
                 for (Map.Entry<MonsterStatus, Integer> stat : getMonsterStati().entrySet()) {
                     MapleMonster mons = (MapleMonster) mo;
                     mons.applyStatus(applyfrom, new MonsterStatusEffect(stat.getKey(), stat.getValue(), sourceid, null, false), isPoison(), getDuration(), true, this);
-
                 }
 
             }

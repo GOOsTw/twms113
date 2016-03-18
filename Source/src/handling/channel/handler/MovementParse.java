@@ -108,21 +108,14 @@ public class MovementParse {
                     break;
                 }
                 case 14: {
-
                     final short xwobble = lea.readShort();
                     final short ywobble = lea.readShort();
-                    int fh = lea.readShort();
+                    short fh = lea.readShort();
                     byte newstate = lea.readByte();
                     short duration = lea.readShort();
                     StaticLifeMovement mov = new StaticLifeMovement(command, null, duration, newstate, 0);
                     mov.setPixelsPerSecond(new Point(xwobble, ywobble));
-                    res.add(mov);
-                    break;
-                }
-                case 21: {
-                    byte newstate = lea.readByte();
-                    short duration = lea.readShort();
-                    StaticLifeMovement mov = new StaticLifeMovement(command, null, duration, newstate, 0);
+                    mov.setFh(fh);
                     res.add(mov);
                     break;
                 }

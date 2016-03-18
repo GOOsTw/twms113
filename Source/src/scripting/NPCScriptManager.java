@@ -84,7 +84,7 @@ public class NPCScriptManager extends AbstractScriptManager {
 
                 cms.put(c, cm);
                 scriptengine.put("cm", cm);
-
+                scriptengine.put("npcid", npc);
                 c.getPlayer().setConversation(1);
                 c.setClickedNPC();
                 try {

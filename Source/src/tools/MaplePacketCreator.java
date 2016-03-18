@@ -297,16 +297,19 @@ public class MaplePacketCreator {
         mplew.writeInt(summon.getObjectId());
         mplew.writeInt(summon.getSkill());
 
-        mplew.write(summon.getOwnerLevel());
+        mplew.write(summon.getOwnerLevel() - 1);
         mplew.write(summon.getSkillLevel()); //idk but nexon sends 1 for octo, so we'll leave it
-
         mplew.writePos(summon.getPosition());
         if (summon.isPuppet()) {
             mplew.write(summon.isFacingLeft() ? 4 : 5);
         } else {
             mplew.write(summon.isFacingLeft() ? 5 : 4);
         }
-        mplew.writeShort(0);
+        if ((summon.getSkill() == 35121003) && (summon.getOwner().getMap() != null)) {//Giant Robot SG-88
+            mplew.writeShort(summon.getOwner().getMap().getFootholds().findBelow(summon.getPosition()).getId());
+        } else {
+            mplew.writeShort(0);
+        }
         mplew.write(summon.getMovementType().getValue()); // 0 = don't move, 1 = follow (4th mage summons?), 2/4 = only tele follow, 3 = bird follow
         mplew.write(summon.isPuppet() ? 0 : 1); // 0 = Summon can't attack - but puppets don't attack with 1 either ^.-
         mplew.write(animated ? 0 : 1);

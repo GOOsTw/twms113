@@ -60,7 +60,7 @@ public class StaticLifeMovement extends AbstractLifeMovement {
                 lew.writePos(getPosition());
                 lew.writePos(pixelsPerSecond);
                 lew.writeShort(unk);
-                if (getType() == 15 || getType() == 16) {
+                if (getType() == 15 ) {
                     lew.writeShort(fh);
                 }
                 break;
