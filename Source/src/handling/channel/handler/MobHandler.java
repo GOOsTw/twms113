@@ -55,12 +55,10 @@ public class MobHandler {
         }
         
         final short moveid = slea.readShort();
+        
         final boolean useSkill = slea.readByte() > 0;
         final byte skill = slea.readByte();
-        final int skill1 = slea.readByte() & 0xFF;
-        final int skill2 = slea.readByte();
-        final int skill3 = slea.readByte();
-        final int skill4 = slea.readByte();
+        final int unk2 = slea.readInt();
         
         int realskill = 0;
         int level = 0;
@@ -167,7 +165,7 @@ public class MobHandler {
             
             MovementParse.updatePosition(res, monster, -1);
             map.moveMonster(monster, monster.getPosition());
-            map.broadcastMessage(chr, MobPacket.moveMonster(useSkill, skill, skill1, skill2, skill3, skill4, monster.getObjectId(), startPos, monster.getPosition(), res), monster.getPosition());
+            map.broadcastMessage(chr, MobPacket.moveMonster(useSkill, skill, unk2, monster.getObjectId(), startPos, monster.getPosition(), res), monster.getPosition());
             chr.getCheatTracker().checkMoveMonster(monster.getPosition());
         }
     }

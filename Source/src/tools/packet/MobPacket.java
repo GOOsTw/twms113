@@ -162,7 +162,7 @@ public class MobPacket {
         return mplew.getPacket();
     }
 
-    public static MaplePacket moveMonster(boolean useskill, int skill, int skill1, int skill2, int skill3, int skill4, int oid, Point startPos, Point endPos, List<LifeMovementFragment> moves) {
+    public static MaplePacket moveMonster(boolean useskill, int skill, int unk, int oid, Point startPos, Point endPos, List<LifeMovementFragment> moves) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.MOVE_MONSTER.getValue());
@@ -170,10 +170,7 @@ public class MobPacket {
         mplew.write(0); //moveid but always 0
         mplew.write(useskill ? 1 : 0); //?? I THINK
         mplew.write(skill);
-        mplew.write(skill1);
-        mplew.write(skill2);
-        mplew.write(skill3);
-        mplew.write(skill4);
+        mplew.writeInt(unk);
         mplew.writePos(startPos);
         serializeMovementList(mplew, moves);
 
