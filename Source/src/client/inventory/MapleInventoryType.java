@@ -27,6 +27,8 @@ package client.inventory;
 public enum MapleInventoryType {
 
     UNDEFINED(0),
+    FACE(0), //2
+    HAIR(0), //2
     EQUIP(1),
     USE(2),
     SETUP(3),

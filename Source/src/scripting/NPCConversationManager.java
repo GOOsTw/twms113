@@ -80,6 +80,7 @@ import server.life.MapleMonsterInformationProvider;
 import server.maps.Event_PyramidSubway;
 import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
+import tools.SearchGenerator;
 import tools.StringUtil;
 
 public class NPCConversationManager extends AbstractPlayerInteraction {
@@ -87,18 +88,20 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     private final MapleClient c;
     private final int npc, questid;
     private String getText;
+    protected String script;
     private final byte type; // -1 = NPC, 0 = start quest, 1 = end quest
     private byte lastMsg = -1;
     public boolean pendingDisposal = false;
     private final Invocable iv;
 
-    public NPCConversationManager(MapleClient c, int npc, int questid, byte type, Invocable iv) {
+    public NPCConversationManager(MapleClient c, int npc, int questid, String npcscript, byte type, Invocable iv) {
         super(c);
         this.c = c;
         this.npc = npc;
         this.questid = questid;
         this.type = type;
         this.iv = iv;
+        this.script = npcscript;
     }
 
     public Invocable getIv() {
@@ -111,6 +114,10 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public int getQuest() {
         return questid;
+    }
+
+    public String getScript() {
+        return script;
     }
 
     public byte getType() {
@@ -366,6 +373,28 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         return getText;
     }
 
+    public String searchData(int type, String search) {
+        return SearchGenerator.searchData(type, search);
+    }
+
+    public int[] getSearchData(int type, String search) {
+        Map<Integer, String> data = SearchGenerator.getSearchData(type, search);
+        if (data.isEmpty()) {
+            return null;
+        }
+        int[] searches = new int[data.size()];
+        int i = 0;
+        for (int key : data.keySet()) {
+            searches[i] = key;
+            i++;
+        }
+        return searches;
+    }
+
+    public boolean foundData(int type, String search) {
+        return SearchGenerator.foundData(type, search);
+    }
+
     public void setHair(int hair) {
         getPlayer().setHair(hair);
         getPlayer().updateSingleStat(MapleStat.HAIR, hair);
@@ -431,7 +460,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         c.getPlayer().setConversation(4);
         c.getPlayer().getStorage().sendStorage(c, npc);
     }
-    
+
     public void openShop(int id) {
         MapleShopFactory.getInstance().getShop(id).sendShop(c);
     }
@@ -790,7 +819,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     public void showmeso() {
         c.sendPacket(MaplePacketCreator.showmesoRanks(npc, MapleGuildRanking.getInstance().getMesoRank()));
     }
-    
+
     public void showdpm() {
         c.sendPacket(MaplePacketCreator.showdpmRanks(npc, MapleGuildRanking.getInstance().getDpmRank()));
     }
@@ -1411,10 +1440,10 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             }
         }, 1000 * time); //設定時間, (1 秒 = 1000)
     }
-    
+
     // 轉蛋
     public Gashapon getGashapon() {
         return GashaponFactory.getInstance().getGashaponByNpcId(this.getNpc());
     }
-    
+
 }

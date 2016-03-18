@@ -3,6 +3,7 @@ package client.messages.commands;
 import client.MapleCharacter;
 import constants.ServerConstants.PlayerGMRank;
 import client.MapleClient;
+import client.MapleStat;
 import client.inventory.Equip;
 import client.inventory.IItem;
 import client.inventory.ItemFlag;
@@ -358,7 +359,41 @@ public class GMCommand {
             return new StringBuilder().append("!level [等級] - 更改等級").toString();
         }
     }
-    
+        public static class LevelUp extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (c.getPlayer().getLevel() < 200) {
+                c.getPlayer().gainExp(GameConstants.getExpNeededForLevel(c.getPlayer().getLevel()) + 1, true, false, true);
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!levelup - 等級上升").toString();
+        }
+    }
+
+    public static class LevelUpTo extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            while (c.getPlayer().getLevel() < Integer.parseInt(splitted[1])) {
+                if (c.getPlayer().getLevel() < 255) {
+                    c.getPlayer().levelUp();
+                    c.getPlayer().setExp(0);
+                    c.getPlayer().updateSingleStat(MapleStat.EXP, c.getPlayer().getExp());
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!levelupto [等級數量] - 等級上升").toString();
+        }
+    }
     public static class 清理背包 extends CommandExecute {
         
         @Override

@@ -29,13 +29,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
-
+import provider.MapleData;
+import provider.MapleDataProvider;
+import provider.MapleDataProviderFactory;
+import provider.MapleDataTool;
 import database.DatabaseConnection;
 
 public class MapleMonsterInformationProvider {
 
     private static final MapleMonsterInformationProvider instance = new MapleMonsterInformationProvider();
     private final Map<Integer, List<MonsterDropEntry>> drops = new HashMap<>();
+        private final Map<Integer, String> mobCache = new HashMap<>();
     private final List<MonsterGlobalDropEntry> globaldrops = new ArrayList<>();
 
     protected MapleMonsterInformationProvider() {
@@ -104,8 +108,8 @@ public class MapleMonsterInformationProvider {
                 itemid = rs.getInt("itemid");
                 chance = rs.getInt("chance");
                 /*if (GameConstants.getInventoryType(itemid) == MapleInventoryType.EQUIP) {
-                    chance *= 10; //in GMS/SEA it was raised
-                }*/
+                 chance *= 10; //in GMS/SEA it was raised
+                 }*/
                 ret.add(new MonsterDropEntry(
                         itemid,
                         chance,
@@ -135,5 +139,16 @@ public class MapleMonsterInformationProvider {
         drops.clear();
         globaldrops.clear();
         retrieveGlobal();
+    }
+
+    public Map<Integer, String> getAllMonsters() {
+        if (mobCache.isEmpty()) {
+            final MapleDataProvider stringData = MapleDataProviderFactory.getDataProvider("String.wz");
+            MapleData mobsData = stringData.getData("Mob.img");
+            for (MapleData itemFolder : mobsData.getChildren()) {
+                mobCache.put(Integer.parseInt(itemFolder.getName()), MapleDataTool.getString("name", itemFolder, "NO-NAME"));
+            }
+        }
+        return mobCache;
     }
 }

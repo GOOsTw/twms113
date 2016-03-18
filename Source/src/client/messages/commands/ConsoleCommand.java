@@ -117,7 +117,7 @@ public class ConsoleCommand {
                         for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                             for (MapleCharacter mch : cserv.getPlayerStorage().getAllCharacters()) {
                                 if (mch.getLevel() >= 29) {
-                                    NPCScriptManager.getInstance().start(mch.getClient(), 9010010);
+                                    NPCScriptManager.getInstance().start(mch.getClient(), 9010010, "CrucialTime");
                                 }
                             }
                         }
