@@ -107,11 +107,11 @@ public class MapleTrade {
     public final void chat(final String message) {
         if (!CommandProcessor.processCommand(chr.get().getClient(), message, CommandType.TRADE)) {
             chr.get().dropMessage(-2, chr.get().getName() + " : " + message);
-            StringBuilder sb = new StringBuilder("[交易聊天偷聽] 『" + ((MapleCharacter) this.chr.get()).getName() + "』對『" + this.partner.getChr().getName() + "』的聊天：  " + message);
+            String sb = "[交易聊天偷聽] 『" + ((MapleCharacter) this.chr.get()).getName() + "』對『" + this.partner.getChr().getName() + "』的聊天：  " + message;
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                 for (MapleCharacter chr_ : cserv.getPlayerStorage().getAllCharacters()) {
                     if (chr_.get玩家私聊1()) {
-                        chr_.dropMessage(sb.toString());
+                        chr_.dropMessage(sb);
                     }
                 }
             }
