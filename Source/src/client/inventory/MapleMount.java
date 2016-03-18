@@ -149,7 +149,11 @@ public class MapleMount implements Serializable {
             public void run() {
                 if (i != 0) {
                     increaseFatigue();
-                    owner.get().dropMessage(5, "騎寵目前疲勞值:" + fatigue);
+                    if (owner.get() != null) {
+                        owner.get().dropMessage(5, "騎寵目前疲勞值:" + fatigue);
+                    } else {
+                        MapleMount.this.tirednessSchedule.cancel(false);
+                    }
                 }
                 i++;
             }
