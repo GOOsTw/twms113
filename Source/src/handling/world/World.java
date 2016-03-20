@@ -1368,6 +1368,8 @@ public class World {
                 for (MapleMap map : maps) { //iterating through each map o_x
                     handleMap(map, numTimes, map.getCharactersSize());
                 }
+                maps = null;
+                maps = cserv.getMapFactory().getAllInstanceMaps();
                 for (MapleMap map : maps) {
                     handleMap(map, numTimes, map.getCharactersSize());
                 }
