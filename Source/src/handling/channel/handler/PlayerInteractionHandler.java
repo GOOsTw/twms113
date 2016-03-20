@@ -103,9 +103,9 @@ public class PlayerInteractionHandler {
                 } else if (createType == 1 || createType == 2 || createType == 4 || createType == 5) {
                     /* 商店 */
                     /*if (createType == 4 && !chr.isAdmin()) { //not hired merch... blocked playershop
-                        c.sendPacket(MaplePacketCreator.enableActions());
-                        return;
-                    }*/
+                     c.sendPacket(MaplePacketCreator.enableActions());
+                     return;
+                     }*/
                     if (!chr.getMap().getMapObjectsInRange(chr.getPosition(), 20000, Arrays.asList(MapleMapObjectType.SHOP, MapleMapObjectType.HIRED_MERCHANT)).isEmpty()) {
                         chr.dropMessage(1, "你不能在這裡開店");
                         c.sendPacket(MaplePacketCreator.enableActions());
@@ -512,11 +512,11 @@ public class PlayerInteractionHandler {
             case CLOSE_MERCHANT: {
                 final IMaplePlayerShop merchant = chr.getPlayerShop();
                 if (merchant != null && merchant.getShopType() == 1 && merchant.isOwner(chr) && merchant.isAvailable()) {
+                    c.sendPacket(MaplePacketCreator.serverNotice(1, "請去找富蘭德里領取你的裝備和楓幣"));
+                    c.sendPacket(MaplePacketCreator.enableActions());
                     merchant.removeAllVisitors(-1, -1);
                     chr.setPlayerShop(null);
                     merchant.closeShop(true, true);
-                    c.sendPacket(MaplePacketCreator.serverNotice(1, "請去找富蘭德里領取你的裝備和楓幣"));
-                    c.sendPacket(MaplePacketCreator.enableActions());
                 }
                 break;
             }
