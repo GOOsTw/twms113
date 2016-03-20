@@ -92,7 +92,7 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     MARRIAGE_UPDATE(0x62),
     JOB_UPDATE(0x63),
     SET_BUY_EQUIP_EXT(0x64), //
-    SCRIPT_PROGRESS_MESSAGE(0x65),
+    TOP_MSG(0x65),
     DATA_CRC_CHECK_FAILED(0x66),//
     BBS_OPERATION(0x68),
     FISHING_BOARD_UPDATE(0x69),
