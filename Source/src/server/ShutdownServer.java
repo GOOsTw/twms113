@@ -83,6 +83,8 @@ public class ShutdownServer implements Runnable , ShutdownServerMBean{
         } catch (Exception e) {
             System.out.println("資料庫清除連線失敗");
         }
+        
+        
       
     }
 

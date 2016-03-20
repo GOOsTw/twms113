@@ -251,34 +251,34 @@ public class Event_DojoAgent {
             case 9:
             case 10:
             case 11:
-                return 2;
+                return 1;
             case 13:
             case 14:
             case 15:
             case 16:
             case 17:
-                return 3;
+                return 1;
             case 19:
             case 20:
             case 21:
             case 22:
             case 23:
-                return 4;
+                return 1;
             case 25:
             case 26:
             case 27:
             case 28:
             case 29:
-                return 5;
+                return 1;
             case 31:
             case 32:
             case 33:
             case 34:
             case 35:
-                return 8;
+                return 4;
             case 37:
             case 38:
-                return 10;
+                return 5;
             default:
                 return 0;
         }

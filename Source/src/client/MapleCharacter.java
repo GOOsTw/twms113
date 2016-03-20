@@ -4648,17 +4648,21 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void getDiseaseBuff(final MapleDisease disease, int x, long duration, int skillid, int level) {
-        final List<Pair<MapleDisease, Integer>> debuff = Collections.singletonList(new Pair<>(disease, x));
 
-        if (!hasDisease(disease) && diseases.size() < 2) {
-            if (!(disease == MapleDisease.SEDUCE || disease == MapleDisease.STUN)) {
-                if (isActiveBuffedValue(2321005)) {
-                    return;
-                }
+        final List<Pair<MapleDisease, Integer>> debuff = Collections.singletonList(new Pair<>(disease, x));
+         
+        if ((this.map != null) && (!hasDisease(disease))) {
+            if ((disease != MapleDisease.SEDUCE) && (disease != MapleDisease.STUN)
+                    && (getBuffedValue(MapleBuffStat.HOLY_SHIELD) != null)) {
+                return;
             }
-            diseases.put(disease, new MapleDiseaseValueHolder(disease, System.currentTimeMillis(), duration));
+            diseases.put(disease, new MapleDiseaseValueHolder(disease, System.currentTimeMillis(), duration)); 
             client.sendPacket(MaplePacketCreator.giveDebuff(debuff, skillid, level, (int) duration));
             map.broadcastMessage(this, MaplePacketCreator.giveForeignDebuff(id, debuff, skillid, level), false);
+
+            if (this.isShowDebugInfo()) {
+                this.dropMessage(6, "[系統提示] 受到 Disease BUFF : " + disease.name() + " X:" + x + " 持續:" + duration + " 等級: " + level);
+            }
         }
     }
 
@@ -6455,7 +6459,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         } else if (current - giveCSpointsLasttime > ServerConstants.CSPOINTS_PERIOD) {
             if (this.getClient() != null) {
                 try {
-                    int gainPoints = Math.abs(Randomizer.nextInt()) % 5 + 1;
+                    int gainPoints = Math.abs(Randomizer.nextInt()) % 10 + 1;
                     this.modifyCSPoints(1, gainPoints);
                     this.dropMessage("在線獎勵 : " + gainPoints + "點Gash");
                 } catch (Exception ex) {

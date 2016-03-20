@@ -1275,7 +1275,6 @@ public class GameConstants {
             case 1112810: //new
             case 1112811: //new, doesnt work in friendship?
             case 1112812: //new, im ASSUMING it's friendship cuz of itemID, not sure.
-            case 1112015:
             case 1049000:
                 return true;
         }

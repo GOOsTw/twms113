@@ -552,7 +552,6 @@ public class MaplePacketCreator {
         mplew.write(1);
         mplew.writeInt(life.getObjectId());
         mplew.writeInt(life.getId());
-
         mplew.writeShort(life.getPosition().x);
         mplew.writeShort(life.getCy());
         mplew.write(life.getF() == 1 ? 0 : 1);
@@ -1809,8 +1808,8 @@ public class MaplePacketCreator {
             mplew.writeInt(duration);
         }
         mplew.writeShort(0); // ??? wk charges have 600 here o.o
-        mplew.writeShort(900); //Delay
-        mplew.write(1);
+        mplew.writeShort(0); //Delay
+        mplew.write(0);
 
         return mplew.getPacket();
     }
