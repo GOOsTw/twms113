@@ -230,7 +230,6 @@ public class MobPacket {
             life.addEmpty(); //not done yet lulz ok so we add it now for the lulz
         }
         LinkedList<MonsterStatusEffect> buffs = new LinkedList<>(life.getStati().values());
-        writeMaskFromList(mplew, buffs);
         EncodeTemporary(mplew, buffs);
         //wh spawn - 15 zeroes instead of 16, then 98 F4 56 A6 C7 C9 01 28, then 7 zeroes
     }
@@ -350,10 +349,8 @@ public class MobPacket {
                 mplew.writeShort(buff.getMobSkill().getSkillLevel());
             } else if (buff.getSkill() > 0) {
                 mplew.writeInt(buff.getSkill());
-            } else {
-                mplew.writeInt(0);
-            }
-            mplew.writeShort((short) ((buff.getCancelTask() - System.currentTimeMillis())));
+            } 
+            mplew.writeShort(buff.getStatus().isDefault() ? 0 : 1);
         }
         if (buffstatus.contains(MonsterStatus.WEAPON_DAMAGE_REFLECT)) {
             mplew.writeInt(0);
