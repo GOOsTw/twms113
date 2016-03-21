@@ -6,7 +6,7 @@ var GQItems = Array(1032033, 4001024, 4001025, 4001026, 4001027, 4001028, 400103
 
 function start() {
     if (cm.getPlayer().hasEquipped(1032033)) {
-        cm.sendOk("Please remove your protector's rock.");
+        cm.sendOk("請脫下身上的#t1032033#。");
     } else {
         for (var i = 0; i < GQItems.length; i++) {
             cm.removeAll(GQItems[i]);
