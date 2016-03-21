@@ -349,8 +349,10 @@ public class MobPacket {
                 mplew.writeShort(buff.getMobSkill().getSkillLevel());
             } else if (buff.getSkill() > 0) {
                 mplew.writeInt(buff.getSkill());
-            } 
-            mplew.writeShort(buff.getStatus().isDefault() ? 0 : 1);
+            } else {
+                mplew.writeInt(0);
+            }
+            mplew.writeShort((short) ((buff.getCancelTask() - System.currentTimeMillis())));
         }
         if (buffstatus.contains(MonsterStatus.WEAPON_DAMAGE_REFLECT)) {
             mplew.writeInt(0);
