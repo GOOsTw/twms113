@@ -13,7 +13,7 @@ var itemList = new Array(1012056, 1012098, 1012101, 1012102, 1012103, 1032055, 1
     4020005, 4020006, 4020006, 4010000, 4010000, 4010001, 4010001, 4010002, 4010002, 4010003, 4010003,
     4010004, 4010004, 4010005, 4010005, 4010006, 4020007, 4020008, 4003000); //etc items
 
-var randNum = Math.floor(Math.random() * (itemList.length + 1));
+var randNum = Math.floor(Math.random() * (itemList.length));
 var randItem = itemList[randNum];
 var qty;
 
