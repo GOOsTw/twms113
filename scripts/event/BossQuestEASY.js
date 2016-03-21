@@ -94,15 +94,14 @@ function allMonstersDead(eim) {
 
     eim.setProperty("points", totalp);
 
-    eim.broadcastPlayerMsg(5, "你的隊伍獲得了 " + num + " 點數! 總共為 " + totalp + ".");
+    eim.broadcastPlayerMsg(5, "你的隊伍獲得了 " + num + "BQ點數! 總共為 " + totalp + ".");
 
     eim.saveBossQuest(num);
-
+    eim.saveNX(1);
     if (mobnum < monster.length) {
         eim.broadcastPlayerMsg(6, "準備！下一隻的BOSS即將來臨。");
     } else {
         eim.saveBossQuest(200);
-        eim.broadcastPlayerMsg(5, "恭喜整隊挑戰簡單模式成功額外獲得20 GASH點。");
     }
     // When invoking unregisterMonster(MapleMonster mob) OR killed
     // Happens only when size = 0

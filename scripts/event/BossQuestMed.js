@@ -161,7 +161,7 @@ function allMonstersDead(eim) {
     eim.setProperty("points", totalp);
 
     eim.broadcastPlayerMsg(5, "你的隊伍獲得了 " + num + " 點數! 總共為 " + totalp + ".");
-
+    eim.saveNX(2);
     eim.saveBossQuest(num);
 
     if (mobnum < monster.length) {

@@ -84,6 +84,7 @@ function playerExit(eim, player) {
     }
     eim.saveBossQuestPoints(parseInt(eim.getProperty("points")), player);
     eim.broadcastPlayerMsg(6, "[BossPQ] 您目前的積分已經獲得，如你所願。更好的運氣下一次！");
+    eim.saveNX(2);
     eim.unregisterPlayer(player);
 
     if (dispose) {
