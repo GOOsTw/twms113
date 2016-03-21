@@ -21,11 +21,7 @@ function start() {
                     eim.setProperty("stage3combo", newCombo);
                     //cm.playerMessage("Debug: " + newCombo);
                     eim.setProperty("stage3attempt", "1");
-<<<<<<< HEAD
-                    cm.sendOk("這個噴泉守護秘密通道到金鑾殿。在該地區收購項目的附庸繼續。諸候會告訴你供品是否被接受，如果不是，附庸是會不滿的。你有七次的嘗試機會。祝你好運。")
-=======
-                    cm.sendOk("這裡是保護著通往寶座的祕密通道的地方，請提供給附庸所需要的物品，他會告訴你物品是不是正確定，如果你提供了錯誤的物品，他會很不高興的。你有七次機會，祝你好運。")
->>>>>>> origin/master
+                    cm.sendOk("這裡是保護著通往寶座的祕密通道的地方，請提供給附庸所需要的物品，他會告訴你物品是不是正確定，如果你提供了錯誤的物品，他會很不高興的。你有七次機會，祝你好運。");  
                 } else {
                     var attempt = parseInt(eim.getProperty("stage3attempt"));
                     var combo = parseInt(currentCombo);
@@ -33,11 +29,7 @@ function start() {
                     if (guess != null) {
                         if (combo == guess) {
                             cm.getMap().getReactorByName("watergate").hitReactor(cm.getC());
-<<<<<<< HEAD
-                            cm.sendOk("請繼續下一階。");
-=======
                             cm.sendOk("恭喜，您可以前往下一關了。");
->>>>>>> origin/master
                             cm.showEffect(true, "quest/party/clear");
                             cm.playSound(true, "Party1/Clear");
                             var prev = eim.setProperty("stage3clear", "true", true);
@@ -55,33 +47,20 @@ function start() {
                                 //cm.playerMessage("Results - Correct: " + results[0] + " | Incorrect: " + results[1] + " | Unknown: " + results[2]);
                                 if (results[0] != 0) {
                                     if (results[0] == 1) {
-<<<<<<< HEAD
-                                        string += "附庸很滿意貢獻。\r\n";
-                                    } else {
-                                        string += results[0] + " 附庸收到正確的供供品。\r\n";
-=======
                                         string += "一位附庸很喜歡給他的貢品.\r\n";
                                     } else {
                                         string += results[0] + "位附庸喜歡你們獻給他們的貢品.\r\n";
->>>>>>> origin/master
                                     }
                                 }
                                 if (results[1] != 0) {
                                     if (results[1] == 1) {
-<<<<<<< HEAD
-                                        string += "附庸已經收到了不正確的供品\r\n";
-                                    } else {
-                                        string += results[1] + " 附庸收到了不正確的供品。\r\n";
-=======
                                         string += "一位附庸對貢品很不滿意。\r\n";
                                     } else {
                                         string += results[1] + "位附庸收到了他們不滿意的物品。\r\n";
->>>>>>> origin/master
                                     }
                                 }
                                 if (results[2] != 0) {
                                     if (results[2] == 1) {
-<<<<<<< HEAD
                                         string += "附庸已經收到了未知的供品。\r\n";
                                     } else {
                                         string += results[2] + " 附庸收到了未知的供品。\r\n";
@@ -97,8 +76,6 @@ function start() {
                                         break;
                                     case 3:
                                         string += "第三階段";
-=======
-                                        string += "一位附庸收到了不知名的東西。\r\n";
                                     } else {
                                         string += results[2] + "位附庸收到了不知名的東西。\r\n";
                                     }
@@ -113,7 +90,6 @@ function start() {
                                         break;
                                     case 3:
                                         string += "三";
->>>>>>> origin/master
                                         break;
                                     default:
                                         string += attempt;
@@ -169,11 +145,7 @@ function getGroundItems() {
     var itemInArea = new Array(-1, -1, -1, -1);
 
     if (items.size() != 4) {
-<<<<<<< HEAD
-        cm.playerMessage("還有這個地圖道具太多了請移除掉一些。");
-=======
         cm.playerMessage("地圖上太多東西了，請把它們清除掉。");
->>>>>>> origin/master
         return null;
     }
 
@@ -182,11 +154,7 @@ function getGroundItems() {
         var item = iter.next();
         var id = item.getItem().getItemId();
         if (id < 4001027 || id > 4001030) {
-<<<<<<< HEAD
-            cm.playerMessage("這個地圖上出現了不該出現的供品。");
-=======
             cm.playerMessage("有些東西不是四樣貢品中的其中一項。");
->>>>>>> origin/master
             return null;
         } else {
             //check item location
