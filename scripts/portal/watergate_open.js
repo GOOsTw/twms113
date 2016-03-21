@@ -1,4 +1,4 @@
-/*
+﻿/*
 Stage 3: Exit Door - Guild Quest
 
 @Author Lerk
@@ -9,7 +9,7 @@ function enter(pi) {
         pi.warp(990000600);
         return true;
     } else {
-        pi.playerMessage("This way forward is not open yet.");
+        pi.playerMessage("門尚未開啟。");
         return false;
     }
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
 Stage 5: Door before Ergoth - Guild Quest
 
 @Author Lerk
@@ -12,7 +12,7 @@ function enter(pi) {
         }
         return true;
     } else {
-        pi.playerMessage("This crack appears to be blocked off by the door nearby.");
+        pi.playerMessage("似乎有什麼東西阻擋著。");
         return false;
     }
 }

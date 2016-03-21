@@ -13,7 +13,7 @@ function start() {
     } else {
         if (eim.getProperty("leader").equals(cm.getName())) {
             if (cm.getMap().getReactorByName("watergate").getState() > 0) {
-                cm.sendOk("You may proceed.");
+                cm.sendOk("你可能會繼續進行。");
             } else {
                 var currentCombo = eim.getProperty("stage3combo");
                 if (currentCombo == null || currentCombo.equals("reset")) {
@@ -21,7 +21,7 @@ function start() {
                     eim.setProperty("stage3combo", newCombo);
                     //cm.playerMessage("Debug: " + newCombo);
                     eim.setProperty("stage3attempt", "1");
-                    cm.sendOk("這個噴泉守護秘密通道到金鑾殿。在該地區收購項目的附庸繼續。諸候會告訴你你的產品是否被接受，如果不是，它的附庸是不滿。你有七的嘗試。祝好運。")
+                    cm.sendOk("這個噴泉守護秘密通道到金鑾殿。在該地區收購項目的附庸繼續。諸候會告訴你供品是否被接受，如果不是，附庸是會不滿的。你有七次的嘗試機會。祝你好運。")
                 } else {
                     var attempt = parseInt(eim.getProperty("stage3attempt"));
                     var combo = parseInt(currentCombo);
@@ -29,7 +29,7 @@ function start() {
                     if (guess != null) {
                         if (combo == guess) {
                             cm.getMap().getReactorByName("watergate").hitReactor(cm.getC());
-                            cm.sendOk("您可以繼續。");
+                            cm.sendOk("請繼續下一階。");
                             cm.showEffect(true, "quest/party/clear");
                             cm.playSound(true, "Party1/Clear");
                             var prev = eim.setProperty("stage3clear", "true", true);
@@ -47,35 +47,35 @@ function start() {
                                 //cm.playerMessage("Results - Correct: " + results[0] + " | Incorrect: " + results[1] + " | Unknown: " + results[2]);
                                 if (results[0] != 0) {
                                     if (results[0] == 1) {
-                                        string += "1 vassal is pleased with their offering.\r\n";
+                                        string += "附庸很滿意貢獻。\r\n";
                                     } else {
-                                        string += results[0] + " vassals are pleased with their offerings.\r\n";
+                                        string += results[0] + " 附庸收到正確的供供品。\r\n";
                                     }
                                 }
                                 if (results[1] != 0) {
                                     if (results[1] == 1) {
-                                        string += "1 vassal has recieved an incorrect offering.\r\n";
+                                        string += "附庸已經收到了不正確的供品\r\n";
                                     } else {
-                                        string += results[1] + " vassals have recieved incorrect offerings.\r\n";
+                                        string += results[1] + " 附庸收到了不正確的供品。\r\n";
                                     }
                                 }
                                 if (results[2] != 0) {
                                     if (results[2] == 1) {
-                                        string += "1 vassal has recieved an unknown offering.\r\n";
+                                        string += "附庸已經收到了未知的供品。\r\n";
                                     } else {
-                                        string += results[2] + " vassals have recieved unknown offerings.\r\n";
+                                        string += results[2] + " 附庸收到了未知的供品。\r\n";
                                     }
                                 }
-                                string += "This is your ";
+                                string += "這是你的 ";
                                 switch (attempt) {
                                     case 1:
-                                        string += "1st";
+                                        string += "第一階段";
                                         break;
                                     case 2:
-                                        string += "2nd";
+                                        string += "第二階段";
                                         break;
                                     case 3:
-                                        string += "3rd";
+                                        string += "第三階段";
                                         break;
                                     default:
                                         string += attempt + "th";
@@ -92,7 +92,7 @@ function start() {
                             } else {
                                 //reset the combo and mass spawn monsters
                                 eim.setProperty("stage3combo", "reset");
-                                cm.sendOk("You have failed the test. Please compose yourselves and try again later.");
+                                cm.sendOk("你已經失敗了這次的考驗，請去面壁寫悔過書。");
 
                                 for (var i = 0; i < 5; i++) {
                                     //keep getting new monsters, lest we spawn the same monster five times o.o!
@@ -102,12 +102,12 @@ function start() {
                             }
                         }
                     } else {
-                        cm.sendOk("Please make sure your attempt is properly set in front of the vassals and talk to me again.");
+                        cm.sendOk("請確定是否在諸侯前面放置了物品，並再次和我談話。");
                     }
                 }
             }
         } else {
-            cm.sendOk("Please have your leader speak to me.");
+            cm.sendOk("請找你的領導者和我說話。");
         }
     }
     cm.dispose();
@@ -131,7 +131,7 @@ function getGroundItems() {
     var itemInArea = new Array(-1, -1, -1, -1);
 
     if (items.size() != 4) {
-        cm.playerMessage("There are too many items in the map. Please remove some");
+        cm.playerMessage("還有這個地圖道具太多了請移除掉一些。");
         return null;
     }
 
@@ -140,7 +140,7 @@ function getGroundItems() {
         var item = iter.next();
         var id = item.getItem().getItemId();
         if (id < 4001027 || id > 4001030) {
-            cm.playerMessage("Some items in the map are not part of the 4 items needed");
+            cm.playerMessage("這個地圖上出現了不該出現的供品。");
             return null;
         } else {
             //check item location

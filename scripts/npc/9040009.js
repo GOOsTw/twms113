@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * @Author Lerk
  * 
  * Gatekeeper, Sharenian: Door to the Sharenian Castle (990000300)
@@ -23,6 +23,7 @@ function action(mode, type, selection) {
     var eim = cm.getEventInstance();
     if (eim == null) {
         cm.warp(990001100);
+		cm.dispose();
     } else {
         if (eim.getProperty("leader").equals(cm.getName())) {
             if (cm.getMap().getReactorByName("statuegate").getState() > 0) {
@@ -38,16 +39,16 @@ function action(mode, type, selection) {
                             stage = parseInt(eim.getProperty("stage1phase"));
                         }
                         if (stage == 1) {
-                            cm.sendOk("In this challenge, I shall show a pattern on the statues around me. When I give the word, repeat the pattern to me to proceed.");
+                            cm.sendOk("在這個挑戰，我將顯示在身邊的這些雕像的分身來考驗你。");
                         } else {
-                            cm.sendOk("I shall now present a more difficult puzzle for you. Good luck.")
+                            cm.sendOk("我現在提出一個更困難的題目考考你。\r\n祝你好運！！")
                         }
                     } else if (eim.getProperty("stage1status").equals("active")) {
                         stage = parseInt(eim.getProperty("stage1phase"));
                         if (eim.getProperty("stage1combo").equals(eim.getProperty("stage1guess"))) {
                             if (stage == 3) {
                                 cm.getMap().getReactorByName("statuegate").hitReactor(cm.getClient());
-                                cm.sendOk("Excellent work. Please proceed to the next stage.");
+                                cm.sendOk("好樣的，請繼續下一階段測驗。");
                                 cm.showEffect(true, "quest/party/clear");
                                 cm.playSound(true, "Party1/Clear");
                                 var prev = eim.setProperty("stage1clear", "true", true);
@@ -55,25 +56,23 @@ function action(mode, type, selection) {
                                     cm.gainGP(45);
                                 }
                             } else {
-
-                                cm.sendOk("Very good. You still have more to complete, however. Talk to me again when you're ready.");
+                                cm.sendOk("很好!你已經完成了一部分的測試，但是還有測試如果準備好隨時找我。");
                                 eim.setProperty("stage1phase", stage + 1);
-                                cm.mapMessage("You have completed part " + stage + " of the Gatekeeper Test.");
+                                cm.mapMessage("你已經完成了一部分 " + stage + " 的測驗了。");
                             }
 
                         } else {
-                            cm.sendOk("You have failed this test.");
-                            cm.mapMessage("You have failed the Gatekeeper Test.");
+                            cm.sendOk("你已經失敗了這次的測驗。");
+                            cm.mapMessage("你已經失敗了這次的測驗。");
                             eim.setProperty("stage1phase", "1")
                         }
                         eim.setProperty("stage1status", "waiting");
                         cm.safeDispose();
                     } else {
-                        cm.sendOk("Please wait.");
+                        cm.sendOk("請稍等。");
                         cm.safeDispose();
                     }
                 } else if (status == 1) {
-                    //only applicable for "waiting"
                     var reactors = getReactors();
                     var combo = makeCombo(reactors);
                     /*/var reactorString = "Debug: Reactors in map: ";
@@ -86,7 +85,7 @@ function action(mode, type, selection) {
                                                         reactorString += combo[i] + " ";
                                                 }
                                                 cm.playerMessage(reactorString);*/
-                    cm.mapMessage("Please wait while the combination is revealed.");
+                    cm.mapMessage("請等待完成。");
 
                     var delay = 5000;
                     for (var i = 0; i < combo.length; i++) {
@@ -99,7 +98,7 @@ function action(mode, type, selection) {
             }
 
         } else {
-            cm.sendOk("I need the leader of your party to speak with me, nobody else.");
+            cm.sendOk("我需要你的領導者來和我談話。");
             cm.safeDispose();
         }
     }
