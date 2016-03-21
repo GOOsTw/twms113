@@ -229,35 +229,9 @@ public class MobPacket {
         if (life.getStati().size() <= 0) {
             life.addEmpty(); //not done yet lulz ok so we add it now for the lulz
         }
-
-        writeMaskFromList(mplew, life.getStati().values());
-        boolean ignore_imm = false;
-        for (MonsterStatusEffect buff : life.getStati().values()) {
-            if (buff.getStatus() == MonsterStatus.MAGIC_DAMAGE_REFLECT || buff.getStatus() == MonsterStatus.WEAPON_DAMAGE_REFLECT) {
-                ignore_imm = true;
-                break;
-            }
-        }
-        for (MonsterStatusEffect buff : life.getStati().values()) {
-            if (buff.getStatus() != MonsterStatus.MAGIC_DAMAGE_REFLECT && buff.getStatus() != MonsterStatus.WEAPON_DAMAGE_REFLECT) {
-                if (ignore_imm) {
-                    if (buff.getStatus() == MonsterStatus.MAGIC_IMMUNITY || buff.getStatus() == MonsterStatus.WEAPON_IMMUNITY) {
-                        continue;
-                    }
-                }
-                mplew.writeShort(buff.getX().shortValue());
-                if (buff.getStatus() != MonsterStatus.SUMMON) {
-                    if (buff.getMobSkill() != null) {
-                        mplew.writeShort(buff.getMobSkill().getSkillId());
-                        mplew.writeShort(buff.getMobSkill().getSkillLevel());
-                    } else if (buff.getSkill() > 0) {
-                        mplew.writeInt(buff.getSkill());
-                    }
-                    mplew.writeShort(buff.getStatus().isDefault() ? 0 : 1);
-                }
-            }
-        }
-
+        LinkedList<MonsterStatusEffect> buffs = new LinkedList<>(life.getStati().values());
+        writeMaskFromList(mplew, buffs);
+        EncodeTemporary(mplew, buffs);
         //wh spawn - 15 zeroes instead of 16, then 98 F4 56 A6 C7 C9 01 28, then 7 zeroes
     }
 
@@ -275,7 +249,7 @@ public class MobPacket {
         mplew.write(life.getStance()); // Bitfield
         mplew.writeShort(life.getFh()); // FH
         mplew.writeShort(life.getFh()); // Origin FH
-        mplew.write(life.isFake() ? 0xfc : newSpawn ? -2 : -1);
+        mplew.write(life.isFake() ? -4 : newSpawn ? -2 : -1);
         mplew.write(life.getCarnivalTeam());
         mplew.writeInt(0);
         if (life.getId() / 10000 == 961) {

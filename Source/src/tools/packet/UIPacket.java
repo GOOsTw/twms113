@@ -62,7 +62,7 @@ public class UIPacket {
     public static MaplePacket getTopMsg(String msg) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
-        mplew.writeShort(SendPacketOpcode.SCRIPT_PROGRESS_MESSAGE.getValue());
+        mplew.writeShort(SendPacketOpcode.TOP_MSG.getValue());
         mplew.writeMapleAsciiString(msg);
 
         return mplew.getPacket();

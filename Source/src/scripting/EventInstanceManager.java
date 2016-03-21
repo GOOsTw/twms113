@@ -292,7 +292,7 @@ public class EventInstanceManager {
             return;
         }
         for (MapleCharacter chr : getPlayers()) {
-            chr.modifyCSPoints(1, points, true);
+            chr.modifyCSPoints(2, points, true);
         }
     }
 

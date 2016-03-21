@@ -1473,7 +1473,7 @@ public class MapleItemInformationProvider {
             return 0;
         }
         MapleData item = getItemData(itemid);
-        int life = MapleDataTool.getIntConvert("info/limitedLife", item, 0);
+        int life = MapleDataTool.getIntConvert("info/life", item, 0);
         this.petLifeInfo.put(itemid, life);
         return life;
     }
