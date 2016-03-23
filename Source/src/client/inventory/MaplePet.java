@@ -159,7 +159,7 @@ public class MaplePet implements Serializable {
 
     public static final MaplePet createPet(final int itemid, final int uniqueid) {
         MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-        return createPet(itemid, MapleItemInformationProvider.getInstance().getName(itemid), 1, 0, 100, uniqueid, ii.getPetLimitLife(itemid), ii.getPetFlagInfo(itemid));
+        return createPet(itemid, ii.getName(itemid), 1, 0, 100, uniqueid, ii.getPetLimitLife(itemid), ii.getPetFlagInfo(itemid));
     }
 
     public static final MaplePet createPet(int itemid, String name, int level, int closeness, int fullness, int uniqueid, int limitedLife, short flag) {
@@ -193,6 +193,9 @@ public class MaplePet implements Serializable {
     }
 
     public final String getName() {
+        if (name == null) {
+            setName(MapleItemInformationProvider.getInstance().getName(petitemid));
+        }
         return name;
     }
 

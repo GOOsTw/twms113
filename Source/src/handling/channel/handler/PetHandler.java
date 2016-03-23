@@ -50,7 +50,7 @@ public class PetHandler {
 
     public static final void SpawnPet(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         chr.updateTick(slea.readInt());
-        chr.spawnPet(slea.readByte(), slea.readByte() > 0);
+        chr.spawnPet((byte) slea.readShort(), slea.readByte() > 0);
 
     }
 
@@ -161,7 +161,7 @@ public class PetHandler {
         if (chr == null) {
             return;
         }
-        for (final MaplePet pets : chr.getPets()) {
+        for (final MaplePet pets : chr.getSummonedPets()) {
             if (pets.getSummoned()) {
                 if (pets.getFullness() < previousFullness) {
                     previousFullness = pets.getFullness();

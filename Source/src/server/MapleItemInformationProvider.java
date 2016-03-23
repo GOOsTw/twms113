@@ -1120,7 +1120,7 @@ public class MapleItemInformationProvider {
         if (strings == null) {
             return null;
         }
-        final String ret = MapleDataTool.getString("name", strings, null);
+        final String ret = MapleDataTool.getString("name", strings, "(null)");
         nameCache.put(itemId, ret);
         return ret;
     }

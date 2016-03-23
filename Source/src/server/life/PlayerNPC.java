@@ -50,7 +50,7 @@ public final class PlayerNPC extends MapleNPC {
     private final int mapid, charId;
     private int face, hair ;
     private byte skin, gender;
-    private final int[] pets = new int[3];
+    private final int[] pets = new int[] {0, 0, 0};
 
     public PlayerNPC(ResultSet rs) throws SQLException  {
         super(rs.getInt("ScriptId"), rs.getString("name"));
@@ -143,7 +143,7 @@ public final class PlayerNPC extends MapleNPC {
         setFace(chr.getFace());
         setSkin((byte) (chr.getSkinColor()));
         setGender(chr.getGender());
-        setPets(chr.getPets());
+        setPets(chr.getSummonedPets());
 
         equips = new HashMap<>();
         for (IItem item : chr.getInventory(MapleInventoryType.EQUIPPED).list()) {
@@ -272,11 +272,9 @@ public final class PlayerNPC extends MapleNPC {
     }
 
     public void setPets(List<MaplePet> p) {
-        for (int i = 0; i < 3; i++) {
-            if (p != null && p.size() > i && p.get(i) != null) {
-                this.pets[i] = p.get(i).getPetItemId();
-            } else {
-                this.pets[i] = 0;
+        for (MaplePet pet : p) {
+            if (pet.getSummoned()) {
+                pets[pet.getSummonedValue() - 1] = pet.getPetItemId();
             }
         }
     }
