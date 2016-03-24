@@ -11,7 +11,6 @@ function action(mode, type, selection) {
         status--;
     }
     if (cm.getPlayer().getMapId() == 670011000) {
-        //cm.gainNX(2000);
         cm.warp(670010000, 0);
         cm.dispose();
         return;

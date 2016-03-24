@@ -33,9 +33,9 @@ function action(mode, type, selection) {
                         next = false;
                         break;
                     }
-                    size += (ccPlayer.isGM() ? 6 : 1);
+                    size += (ccPlayer.isGM() ? 2 : 1);
                 }
-                if (next && size >= 6) {
+                if (next && size >= 2) {
                     var em = cm.getEventManager("Amoria");
                     if (em == null) {
                         cm.sendOk("請稍後再嘗試。");

@@ -27,6 +27,7 @@ import handling.MaplePacket;
 import handling.SendPacketOpcode;
 import java.util.List;
 import server.MerchItemPackage;
+import server.shops.AbstractPlayerStore;
 import server.shops.AbstractPlayerStore.BoughtItem;
 import server.shops.HiredMerchant;
 import server.shops.IMaplePlayerShop;
@@ -85,7 +86,8 @@ public class PlayerShopPacket {
         mplew.write(5);
         mplew.write(5);
         mplew.write(4);
-        mplew.writeShort(merch.getVisitorSlot(chr));
+        mplew.write(merch.getVisitorSlot(chr));
+        mplew.write(0);
         mplew.writeInt(merch.getItemId());
         mplew.writeMapleAsciiString("精靈商人");
 

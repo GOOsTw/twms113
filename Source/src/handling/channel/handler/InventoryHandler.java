@@ -2610,7 +2610,7 @@ public class InventoryHandler {
                 if (merchant != null) {
                     if (merchant.isOwner(c.getPlayer())) {
                         merchant.setOpen(false);
-                        merchant.removeAllVisitors((byte) 16, (byte) 0);
+                        merchant.removeAllVisitors((byte) 18, (byte) 1);
                         c.getPlayer().setPlayerShop(merchant);
                         c.sendPacket(PlayerShopPacket.getHiredMerch(c.getPlayer(), merchant, false));
                     } else if (!merchant.isOpen() || !merchant.isAvailable()) {

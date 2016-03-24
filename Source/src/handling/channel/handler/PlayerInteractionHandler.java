@@ -191,7 +191,7 @@ public class PlayerInteractionHandler {
                         if (merchant.isOwner(chr)) {
                             /*商店主人*/
                             merchant.setOpen(false);
-                            merchant.removeAllVisitors((byte) 16, (byte) 0);
+                            merchant.removeAllVisitors((byte) 18, (byte) 1);
                             chr.setPlayerShop(ips);
                             c.sendPacket(PlayerShopPacket.getHiredMerch(chr, merchant, false));
                         } else {
