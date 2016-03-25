@@ -34,6 +34,7 @@ import provider.MapleDataProvider;
 import provider.MapleDataProviderFactory;
 import provider.MapleDataTool;
 import database.DatabaseConnection;
+import server.ServerProperties;
 
 public class MapleMonsterInformationProvider {
 
@@ -143,7 +144,8 @@ public class MapleMonsterInformationProvider {
 
     public Map<Integer, String> getAllMonsters() {
         if (mobCache.isEmpty()) {
-            final MapleDataProvider stringData = MapleDataProviderFactory.getDataProvider("String.wz");
+            final MapleDataProvider stringData = MapleDataProviderFactory.getDataProvider(ServerProperties.getProperty("server.wzpath") + "/String.wz");
+            
             MapleData mobsData = stringData.getData("Mob.img");
             for (MapleData itemFolder : mobsData.getChildren()) {
                 mobCache.put(Integer.parseInt(itemFolder.getName()), MapleDataTool.getString("name", itemFolder, "NO-NAME"));

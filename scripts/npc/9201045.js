@@ -17,23 +17,23 @@ function action(mode, type, selection) {
     switch (cm.getMapId()) {
         case 670010500:
             if (!cm.isLeader()) {
-                cm.sendOk("I want your leader, only.");
+                cm.sendOk("請找隊長來和我談話。");
                 cm.dispose();
                 return;
             }
             if (cm.haveItem(4031597, 50)) {
-                cm.mapMessage(6, "Run! To the right! Run for your lives!");
+                cm.mapMessage(6, "跑，跑向前跑，絕對不要回頭！");
                 cm.warpParty(670010600);
                 cm.gainItem(4031597, -50);
 
             } else {
-                cm.sendOk("I want you and your party to get me 50 Cupid Code Pieces!");
+                cm.sendOk("我希望你和你的隊員們弄50個#t4031597#給我。");
             }
             cm.dispose();
             break;
         case 670010600:
             if (!cm.isLeader()) {
-                cm.sendOk("I want your leader, only.");
+                cm.sendOk("請找隊長來和我談話。");
                 cm.dispose();
                 return;
             }
@@ -42,7 +42,7 @@ function action(mode, type, selection) {
             break;
         case 670010700:
             if (!cm.isLeader()) {
-                cm.sendOk("I want your leader, only.");
+                cm.sendOk("請找隊長來和我談話。");
                 cm.dispose();
                 return;
             }
@@ -55,7 +55,7 @@ function action(mode, type, selection) {
                     cm.gainItem(4031594, -1);
                     cm.warpParty(670010800, -1);
                 } else {
-                    cm.sendOk("I need the Geist Fang from Geist Balrog...");
+                    cm.sendOk("我需要#t4031594#....");
                 }
             }
             cm.dispose();

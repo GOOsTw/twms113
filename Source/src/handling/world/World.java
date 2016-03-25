@@ -1413,19 +1413,19 @@ public class World {
             }
         }
         if (numTimes % 100 == 0) { //we're parsing through the characters anyway (:
-            for (MaplePet pet : chr.getPets()) {
+            for (MaplePet pet : chr.getSummonedPets()) {
                 if (pet.getSummoned()) {
                     if (pet.getPetItemId() == 5000054 && pet.getSecondsLeft() > 0) {
                         pet.setLimitedLife(pet.getSecondsLeft() - 1);
                         if (pet.getSecondsLeft() <= 0) {
-                            chr.unequipPet(pet, true, true);
+                            chr.unequipPet(pet, true);
                             return;
                         }
                     }
                     int newFullness = pet.getFullness() - PetDataFactory.getHunger(pet.getPetItemId());
                     if (newFullness <= 5) {
                         pet.setFullness(15);
-                        chr.unequipPet(pet, true, true);
+                        chr.unequipPet(pet, true);
                     } else {
                         pet.setFullness(newFullness);
                         chr.getClient().sendPacket(PetPacket.updatePet(pet, chr.getInventory(MapleInventoryType.CASH).getItem(pet.getInventoryPosition())));

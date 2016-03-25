@@ -38,16 +38,16 @@ public class MaplePet implements Serializable {
 
     public static enum PetFlag {
 
-        ITEM_PICKUP(0x01, 5190000, 5191000),
-        EXPAND_PICKUP(0x02, 5190002, 5191002), //idk
-        AUTO_PICKUP(0x04, 5190003, 5191003), //idk
-        UNPICKABLE(0x08, 5190005, -1), //not coded
-        LEFTOVER_PICKUP(0x10, 5190004, 5191004), //idk
-        HP_CHARGE(0x20, 5190001, 5191001),
-        MP_CHARGE(0x40, 5190006, -1),
+	ITEM_PICKUP(0x01, 5190000, 5191000), //撿道具技能
+        EXPAND_PICKUP(0x02, 5190002, 5191002), //擴大移動範圍技能
+        AUTO_PICKUP(0x04, 5190003, 5191003), //範圍自動撿起功能
+        UNPICKABLE(0x08, 5190005, -1), //勿撿特定道具技能
+        LEFTOVER_PICKUP(0x10, 5190004, 5191004), //撿起無所有權道具&楓幣技能
+        HP_CHARGE(0x20, 5190001, 5191001), //自動服用HP藥水技能
+        MP_CHARGE(0x40, 5190006, -1), //自動服用MP藥水技能
         PET_BUFF(0x80, -1, -1), //idk
-        PET_DRAW(0x100, 5190007, -1), //nfs
-        PET_DIALOGUE(0x200, 5190008, -1); //nfs
+	PET_DRAW(0x100, 5190007, -1), //寵物召喚
+        PET_DIALOGUE(0x200, 5190008, -1); //自言自語
 
         private final int i, item, remove;
 
@@ -159,7 +159,7 @@ public class MaplePet implements Serializable {
 
     public static final MaplePet createPet(final int itemid, final int uniqueid) {
         MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-        return createPet(itemid, MapleItemInformationProvider.getInstance().getName(itemid), 1, 0, 100, uniqueid, ii.getPetLimitLife(itemid), ii.getPetFlagInfo(itemid));
+        return createPet(itemid, ii.getName(itemid), 1, 0, 100, uniqueid, ii.getPetLimitLife(itemid), ii.getPetFlagInfo(itemid));
     }
 
     public static final MaplePet createPet(int itemid, String name, int level, int closeness, int fullness, int uniqueid, int limitedLife, short flag) {
@@ -193,6 +193,9 @@ public class MaplePet implements Serializable {
     }
 
     public final String getName() {
+        if (name == null) {
+            setName(MapleItemInformationProvider.getInstance().getName(petitemid));
+        }
         return name;
     }
 

@@ -349,10 +349,8 @@ public class MobPacket {
                 mplew.writeShort(buff.getMobSkill().getSkillLevel());
             } else if (buff.getSkill() > 0) {
                 mplew.writeInt(buff.getSkill());
-            } else {
-                mplew.writeInt(0);
             }
-            mplew.writeShort((short) ((buff.getCancelTask() - System.currentTimeMillis())));
+            mplew.writeShort(buff.getStatus().isDefault() ? 0 : 1);
         }
         if (buffstatus.contains(MonsterStatus.WEAPON_DAMAGE_REFLECT)) {
             mplew.writeInt(0);
@@ -383,13 +381,13 @@ public class MobPacket {
         mplew.writeShort(SendPacketOpcode.APPLY_MONSTER_STATUS.getValue());
         mplew.writeInt(mons.getObjectId());
         /*writeMaskFromList(mplew, Collections.singletonList(ms));
-        mplew.writeShort(ms.getX());
-        mplew.writeShort(ms.getMobSkill().getSkillId());
-        mplew.writeShort(ms.getMobSkill().getSkillLevel());
-        mplew.writeShort(ms.getStati().isEmpty() ? 1 : 0); // might actually be the buffTime but it's not displayed anywhere
-        mplew.writeShort(0); // delay in ms
-        mplew.write(1); // size
-//        mplew.write(1); // ? v97*/
+         mplew.writeShort(ms.getX());
+         mplew.writeShort(ms.getMobSkill().getSkillId());
+         mplew.writeShort(ms.getMobSkill().getSkillLevel());
+         mplew.writeShort(ms.getStati().isEmpty() ? 1 : 0); // might actually be the buffTime but it's not displayed anywhere
+         mplew.writeShort(0); // delay in ms
+         mplew.write(1); // size
+         //        mplew.write(1); // ? v97*/
         SingleProcessStatSet(mplew, ms);
 
         return mplew.getPacket();
@@ -410,35 +408,35 @@ public class MobPacket {
     }
 
     /* public static MaplePacket applyMonsterStatus(final int oid, final Map<MonsterStatus, Integer> stati, final List<Integer> reflection, MobSkill skil) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+     MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
-        mplew.writeShort(SendPacketOpcode.APPLY_MONSTER_STATUS.getValue());
-        mplew.writeInt(oid);
-        writeMaskFromList(mplew, stati);
+     mplew.writeShort(SendPacketOpcode.APPLY_MONSTER_STATUS.getValue());
+     mplew.writeInt(oid);
+     writeMaskFromList(mplew, stati);
 
-        for (Map.Entry<MonsterStatus, Integer> mse : stati.entrySet()) {
-            mplew.writeShort(mse.getValue());
-            mplew.writeShort(skil.getSkillId());
-            mplew.writeShort(skil.getSkillLevel());
-            mplew.writeShort(mse.getKey().isEmpty() ? 1 : 0); // might actually be the buffTime but it's not displayed anywhere
-        }
-        mplew.writeShort(0);
-        mplew.writeInt(0);
-        /*for (Integer ref : reflection) {
-         mplew.writeInt(ref);
-         }
-         mplew.writeInt(0);
-         mplew.writeShort(0); // delay in ms
+     for (Map.Entry<MonsterStatus, Integer> mse : stati.entrySet()) {
+     mplew.writeShort(mse.getValue());
+     mplew.writeShort(skil.getSkillId());
+     mplew.writeShort(skil.getSkillLevel());
+     mplew.writeShort(mse.getKey().isEmpty() ? 1 : 0); // might actually be the buffTime but it's not displayed anywhere
+     }
+     mplew.writeShort(0);
+     mplew.writeInt(0);
+     /*for (Integer ref : reflection) {
+     mplew.writeInt(ref);
+     }
+     mplew.writeInt(0);
+     mplew.writeShort(0); // delay in ms
 
-         int size = stati.size(); // size
-         if (reflection.size() > 0) {
-         size /= 2; // This gives 2 buffs per reflection but it's really one buff
-         }
-         mplew.write(size); // size
-         //        mplew.write(1); // ? v97
+     int size = stati.size(); // size
+     if (reflection.size() > 0) {
+     size /= 2; // This gives 2 buffs per reflection but it's really one buff
+     }
+     mplew.write(size); // size
+     //        mplew.write(1); // ? v97
 
-        return mplew.getPacket();
-    }*/
+     return mplew.getPacket();
+     }*/
     public static MaplePacket cancelMonsterStatus(MapleMonster mons, MonsterStatusEffect ms) {
         List<MonsterStatusEffect> mse = new ArrayList<>();
         mse.add(ms);

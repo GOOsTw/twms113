@@ -1964,7 +1964,7 @@ public final class MapleMap {
                     break;
             }
         }
-        for (final MaplePet pet : chr.getPets()) {
+        for (final MaplePet pet : chr.getSummonedPets()) {
             if (pet.getSummoned()) {
                 broadcastMessage(chr, PetPacket.showPet(chr, pet, false, false), false);
             }

@@ -1554,22 +1554,16 @@ public class MaplePacketCreator {
         mplew.write(chr.getmonth());// 月
         mplew.write(chr.getday());// 日
 
-        final IItem inv = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -114);
-        final int peteqid = inv != null ? inv.getItemId() : 0;
-
-        for (final MaplePet pet : chr.getPets()) {
+        for (final MaplePet pet : chr.getSummonedPets()) {
             if (pet.getSummoned()) {
                 mplew.write(pet.getUniqueId()); //o-o byte ?
                 mplew.writeInt(pet.getPetItemId()); // petid
-                if (pet.getName() == null) { //判斷寵物名字
-                    mplew.writeMapleAsciiString("沒有名字的寵物");
-                } else {
-                    mplew.writeMapleAsciiString(pet.getName());
-                }
+                mplew.writeMapleAsciiString(pet.getName());
                 mplew.write(pet.getLevel()); // pet level
                 mplew.writeShort(pet.getCloseness()); // pet closeness
                 mplew.write(pet.getFullness()); // pet fullness
                 mplew.writeShort(pet.getFlags()); // 寵物使用技能
+                IItem inv = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) (pet.getSummonedValue() == 2 ? -124 : pet.getSummonedValue() == 1 ? -114 : -126));
                 mplew.writeInt(inv == null ? 0 : inv.getItemId());
             }
         }

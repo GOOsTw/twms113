@@ -23,7 +23,7 @@ function action(mode, type, selection) {
                 cm.warp(670010300, 0);
             } else {
                 if (!cm.isLeader()) {
-                    cm.sendOk("I want your leader, only.");
+                    cm.sendOk("請找隊長來和我談話。");
                     cm.dispose();
                     return;
                 }
@@ -31,14 +31,14 @@ function action(mode, type, selection) {
                 cm.getMap().changeEnvironment("gate0", 2);
                 cm.getMap().changeEnvironment("gate1", 2);
                 cm.getMap().changeEnvironment("gate2", 2);
-                cm.sendOk("The gate is opened.");
+                cm.sendOk("門已經開了。");
             }
             cm.dispose();
             break;
         case 670010300:
             if (em.getProperty("apq2").equals("0")) {
                 if (!cm.isLeader()) {
-                    cm.sendOk("I want your leader, only.");
+                    cm.sendOk("請找隊長來和我談話。");
                     cm.dispose();
                     return;
                 }
@@ -50,7 +50,7 @@ function action(mode, type, selection) {
                     total += z;
                 }
                 if (total < 5) {
-                    cm.sendOk("There needs to be 5 players on the ropes.");
+                    cm.sendOk("這裡需要五個隊員在繩子上。");
                 } else {
                     var num_correct = 0;
                     for (var i = 0; i < 3; i++) {
@@ -76,21 +76,21 @@ function action(mode, type, selection) {
                         			    em.setProperty("apq2_tries", "0");
                         			} else */
                         if (num_correct > 0) {
-                            cm.sendOk("One of the ropes is correct.");
+                            cm.sendOk("有一個是正確的。");
                         } else {
-                            cm.sendOk("All of the ropes are wrong.");
+                            cm.sendOk("全部都是錯誤的。");
                         }
                     }
                 }
             } else {
-                cm.sendOk("The portal is opened! Go!");
+                cm.sendOk("傳點已經打開了快進下一階吧！");
             }
             cm.dispose();
             break;
         case 670010400:
             if (em.getProperty("apq3").equals("0")) {
                 if (!cm.isLeader()) {
-                    cm.sendOk("I want your leader, only.");
+                    cm.sendOk("請找隊長來和我談話。");
                     cm.dispose();
                     return;
                 }
@@ -105,7 +105,7 @@ function action(mode, type, selection) {
                     total += z;
                 }
                 if (total != 5) {
-                    cm.sendOk("There needs to be 5 players on the platforms, all on different platforms.");
+                    cm.sendOk("這裡需要五個隊員在平台上。");
                 } else {
                     var num_correct = 0;
                     for (var i = 0; i < 9; i++) {
@@ -137,7 +137,7 @@ function action(mode, type, selection) {
                     }
                 }
             } else {
-                cm.sendOk("The portal is opened! Go!");
+                cm.sendOk("傳點已經打開了快進下一階吧！");
             }
             cm.dispose();
             break;

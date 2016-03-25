@@ -14,6 +14,7 @@ import constants.GameConstants;
 import client.MapleCharacter;
 import client.MapleClient;
 import client.inventory.MapleInventoryType;
+import client.inventory.MaplePet;
 import client.inventory.MapleWeaponType;
 import provider.MapleData;
 import provider.MapleDataDirectoryEntry;
@@ -1120,7 +1121,7 @@ public class MapleItemInformationProvider {
         if (strings == null) {
             return null;
         }
-        final String ret = MapleDataTool.getString("name", strings, null);
+        final String ret = MapleDataTool.getString("name", strings, "(null)");
         nameCache.put(itemId, ret);
         return ret;
     }
@@ -1491,25 +1492,22 @@ public class MapleItemInformationProvider {
             return flag;
         }
         if (MapleDataTool.getIntConvert("info/pickupItem", item, 0) > 0) {
-            flag = (short) (flag | 0x1);
+            flag = (short) (flag | MaplePet.PetFlag.ITEM_PICKUP.getValue());
         }
         if (MapleDataTool.getIntConvert("info/longRange", item, 0) > 0) {
-            flag = (short) (flag | 0x2);
+            flag = (short) (flag | MaplePet.PetFlag.EXPAND_PICKUP.getValue());
         }
         if (MapleDataTool.getIntConvert("info/pickupAll", item, 0) > 0) {
-            flag = (short) (flag | 0x4);
+            flag = (short) (flag | MaplePet.PetFlag.AUTO_PICKUP.getValue());
         }
         if (MapleDataTool.getIntConvert("info/sweepForDrop", item, 0) > 0) {
-            flag = (short) (flag | 0x10);
+            flag = (short) (flag | MaplePet.PetFlag.LEFTOVER_PICKUP.getValue());
         }
         if (MapleDataTool.getIntConvert("info/consumeHP", item, 0) > 0) {
-            flag = (short) (flag | 0x20);
+            flag = (short) (flag | MaplePet.PetFlag.HP_CHARGE.getValue());
         }
         if (MapleDataTool.getIntConvert("info/consumeMP", item, 0) > 0) {
-            flag = (short) (flag | 0x40);
-        }
-        if (MapleDataTool.getIntConvert("info/autoBuff", item, 0) > 0) {
-            flag = (short) (flag | 0x200);
+            flag = (short) (flag | MaplePet.PetFlag.MP_CHARGE.getValue());
         }
         this.petFlagInfo.put(itemId, flag);
         return flag;

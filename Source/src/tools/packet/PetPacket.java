@@ -206,7 +206,7 @@ public class PetPacket {
         mplew.writeInt(MapleStat.PET.getValue());
 
         byte count = 0;
-        for (final MaplePet pet : chr.getPets()) {
+        for (final MaplePet pet : chr.getSummonedPets()) {
             if (pet.getSummoned()) {
                 mplew.writeLong(pet.getUniqueId());
                 count++;

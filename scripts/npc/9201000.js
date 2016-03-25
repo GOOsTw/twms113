@@ -5,6 +5,7 @@ var ingredients_0 = Array(4011004, 4021007);
 var ingredients_1 = Array(4011006, 4021007);
 var ingredients_2 = Array(4011007, 4021007);
 var ingredients_3 = Array(4021009, 4021007);
+var num = Array(1, 2, 3);
 var mats = Array();
 var mesos = Array(1000000, 2000000, 3000000);
 
@@ -49,8 +50,9 @@ function action(mode, type, selection) {
                 return;
         }
         for (var i = 0; i < mats.length; i++) {
-            prompt += "\r\n#i" + mats[i] + "##t" + mats[i] + "# x 1";
+            prompt += "\r\n#i" + mats[i] + "##t" + mats[i] + "#";
         }
+		prompt += "\r\n 以上材料各x" + num[secondSelection] + "個";
         prompt += "\r\n#i4031138# " + mesos[secondSelection]; + " 楓幣";
         cm.sendYesNo(prompt);
     } else if (status == 3) {
@@ -59,7 +61,7 @@ function action(mode, type, selection) {
         } else {
             var complete = true;
             for (var i = 0; i < mats.length; i++) {
-                if (!cm.haveItem(mats[i], 1)) {
+                if (!cm.haveItem(mats[i], num[secondSelection])) {
                     complete = false;
                     break;
                 }
@@ -70,7 +72,7 @@ function action(mode, type, selection) {
                 cm.sendOk("做完了，趕快去找你心愛的人求婚吧！！");
                 cm.gainMeso(-mesos[secondSelection]);
                 for (var i = 0; i < mats.length; i++) {
-                    cm.gainItem(mats[i], -1);
+                    cm.gainItem(mats[i], -num[secondSelection]);
                 }
                 cm.gainItem(2240004 + (firstSelection * 3) + secondSelection, 1);
             }
