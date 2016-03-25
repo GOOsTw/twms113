@@ -185,11 +185,11 @@ public class MapleQuest implements Serializable {
         quests.clear();
         initQuests(); //test
     }
-    
+
     public static Collection<MapleQuest> getAllInstances() {
         return quests.values();
     }
-    
+
     public static MapleQuest getInstance(int id) {
 
         MapleQuest ret = quests.get(id);
@@ -269,7 +269,7 @@ public class MapleQuest implements Serializable {
                 forceStart(c, npc, null);
             } else {
                 NPCScriptManager.getInstance().endQuest(c.getClient(), npc, getId(), true);
-            }        
+            }
         } else {
             for (MapleQuestAction a : startActs) {
                 if (!a.checkEnd(c, null)) { //just in case
@@ -310,6 +310,12 @@ public class MapleQuest implements Serializable {
         } else if (checkNPCOnMap(c, npc) || canComplete(c, npc)) {
             for (MapleQuestAction a : completeActs) {
                 if (!a.checkEnd(c, selection)) {
+                    return;
+                }
+            }
+            if (c.getClient().getPlayer().getQuestStatus(8027) == 1) {
+                if (c.getClient().getPlayer().haveItem(1002418)) {
+                    c.getClient().getPlayer().dropMessage(1, "請把任務的道具脫下來。");
                     return;
                 }
             }
