@@ -1,4 +1,4 @@
-/* @Author Lerk
+* @Author Lerk
  *
  * Guardian Statue - Sharenian: Fountain of the Wiseman (990000500)
  * 
@@ -13,7 +13,7 @@ function start() {
     } else {
         if (eim.getProperty("leader").equals(cm.getName())) {
             if (cm.getMap().getReactorByName("watergate").getState() > 0) {
-                cm.sendOk("你可能會繼續進行。");
+                cm.sendOk("You may proceed.");
             } else {
                 var currentCombo = eim.getProperty("stage3combo");
                 if (currentCombo == null || currentCombo.equals("reset")) {
@@ -21,7 +21,7 @@ function start() {
                     eim.setProperty("stage3combo", newCombo);
                     //cm.playerMessage("Debug: " + newCombo);
                     eim.setProperty("stage3attempt", "1");
-                    cm.sendOk("這裡是保護著通往寶座的祕密通道的地方，請提供給附庸所需要的物品，他會告訴你物品是不是正確定，如果你提供了錯誤的物品，他會很不高興的。你有七次機會，祝你好運。");  
+                    cm.sendOk("這裡是保護著通往寶座的祕密通道的地方，請提供給附庸所需要的物品，他會告訴你物品是不是正確定，如果你提供了錯誤的物品，他會很不高興的。你有七次機會，祝你好運。")
                 } else {
                     var attempt = parseInt(eim.getProperty("stage3attempt"));
                     var combo = parseInt(currentCombo);
@@ -61,21 +61,7 @@ function start() {
                                 }
                                 if (results[2] != 0) {
                                     if (results[2] == 1) {
-                                        string += "附庸已經收到了未知的供品。\r\n";
-                                    } else {
-                                        string += results[2] + " 附庸收到了未知的供品。\r\n";
-                                    }
-                                }
-                                string += "這是你的 ";
-                                switch (attempt) {
-                                    case 1:
-                                        string += "第一階段";
-                                        break;
-                                    case 2:
-                                        string += "第二階段";
-                                        break;
-                                    case 3:
-                                        string += "第三階段";
+                                        string += "一位附庸收到了不知名的東西。\r\n";
                                     } else {
                                         string += results[2] + "位附庸收到了不知名的東西。\r\n";
                                     }
@@ -106,7 +92,7 @@ function start() {
                             } else {
                                 //reset the combo and mass spawn monsters
                                 eim.setProperty("stage3combo", "reset");
-                                cm.sendOk("你已經失敗了這次的考驗，請去面壁寫悔過書。");
+                                cm.sendOk("You have failed the test. Please compose yourselves and try again later.");
 
                                 for (var i = 0; i < 5; i++) {
                                     //keep getting new monsters, lest we spawn the same monster five times o.o!
@@ -116,12 +102,12 @@ function start() {
                             }
                         }
                     } else {
-                        cm.sendOk("請確定是否在諸侯前面放置了物品，並再次和我談話。");
+                        cm.sendOk("Please make sure your attempt is properly set in front of the vassals and talk to me again.");
                     }
                 }
             }
         } else {
-            cm.sendOk("請找你的領導者和我說話。");
+            cm.sendOk("Please have your leader speak to me.");
         }
     }
     cm.dispose();
@@ -222,12 +208,10 @@ function compare(answer, guess) {
 
             /*/debugAnswer = "Combo : ";
                         debugGuess = "Guess : ";
-
                         for (var d = 0; d < answer.length; d++) {
                                 debugAnswer += answer[d] + " ";
                                 debugGuess += guess[d] + " ";
                         }
-
                         cm.playerMessage(debugAnswer);
                         cm.playerMessage(debugGuess);*/
         } else {
