@@ -2,12 +2,12 @@
  重新改寫打教官腳本by:Kodan
  */
 
-var check = null;
 var msg = "";
 
 function start() {
     action(1, 0, 0);
 }
+
 function action(mode, type, selection) {
     var nextmap1 = cm.getMapFactory().getMap(108010201);
     var nextmap2 = cm.getMapFactory().getMap(108010301);
@@ -19,13 +19,6 @@ function action(mode, type, selection) {
     var nextmap33 = cm.getMapFactory().getMap(108010100);
     var nextmap44 = cm.getMapFactory().getMap(108010400);
     var nextmap55 = cm.getMapFactory().getMap(108010500);
-
-    if (check == null) {
-        msg = "裡面有人在挑戰。";
-        cm.sendNext(msg);
-        cm.dispose();
-        return;
-    }
 
     if (cm.getPlayer().getLevel() >= 70) {
         if (cm.canHold(4031059)) {
@@ -45,7 +38,8 @@ function action(mode, type, selection) {
                     case 100040106:
                         if (cm.getJob() == 210 || cm.getJob() == 220 || cm.getJob() == 230) {
                             if (nextmap11.playerCount() != 0 || nextmap1.playerCount() != 0) {
-                                check = null;
+                                check();
+                                return;
                             }
                             cm.warp(108010200, 0);
                             cm.spawnMobOnMap(9001001, 1, -276, -3, 108010201);
@@ -56,8 +50,9 @@ function action(mode, type, selection) {
                         break;
                     case 105070001:
                         if (cm.getJob() == 110 || cm.getJob() == 120 || cm.getJob() == 130) {
-                            if (nextmap2.playerCount() != 0 || nextmap22.playerCount() != 0) {
-                                check = null;
+                            if (nextmap2.playerCount() != 0 && nextmap22.playerCount() != 0) {
+                                check();
+                                return;
                             }
                             cm.warp(108010300, 0);
                             cm.spawnMobOnMap(9001000, 1, -276, -3, 108010301);
@@ -69,7 +64,8 @@ function action(mode, type, selection) {
                     case 105040305:
                         if (cm.getJob() == 310 || cm.getJob() == 320) {
                             if (nextmap3.playerCount() != 0 || nextmap33.playerCount() != 0) {
-                                check = null;
+                                check();
+                                return;
                             }
                             cm.warp(108010100, 0);
                             cm.spawnMobOnMap(9001002, 1, -276, -3, 108010101);
@@ -81,7 +77,8 @@ function action(mode, type, selection) {
                     case 107000402:
                         if (cm.getJob() == 410 || cm.getJob() == 420) {
                             if (nextmap4.playerCount() != 0 || nextmap44.playerCount() != 0) {
-                                check = null;
+                                check();
+                                return;
                             }
                             cm.warp(108010400, 0);
                             cm.spawnMobOnMap(9001003, 1, -276, -3, 108010401);
@@ -93,7 +90,8 @@ function action(mode, type, selection) {
                     case 105070200:
                         if (cm.getJob() == 510 || cm.getJob() == 520) {
                             if (nextmap5.playerCount() != 0 || nextmap55.playerCount() != 0) {
-                                check = null;
+                                check();
+                                return;
                             }
                             cm.warp(108010500, 0);
                             cm.spawnMobOnMap(9001004, 1, -276, -3, 108010501);
@@ -112,5 +110,11 @@ function action(mode, type, selection) {
     } else {
         cm.sendOk("等級好像不正確。");
     }
+    cm.dispose();
+}
+
+function check() {
+    msg = "裡面有人在挑戰。";
+    cm.sendNext(msg);
     cm.dispose();
 }
