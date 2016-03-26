@@ -76,9 +76,9 @@ function start() {
                                         break;
                                     case 3:
                                         string += "第三階段";
-                                    } else {
-                                        string += results[2] + "位附庸收到了不知名的東西。\r\n";
-                                    }
+                                    default:
+										string += attempt + "階段";
+										break;
                                 }
                                 string += "這是你的第 ";
                                 switch (attempt) {
@@ -170,7 +170,7 @@ function getGroundItems() {
 
     //guaranteed four items that are part of the stage 3 item set by this point, check to see if each area has an item
     if (itemInArea[0] == -1 || itemInArea[1] == -1 || itemInArea[2] == -1 || itemInArea[3] == -1) {
-        cm.playerMessage("請把它們放到正確的位置: " + (itemInArea[0] == -1 ? "Statue 1, " : "") + (itemInArea[1] == -1 ? "Statue 2, " : "") + (itemInArea[2] == -1 ? "Statue 3, " : "") + (itemInArea[3] == -1 ? "Statue 4. " : ""));
+        cm.playerMessage("請把它們放到正確的位置: " + (itemInArea[0] == -1 ? "階段 1, " : "") + (itemInArea[1] == -1 ? "階段 2, " : "") + (itemInArea[2] == -1 ? "階段 3, " : "") + (itemInArea[3] == -1 ? "階段 4. " : ""));
         /*  for (var i = 0; i < 4; i++) {
                   cm.playerMessage("Item in area "+i+": " + itemInArea[i]);
           }*/

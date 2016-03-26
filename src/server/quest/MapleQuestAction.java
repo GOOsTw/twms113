@@ -523,7 +523,7 @@ public class MapleQuestAction implements Serializable {
             ret.add(1100);
         }
         if ((encoded & 0x1000) != 0) {
-           ret.add(1200);
+            ret.add(1200);
         }
         if ((encoded & 0x2000) != 0) {
             ret.add(1300);

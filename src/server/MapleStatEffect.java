@@ -1131,6 +1131,7 @@ public class MapleStatEffect implements Serializable {
         }
         final long starttime = System.currentTimeMillis();
         final CancelEffectAction cancelAction = new CancelEffectAction(applyto, this, starttime);
+        
         final ScheduledFuture<?> schedule = BuffTimer.getInstance().schedule(cancelAction, ((starttime + localDuration) - System.currentTimeMillis()));
         applyto.registerEffect(this, starttime, schedule, localstatups);
     }
