@@ -21,6 +21,7 @@ function end(mode, type, selection) {
     } else if (status == 2) {
         if (qm.getPlayerStat("RSP") > (qm.getPlayerStat("LVL") - 70) * 3) {
             qm.sendNext("技能點數沒點完。");
+			qm.dispose();
         } else {
             qm.changeJob(2111);
             qm.worldMessage("『轉職快報』：恭喜玩家." + qm.getChar().getName() + "  成功狂狼勇士三轉讓我們熱烈的祝福他/她吧！");
