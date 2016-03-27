@@ -20,7 +20,7 @@ function action(mode, type, selection) {
         status--;
 
     if (status == 0) {
-        if (!(cm.getJob() == 111 || cm.getJob() == 121 || cm.getJob() == 131 || cm.getJob() == 2111)) {
+        if (!(cm.getJob() == 111 || cm.getJob() == 121 || cm.getJob() == 131)) {
             cm.sendOk("為什麼你要見我??還有你想要問我關於什麼事情??");
             cm.dispose();
             return;
@@ -35,8 +35,6 @@ function action(mode, type, selection) {
                 cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為聖騎士.#l\r\n#b#L1#像我想一下...#l");
             } else if (cm.getJob() == 131) {
                 cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為黑騎士.#l\r\n#b#L1#像我想一下...#l");
-            } else if (cm.getJob() == 2111) {
-                cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想變強！！#l\r\n#b#L1#像我想一下...#l");
             } else {
                 cm.sendOk("好吧假如你想要4轉麻煩再來找我");
                 cm.dispose();
@@ -84,15 +82,6 @@ function action(mode, type, selection) {
                     cm.gainItem(4031860, -1);
 					cm.gainItem(4031861, -1);
                     cm.sendNext("恭喜你轉職為 #b黑騎士#k.我送你一些神秘小禮物^^");
-                } else if (cm.getJob() == 2111) {
-                    cm.gainItem(4031860, -1);
-					cm.gainItem(4031861, -1);
-                    cm.changeJob(2112);
-                    if (cm.canHold(1142132, 1)) {
-                        cm.forceCompleteQuest(29927);
-                        cm.gainItem(1142132, 1);
-                    }
-                    cm.sendNext("恭喜你狂狼勇士又更上一層樓了！ 另外我送你一些神秘小禮物^^");
                 } else {
                     cm.sendOk("你沒有多的欄位請清空再來嘗試一次!");
                     cm.dispose();
