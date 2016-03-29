@@ -108,7 +108,7 @@ public enum MonsterStatus {
     private MonsterStatus(int i, int order) {
         this.i = 1 << (i % 32);
         this.pos = 3 - (int) Math.floor(i / 32);
-        this.order = i;
+        this.order = order;
         this.isDefault = false;
     }
 
