@@ -31,7 +31,9 @@ import handling.world.World;
 import static handling.world.World.Alliance.getAlliance;
 import handling.world.guild.MapleGuild;
 import handling.world.guild.MapleGuildAlliance;
+import server.ServerConfig;
 import server.maps.MapleMap;
+import tools.FilePrinter;
 import tools.MaplePacketCreator;
 import tools.data.input.SeekableLittleEndianAccessor;
 
@@ -98,13 +100,16 @@ public class ChatHandler {
                     map.broadcastMessage(MaplePacketCreator.getChatText(c.getPlayer().getId(), text, false, 1));
                 } else {
                     StringBuilder sb;
-                    if (c.getPlayer().gmLevel() == 0 && !chr.isHidden()) {
+                    if (!c.getPlayer().isGM()) {
                         chr.getCheatTracker().checkMsg();
                         map.broadcastMessage(MaplePacketCreator.getChatText(chr.getId(), text, c.getPlayer().isGM(), unk), c.getPlayer().getPosition());
-                        sb = new StringBuilder("[普通聊天偷聽] 玩家『" + chr.getName() + "』地圖『" + chr.getMapId() + "』：  " + text);
+                        sb = new StringBuilder("[普通聊天偷聽] 玩家：" + chr.getName() + " 地圖：" + chr.getMapId() + "：  " + text);
+                        if (ServerConfig.isLogChat()) {
+                            FilePrinter.print(FilePrinter.GeneralChatLog + chr.getName() + ".txt", sb.toString());
+                        }
                         for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                             for (MapleCharacter chr_ : cserv.getPlayerStorage().getAllCharacters()) {
-                                if (chr_.get玩家私聊1()) {
+                                if (chr_.get玩家私聊1() && chr_.isGM()) {
                                     chr_.dropMessage(sb.toString());
                                 }
                             }
@@ -140,10 +145,13 @@ public class ChatHandler {
         switch (type) {
             case 0:
                 World.Buddy.buddyChat(recipients, chr.getId(), chr.getName(), chattext);
-                sb = new StringBuilder("[好友聊天偷聽] 玩家『" + chr.getName() + "』地圖『" + chr.getMapId() + "』：  " + chattext);
+                sb = new StringBuilder("[好友聊天偷聽] 玩家：" + chr.getName() + " 地圖：" + chr.getMapId() + " ：  " + chattext);
+                if (ServerConfig.isLogChat()) {
+                    FilePrinter.print(FilePrinter.GeneralChatLog + chr.getName() + ".txt", sb.toString());
+                }
                 for (ChannelServer cserv : ChannelServer.getAllInstances()) {
-                    for (MapleCharacter chr_ : cserv.getPlayerStorage().getAllCharacters()) {
-                        if (chr_.get玩家私聊2()) {
+                    for (MapleCharacter chr_ : cserv.getPlayerStorage().getAllCharactersThreadSafe()) {
+                        if (chr_.get玩家私聊2() && chr_.isGM()) {
                             chr_.dropMessage(sb.toString());
                         }
                     }
@@ -154,10 +162,13 @@ public class ChatHandler {
                     break;
                 }
                 World.Party.partyChat(chr.getParty().getId(), chattext, chr.getName());
-                sb = new StringBuilder("[組隊聊天偷聽]『隊長 " + chr.getParty().getLeader().getName() + "』 玩家『" + chr.getName() + "』地圖『" + chr.getMapId() + "』：  " + chattext);
+                sb = new StringBuilder("[組隊聊天偷聽] 玩家：" + chr.getName() + " 地圖：" + chr.getMapId() + " ：  " + chattext);
+                if (ServerConfig.isLogChat()) {
+                    FilePrinter.print(FilePrinter.GeneralChatLog + chr.getName() + ".txt", sb.toString());
+                }
                 for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                     for (MapleCharacter chr_ : cserv.getPlayerStorage().getAllCharacters()) {
-                        if (chr_.get玩家私聊2()) {
+                        if (chr_.get玩家私聊2() && chr_.isGM()) {
                             chr_.dropMessage(sb.toString());
                         }
                     }
@@ -168,10 +179,13 @@ public class ChatHandler {
                     break;
                 }
                 World.Guild.guildChat(chr.getGuildId(), chr.getName(), chr.getId(), chattext);
-                sb = new StringBuilder("[公會聊天偷聽] " + "公會『" + chr.getGuild().getName() + "』玩家『" + chr.getName() + "』地圖『" + chr.getMapId() + "』：  " + chattext);
+                sb = new StringBuilder("[公會聊天偷聽] " + "公會：" + chr.getGuild().getName() + "玩家：" + chr.getName() + " 地圖：" + chr.getMapId() + " ：  " + chattext);
+                if (ServerConfig.isLogChat()) {
+                    FilePrinter.print(FilePrinter.GuildChatLog + chr.getName() + ".txt", sb.toString());
+                }
                 for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                     for (MapleCharacter chr_ : cserv.getPlayerStorage().getAllCharacters()) {
-                        if (chr_.get玩家私聊3()) {
+                        if (chr_.get玩家私聊3() && chr_.isGM()) {
                             chr_.dropMessage(sb.toString());
                         }
                     }
@@ -182,10 +196,13 @@ public class ChatHandler {
                     break;
                 }
                 World.Alliance.allianceChat(chr.getGuildId(), chr.getName(), chr.getId(), chattext);
-                sb = new StringBuilder("[聯盟聊天偷聽] " + "公會『" + chr.getGuild().getName() + "』玩家『" + chr.getName() + "』地圖『" + chr.getMapId() + "』：  " + chattext);
+                sb = new StringBuilder("[聯盟聊天偷聽] " + "公會：" + chr.getGuild().getName() + " 玩家：" + chr.getName() + " 地圖：" + chr.getMapId() + " ：  " + chattext);
+                if (ServerConfig.isLogChat()) {
+                    FilePrinter.print(FilePrinter.GuildChatLog + chr.getName() + ".txt", sb.toString());
+                }
                 for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                     for (MapleCharacter chr_ : cserv.getPlayerStorage().getAllCharacters()) {
-                        if (chr_.get玩家私聊3()) {
+                        if (chr_.get玩家私聊3() && chr_.isGM()) {
                             chr_.dropMessage(sb.toString());
                         }
                     }
@@ -244,12 +261,10 @@ public class ChatHandler {
                         } else {
                             c.sendPacket(MaplePacketCreator.messengerChat(c.getPlayer().getName() + " : " + target.getName() + " 忙碌中."));
                         }
+                    } else if (World.isConnected(input)) {
+                        World.Messenger.messengerInvite(c.getPlayer().getName(), messenger.getId(), input, c.getChannel(), c.getPlayer().isGM());
                     } else {
-                        if (World.isConnected(input)) {
-                            World.Messenger.messengerInvite(c.getPlayer().getName(), messenger.getId(), input, c.getChannel(), c.getPlayer().isGM());
-                        } else {
-                            c.sendPacket(MaplePacketCreator.messengerNote(input, 4, 0));
-                        }
+                        c.sendPacket(MaplePacketCreator.messengerNote(input, 4, 0));
                     }
                 }
                 break;
@@ -260,7 +275,8 @@ public class ChatHandler {
                     if (target.getMessenger() != null) {
                         target.getClient().sendPacket(MaplePacketCreator.messengerNote(c.getPlayer().getName(), 5, 0));
                     }
-                } else { // Other channel
+                } else // Other channel
+                {
                     if (!c.getPlayer().isGM()) {
                         World.Messenger.declineChat(targeted, c.getPlayer().getName());
                     }
@@ -335,10 +351,13 @@ public class ChatHandler {
                     }
                     StringBuilder sb;
                     player.getClient().sendPacket(MaplePacketCreator.getWhisper(c.getPlayer().getName(), c.getChannel(), text));
-                    sb = new StringBuilder("[密語聊天偷聽] 玩家『" + c.getPlayer().getName() + "』地圖『" + c.getPlayer().getMapId() + "』：  " + text);
+                    sb = new StringBuilder("[密語聊天偷聽] 玩家：" + c.getPlayer().getName() + " -> " + player.getName() + " ：" + text);
+                    if (ServerConfig.isLogChat()) {
+                        FilePrinter.print(FilePrinter.WishperChatLog, sb.toString());
+                    }
                     for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                         for (MapleCharacter chr_ : cserv.getPlayerStorage().getAllCharacters()) {
-                            if (chr_.get玩家私聊2()) {
+                            if (chr_.get玩家私聊2() && chr_.isGM()) {
                                 chr_.dropMessage(sb.toString());
                             }
                         }

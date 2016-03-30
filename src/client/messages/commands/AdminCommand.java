@@ -84,6 +84,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import server.CashItemFactory;
 import server.FishingRewardFactory;
+import server.ServerConfig;
 import server.Timer;
 import server.gashapon.GashaponFactory;
 import server.life.CustomNPC;
@@ -113,6 +114,27 @@ public class AdminCommand {
             return new StringBuilder().append("!debbug - 顯示DEBUG訊息").toString();
         }
 
+    }
+    
+    public static class 聊天紀錄存檔 extends logChat {
+         @Override
+        public String getMessage() {
+            return new StringBuilder().append("!聊天紀錄存檔 - 聊天紀錄存檔").toString();
+        }
+    }
+    
+    public static class logChat extends CommandExecute {
+         @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            ServerConfig.setLogChat(!ServerConfig.isLogChat());
+            c.getPlayer().dropMessage("聊天紀錄存檔已" + ( ServerConfig.isLogChat() ? "開啟" : "關閉"));
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!logChat - 聊天紀錄存檔").toString();
+        }
     }
 
     public static class SavePlayerShops extends CommandExecute {

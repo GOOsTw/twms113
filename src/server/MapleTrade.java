@@ -12,6 +12,7 @@ import client.messages.CommandProcessor;
 import constants.ServerConstants.CommandType;
 import handling.channel.ChannelServer;
 import java.lang.ref.WeakReference;
+import tools.FilePrinter;
 import tools.MaplePacketCreator;
 import tools.packet.PlayerShopPacket;
 
@@ -108,9 +109,12 @@ public class MapleTrade {
         if (!CommandProcessor.processCommand(chr.get().getClient(), message, CommandType.TRADE)) {
             chr.get().dropMessage(-2, chr.get().getName() + " : " + message);
             String sb = "[交易聊天偷聽] 『" + ((MapleCharacter) this.chr.get()).getName() + "』對『" + this.partner.getChr().getName() + "』的聊天：  " + message;
+            if (ServerConfig.isLogChat()) {
+                FilePrinter.print(FilePrinter.OtherChatLog, sb);
+            }
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
                 for (MapleCharacter chr_ : cserv.getPlayerStorage().getAllCharacters()) {
-                    if (chr_.get玩家私聊1()) {
+                    if (chr_.get玩家私聊1() && chr_.isGM()) {
                         chr_.dropMessage(sb);
                     }
                 }
