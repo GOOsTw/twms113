@@ -116,6 +116,20 @@ public class CashShopOperation {
         refreshCashShop(c);
     }
 
+    public static final void ChangeName(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+        String secondPassword = slea.readMapleAsciiString().toLowerCase();
+        if (c.getSecondPassword() != null) {
+            if (secondPassword == null) { // 確認是否外掛
+                c.getPlayer().dropMessage(1, "請輸入密碼。");
+            } else {
+                if (!c.check2ndPassword(secondPassword)) { // 第二密碼錯誤
+                    c.getPlayer().dropMessage(1, "密碼錯誤。");
+                }
+            }
+        }
+        refreshCashShop(c);
+    }
+
     public static void CouponCode(final String code, final MapleClient c) {
         boolean validcode = false;
         int type = -1, item = -1, size = -1;
@@ -384,7 +398,7 @@ public class CashShopOperation {
             }
 
             case 8: { //角色擴充
-                byte nxcheck = (byte) (slea.readByte() +1);
+                byte nxcheck = (byte) (slea.readByte() + 1);
                 CashItemInfo item = CashItemFactory.getInstance().getItem(slea.readInt());
                 int slots = c.getCharacterSlots();
                 if (item == null || c.getPlayer().getCSPoints(nxcheck) < item.getPrice() || slots > 15) {
@@ -599,7 +613,31 @@ public class CashShopOperation {
                 refreshCashShop(c);
                 break;
             }
+            case 51: { //楓葉點數購買
+                CashItemInfo item = CashItemFactory.getInstance().getItem(slea.readInt());
+                if (item == null || c.getPlayer().getCSPoints(1) < item.getPrice()) {
+                    c.sendPacket(MTSCSPacket.sendCSFail(0));
+                    refreshCashShop(c);
+                    return;
+                }
+                switch (item.getPrice()) {
+                    case 50:
+                        c.getPlayer().modifyCSPoints(2, item.getPrice(), false);
+                        break;
+                    case 150:
+                        c.getPlayer().modifyCSPoints(2, item.getPrice(), false);
+                        break;
+                    case 500:
+                        c.getPlayer().modifyCSPoints(2, item.getPrice(), false);
+                        break;
+                }
+                chr.dropMessage(1, "成功購買楓葉點數:" + item.getPrice());
+                c.getPlayer().modifyCSPoints(1, -item.getPrice(), false);
 
+                refreshCashShop(c);
+                break;
+            }
+            
             default:
                 c.sendPacket(MTSCSPacket.sendCSFail(0));
                 refreshCashShop(c);

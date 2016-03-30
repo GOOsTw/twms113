@@ -125,7 +125,7 @@ public class NPCHandler {
                 final int npc = slea.readInt();
                 if (npc == 0 && quest > 0) {
                     q.forceStart(chr, npc, null);
-                } else if (quest == 2001 || quest == 8511) {
+                } else if (quest == 2001 || quest == 8511 || quest == 21301 || quest == 21302) {
                     q.forceStart(chr, npc, null);
                 } else if (quest == 8512) {
                     q.start(chr, npc);

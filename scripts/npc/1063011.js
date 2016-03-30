@@ -13,7 +13,7 @@ function action(mode, type, selection) {
     } else {
         status++;
 		if (status == 0) {
-			if (cm.getText() == "浦藍西斯是天才魁儡師！") {
+			if (cm.getText() == "浦藍西斯是天才傀儡師！") {
 				cm.warp(910510001);
 			} else {
 				cm.sendNext("有奇怪的聲音嘲笑著\r\n\r\n#e#b是笨蛋嗎？這不是暗號嗎？從連寫法到感嘆號都一模一樣#k#n");

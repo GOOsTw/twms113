@@ -1,31 +1,3 @@
-/*
-	This file is part of the OdinMS Maple Story Server
-    Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc>
-		       Matthias Butz <matze@odinms.de>
-		       Jan Christian Meyer <vimes@odinms.de>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation version 3 as published by
-    the Free Software Foundation. You may not use, modify or distribute
-    this program under any other version of the GNU Affero General Public
-    License.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-//BY MOOGRA
-/* Robeira
-	Magician 3rd job advancement
-	El Nath: Chief's Residence (211000001)
-	Custom Quest 100100, 100102
-*/
-
 var status = 0;
 var job;
 
@@ -80,12 +52,12 @@ function action(mode, type, selection) {
                     }
                 }
             }
-            if (cm.getJob() == 111 || cm.getJob() == 121 || cm.getJob() == 131 || cm.getJob() == 112 || cm.getJob() == 122 || cm.getJob() == 132 || cm.getJob() == 2111) {
+            if (cm.getJob() == 111 || cm.getJob() == 121 || cm.getJob() == 131 || cm.getJob() == 112 || cm.getJob() == 122 || cm.getJob() == 132) {
                 cm.sendOk("您屬於劍士部,但是您已經成功三轉了,已經超越了教官的強度了!");
                 cm.dispose();
                 return;
             }
-            if (!(cm.getJob() == 110 || cm.getJob() == 120 || cm.getJob() == 130 || cm.getJob() == 2110)) {
+            if (!(cm.getJob() == 110 || cm.getJob() == 120 || cm.getJob() == 130)) {
                 cm.sendOk("請找您的轉職教官,您不屬於劍士部的滾吧!");
                 cm.dispose();
                 return;
@@ -131,13 +103,6 @@ function action(mode, type, selection) {
                     cm.gainItem(4031058, -1);
                     cm.sendOk("恭喜轉職了!");
                     cm.worldMessage("『轉職快報』：恭喜玩家." + cm.getChar().getName() + "  成功三轉-龍騎士讓我們熱烈的祝福他/她吧！");
-                    cm.dispose();
-                } else if (cm.getJob() == 2110) {
-                    cm.changeJob(2111);
-                    cm.gainItem(4031057, -1);
-                    cm.gainItem(4031058, -1);
-                    cm.sendOk("恭喜轉職了!");
-                    cm.worldMessage("『轉職快報』：恭喜玩家." + cm.getChar().getName() + "  成功狂狼勇士三轉讓我們熱烈的祝福他/她吧！");
                     cm.dispose();
                 }
             } else if (cm.haveItem(4031057, 1))
