@@ -1591,7 +1591,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public boolean changeFace(int color) {
-        
+
         int newFace = face / 1000 + color + face % 100;
         updateSingleStat(MapleStat.FACE, face);
         equipChanged();
@@ -4514,12 +4514,16 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 break;
         }
         if (show && quantity != 0) {
-            dropMessage(-1, "你" + (quantity > 0 ? "獲得了 " : "失去了 ") + quantity + (type == 1 ? " 點Gash." : " 點楓葉點數."));
+            dropMessage("您已經 " + (quantity > 0 ? "獲得 " : "花費 ") + quantity + (type == 1 ? " GASH點數." : " 楓葉點數."));
             //client.sendPacket(MaplePacketCreator.showSpecialEffect(19));
         }
         saveCSPoints();
 
     }
+    
+    /*
+     * @param type 1 = GASH點數 2 = 楓葉點數
+     */
 
     public int getCSPoints(int type) {
         switch (type) {
