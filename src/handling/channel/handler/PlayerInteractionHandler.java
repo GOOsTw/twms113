@@ -64,6 +64,7 @@ public class PlayerInteractionHandler {
             ADD_ITEM = 0x1E,
             BUY_ITEM_STORE = 0x1F,
             BUY_ITEM_HIREDMERCHANT = 0x21,
+            REMOVE_ITEM_PS = 0x18,
             REMOVE_ITEM = 0x23,
             MAINTANCE_OFF = 0x24, //This is mispelled...
             MAINTANCE_ORGANISE = 0x25,
@@ -451,6 +452,7 @@ public class PlayerInteractionHandler {
                 shop.broadcastToVisitors(PlayerShopPacket.shopItemUpdate(shop));
                 break;
             }
+            case REMOVE_ITEM_PS:
             case REMOVE_ITEM: {
                 int slot = slea.readShort(); //0
                 final IMaplePlayerShop shop = chr.getPlayerShop();
