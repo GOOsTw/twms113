@@ -50,7 +50,7 @@ function action(mode, type, selection) {
                     status = 10;
                     cm.sendNext("你已經可以轉職了,要轉職請點下一頁.");
                 }
-            } else if (cm.getPlayer().getLevel() >= 70 && cm.getJob() == 110 || cm.getJob() == 120 || cm.getJob() == 130 || cm.getJob() == 2110) {
+            } else if (cm.getPlayer().getLevel() >= 70 && cm.getJob() == 110 || cm.getJob() == 120 || cm.getJob() == 130) {
                 if (cm.haveItem(4031059, 1)) {
                     cm.gainItem(4031057, 1);
                     cm.gainItem(4031059, -1);
