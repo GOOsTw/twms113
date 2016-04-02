@@ -112,7 +112,7 @@ public class GuildHandler {
             return hash;
         }
     }
-    
+
     private static final List<Invited> invited = new LinkedList<>();
     private static long nextPruneTime = System.currentTimeMillis() + 20 * 60 * 1000;
 
@@ -132,9 +132,10 @@ public class GuildHandler {
         }
 
         GuildOperation operation = GuildOperation.getByValue(slea.readByte());
-        
-        if( operation == null )
+
+        if (operation == null) {
             return;
+        }
 
         switch (operation) {
 
@@ -238,6 +239,10 @@ public class GuildHandler {
                 if (cid != c.getPlayer().getId() || !name.equals(c.getPlayer().getName()) || c.getPlayer().getGuildId() <= 0) {
                     return;
                 }
+                if (c.getPlayer().getMapId() == 990001000) {
+                    c.getPlayer().dropMessage(5, "無法在當前地圖退出工會。");
+                    return;
+                }
                 World.Guild.leaveGuild(c.getPlayer().getMGC());
                 c.sendPacket(MaplePacketCreator.showGuildInfo(null));
                 c.sendPacket(MaplePacketCreator.fuckGuildInfo(c.getPlayer()));
@@ -246,8 +251,14 @@ public class GuildHandler {
             case EXPEL: {
                 int cid = slea.readInt();
                 String name = slea.readMapleAsciiString();
+                MapleCharacter victim;
+                victim = c.getChannelServer().getPlayerStorage().getCharacterByName(name);
 
                 if (c.getPlayer().getGuildRank() > 2 || c.getPlayer().getGuildId() <= 0) {
+                    return;
+                }
+                if (victim.getMapId() == 990001000) {
+                    c.getPlayer().dropMessage(5, "當前無法驅除" + victim.getName() + "工會。");
                     return;
                 }
                 World.Guild.expelMember(c.getPlayer().getMGC(), name, cid);
@@ -285,7 +296,7 @@ public class GuildHandler {
                     c.getPlayer().dropMessage(1, "你的楓幣不夠,無法創建公會徽章");
                     return;
                 }
-                
+
                 final short bg = slea.readShort();
                 final byte bgcolor = slea.readByte();
                 final short logo = slea.readShort();
