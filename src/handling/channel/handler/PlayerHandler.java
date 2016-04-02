@@ -268,7 +268,7 @@ public class PlayerHandler {
         if (damage == -1) {
             fake = 4020002 + ((chr.getJob() / 10 - 40) * 100000);
         } else if (damage < -1 || damage > 60000) {
-            AutobanManager.getInstance().addPoints(c, 1000, 60000, "Taking abnormal amounts of damge from " + monsteridfrom + ": " + damage);
+            AutobanManager.getInstance().addPoints(c, 1000, 60000, "角色傷害異常 怪物: " + monsteridfrom + ": 傷害" + damage);
             return;
         }
         chr.getCheatTracker().checkTakeDamage(damage);
@@ -309,16 +309,30 @@ public class PlayerHandler {
                         break;
                     }
                     case 122: {
-                        final ISkill skill = SkillFactory.getSkill(黑騎士.武神防禦);
+                        final ISkill skill = SkillFactory.getSkill(聖騎士.武神防禦);
                         if (chr.getSkillLevel(skill) > 0) {
                             damage = (int) ((skill.getEffect(chr.getSkillLevel(skill)).getX() / 1000.0) * damage);
                         }
                         break;
                     }
                     case 132: {
-                        final ISkill skill = SkillFactory.getSkill(1320005);
+                        final ISkill skill = SkillFactory.getSkill(黑騎士.武神防禦);
                         if (chr.getSkillLevel(skill) > 0) {
                             damage = (int) ((skill.getEffect(chr.getSkillLevel(skill)).getX() / 1000.0) * damage);
+                        }
+                        break;
+                    }
+                    case 2112: {
+                        final ISkill skill = SkillFactory.getSkill(狂狼勇士4.防禦戰術);
+                        final ISkill skill1 = SkillFactory.getSkill(狂狼勇士4.宙斯之盾);
+                        Integer buff = chr.getBuffedValue(MapleBuffStat.COMBO_BARRIER);
+                        if (chr.getSkillLevel(skill) > 0) {
+                            damage = (int) ((skill.getEffect(chr.getSkillLevel(skill)).getX() / 1000.0) * damage);
+                        }
+                        if (buff != null) {
+                            if (chr.getSkillLevel(skill1) > 0) {
+                                damage = (int) ((skill1.getEffect(chr.getSkillLevel(skill1)).getX() / 1000.0) * damage);
+                            }
                         }
                         break;
                     }
@@ -452,9 +466,9 @@ public class PlayerHandler {
         if ((chr == null) || (chr.getMap() == null)) {
             return;
         }
-        
+
         final ISkill skill = SkillFactory.getSkill(sourceid);
-        
+
         if (skill.isChargeSkill()) {
             chr.setKeyDownSkill_Time(0);
             chr.getMap().broadcastMessage(chr, MaplePacketCreator.skillCancel(chr, sourceid), false);
