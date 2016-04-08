@@ -4520,11 +4520,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         saveCSPoints();
 
     }
-    
+
     /*
      * @param type 1 = GASH點數 2 = 楓葉點數
      */
-
     public int getCSPoints(int type) {
         switch (type) {
             case 1:

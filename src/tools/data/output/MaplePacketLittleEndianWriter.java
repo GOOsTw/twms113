@@ -65,7 +65,7 @@ public class MaplePacketLittleEndianWriter extends GenericLittleEndianWriter {
     public final MaplePacket getPacket() {
         if (debugMode) {
             MaplePacket packet = new ByteArrayMaplePacket(baos.toByteArray());
-            System.out.println("Packet to be sent:\n" + packet.toString());
+            System.out.println("[Send] 已處理:\n" + packet.toString());
         }
         return new ByteArrayMaplePacket(baos.toByteArray());
     }

@@ -96,8 +96,8 @@ public class MapleCharacterUtil {
         }
         return -1;
     }
-    
-     public static final int getAccIdByName(final String name) {
+
+    public static final int getAccIdByName(final String name) {
         Connection con = DatabaseConnection.getConnection();
 
         final int id;
@@ -116,7 +116,7 @@ public class MapleCharacterUtil {
             System.err.println("error 'getIdByName' " + e);
         }
         return -1;
-     }
+    }
 
     public static final boolean PromptPoll(final int accountid) {
         PreparedStatement ps = null;
@@ -290,6 +290,23 @@ public class MapleCharacterUtil {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     item = rs.getInt("size");
+                }
+            }
+
+        } catch (SQLException ex) {
+            FilePrinter.printError("MapleCharacterUtil.txt", ex);
+        }
+        return item;
+    }
+
+    public static int getNXCodeTime(String code) {
+        int item = -1;
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement ps = con.prepareStatement("SELECT `time` FROM nxcode WHERE code = ?")) {
+            ps.setString(1, code);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    item = rs.getInt("time");
                 }
             }
 

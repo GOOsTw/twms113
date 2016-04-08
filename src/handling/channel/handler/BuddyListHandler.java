@@ -23,7 +23,6 @@ package handling.channel.handler;
 import static client.BuddyList.BuddyOperation.ADDED;
 import static client.BuddyList.BuddyOperation.DELETED;
 
-
 import client.BuddyList;
 import client.BuddyEntry;
 import client.MapleCharacter;
@@ -55,6 +54,12 @@ public class BuddyListHandler {
         final BuddyList buddyList = player.getBuddylist();
 
         switch (mode) {
+            case 0: {
+                final int unknow1 = slea.readInt();
+                final int unknow2 = slea.readInt();
+                client.sendPacket(MaplePacketCreator.updateBuddylist(player.getBuddylist().getBuddies()));
+                break;
+            }
             case 1: {
                 final String buddyName = slea.readMapleAsciiString();
                 final String buddyGroup = slea.readMapleAsciiString();
@@ -132,7 +137,7 @@ public class BuddyListHandler {
                     if (buddyCount == -1) {
                         throw new RuntimeException("Result set expected");
                     } else {
-                        if (buddyCount >= BuddyList.getBuddyCapacity(buddy.getCharacterId()) ) {
+                        if (buddyCount >= BuddyList.getBuddyCapacity(buddy.getCharacterId())) {
                             reqRes = BuddyAddResult.BUDDYLIST_FULL;
                         }
                     }
@@ -145,7 +150,7 @@ public class BuddyListHandler {
                 if (reqRes == BuddyAddResult.BUDDYLIST_FULL) {
 
                     client.sendPacket(MaplePacketCreator.buddylistMessage((byte) 12));
-                    
+
                     break;
 
                 } else {
@@ -211,6 +216,12 @@ public class BuddyListHandler {
                 buddyList.remove(buddyCharId);
                 client.sendPacket(MaplePacketCreator.updateBuddylist(player.getBuddylist().getBuddies()));
                 nextPendingRequest(client);
+                break;
+            }
+            case 82: {
+                final int unknow1 = slea.readShort();
+                final int unknow2 = slea.readByte();
+                client.sendPacket(MaplePacketCreator.updateBuddylist(player.getBuddylist().getBuddies()));
                 break;
             }
             default: {

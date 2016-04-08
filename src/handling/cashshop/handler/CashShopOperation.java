@@ -121,10 +121,8 @@ public class CashShopOperation {
         if (c.getSecondPassword() != null) {
             if (secondPassword == null) { // 確認是否外掛
                 c.getPlayer().dropMessage(1, "請輸入密碼。");
-            } else {
-                if (!c.check2ndPassword(secondPassword)) { // 第二密碼錯誤
-                    c.getPlayer().dropMessage(1, "密碼錯誤。");
-                }
+            } else if (!c.check2ndPassword(secondPassword)) { // 第二密碼錯誤
+                c.getPlayer().dropMessage(1, "密碼錯誤。");
             }
         }
         refreshCashShop(c);
@@ -132,7 +130,7 @@ public class CashShopOperation {
 
     public static void CouponCode(final String code, final MapleClient c) {
         boolean validcode = false;
-        int type = -1, item = -1, size = -1;
+        int type = -1, item = -1, size = -1, time = -1;
 
         validcode = MapleCharacterUtil.getNXCodeValid(code.toUpperCase(), validcode);
 
@@ -140,6 +138,7 @@ public class CashShopOperation {
             type = MapleCharacterUtil.getNXCodeType(code);
             item = MapleCharacterUtil.getNXCodeItem(code);
             size = MapleCharacterUtil.getNXCodeSize(code);
+            time = MapleCharacterUtil.getNXCodeTime(code);
             if (type != 4) {
                 try {
                     MapleCharacterUtil.setNXCodeUsed(c.getPlayer().getName(), code);
@@ -158,7 +157,7 @@ public class CashShopOperation {
              * Type 4: 楓幣
              */
             int maplePoints = 0, mesos = 0, as = 0;
-            String cc = "";
+            String cc = "", tt = "";
             switch (type) {
                 case 1:
                     c.getPlayer().modifyCSPoints(1, item, false);
@@ -171,7 +170,7 @@ public class CashShopOperation {
                     cc = "楓葉點數";
                     break;
                 case 3:
-                    MapleInventoryManipulator.addById(c, item, (short) size, "優待卷禮品.", null, -1);
+                    MapleInventoryManipulator.addById(c, item, (short) size, "優待卷禮品.", null, time);
                     as = 1;
                     break;
                 case 4:
@@ -180,9 +179,15 @@ public class CashShopOperation {
                     cc = "楓幣";
                     break;
             }
+            if (time == -1) {
+                tt = "永久";
+                as = 2;
+            }
             if (as == 1) {
                 //c.sendPacket(MTSCSPacket.showCouponRedeemedItem(itemz, mesos, maplePoints, c));
-                c.getPlayer().dropMessage(1, "已成功使用優待卷獲得" + MapleItemInformationProvider.getInstance().getName(item) + " x" + size + "。");
+                c.getPlayer().dropMessage(1, "已成功使用優待卷獲得" + MapleItemInformationProvider.getInstance().getName(item) + time + "天 x" + size + "。");
+            } else if (as == 2) {
+                c.getPlayer().dropMessage(1, "已成功使用優待卷獲得" + MapleItemInformationProvider.getInstance().getName(item) + "永久 x" + size + "。");
             } else {
                 c.getPlayer().dropMessage(1, "已成功使用優待卷獲得" + item + cc);
             }
@@ -503,12 +508,10 @@ public class CashShopOperation {
                         c.getPlayer().dropMessage(1, "請輸入密碼。");
                         refreshCashShop(c);
                         return;
-                    } else {
-                        if (!c.check2ndPassword(secondPassword)) { // 第二密碼錯誤
-                            c.getPlayer().dropMessage(1, "密碼錯誤。");
-                            refreshCashShop(c);
-                            return;
-                        }
+                    } else if (!c.check2ndPassword(secondPassword)) { // 第二密碼錯誤
+                        c.getPlayer().dropMessage(1, "密碼錯誤。");
+                        refreshCashShop(c);
+                        return;
                     }
                     for (int i = 0; i < chr.getCashInventory().getInventory().size(); i++) {
                         IItem temp = chr.getCashInventory().getInventory().get(i);
@@ -535,7 +538,7 @@ public class CashShopOperation {
 
             case 29: // crush ring
             case 35: { // friendRing
-                 /*
+                /*
                  E6 00 
                  23 
                  08 00 5D 31 31 31 31 31 31 31 
@@ -637,7 +640,7 @@ public class CashShopOperation {
                 refreshCashShop(c);
                 break;
             }
-            
+
             default:
                 c.sendPacket(MTSCSPacket.sendCSFail(0));
                 refreshCashShop(c);
