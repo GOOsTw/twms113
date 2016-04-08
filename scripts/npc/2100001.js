@@ -136,27 +136,29 @@ function action(mode, type, selection) {
         var complete = true;
 
         if (cm.getMeso() < cost * qty) {
-            complete = false;
-            cm.sendOk("Cash only, no credit.")
+            cm.sendOk("糟糕...你的錢好像不夠哦...")
+            cm.dispose();
+            return;
         } else {
             if (mats instanceof Array) {
-                for (var i = 0; complete && i < mats.length; i++) {
-                    if (matQty[i] * qty == 1) {
-                        complete = cm.haveItem(mats[i]);
-                    } else {
-                        complete = cm.haveItem(mats[i], matQty[i] * qty);
+
+                for (var i = 0; complete && i < mats.length; i++)
+                {
+                    if (!cm.haveItem(mats[i], matQty[i] * qty))
+                    {
+                        complete = false;
                     }
                 }
             } else {
-                complete = cm.haveItem(mats, matQty * qty);
+                if (!cm.haveItem(mats, matQty * qty)) {
+                    complete = false;
+                }
             }
         }
 
         if (!complete)
             cm.sendOk("我不能接受的替代品。如果你沒有什麼我需要的東西的話，我就不能來幫你.");
-        else if(cm.canHold()) {
-            cm.sendOk("請確認道具欄位是否有空間");
-        } else {
+        else {
             if (mats instanceof Array) {
                 for (var i = 0; i < mats.length; i++) {
                     cm.gainItem(mats[i], -matQty[i] * qty);
