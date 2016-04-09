@@ -1,6 +1,6 @@
 ﻿
 /*
-	Crystal of Roots - Leafre Cave of life
+ Crystal of Roots - Leafre Cave of life
  */
 
 var status = -1;
@@ -20,19 +20,16 @@ function action(mode, type, selection) {
             status--;
         }
         if (status == 0) {
-            if (cm.getMapId() == 240050400) {
-                cm.sendYesNo("你想離開這裡到 #m240040700# 嗎?");
-            } else {
-                cm.sendYesNo("你想離開這裡到 #m240040700# 嗎?");
-            }
+            cm.sendYesNo("你想離開這裡到 #m240040700# 嗎?");
         } else if (status == 1) {
-            if (cm.getMapId() == 240050400) {
-                cm.warp(240040700, 0);
-                cm.dispose();
-            } else {
-                cm.warp(240040700, 0);
-                cm.dispose();
-            }
+            cm.removeAll(4001087);
+            cm.removeAll(4001088);
+            cm.removeAll(4001089);
+            cm.removeAll(4001090);
+            cm.removeAll(4001091);
+            cm.removeAll(4001092);
+			cm.removeAll(4001093);
+            cm.warp(240040700, 0);
             cm.dispose();
         }
     }
