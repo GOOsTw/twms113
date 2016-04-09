@@ -36,14 +36,6 @@ function action(mode, type, selection) {
         if (morph == 2210003 || (cm.isQuestFinished(7301) && time + (6 * 3600000) < cm.getCurrentTime())) {
             cm.cancelItem(2210003);
             cm.warp(240050000, 0);
-
-            /*	    if (cm.haveItem(4031454)) { // Paladin
-            		cm.gainItem(4031454, -1);
-            		cm.gainItem(4031455, 1);
-            	    }*/
-            /*	    if (cm.getQuestStatus(6169) == 1) { // Temporary
-            		cm.gainItem(4031461, 1);
-            	    }*/
         } else {
             cm.warp(240040600, "st00");
         }
