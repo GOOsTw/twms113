@@ -21,11 +21,7 @@ function start() {
         cm.dispose();
         return;
     }
-    if (cm.getBossLog("熊獅王次數") == yaoshi) {
-        cm.sendOk("很抱歉每天只能打兩次..");
-        cm.dispose();
-        return;
-    }
+
     var em = cm.getEventManager("ScarTarBattle");
 
     if (em == null) {
@@ -46,7 +42,7 @@ function start() {
         var squadAvailability = cm.getSquadAvailability("ScarTar");
         if (squadAvailability == -1) {
             status = 0;
-            cm.sendYesNo("現在有人正在挑戰當中，您可以先申請遠征隊排隊，你想成為遠征隊隊長嗎？");
+            cm.sendYesNo("你想成為遠征隊隊長嗎？");
             if (cm.getBossLog("熊獅王次數") == yaoshi) {
                 cm.sendOk("很抱歉每天只能打兩次..");
                 cm.dispose();
@@ -118,6 +114,7 @@ function action(mode, type, selection) {
             if (mode == 1) {
                 if (cm.registerSquad("ScarTar", 5, " 已經成為了遠征隊隊長。如果你想加入遠征隊，請重新打開對話申請加入遠征隊。")) {
                     cm.sendOk("你已經成為了遠征隊隊長。接下來的5分鐘，請等待隊員們的申請。");
+                    cm.setBossLog("熊獅王次數");
                 } else {
                     cm.sendOk("未知錯誤.");
                 }
@@ -127,8 +124,8 @@ function action(mode, type, selection) {
         case 1:
             if (mode == 1) {
                 cm.warp(551030100, 0);
+                cm.dispose();
             }
-            cm.dispose();
             break;
         case 2:
             if (!cm.reAdd("ScarTarBattle", "ScarTar")) {
@@ -140,8 +137,14 @@ function action(mode, type, selection) {
             if (mode == 1) {
                 var squd = cm.getSquad("ScarTar");
                 if (squd != null && !squd.getAllNextPlayer().contains(cm.getPlayer().getName())) {
+                    if (cm.getBossLog("熊獅王次數") == yaoshi) {
+                        cm.sendOk("很抱歉每天只能打兩次..");
+                        cm.dispose();
+                        return;
+                    }
                     squd.setNextPlayer(cm.getPlayer().getName());
                     cm.sendOk("你已經成功登記為下一組..");
+                    cm.setBossLog("熊獅王次數");
                 }
             }
             cm.dispose();
@@ -152,6 +155,11 @@ function action(mode, type, selection) {
                 if (ba == 2) {
                     cm.sendOk("遠征隊員已經達到30名，請稍後再試。");
                 } else if (ba == 1 && !cm.getPlayer().isGM()) {
+                    if (cm.getBossLog("熊獅王次數") == yaoshi) {
+                        cm.sendOk("很抱歉每天只能打兩次..");
+                        cm.dispose();
+                        return;
+                    }
                     cm.setBossLog("熊獅王次數");
                     cm.sendOk("申請加入遠征隊成功，請等候隊長指示。");
                 } else {
@@ -194,7 +202,6 @@ function action(mode, type, selection) {
                     if (cm.getSquad("ScarTar") != null) {
                         var dd = cm.getEventManager("ScarTarBattle");
                         dd.startInstance(cm.getSquad("ScarTar"), cm.getMap(), 160108);
-                        cm.setBossLog("熊獅王次數");
                     } else {
                         cm.sendOk("由於未知的錯誤，操作失敗。");
                     }

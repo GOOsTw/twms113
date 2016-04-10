@@ -52,7 +52,7 @@ function action(mode, type, selection) {
 				cm.safeDispose();
 			}
 			} else {
-				cm.sendNext("請檢查你的裝備欄是否滿了。");
+				cm.sendNext("請檢查你的裝備欄。");
 				cm.safeDispose();
 			}
         } else {

@@ -1,4 +1,4 @@
-function init() {}
+﻿function init() {}
 
 function monsterValue(eim, mobId) {
     return 1;

@@ -2189,6 +2189,8 @@ public final class MapleMap {
             case 280030001:
                 zz = MapleSquadType.chaoszak;
                 break;
+            case 240060000:
+            case 240060100:
             case 240060200:
                 zz = MapleSquadType.horntail;
                 break;
@@ -2255,6 +2257,8 @@ public final class MapleMap {
             case 280030000:
                 em = "ZakumBattle";
                 break;
+            case 240060000:
+            case 240060100:
             case 240060200:
                 em = "HorntailBattle";
                 break;

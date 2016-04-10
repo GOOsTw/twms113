@@ -11,8 +11,8 @@ function start() {
         cm.dispose();
         return;
     }
-    if (cm.getPlayer().getClient().getChannel() != 1) {
-        cm.sendOk("闇黑龍王只有在頻道 1可以挑戰");
+    if (cm.getPlayer().getClient().getChannel() != 13 && cm.getPlayer().getClient().getChannel() != 14) {
+        cm.sendOk("闇黑龍王只有在頻道 13 或 14 才可以挑戰");
         cm.dispose();
         return;
     }
@@ -54,7 +54,7 @@ function start() {
                 }
             } else { // Is leader
                 status = 10;
-                cm.sendSimple("你要做什麼? \r\n#b#L0#查看遠征隊名單#l \r\n#b#L1#踢除隊員#l \r\n#b#L2#修改遠征隊清單#l \r\n#r#L3#進入地圖#l");
+                cm.sendSimple("你現在想做什麼？\r\n#b#L0#查看遠征隊成員。#l \r\n#b#L1#管理遠征隊成員。#l \r\n#b#L2#編輯限制列表。#l \r\n#r#L3#進入地圖。#l");
                 // TODO viewing!
             }
         } else {

@@ -15,26 +15,20 @@ function setup() {
 
     var map = eim.setInstanceMap(240050100);
     map.resetFully();
-    //    map.getPortal("next00").setScriptName("lpq1");
     map = eim.setInstanceMap(240050101);
     map.resetFully();
-    //    map.getPortal("next00").setScriptName("lpq2");
     eim.setInstanceMap(922010201).resetFully();
     map = eim.setInstanceMap(240050102);
     map.resetFully();
-    //    map.getPortal("next00").setScriptName("lpq3");
     map = eim.setInstanceMap(240050103);
     map.resetFully();
-    //    map.getPortal("next00").setScriptName("lpq4");
     eim.setInstanceMap(240050104).resetFully();
     eim.setInstanceMap(240050105).resetFully();
     eim.setInstanceMap(240050200).resetFully();
     map = eim.setInstanceMap(240050300);
     map.resetFully();
-    //    map.getPortal("next00").setScriptName("lpq7");
     map = eim.setInstanceMap(240050310);
     map.resetFully();
-    //    map.getPortal("next00").setScriptName("lpq8");
 
     eim.startEventTimer(60 * 1000 * 60);
 

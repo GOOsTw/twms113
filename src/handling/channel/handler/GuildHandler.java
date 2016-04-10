@@ -25,6 +25,7 @@ import java.util.Iterator;
 import client.MapleCharacter;
 import client.MapleClient;
 import handling.MaplePacket;
+import handling.channel.ChannelServer;
 import handling.world.World;
 import handling.world.guild.*;
 import java.util.LinkedList;
@@ -251,18 +252,19 @@ public class GuildHandler {
             case EXPEL: {
                 int cid = slea.readInt();
                 String name = slea.readMapleAsciiString();
-                MapleCharacter victim;
-                victim = c.getChannelServer().getPlayerStorage().getCharacterByName(name);
-
-                if (c.getPlayer().getGuildRank() > 2 || c.getPlayer().getGuildId() <= 0) {
-                    return;
-                }
-                if (victim.getMapId() == 990001000) {
-                    c.getPlayer().dropMessage(5, "當前無法驅除" + victim.getName() + "工會。");
-                    return;
-                }
+                MapleCharacter victim = null;
+                int ch = World.Find.findChannel(name);
+                if (ch >= 1) {
+                    victim = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(name);
+                    if (victim != null) {
+                        if (c.getPlayer().getGuildRank() > 2 || c.getPlayer().getGuildId() <= 0) {
+                            c.getPlayer().dropMessage(5, "當前無法驅除" + victim.getName() + "工會。");
+                            return;
+                        }
+                    }
                 World.Guild.expelMember(c.getPlayer().getMGC(), name, cid);
                 break;
+            }
             }
             case CHANGE_RANK_TITLE: {
                 if (c.getPlayer().getGuildId() <= 0 || c.getPlayer().getGuildRank() != 1) {
