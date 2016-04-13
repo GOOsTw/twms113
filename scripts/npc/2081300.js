@@ -32,15 +32,15 @@ function action(mode, type, selection) {
         } else {
             if (cm.getQuestStatus(6924) == 2) {
                 pass = true;
-                if (cm.getJob() == 311) {
-                    cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為箭神.#l\r\n#b#L1#像我想一下...#l");
-                } else if (cm.getJob() == 321) {
-                    cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為神射手.#l\r\n#b#L1#像我想一下...#l");
-                } else {
-                    cm.sendOk("好吧假如你想要4轉麻煩再來找我");
-                    cm.dispose();
-                    return;
-                }
+            }
+            if (cm.getJob() == 311) {
+                cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為箭神.#l\r\n#b#L1#像我想一下...#l");
+            } else if (cm.getJob() == 321) {
+                cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為神射手.#l\r\n#b#L1#像我想一下...#l");
+            } else {
+                cm.sendOk("好吧假如你想要4轉麻煩再來找我");
+                cm.dispose();
+                return;
             }
         }
     } else if (status == 1) {
@@ -53,18 +53,21 @@ function action(mode, type, selection) {
             cm.sendOk("你的技能點數還沒點完..");
             cm.dispose();
             return;
-        } else if (pass) {
-            status = 1;
+        }
+        if (pass) {
             cm.sendNext("即將四轉。");
-        } else if (!cm.haveItem(4031860) || !cm.haveItem(4031861)) {
-            cm.sendOk("我需要#t4031860# x1 #t4031861# x1。");
-            cm.dispose();
-            return;
+        } else {
+            if (!cm.haveItem(4031860) || !cm.haveItem(4031861)) {
+                cm.sendOk("我需要#t4031860# x1 #t4031861# x1。");
+                cm.dispose();
+                return;
+            } else {
+                cm.sendNext("即將四轉。");
+            }
         }
     } else if (status == 2) {
         if (cm.canHold(2280003)) {
             cm.gainItem(2280003, 1);
-
             if (cm.getJob() == 311) {
                 cm.changeJob(312);
                 cm.teachSkill(3120005, 0, 10);
@@ -89,11 +92,7 @@ function action(mode, type, selection) {
         }
 
     } else if (status == 3) {
-        if (cm.getJob() == 312) {
-            cm.sendNext("不要忘記了這一切都取決於你練了多少.");
-        } else {
-            cm.sendNext("不要忘記了這一切都取決於你練了多少.");
-        }
+        cm.sendNext("不要忘記了這一切都取決於你練了多少.");
     } else if (status == 4) {
         cm.sendNextPrev("我已你為榮.");
         cm.dispose();

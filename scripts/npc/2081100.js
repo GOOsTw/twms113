@@ -32,17 +32,17 @@ function action(mode, type, selection) {
         } else {
             if (cm.getQuestStatus(6904) == 2) {
                 pass = true;
-                if (cm.getJob() == 111) {
-                    cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為英雄.#l\r\n#b#L1#像我想一下...#l");
-                } else if (cm.getJob() == 121) {
-                    cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為聖騎士.#l\r\n#b#L1#像我想一下...#l");
-                } else if (cm.getJob() == 131) {
-                    cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為黑騎士.#l\r\n#b#L1#像我想一下...#l");
-                } else {
-                    cm.sendOk("好吧假如你想要4轉麻煩再來找我");
-                    cm.dispose();
-                    return;
-                }
+            }
+            if (cm.getJob() == 111) {
+                cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為英雄.#l\r\n#b#L1#像我想一下...#l");
+            } else if (cm.getJob() == 121) {
+                cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為聖騎士.#l\r\n#b#L1#像我想一下...#l");
+            } else if (cm.getJob() == 131) {
+                cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為黑騎士.#l\r\n#b#L1#像我想一下...#l");
+            } else {
+                cm.sendOk("好吧假如你想要4轉麻煩再來找我");
+                cm.dispose();
+                return;
             }
         }
     } else if (status == 1) {
@@ -55,13 +55,17 @@ function action(mode, type, selection) {
             cm.sendOk("你的技能點數還沒點完..");
             cm.dispose();
             return;
-        } else if (pass) {
-            status = 1;
+        }
+        if (pass) {
             cm.sendNext("即將四轉。");
-        } else if (!cm.haveItem(4031860) || !cm.haveItem(4031861)) {
-            cm.sendOk("我需要#t4031860# x1 #t4031861# x1。");
-            cm.dispose();
-            return;
+        } else {
+            if (!cm.haveItem(4031860) || !cm.haveItem(4031861)) {
+                cm.sendOk("我需要#t4031860# x1 #t4031861# x1。");
+                cm.dispose();
+                return;
+            } else {
+                cm.sendNext("即將四轉。");
+            }
         }
     } else if (status == 2) {
         if (cm.canHold(2280003)) {
@@ -90,14 +94,17 @@ function action(mode, type, selection) {
                 cm.gainItem(4031860, -1);
                 cm.gainItem(4031861, -1);
                 cm.sendNext("恭喜你轉職為 #b黑騎士#k.我送你一些神秘小禮物^^");
-            } else {
-                cm.sendOk("你沒有多的欄位請清空再來嘗試一次!");
-                cm.dispose();
-                return;
             }
+        } else {
+            cm.sendOk("你沒有多的欄位請清空再來嘗試一次!");
+            cm.dispose();
+            return;
         }
+
     } else if (status == 3) {
-        cm.sendNextPrev("不要忘記了這一切都取決於你練了多少.");
+        cm.sendNext("不要忘記了這一切都取決於你練了多少.");
+    } else if (status == 4) {
+        cm.sendNextPrev("我已你為榮.");
         cm.dispose();
     }
 }
