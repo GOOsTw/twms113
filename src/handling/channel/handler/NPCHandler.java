@@ -285,6 +285,7 @@ public class NPCHandler {
                     storage.setMeso(storageMesos - meso);
                     storage.saveToDB();
                     chr.gainMeso(meso, false, true, false);
+                    chr.saveToDB(false, false);
                 } else {
                     AutobanManager.getInstance().addPoints(c, 1000, 0, "Trying to store or take out unavailable amount of mesos (" + meso + "/" + storage.getMeso() + "/" + c.getPlayer().getMeso() + ")");
                     return;
@@ -309,7 +310,7 @@ public class NPCHandler {
 
         final NPCConversationManager cm = NPCScriptManager.getInstance().getCM(c);
 
-        if (cm == null || c.getPlayer().getConversation() == 0 || cm.getLastMsg() != lastMsg) {
+        if (c == null || c.getPlayer() == null || cm == null || c.getPlayer().getConversation() == 0 || cm.getLastMsg() != lastMsg) {
             return;
         }
         cm.setLastMsg((byte) -1);

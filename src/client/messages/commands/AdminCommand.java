@@ -115,19 +115,21 @@ public class AdminCommand {
         }
 
     }
-    
+
     public static class 聊天紀錄存檔 extends logChat {
-         @Override
+
+        @Override
         public String getMessage() {
             return new StringBuilder().append("!聊天紀錄存檔 - 聊天紀錄存檔").toString();
         }
     }
-    
+
     public static class logChat extends CommandExecute {
-         @Override
+
+        @Override
         public boolean execute(MapleClient c, String splitted[]) {
             ServerConfig.setLogChat(!ServerConfig.isLogChat());
-            c.getPlayer().dropMessage("聊天紀錄存檔已" + ( ServerConfig.isLogChat() ? "開啟" : "關閉"));
+            c.getPlayer().dropMessage("聊天紀錄存檔已" + (ServerConfig.isLogChat() ? "開啟" : "關閉"));
             return true;
         }
 
@@ -189,6 +191,8 @@ public class AdminCommand {
             }
             minutesLeft = Integer.parseInt(splitted[1]);
             c.getPlayer().dropMessage(6, "伺服器將在 " + minutesLeft + "分鐘後關閉. 請盡速關閉精靈商人 並下線.");
+            World.isShutDown = true;
+            c.getPlayer().dropMessage(6, "已經限制玩家使用精靈商人。");
             if (ts == null && (t == null || !t.isAlive())) {
                 t = new Thread(ShutdownServer.getInstance());
                 ts = EventTimer.getInstance().register(new Runnable() {

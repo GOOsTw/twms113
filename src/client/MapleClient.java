@@ -51,6 +51,7 @@ import handling.world.World;
 import handling.world.family.MapleFamilyCharacter;
 import handling.world.guild.MapleGuildCharacter;
 import java.io.UnsupportedEncodingException;
+import static java.lang.Thread.sleep;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -98,6 +99,7 @@ public class MapleClient {
     private transient long lastPong = 0, lastPing = 0;
     private boolean monitored = false, receiving = true;
     private boolean gm;
+
     private byte bannedReason = 1, gender = -1;
     public transient short loginAttempt = 0;
     private final transient List<Integer> allowedChar = new LinkedList<>();
@@ -440,7 +442,7 @@ public class MapleClient {
                         final int banned = rs.getInt("banned");
                         final String passhash = rs.getString("password");
                         final String salt = rs.getString("salt");
-
+                        final String oldSession = rs.getString("SessionIP");
                         accountId = rs.getInt("id");
                         mac = rs.getString("macs");
                         secondPassword = rs.getString("2ndpassword");
@@ -461,11 +463,15 @@ public class MapleClient {
 
                             boolean updatePasswordHash = false;
                             // Check if the passwords are correct here. :B
-                            if (password.equalsIgnoreCase("fixlogged")) {
-                                loginok = 7;
-                                ChannelServer.forceRemovePlayerByAccId(accountId);
-                                this.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, this.getSessionIPAddress());
-                                this.sendPacket(MaplePacketCreator.serverNotice(1, "帳號解卡成功,請重新登入!"));
+                            if (passhash == null || passhash.isEmpty()) {
+                                //match by sessionIP
+                                if (oldSession != null && !oldSession.isEmpty()) {
+                                    loggedIn = getSessionIPAddress().equals(oldSession);
+                                    loginok = loggedIn ? 0 : 4;
+                                } else {
+                                    loginok = 4;
+                                    loggedIn = false;
+                                }
                             } else if (LoginCryptoLegacy.isLegacyPassword(passhash) && LoginCryptoLegacy.checkPassword(password, passhash)) {
                                 // Check if a password upgrade is needed.
                                 loginok = 0;
@@ -493,10 +499,51 @@ public class MapleClient {
                                 }
                             }
                             if (loginstate > MapleClient.LOGIN_NOTLOGGEDIN) { // already loggedin
-                                loggedIn = false;
-                                loginok = 7;
+                                if (loginok != 0) {
+                                    loggedIn = false;
+                                    loginok = 7;
+                                } else {//卡號解卡處理
+                                    sendPacket(MaplePacketCreator.serverNotice(1, "解卡成功。"));
+                                    boolean unLocked = false;
+                                    for (final MapleClient c : World.Client.getClients()) {
+                                        if (c == this) {
+                                            continue;
+                                        }
+                                        if (c.getAccID() == accountId) {
+                                            if (!c.getSession().isSecured()) {
+                                                List<String> charName = c.loadCharacterNames(c.getWorld());
+                                                for (final String cha : charName) {
+                                                    MapleCharacter chr = CashShopServer.getPlayerStorage().getCharacterByName(cha);
+                                                    if (chr != null) {
+                                                        CashShopServer.getPlayerStorage().deregisterPlayer(chr);
+                                                        break;
+                                                    }
+                                                }
+                                                for (ChannelServer cs : ChannelServer.getAllInstances()) {
+                                                    for (final String cha : charName) {
+                                                        MapleCharacter chr = cs.getPlayerStorage().getCharacterByName(cha);
+                                                        if (chr != null) {
+                                                            cs.removePlayer(chr);
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                break;
+                                            }
+                                            c.unLockDisconnect();
+                                            unLocked = true;
+                                        }
+                                    }
+                                    if (!unLocked) {
+                                        try (PreparedStatement pss = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ?")) {
+                                            pss.setString(1, accountName);
+                                            pss.executeUpdate();
+                                            pss.close();
+                                        } catch (SQLException se) {
+                                        }
+                                    }
+                                }
                             }
-
                         }
                     }
                 }
@@ -505,6 +552,27 @@ public class MapleClient {
             System.err.println("ERROR" + e);
         }
         return loginok;
+    }
+
+    public final void unLockDisconnect() {
+        sendPacket(MaplePacketCreator.serverNotice(1, "當前賬號在別處登入\r\n若不是你本人操作請及時更改密碼。"));
+        disconnect(serverTransition, getChannel() == -10);
+        final MapleClient client = this;
+        Thread closeSession = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    sleep(3000);
+                } catch (InterruptedException ex) {
+                }
+                client.getSession().close();
+                System.err.println("伺服器主動斷開用戶端連結,調用位置: " + new java.lang.Throwable().getStackTrace()[0]);
+            }
+        };
+        try {
+            closeSession.start();
+        } catch (Exception ex) {
+        }
     }
 
     public void logout() {
@@ -576,7 +644,8 @@ public class MapleClient {
 
             }
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-            Logger.getLogger(MapleClient.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MapleClient.class
+                    .getName()).log(Level.SEVERE, null, ex);
 
         }
     }
@@ -1174,6 +1243,7 @@ public class MapleClient {
 
     public final void setIdleTask(final ScheduledFuture<?> idleTask) {
         this.idleTask = idleTask;
+
     }
 
     protected static final class CharNameAndId {

@@ -28,6 +28,7 @@ import constants.GameConstants;
 import client.MapleClient;
 import client.MapleCharacter;
 import client.inventory.MapleInventoryType;
+import handling.world.World;
 import server.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
 import server.MapleTrade;
@@ -142,11 +143,20 @@ public class PlayerInteractionHandler {
                         if (shop == null || shop.getQuantity() <= 0 || shop.getItemId() != slea.readInt() || c.getPlayer().getMapId() < 910000001 || c.getPlayer().getMapId() > 910000022) {
                             return;
                         }
+                        for (int i = 1; i <= 5; i++) {
+                            chr.dropMessage(1, "使用合約書請詳細閱讀\r\n因精靈商人BUG太多 請玩家使用時請抱著此種心態\r\n1.東西不想要了 2.沒錢拿也沒差\r\n因為很重要所以請閱讀5次");
+                        }
+                        if (World.isShutDown) {
+                            chr.dropMessage(1, "伺服器即將關閉所以不能使用商店.");
+                            c.sendPacket(MaplePacketCreator.enableActions());
+                            return;
+                        }
                         if (createType == 4) {
                             MaplePlayerShop mps = new MaplePlayerShop(chr, shop.getItemId(), desc);
                             chr.setPlayerShop(mps);
                             chr.getMap().addMapObject(mps);
                             c.sendPacket(PlayerShopPacket.getPlayerStore(chr, true));
+
                         } else {
                             final HiredMerchant merch = new HiredMerchant(chr, shop.getItemId(), desc);
                             chr.setPlayerShop(merch);
@@ -166,6 +176,11 @@ public class PlayerInteractionHandler {
                 break;
             }
             case VISIT: {
+                if (World.isShutDown) {
+                    chr.dropMessage(1, "伺服器即將關閉所以不能使用商店.");
+                    c.sendPacket(MaplePacketCreator.enableActions());
+                    return;
+                }
                 if (chr.getTrade() != null && chr.getTrade().getPartner() != null) {
                     MapleTrade.visitTrade(chr, chr.getTrade().getPartner().getChr());
                 } else if (chr.getMap() != null) {
@@ -176,7 +191,6 @@ public class PlayerInteractionHandler {
                     if (object == null) {
                         object = chr.getMap().getMapObject(objectId, MapleMapObjectType.SHOP);
                     }
-
                     if (!(object instanceof IMaplePlayerShop)) {
                         /* 不是商店 */
                         break;
@@ -195,47 +209,38 @@ public class PlayerInteractionHandler {
                             merchant.removeAllVisitors((byte) 18, (byte) 1);
                             chr.setPlayerShop(ips);
                             c.sendPacket(PlayerShopPacket.getHiredMerch(chr, merchant, false));
-                        } else {
-                            /**/
-                            if (!merchant.isOpen() || !merchant.isAvailable()) {
-                                chr.dropMessage(1, "這個商店在整理或者是沒再販賣東西。");
-                            } else {
-                                if (ips.getFreeSlot() == -1) {
-                                    chr.dropMessage(1, "商店人數已經滿了，請稍後再進入。");
-                                } else if (merchant.isInBlackList(chr.getName())) {
-                                    chr.dropMessage(1, "被加入黑名單了，所以不能進入。");
-                                } else {
-                                    chr.setPlayerShop(ips);
-                                    merchant.addVisitor(chr);
-                                    c.sendPacket(PlayerShopPacket.getHiredMerch(chr, merchant, false));
-                                }
-                            }
-                        }
-                    } else {
-                        if (ips instanceof MaplePlayerShop && ((MaplePlayerShop) ips).isBanned(chr.getName())) {
+                        } else /**/ if (!merchant.isOpen() || !merchant.isAvailable()) {
+                            chr.dropMessage(1, "這個商店在整理或者是沒再販賣東西。");
+                        } else if (ips.getFreeSlot() == -1) {
+                            chr.dropMessage(1, "商店人數已經滿了，請稍後再進入。");
+                        } else if (merchant.isInBlackList(chr.getName())) {
                             chr.dropMessage(1, "被加入黑名單了，所以不能進入。");
                         } else {
-                            if (ips.getFreeSlot() < 0 || ips.getVisitorSlot(chr) > -1 || !ips.isOpen() || !ips.isAvailable()) {
-                                c.sendPacket(PlayerShopPacket.getMiniGameFull());
-                            } else {
-                                if (slea.available() > 0 && slea.readByte() > 0) { //a password has been entered
-                                    String pass = slea.readMapleAsciiString();
-                                    if (!pass.equals(ips.getPassword())) {
-                                        c.getPlayer().dropMessage(1, "你輸入的密碼錯誤,請重新再試一次.");
-                                        return;
-                                    }
-                                } else if (ips.getPassword().length() > 0) {
-                                    c.getPlayer().dropMessage(1, "你輸入的密碼錯誤,請重新再試一次.");
-                                    return;
-                                }
-                                chr.setPlayerShop(ips);
-                                ips.addVisitor(chr);
-                                if (ips instanceof MapleMiniGame) {
-                                    ((MapleMiniGame) ips).send(c);
-                                } else {
-                                    c.sendPacket(PlayerShopPacket.getPlayerStore(chr, false));
-                                }
+                            chr.setPlayerShop(ips);
+                            merchant.addVisitor(chr);
+                            c.sendPacket(PlayerShopPacket.getHiredMerch(chr, merchant, false));
+                        }
+                    } else if (ips instanceof MaplePlayerShop && ((MaplePlayerShop) ips).isBanned(chr.getName())) {
+                        chr.dropMessage(1, "被加入黑名單了，所以不能進入。");
+                    } else if (ips.getFreeSlot() < 0 || ips.getVisitorSlot(chr) > -1 || !ips.isOpen() || !ips.isAvailable()) {
+                        c.sendPacket(PlayerShopPacket.getMiniGameFull());
+                    } else {
+                        if (slea.available() > 0 && slea.readByte() > 0) { //a password has been entered
+                            String pass = slea.readMapleAsciiString();
+                            if (!pass.equals(ips.getPassword())) {
+                                c.getPlayer().dropMessage(1, "你輸入的密碼錯誤,請重新再試一次.");
+                                return;
                             }
+                        } else if (ips.getPassword().length() > 0) {
+                            c.getPlayer().dropMessage(1, "你輸入的密碼錯誤,請重新再試一次.");
+                            return;
+                        }
+                        chr.setPlayerShop(ips);
+                        ips.addVisitor(chr);
+                        if (ips instanceof MapleMiniGame) {
+                            ((MapleMiniGame) ips).send(c);
+                        } else {
+                            c.sendPacket(PlayerShopPacket.getPlayerStore(chr, false));
                         }
                     }
 
@@ -288,8 +293,8 @@ public class PlayerInteractionHandler {
                     break;
                 }
                 if (chr.getMap().allowPersonalShop()) {
-                    if (c.getChannelServer().isShutdown()) {
-                        chr.dropMessage(1, "伺服器即將關閉所以不能整理商店.");
+                    if (World.isShutDown) {
+                        chr.dropMessage(1, "伺服器即將關閉所以不能使用商店.");
                         c.sendPacket(MaplePacketCreator.enableActions());
                         shop.closeShop(shop.getShopType() == 1, false);
                         return;

@@ -307,7 +307,7 @@ public class ChannelServer implements Serializable {
     public final boolean isShutdown() {
         return shutdown;
     }
-
+    
     public final int getLoadedMaps() {
         return mapFactory.getLoadedMaps();
     }

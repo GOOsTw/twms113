@@ -26,7 +26,9 @@ import client.inventory.IItem;
 import client.inventory.ItemFlag;
 import client.MapleCharacter;
 import client.MapleClient;
+import constants.GameConstants;
 import server.MapleInventoryManipulator;
+import tools.MaplePacketCreator;
 import tools.packet.PlayerShopPacket;
 
 public class MaplePlayerShop extends AbstractPlayerStore {
@@ -53,11 +55,16 @@ public class MaplePlayerShop extends AbstractPlayerStore {
             }
             final int gainmeso = pItem.price * quantity;
             if (c.getPlayer().getMeso() >= gainmeso) {
+                if (!c.getPlayer().canHold(newItem.getItemId())) {
+                    c.getPlayer().dropMessage(1, "您的背包滿了.");
+                    c.sendPacket(MaplePacketCreator.enableActions());
+                    return;
+                }
                 if (getMCOwner().getMeso() + gainmeso > 0 && MapleInventoryManipulator.checkSpace(c, newItem.getItemId(), newItem.getQuantity(), newItem.getOwner()) && MapleInventoryManipulator.addFromDrop(c, newItem, false)) {
                     pItem.bundles -= quantity;
                     bought.add(new BoughtItem(newItem.getItemId(), quantity, gainmeso, c.getPlayer().getName()));
                     c.getPlayer().gainMeso(-gainmeso, false);
-                    getMCOwner().gainMeso(gainmeso, false);
+                    getMCOwner().gainMeso(gainmeso - GameConstants.EntrustedStoreTax(gainmeso), false);
                     if (pItem.bundles <= 0) {
                         boughtnumber++;
                         if (boughtnumber == items.size()) {
@@ -80,28 +87,30 @@ public class MaplePlayerShop extends AbstractPlayerStore {
     public byte getShopType() {
         return IMaplePlayerShop.PLAYER_SHOP;
     }
-    
+
     @Override
     public void closeShop(boolean saveItems, boolean remove) {
         MapleCharacter owner = getMCOwner();
-        removeAllVisitors(3, 1);
-        getMap().removeMapObject(this);
+        if (owner != null && owner.getClient() != null) {
+            removeAllVisitors(3, 1);
+            getMap().removeMapObject(this);
 
-        for (MaplePlayerShopItem items : getItems()) {
-            if (items.bundles > 0) {
-                IItem newItem = items.item.copy();
-                newItem.setQuantity((short) (items.bundles * newItem.getQuantity()));
-                if (MapleInventoryManipulator.addFromDrop(owner.getClient(), newItem, false)) {
-                    items.bundles = 0;
-                } else {
-                    saveItems(); //O_o
-                    break;
+            for (MaplePlayerShopItem items : getItems()) {
+                if (items.bundles > 0) {
+                    IItem newItem = items.item.copy();
+                    newItem.setQuantity((short) (items.bundles * newItem.getQuantity()));
+                    if (MapleInventoryManipulator.addFromDrop(owner.getClient(), newItem, false)) {
+                        items.bundles = 0;
+                    } else {
+                        saveItems(); //O_o
+                        break;
+                    }
                 }
             }
+            owner.setPlayerShop(null);
+            update();
         }
-        owner.setPlayerShop(null);
-        update();
-        getMCOwner().getClient().sendPacket(PlayerShopPacket.shopErrorMessage(3, 1));
+        //getMCOwner().getClient().sendPacket(PlayerShopPacket.shopErrorMessage(3, 1));
     }
 
     public void banPlayer(String name) {

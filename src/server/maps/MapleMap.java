@@ -762,6 +762,8 @@ public final class MapleMap {
             if (sqd != null) {
                 doShrine(true);
             }
+        } else if (mobid == 8500002 && mapid == 220080001) {
+
         } else if (mobid >= 8800003 && mobid <= 8800010) {
             boolean makeZakReal = true;
             final Collection<MapleMonster> monsters = getAllMonstersThreadsafe();
@@ -2350,6 +2352,7 @@ public final class MapleMap {
 
     public final void removePlayer(final MapleCharacter chr) {
         //log.warn("[dc] [level2] Player {} leaves map {}", new Object[] { chr.getName(), mapid });
+        final MapleMap map = chr.getClient().getChannelServer().getMapFactory().getMap(220080000);
 
         if (everlast) {
             returnEverLastItem(chr);
@@ -2363,6 +2366,11 @@ public final class MapleMap {
         }
         removeMapObject(chr);
         chr.checkFollow();
+
+        if (chr.getMapId() == 220080001 && chr.getMap().playerCount() <= 0) { //修正拉圖斯卡門bug
+            map.resetReactors();
+        }
+
         broadcastMessage(MaplePacketCreator.removePlayerFromMap(chr.getId()));
         if (!chr.isClone()) {
             final List<MapleMonster> update = new ArrayList<>();
@@ -2438,7 +2446,7 @@ public final class MapleMap {
         broadcastMessage(source, packet, GameConstants.maxViewRangeSq(), rangedFrom);
     }
 
-     private void broadcastMessage(final MapleCharacter source, final MaplePacket packet, final double rangeSq, final Point rangedFrom) {
+    private void broadcastMessage(final MapleCharacter source, final MaplePacket packet, final double rangeSq, final Point rangedFrom) {
         charactersLock.readLock().lock();
         try {
             for (MapleCharacter chr : characters) {
@@ -3401,7 +3409,7 @@ public final class MapleMap {
     public final int incApplyedStatusMonsterCount() {
         return applyedMonsterCount.incrementAndGet();
     }
-    
+
     public final int getApplyedStatusMonsterCount() {
         return applyedMonsterCount.get();
     }

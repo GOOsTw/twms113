@@ -327,8 +327,8 @@ public class Event_PyramidSubway {
         } else {
             map = c.getClient().getChannelServer().getMapFactory().getMap(926010001 + type);
         }
-        changeMap(c, map, 1, 200, 2);
         dispose(c);
+        changeMap(c, map, 1, 200, 2);
     }
 
     public final void dispose(final MapleCharacter c) {

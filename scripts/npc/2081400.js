@@ -1,9 +1,10 @@
 /*  NPC : 海倫
-	盜賊 4轉 任務腳本
-	地圖代碼 (240010501)
+ 盜賊 4轉 任務腳本
+ 地圖代碼 (240010501)
  */
 
 var status = -1;
+var pass = false;
 
 function action(mode, type, selection) {
     if (mode == 1) {
@@ -22,14 +23,17 @@ function action(mode, type, selection) {
             cm.dispose();
             return;
         } else {
-            if (cm.getJob() == 411) {
-                cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為夜使者.#l\r\n#b#L1#像我想一下...#l");
-            } else if (cm.getJob() == 421) {
-                cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為暗影神偷.#l\r\n#b#L1#像我想一下...#l");
-            } else {
-                cm.sendOk("好吧假如你想要4轉麻煩再來找我");
-                cm.safeDispose();
-                return;
+            if (cm.getQuestStatus(6934) == 2) {
+                pass = true;
+                if (cm.getJob() == 411) {
+                    cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為夜使者.#l\r\n#b#L1#像我想一下...#l");
+                } else if (cm.getJob() == 421) {
+                    cm.sendSimple("恭喜你有資格4轉. \r\n請問你想4轉嗎??\r\n#b#L0#我想成為暗影神偷.#l\r\n#b#L1#像我想一下...#l");
+                } else {
+                    cm.sendOk("好吧假如你想要4轉麻煩再來找我");
+                    cm.safeDispose();
+                    return;
+                }
             }
         }
     } else if (status == 1) {
@@ -42,40 +46,43 @@ function action(mode, type, selection) {
             cm.sendOk("你的技能點數還沒點完..");
             cm.dispose();
             return;
+        } else if (pass) {
+            status = 1;
+            cm.sendNext("即將四轉。");
         } else if (!cm.haveItem(4031860) || !cm.haveItem(4031861)) {
             cm.sendOk("我需要#t4031860# x1 #t4031861# x1。");
             cm.dispose();
             return;
-        } else {
-            if (cm.canHold(2280003)) {
-                cm.gainItem(2280003, 1);
-
-                if (cm.getJob() == 411) {
-                    cm.changeJob(412);
-                    cm.teachSkill(4120002, 0, 10);
-                    cm.teachSkill(4121006, 0, 10);
-                    cm.teachSkill(4120005, 0, 10);
-                    cm.gainItem(4031860, -1);
-					cm.gainItem(4031861, -1);
-                    cm.sendNext("恭喜你轉職為 #b夜使者#k.我送你一些神秘小禮物^^");
-                } else if (cm.getJob() == 421) {
-                    cm.changeJob(422);
-                    cm.teachSkill(4220002, 0, 10);
-                    cm.teachSkill(4221007, 0, 10);
-                    cm.teachSkill(4220005, 0, 10);
-                    cm.gainItem(4031860, -1);
-					cm.gainItem(4031861, -1);
-                    cm.sendNext("恭喜你轉職為 #b暗影神偷#k.我送你一些神秘小禮物^^");
-                } else {
-                    cm.sendOk("你沒有多的欄位請清空再來嘗試一次!");
-                    cm.safeDispose();
-                    return;
-                }
-            }
         }
     } else if (status == 2) {
-        cm.sendNextPrev("不要忘記了這一切都取決於你練了多少.");
+        if (cm.canHold(2280003)) {
+            cm.gainItem(2280003, 1);
+
+            if (cm.getJob() == 411) {
+                cm.changeJob(412);
+                cm.teachSkill(4120002, 0, 10);
+                cm.teachSkill(4121006, 0, 10);
+                cm.teachSkill(4120005, 0, 10);
+                cm.gainItem(4031860, -1);
+                cm.gainItem(4031861, -1);
+                cm.sendNext("恭喜你轉職為 #b夜使者#k.我送你一些神秘小禮物^^");
+            } else if (cm.getJob() == 421) {
+                cm.changeJob(422);
+                cm.teachSkill(4220002, 0, 10);
+                cm.teachSkill(4221007, 0, 10);
+                cm.teachSkill(4220005, 0, 10);
+                cm.gainItem(4031860, -1);
+                cm.gainItem(4031861, -1);
+                cm.sendNext("恭喜你轉職為 #b暗影神偷#k.我送你一些神秘小禮物^^");
+            } else {
+                cm.sendOk("你沒有多的欄位請清空再來嘗試一次!");
+                cm.safeDispose();
+                return;
+            }
+        }
     } else if (status == 3) {
+        cm.sendNextPrev("不要忘記了這一切都取決於你練了多少.");
+    } else if (status == 4) {
         cm.dispose();
     }
 }

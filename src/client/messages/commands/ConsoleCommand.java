@@ -143,6 +143,8 @@ public class ConsoleCommand {
         public int execute(String[] splitted) {
             if (splitted.length > 1) {
                 minutesLeft = Integer.parseInt(splitted[1]);
+                World.isShutDown = true;
+                System.out.println("已經限制玩家使用精靈商人。");
                 if (ts == null && (t == null || !t.isAlive())) {
                     t = new Thread(server.ShutdownServer.getInstance());
                     ts = Timer.EventTimer.getInstance().register(new Runnable() {

@@ -1338,7 +1338,7 @@ public class InventoryHandler {
                         item.setOwner(c.getPlayer().getName());
                         c.getPlayer().forceReAddItem(item, MapleInventoryType.EQUIPPED);
                         c.getPlayer().reloadC();
-                        c.getPlayer().dropMessage(5,"刻名成功！");
+                        c.getPlayer().dropMessage(5, "刻名成功！");
                         used = true;
                     }
                 }
@@ -2333,6 +2333,10 @@ public class InventoryHandler {
                 c.sendPacket(MaplePacketCreator.enableActions());
                 return;
             }
+            if (mapitem.isPlayerDrop() && mapitem.getDropType() == 2 && mapitem.getOwner() == chr.getId()) {
+                c.getSession().write(MaplePacketCreator.enableActions());
+                return;
+            }
             final double pickUpDistanceCS = clientPickPos.distanceSq(mapitem.getPosition());
             final double pickUpDistanceSS = pet.getPos().distanceSq(mapitem.getPosition());
             if (pickUpDistanceCS > 10000 && (mapitem.getMeso() > 0 || mapitem.getItemId() != 4001025)) {
@@ -2373,7 +2377,7 @@ public class InventoryHandler {
                 }
                 removeItemPet(chr, mapitem, petz);
                 MapleInventoryManipulator.addFromDrop(c, mapitem.getItem(), true, mapitem.getDropper() instanceof MapleMonster, true);
-                
+
             }
         } finally {
             lock.unlock();

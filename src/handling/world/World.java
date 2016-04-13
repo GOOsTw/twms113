@@ -19,6 +19,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import client.BuddyEntry;
 
 import client.MapleCharacter;
+import client.MapleClient;
 
 import client.MapleCoolDownValueHolder;
 import client.MapleDiseaseValueHolder;
@@ -872,6 +873,25 @@ public class World {
             if (c != null && c.getFamilyId() == guildid) {
                 c.getClient().sendPacket(packet);
             }
+        }
+    }
+
+    public static class Client {
+
+        private static final ArrayList<MapleClient> clients = new ArrayList();
+
+        public static void addClient(MapleClient c) {
+            if (!clients.contains(c)) {
+                clients.add(c);
+            }
+        }
+
+        public static boolean removeClient(MapleClient c) {
+            return clients.remove(c);
+        }
+
+        public static ArrayList<MapleClient> getClients() {
+            return clients;
         }
     }
 

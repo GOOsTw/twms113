@@ -11,7 +11,7 @@ function start() {
         cm.dispose();
         return;
     }
-    if (cm.getPlayer().getClient().getChannel() != 13 && cm.getPlayer().getClient().getChannel() != 14) {
+    if (cm.getPlayer().getClient().getChannel() != 13 && cm.getPlayer().getClient().getChannel() != 2) {
         cm.sendOk("闇黑龍王只有在頻道 13 或 14 才可以挑戰");
         cm.dispose();
         return;
