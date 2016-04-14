@@ -34,19 +34,19 @@ function action(mode, type, selection) {
                 data = "0";
             }
             var time = parseInt(data);
-             if (time + (6 * 3600000) < cm.getCurrentTime()) { //6 小時
-				if (!cm.haveItem(4031592) && cm.haveItem(4031593, 10)) {
-					cm.gainItem(4031593, -10);
-					cm.gainItem(4031592, 1);
-					cm.sendOk("請下一張入場卷要6小時候唷。");
-					apq.setCustomData("" + cm.getCurrentTime());
-             } else {
-					cm.sendOk("從怪物身上取得 10 個藍環鑰匙給我. 你一次只能擁有一個入場卷.");
-           		}
-             } else {
-					cm.sendNext("領取的時間尚未滿6小時。");
-             }
-             cm.dispose();
+            if (time + (6 * 3600000) < cm.getCurrentTime()) { //6 小時
+                if (!cm.haveItem(4031592) && cm.haveItem(4031593, 10)) {
+                    cm.gainItem(4031593, -10);
+                    cm.gainItem(4031592, 1);
+                    cm.sendOk("請下一張入場卷要6小時候唷。");
+                    apq.setCustomData("" + cm.getCurrentTime());
+                } else {
+                    cm.sendOk("從怪物身上取得 10 個藍環鑰匙給我. 你一次只能擁有一個入場卷.");
+                }
+            } else {
+                cm.sendNext("領取的時間尚未滿6小時。");
+            }
+            cm.dispose();
         }
     } else if (status == 1) {
         cm.gainItem(4031592, -1);

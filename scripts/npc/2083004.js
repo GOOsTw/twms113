@@ -1,9 +1,5 @@
-/*
-	NPC Name: 		Mark of the Squad
-	Map(s): 		Entrance to Horned Tail's Cave
-	Description: 		Horntail Battle starter
-*/
 var status = -1;
+var horntail = 2;
 
 function start() {
     if (cm.getPlayer().getLevel() < 80) {
@@ -11,7 +7,7 @@ function start() {
         cm.dispose();
         return;
     }
-    if (cm.getPlayer().getClient().getChannel() != 13 && cm.getPlayer().getClient().getChannel() != 2) {
+    if (cm.getPlayer().getClient().getChannel() != 1 && cm.getPlayer().getClient().getChannel() != 2) {
         cm.sendOk("闇黑龍王只有在頻道 13 或 14 才可以挑戰");
         cm.dispose();
         return;
@@ -24,23 +20,32 @@ function start() {
         return;
     }
     var prop = em.getProperty("state");
-
     if (prop == null || prop.equals("0")) {
         var squadAvailability = cm.getSquadAvailability("Horntail");
+        var check1 = cm.getMapFactory().getMap(240060100);
+        var check2 = cm.getMapFactory().getMap(240060200);
+        if (check1.playerCount() != 0 || check2.playerCount() != 0) {
+            cm.sendNext("其它遠征隊，正在對戰中。");
+            cm.safeDispose();
+        }
         if (squadAvailability == -1) {
             status = 0;
             cm.sendYesNo("你有興趣成為遠征隊隊長？？");
-
+            if (cm.getBossLog("龍王次數") == horntail) {
+                cm.sendOk("很抱歉每天只能打兩次..");
+                cm.dispose();
+                return;
+            }
         } else if (squadAvailability == 1) {
             // -1 = Cancelled, 0 = not, 1 = true
             var type = cm.isSquadLeader("Horntail");
             if (type == -1) {
-                cm.sendOk("由於遠征隊時間流逝，所以必須重新再申請一次遠征隊。");
+                cm.sendOk("你被踢除所以不得再申請遠征隊。");
                 cm.dispose();
             } else if (type == 0) {
                 var memberType = cm.isSquadMember("Horntail");
                 if (memberType == 2) {
-                    cm.sendOk("你被踢除所以不得再申請遠征隊。");
+                    cm.sendOk("你已經被黑名單了。");
                     cm.dispose();
                 } else if (memberType == 1) {
                     status = 5;
@@ -91,12 +96,14 @@ function start() {
     }
 }
 
+
 function action(mode, type, selection) {
     switch (status) {
         case 0:
             if (mode == 1) {
                 if (cm.registerSquad("Horntail", 5, "已成為闇黑龍王遠征隊長，想要參加遠征隊的玩家請開始進行申請。")) {
                     cm.sendOk("你成功申請了遠征隊隊長，你必須在接下來的五分鐘召集玩家申請遠征隊，然後開始戰鬥。");
+                    cm.setBossLog("龍王次數");
                 } else {
                     cm.sendOk("申請遠征隊失敗，發生了未知錯誤。");
                 }
@@ -112,18 +119,24 @@ function action(mode, type, selection) {
         case 5:
             if (selection == 0) {
                 if (!cm.getSquadList("Horntail", 0)) {
-                    cm.sendOk("由於未知的錯誤，遠征隊的請求被拒絕了。");
+                    cm.sendOk("錯誤.... 請重新在試一次。");
                 }
             } else if (selection == 1) { // join
                 var ba = cm.addMember("Horntail", true);
                 if (ba == 2) {
                     cm.sendOk("遠征隊人數已滿，請稍後再嘗試。");
                 } else if (ba == 1) {
+                    if (cm.getBossLog("龍王次數") == horntail) {
+                        cm.sendOk("很抱歉每天只能打兩次..");
+                        cm.dispose();
+                        return;
+                    }
+                    cm.setBossLog("龍王次數");
                     cm.sendOk("申請遠征隊成功。");
                 } else {
                     cm.sendOk("你已經在遠征隊裡面了。");
                 }
-            } else { // withdraw
+            } else {// withdraw
                 var baa = cm.addMember("Horntail", false);
                 if (baa == 1) {
                     cm.sendOk("離開遠征隊成功。");
@@ -155,7 +168,7 @@ function action(mode, type, selection) {
                 } else if (selection == 3) { // get insode
                     if (cm.getSquad("Horntail") != null) {
                         var dd = cm.getEventManager("HorntailBattle");
-                        dd.startInstance(cm.getSquad("Horntail"), cm.getMap());
+                        dd.startInstance(cm.getSquad("Horntail"), cm.getMap(), 160100);
                     } else {
                         cm.sendOk("由於未知的錯誤，遠征隊的請求被拒絕了。");
                     }
