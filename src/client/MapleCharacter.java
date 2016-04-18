@@ -1744,7 +1744,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void registerEffect(MapleStatEffect effect, long starttime, ScheduledFuture<?> schedule, List<Pair<MapleBuffStat, Integer>> statups) {
-        if (effect.isHide()) {
+        if (effect.isHide() && isGM()) {
             this.hidden = true;
             map.broadcastMessage(this, MaplePacketCreator.removePlayerFromMap(getId()), false);
         } else if (effect.isDragonBlood()) {
@@ -1924,7 +1924,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         // check if we are still logged in o.o
         if (!overwrite) {
             cancelPlayerBuffs(buffstats);
-            if (effect.isHide() && client.getChannelServer().getPlayerStorage().getCharacterById(this.getId()) != null) { //Wow this is so fking hacky...
+            if ((isGM() && effect.isHide()) && client.getChannelServer().getPlayerStorage().getCharacterById(this.getId()) != null) { //Wow this is so fking hacky...
                 this.hidden = false;
                 map.broadcastMessage(this, MaplePacketCreator.spawnPlayerMapobject(this), false);
 

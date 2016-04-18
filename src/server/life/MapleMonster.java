@@ -362,6 +362,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                         case 1:
                             this.getMap().broadcastMessage(from, MobPacket.damageFriendlyMob(this, damage, true), false);
                             break;
+                        case -1:
                         case 2:
                             this.getMap().broadcastMessage(MobPacket.showMonsterHP(getObjectId(), (int) Math.ceil((hp * 100.0) / getMobMaxHp())));
                             from.mulungEnergyModify(true);
@@ -381,6 +382,9 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                 }
 
                 if (this.getHp() <= 0) {
+                    if (getStats().getHPDisplayType() == -1) {
+                        this.getMap().broadcastMessage(MobPacket.showMonsterHP(getObjectId(), (int) Math.ceil((hp * 100.0) / getMobMaxHp())));
+                    }
                     this.getMap().killMonster(this, from, true, false, (byte) 1, lastSkill);
                 }
             }

@@ -299,7 +299,7 @@ public class PlayerHandler {
                     is_pg = true;
                 }
             }
-            if (type != -1 && type != -2 && type != -3 && type != -4) {
+            if (type != -2 && type != -3 && type != -4) {
                 switch (chr.getJob()) {
                     case 112: {
                         final ISkill skill = SkillFactory.getSkill(英雄.武神防禦);
