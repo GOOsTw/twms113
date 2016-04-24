@@ -90,7 +90,8 @@ function changedMap(eim, player, mapid) {
 }
 
 function playerDisconnected(eim, player) {
-    return 0;
+	eim.broadcastPlayerMsg(5, player.getName() + " 斷線了所以結婚小鎮組隊結束了。");
+	end(eim);
 }
 
 function monsterValue(eim, mobId) {
@@ -119,12 +120,7 @@ function clearPQ(eim) {
 function allMonstersDead(eim) {}
 
 function leftParty(eim, player) {
-    // If only 2 players are left, uncompletable:
-    var party = eim.getPlayers();
-    if (party.size() < minPlayers) {
-        end(eim);
-    } else
-        playerExit(eim, player);
+    end(eim);
 }
 
 function disbandParty(eim) {
