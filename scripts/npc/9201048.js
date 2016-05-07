@@ -1,5 +1,6 @@
 var status = -1;
-
+var nextt = true;
+var check = [670010200, 670010300, 670010400, 670010500, 670010600, 670010700, 670010800];
 function action(mode, type, selection) {
     if (mode == 1) {
         status++;
@@ -21,6 +22,16 @@ function action(mode, type, selection) {
             if (cm.getPlayer().getParty() == null || !cm.isLeader()) {
                 cm.sendOk("必須要有隊長在這裡。");
             } else {
+                for (var i = 0; i < check.length; i++) {
+                    if (cm.getPlayer().getClient().getChannelServer().getMapFactory().getMap(check[i]).playerCount() > 0) {
+                        nextt = false;
+                    }
+                }
+                if (!nextt) {
+                    cm.sendNext("目前地圖有人");
+                    cm.dispose();
+                    return;
+                }
                 var party = cm.getPlayer().getParty().getMembers();
                 var mapId = cm.getPlayer().getMapId();
                 var next = true;
