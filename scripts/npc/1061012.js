@@ -1,26 +1,20 @@
-/*
-	NPC Name: 		Insiginificant Being
-	Map(s): 		Dungeon : Another Entrance
-	Description: 		Takes you to another Dimension
-*/
-
-function start() {
+﻿function start() {
     if (cm.getQuestStatus(6108) == 1) {
         var ret = checkJob();
         if (ret == -1) {
-            cm.sendOk("Please form a party and talk to me again.");
+            cm.sendOk("請先組隊在確認一次。");
         } else if (ret == 0) {
-            cm.sendOk("Please make sure that your party is a size of 2.");
+            cm.sendOk("請確認隊伍裡面有兩個人。");
         } else if (ret == 1) {
-            cm.sendOk("One of your party member's job is not eligible for entering the other world.");
+            cm.sendOk("隊伍其中一個人沒有符合資格。");
         } else if (ret == 2) {
-            cm.sendOk("One of your party member's level is not eligible for entering the other world.");
+            cm.sendOk("隊伍裡有成員尚未符合。");
         } else {
             var em = cm.getEventManager("s4aWorld");
             if (em == null) {
-                cm.sendOk("You're not allowed to enter with unknown reason. Try again.");
+                cm.sendOk("找不到副本請聯繫管理員。");
             } else if (em.getProperty("started").equals("true")) {
-                cm.sendOk("Someone else is already attempting to defeat the Jr.Balrog in another world.");
+                cm.sendOk("已經有隊伍正在挑戰，請稍後再嘗試。");
             } else {
                 em.startInstance(cm.getParty(), cm.getMap());
             }
@@ -37,9 +31,7 @@ function checkJob() {
     if (party == null) {
         return -1;
     }
-    //    if (party.getMembers().size() != 2) {
-    //	return 0;
-    //    }
+
     var it = party.getMembers().iterator();
 
     while (it.hasNext()) {
