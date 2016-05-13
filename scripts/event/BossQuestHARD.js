@@ -147,6 +147,7 @@ function allMonstersDead(eim) {
         eim.broadcastPlayerMsg(6, "準備！下一隻的BOSS即將來臨。");
     } else {
         eim.saveBossQuest(3000);
+		eim.broadcastPlayerMsg(5, "恭喜整隊挑戰困難模式成功。");
     }
     // When invoking unregisterMonster(MapleMonster mob) OR killed
     // Happens only when size = 0
