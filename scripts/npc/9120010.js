@@ -141,9 +141,13 @@ function action(mode, type, selection) {
         itemSet = (Math.floor(Math.random() * reward.length));
         prizeItem = reward[itemSet][0];
         prizeQuantity = reward[itemSet][1];
-        if (!cm.canHold()) {
+		
+        if(!cm.canHold(prizeItem) || !cm.canHold(1302000) || !cm.canHold(2000006) || !cm.canHold(4000000)){
             cm.sendNext("什麼？我不能給你獎勵，確保你的道具欄有無滿。");
-        } else if (checkQuantity(requiredItem) >= 100) { // check they have >= 100 in Inventory
+			cm.dispose();
+			return;
+        }
+		if (cm.getPlayer().itemQuantity(requiredItem) >= 100) { // check they have >= 100 in Inventory
             cm.gainItem(requiredItem, -100);
             cm.gainItem(prizeItem, prizeQuantity);
             cm.sendOk("嗯......如果不是因為這個小划痕......嘆了口氣。恐怕我只能認為這是一個標準的品質項目。那麼，這裡的 \r\n#t" + prizeItem + "# 給你。");
@@ -162,11 +166,3 @@ function makeChoices(a) {
     return result;
 }
 
-function checkQuantity(itemId) {
-    var itemCount = 0;
-    var iter = cm.getInventory(4).listById(itemId).iterator();
-    while (iter.hasNext()) {
-        itemCount += iter.next().getQuantity();
-    }
-    return itemCount;
-}

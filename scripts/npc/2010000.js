@@ -206,11 +206,15 @@ function action(mode, type, selection) {
         reward = eQuestPrizes[lastSelection];
         prizeItem = reward[itemSet][0];
         prizeQuantity = reward[itemSet][1];
-		if (!cm.canHold()) {
-			cm.sendNext("你的道具攔似乎滿了，請清空一些不要的東西再來找我交易一次謝謝。");
-		} else if (!cm.haveItem(requiredItem, 100)) {
-            cm.sendOk("嗯... 你確定你有 #b100個 #t" + requiredItem + "##k? 如果有請定你道具攔是不是滿了....");
-        } else {
+	if(!cm.haveItem(requiredItem,100)){
+	    cm.sendOk("嗯... 你確定你有 #b100個 #t" + requiredItem + "##k? 如果有請定你道具攔是不是滿了....");
+		cm.dispose();
+		return;
+	} else if(!cm.canHold(prizeItem) || !cm.canHold(1302000) || !cm.canHold(2000006) || !cm.canHold(4000000)){
+	    cm.sendNext("你的道具攔似乎滿了，請清空一些不要的東西再來找我交易一次謝謝。");
+		cm.dispose();
+		return;
+	}
             cm.gainItem(requiredItem, -100);
             cm.gainExp(500);
             cm.gainItem(prizeItem, prizeQuantity);
@@ -218,7 +222,6 @@ function action(mode, type, selection) {
         }
         cm.dispose();
     }
-}
 
 function makeChoices(a) {
     var result = "好，首先你需要選擇，你手上有的道具，當然更多道具收穫更多。\r\n";
