@@ -82,12 +82,15 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.LinkedHashSet;
 import server.CashItemFactory;
 import server.FishingRewardFactory;
 import server.ServerConfig;
 import server.Timer;
 import server.gashapon.GashaponFactory;
 import server.life.CustomNPC;
+import tools.HexTool;
+import tools.data.output.MaplePacketLittleEndianWriter;
 
 /**
  *
@@ -192,7 +195,9 @@ public class AdminCommand {
             minutesLeft = Integer.parseInt(splitted[1]);
             c.getPlayer().dropMessage(6, "伺服器將在 " + minutesLeft + "分鐘後關閉. 請盡速關閉精靈商人 並下線.");
             World.isShutDown = true;
-            c.getPlayer().dropMessage(6, "已經限制玩家使用精靈商人。");
+            c.getPlayer().dropMessage(6, "已經限制玩家玩家所有行動。");
+            LoginServer.adminOnly = true;
+            c.getPlayer().dropMessage(6, "已經開啟管理員模式。");
             if (ts == null && (t == null || !t.isAlive())) {
                 t = new Thread(ShutdownServer.getInstance());
                 ts = EventTimer.getInstance().register(new Runnable() {
@@ -581,6 +586,21 @@ public class AdminCommand {
             LoginServer.adminOnly = !LoginServer.adminOnly;
             c.getPlayer().dropMessage(0, "[logindoor] " + (LoginServer.adminOnly ? "開啟" : "關閉"));
             System.out.println("[logindoor] " + (LoginServer.adminOnly ? "開啟" : "關閉"));
+            return true;
+        }
+
+        public String getMessage() {
+            return new StringBuilder().append("!logindoor  - 管理員登入模式開關").toString();
+        }
+    }
+
+    public static class 禁止玩家使用 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            World.isShutDown = !World.isShutDown;
+            c.getPlayer().dropMessage(0, "[禁止玩家使用] " + (World.isShutDown ? "開啟" : "關閉"));
+            System.out.println("[禁止玩家使用] " + (World.isShutDown ? "開啟" : "關閉"));
             return true;
         }
 
@@ -3493,6 +3513,67 @@ public class AdminCommand {
         @Override
         public String getMessage() {
             return new StringBuilder().append("!respawn - 重置這個地圖").toString();
+        }
+    }
+
+    public static class Packet extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String[] splitted) {
+            final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+            int packetheader = Integer.parseInt(splitted[1]);
+            String packet_in = " 00 00 00 00 00 00 00 00 00 ";
+            if (splitted.length > 2) {
+                packet_in = StringUtil.joinStringFrom(splitted, 2);
+            }
+
+            mplew.writeShort(packetheader);
+            mplew.write(HexTool.getByteArrayFromHexString(packet_in));
+            mplew.writeZeroBytes(20);
+            c.getSession().write(mplew.getPacket());
+            c.getPlayer().dropMessage(packetheader + "已傳送封包[" + packetheader + "] : " + mplew.toString());
+            return true;
+        }
+
+        public String getMessage() {
+            return new StringBuilder().append("!Packet - <封包內容>").toString();
+        }
+    }
+
+    public static class UpdateMap extends CommandExecute {
+
+        public boolean execute(MapleClient c, String splitted[]) {
+            MapleCharacter player = c.getPlayer();
+            if (splitted.length < 2) {
+                return false;
+            }
+            boolean custMap = splitted.length >= 2;
+            int mapid = custMap ? Integer.parseInt(splitted[1]) : player.getMapId();
+            MapleMap map = custMap ? player.getClient().getChannelServer().getMapFactory().getMap(mapid) : player.getMap();
+            if (player.getClient().getChannelServer().getMapFactory().destroyMap(mapid)) {
+                MapleMap newMap = player.getClient().getChannelServer().getMapFactory().getMap(mapid);
+                MaplePortal newPor = newMap.getPortal(0);
+                LinkedHashSet<MapleCharacter> mcs = new LinkedHashSet<>(map.getCharacters()); // do NOT remove, fixing ConcurrentModificationEx.
+                outerLoop:
+                for (MapleCharacter m : mcs) {
+                    for (int x = 0; x < 5; x++) {
+                        try {
+                            m.changeMap(newMap, newPor);
+                            continue outerLoop;
+                        } catch (Throwable t) {
+                        }
+                    }
+                    player.dropMessage("傳送玩家 " + m.getName() + " 到新地圖失敗. 自動省略...");
+                }
+                player.dropMessage("地圖刷新完成.");
+                return true;
+            }
+            player.dropMessage("刷新地圖失敗!");
+            return true;
+        }
+
+        public String getMessage() {
+            return new StringBuilder().append("!UpdateMap <maipid> - 刷新某個地圖").toString();
         }
     }
 
