@@ -1261,7 +1261,6 @@ public class GameConstants {
             case 1112806:
             case 1112807:
             case 1112809:
-            case 1112013:
                 return true;
         }
         return false;
@@ -1275,6 +1274,7 @@ public class GameConstants {
             case 1112810: //new
             case 1112811: //new, doesnt work in friendship?
             case 1112812: //new, im ASSUMING it's friendship cuz of itemID, not sure.
+			case 1112804:
             case 1049000:
                 return true;
         }
@@ -1291,7 +1291,7 @@ public class GameConstants {
             case 1112007:
             case 1112012:
             case 1112015: //new
-
+			case 1112013:
             case 1048000:
                 return true;
         }
