@@ -1018,6 +1018,7 @@ public class MapleStatEffect implements Serializable {
             applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.showBuffeffect(applyto.getId(), sourceid, 1), false);
         }
         List<Pair<MapleBuffStat, Integer>> localstatups = statups;
+        ArrayList<Pair<MapleBuffStat, Integer>> Selfstat = null;
         boolean normal = true;
         switch (sourceid) {
             case 5121009: // Speed Infusion
@@ -1090,15 +1091,22 @@ public class MapleStatEffect implements Serializable {
                 normal = false;
                 break;
             }
-
             case 1121010: // Enrage
                 applyto.handleOrbconsume();
                 break;
             default:
-                if (isMorph() || isPirateMorph()) {
-                    final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.MORPH, getMorph(applyto)));
-                    localstatups.add(new Pair<>(MapleBuffStat.MORPH, getMorph(applyto)));
+                if (isPMorph()) {
+                    final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<MapleBuffStat, Integer>(MapleBuffStat.MORPH, Integer.valueOf(getMorph(applyto))));
                     applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveForeignBuff(applyto.getId(), stat, this), false);
+                } else if (isMorph() || isPirateMorph()) {
+                    final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.MORPH, getMorph(applyto)));
+                    applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveForeignBuff(applyto.getId(), stat, this), false);
+                    Selfstat = new ArrayList();
+                    Selfstat.add((new Pair<>(MapleBuffStat.JUMP, (int) getJump())));
+                    Selfstat.add((new Pair<>(MapleBuffStat.WDEF, (int) getWdef())));
+                    Selfstat.add((new Pair<>(MapleBuffStat.MDEF, (int) getWdef())));
+                    Selfstat.add((new Pair<>(MapleBuffStat.SPEED, (int) getSpeed())));
+                    Selfstat.add((new Pair<>(MapleBuffStat.MORPH, (int) getMorph(applyto))));
                 } else if (isMonsterRiding()) {
                     localDuration = 2100000000;
                     final int mountid = parseMountInfo(applyto, sourceid);
@@ -1123,17 +1131,17 @@ public class MapleStatEffect implements Serializable {
                 break;
         }
         if (!isMonsterRiding()) {
-            applyto.cancelEffect(this, true, -1, localstatups);
+            applyto.cancelEffect(this, true, -1, Selfstat == null ? localstatups : Selfstat);
         }
         // Broadcast effect to self
         if (normal && statups.size() > 0) {
-            applyto.getClient().sendPacket(MaplePacketCreator.giveBuff((skill ? sourceid : -sourceid), localDuration, statups, this));
+            applyto.getClient().sendPacket(MaplePacketCreator.giveBuff((skill ? sourceid : -sourceid), localDuration, Selfstat == null ? statups : Selfstat, this));
         }
         final long starttime = System.currentTimeMillis();
         final CancelEffectAction cancelAction = new CancelEffectAction(applyto, this, starttime);
-        
+
         final ScheduledFuture<?> schedule = BuffTimer.getInstance().schedule(cancelAction, ((starttime + localDuration) - System.currentTimeMillis()));
-        applyto.registerEffect(this, starttime, schedule, localstatups);
+        applyto.registerEffect(this, starttime, schedule, Selfstat == null ? localstatups : Selfstat);
     }
 
     public static final int parseMountInfo(final MapleCharacter player, final int skillid) {
@@ -1345,7 +1353,7 @@ public class MapleStatEffect implements Serializable {
     }
 
     private boolean isPartyBuff() {
-          if (lt == null || rb == null || !partyBuff) {
+        if (lt == null || rb == null || !partyBuff) {
             return isSoulStone();
         }
         switch (sourceid) {
@@ -1620,6 +1628,14 @@ public class MapleStatEffect implements Serializable {
 
     public final boolean isMorph() {
         return morphId > 0;
+    }
+
+    public final boolean isPMorph() {
+        switch (sourceid) {
+            case 5101007:
+                return skill;
+        }
+        return false;
     }
 
     public final int getMorph() {
