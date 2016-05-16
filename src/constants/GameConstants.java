@@ -113,36 +113,6 @@ public class GameConstants {
         return false;
     }
 
-    public static boolean isMarrigeRing(int itemid) {
-        switch (itemid) {
-            case 1112300:
-            case 1112301:
-            case 1112302:
-            case 1112303:
-            case 1112304:
-            case 1112305:
-            case 1112306:
-            case 1112307:
-            case 1112308:
-            case 1112309:
-            case 1112310:
-            case 1112311:
-            case 1112315:
-            case 1112316:
-            case 1112317:
-            case 1112318:
-            case 1112319:
-            case 1112320:
-            case 1112803:
-            case 1112806:
-            case 1112807:
-            case 1112808:
-            case 1112809:
-                return true;
-        }
-        return false;
-    }
-
     public static boolean Novice_Skill(int skill) {
         switch (skill) {
             case 1000://嫩寶丟擲術
@@ -1245,7 +1215,26 @@ public class GameConstants {
                 return false;
         }
     }
-
+    
+    public static boolean isMarrigeRing(int itemid) {
+        switch (itemid) {
+            case 1112300:
+            case 1112301:
+            case 1112302:
+            case 1112303:
+            case 1112304:
+            case 1112305:
+            case 1112306:
+            case 1112307:
+            case 1112308:
+            case 1112309:
+            case 1112310:
+            case 1112311:
+                return true;
+        }
+        return false;
+    }
+    
     public static boolean isRing(int itemId) {
         return itemId >= 1112000 && itemId < 1113000;
     }// 112xxxx - pendants, 113xxxx - belts
@@ -1257,7 +1246,6 @@ public class GameConstants {
 
     public static boolean isMarriageRing(int itemId) {
         switch (itemId) {
-            case 1112803:
             case 1112806:
             case 1112807:
             case 1112809:
@@ -1274,7 +1262,10 @@ public class GameConstants {
             case 1112810: //new
             case 1112811: //new, doesnt work in friendship?
             case 1112812: //new, im ASSUMING it's friendship cuz of itemID, not sure.
-			case 1112804:
+            case 1112803: //海灘聊天戒指
+            case 1112806: // 巧克力聊天戒指
+            case 1112807: // 粉紅糖果聊天戒指
+            case 1112804:
             case 1049000:
                 return true;
         }
@@ -1291,7 +1282,7 @@ public class GameConstants {
             case 1112007:
             case 1112012:
             case 1112015: //new
-			case 1112013:
+            case 1112013:
             case 1048000:
                 return true;
         }
