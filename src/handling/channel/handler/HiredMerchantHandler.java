@@ -138,9 +138,7 @@ public class HiredMerchantHandler {
                                         FilePrinter.print("HiredMerchantLog.txt", "角色名字:" + c.getPlayer().getName() + " 從精靈商人取回楓幣: " + pack.getMesos() + " 取回時間:" + FilePrinter.getLocalDateString());
                                         c.getPlayer().setConversation(0);
                                     }
-                                    for (IItem item : pack.getItems()) {
-                                        MapleInventoryManipulator.addFromDrop(c, item, false);
-                                    }
+                                    c.getPlayer().gainMeso(pack.getMesos(), false);
                                     c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x1d));
                                     c.getPlayer().setConversation(0);
                                 } else {
