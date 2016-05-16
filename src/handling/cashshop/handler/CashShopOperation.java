@@ -139,7 +139,7 @@ public class CashShopOperation {
             item = MapleCharacterUtil.getNXCodeItem(code);
             size = MapleCharacterUtil.getNXCodeSize(code);
             time = MapleCharacterUtil.getNXCodeTime(code);
-            if (type != 4) {
+            if (type <= 4) {
                 try {
                     MapleCharacterUtil.setNXCodeUsed(c.getPlayer().getName(), code);
                 } catch (SQLException e) {
@@ -183,13 +183,17 @@ public class CashShopOperation {
                 tt = "永久";
                 as = 2;
             }
-            if (as == 1) {
-                //c.sendPacket(MTSCSPacket.showCouponRedeemedItem(itemz, mesos, maplePoints, c));
-                c.getPlayer().dropMessage(1, "已成功使用優待卷獲得" + MapleItemInformationProvider.getInstance().getName(item) + time + "天 x" + size + "。");
-            } else if (as == 2) {
-                c.getPlayer().dropMessage(1, "已成功使用優待卷獲得" + MapleItemInformationProvider.getInstance().getName(item) + "永久 x" + size + "。");
-            } else {
-                c.getPlayer().dropMessage(1, "已成功使用優待卷獲得" + item + cc);
+            switch (as) {
+                case 1:
+                    //c.sendPacket(MTSCSPacket.showCouponRedeemedItem(itemz, mesos, maplePoints, c));
+                    c.getPlayer().dropMessage(1, "已成功使用優待卷獲得" + MapleItemInformationProvider.getInstance().getName(item) + time + "天 x" + size + "。");
+                    break;
+                case 2:
+                    c.getPlayer().dropMessage(1, "已成功使用優待卷獲得" + MapleItemInformationProvider.getInstance().getName(item) + "永久 x" + size + "。");
+                    break;
+                default:
+                    c.getPlayer().dropMessage(1, "已成功使用優待卷獲得" + item + cc);
+                    break;
             }
         } else {
             c.sendPacket(MTSCSPacket.sendCSFail(validcode ? 0xA5 : 0xA7)); //A1, 9F
