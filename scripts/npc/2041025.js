@@ -21,6 +21,7 @@ function action(mode, type, selection) {
         cm.warp(220080000);
         if (cm.getPlayerCount(220080001) == 0) {
             cm.getMap(220080000).resetReactors();
+			cm.getMap().EndPapfight();
         }
         cm.dispose();
     } else {

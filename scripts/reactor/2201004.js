@@ -1,5 +1,4 @@
-﻿
-/*
+﻿/*
 Papulatus Reactor: Performs the Papulatus commands
 */
 
@@ -8,4 +7,5 @@ function act() {
     rm.changeMusic("Bgm09/TimeAttack");
     rm.spawnMonster(8500000, -410, -400);
     rm.getMap(220080000).setReactorState();
+	rm.getMap().Papfight();
 }

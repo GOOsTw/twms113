@@ -158,6 +158,7 @@ public final class MapleMap {
     private boolean clock;
     private boolean boat;
     private boolean docked;
+    private boolean PapfightStart = false;
 
     public MapleMap(final int mapid, final int channel, final int returnMapId, final float monsterRate) {
         this.mapid = mapid;
@@ -762,7 +763,6 @@ public final class MapleMap {
             if (sqd != null) {
                 doShrine(true);
             }
-        } else if (mobid == 8500002 && mapid == 220080001) {
 
         } else if (mobid >= 8800003 && mobid <= 8800010) {
             boolean makeZakReal = true;
@@ -2368,6 +2368,7 @@ public final class MapleMap {
         chr.checkFollow();
 
         if (chr.getMapId() == 220080001 && chr.getMap().playerCount() <= 0) { //修正拉圖斯卡門bug
+            map.EndPapfight();
             map.resetReactors();
         }
 
@@ -2980,6 +2981,18 @@ public final class MapleMap {
     public void startSpeedRun(String leader) {
         speedRunStart = System.currentTimeMillis();
         speedRunLeader = leader;
+    }
+    
+    public boolean getPapfight() {
+        return PapfightStart;
+    }
+    
+    public void Papfight() {
+        PapfightStart = true;
+    }
+    
+    public void EndPapfight() {
+        PapfightStart = false;
     }
 
     public void endSpeedRun() {
