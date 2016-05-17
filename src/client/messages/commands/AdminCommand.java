@@ -3191,7 +3191,21 @@ public class AdminCommand {
             return new StringBuilder().append("!reloadGashapon - 重新載入轉蛋機").toString();
         }
     }
+	
+    public static class ReloadOX extends CommandExecute {
 
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            MapleOxQuizFactory.getInstance().reloadOX();
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!reloadox - 重新載入OX題目").toString();
+        }
+    }
+	
     public static class ReloadFishing extends CommandExecute {
 
         @Override

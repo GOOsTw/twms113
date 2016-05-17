@@ -127,7 +127,20 @@ public class MapleOxQuizFactory {
             return -1;
         }
     }
+	
+    public void reloadOX() {
+        questionCache.clear();
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement ps = con.prepareStatement("SELECT * FROM wz_oxdata"); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                questionCache.put(new Pair<>(rs.getInt("questionset"), rs.getInt("questionid")), get(rs));
+            }
 
+        } catch (Exception e) {
+            FilePrinter.printError("MapleOxQuizEntry.txt", e);
+        }
+    }
+	
     public static class MapleOxQuizEntry {
 
         private final String question, answerText;
