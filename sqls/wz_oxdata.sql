@@ -44,7 +44,7 @@ INSERT INTO `wz_oxdata` VALUES ('1', '115', '在動物森林中的狐狸與浣�
 INSERT INTO `wz_oxdata` VALUES ('1', '116', '抓住上海郊外的鴨子的話可獲得潛水鞋.', '不是潛水鞋而是可獲得鴨蛋.', 'x');
 INSERT INTO `wz_oxdata` VALUES ('1', '117', '英文APPLE的意思是柳丁.', 'APPLE的意思是蘋果.', 'x');
 INSERT INTO `wz_oxdata` VALUES ('1', '118', '2014年世界杯冠軍是巴西隊.', '巴西隊已經被淘汰囉.', 'x');
-INSERT INTO `wz_oxdata` VALUES ('1', '119', '機器貓小叮噹最愛的食物是銅鑼燒. ', '抓到山羊的話可獲得白羊角.', 'x');
+INSERT INTO `wz_oxdata` VALUES ('1', '119', '機器貓小叮噹最愛的食物是銅鑼燒. ', '沒錯小叮噹最愛吃的就是銅鑼燒.', 'o');
 INSERT INTO `wz_oxdata` VALUES ('1', '120', '人類的五官包括手.', '五官是眉眼耳鼻口.', 'x');
 INSERT INTO `wz_oxdata` VALUES ('2', '1', '村莊商店雖然有賣單邊銀色耳環但沒有賣紫水晶耳環.', '紫水晶耳環可在弓箭手村商店中購買.', 'x');
 INSERT INTO `wz_oxdata` VALUES ('2', '2', '在商店購買 100%卷軸時雙手武器卷軸比單手武器卷軸還貴.', '雙手武器卷軸與單手武器卷軸的價錢一樣.', 'x');

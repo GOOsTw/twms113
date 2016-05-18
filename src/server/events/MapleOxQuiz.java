@@ -92,6 +92,7 @@ public class MapleOxQuiz extends MapleEvent {
             @Override
             public void run() {
                 int number = 0;
+                final int enditem = 9 - timesAsked;
                 for (MapleCharacter mc : toSend.getCharactersThreadsafe()) {
                     if (mc.isGM() || !mc.isAlive()) {
                         number++;
@@ -129,6 +130,7 @@ public class MapleOxQuiz extends MapleEvent {
                                     chr.getStat().setHp((short) 0);
                                     chr.updateSingleStat(MapleStat.HP, 0);
                                 } else {
+                                    toSend.broadcastMessage(MaplePacketCreator.serverNotice(6, "目前已經第:" + timesAsked + "題/距離活動結束還有:" + enditem + "題"));
                                     chr.gainExp(3000, true, true, false);
                                 }
                             }

@@ -1358,15 +1358,23 @@ public class AdminCommand {
     public static class 活動開始 extends CommandExecute {
 
         private static ScheduledFuture<?> ts = null;
-        private int min = 1;
+        private int min = 1, sec = 0;
 
         @Override
         public boolean execute(final MapleClient c, String splitted[]) {
             if (c.getChannelServer().getEvent() == c.getPlayer().getMapId()) {
                 MapleEvent.setEvent(c.getChannelServer(), false);
-                c.getPlayer().dropMessage(5, "已經關閉活動入口，６０秒後開始活動。");
-                World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "頻道:" + c.getChannel() + "活動目前已經關閉大門口，６０秒後開始活動。").getBytes());
-                c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getClock(60));
+                if (c.getPlayer().getMapId() == 109020001) {
+                    sec = 10;
+                    c.getPlayer().dropMessage(5, "已經關閉活動入口，１０秒後開始活動。");
+                    World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "頻道:" + c.getChannel() + "活動目前已經關閉大門口，１０秒後開始活動。").getBytes());
+                    c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getClock(sec));
+                } else {
+                    sec = 60;
+                    c.getPlayer().dropMessage(5, "已經關閉活動入口，６０秒後開始活動。");
+                    World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "頻道:" + c.getChannel() + "活動目前已經關閉大門口，６０秒後開始活動。").getBytes());
+                    c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getClock(sec));
+                }
                 ts = EventTimer.getInstance().register(new Runnable() {
 
                     @Override
@@ -1378,7 +1386,7 @@ public class AdminCommand {
                         }
                         min--;
                     }
-                }, 60 * 1000);
+                }, sec * 1000);
                 return true;
             } else {
                 c.getPlayer().dropMessage(5, "您必須先使用 !選擇活動 設定當前頻道的活動，並在當前頻道活動地圖裡使用。");
