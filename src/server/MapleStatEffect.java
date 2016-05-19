@@ -1096,8 +1096,10 @@ public class MapleStatEffect implements Serializable {
                 break;
             default:
                 if (isPMorph()) {
-                    final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<MapleBuffStat, Integer>(MapleBuffStat.MORPH, Integer.valueOf(getMorph(applyto))));
-                    applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveForeignBuff(applyto.getId(), stat, this), false);
+                    final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.MORPH, getMorph(applyto)));
+                    applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveForeignBuff(applyto.getId(), stat, this), true);
+                    Selfstat = new ArrayList();
+                    Selfstat.add((new Pair<>(MapleBuffStat.MORPH, (int) getMorph(applyto))));
                 } else if (isMorph() || isPirateMorph()) {
                     final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.MORPH, getMorph(applyto)));
                     applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveForeignBuff(applyto.getId(), stat, this), false);
@@ -1134,7 +1136,7 @@ public class MapleStatEffect implements Serializable {
             applyto.cancelEffect(this, true, -1, Selfstat == null ? localstatups : Selfstat);
         }
         // Broadcast effect to self
-        if (normal && statups.size() > 0) {
+        if (normal && (statups.size() > 0 || (Selfstat != null && Selfstat.size() > 0))) {
             applyto.getClient().sendPacket(MaplePacketCreator.giveBuff((skill ? sourceid : -sourceid), localDuration, Selfstat == null ? statups : Selfstat, this));
         }
         final long starttime = System.currentTimeMillis();
