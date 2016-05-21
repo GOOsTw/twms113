@@ -84,9 +84,9 @@ public class GuildHandler {
         mc.getMap().broadcastMessage(mc, MaplePacketCreator.spawnPlayerMapobject(mc), false);
     }
     
-    private static void SaveCharDb(final MapleClient c) {
+    private static void SaveCharDb(final MapleCharacter c) {
         try {
-            c.getPlayer().saveToDB(false, false);
+            c.saveToDB(false, false);
         } catch (Exception e) {
             System.out.println("公會的錯誤:" + e);
         }
@@ -180,7 +180,7 @@ public class GuildHandler {
                 World.Guild.gainGP(c.getPlayer().getGuildId(), 500);
                 c.getPlayer().dropMessage(1, "恭喜你成功創建一個公會.");
                 respawnPlayer(c.getPlayer());
-                SaveCharDb(c);
+                SaveCharDb(c.getPlayer());
                 break;
             }
             
@@ -236,7 +236,7 @@ public class GuildHandler {
                         }
                         c.getPlayer().saveGuildStatus();
                         respawnPlayer(c.getPlayer());
-                        SaveCharDb(c);
+                        SaveCharDb(c.getPlayer());
                         break;
                     }
                 }
@@ -257,7 +257,7 @@ public class GuildHandler {
                 World.Guild.leaveGuild(c.getPlayer().getMGC());
                 c.sendPacket(MaplePacketCreator.showGuildInfo(null));
                 c.sendPacket(MaplePacketCreator.fuckGuildInfo(c.getPlayer()));
-                SaveCharDb(c);
+                SaveCharDb(c.getPlayer());
                 break;
             }
             case EXPEL: {
@@ -274,7 +274,7 @@ public class GuildHandler {
                         }
                     }
                     World.Guild.expelMember(c.getPlayer().getMGC(), name, cid);
-                    SaveCharDb(c);
+                    SaveCharDb(c.getPlayer());
                     break;
                 }
             }
