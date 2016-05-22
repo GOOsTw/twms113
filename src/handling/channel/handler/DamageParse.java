@@ -74,6 +74,9 @@ public class DamageParse {
             }
             /* 武陵道場技能 */
             if (GameConstants.武陵道場技能(attack.skill)) {
+                if (player.getmulungEnergy() < 10000) {
+                    return;
+                }
                 if (player.getMapId() / 10000 == 92502) {
                     player.mulungEnergyModify(false);
                 } else {

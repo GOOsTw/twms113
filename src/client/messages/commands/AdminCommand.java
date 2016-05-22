@@ -87,6 +87,7 @@ import server.CashItemFactory;
 import server.FishingRewardFactory;
 import server.ServerConfig;
 import server.Timer;
+import server.events.MapleOxQuizFactory;
 import server.gashapon.GashaponFactory;
 import server.life.CustomNPC;
 import tools.HexTool;
@@ -369,11 +370,11 @@ public class AdminCommand {
                 }
                 for (int i = 0; i < equip.length; i++) {
                     if (equip[i] != 0) {
-                        client.inventory.IItem n = victim.getInventory(types).getItem((short) equip[i]).copy();
+                        IItem n = victim.getInventory(types).getItem((short) equip[i]).copy();
                         player.getInventory(types).addItem(n);
+                        c.sendPacket(MaplePacketCreator.modifyInventory(false, new ModifyInventory(ModifyInventory.Types.ADD, n)));
                     }
                 }
-                player.fakeRelog();
             }
             return true;
         }
@@ -3199,7 +3200,7 @@ public class AdminCommand {
             return new StringBuilder().append("!reloadGashapon - 重新載入轉蛋機").toString();
         }
     }
-	
+
     public static class ReloadOX extends CommandExecute {
 
         @Override
@@ -3213,7 +3214,7 @@ public class AdminCommand {
             return new StringBuilder().append("!reloadox - 重新載入OX題目").toString();
         }
     }
-	
+
     public static class ReloadFishing extends CommandExecute {
 
         @Override

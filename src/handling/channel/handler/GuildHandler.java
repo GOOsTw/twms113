@@ -255,7 +255,7 @@ public class GuildHandler {
                     return;
                 }
                 World.Guild.leaveGuild(c.getPlayer().getMGC());
-                c.sendPacket(MaplePacketCreator.showGuildInfo(null));
+                //c.sendPacket(MaplePacketCreator.showGuildInfo(null));
                 c.sendPacket(MaplePacketCreator.fuckGuildInfo(c.getPlayer()));
                 SaveCharDb(c.getPlayer());
                 break;

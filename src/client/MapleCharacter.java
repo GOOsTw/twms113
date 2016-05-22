@@ -2573,7 +2573,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public void changeMap(final MapleMap to, final MaplePortal pto) {
         changeMapInternal(to, pto.getPosition(), MaplePacketCreator.getWarpToMap(to, pto.getId(), this), null);
     }
-
+    
     public void changeMapPortal(final MapleMap to, final MaplePortal pto) {
         changeMapInternal(to, pto.getPosition(), MaplePacketCreator.getWarpToMap(to, pto.getId(), this), pto);
     }
@@ -4777,6 +4777,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         } catch (SQLException e) {
             System.err.println("Unable to delete note" + e);
         }
+    }
+    
+    public int getmulungEnergy() {
+        return mulung_energy;
     }
 
     public void mulungEnergyModify(boolean inc) {

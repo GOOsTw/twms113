@@ -1,30 +1,30 @@
 function enter(pi) {
     if (pi.getQuestStatus(6110) == 1) {
-        if (pi.getParty() != null) {
-            if (!pi.isLeader()) {
-                pi.playerMessage("Party leader consisting of two Warriors can decide to enter.");
-            } else {
-                if (pi.getParty().getMembers().size < 2) {
-                    pi.playerMessage("You can make a quest when you have a party with two. Please make your party with two members.");
-                } else {
-                    if (!pi.isAllPartyMembersAllowedJob(1)) {
-                        pi.playerMessage("You can't enter. Your party member's job is not Warrior or Your party doesn't consist of two members.");
-                    } else {
-                        var em = pi.getEventManager("4jrush");
-                        if (em == null) {
-                            pi.playerMessage("You're not allowed to enter with unknown reason. Try again.");
-                        } else {
-                            em.startInstance(pi.getParty(), pi.getMap());
-                            return true;
-                        }
-                    }
-                }
-            }
-        } else {
-            pi.playerMessage(5, "You don...t have a  party. You can challenge with party.");
-        }
+	 if (pi.getParty() != null) {
+	     if (!pi.isLeader()) {
+		 pi.playerMessage("請找隊伍隊長來找我。");
+	     } else {
+		 if (pi.getParty().getMembers().size < 2) {
+		    pi.playerMessage("隊伍人數必須大於兩個以上。");
+		 } else {
+		      if (!pi.isAllPartyMembersAllowedJob(1)) {
+			  pi.playerMessage("隊伍裡有人職業不符合。");
+		      } else {
+			  var em = pi.getEventManager("4jrush");
+			  if (em == null) {
+			      pi.playerMessage("尚未找到副本，請聯繫管理員。");
+			  } else {
+			      em.startInstance(pi.getParty(), pi.getMap());
+			      return true;
+			  }
+		      }
+		 }
+	     }
+	 } else {
+	     pi.playerMessage(5, "尚未組隊，請組隊後再來找我。");
+	 }
     } else {
-        pi.playerMessage("You can't enter sealed place.");
+	pi.playerMessage("由於太過強大您無法進入。");
     }
     return false;
 }
