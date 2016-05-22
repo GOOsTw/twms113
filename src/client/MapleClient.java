@@ -472,9 +472,6 @@ public class MapleClient {
                                     loginok = 4;
                                     loggedIn = false;
                                 }
-                            } else if (loginstate == 5) {
-                                loginok = 1;
-                                loggedIn = false;
                             } else if (LoginCryptoLegacy.isLegacyPassword(passhash) && LoginCryptoLegacy.checkPassword(password, passhash)) {
                                 // Check if a password upgrade is needed.
                                 loginok = 0;
