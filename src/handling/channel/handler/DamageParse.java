@@ -332,23 +332,19 @@ public class DamageParse {
                         }
                         case SkillType.龍騎士.龍之獻祭: { // Sacrifice
                             final int remainingHP = stats.getHp() - totDamage * (effect != null ? effect.getX() : 0) / 100;
-                            stats.setHp(remainingHP > 1 ? 1 : remainingHP);
+                            stats.setHp(remainingHP > 1 ? remainingHP : 1);
                             break;
                         }
 
                         case SkillType.盜賊.雙飛斬:
-                        case SkillType.盜賊.詛咒術:
                         case SkillType.盜賊.劈空斬:
-                        case SkillType.暗殺者.風魔手裏劍:
                         case SkillType.夜使者.三飛閃:
                         case SkillType.俠盜.迴旋斬:
                         case SkillType.神偷.落葉斬:
                         case SkillType.神偷.分身術:
                         case SkillType.暗影神偷.瞬步連擊:
                         case SkillType.暗影神偷.致命暗殺:
-                        case SkillType.暗夜行者1.詛咒術:
                         case SkillType.暗夜行者1.雙飛斬:
-                        case SkillType.暗夜行者3.風魔手裏劍:
                         case SkillType.暗夜行者3.三飛閃: {
                             if (player.hasBuffedValue(MapleBuffStat.WK_CHARGE) && !monster.getStats().isBoss()) {
                                 MapleStatEffect eff = player.getStatForBuff(MapleBuffStat.WK_CHARGE);
