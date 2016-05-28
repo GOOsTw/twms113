@@ -103,7 +103,7 @@ public class MapleMapFactory {
                         for (MapleData footHold : footCat) {
                             fh = new MapleFoothold(new Point(
                                     MapleDataTool.getInt(footHold.getChildByPath("x1")), MapleDataTool.getInt(footHold.getChildByPath("y1"))), new Point(
-                                            MapleDataTool.getInt(footHold.getChildByPath("x2")), MapleDataTool.getInt(footHold.getChildByPath("y2"))), Integer.parseInt(footHold.getName()));
+                                    MapleDataTool.getInt(footHold.getChildByPath("x2")), MapleDataTool.getInt(footHold.getChildByPath("y2"))), Integer.parseInt(footHold.getName()));
                             fh.setPrev((short) MapleDataTool.getInt(footHold.getChildByPath("prev")));
                             fh.setNext((short) MapleDataTool.getInt(footHold.getChildByPath("next")));
 
@@ -257,7 +257,7 @@ public class MapleMapFactory {
                 for (MapleData footHold : footCat) {
                     MapleFoothold fh = new MapleFoothold(new Point(
                             MapleDataTool.getInt(footHold.getChildByPath("x1")), MapleDataTool.getInt(footHold.getChildByPath("y1"))), new Point(
-                                    MapleDataTool.getInt(footHold.getChildByPath("x2")), MapleDataTool.getInt(footHold.getChildByPath("y2"))), Integer.parseInt(footHold.getName()));
+                            MapleDataTool.getInt(footHold.getChildByPath("x2")), MapleDataTool.getInt(footHold.getChildByPath("y2"))), Integer.parseInt(footHold.getName()));
                     fh.setPrev((short) MapleDataTool.getInt(footHold.getChildByPath("prev")));
                     fh.setNext((short) MapleDataTool.getInt(footHold.getChildByPath("next")));
 
@@ -724,5 +724,23 @@ public class MapleMapFactory {
             mapInfos.put(mapid, nodeInfo);
         }
         return nodeInfo;
+    }
+
+    public boolean destroyMap(int mapid) {
+        return destroyMap(mapid, false);
+    }
+
+    public boolean destroyMap(int mapid, boolean Remove) {
+        synchronized (this.maps) {
+            if (this.maps.containsKey(Integer.valueOf(mapid))) {
+                if (Remove) {
+                    //this.DeStorymaps.put(mapid, 0);
+                    this.maps.remove(mapid);
+                }
+                return this.maps.remove(Integer.valueOf(mapid)) != null;
+
+            }
+        }
+        return false;
     }
 }
