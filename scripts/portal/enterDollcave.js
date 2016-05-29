@@ -1,5 +1,5 @@
 function enter(pi) {
-    if (pi.getQuestStatus(21731) == 1) {
+    if (pi.getQuestStatus(21731) == 1 || pi.getQuestStatus(20730) == 1) {
         pi.openNpc(1063011);
 	} else if (pi.getQuestStatus(21728) == 1) {
 		pi.forceCompleteQuest(21728);

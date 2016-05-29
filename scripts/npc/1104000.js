@@ -8,7 +8,7 @@ function action(mode, type, selection) {
         status--;
     }
     if (status == 0) {
-        if ((cm.getQuestStatus(21731) == 1) && cm.getPlayer().isAran()) {
+        if (cm.getQuestStatus(21731) == 1 && cm.getPlayer().isAran() || cm.getQuestStatus(20730) == 1 && cm.getPlayer().isKOC()) {
             cm.sendNextS("我是#p1204001#黑色翅膀的成員，你怎麼敢來打擾我呢?? 你害我的老毛病又犯了，我發誓要效忠於黑魔法師，要是我抓住你了，我會讓你付出代價的！", 9);
             status++;
         } else {
@@ -18,7 +18,7 @@ function action(mode, type, selection) {
     } else if (status == 1) {
         cm.sendNextPrevS("#b(黑色翅膀? 他們是誰? 而怎麼會又跟黑魔法師扯到關係，也許該報告才對。)#k", 3);
     } else if (status == 2) {
-        if (cm.isQuestActive(21731) && cm.getPlayer().isAran()) {
+        if (cm.getQuestStatus(21731) == 1 && cm.getPlayer().isAran() || cm.getQuestStatus(20730) == 1 && cm.getPlayer().isKOC()) {
             var em = cm.getEventManager("Francis");
             if (em == null) {
                 cm.sendOk("當前副本有問題，請聯絡管理員....");
