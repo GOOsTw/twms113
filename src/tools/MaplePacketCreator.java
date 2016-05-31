@@ -2637,12 +2637,14 @@ public class MaplePacketCreator {
     public static MaplePacket partyStatusMessage(int message) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
-        /*	* 10: A beginner can't create a party.
-         * 1/11/14/19: Your request for a party didn't work due to an unexpected error.
-         * 13: You have yet to join a party.
-         * 16: Already have joined a party.
-         * 17: The party you're trying to join is already in full capacity.
-         * 19: Unable to find the requested character in this channel.*/
+        /*	
+         * 10: 初心者不能開啟隊伍
+         * 11: 發生未知錯誤，不能組隊邀請
+         * 13: 沒有參加的隊伍
+         * 16: 已經加入其他組
+         * 17: 隊伍成員已滿
+         * 19: 目前頻道內找不到該腳色
+        */
         mplew.writeShort(SendPacketOpcode.PARTY_OPERATION.getValue());
         mplew.write(message);
 

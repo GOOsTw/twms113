@@ -7,7 +7,7 @@ var status = -1;
 
 function start() {
     if (cm.getMapId() == 802000710) {
-        if (cm.getPlayer().getClient().getChannel() != 1) {
+        if (cm.getPlayer().getClient().getChannel() != 2) {
             cm.sendOk("參加遠征任務請到 2 頻道.");
             cm.dispose();
             return;
@@ -19,9 +19,6 @@ function start() {
             cm.dispose();
             return;
         }
-        //	var prop = em.getProperty("NibergenSummoned");
-
-        //	if (((prop.equals("PQCleared") || (prop.equals("1")) && cm.getPlayerCount(802000211) == 0)) || prop.equals("0") || prop == null) {
         var prop = em.getProperty("state");
         if (prop == null || prop.equals("0")) {
             var squadAvailability = cm.getSquadAvailability("dunas2");
@@ -116,7 +113,7 @@ function action(mode, type, selection) {
             var squd = cm.getSquad("Dunas2");
             if (squd != null && !squd.getAllNextPlayer().contains(cm.getPlayer().getName())) {
                 squd.setNextPlayer(cm.getPlayer().getName());
-                cm.sendOk("You have reserved the spot.");
+                cm.sendOk("你已經登記了下一組的遠征隊。");
             }
         }
         cm.dispose();

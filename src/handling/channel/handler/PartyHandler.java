@@ -22,6 +22,7 @@ package handling.channel.handler;
 
 import client.MapleCharacter;
 import client.MapleClient;
+import client.MapleJob;
 import handling.world.MapleParty;
 import handling.world.MaplePartyCharacter;
 import handling.world.PartyOperation;
@@ -68,10 +69,13 @@ public class PartyHandler {
         switch (operation) {
             case 1: // create
                 if (c.getPlayer().getParty() == null) {
-                    party = World.Party.createParty(partyplayer);
-                    c.getPlayer().setParty(party);
-                    c.sendPacket(MaplePacketCreator.partyCreated(party.getId()));
-
+                    if (!MapleJob.isBeginner(c.getPlayer().getJob())) {
+                        party = World.Party.createParty(partyplayer);
+                        c.getPlayer().setParty(party);
+                        c.sendPacket(MaplePacketCreator.partyCreated(party.getId()));
+                    } else {
+                        c.sendPacket(MaplePacketCreator.partyStatusMessage(10));
+                    }
                 } else {
                     if (partyplayer.equals(party.getLeader()) && party.getMembers().size() == 1) { //only one, reupdate
                         c.sendPacket(MaplePacketCreator.partyCreated(party.getId()));
@@ -129,10 +133,10 @@ public class PartyHandler {
                         if (party.getMembers().size() < 6) {
                             invited.getClient().sendPacket(MaplePacketCreator.partyInvite(c.getPlayer()));
                         } else {
-                            c.sendPacket(MaplePacketCreator.partyStatusMessage(16));
+                            c.sendPacket(MaplePacketCreator.partyStatusMessage(17));
                         }
                     } else {
-                        c.sendPacket(MaplePacketCreator.partyStatusMessage(17));
+                        c.sendPacket(MaplePacketCreator.partyStatusMessage(16));
                     }
                 } else {
                     c.sendPacket(MaplePacketCreator.partyStatusMessage(19));

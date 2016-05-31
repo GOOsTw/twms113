@@ -81,11 +81,11 @@ function start() {
             }
             cm.dispose();
             break;
-        case 802000803:
+        case 802000821:
             if (cm.getQuestStatus(50016) == 2) {
                 cm.gainItem(4032181, 100);
                 cm.gainItem(4032361, 1);
-                cm.warp(802000804, 0);
+                cm.warp(802000820, 0);
             } else {
                 cm.showEffect(false, "quest/party/clear");
                 cm.playSound(false, "Party1/Clear");
@@ -96,7 +96,7 @@ function start() {
             cm.dispose();
             break;
         default:
-            cm.sendSimple("嗨~ 我是水晶，需要我幫忙？ \r #b#L0##m802000200##l \r #L1##m802000300##l \r #L2##m802000500##l \r #L3##m802000600##l \r #L5##m802000800##l  \r #L7##m802000200##l \r #L6#讓我好好考慮一下。#l");
+            cm.sendSimple("嗨~ 我是水晶，需要我幫忙？ \r #b#L0##m802000200##l \r #L1##m802000300##l \r #L2##m802000500##l \r #L3##m802000600##l \r #L5##m802000700##l  \r #L7##m802000820##l \r #L6#讓我好好考慮一下。#l");
             break;
     }
 }
@@ -131,7 +131,7 @@ function action(mode, type, selection) {
                 break;
             case 5:
                 questid = cm.haveItem(1142103);
-                mapid = 802000800;
+                mapid = 802000700;
                 portal = 0;
                 break;
             case 7:

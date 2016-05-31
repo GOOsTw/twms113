@@ -7,7 +7,7 @@ var status = -1;
 
 function start() {
     if (cm.getMapId() == 802000800) {
-        if (cm.getPlayer().getClient().getChannel() != 1) {
+        if (cm.getPlayer().getClient().getChannel() != 2) {
             cm.sendOk("參加遠征任務請到 2 頻道.");
             cm.dispose();
             return;
@@ -19,9 +19,6 @@ function start() {
             cm.dispose();
             return;
         }
-        //	var prop = em.getProperty("CoreBlaze");
-
-        //	if (((prop.equals("PQCleared") || (prop.equals("1")) && cm.getPlayerCount(802000211) == 0)) || prop.equals("0") || prop == null) {
         var prop = em.getProperty("state");
         if (prop == null || prop.equals("0")) {
             var squadAvailability = cm.getSquadAvailability("Core_Blaze");
@@ -30,7 +27,6 @@ function start() {
                 cm.sendYesNo("你想成為遠征隊長嗎？");
 
             } else if (squadAvailability == 1) {
-                // -1 = Cancelled, 0 = not, 1 = true
                 var type = cm.isSquadLeader("Core_Blaze");
                 if (type == -1) {
                     cm.sendOk("遠征隊已經註銷.請重新發起.");
