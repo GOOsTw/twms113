@@ -2827,6 +2827,21 @@ public class AdminCommand {
         }
     }
 
+    public static class 最近傳送點 extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String[] splitted) {
+            MaplePortal portal = c.getPlayer().getMap().findClosestPortal(c.getPlayer().getTruePosition());
+            c.getPlayer().dropMessage(-11, portal.getName() + " id: " + portal.getId() + " script: " + portal.getScriptName());
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!最近傳送點 - 查看最近的傳送點").toString();
+        }
+    }
+
     public static class KillMonster extends CommandExecute {
 
         @Override

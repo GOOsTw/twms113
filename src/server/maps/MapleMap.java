@@ -2191,8 +2191,6 @@ public final class MapleMap {
             case 280030001:
                 zz = MapleSquadType.chaoszak;
                 break;
-            case 240060000:
-            case 240060100:
             case 240060200:
                 zz = MapleSquadType.horntail;
                 break;
@@ -2259,8 +2257,6 @@ public final class MapleMap {
             case 280030000:
                 em = "ZakumBattle";
                 break;
-            case 240060000:
-            case 240060100:
             case 240060200:
                 em = "HorntailBattle";
                 break;
@@ -2803,7 +2799,20 @@ public final class MapleMap {
         }
         return closest;
     }
-
+	
+    public MaplePortal findClosestPortal(Point from) {
+        MaplePortal closest = getPortal(0);
+        double distance, shortestDistance = Double.POSITIVE_INFINITY;
+        for (MaplePortal portal : portals.values()) {
+            distance = portal.getPosition().distanceSq(from);
+            if (distance < shortestDistance) {
+                closest = portal;
+                shortestDistance = distance;
+            }
+        }
+        return closest;
+    }
+	
     public String spawnDebug() {
         StringBuilder sb = new StringBuilder("Mapobjects in map : ");
         sb.append(this.getMapObjectSize());

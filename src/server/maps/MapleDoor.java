@@ -137,7 +137,7 @@ public class MapleDoor extends AbstractMapleMapObject {
     public final void warp(final MapleCharacter chr, final boolean toTown) {
         if (chr.getId() == getOwnerId() || (getOwner() != null && getOwner().getParty() != null && getOwner().getParty().getMemberById(chr.getId()) != null)) {
             if (!toTown) {
-                chr.changeMap(target, targetPosition);
+                chr.changeMap(target, target.findClosestPortal(targetPosition));
             } else {
                 chr.changeMap(town, townPortal);
             }

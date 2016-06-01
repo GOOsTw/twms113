@@ -24,8 +24,7 @@ function CheckHorntailHead(eim) {
     var prop = em.getProperty("preheadCheck");
     if (prop.equals("0")) {
     eim.schedule("CheckHorntailHead", 3000);
-    }
-    else if (prop.equals("1")) {
+    } else if (prop.equals("1")) {
     em.setProperty("preheadCheck", "2");
     var mob = em.getMonster(8810024); // First HT Head
     eim.registerMonster(mob);
@@ -33,11 +32,9 @@ function CheckHorntailHead(eim) {
 	em.setProperty("state", "2");
     eim.broadcastPlayerMsg(5,"闇黑龍王吼了一聲，你必須殺死闇黑龍王的左頭顱，才能進入下一關。");
     eim.schedule("CheckHorntailHead", 3000);
-    }
-    else if (prop.equals("2")) {
+    } else if (prop.equals("2")) {
     eim.schedule("CheckHorntailHead", 3000);
-    }
-    else if (prop.equals("3")) {
+    } else if (prop.equals("3")) {
     em.setProperty("preheadCheck", "4");
     var mob = em.getMonster(8810025); // Second HT Head
     eim.registerMonster(mob);
@@ -68,7 +65,7 @@ function changedMap(eim, player, mapid) {
 
 function playerDisconnected(eim, player) {
 	player.setMap(eim.getMapInstance(returnmap));
-    return 1;
+    return 0;
 }
 
 function scheduledTimeout(eim) {

@@ -3944,7 +3944,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public void sendSpawnData(MapleClient client) {
         if (client.getPlayer().allowedToTarget(this)) {
             client.sendPacket(MaplePacketCreator.spawnPlayerMapobject(this));
-
+            if (getParty() != null && !isClone()) {
+                updatePartyMemberHP();
+                receivePartyMemberHP();
+            }
             for (final MaplePet pet : pets) {
                 if (pet.getSummoned()) {
                     client.sendPacket(PetPacket.showPet(this, pet, false, false));
