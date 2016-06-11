@@ -1,5 +1,5 @@
-﻿var baseid = 100040400;
-var dungeonid = 100040500;
+﻿var baseid = 101030400;
+var dungeonid = 101030500;
 var dungeons = 30;
 
 function enter(pi) {

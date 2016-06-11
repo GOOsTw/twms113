@@ -962,10 +962,9 @@ public class MapleStatEffect implements Serializable {
         this.duration = d;
     }
 
-    public final void silentApplyBuff(final MapleCharacter chr, final long starttime) {
-        final int localDuration = alchemistModifyVal(chr, duration, false);
+    public final void silentApplyBuff(final MapleCharacter chr, final long starttime, final int localDuration, final List<Pair<MapleBuffStat, Integer>> statup, final int cid) {
         chr.registerEffect(this, starttime, BuffTimer.getInstance().schedule(new CancelEffectAction(chr, this, starttime),
-                ((starttime + localDuration) - System.currentTimeMillis())));
+                ((starttime + localDuration) - System.currentTimeMillis())), statup, true, localDuration, cid);
 
         final SummonMovementType summonMovementType = getSummonMovementType();
         if (summonMovementType != null) {
@@ -990,7 +989,7 @@ public class MapleStatEffect implements Serializable {
         final long starttime = System.currentTimeMillis();
         final CancelEffectAction cancelAction = new CancelEffectAction(applyto, this, starttime);
         final ScheduledFuture<?> schedule = Timer.BuffTimer.getInstance().schedule(cancelAction, ((starttime + 99999) - System.currentTimeMillis()));
-        applyto.registerEffect(this, starttime, null);
+        applyto.registerEffect(this, starttime, null, applyto.getId());
     }
 
     public final void applyEnergyBuff(final MapleCharacter applyto, final boolean infinity) {
@@ -999,14 +998,14 @@ public class MapleStatEffect implements Serializable {
         final long starttime = System.currentTimeMillis();
         if (infinity) {
             applyto.getClient().sendPacket(MaplePacketCreator.giveEnergyChargeTest(0, duration / 1000));
-            applyto.registerEffect(this, starttime, null);
+            applyto.registerEffect(this, starttime, null, applyto.getId());
         } else {
             applyto.cancelEffect(this, true, -1);
             applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveEnergyChargeTest(applyto.getId(), 10000, duration / 1000), false);
             final CancelEffectAction cancelAction = new CancelEffectAction(applyto, this, starttime);
             final ScheduledFuture<?> schedule = BuffTimer.getInstance().schedule(cancelAction, ((starttime + duration) - System.currentTimeMillis()));
             this.statups = Collections.singletonList(new Pair<>(MapleBuffStat.ENERGY_CHARGE, 10000));
-            applyto.registerEffect(this, starttime, schedule);
+            applyto.registerEffect(this, starttime, schedule, stat, false, duration, applyto.getId());
             this.statups = stat;
         }
     }
@@ -1143,7 +1142,8 @@ public class MapleStatEffect implements Serializable {
         final CancelEffectAction cancelAction = new CancelEffectAction(applyto, this, starttime);
 
         final ScheduledFuture<?> schedule = BuffTimer.getInstance().schedule(cancelAction, ((starttime + localDuration) - System.currentTimeMillis()));
-        applyto.registerEffect(this, starttime, schedule, Selfstat == null ? localstatups : Selfstat);
+        applyto.registerEffect(this, starttime, schedule, Selfstat == null ? localstatups : Selfstat,
+                false, localDuration, applyfrom.getId());
     }
 
     public static final int parseMountInfo(final MapleCharacter player, final int skillid) {
@@ -1369,10 +1369,6 @@ public class MapleStatEffect implements Serializable {
             case 1221004:
             case 11111007:
             case 12101005:
-            case 4311001:
-            case 4331003:
-            case 4341002:
-            case 35121005:
                 return false;
         }
         if (GameConstants.isNoDelaySkill(sourceid)) {

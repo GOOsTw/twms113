@@ -270,7 +270,7 @@ public class HiredMerchantHandler {
             pack.setSentTime(rs.getLong("time"));
             rs.close();
 
-            Map<Integer, Pair<IItem, MapleInventoryType>> items = ItemLoader.HIRED_MERCHANT.loadItems(false, packageid, accountid, charid);
+            Map<Integer, Pair<IItem, MapleInventoryType>> items = ItemLoader.HIRED_MERCHANT.loadItems(false, packageid, accountid);
             if (items != null) {
                 List<IItem> iters = new ArrayList<>();
                 for (Pair<IItem, MapleInventoryType> z : items.values()) {

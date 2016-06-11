@@ -1,36 +1,48 @@
-//var baseid = 541020610;
-//var dungeonid = 541020620;
-//var dungeons = 19;
+﻿var baseid = 251010402;
+var dungeonid = 251010410;
+var dungeons = 30;
 
 function enter(pi) {
-    if (pi.getMapId() == 251010402) {
+    if (pi.getMapId() == baseid) {
         if (pi.getParty() != null) {
             if (pi.isLeader()) {
-                //		for (var i = 0; i < dungeons; i++) {
-                //		    if (pi.getPlayerCount(dungeonid + i) == 0) {
-                //			pi.warpParty(dungeonid + i);
-                pi.warpParty(251010410);
-                return true;
-                //		    }
-                //		}
+                var party = pi.getPlayer().getParty().getMembers();
+                var mapId = pi.getPlayer().getMapId();
+                var next = true;
+                var it = party.iterator();
+                while (it.hasNext()) {
+                    var cPlayer = it.next();
+                    var ccPlayer = pi.getPlayer().getMap().getCharacterById(cPlayer.getId());
+                    if (ccPlayer == null) {
+                        next = false;
+                        break;
+                    }
+                }
+                for (var i = 0; i < dungeons; i++) {
+                    if (!next) {
+                        pi.playerMessage(5, "隊伍成員必須在相同地圖上。");
+                        return;
+                    }
+                    if (pi.getPlayerCount(dungeonid + i) == 0) {
+                        pi.warpParty(dungeonid + i);
+                        return;
+                    }
+                }
             } else {
-                pi.playerMessage(5, "需要一個隊伍。");
-                return false;
+                pi.playerMessage(5, "你不是隊長。");
+                return;
             }
         } else {
-            //	    for (var i = 0; i < dungeons; i++) {
-            //		if (pi.getPlayerCount(dungeonid + i) == 0) {
-            //		    pi.warp(dungeonid + i);
-            pi.warp(251010410, 0);
-            return true;
-            //		}
-            //	    }
+            for (var i = 0; i < dungeons; i++) {
+                if (pi.getPlayerCount(dungeonid + i) == 0) {
+                    pi.warp(dungeonid + i);
+                    return;
+                }
+            }
         }
-        pi.playerMessage(5, "所有的地下城都在使用中，請稍後再嘗試。");
-        return false;
+        pi.playerMessage(5, "目前所有地下城都在使用，請稍後在嘗試。");
     } else {
         pi.playPortalSE();
-        pi.warp(251010402, "MD00");
-        return true;
+        pi.warp(baseid, "MD00");
     }
 }

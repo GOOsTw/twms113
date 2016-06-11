@@ -1,6 +1,6 @@
-﻿var baseid = 100040400;
-var dungeonid = 100040500;
-var dungeons = 30;
+﻿var baseid = 221040000;
+var dungeonid = 221040001;
+var dungeons = 39;
 
 function enter(pi) {
     if (pi.getMapId() == baseid) {

@@ -1739,11 +1739,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
     }
 
-    public void registerEffect(MapleStatEffect effect, long starttime, ScheduledFuture<?> schedule) {
-        registerEffect(effect, starttime, schedule, effect.getStatups());
+    public void registerEffect(MapleStatEffect effect, long starttime, ScheduledFuture<?> schedule, int from) {
+        registerEffect(effect, starttime, schedule, effect.getStatups(), false, effect.getDuration(), from);
     }
 
-    public void registerEffect(MapleStatEffect effect, long starttime, ScheduledFuture<?> schedule, List<Pair<MapleBuffStat, Integer>> statups) {
+    public void registerEffect(MapleStatEffect effect, long starttime, ScheduledFuture<?> schedule, List<Pair<MapleBuffStat, Integer>> statups, boolean silent, final int localDuration, final int cid) {
         if (effect.isHide() && isGM()) {
             this.hidden = true;
             map.broadcastMessage(this, MaplePacketCreator.removePlayerFromMap(getId()), false);
@@ -1773,7 +1773,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     battleshipHP = value; //copy this as well
                 }
             }
-            effects.put(statup.getLeft(), new MapleBuffStatValueHolder(effect, starttime, schedule, value));
+            final MapleBuffStatValueHolder mbsvh = new MapleBuffStatValueHolder(effect, starttime, schedule, value, localDuration, cid);
+            effects.put(statup.getLeft(), mbsvh);
         }
         if (clonez > 0) {
             int cloneSize = Math.max(getNumClones(), getCloneSize());
@@ -2169,15 +2170,24 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             return;
         }
         for (PlayerBuffValueHolder mbsvh : buffs) {
-            mbsvh.effect.silentApplyBuff(this, mbsvh.startTime);
+            mbsvh.effect.silentApplyBuff(this, mbsvh.startTime, mbsvh.localDuration, mbsvh.statup, mbsvh.cid);
         }
     }
 
     public List<PlayerBuffValueHolder> getAllBuffs() {
-        List<PlayerBuffValueHolder> ret = new ArrayList<>();
-        LinkedList<MapleBuffStatValueHolder> allBuffs = new LinkedList<>(effects.values());
-        for (MapleBuffStatValueHolder mbsvh : allBuffs) {
-            ret.add(new PlayerBuffValueHolder(mbsvh.startTime, mbsvh.effect));
+        final List<PlayerBuffValueHolder> ret = new ArrayList<>();
+        final Map<Pair<Integer, Byte>, Integer> alreadyDone = new HashMap<>();
+        final LinkedList<Entry<MapleBuffStat, MapleBuffStatValueHolder>> allBuffs = new LinkedList<>(effects.entrySet());
+        for (Entry<MapleBuffStat, MapleBuffStatValueHolder> mbsvh : allBuffs) {
+            final Pair<Integer, Byte> key = new Pair<>(mbsvh.getValue().effect.getSourceId(), mbsvh.getValue().effect.getLevel());
+            if (alreadyDone.containsKey(key)) {
+                ret.get(alreadyDone.get(key)).statup.add((new Pair<>(mbsvh.getKey(), mbsvh.getValue().value)));
+            } else {
+                alreadyDone.put(key, ret.size());
+                ArrayList<Pair<MapleBuffStat, Integer>> list = new ArrayList();
+                list.add((new Pair<>(mbsvh.getKey(), mbsvh.getValue().value)));
+                ret.add(new PlayerBuffValueHolder(mbsvh.getValue().startTime, mbsvh.getValue().effect, list, mbsvh.getValue().localDuration, mbsvh.getValue().cid));
+            }
         }
         return ret;
     }
@@ -2573,7 +2583,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public void changeMap(final MapleMap to, final MaplePortal pto) {
         changeMapInternal(to, pto.getPosition(), MaplePacketCreator.getWarpToMap(to, pto.getId(), this), null);
     }
-    
+
     public void changeMapPortal(final MapleMap to, final MaplePortal pto) {
         changeMapInternal(to, pto.getPosition(), MaplePacketCreator.getWarpToMap(to, pto.getId(), this), pto);
     }
@@ -4781,7 +4791,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             System.err.println("Unable to delete note" + e);
         }
     }
-    
+
     public int getmulungEnergy() {
         return mulung_energy;
     }

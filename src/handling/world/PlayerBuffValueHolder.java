@@ -20,17 +20,27 @@
  */
 package handling.world;
 
+import client.MapleBuffStat;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 import server.MapleStatEffect;
+import tools.Pair;
+
 
 public class PlayerBuffValueHolder implements Serializable {
 
     private static final long serialVersionUID = 9179541993413738569L;
     public long startTime;
+    public int localDuration, cid;
     public MapleStatEffect effect;
-
-    public PlayerBuffValueHolder(final long startTime, final MapleStatEffect effect) {
+    public List<Pair<MapleBuffStat, Integer>> statup;
+    
+    public PlayerBuffValueHolder(final long startTime, final MapleStatEffect effect, final List<Pair<MapleBuffStat, Integer>> statup, int localDuration, int cid) {
         this.startTime = startTime;
         this.effect = effect;
+        this.statup = statup;
+        this.localDuration = localDuration;
+        this.cid = cid;
     }
 }

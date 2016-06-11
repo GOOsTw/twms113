@@ -33,8 +33,6 @@ import database.DatabaseConnection;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import tools.Pair;
 
 public enum ItemLoader {
@@ -44,7 +42,7 @@ public enum ItemLoader {
     CASHSHOP_EXPLORER("csitems", "csequipment", 2, "accountid"),
     CASHSHOP_CYGNUS("csitems", "csequipment", 3, "accountid"),
     CASHSHOP_ARAN("csitems", "csequipment", 4, "accountid"),
-    HIRED_MERCHANT("hiredmerchitems", "hiredmerchequipment", 5, "packageid", "accountid", "characterid"),
+    HIRED_MERCHANT("hiredmerchitems", "hiredmerchequipment", 5, "packageid", "accountid"),
     DUEY("dueyitems", "dueyequipment", 6, "packageid"),
     CASHSHOP_EVAN("csitems", "csequipment", 7, "accountid"),
     MTS("mtsitems", "mtsequipment", 8, "packageid"),

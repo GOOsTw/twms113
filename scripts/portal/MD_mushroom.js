@@ -1,38 +1,48 @@
-/*
-	This file is part of the OdinMS Maple Story Server
-    Copyright (C) 2008 Patrick Huy <patrick.huy@frz.cc> 
-                       Matthias Butz <matze@odinms.de>
-                       Jan Christian Meyer <vimes@odinms.de>
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License version 3
-    as published by the Free Software Foundation. You may not use, modify
-    or distribute this program under any other version of the
-    GNU Affero General Public License.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-/*
-MiniDungeon - Mushroom
-*/
-
-var baseid = 105050100;
+﻿var baseid = 105050100;
 var dungeonid = 105050101;
 var dungeons = 30;
 
 function enter(pi) {
     if (pi.getMapId() == baseid) {
-        for (var i = 0; i < dungeons; i++)
-            if (pi.getPlayerCount(dungeonid + i) == 0) {
-                pi.warp(dungeonid + i, 0);
-                return true;
+        if (pi.getParty() != null) {
+            if (pi.isLeader()) {
+                var party = pi.getPlayer().getParty().getMembers();
+                var mapId = pi.getPlayer().getMapId();
+                var next = true;
+                var it = party.iterator();
+                while (it.hasNext()) {
+                    var cPlayer = it.next();
+                    var ccPlayer = pi.getPlayer().getMap().getCharacterById(cPlayer.getId());
+                    if (ccPlayer == null) {
+                        next = false;
+                        break;
+                    }
+                }
+                for (var i = 0; i < dungeons; i++) {
+                    if (!next) {
+                        pi.playerMessage(5, "隊伍成員必須在相同地圖上。");
+                        return;
+                    }
+                    if (pi.getPlayerCount(dungeonid + i) == 0) {
+                        pi.warpParty(dungeonid + i);
+                        return;
+                    }
+                }
+            } else {
+                pi.playerMessage(5, "你不是隊長。");
+                return;
             }
-        pi.playerMessage(5, "目前所有迷你地下城都有人，請稍後再嘗試。");
-    } else
+        } else {
+            for (var i = 0; i < dungeons; i++) {
+                if (pi.getPlayerCount(dungeonid + i) == 0) {
+                    pi.warp(dungeonid + i);
+                    return;
+                }
+            }
+        }
+        pi.playerMessage(5, "目前所有地下城都在使用，請稍後在嘗試。");
+    } else {
+        pi.playPortalSE();
         pi.warp(baseid, "MD00");
-    return true;
+    }
 }

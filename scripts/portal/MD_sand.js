@@ -1,4 +1,4 @@
-var baseid = 260020600;
+﻿var baseid = 260020600;
 var dungeonid = 260020630;
 var dungeons = 30;
 
@@ -6,14 +6,31 @@ function enter(pi) {
     if (pi.getMapId() == baseid) {
         if (pi.getParty() != null) {
             if (pi.isLeader()) {
+                var party = pi.getPlayer().getParty().getMembers();
+                var mapId = pi.getPlayer().getMapId();
+                var next = true;
+                var it = party.iterator();
+                while (it.hasNext()) {
+                    var cPlayer = it.next();
+                    var ccPlayer = pi.getPlayer().getMap().getCharacterById(cPlayer.getId());
+                    if (ccPlayer == null) {
+                        next = false;
+                        break;
+                    }
+                }
                 for (var i = 0; i < dungeons; i++) {
+                    if (!next) {
+                        pi.playerMessage(5, "隊伍成員必須在相同地圖上。");
+                        return;
+                    }
                     if (pi.getPlayerCount(dungeonid + i) == 0) {
                         pi.warpParty(dungeonid + i);
                         return;
                     }
                 }
             } else {
-                pi.playerMessage(5, "您不是組隊隊長！");
+                pi.playerMessage(5, "你不是隊長。");
+                return;
             }
         } else {
             for (var i = 0; i < dungeons; i++) {
@@ -23,7 +40,7 @@ function enter(pi) {
                 }
             }
         }
-        pi.playerMessage(5, "所有的地下城都在使用中，請稍後再嘗試。");
+        pi.playerMessage(5, "目前所有地下城都在使用，請稍後在嘗試。");
     } else {
         pi.playPortalSE();
         pi.warp(baseid, "MD00");
