@@ -69,6 +69,7 @@ import server.events.MapleSnowball;
 import server.events.MapleJewel;
 import server.life.CustomNPC;
 import server.maps.MapleMapObject;
+import server.shops.MaplePlayerShop;
 import tools.CollectionUtil;
 import tools.ConcurrentEnumMap;
 
@@ -82,7 +83,7 @@ public class ChannelServer implements Serializable {
     private static final short DEFAULT_PORT = 14000;
     private final int channel;
     private final String key;
-    private int running_MerchantID = 0, flags = 0;
+    private int running_MerchantID = 0, flags = 0, running_PlayerShopID = 0;
     private String serverMessage, serverName;
     private boolean shutdown = false, finishedShutdown = false, MegaphoneMuteState = false, adminOnly = false;
     private PlayerStorage players;
@@ -93,6 +94,7 @@ public class ChannelServer implements Serializable {
     private static final Map<Integer, ChannelServer> instances = new HashMap<>();
     private final Map<MapleSquadType, MapleSquad> mapleSquads = new ConcurrentEnumMap<>(MapleSquadType.class);
     private final Map<Integer, HiredMerchant> merchants = new HashMap<>();
+    private final Map<Integer, MaplePlayerShop> playershops = new HashMap<>();
     private final Map<Integer, PlayerNPC> playerNPCs = new HashMap<>();
     private final ReentrantReadWriteLock merchLock = new ReentrantReadWriteLock(); //merchant
     private final ReentrantReadWriteLock squadLock = new ReentrantReadWriteLock(); //squad
@@ -307,7 +309,7 @@ public class ChannelServer implements Serializable {
     public final boolean isShutdown() {
         return shutdown;
     }
-    
+
     public final int getLoadedMaps() {
         return mapFactory.getLoadedMaps();
     }
@@ -352,6 +354,24 @@ public class ChannelServer implements Serializable {
         return false;
     }
 
+    public final int closeAllPlayerShop() {
+        int ret = 0;
+        merchLock.writeLock().lock();
+        try {
+            final Iterator<Map.Entry<Integer, MaplePlayerShop>> playershops_ = playershops.entrySet().iterator();
+            while (playershops_.hasNext()) {
+                MaplePlayerShop hm = playershops_.next().getValue();
+                hm.closeShop(true, false);
+                hm.getMap().removeMapObject(hm);
+                playershops_.remove();
+                ret++;
+            }
+        } finally {
+            merchLock.writeLock().unlock();
+        }
+        return ret;
+    }
+
     public final int closeAllMerchant() {
         int ret = 0;
         merchLock.writeLock().lock();
@@ -375,6 +395,19 @@ public class ChannelServer implements Serializable {
             }
         }
         return ret;
+    }
+
+    public final int addPlayerShop(final MaplePlayerShop PlayerShop) {
+        merchLock.writeLock().lock();
+        int runningmer = 0;
+        try {
+            runningmer = running_PlayerShopID;
+            playershops.put(running_PlayerShopID, PlayerShop);
+            running_PlayerShopID++;
+        } finally {
+            merchLock.writeLock().unlock();
+        }
+        return runningmer;
     }
 
     public final int addMerchant(final HiredMerchant hMerchant) {
@@ -588,7 +621,7 @@ public class ChannelServer implements Serializable {
             }
         }
     }
-    
+
     public boolean canUseGMItem() {
         return canUseGMItem;
     }

@@ -8,7 +8,7 @@ import handling.world.World;
 import java.util.Set;
 import server.Timer.*;
 
-public class ShutdownServer implements Runnable , ShutdownServerMBean{
+public class ShutdownServer implements Runnable, ShutdownServerMBean {
 
     private static final ShutdownServer instance = new ShutdownServer();
     public static boolean running = false;
@@ -39,7 +39,11 @@ public class ShutdownServer implements Runnable , ShutdownServerMBean{
             cserv.closeAllMerchant();
         }
         System.out.println("精靈商人儲存完畢.");
-
+        int ret = 0;
+        for (handling.channel.ChannelServer cserv : handling.channel.ChannelServer.getAllInstances()) {
+            ret += cserv.closeAllPlayerShop();
+        }
+        System.out.println("共儲存了 " + ret + " 個營業執照");
         World.Guild.save();
 
         System.out.println("公會資料儲存完畢");
@@ -83,9 +87,7 @@ public class ShutdownServer implements Runnable , ShutdownServerMBean{
         } catch (Exception e) {
             System.out.println("資料庫清除連線失敗");
         }
-        
-        
-      
+
     }
 
     @Override

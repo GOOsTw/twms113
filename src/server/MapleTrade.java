@@ -11,6 +11,7 @@ import client.inventory.MapleInventoryType;
 import client.messages.CommandProcessor;
 import constants.ServerConstants.CommandType;
 import handling.channel.ChannelServer;
+import handling.world.World;
 import java.lang.ref.WeakReference;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
@@ -261,8 +262,10 @@ public class MapleTrade {
         Localtrade.cancel(c);
 
         final MapleTrade partner = Localtrade.getPartner();
-        if (partner != null) {
-            partner.cancel(partner.getChr().getClient());
+        if (partner != null && partner.getChr() != null) {
+            if (partner.getChr().getClient() != null) {
+                partner.cancel(partner.getChr().getClient());
+            }
             partner.getChr().setTrade(null);
         }
         if (Localtrade.chr.get() != null) {
@@ -280,7 +283,19 @@ public class MapleTrade {
     }
 
     public static final void inviteTrade(final MapleCharacter c1, final MapleCharacter c2) {
+        if (World.isShutDown) {
+            c1.getTrade().cancel1(c1.getClient());
+            c1.setTrade(null);
+            c1.getClient().sendPacket(MaplePacketCreator.serverNotice(5, "目前無法交易。"));
+            return;
+        }
         if (c1 == null || c1.getTrade() == null) {
+            return;
+        }
+        if (c2 == null || c2.getPlayerShop() != null) {
+            c1.getTrade().cancel1(c1.getClient());
+            c1.setTrade(null);
+            c1.getClient().sendPacket(MaplePacketCreator.serverNotice(5, "對方正在忙碌中。"));
             return;
         }
         if (c2.getGMLevel() > c1.getGMLevel()) {

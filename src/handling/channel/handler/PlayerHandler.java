@@ -177,16 +177,14 @@ public class PlayerHandler {
                     }
                 }
             }
-        } else {
-            if (addrem == 0) {
-                chr.deleteFromRegRocks(slea.readInt());
-            } else if (addrem == 1) {
-                if (!FieldLimitType.VipRock.check(chr.getMap().getFieldLimit())) {
-                    if (c.getPlayer().getMapId() <= 197010000 && c.getPlayer().getMapId() != 180000000) {
-                        chr.addRegRockMap();
-                    } else {
-                        chr.dropMessage(1, "你不能儲存這張地圖");
-                    }
+        } else if (addrem == 0) {
+            chr.deleteFromRegRocks(slea.readInt());
+        } else if (addrem == 1) {
+            if (!FieldLimitType.VipRock.check(chr.getMap().getFieldLimit())) {
+                if (c.getPlayer().getMapId() <= 197010000 && c.getPlayer().getMapId() != 180000000) {
+                    chr.addRegRockMap();
+                } else {
+                    chr.dropMessage(1, "你不能儲存這張地圖");
                 }
             }
         }
@@ -324,20 +322,17 @@ public class PlayerHandler {
                     }
                     case 2112: {
                         final ISkill skill = SkillFactory.getSkill(狂狼勇士4.防禦戰術);
-                        final ISkill skill1 = SkillFactory.getSkill(狂狼勇士4.宙斯之盾);
-                        Integer buff = chr.getBuffedValue(MapleBuffStat.COMBO_BARRIER);
                         if (chr.getSkillLevel(skill) > 0) {
                             damage = (int) ((skill.getEffect(chr.getSkillLevel(skill)).getX() / 1000.0) * damage);
-                        }
-                        if (buff != null) {
-                            if (chr.getSkillLevel(skill1) > 0) {
-                                damage = (int) ((skill1.getEffect(chr.getSkillLevel(skill1)).getX() / 1000.0) * damage);
-                            }
                         }
                         break;
                     }
                 }
+                if (chr.getBuffedValue(MapleBuffStat.COMBO_BARRIER) != null) {
+                    damage = (int) ((chr.getBuffedSkill_X(MapleBuffStat.COMBO_BARRIER) / 1000.0) * damage);
+                }
             }
+
             if (chr.getBuffedValue(MapleBuffStat.MAGIC_GUARD) != null) {
                 int hploss = 0, mploss = 0;
                 if (isDeadlyAttack) {
@@ -379,12 +374,10 @@ public class PlayerHandler {
                     mpattack = stats.getMp() - 1;
                 }
                 chr.addMPHP(-damage, -mpattack);
+            } else if (isDeadlyAttack) {
+                chr.addMPHP(stats.getHp() > 1 ? -(stats.getHp() - 1) : 0, stats.getMp() > 1 ? -(stats.getMp() - 1) : 0);
             } else {
-                if (isDeadlyAttack) {
-                    chr.addMPHP(stats.getHp() > 1 ? -(stats.getHp() - 1) : 0, stats.getMp() > 1 ? -(stats.getMp() - 1) : 0);
-                } else {
-                    chr.addMPHP(-damage, -mpattack);
-                }
+                chr.addMPHP(-damage, -mpattack);
             }
             chr.handleBattleshipHP(-damage);
         }
@@ -652,6 +645,7 @@ public class PlayerHandler {
                     case 112:
                     case 1110:
                     case 1111:
+                    case 1112:
                         if (attack.skill != 1111008) { // shout should not give orbs
                             chr.handleOrbgain();
                         }
@@ -1255,12 +1249,10 @@ public class PlayerHandler {
                     final MapleMap to = ChannelServer.getInstance(c.getChannel()).getMapFactory().getMap(targetid);
                     chr.changeMap(to, to.getPortal(0));
                 }
+            } else if (portal != null) {
+                portal.enterPortal(c);
             } else {
-                if (portal != null) {
-                    portal.enterPortal(c);
-                } else {
-                    c.sendPacket(MaplePacketCreator.enableActions());
-                }
+                c.sendPacket(MaplePacketCreator.enableActions());
             }
         }
     }
@@ -1270,7 +1262,6 @@ public class PlayerHandler {
             return;
         }
         final MaplePortal portal = chr.getMap().getPortal(slea.readMapleAsciiString());
-        final Point Original_Pos = chr.getPosition();
         final int toX = slea.readShort();
         final int toY = slea.readShort();
 //	slea.readShort(); // Original X pos
@@ -1312,7 +1303,7 @@ public class PlayerHandler {
     //MapleCharacter.UpdateCharMessageZone();
     //chr.UpdateCharMessageZone();
     //System.err.println("SetCharMessage");
-        /*} else if (type == 1) { // 表情
+    /*} else if (type == 1) { // 表情
      int expression = slea.readByte();
      c.getPlayer().setexpression(expression);
      System.err.println("Expression");
@@ -1328,7 +1319,7 @@ public class PlayerHandler {
      System.err.println("Constellation");
      }*/
     //}
-        /*public String getcharmessage(final MapleClient c) {
+    /*public String getcharmessage(final MapleClient c) {
 
      return c.getPlayer().getcharmessage();
 

@@ -104,7 +104,7 @@ public class PlayerInteractionHandler {
                     MapleTrade.startTrade(chr);
                 } else if (createType == 1 || createType == 2 || createType == 4 || createType == 5) {
                     /* 商店 */
-                    /*if (createType == 4 && !chr.isAdmin()) { //not hired merch... blocked playershop
+ /*if (createType == 4 && !chr.isAdmin()) { //not hired merch... blocked playershop
                      c.sendPacket(MaplePacketCreator.enableActions());
                      return;
                      }*/
@@ -285,38 +285,40 @@ public class PlayerInteractionHandler {
             }
             case OPEN: {
                 final IMaplePlayerShop shop = chr.getPlayerShop();
-                if (shop == null) {
-                    break;
-                }
-                if (!(shop.isOwner(chr) && shop.getShopType() < 3)) {
-                    /*檢查使用者是不是商店主人以及商店種類*/
-                    break;
-                }
-                if (chr.getMap().allowPersonalShop()) {
-                    if (World.isShutDown) {
-                        chr.dropMessage(1, "伺服器即將關閉所以不能使用商店.");
-                        c.sendPacket(MaplePacketCreator.enableActions());
-                        shop.closeShop(shop.getShopType() == 1, false);
-                        return;
-                    }
-                    if (shop.getShopType() == 1) {
-                        final HiredMerchant merchant = (HiredMerchant) shop;
-                        merchant.setStoreId(c.getChannelServer().addMerchant(merchant));
-                        merchant.setOpen(true);
-                        merchant.setAvailable(true);
-                        chr.getMap().broadcastMessage(PlayerShopPacket.spawnHiredMerchant(merchant));
-                        chr.setPlayerShop(null);
+                if (shop != null) {
+                    if (shop.isOwner(chr)) {
+                        if (shop.getShopType() < 3) {
+                            if (chr.getMap().allowPersonalShop()) {
+                                if (World.isShutDown) {
+                                    chr.dropMessage(1, "伺服器即將關閉所以不能使用商店.");
+                                    c.sendPacket(MaplePacketCreator.enableActions());
+                                    shop.closeShop(shop.getShopType() == 1, false);
+                                    return;
+                                }
+                                if (shop.getShopType() == 1) {
+                                    final HiredMerchant merchant = (HiredMerchant) shop;
+                                    merchant.setStoreId(c.getChannelServer().addMerchant(merchant));
+                                    merchant.setOpen(true);
+                                    merchant.setAvailable(true);
+                                    chr.getMap().broadcastMessage(PlayerShopPacket.spawnHiredMerchant(merchant));
+                                    chr.setPlayerShop(null);
 
-                    } else if (shop.getShopType() == 2) {
-                        shop.setOpen(true);
-                        shop.setAvailable(true);
-                        shop.update();
+                                } else if (shop.getShopType() == 2) {
+                                    shop.setOpen(true);
+                                    shop.setAvailable(true);
+                                    shop.update();
+                                    final MaplePlayerShop playershop = (MaplePlayerShop) shop;
+                                    c.getChannelServer().addPlayerShop(playershop);
+                                }
+                            } else {
+                                c.getSession().close();
+                            }
+                        }
                     }
-                } else {
-                    c.disconnect(true, false);
                 }
                 break;
             }
+
             case SET_ITEMS: {
                 final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
                 final MapleInventoryType ivType = MapleInventoryType.getByType(slea.readByte());

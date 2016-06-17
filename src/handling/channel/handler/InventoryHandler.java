@@ -70,6 +70,7 @@ import server.maps.MapleMapObjectType;
 import server.life.MapleMonster;
 import server.life.MapleLifeFactory;
 import scripting.NPCScriptManager;
+import server.PredictCardFactory;
 import server.StructPotentialItem;
 import server.maps.MapleMist;
 import server.shops.HiredMerchant;
@@ -999,6 +1000,9 @@ public class InventoryHandler {
 
                 if (apto == apfrom) {
                     break; // Hack
+                } else if (apfrom == MapleStat.MAXMP && apto != MapleStat.MAXHP) {
+                    c.getPlayer().dropMessage(1, "MP無法增加到HP以外的屬性唷");
+                    break;
                 }
                 final int job = c.getPlayer().getJob();
                 final PlayerStats playerst = c.getPlayer().getStat();
@@ -2063,7 +2067,41 @@ public class InventoryHandler {
                     break;
                 }
             }
-
+            case 5320000: { //速配券
+                String name = slea.readMapleAsciiString();
+                String otherName = slea.readMapleAsciiString();
+                long unk = slea.readInt();
+                long unk_2 = slea.readInt();
+                int cardId = slea.readByte();
+                short unk_3 = slea.readShort();
+                byte unk_4 = slea.readByte();
+                int comm = Randomizer.rand(1, 6);
+                MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(otherName);
+                PredictCardFactory pcf = PredictCardFactory.getInstance();
+                PredictCardFactory.PredictCard Card = pcf.getPredictCard(cardId);
+                PredictCardFactory.PredictCardComment Comment = pcf.getPredictCardComment(comm);
+                if ((Card == null) || (Comment == null)) {
+                    break;
+                } else if (!name.equals(c.getPlayer().getName())) {
+                    c.getPlayer().dropMessage(1, "我的角色名字請填自己。");
+                    c.sendPacket(MaplePacketCreator.enableActions());
+                    return;
+                } else if (victim == null) {
+                    c.getPlayer().dropMessage(1, "對方必須上線。");
+                    c.sendPacket(MaplePacketCreator.enableActions());
+                    return;
+                } else if (c.getPlayer().getGMLevel() < victim.getGMLevel()) {
+                    c.getPlayer().dropMessage(1, "無法對此玩家使用。");
+                    c.sendPacket(MaplePacketCreator.enableActions());
+                    return;
+                }
+                int love = Randomizer.rand(1, Comment.score) + 5;
+                c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.startMapEffect("", 0, false)); // 清除當前地圖速配結果
+                c.getSession().write(MTSCSPacket.showPredictCard(name, otherName, love, cardId, Comment.effectType));
+                c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.startMapEffect(name + "和" + otherName + "的速配程度 " + Comment.worldmsg0, 5120026, true));
+                used = true;
+                break;
+            }
             /* 黑板 */
             case 5370000:
             case 5370001: {
@@ -2219,6 +2257,11 @@ public class InventoryHandler {
         if (chr.getPlayerShop() != null
                 || c.getPlayer().getConversation() > 0
                 || c.getPlayer().getTrade() != null) {
+            c.sendPacket(MaplePacketCreator.enableActions());
+            return;
+        }
+        if (World.isShutDown) {
+            c.getPlayer().dropMessage(1, "目前無法撿物品。");
             c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
