@@ -89,6 +89,7 @@ public class Start {
         SkillFactory.getSkill(99999999);
         MapleOxQuizFactory.getInstance().initialize();
         MapleCarnivalFactory.getInstance();
+        PredictCardFactory.getInstance().initialize();
         MapleGuildRanking.getInstance().getGuildRank();
         MapleFamilyBuff.getBuffEntry();
         MapleServerHandler.registerMBean();
@@ -110,7 +111,7 @@ public class Start {
         World.registerRespawn();
         LoginServer.setOn();
         System.out.println("【伺服器開啟完畢】");
-        
+
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         
         while (!World.isShutDown) {

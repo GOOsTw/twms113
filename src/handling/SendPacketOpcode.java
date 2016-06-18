@@ -175,6 +175,7 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     REPAIR_WINDOW(0xD5),
     CYGNUS_INTRO_LOCK(0xD6),
     CYGNUS_INTRO_DISABLE_UI(0xD7),
+    Show_Predict_Card,
     CS_WEB,
     CS_UPDATE,
     CS_OPERATION,

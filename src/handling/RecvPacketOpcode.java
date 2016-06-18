@@ -169,6 +169,7 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     MTS_Recharge,
     CS_Recharge,
     CS_RANDOMEQS,
+    Change_Name,
     BEANS_GAME1,
     BEANS_GAME2,
     TOBY_SHIELD_START,

@@ -737,6 +737,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case CS_Recharge:
                 CashShopOperation.sendWebSite(c);
                 break;
+            case Change_Name:
+                CashShopOperation.ChangeName(slea, c);
+                break;
             case CS_RANDOMEQS:
                 CashShopOperation.randomes(c);
                 break;

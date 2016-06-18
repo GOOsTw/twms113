@@ -47,8 +47,19 @@ import tools.data.output.MaplePacketLittleEndianWriter;
 
 public class MTSCSPacket {
 
+    public static MaplePacket showPredictCard(String name, String otherName, int love, int cardId, int commentId) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+        mplew.writeShort(SendPacketOpcode.Show_Predict_Card.getValue());
+        mplew.writeMapleAsciiString(name);
+        mplew.writeMapleAsciiString(otherName);
+        mplew.writeInt(love);
+        mplew.writeInt(cardId);
+        mplew.writeInt(commentId);
+        return mplew.getPacket();
+    }
+
     public static MaplePacket warpCS(MapleClient c) {
-        
+
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.SET_CASH_SHOP.getValue());
@@ -61,7 +72,7 @@ public class MTSCSPacket {
         mplew.writeInt(0); // some info , it'size , decodeBuffer(4*size)
         Iterator<CashModInfo> iterator = cmi.iterator();
         mplew.writeShort(cmi.size());
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             addModCashItemInfo(mplew, iterator.next());
         }
         mplew.write(HexTool.getByteArrayFromHexString("00 00 0A 00 50 10 27 00 00 00 5A 00 00 00 00 00 00 00 00 00 00 00 00 FF 00 00 00 00 00 00 00 00 00 "));
@@ -93,7 +104,7 @@ public class MTSCSPacket {
         mplew.writeShort(0);
         mplew.writeShort(0);
         mplew.write(0);
- 
+
         return mplew.getPacket();
     }
 
@@ -132,11 +143,19 @@ public class MTSCSPacket {
 
         return mplew.getPacket();
     }
-    
+
     public static MaplePacket sendWEB(MapleClient c) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        
+
         mplew.writeShort(SendPacketOpcode.CS_WEB.getValue());
+        return mplew.getPacket();
+    }
+
+    public static MaplePacket sendChnageName(MapleClient c) {
+        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+        mplew.writeShort(SendPacketOpcode.CS_OPERATION.getValue());
+        mplew.write(0x86);
+        mplew.writeShort(0); // 顯示訊息
         return mplew.getPacket();
     }
 
@@ -242,7 +261,7 @@ public class MTSCSPacket {
         mplew.writeShort(SendPacketOpcode.MAP_TRANSFER_RESULT.getValue());
         mplew.write(delete ? 2 : 3);
         mplew.write(vip);
-        if (vip==1) {
+        if (vip == 1) {
             int[] map = chr.getRocks();
             for (int i = 0; i < 10; i++) {
                 mplew.writeInt(map[i]);
@@ -332,11 +351,25 @@ public class MTSCSPacket {
 
         mplew.writeShort(SendPacketOpcode.CS_OPERATION.getValue());
         mplew.write(0x80);
+        /* 
+        0x62 發生不明錯誤！
+        0x63 刪除加值道具
+        0x80 套裝購買成功！
+        0x81 購買失敗！
+        0x86 報名成功！
+        0x95 完成拒絕收禮！
+        0x96 因送禮人已刪除帳號，無法拒絕收禮！
+        0x9B 恭喜中獎！本次購買為大贏家活動第一百筆消費！
+        0x9D 購買成功！
+        0x9F 購買成功！
+        0xA1 購買成功！
+        0xA4 已超過工作時間。休息一下再繼續。
+         */
         mplew.write(ccc.size());
         for (Entry<Integer, IItem> sn : ccc.entrySet()) {
             addCashItemInfo(mplew, sn.getValue(), accid, sn.getKey());
         }
-        mplew.write(1); // 顯示買好了
+        mplew.writeShort(0); // 顯示買好了
         return mplew.getPacket();
     }
 
@@ -847,13 +880,11 @@ public class MTSCSPacket {
             } else {
                 mplew.write(0x2B);
             }
+        } else if (fail) {
+            mplew.write(0x2A);
+            mplew.writeInt(-1);
         } else {
-            if (fail) {
-                mplew.write(0x2A);
-                mplew.writeInt(-1);
-            } else {
-                mplew.write(0x29);
-            }
+            mplew.write(0x29);
         }
 
         return mplew.getPacket();

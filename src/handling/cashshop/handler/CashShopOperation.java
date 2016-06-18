@@ -117,14 +117,24 @@ public class CashShopOperation {
     }
 
     public static final void ChangeName(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-        String secondPassword = slea.readMapleAsciiString().toLowerCase();
+        int useNX = slea.readByte() + 1;
+        short unknow_1 = slea.readByte();
+        short unknow_2 = slea.readShort();
+        final String secondPassword = slea.readMapleAsciiString();
         if (c.getSecondPassword() != null) {
             if (secondPassword == null) { // 確認是否外掛
                 c.getPlayer().dropMessage(1, "請輸入密碼。");
+                refreshCashShop(c);
+                return;
             } else if (!c.check2ndPassword(secondPassword)) { // 第二密碼錯誤
                 c.getPlayer().dropMessage(1, "密碼錯誤。");
+                refreshCashShop(c);
+                return;
             }
+            c.getPlayer().modifyCSPoints(useNX, -500, false);
+            c.sendPacket(MTSCSPacket.sendChnageName(c));
         }
+
         refreshCashShop(c);
     }
 
@@ -270,7 +280,7 @@ public class CashShopOperation {
                             ccz.put(i.getSN(), itemz);
                             c.getPlayer().getCashInventory().addToInventory(itemz);
                         }
-                        chr.modifyCSPoints(1, -cItem.getPrice(), false);
+                        chr.modifyCSPoints(useNX, -cItem.getPrice(), false);
                         c.sendPacket(MTSCSPacket.showBoughtCashPackage(ccz, c.getAccID()));
                     }
 
@@ -467,7 +477,55 @@ public class CashShopOperation {
                 refreshCashShop(c);
                 break;
             }
+            case 31: { // Package gift
+                final String secondPassword = slea.readMapleAsciiString();
+                final int sn = slea.readInt();
+                final String characterName = slea.readMapleAsciiString();
+                final String message = slea.readMapleAsciiString();
 
+                CashItemInfo cItem = CashItemFactory.getInstance().getItem(sn);
+                IItem item = chr.getCashInventory().toItem(cItem);
+
+                Pair<Integer, Pair<Integer, Integer>> info = MapleCharacterUtil.getInfoByName(characterName, c.getPlayer().getWorld());
+                if (c.getSecondPassword() != null) {
+                    if (secondPassword == null) { // 確認是否外掛
+                        c.getPlayer().dropMessage(1, "請輸入密碼。");
+                        refreshCashShop(c);
+                        return;
+                    } else if (!c.check2ndPassword(secondPassword)) { // 第二密碼錯誤
+                        c.getPlayer().dropMessage(1, "密碼錯誤。");
+                        refreshCashShop(c);
+                        return;
+                    }
+                    if (info == null || info.getLeft().intValue() <= 0 || info.getLeft().intValue() == c.getPlayer().getId() || info.getRight().getLeft() == c.getAccID()) {
+                        c.sendPacket(MTSCSPacket.sendCSFail(0xA2)); //9E v75
+                        refreshCashShop(c);
+                        return;
+                    } else if (!cItem.genderEquals(info.getRight().getRight())) {
+                        c.sendPacket(MTSCSPacket.sendCSFail(0xA3));
+                        refreshCashShop(c);
+                        return;
+                    } else {
+                        for (int i : GameConstants.cashBlock) {
+                            if (cItem.getId() == i) {
+                                c.getPlayer().dropMessage(1, GameConstants.getCashBlockedMsg(cItem.getId()));
+                                refreshCashShop(c);
+                                return;
+                            }
+                        }
+                        c.getPlayer().getCashInventory().gift(info.getLeft(), c.getPlayer().getName(), message, cItem.getSN(), MapleInventoryIdentifier.getInstance());
+                        c.getPlayer().modifyCSPoints(1, -cItem.getPrice(), false);
+                        c.sendPacket(MTSCSPacket.sendGift(characterName, cItem, cItem.getPrice() / 2, false));
+                        chr.sendNote(characterName, chr.getName() + " 送了你禮物! 趕快去商城確認看看.", (byte) 0); //fame or not
+                        MapleCharacter receiver = c.getChannelServer().getPlayerStorage().getCharacterByName(characterName);
+                        if (receiver != null) {
+                            receiver.showNote();
+                        }
+                    }
+                }
+                refreshCashShop(c);
+                break;
+            }
             case 32: { //1 meso
                 final CashItemInfo item = CashItemFactory.getInstance().getItem(slea.readInt());
                 if (item == null || !MapleItemInformationProvider.getInstance().isQuestItem(item.getId())) {
@@ -620,6 +678,10 @@ public class CashShopOperation {
                 refreshCashShop(c);
                 break;
             }
+            case 49: { // 送禮後重整處理
+                refreshCashShop(c);
+                break;
+            }
             case 51: { //楓葉點數購買
                 CashItemInfo item = CashItemFactory.getInstance().getItem(slea.readInt());
                 if (item == null || c.getPlayer().getCSPoints(1) < item.getPrice()) {
@@ -644,7 +706,6 @@ public class CashShopOperation {
                 refreshCashShop(c);
                 break;
             }
-
             default:
                 c.sendPacket(MTSCSPacket.sendCSFail(0));
                 refreshCashShop(c);
