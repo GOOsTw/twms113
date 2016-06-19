@@ -733,7 +733,7 @@ public class MapleItemInformationProvider {
                     case 2049003:
                     case 2049004:
                     case 2049005: {
-                        if (nEquip.getLevel() + nEquip.getUpgradeSlots() < eqstats.get("tuc")) {
+                        if (eqstats.containsKey("tuc") && nEquip.getLevel() + nEquip.getUpgradeSlots() < eqstats.get("tuc")) {
                             nEquip.setUpgradeSlots((byte) (nEquip.getUpgradeSlots() + 1));
                         }
                         break;
@@ -741,7 +741,7 @@ public class MapleItemInformationProvider {
                     case 2049006:
                     case 2049007:
                     case 2049008: {
-                        if (nEquip.getLevel() + nEquip.getUpgradeSlots() < eqstats.get("tuc")) {
+                        if (eqstats.containsKey("tuc") && nEquip.getLevel() + nEquip.getUpgradeSlots() < eqstats.get("tuc")) {
                             nEquip.setUpgradeSlots((byte) (nEquip.getUpgradeSlots() + 2));
                         }
                         break;

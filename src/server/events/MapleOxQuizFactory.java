@@ -127,7 +127,7 @@ public class MapleOxQuizFactory {
             return -1;
         }
     }
-	
+
     public void reloadOX() {
         questionCache.clear();
         Connection con = DatabaseConnection.getConnection();
@@ -140,7 +140,7 @@ public class MapleOxQuizFactory {
             FilePrinter.printError("MapleOxQuizEntry.txt", e);
         }
     }
-	
+
     public static class MapleOxQuizEntry {
 
         private final String question, answerText;

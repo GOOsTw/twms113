@@ -196,7 +196,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
                 item.setQuantity((short) (item.getQuantity() * pItems.bundles));
                 iters.add(new Pair<>(item, GameConstants.getInventoryType(item.getItemId())));
             }
-            ItemLoader.HIRED_MERCHANT.saveItems(iters, packageid, ownerAccount, ownerId);
+            ItemLoader.HIRED_MERCHANT.saveItems(iters, packageid, ownerAccount);
             return true;
         } catch (SQLException se) {
             FilePrinter.printError("AbstractPlayerStore.txt", se, "saveItems");

@@ -122,7 +122,7 @@ public class MapleGenericPortal implements MaplePortal {
                 final MapleMap to = ChannelServer.getInstance(c.getChannel()).getMapFactory().getMap(getTargetMapId());
                 if (!c.getPlayer().isGM()) {
                     if (to.getLevelLimit() > 0 && to.getLevelLimit() > c.getPlayer().getLevel()) {
-                        c.getPlayer().dropMessage(-1, "You are too low of a level to enter this place.");
+                        c.getPlayer().dropMessage(1, "你的等級太低，進入這個地方。");
                         c.sendPacket(MaplePacketCreator.enableActions());
                         return;
                     }

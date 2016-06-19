@@ -457,8 +457,13 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public void sendStorage() {
-        c.getPlayer().setConversation(4);
-        c.getPlayer().getStorage().sendStorage(c, npc);
+        if (!World.isShutDown) {
+            c.getPlayer().setConversation(4);
+            c.getPlayer().getStorage().sendStorage(c, npc);
+        } else {
+            c.getPlayer().dropMessage(1, "目前不能使用倉庫。");
+            c.sendPacket(MaplePacketCreator.enableActions());
+        }
     }
 
     public void openShop(int id) {
@@ -718,12 +723,10 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         final MapleSquad squad = c.getChannelServer().getMapleSquad(type);
         if (squad == null) {
             return -1;
+        } else if (squad.getLeader() != null && squad.getLeader().getId() == c.getPlayer().getId()) {
+            return 1;
         } else {
-            if (squad.getLeader() != null && squad.getLeader().getId() == c.getPlayer().getId()) {
-                return 1;
-            } else {
-                return 0;
-            }
+            return 0;
         }
     }
 
@@ -768,14 +771,12 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         final MapleSquad squad = c.getChannelServer().getMapleSquad(type);
         if (squad == null) {
             return -1;
+        } else if (squad.getMembers().contains(c.getPlayer().getName())) {
+            return 1;
+        } else if (squad.isBanned(c.getPlayer())) {
+            return 2;
         } else {
-            if (squad.getMembers().contains(c.getPlayer().getName())) {
-                return 1;
-            } else if (squad.isBanned(c.getPlayer())) {
-                return 2;
-            } else {
-                return 0;
-            }
+            return 0;
         }
     }
 
@@ -995,8 +996,13 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public void openMerchantItemStore() {
-        c.getPlayer().setConversation(3);
-        c.sendPacket(PlayerShopPacket.merchItemStore((byte) 0x22));
+        if (!World.isShutDown) {
+            c.getPlayer().setConversation(3);
+            c.sendPacket(PlayerShopPacket.merchItemStore((byte) 0x22));
+        } else {
+            c.getPlayer().dropMessage(1, "目前不能使用精靈商人領取。");
+            c.sendPacket(MaplePacketCreator.enableActions());
+        }
     }
 
     public void sendRepairWindow() {
