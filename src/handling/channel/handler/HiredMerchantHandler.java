@@ -132,6 +132,9 @@ public class HiredMerchantHandler {
                                     c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x21));
                                     return;
                                 }
+                                for (IItem item : pack.getItems()) {
+                                    MapleInventoryManipulator.addFromDrop(c, item, false);
+                                }
                                 if (deletePackage(c.getPlayer().getId(), c.getPlayer().getAccountID(), pack.getPackageid())) {
                                     if (pack.getMesos() > 0) {
                                         c.getPlayer().dropMessage(1, "你已經從精靈商人領取了" + pack.getMesos() + "楓幣");
@@ -175,11 +178,14 @@ public class HiredMerchantHandler {
                     return;
                 }
                 if (deletePackage(c.getPlayer().getId(), c.getPlayer().getAccountID(), pack.getPackageid())) {
+                    String output = "";
                     c.getPlayer().gainMeso(pack.getMesos(), false);
                     for (IItem item : pack.getItems()) {
                         MapleInventoryManipulator.addFromDrop(c, item, false);
+                        output += item.getItemId() + "(" + item.getQuantity() + "), ";
                     }
                     c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x1d));
+                    FilePrinter.print("HiredMerchantLog.txt", "角色名字:" + c.getPlayer().getName() + " 從精靈商人取回楓幣: " + pack.getMesos() + " 和" + pack.getItems().size() + "件物品 取回時間:" + FilePrinter.getLocalDateString());
                 } else {
                     c.getPlayer().dropMessage(1, "未知的錯誤");
                 }
