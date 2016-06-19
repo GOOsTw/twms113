@@ -17,7 +17,7 @@ public class PredictCardFactory {
 
     public PredictCardFactory() {
         System.out.println("【讀取中】 PredictCardFactory:::");
-        this.etcData = MapleDataProviderFactory.getDataProvider(new File("wz/Etc.wz"));
+        this.etcData = MapleDataProviderFactory.getDataProvider(new File(ServerProperties.getProperty("server.wzpath") +"/Etc.wz"));
         this.predictCard = new HashMap();
         this.predictCardComment = new HashMap();
     }
