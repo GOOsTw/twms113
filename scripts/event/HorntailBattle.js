@@ -3,14 +3,14 @@ var returnmap = 240050400;
 function init() {
     // 0 = Not started, 1 = started, 2 = first head defeated, 3 = second head defeated
     em.setProperty("state", "0");
-	em.setProperty("leader", "true");
+    em.setProperty("leader", "true");
     em.setProperty("preheadCheck", "0");
 }
 
 function setup(eim, leaderid) {
     em.setProperty("state", "1");
     em.setProperty("preheadCheck", "0");
-	em.setProperty("leader", "true");
+    em.setProperty("leader", "true");
 
     var eim = em.newInstance("HorntailBattle");
     eim.setInstanceMap(240060000).resetFully();
@@ -23,24 +23,24 @@ function setup(eim, leaderid) {
 function CheckHorntailHead(eim) {
     var prop = em.getProperty("preheadCheck");
     if (prop.equals("0")) {
-    eim.schedule("CheckHorntailHead", 3000);
+        eim.schedule("CheckHorntailHead", 3000);
     } else if (prop.equals("1")) {
-    em.setProperty("preheadCheck", "2");
-    var mob = em.getMonster(8810024); // First HT Head
-    eim.registerMonster(mob);
-    eim.getMapFactory().getMap(240060000).spawnMonsterOnGroundBelow(mob, new java.awt.Point(890, 230));
-	em.setProperty("state", "2");
-    eim.broadcastPlayerMsg(5,"闇黑龍王吼了一聲，你必須殺死闇黑龍王的左頭顱，才能進入下一關。");
-    eim.schedule("CheckHorntailHead", 3000);
+        em.setProperty("preheadCheck", "2");
+        var mob = em.getMonster(8810024); // First HT Head
+        eim.registerMonster(mob);
+        eim.getMapFactory().getMap(240060000).spawnMonsterOnGroundBelow(mob, new java.awt.Point(890, 230));
+        //em.setProperty("state", "2");
+        eim.broadcastPlayerMsg(5, "闇黑龍王吼了一聲，你必須殺死闇黑龍王的左頭顱，才能進入下一關。");
+        eim.schedule("CheckHorntailHead", 3000);
     } else if (prop.equals("2")) {
-    eim.schedule("CheckHorntailHead", 3000);
+        eim.schedule("CheckHorntailHead", 3000);
     } else if (prop.equals("3")) {
-    em.setProperty("preheadCheck", "4");
-    var mob = em.getMonster(8810025); // Second HT Head
-    eim.registerMonster(mob);
-    eim.getMapFactory().getMap(240060100).spawnMonsterOnGroundBelow(mob, new java.awt.Point(-360, 230));
-	em.setProperty("state", "3");
-    eim.broadcastPlayerMsg(5,"闇黑龍王吼了一聲，你必須殺死闇黑龍王的右頭顱，才能進入下一關。");
+        em.setProperty("preheadCheck", "4");
+        var mob = em.getMonster(8810025); // Second HT Head
+        eim.registerMonster(mob);
+        eim.getMapFactory().getMap(240060100).spawnMonsterOnGroundBelow(mob, new java.awt.Point( - 360, 230));
+        //em.setProperty("state", "3");
+        eim.broadcastPlayerMsg(5, "闇黑龍王吼了一聲，你必須殺死闇黑龍王的右頭顱，才能進入下一關。");
     }
 }
 function playerEntry(eim, player) {
@@ -50,36 +50,36 @@ function playerEntry(eim, player) {
 
 function changedMap(eim, player, mapid) {
     switch (mapid) {
-	case 240060000:
-	case 240060100:
-	case 240060200:
-	    return;
+    case 240060000:
+    case 240060100:
+    case 240060200:
+        return;
     }
     eim.unregisterPlayer(player);
 
     if (eim.disposeIfPlayerBelow(0, 0)) {
-	em.setProperty("state", "0");
-		em.setProperty("leader", "true");
+        em.setProperty("state", "0");
+        em.setProperty("leader", "true");
     }
 }
 
 function playerDisconnected(eim, player) {
-	player.setMap(eim.getMapInstance(returnmap));
+    player.setMap(eim.getMapInstance(returnmap));
     return 0;
 }
 
 function scheduledTimeout(eim) {
     eim.disposeIfPlayerBelow(100, 240050400);
     em.setProperty("state", "0");
-		em.setProperty("leader", "true");
+    em.setProperty("leader", "true");
 }
 
 function playerExit(eim, player) {
     eim.unregisterPlayer(player);
 
     if (eim.disposeIfPlayerBelow(0, 0)) {
-	em.setProperty("state", "0");
-		em.setProperty("leader", "true");
+        em.setProperty("state", "0");
+        em.setProperty("leader", "true");
     }
 }
 
@@ -87,15 +87,14 @@ function monsterValue(eim, mobId) {
     return 1;
 }
 
-function allMonstersDead(eim) {
-}
+function allMonstersDead(eim) {}
 
 function playerRevive(eim, player) {
     return false;
 }
 
 function clearPQ(eim) {}
-function leftParty (eim, player) {}
-function disbandParty (eim) {}
+function leftParty(eim, player) {}
+function disbandParty(eim) {}
 function playerDead(eim, player) {}
 function cancelSchedule() {}

@@ -182,60 +182,11 @@ public class PlayerCommand {
         }
     }
 
-    public static class time extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String[] splitted) {
-            if (!c.getPlayer().getCheatTracker().GMSpam(300000, 1) && (!c.getPlayer().isGM())) { // 5 minutes.
-                World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "『玩家』" + c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期" + getDayOfWeek()).getBytes());
-            } else if (c.getPlayer().isGM()) {
-                World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "『管理員』" + c.getPlayer().getName() + "使用了『報時系統』 當前時間:" + FilePrinter.getLocalDateString() + " 星期" + getDayOfWeek()).getBytes());
-            } else {
-                c.getPlayer().dropMessage(6, "為了防止瘋狂報時引響其他玩家，所以5分鐘只能使用一次。");
-            }
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("@time - 目前時間").toString();
-        }
-
-        public static String getDayOfWeek() {
-            int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
-            String dd = String.valueOf(dayOfWeek);
-            switch (dayOfWeek) {
-                case 0:
-                    dd = "日";
-                    break;
-                case 1:
-                    dd = "一";
-                    break;
-                case 2:
-                    dd = "二";
-                    break;
-                case 3:
-                    dd = "三";
-                    break;
-                case 4:
-                    dd = "四";
-                    break;
-                case 5:
-                    dd = "五";
-                    break;
-                case 6:
-                    dd = "六";
-                    break;
-            }
-            return dd;
-        }
-    }
-
     public static class dpm extends CommandExecute {
 
         @Override
         public boolean execute(final MapleClient c, String[] splitted) {
-            if ((c.getPlayer().getMapId() == 100000000 && c.getPlayer().getLevel() >= 70) ||  c.getPlayer().isGM()) {
+            if ((c.getPlayer().getMapId() == 100000000 && c.getPlayer().getLevel() >= 70) || c.getPlayer().isGM()) {
                 if (!c.getPlayer().isTestingDPS()) {
                     c.getPlayer().toggleTestingDPS();
                     c.getPlayer().dropMessage(5, "請持續攻擊怪物1分鐘，來測試您的每秒輸出！");
@@ -353,6 +304,7 @@ public class PlayerCommand {
             NPCScriptManager.getInstance().dispose(c);
             c.sendPacket(MaplePacketCreator.enableActions());
             c.getPlayer().dropMessage(1, "解卡完畢.");
+            c.getPlayer().dropMessage(6, "當前系統時間" + FilePrinter.getLocalDateString() + " 星期" + getDayOfWeek());
             c.getPlayer().dropMessage(6, "經驗值倍率 " + ((Math.round(c.getPlayer().getEXPMod()) * 100) * Math.round(c.getPlayer().getStat().expBuff / 100.0) + (c.getPlayer().getStat().equippedFairy ? c.getPlayer().getFairyExp() : 0)) + "%, 掉寶倍率 " + Math.round(c.getPlayer().getDropMod() * (c.getPlayer().getStat().dropBuff / 100.0) * 100) + "%, 楓幣倍率 " + Math.round((c.getPlayer().getStat().mesoBuff / 100.0) * 100) + "%");
             c.getPlayer().dropMessage(6, "目前剩餘 " + c.getPlayer().getCSPoints(1) + " GASH " + c.getPlayer().getCSPoints(2) + " 楓葉點數 ");
             c.getPlayer().dropMessage(6, "已使用:" + c.getPlayer().getHpMpApUsed() + " 張能力重置捲");
@@ -363,6 +315,35 @@ public class PlayerCommand {
         @Override
         public String getMessage() {
             return new StringBuilder().append("@ea - 解卡").toString();
+        }
+
+        public static String getDayOfWeek() {
+            int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
+            String dd = String.valueOf(dayOfWeek);
+            switch (dayOfWeek) {
+                case 0:
+                    dd = "日";
+                    break;
+                case 1:
+                    dd = "一";
+                    break;
+                case 2:
+                    dd = "二";
+                    break;
+                case 3:
+                    dd = "三";
+                    break;
+                case 4:
+                    dd = "四";
+                    break;
+                case 5:
+                    dd = "五";
+                    break;
+                case 6:
+                    dd = "六";
+                    break;
+            }
+            return dd;
         }
     }
 
@@ -436,20 +417,18 @@ public class PlayerCommand {
             }
             if (c.getPlayer().isGM()) {
                 c.getPlayer().dropMessage(6, "因為你自己是GM所法使用此指令,可以嘗試!cngm <訊息> 來建立GM聊天頻道~");
-            } else {
-                if (!c.getPlayer().getCheatTracker().GMSpam(60000, 1)) { // 1 minutes.
-                    boolean fake = false;
-                    if (BlackConfig.getBlackList().containsKey(c.getAccID())) {
-                        fake = true;
-                    }
-                    c.getPlayer().dropMessage(6, "訊息已經寄送給GM了!");
-                    if (!fake) {
-                        World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "	管理員幫幫忙頻道 " + c.getPlayer().getClient().getChannel() + " 玩家 	" + c.getPlayer().getName() + " : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
-                        System.out.println("[管理員幫幫忙] " + c.getPlayer().getName() + " : " + StringUtil.joinStringFrom(splitted, 1));
-                    }
-                } else {
-                    c.getPlayer().dropMessage(6, "為了防止對GM刷屏所以每1分鐘只能發一次.");
+            } else if (!c.getPlayer().getCheatTracker().GMSpam(60000, 1)) { // 1 minutes.
+                boolean fake = false;
+                if (BlackConfig.getBlackList().containsKey(c.getAccID())) {
+                    fake = true;
                 }
+                c.getPlayer().dropMessage(6, "訊息已經寄送給GM了!");
+                if (!fake) {
+                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "	管理員幫幫忙頻道 " + c.getPlayer().getClient().getChannel() + " 玩家 	" + c.getPlayer().getName() + " : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
+                    System.out.println("[管理員幫幫忙] " + c.getPlayer().getName() + " : " + StringUtil.joinStringFrom(splitted, 1));
+                }
+            } else {
+                c.getPlayer().dropMessage(6, "為了防止對GM刷屏所以每1分鐘只能發一次.");
             }
             return true;
         }
@@ -472,7 +451,7 @@ public class PlayerCommand {
 
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
-            c.getPlayer().dropNPC("\t\t #i3994014##i3994018##i3994070##i3994061##i3994005##i3991038##i3991004#\r\t\t\t\t\t\t #i3994078##i3991040#\t\t\r\n\t\t#i3991035##i3994067##i3994079##i3994071##i3994002##i3994012##i3994077#\r\r\n\t      #fMob/0100101.img/move/1##b 親愛的： #h \r\n #fMob/0100101.img/move/1##k\r\r\n\t      #fMob/0130101.img/move/1##g[以下是玩家指令]#k#fMob/0130101.img/move/1#\r\n\t  #d▇▇▆▅▄▃▂#r萬用指令區#d▂▃▄▅▆▇▇\r\n\t\t#b@查看/@ea#k - #r<解除異常+查看當前狀態>#k\r\n\t\t#b@怪物/@mob#k - #r<查看身邊怪物訊息>#k\r\n\t\t#b@存檔/@save#k - #r<存檔>#k\r\n\t\t#b@卡圖/@car#k - #r<卡圖修復>#k\r\n\t\t#b@CGM <訊息>#k - #r<傳送訊息給GM>#k\r\n\t\t#b@expfix#k - #r<修復經驗假死>#k\r\n\t\t#b@time#k - #r<報時系統>#k\r\n\t\t#b@dpm#k - #r<測試每分鐘平均傷害>#k\r\n\t  #g▇▇▆▅▄▃▂#dNPＣ指令區#g▂▃▄▅▆▇▇\r\n\t\t#b@丟裝/@DropCash#k - #r<丟棄點裝>#k\r\n\t\t#b@萬能/@npc#k - #r<工具箱>#k\r\n\t\t#b@猜拳/@pk#k - #r<小遊戲>#k\r\n\t\t#b@event#k - #r<參加活動>#k\r\n\t\t#b@bspq#k - #r<BOSSPQ兌換NPC>#k");
+            c.getPlayer().dropNPC("\t\t #i3994014##i3994018##i3994070##i3994061##i3994005##i3991038##i3991004#\r\t\t\t\t\t\t #i3994078##i3991040#\t\t\r\n\t\t#i3991035##i3994067##i3994079##i3994071##i3994002##i3994012##i3994077#\r\r\n\t      #fMob/0100101.img/move/1##b 親愛的： #h \r\n #fMob/0100101.img/move/1##k\r\r\n\t      #fMob/0130101.img/move/1##g[以下是玩家指令]#k#fMob/0130101.img/move/1#\r\n\t  #d▇▇▆▅▄▃▂#r萬用指令區#d▂▃▄▅▆▇▇\r\n\t\t#b@查看/@ea#k - #r<解除異常+查看當前狀態>#k\r\n\t\t#b@怪物/@mob#k - #r<查看身邊怪物訊息>#k\r\n\t\t#b@存檔/@save#k - #r<存檔>#k\r\n\t\t#b@卡圖/@car#k - #r<卡圖修復>#k\r\n\t\t#b@CGM <訊息>#k - #r<傳送訊息給GM>#k\r\n\t\t#b@dpm#k - #r<測試每分鐘平均傷害>#k\r\n\t  #g▇▇▆▅▄▃▂#dNPＣ指令區#g▂▃▄▅▆▇▇\r\n\t\t#b@丟裝/@DropCash#k - #r<丟棄點裝>#k\r\n\t\t#b@萬能/@npc#k - #r<工具箱>#k\r\n\t\t#b@猜拳/@pk#k - #r<小遊戲>#k\r\n\t\t#b@event#k - #r<參加活動>#k\r\n\t\t#b@bspq#k - #r<BOSSPQ兌換NPC>#k");
             return true;
         }
 

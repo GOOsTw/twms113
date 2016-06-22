@@ -58,9 +58,9 @@ public class MapleCoconut extends MapleEvent {
     }
 
     public MapleCoconuts getCoconut(int id) {
-        if(coconuts.size() > id)
-            return coconuts.get(id);
-        return null;
+        //if(coconuts.size() > id)
+        return coconuts.get(id);
+        //return null;
     }
 
     public List<MapleCoconuts> getAllCoconuts() {

@@ -26,7 +26,7 @@ public class MapleSquad {
         bossbalrog(2), 
         zak(2), 
         chaoszak(3), 
-        horntail(2), 
+        horntail(3), 
         chaosht(3), 
         pinkbean(3), 
         nmm_squad(2), 
