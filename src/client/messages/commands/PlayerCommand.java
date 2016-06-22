@@ -424,7 +424,7 @@ public class PlayerCommand {
                 }
                 c.getPlayer().dropMessage(6, "訊息已經寄送給GM了!");
                 if (!fake) {
-                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "	管理員幫幫忙頻道 " + c.getPlayer().getClient().getChannel() + " 玩家 	" + c.getPlayer().getName() + " : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
+                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "	管理員幫幫忙頻道 " + c.getPlayer().getClient().getChannel() + " 玩家 " + c.getPlayer().getName() + " : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
                     System.out.println("[管理員幫幫忙] " + c.getPlayer().getName() + " : " + StringUtil.joinStringFrom(splitted, 1));
                 }
             } else {
