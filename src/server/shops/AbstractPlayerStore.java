@@ -294,6 +294,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
                 broadcastToVisitors(PlayerShopPacket.shopVisitorLeave(getVisitorSlot(visitor)), getVisitorSlot(visitor));
                 visitor.setPlayerShop(null);
                 chrs[i] = new WeakReference<>(null);
+                type++;
             }
         }
         update();
