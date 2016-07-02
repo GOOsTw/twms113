@@ -6600,4 +6600,36 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             System.out.println("Error deleting player variable: " + ex);
         }
     }
+    
+    public void disposeSchedules()
+    {
+        if (BerserkSchedule != null) {
+            BerserkSchedule.cancel(false);
+            BerserkSchedule = null;
+        }
+        if (beholderHealingSchedule != null) {
+            beholderHealingSchedule.cancel(false);
+            beholderHealingSchedule = null;
+        }
+        if (beholderBuffSchedule != null) {
+            beholderBuffSchedule.cancel(false);
+            beholderBuffSchedule = null;
+        }
+        if (dragonBloodSchedule != null) {
+            dragonBloodSchedule.cancel(false);
+            dragonBloodSchedule = null;
+        }
+        if (fairySchedule != null) {
+            fairySchedule.cancel(false);
+            fairySchedule = null;
+        }
+        if (mapTimeLimitTask != null) {
+            mapTimeLimitTask.cancel(false);
+            mapTimeLimitTask = null;
+        }
+        if (fishing != null) {
+            fishing.cancel(false);
+            fishing = null;
+        }
+    }
 }
