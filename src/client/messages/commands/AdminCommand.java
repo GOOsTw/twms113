@@ -194,9 +194,6 @@ public class AdminCommand {
                 return false;
             }
             minutesLeft = Integer.parseInt(splitted[1]);
-            c.getPlayer().dropMessage(6, "伺服器將在 " + minutesLeft + "分鐘後關閉. 請盡速關閉精靈商人 並下線.");
-            World.isShutDown = true;
-            c.getPlayer().dropMessage(6, "已經限制玩家玩家所有行動。");
             LoginServer.adminOnly = true;
             c.getPlayer().dropMessage(6, "已經開啟管理員模式。");
             if (ts == null && (t == null || !t.isAlive())) {
@@ -205,7 +202,10 @@ public class AdminCommand {
 
                     @Override
                     public void run() {
-                        if (minutesLeft == 0) {
+                        if ((minutesLeft > 0 && minutesLeft <= 11) && !World.isShutDown) {
+                            World.isShutDown = true;
+                            c.getPlayer().dropMessage(6, "已經限制玩家玩家所有行動。");
+                        } else if (minutesLeft == 0) {
                             ShutdownServer.getInstance().run();
                             t.start();
                             ts.cancel(false);
@@ -214,7 +214,7 @@ public class AdminCommand {
                         StringBuilder message = new StringBuilder();
                         message.append("[楓之谷公告] 伺服器將在 ");
                         message.append(minutesLeft);
-                        message.append("分鐘後關閉. 請盡速關閉精靈商人 並下線.");
+                        message.append("分鐘後關閉. ");
                         World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, message.toString()).getBytes());
                         World.Broadcast.broadcastMessage(MaplePacketCreator.serverMessage(message.toString()).getBytes());
                         minutesLeft--;
@@ -229,7 +229,7 @@ public class AdminCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!shutdowntime <秒數> - 關閉伺服器").toString();
+            return new StringBuilder().append("!shutdowntime <分鐘> - 關閉伺服器").toString();
         }
     }
 

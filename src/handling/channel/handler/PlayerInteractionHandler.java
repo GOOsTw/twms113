@@ -143,7 +143,7 @@ public class PlayerInteractionHandler {
                         if (shop == null || shop.getQuantity() <= 0 || shop.getItemId() != slea.readInt() || c.getPlayer().getMapId() < 910000001 || c.getPlayer().getMapId() > 910000022) {
                             return;
                         }
-                        for (int i = 1; i <= 5; i++) {
+                        for (int i = 1; i <= 5; i++) { // lol
                             chr.dropMessage(1, "使用合約書請詳細閱讀\r\n因精靈商人BUG太多 請玩家使用時請抱著此種心態\r\n1.東西不想要了 2.沒錢拿也沒差\r\n因為很重要所以請閱讀5次");
                         }
                         if (World.isShutDown) {
@@ -521,6 +521,7 @@ public class PlayerInteractionHandler {
             case CLOSE_MERCHANT: {
                 final IMaplePlayerShop merchant = chr.getPlayerShop();
                 if (merchant != null && merchant.getShopType() == 1 && merchant.isOwner(chr) && merchant.isAvailable()) {
+                    c.sendPacket(PlayerShopPacket.shopErrorMessage(0x15, 0));
                     c.sendPacket(MaplePacketCreator.serverNotice(1, "請去找富蘭德里領取你的裝備和楓幣"));
                     c.sendPacket(MaplePacketCreator.enableActions());
                     merchant.removeAllVisitors(-1, -1);
