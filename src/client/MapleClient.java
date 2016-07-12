@@ -1216,6 +1216,10 @@ public class MapleClient {
 
     }
 
+    public void sendPacket(byte[] data) {
+        this.getSession().write(data);
+    }
+
     protected static final class CharNameAndId {
 
         public final String name;
