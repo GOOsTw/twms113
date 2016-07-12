@@ -38,6 +38,7 @@ import handling.world.World;
 import java.util.Map;
 import server.MapleInventoryManipulator;
 import server.MerchItemPackage;
+import server.maps.MapleMap;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
 import tools.Pair;
@@ -50,17 +51,18 @@ public class HiredMerchantHandler {
 
         if (c.getPlayer().getMap().allowPersonalShop() && c.getPlayer().getMap() != null) {
             final byte state = checkExistance(c.getPlayer().getAccountID(), c.getPlayer().getId());
+            final int HMCH = MapleMap.getMerchantChannel(c.getPlayer());
 
             switch (state) {
                 case 1:
-                    c.getPlayer().dropMessage(1, "請先去找富蘭德里領取你之前擺的東西");
+                    c.getPlayer().dropMessage(1, "請先去找富蘭德里領取你之前擺的東西。");
                     break;
                 case 0:
                     boolean merch = World.hasMerchant(c.getPlayer().getAccountID());
                     if (!merch) {
                         c.sendPacket(PlayerShopPacket.sendTitleBox());
                     } else {
-                        c.getPlayer().dropMessage(1, "請換個地方開或者是你已經有開了");
+                        c.getPlayer().dropMessage(1, "請先關閉在" + HMCH + "頻的精靈商人。");
                     }
                     break;
                 default:
@@ -115,9 +117,12 @@ public class HiredMerchantHandler {
                             return;
                         }
                         final int conv = c.getPlayer().getConversation();
+                        final int HMMap = MapleMap.getMerchantMap(c.getPlayer());
+                        final int HMChannel = MapleMap.getMerchantChannel(c.getPlayer());
                         boolean merch = World.hasMerchant(c.getPlayer().getAccountID());
                         if (merch) {
-                            c.getPlayer().dropMessage(1, "請關閉商店後在試一次.");
+                            //c.getPlayer().dropMessage(1, "請關閉商店後在試一次.");
+                            c.sendPacket(PlayerShopPacket.ShowMerchItemStore(9030000, HMMap, HMChannel));
                             c.getPlayer().setConversation(0);
                         } else if (conv == 3) { // Hired Merch
                             final MerchItemPackage pack = loadItemFromDatabase(c.getPlayer().getId(), c.getPlayer().getAccountID());
@@ -136,13 +141,10 @@ public class HiredMerchantHandler {
                                     MapleInventoryManipulator.addFromDrop(c, item, false);
                                 }
                                 if (deletePackage(c.getPlayer().getId(), c.getPlayer().getAccountID(), pack.getPackageid())) {
-                                    if (pack.getMesos() > 0) {
-                                        c.getPlayer().dropMessage(1, "你已經從精靈商人領取了" + pack.getMesos() + "楓幣");
-                                        FilePrinter.print("HiredMerchantLog.txt", "角色名字:" + c.getPlayer().getName() + " 從精靈商人取回楓幣: " + pack.getMesos() + " 取回時間:" + FilePrinter.getLocalDateString());
-                                        c.getPlayer().setConversation(0);
-                                    }
-                                    c.getPlayer().gainMeso(pack.getMesos(), false);
-                                    c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x1d));
+                                    c.getPlayer().gainMeso(pack.getMesos(), true);
+                                    c.getPlayer().dropMessage(1, "你已經從精靈商人領取了" + pack.getMesos() + "楓幣");
+                                    FilePrinter.print("HiredMerchantLog.txt", "角色名字:" + c.getPlayer().getName() + " 從精靈商人取回楓幣: " + pack.getMesos() + " 取回時間:" + FilePrinter.getLocalDateString());
+                                    //c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x1d));
                                     c.getPlayer().setConversation(0);
                                 } else {
                                     c.getPlayer().dropMessage(1, "未知的錯誤");

@@ -259,20 +259,20 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
         session.write(LoginPacket.getHello(ServerConstants.MAPLE_VERSION, ivSend, ivRecv));
         session.setAttribute(MapleClient.CLIENT_KEY, client);
-        
+
         DateFormat dateFormat;
         dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
-        
-          String IP = address.split(":")[0].replace("/", "");
+
+        String IP = address.split(":")[0].replace("/", "");
         String account = client.getAccountName();
         String charName = client.getPlayer() != null ? client.getPlayer().getName() : "";
         if (this.channel == -1) {
-            FilePrinter.print("Sessions/LoginServer.txt", "IP: " + IP  + " 時間: " + dateFormat.format(cal.getTime()), true);
+            FilePrinter.print("Sessions/LoginServer.txt", "IP: " + IP + " 時間: " + dateFormat.format(cal.getTime()), true);
         } else if (this.isCashShop) {
-            FilePrinter.print("Sessions/CashShopServer.txt", "IP: " + IP  + " 帳號: " + charName + " 時間: " + dateFormat.format(cal.getTime()), true);
+            FilePrinter.print("Sessions/CashShopServer.txt", "IP: " + IP + " 帳號: " + charName + " 時間: " + dateFormat.format(cal.getTime()), true);
         } else {
-            FilePrinter.print("Sessions/ChannelServer.txt", "IP: " + IP  + " 頻道: " + this.channel + " 時間: " + dateFormat.format(cal.getTime()), true);
+            FilePrinter.print("Sessions/ChannelServer.txt", "IP: " + IP + " 頻道: " + this.channel + " 時間: " + dateFormat.format(cal.getTime()), true);
         }
     }
 
@@ -378,7 +378,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     public static final void handlePacket(final RecvPacketOpcode header, final SeekableLittleEndianAccessor slea, final MapleClient c, final boolean cs) throws Exception {
         switch (header) {
             case TOBY_SHIELD_START: {
-                
+
                 break;
             }
             case PONG:
@@ -445,7 +445,13 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 InterServerHandler.EnterCashShop(c, c.getPlayer(), false);
                 break;
             case ENTER_MTS:
-                InterServerHandler.EnterCashShop(c, c.getPlayer(), true);
+                if (c.getPlayer().isGM()) {
+                    InterServerHandler.EnterCashShop(c, c.getPlayer(), true);
+                } else {
+                    c.sendPacket(tools.MaplePacketCreator.enableActions());
+                    c.getPlayer().dropMessage(5, "目前拍賣系統不開放。");
+                }
+                //InterServerHandler.EnterCashShop(c, c.getPlayer(), true);
                 break;
             case MOVE_PLAYER:
                 PlayerHandler.MovePlayer(slea, c, c.getPlayer());

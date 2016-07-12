@@ -41,6 +41,7 @@ import javax.script.ScriptEngine;
 import database.DatabaseConnection;
 import database.DatabaseException;
 import handling.MaplePacket;
+import handling.MapleServerHandler;
 import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
 import handling.world.MapleMessengerCharacter;
@@ -498,50 +499,19 @@ public class MapleClient {
                                     pss.executeUpdate();
                                 }
                             }
+                            if (loginok == 0) {
+                                ChannelServer.forceRemovePlayerByAccId(this, accountId);
+                                this.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, this.getSessionIPAddress());
+                            }
                             if (loginstate > MapleClient.LOGIN_NOTLOGGEDIN) { // already loggedin
-                                if (loginok != 0) {
+                                if (loginok == 0) {
+                                    if (isGm()) {
+                                        sendPacket(MaplePacketCreator.serverNotice(1, "[管理員提示] 登入解卡成功。"));
+                                    }
+                                    this.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, this.getSessionIPAddress());
+                                } else {
                                     loggedIn = false;
                                     loginok = 7;
-                                } else {//卡號解卡處理
-                                    sendPacket(MaplePacketCreator.serverNotice(1, "解卡成功。"));
-                                    boolean unLocked = false;
-                                    for (final MapleClient c : World.Client.getClients()) {
-                                        if (c == this) {
-                                            continue;
-                                        }
-                                        if (c.getAccID() == accountId) {
-                                            if (!c.getSession().isSecured()) {
-                                                List<String> charName = c.loadCharacterNames(c.getWorld());
-                                                for (final String cha : charName) {
-                                                    MapleCharacter chr = CashShopServer.getPlayerStorage().getCharacterByName(cha);
-                                                    if (chr != null) {
-                                                        CashShopServer.getPlayerStorage().deregisterPlayer(chr);
-                                                        break;
-                                                    }
-                                                }
-                                                for (ChannelServer cs : ChannelServer.getAllInstances()) {
-                                                    for (final String cha : charName) {
-                                                        MapleCharacter chr = cs.getPlayerStorage().getCharacterByName(cha);
-                                                        if (chr != null) {
-                                                            cs.removePlayer(chr);
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-                                                break;
-                                            }
-                                            c.unLockDisconnect();
-                                            unLocked = true;
-                                        }
-                                    }
-                                    if (!unLocked) {
-                                        try (PreparedStatement pss = con.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE name = ?")) {
-                                            pss.setString(1, accountName);
-                                            pss.executeUpdate();
-                                            pss.close();
-                                        } catch (SQLException se) {
-                                        }
-                                    }
                                 }
                             }
                         }
@@ -854,7 +824,7 @@ public class MapleClient {
             final MapleMessengerCharacter chrm = new MapleMessengerCharacter(player);
             final MapleGuildCharacter chrg = player.getMGC();
             final MapleFamilyCharacter chrf = player.getMFC();
-            player.disposeSchedules();
+
             removalTask(shutdown);
             player.saveToDB(true, fromCS);
             if (shutdown) {

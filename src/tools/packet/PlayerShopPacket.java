@@ -291,6 +291,16 @@ public class PlayerShopPacket {
         return mplew.getPacket();
     }
 
+    public static final MaplePacket ShowMerchItemStore(int npc, int mapid, int ch) {
+        final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+        mplew.writeShort(SendPacketOpcode.MERCH_ITEM_STORE.getValue());
+        mplew.write(0x25);
+        mplew.writeInt(npc);
+        mplew.writeInt(mapid);
+        mplew.write(ch - 1);
+        return mplew.getPacket();
+    }
+    
     public static final MaplePacket merchItemStore(final byte op) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         // [28 01] [22 01] - Invalid Asiasoft Passport
@@ -304,13 +314,27 @@ public class PlayerShopPacket {
             case 0x22:
                 mplew.write(0); // 1 or 0 跳出訊息
                 break;
-            case 0x26: // 跳訊息
-
+            case 0x23:
+                /* I can't decode */
+                //CField__OnPacket
+                //sub_79E62D(Args, Str);
+                //int __thiscall sub_79CFF6(int this, int a2)
+                break;
+            case 0x24:
+                /*
+                 v23 = CInPacket__Decode4(v4);
+                 v24 = CInPacket__Decode4(v4);
+                 sub_79E528((void *)v22, v23, v24);
+                 */
+                mplew.writeInt(0);
+                mplew.writeInt(0);
                 break;
             case 0x25:
                 mplew.writeInt(0);
                 mplew.writeInt(0);
                 mplew.write(0);
+                break;
+            case 0x26: // 跳訊息
                 break;
             /**
              * v65 = CInPacket__Decode4(v4); // opcode == 0x25 v10 =
@@ -321,21 +345,6 @@ public class PlayerShopPacket {
              * ZXString_char___Format((int)&a2, (char *)v50, v51); LOBYTE(v70) =
              * 5; v11 = &v66; }
              */
-            case 0x24:
-                /*
-                 v23 = CInPacket__Decode4(v4);
-                 v24 = CInPacket__Decode4(v4);
-                 sub_79E528((void *)v22, v23, v24);
-                 */
-                mplew.writeInt(0);
-                mplew.writeInt(0);
-                break;
-            case 0x23:
-                /* I can't decode */
-                //CField__OnPacket
-                //sub_79E62D(Args, Str);
-                //int __thiscall sub_79CFF6(int this, int a2)
-                break;
         }
 
         return mplew.getPacket();

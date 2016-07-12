@@ -58,7 +58,7 @@ public class PlayerCommand {
                         return true;
                     }
                 }
-                if (c.getPlayer().getLevel() < 10) {
+                if (c.getPlayer().getLevel() < 10 && c.getPlayer().getJob() != 200) {
                     c.getPlayer().dropMessage(1, "你的等級必須是10等.");
                     return true;
                 }
@@ -379,7 +379,7 @@ public class PlayerCommand {
         }
     }
 
-    public static class 卡圖 extends stocked {
+    /*public static class 卡圖 extends stocked {
 
         @Override
         public String getMessage() {
@@ -407,8 +407,7 @@ public class PlayerCommand {
         public String getMessage() {
             return new StringBuilder().append("@stocked - 解除卡圖").toString();
         }
-    }
-
+    }*/
     public static class CGM extends CommandExecute {
 
         @Override
@@ -454,7 +453,7 @@ public class PlayerCommand {
 
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
-            c.getPlayer().dropNPC("\t\t #i3994014##i3994018##i3994070##i3994061##i3994005##i3991038##i3991004#\r\t\t\t\t\t\t #i3994078##i3991040#\t\t\r\n\t\t#i3991035##i3994067##i3994079##i3994071##i3994002##i3994012##i3994077#\r\r\n\t      #fMob/0100101.img/move/1##b 親愛的： #h \r\n #fMob/0100101.img/move/1##k\r\r\n\t      #fMob/0130101.img/move/1##g[以下是玩家指令]#k#fMob/0130101.img/move/1#\r\n\t  #d▇▇▆▅▄▃▂#r萬用指令區#d▂▃▄▅▆▇▇\r\n\t\t#b@查看/@ea#k - #r<解除異常+查看當前狀態>#k\r\n\t\t#b@怪物/@mob#k - #r<查看身邊怪物訊息>#k\r\n\t\t#b@存檔/@save#k - #r<存檔>#k\r\n\t\t#b@卡圖/@car#k - #r<卡圖修復>#k\r\n\t\t#b@CGM <訊息>#k - #r<傳送訊息給GM>#k\r\n\t\t#b@dpm#k - #r<測試每分鐘平均傷害>#k\r\n\t  #g▇▇▆▅▄▃▂#dNPＣ指令區#g▂▃▄▅▆▇▇\r\n\t\t#b@丟裝/@DropCash#k - #r<丟棄點裝>#k\r\n\t\t#b@萬能/@npc#k - #r<工具箱>#k\r\n\t\t#b@猜拳/@pk#k - #r<小遊戲>#k\r\n\t\t#b@event#k - #r<參加活動>#k\r\n\t\t#b@bspq#k - #r<BOSSPQ兌換NPC>#k");
+            c.getPlayer().dropNPC("\t\t #i3994014##i3994018##i3994070##i3994061##i3994005##i3991038##i3991004#\r\t\t\t\t\t\t #i3994078##i3991040#\t\t\r\n\t\t#i3991035##i3994067##i3994079##i3994071##i3994002##i3994012##i3994077#\r\r\n\t      #fMob/0100101.img/move/1##b 親愛的： #h \r\n #fMob/0100101.img/move/1##k\r\r\n\t      #fMob/0130101.img/move/1##g[以下是玩家指令]#k#fMob/0130101.img/move/1#\r\n\t  #d▇▇▆▅▄▃▂#r萬用指令區#d▂▃▄▅▆▇▇\r\n\t\t#b@查看/@ea#k - #r<解除異常+查看當前狀態>#k\r\n\t\t#b@怪物/@mob#k - #r<查看身邊怪物訊息>#k\r\n\t\t#b@存檔/@save#k - #r<存檔>#k\r\n\t\t#b@CGM <訊息>#k - #r<傳送訊息給GM>#k\r\n\t\t#b@dpm#k - #r<測試每分鐘平均傷害>#k\r\n\t  #g▇▇▆▅▄▃▂#dNPＣ指令區#g▂▃▄▅▆▇▇\r\n\t\t#b@丟裝/@DropCash#k - #r<丟棄點裝>#k\r\n\t\t#b@萬能/@npc#k - #r<工具箱>#k\r\n\t\t#b@猜拳/@pk#k - #r<小遊戲>#k\r\n\t\t#b@event#k - #r<參加活動>#k\r\n\t\t#b@bspq#k - #r<BOSSPQ兌換NPC>#k");
             return true;
         }
 

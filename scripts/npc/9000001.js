@@ -13,6 +13,10 @@ function action(mode, type, selection) {
             cm.dispose();
         }
     }
+	if (cm.getPlayer().getJob() == 2000) {
+		cm.sendNext("幹！想使用BUG吃屎去吧！");
+		cm.dispose();
+	}
     if (mode == -1) {
         cm.dispose();
     } else {

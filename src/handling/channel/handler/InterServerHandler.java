@@ -54,7 +54,11 @@ public class InterServerHandler {
     private static final boolean isCSOpen = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.cashshop.enable", "false"));
 
     public static final void EnterCashShop(final MapleClient c, final MapleCharacter chr, final boolean mts) {
-
+        if (World.isShutDown && chr.isGM() == false) {
+            c.sendPacket(MaplePacketCreator.serverBlocked(2));
+            c.sendPacket(MaplePacketCreator.enableActions());
+            return;
+        }
         if (!isCSOpen && chr.isGM() == false) {
             c.sendPacket(MaplePacketCreator.serverBlocked(2));
             c.sendPacket(MaplePacketCreator.enableActions());
@@ -67,8 +71,9 @@ public class InterServerHandler {
         }
         if (chr.isTestingDPS()) {
             final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
-            if(chr.getMap() != null)
-            chr.getMap().killMonster1(mm);
+            if (chr.getMap() != null) {
+                chr.getMap().killMonster1(mm);
+            }
             chr.toggleTestingDPS();
             chr.dropMessage(5, "已停止當前的DPM測試。");
         }
@@ -116,7 +121,10 @@ public class InterServerHandler {
         }
 
         final int state = c.getLoginState();
-
+        
+        //對在線上角色做斷線
+        ChannelServer.forceRemovePlayerByAccId(c, c.getAccID());
+        
         c.updateLoginState(MapleClient.LOGIN_LOGGEDIN, c.getSessionIPAddress());
         channelServer.addPlayer(player);
 

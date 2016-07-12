@@ -20,6 +20,7 @@
  */
 package handling.login;
 
+import client.MapleClient;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import java.util.Map;
 
 import handling.MapleServerHandler;
 import handling.mina.MapleCodecFactory;
+import java.util.Collection;
 import java.util.Iterator;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.buffer.SimpleBufferAllocator;
@@ -164,5 +166,37 @@ public class LoginServer {
 
     public static final void setOn() {
         finishedShutdown = false;
+    }
+
+    public static void forceRemoveClient(MapleClient client) {
+        Collection<MapleClient> cls = getClientStorage().getAllClientsThreadSafe();
+        for (MapleClient c : cls) {
+            if (c == null) {
+                continue;
+            }
+            if (c.getAccID() == client.getAccID() || c == client) {
+                if (c != client) {
+                    c.unLockDisconnect();
+                }
+                removeClient(c);
+            }
+        }
+    }
+    
+    private static AccountStorage clients;
+
+    public static AccountStorage getClientStorage() {
+        if (clients == null) {
+            clients = new AccountStorage();
+        }
+        return clients;
+    }
+
+    public static final void addClient(final MapleClient c) {
+        getClientStorage().registerAccount(c);
+    }
+
+    public static final void removeClient(final MapleClient c) {
+        getClientStorage().deregisterAccount(c);
     }
 }

@@ -34,7 +34,7 @@ public class NPCHandler {
 
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.NPC_ACTION.getValue());
-        mplew.write(slea.read((int)slea.available()));
+        mplew.write(slea.read((int) slea.available()));
         c.sendPacket(mplew.getPacket());
     }
 
@@ -195,10 +195,15 @@ public class NPCHandler {
                         storage.store(item);
                         chr.dropMessage(1, "你的物品攔已經滿了..");
                     } else {
+                        if (item.getQuantity() < 1) {
+                            return;
+                        }
                         MapleInventoryManipulator.addFromDrop(c, item, false);
+                        storage.sendTakenOut(c, GameConstants.getInventoryType(item.getItemId()));
+                        storage.saveToDB();
                     }
-                    storage.sendTakenOut(c, GameConstants.getInventoryType(item.getItemId()));
                 } else {
+                    c.sendPacket(MaplePacketCreator.enableActions());
                     //AutobanManager.getInstance().autoban(c, "Trying to take out item from storage which does not exist.");
                 }
                 break;
@@ -252,13 +257,15 @@ public class NPCHandler {
                         MapleInventoryManipulator.removeFromSlot(c, type, slot, quantity, false);
                         item.setQuantity(quantity);
                         storage.store(item);
+                        storage.saveToDB();
+                        chr.saveToDB(false, false);
                     } else {
                         AutobanManager.getInstance().addPoints(c, 1000, 0, "Trying to store non-matching itemid (" + itemId + "/" + item.getItemId() + ") or quantity not in posession (" + quantity + "/" + item.getQuantity() + ")");
                         return;
                     }
-                    storage.sendStored(c, GameConstants.getInventoryType(itemId));
-                    break;
                 }
+                storage.sendStored(c, GameConstants.getInventoryType(itemId));
+                break;
             }
             case 6: {
                 storage.arrange();

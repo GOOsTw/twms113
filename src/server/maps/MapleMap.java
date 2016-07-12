@@ -58,6 +58,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -96,9 +97,6 @@ import tools.Pair;
 
 public final class MapleMap {
 
-    /*
-     * 
-     */
     private final Map<MapleMapObjectType, LinkedHashMap<Integer, MapleMapObject>> mapObjects;
     private final Map<MapleMapObjectType, ReentrantReadWriteLock> mapObjectLocks;
     private final List<MapleCharacter> characters = new LinkedList<>();
@@ -642,7 +640,7 @@ public final class MapleMap {
         final int mobid = monster.getId();
         SpeedRunType type = SpeedRunType.NULL;
         final MapleSquad sqd = getSquadByMap();
-        if (mobid == 8810018 && mapid == 240060200) { // Horntail
+        if (mobid == 8810018 && mapid == 240060200 && !chr.isGM()) { // Horntail
             World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "經過無數次的挑戰，" + chr.getName() + "所帶領的隊伍終於擊破了闇黑龍王的遠征隊！你們才是龍之林的真正英雄~").getBytes());
             /*for (MapleCharacter c : getCharactersThreadsafe()) {
              c.finishAchievement(16);
@@ -717,8 +715,7 @@ public final class MapleMap {
                 type = SpeedRunType.Aufhaven;
             }
             if (sqd != null) {
-                
-                
+
                 doShrine(true);
             }
         } else if ((mobid == 9420549 || mobid == 9420544) && mapid == 551030200) {
@@ -729,7 +726,7 @@ public final class MapleMap {
                     type = SpeedRunType.Targa;
                 }
             }
-        } else if (mobid == 8820001 && mapid == 270050100) {
+        } else if (mobid == 8820001 && mapid == 270050100 && !chr.isGM()) {
             World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, chr.getName() + " 經過帶領的隊伍經過無數次的挑戰，終於擊破了時間的寵兒－皮卡丘的遠征隊！你們才是時間神殿的真正英雄~").getBytes());
             /*for (MapleCharacter c : getCharactersThreadsafe()) {
              c.finishAchievement(17);
@@ -1928,7 +1925,7 @@ public final class MapleMap {
             broadcastMessage(chr, MaplePacketCreator.spawnPlayerMapobject(chr), false);
             if (chr.isGM() && speedRunStart > 0) {
                 endSpeedRun();
-                broadcastMessage(MaplePacketCreator.serverNotice(5, "The speed run has ended."));
+                broadcastMessage(MaplePacketCreator.serverNotice(5, "由於遠征隊隊長離開了，所以遠征隊任務失敗。"));
             }
         }
 
@@ -2805,7 +2802,7 @@ public final class MapleMap {
         }
         return closest;
     }
-	
+
     public MaplePortal findClosestPortal(Point from) {
         MaplePortal closest = getPortal(0);
         double distance, shortestDistance = Double.POSITIVE_INFINITY;
@@ -2818,7 +2815,7 @@ public final class MapleMap {
         }
         return closest;
     }
-	
+
     public String spawnDebug() {
         StringBuilder sb = new StringBuilder("Mapobjects in map : ");
         sb.append(this.getMapObjectSize());
@@ -2997,15 +2994,15 @@ public final class MapleMap {
         speedRunStart = System.currentTimeMillis();
         speedRunLeader = leader;
     }
-    
+
     public boolean getPapfight() {
         return PapfightStart;
     }
-    
+
     public void Papfight() {
         PapfightStart = true;
     }
-    
+
     public void EndPapfight() {
         PapfightStart = false;
     }
@@ -3013,6 +3010,26 @@ public final class MapleMap {
     public void endSpeedRun() {
         speedRunStart = 0;
         speedRunLeader = "";
+    }
+
+    public static int getMerchantMap(MapleCharacter chr) {
+        for (ChannelServer cs : ChannelServer.getAllInstances()) {
+            int map = cs.getMerchantMap(chr);
+            if (map != -1) {
+                return map;
+            }
+        }
+        return -1;
+    }
+
+    public static int getMerchantChannel(MapleCharacter chr) {
+        for (ChannelServer cs : ChannelServer.getAllInstances()) {
+            int map = cs.getMerchantMap(chr);
+            if (map != -1) {
+                return cs.getChannel();
+            }
+        }
+        return -1;
     }
 
     public void getRankAndAdd(String leader, String time, SpeedRunType type, long timz, Collection<String> squad) {
@@ -3442,4 +3459,22 @@ public final class MapleMap {
         return applyedMonsterCount.get();
     }
 
+    public void UpdateMap(int ch, int mapid) {
+        MapleMap map = ChannelServer.getInstance(ch).getMapFactory().getMap(mapid);
+        if (ChannelServer.getInstance(ch).getMapFactory().destroyMap(mapid)) {
+            MapleMap newMap = ChannelServer.getInstance(ch).getMapFactory().getMap(mapid);
+            MaplePortal newPor = newMap.getPortal(0);
+            LinkedHashSet<MapleCharacter> mcs = new LinkedHashSet<>(map.getCharacters()); // do NOT remove, fixing ConcurrentModificationEx.
+            outerLoop:
+            for (MapleCharacter m : mcs) {
+                for (int x = 0; x < 5; x++) {
+                    try {
+                        m.changeMap(newMap, newPor);
+                        continue outerLoop;
+                    } catch (Throwable t) {
+                    }
+                }
+            }
+        }
+    }
 }

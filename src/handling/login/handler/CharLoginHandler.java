@@ -104,9 +104,7 @@ public class CharLoginHandler {
         } else if (loginok == 5) {
             //帳號不存在
             if (LoginServer.autoRegister) {
-                if (password.equalsIgnoreCase("fixlogged")) {
-                    errorInfo = "這個密碼是解卡密碼，請換其他密碼。";
-                } else if (account.length() >= 12) {
+                if (account.length() >= 12) {
                     errorInfo = "您的帳號長度太長了唷!\r\n請重新輸入.";
                 } else {
                     AutoRegister.createAccount(account, password, c.getSession().getRemoteAddress().toString(), macData);
@@ -127,9 +125,6 @@ public class CharLoginHandler {
         }
 
         if (loginok != 0) {
-            if (password.equalsIgnoreCase("fixlogged")) {
-                loginok = 1;
-            }
             if (!loginFailCount(c)) {
                 c.sendPacket(LoginPacket.getLoginFailed(loginok));
                 if (errorInfo != null) {

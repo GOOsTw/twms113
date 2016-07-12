@@ -1,4 +1,4 @@
-function enter(pi) {
+﻿function enter(pi) {
     if (pi.haveItem(4031346)) {
         if (pi.getMapId() == 240010100) {
             pi.playPortalSE();
@@ -8,10 +8,9 @@ function enter(pi) {
             pi.warp(240010100, "elli00");
         }
         pi.gainItem(4031346, -1);
-        pi.playerMessage("The Magical Seed is spent and you are transferred to somewhere.");
         return true;
     } else {
-        pi.playerMessage("Magic Seed is needed to go through the portal.");
+        pi.playerMessage("為了要傳送到神祕的地方需要魔法種子。");
         return false;
     }
 }

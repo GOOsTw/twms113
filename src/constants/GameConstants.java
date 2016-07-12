@@ -1,5 +1,6 @@
 package constants;
 
+import client.inventory.IItem;
 import client.inventory.MapleInventoryType;
 import client.inventory.MapleWeaponType;
 import client.status.MonsterStatus;
@@ -90,6 +91,7 @@ public class GameConstants {
     public static final int MATCH_SCORE = 122210;
     public static final int[] blockedSkills = {4341003};
     public static final String[] RESERVED = {"Rental"};
+    public static int 商店一次拍賣獲得最大楓幣 = 1500000;
 
     public static int getExpNeededForLevel(final int level) {
         if (level < 0 || level >= ExpTable.length) {
@@ -330,15 +332,32 @@ public class GameConstants {
     public static boolean 武器(final int itemId) {
         return itemId >= 1300000 && itemId < 1500000;
     }
-
-    public static MapleInventoryType getInventoryType(final int itemId) {
-        final byte type = (byte) (itemId / 1000000);
-        if (type < 1 || type > 5) {
-            return MapleInventoryType.UNDEFINED;
+    public static MapleInventoryType getInventoryType(final IItem item) {
+        MapleInventoryType type = getInventoryType(item.getItemId());
+        if (type == MapleInventoryType.EQUIP && item.getPosition() < 0) {
+            type = MapleInventoryType.EQUIPPED;
         }
-        return MapleInventoryType.getByType(type);
+        return type;
     }
-
+    public static MapleInventoryType getInventoryType(final int itemId) {
+        MapleInventoryType type = MapleInventoryType.getByType((byte) (itemId / 1000000));
+        if (type == MapleInventoryType.UNDEFINED || type == null) {
+            final byte type2 = (byte) (itemId / 10000);
+            switch (type2) {
+                case 2:
+                    type = MapleInventoryType.FACE;
+                    break;
+                case 3:
+                case 4:
+                    type = MapleInventoryType.HAIR;
+                    break;
+                default:
+                    type = MapleInventoryType.UNDEFINED;
+                    break;
+            }
+        }
+        return type;
+    }
     public static MapleWeaponType 武器種類(final int itemId) {
         int cat = itemId / 10000;
         cat = cat % 100;

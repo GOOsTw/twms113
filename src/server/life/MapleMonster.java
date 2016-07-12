@@ -1101,12 +1101,18 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         } else if (statusSkill == 4121004 || statusSkill == 4221004) { // NINJA_AMBUSH
             statusEff.setValue(statusEff.getStatus(), Math.min(Short.MAX_VALUE, (int) (eff.getDamage() * from.getStat().getCurrentMaxBaseDamage() / 100.0)));
             int dam = (int) (aniTime / 1000 * statusEff.getX() / 2);
+
+            if (dam > 0) {
+                if (dam >= hp) {
+                    dam = (int) (hp - 1);
+                }
+            }
             statusEff.setPoisonDamage(dam, from);
         }
-        
-         if (poison && getHp() <= 1) { 
-             return;
-         }
+
+        if (poison && getHp() <= 1) {
+            return;
+        }
 
         final BuffTimer applyEffectTimer = Timer.BuffTimer.getInstance();
 
@@ -1122,7 +1128,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                         dam = (int) (hp - statusEff.getPoisonDamage());
                     }
                     damage(from, dam, false);
-                    applyEffectTimer.schedule(this, reTime); 
+                    applyEffectTimer.schedule(this, reTime);
                 } else if (from.isShowDebugInfo()) {
                     from.dropMessage(6, "結束 => 執行時間[" + System.currentTimeMillis() + "]");
                 }

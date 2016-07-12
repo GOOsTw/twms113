@@ -165,8 +165,11 @@ public class MapleShop {
             } else {
                 price = ii.getPrice(item.getItemId());
             }
-            final int recvMesos = (int) Math.max(Math.ceil(price * quantity), 0);
+            int recvMesos = (int) Math.max(Math.ceil(price * quantity), 0);
             if (price != -1.0 && recvMesos > 0) {
+                if (recvMesos > GameConstants.商店一次拍賣獲得最大楓幣) {
+                    recvMesos = 1;
+                }
                 c.getPlayer().gainMeso(recvMesos, false);
             }
             c.sendPacket(MaplePacketCreator.confirmShopTransaction((byte) 0x8));
