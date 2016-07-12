@@ -824,7 +824,7 @@ public class MapleClient {
             final MapleMessengerCharacter chrm = new MapleMessengerCharacter(player);
             final MapleGuildCharacter chrg = player.getMGC();
             final MapleFamilyCharacter chrf = player.getMFC();
-
+			player.disposeSchedules();
             removalTask(shutdown);
             player.saveToDB(true, fromCS);
             if (shutdown) {
