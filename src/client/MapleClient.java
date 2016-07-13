@@ -1,4 +1,4 @@
-/*
+﻿/*
  This file is part of the OdinMS Maple Story Server
  Copyright (C) 2008 ~ 2010 Patrick Huy <patrick.huy@frz.cc> 
  Matthias Butz <matze@odinms.de>
@@ -536,7 +536,8 @@ public class MapleClient {
                 } catch (InterruptedException ex) {
                 }
                 client.getSession().close();
-                System.err.println("伺服器主動斷開用戶端連結,調用位置: " + new java.lang.Throwable().getStackTrace()[0]);
+                //System.err.println("伺服器主動斷開用戶端連結,調用位置: " + new java.lang.Throwable().getStackTrace()[0]);
+                FilePrinter.print("疑似想複製東西名單.txt", FilePrinter.getLocalDateString() + " 玩家[" + client.getPlayer().getName() + "] 帳號[" + client.getAccountName() + "]: ");
             }
         };
         try {
@@ -824,7 +825,8 @@ public class MapleClient {
             final MapleMessengerCharacter chrm = new MapleMessengerCharacter(player);
             final MapleGuildCharacter chrg = player.getMGC();
             final MapleFamilyCharacter chrf = player.getMFC();
-			player.disposeSchedules();
+            player.disposeSchedules();
+
             removalTask(shutdown);
             player.saveToDB(true, fromCS);
             if (shutdown) {
