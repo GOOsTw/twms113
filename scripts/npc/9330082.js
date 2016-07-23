@@ -89,10 +89,10 @@ function action(mode, type, selection) {
         var itemid = select == 1 ? 3993002 : 3993002;
         var pricemultipy = select == 1 ? 10000 : 10000;
         if (select == 1 || select == 2) {
-            if (cm.haveItem(itemid, selection)) {
-                intPoints += (pricemultipy * cm.itemQuantity(itemid));
+            if (cm.haveItem(itemid, sel)) {
+                intPoints += (pricemultipy * sel);
                 record.setCustomData("" + intPoints + "");
-                cm.gainItem(itemid, -selection);
+                cm.gainItem(itemid, -sel);
                 cm.sendOk("完成! 請查看你的點數。");
             } else {
                 cm.sendOk("你沒有可兌換的道具");

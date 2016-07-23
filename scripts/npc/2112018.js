@@ -1,4 +1,4 @@
-function action(mode, type, selection) {
+﻿function action(mode, type, selection) {
     cm.removeAll(4001130);
     cm.removeAll(4001131);
     cm.removeAll(4001132);
@@ -9,7 +9,7 @@ function action(mode, type, selection) {
     if (em != null) {
         var itemid = cm.getMapId() == 926100600 ? 4001160 : 4001159;
         if (!cm.canHold(itemid, 1)) {
-            cm.sendOk("Please clear 1 ETC slot.");
+            cm.sendOk("請空出一個其他欄位。");
             cm.dispose();
             return;
         }

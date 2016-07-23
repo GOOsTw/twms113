@@ -1,4 +1,4 @@
-function enter(pi) {
+﻿function enter(pi) {
     if (pi.getPlayerCount(541020800) <= 0) { // krex. Map
         var krexMap = pi.getMap(541020800);
 
@@ -13,7 +13,7 @@ function enter(pi) {
             pi.warp(541020800, "sp");
             return true;
         } else {
-            pi.playerMessage(5, "The battle against the boss has already begun, so you may not enter this place.");
+            pi.playerMessage(5, "裡面已經有人正在挑戰了，請稍後再嘗試。");
             return false;
         }
     }

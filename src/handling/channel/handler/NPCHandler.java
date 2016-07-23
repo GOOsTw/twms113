@@ -199,9 +199,9 @@ public class NPCHandler {
                             return;
                         }
                         MapleInventoryManipulator.addFromDrop(c, item, false);
-                        storage.sendTakenOut(c, GameConstants.getInventoryType(item.getItemId()));
-                        storage.saveToDB();
                     }
+					storage.sendTakenOut(c, GameConstants.getInventoryType(item.getItemId()));
+                    storage.saveToDB();
                 } else {
                     c.sendPacket(MaplePacketCreator.enableActions());
                     //AutobanManager.getInstance().autoban(c, "Trying to take out item from storage which does not exist.");

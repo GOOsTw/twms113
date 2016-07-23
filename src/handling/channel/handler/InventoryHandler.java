@@ -1866,7 +1866,7 @@ public class InventoryHandler {
                     c.getPlayer().dropMessage(1, "必須等級30級以上才可以使用.");
                     break;
                 }
-                if (color >= 0 && c.getPlayer().changeFace(color)) {
+                if (color >= 0 && c.getPlayer().changeFace((short) itemId, color)) {
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(1, "使用日拋隱形眼鏡出現錯誤。");
@@ -2600,7 +2600,8 @@ public class InventoryHandler {
                 }
             }
         }
-        c.sendPacket(MaplePacketCreator.useSkillBook(chr, skill, maxlevel, canuse, success));
+        //c.sendPacket(MaplePacketCreator.useSkillBook(chr, skill, maxlevel, canuse, success));
+        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.useSkillBook(chr, skill, maxlevel, canuse, success));
     }
 
     public static final void OwlWarp(final SeekableLittleEndianAccessor slea, final MapleClient c) {

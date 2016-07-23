@@ -138,7 +138,7 @@ public class HiredMerchantHandler {
                                     return;
                                 }
                                 for (IItem item : pack.getItems()) {
-                                    MapleInventoryManipulator.addFromDrop(c, item, false);
+                                    MapleInventoryManipulator.addFromDrop(c, item, true);
                                 }
                                 if (deletePackage(c.getPlayer().getId(), c.getPlayer().getAccountID(), pack.getPackageid())) {
                                     c.getPlayer().gainMeso(pack.getMesos(), true);
@@ -181,9 +181,9 @@ public class HiredMerchantHandler {
                 }
                 if (deletePackage(c.getPlayer().getId(), c.getPlayer().getAccountID(), pack.getPackageid())) {
                     String output = "";
-                    c.getPlayer().gainMeso(pack.getMesos(), false);
+                    c.getPlayer().gainMeso(pack.getMesos(), true);
                     for (IItem item : pack.getItems()) {
-                        MapleInventoryManipulator.addFromDrop(c, item, false);
+                        MapleInventoryManipulator.addFromDrop(c, item, true);
                         output += item.getItemId() + "(" + item.getQuantity() + "), ";
                     }
                     c.sendPacket(PlayerShopPacket.merchItem_Message((byte) 0x1d));
