@@ -48,7 +48,7 @@ public class CharacterTransfer implements Externalizable {
             familyid, seniorid, junior1, junior2, currentrep, totalrep, expression, constellation, blood, month, day, battleshipHP, gachexp;
     public byte channel, dojoRecord, gender, gmLevel, guildrank, alliancerank, clonez, fairyExp, buddysize, world, initialSpawnPoint, skinColor, mount_level, mount_Fatigue, subcategory;
     public long lastfametime, TranferTime, dps;
-    public String name, mac, accountname, BlessOfFairy, chalkboard, charmessage, prefix;
+    public String name, accountname, BlessOfFairy, chalkboard, charmessage, prefix;
     public short level, fame, str, dex, int_, luk, maxhp, maxmp, hp, mp, remainingAp, hpApUsed, job;
     public Object inventorys, skillmacro, storage, cs;
     public int[] savedlocation, wishlist, rocks, remainingSp, regrocks;
@@ -71,7 +71,6 @@ public class CharacterTransfer implements Externalizable {
         this.characterid = chr.getId();
         this.accountid = chr.getAccountID();
         this.accountname = chr.getClient().getAccountName();
-        this.mac = chr.getClient().getMac();
         this.channel = (byte) chr.getClient().getChannel();
         this.ACash = chr.getCSPoints(1);
         this.MaplePoints = chr.getCSPoints(2);
@@ -206,7 +205,6 @@ public class CharacterTransfer implements Externalizable {
         this.characterid = in.readInt();
         this.accountid = in.readInt();
         this.accountname = in.readUTF();
-        this.mac = in.readUTF();
         this.channel = in.readByte();
         this.ACash = in.readInt();
         this.MaplePoints = in.readInt();
@@ -368,7 +366,6 @@ public class CharacterTransfer implements Externalizable {
         out.writeInt(this.characterid);
         out.writeInt(this.accountid);
         out.writeUTF(this.accountname);
-        out.writeUTF(this.mac);
         out.writeByte(this.channel);
         out.writeInt(this.ACash);
         out.writeInt(this.MaplePoints);

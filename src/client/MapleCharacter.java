@@ -82,15 +82,11 @@ import java.lang.ref.WeakReference;
 import java.sql.Statement;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.Timer;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import tools.MockIOSession;
 import scripting.EventInstanceManager;
 import scripting.NPCScriptManager;
-import server.AutoGiveCSPoints;
 import server.MaplePortal;
 import server.MapleShop;
 import server.MapleStatEffect;
@@ -459,7 +455,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.storage = (MapleStorage) ct.storage;
         ret.cs = (CashShop) ct.cs;
         client.setAccountName(ct.accountname);
-        client.setMac(ct.mac);
         ret.acash = ct.ACash;
         ret.maplepoints = ct.MaplePoints;
         ret.numClones = ct.clonez;
@@ -3753,10 +3748,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (lastmonthfameids == null) {
             throw new RuntimeException("Trying to ban a non-loaded character (testhack)");
         }
+        String ip = client.getSessionIPAddress();
         try {
             Connection con = DatabaseConnection.getConnection();
             PreparedStatement ps = con.prepareStatement("UPDATE accounts SET banned = ?, banreason = ? WHERE id = ?");
-            PreparedStatement ps1 = con.prepareStatement("UPDATE accounts SET banned = ?, banreason = ? WHERE id = ?");
             ps.setInt(1, autoban ? 2 : 1);
             ps.setString(2, reason);
             ps.setInt(3, accountid);
@@ -3764,10 +3759,24 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.close();
 
             if (banIP) {
-
-                client.banIP();
-                client.banMac();
-
+                ps = con.prepareStatement("INSERT INTO ipbans (ip) VALUES (?)");
+                ps.setString(1, ip);
+                ps.executeUpdate();
+                ps.close();
+                try {
+                    for (ChannelServer cs : ChannelServer.getAllInstances()) {
+                        for (MapleCharacter chr : cs.getPlayerStorage().getAllCharactersThreadSafe()) {
+                            if (chr.getClient().getSessionIPAddress().equals(client.getSessionIPAddress())) {
+                                if (!chr.getClient().isGm()) {
+                                    chr.getClient().disconnect(true, false);
+                                    chr.getClient().getSession().close();
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception ex) {
+                }
+                client.banMacs();
                 if (hellban) {
                     try (PreparedStatement psa = con.prepareStatement("SELECT * FROM accounts WHERE id = ?")) {
                         psa.setInt(1, accountid);
@@ -3836,7 +3845,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                                     }
                                     String macData = rsa.getString("macs");
                                     if (macData != null) {
-                                        MapleClient.banMac(macData);
+                                        MapleClient.banMacs(macData);
                                     }
                                     if (hellban) {
                                         try (PreparedStatement pss = con.prepareStatement("UPDATE accounts SET banned = 1, banreason = ? WHERE email = ?" + (sessionIP == null ? "" : " OR SessionIP = ?"))) {
@@ -3859,6 +3868,83 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             return ret;
         } catch (SQLException ex) {
             System.err.println("Error while banning" + ex);
+        }
+        return false;
+    }
+
+    public boolean OfflineBanByName(String name, String reason) {
+        int id = 0;
+        try {
+            PreparedStatement ps = null;
+            Connection con = DatabaseConnection.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet rs;
+            ps = con.prepareStatement("select id from characters where name = ?");
+            ps.setString(1, name);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                id = rs.getInt("id");
+            }
+        } catch (Exception ex) {
+        }
+        if (id == 0) {
+            return false;
+        }
+        return OfflineBanById(id, reason);
+    }
+
+    public boolean OfflineBanById(int id, String reason) {
+        try {
+            Connection con = DatabaseConnection.getConnection();
+            Statement stmt = con.createStatement();
+            PreparedStatement ps;
+            ResultSet rs;
+            int z = id;
+            int acid = 0;
+            String ip = "";
+            String mac = "";
+            rs = stmt.executeQuery("select accountid from characters where id = " + id);
+            while (rs.next()) {
+                acid = rs.getInt("accountid");
+            }
+            if (acid == 0) {
+                return false;
+            }
+            try (PreparedStatement psb = con.prepareStatement("UPDATE accounts SET banned = 1, banreason = ? WHERE id = ?")) {
+                psb.setString(1, reason);
+                psb.setInt(2, acid);
+                psb.execute();
+                psb.close();
+            }
+
+            rs = stmt.executeQuery("select SessionIP, macs from accounts where id = " + acid);
+            while (rs.next()) {
+                ip = rs.getString("SessionIP");
+                mac = rs.getString("macs");
+            }
+            ps = con.prepareStatement("INSERT INTO ipbans (ip) VALUES (?)");
+            ps.setString(1, ip);
+            ps.executeUpdate();
+            ps.close();
+            try {
+                for (ChannelServer cs : ChannelServer.getAllInstances()) {
+                    for (MapleCharacter chr : cs.getPlayerStorage().getAllCharactersThreadSafe()) {
+                        if (chr.getClient().getSessionIPAddress().equals(ip)) {
+                            if (!chr.getClient().isGm()) {
+                                chr.getClient().disconnect(true, false);
+                                chr.getClient().getSession().close();
+                            }
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+            }
+            client.banMacs(mac);
+            rs.close();
+            stmt.close();
+            return true;
+        } catch (Exception ex) {
+            System.err.println("封鎖出現錯誤 " + ex);
         }
         return false;
     }
@@ -6588,9 +6674,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             System.out.println("Error deleting player variable: " + ex);
         }
     }
-    
-    public void disposeSchedules()
-    {
+
+    public void disposeSchedules() {
         if (BerserkSchedule != null) {
             BerserkSchedule.cancel(false);
             BerserkSchedule = null;

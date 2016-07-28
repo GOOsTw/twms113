@@ -39,7 +39,10 @@ public class LoginWorker {
             c.sendPacket(LoginPacket.getLoginFailed(7));
             return;
         }
-
+        if (!c.isGm() && (c.hasBannedMac() || c.hasBannedIP())) {
+            c.sendPacket(LoginPacket.getLoginFailed(3)); //
+            return;
+        }
         if (System.currentTimeMillis() - lastUpdate > 600000) { // Update once every 10 minutes
             lastUpdate = System.currentTimeMillis();
             final Map<Integer, Integer> load = ChannelServer.getChannelLoad();

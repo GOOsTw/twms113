@@ -1,4 +1,4 @@
-﻿/*
+/*
  This file is part of the OdinMS Maple Story Server
  Copyright (C) 2008 ~ 2010 Patrick Huy <patrick.huy@frz.cc> 
  Matthias Butz <matze@odinms.de>
@@ -104,7 +104,7 @@ public class MapleClient {
     private byte bannedReason = 1, gender = -1;
     public transient short loginAttempt = 0;
     private final transient List<Integer> allowedChar = new LinkedList<>();
-    private transient String mac = "00-00-00-00-00-00";
+    private final transient Set<String> macs = new HashSet<>();
     private final transient Map<String, ScriptEngine> engines = new HashMap<>();
     private transient ScheduledFuture<?> idleTask = null;
     private transient String secondPassword; // To be used only on login
@@ -258,16 +258,74 @@ public class MapleClient {
         return ret;
     }
 
-    public String getMac() {
-        return mac;
+    public void banIP() {
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement ps = con.prepareStatement("INSERT INTO ipbans VALUES (DEFAULT, ?)")) {
+            ps.setString(1, getSession().getRemoteAddress().toString().split(":")[0]);
+            ps.execute();
+        } catch (SQLException e) {
+            System.err.println("Error ban ip " + e);
+        }
     }
 
-    public void setMac(String macData) {
+    public static boolean banMacs(String macData) {
         if (macData.equalsIgnoreCase("00-00-00-00-00-00") || macData.length() != 17) {
-            return;
+            return false;
         }
-        mac = macData;
-        updateMac(mac);
+        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("INSERT INTO macbans (mac) VALUES (?)")) {
+            ps.setString(1, macData);
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            System.err.println("Error banning MACs" + e);
+            return false;
+        }
+        return true;
+    }
+
+    public final Set<String> getMacs() {
+        return Collections.unmodifiableSet(macs);
+    }
+
+    public void setMacs(String macData) {
+        if (macs != null) {
+            try {
+                if (!"00-00-00-00-00-00".equals(macData) && !macData.isEmpty()) {
+                    macs.addAll(Arrays.asList(macData.split(", ")));
+                }
+            } catch (Exception ex) {
+            }
+        }
+    }
+
+    public void updateMacs(String macData) {
+        try {
+            macs.addAll(Arrays.asList(macData.split(", ")));
+        } catch (Exception ex) {
+        }
+        StringBuilder newMacData = new StringBuilder();
+        Iterator<String> iter = macs.iterator();
+        while (iter.hasNext()) {
+            String ip = iter.next();
+            if (!"00-00-00-00-00-00".equals(ip)) {
+                newMacData.append(ip);
+            }
+            if (iter.hasNext()) {
+                if (!"00-00-00-00-00-00".equals(ip)) {
+                    newMacData.append(", ");
+                }
+            }
+        }
+        try {
+            Connection con = DatabaseConnection.getConnection();
+            try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET macs = ? WHERE id = ?")) {
+                ps.setString(1, newMacData.toString());
+                ps.setInt(2, accountId);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            System.err.println("Error saving MACs" + e);
+        }
     }
 
     public boolean isBannedMac(String mac) {
@@ -290,50 +348,116 @@ public class MapleClient {
         return ret;
     }
 
-    public void banMac() {
-        banMac(mac);
-    }
-
-    public static boolean banMac(String macData) {
-        if (macData.equalsIgnoreCase("00-00-00-00-00-00") || macData.length() != 17) {
+    public boolean hasBannedMac() {
+        if (macs.isEmpty()) {
             return false;
         }
-        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("INSERT INTO macbans (mac) VALUES (?)")) {
-            ps.setString(1, macData);
-            ps.executeUpdate();
+        boolean ret = false;
+        int i;
+        try {
+            Connection con = DatabaseConnection.getConnection();
+            StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM macbans WHERE mac IN (");
+            for (i = 0; i < macs.size(); i++) {
+                sql.append("?");
+                if (i != macs.size() - 1) {
+                    sql.append(", ");
+                }
+            }
+            sql.append(")");
+            try (PreparedStatement ps = con.prepareStatement(sql.toString())) {
+                i = 0;
+                for (String mac : macs) {
+                    i++;
+                    ps.setString(i, mac);
+                }
+                try (ResultSet rs = ps.executeQuery()) {
+                    rs.next();
+                    if (rs.getInt(1) > 0) {
+                        ret = true;
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            System.err.println("Error checking mac bans" + ex);
+        }
+        return ret;
+    }
+
+    private void loadMacsIfNescessary() throws SQLException {
+        if (macs.isEmpty()) {
+            Connection con = DatabaseConnection.getConnection();
+            try (PreparedStatement ps = con.prepareStatement("SELECT macs FROM accounts WHERE id = ?")) {
+                ps.setInt(1, accountId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        if (rs.getString("macs") != null) {
+                            String[] macData;
+                            macData = rs.getString("macs").split(", ");
+                            for (String mac : macData) {
+                                if (!mac.equals("")) {
+                                    macs.add(mac);
+                                }
+                            }
+                        }
+                    } else {
+                        rs.close();
+                        ps.close();
+                        throw new RuntimeException("No valid account associated with this client.");
+                    }
+                }
+            }
+        }
+    }
+
+    public void banMacs() {
+        try {
+            loadMacsIfNescessary();
+            if (this.macs.size() > 0) {
+                String[] macBans = new String[this.macs.size()];
+                int z = 0;
+                for (String mac : this.macs) {
+                    macBans[z] = mac;
+                    z++;
+                }
+                banMacs(macBans);
+            }
+        } catch (SQLException e) {
+        }
+    }
+
+    public static void banMacs(String[] macs) {
+        Connection con = DatabaseConnection.getConnection();
+        try {
+            List<String> filtered = new LinkedList<>();
+            PreparedStatement ps = con.prepareStatement("SELECT filter FROM macfilters");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                filtered.add(rs.getString("filter"));
+            }
+            rs.close();
+            ps.close();
+
+            ps = con.prepareStatement("INSERT INTO macbans (mac) VALUES (?)");
+            for (String mac : macs) {
+                boolean matched = false;
+                for (String filter : filtered) {
+                    if (mac.matches(filter)) {
+                        matched = true;
+                        break;
+                    }
+                }
+                if (!matched) {
+                    ps.setString(1, mac);
+                    try {
+                        ps.executeUpdate();
+                    } catch (SQLException e) {
+                        // can fail because of UNIQUE key, we dont care
+                    }
+                }
+            }
             ps.close();
         } catch (SQLException e) {
             System.err.println("Error banning MACs" + e);
-            return false;
-        }
-        return true;
-    }
-
-    public void updateMac() {
-        updateMac(mac);
-    }
-
-    public void updateMac(String macData) {
-        if (macData.equalsIgnoreCase("00-00-00-00-00-00") || macData.length() != 17) {
-            return;
-        }
-        Connection con = DatabaseConnection.getConnection();
-        try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET macs = ? WHERE id = ?")) {
-            ps.setString(1, macData);
-            ps.setInt(2, accountId);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("Error ban MAC " + e);
-        }
-    }
-
-    public void banIP() {
-        Connection con = DatabaseConnection.getConnection();
-        try (PreparedStatement ps = con.prepareStatement("INSERT INTO ipbans VALUES (DEFAULT, ?)")) {
-            ps.setString(1, getSession().getRemoteAddress().toString().split(":")[0]);
-            ps.execute();
-        } catch (SQLException e) {
-            System.err.println("Error ban ip " + e);
         }
     }
 
@@ -445,7 +569,6 @@ public class MapleClient {
                         final String salt = rs.getString("salt");
                         final String oldSession = rs.getString("SessionIP");
                         accountId = rs.getInt("id");
-                        mac = rs.getString("macs");
                         secondPassword = rs.getString("2ndpassword");
                         gm = rs.getInt("gm") > 0;
                         bannedReason = rs.getByte("greason");
@@ -570,8 +693,8 @@ public class MapleClient {
             ps.setInt(1, accountID);
             rs = ps.executeQuery();
             if (rs.next()) {
+                setMacs(rs.getString("macs"));
                 accountId = rs.getInt("id");
-                mac = rs.getString("macs");
                 secondPassword = rs.getString("2ndpassword");
                 gm = rs.getInt("gm") > 0;
                 bannedReason = rs.getByte("greason");

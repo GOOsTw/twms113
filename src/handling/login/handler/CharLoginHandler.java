@@ -80,10 +80,10 @@ public class CharLoginHandler {
         }
         String macData = sps.toString();
         macData = macData.substring(0, macData.length() - 1);
-        c.setMac(macData);
+        c.setMacs(macData);
         c.setAccountName(account);
         final boolean ipBan = c.hasBannedIP();
-        final boolean macBan = c.isBannedMac(macData);
+        final boolean macBan = c.hasBannedMac();
         final boolean ban = ipBan || macBan;
 
         int loginok = c.login(account, password, ban);
@@ -141,7 +141,7 @@ public class CharLoginHandler {
             }
         } else {
             c.loginAttempt = 0;
-            c.updateMac();
+            c.updateMacs(macData);
             LoginWorker.registerClient(c);
             for (ChannelServer ch : ChannelServer.getAllInstances()) {
                 List<MapleCharacter> list = ch.getPlayerStorage().getAllCharactersThreadSafe();
