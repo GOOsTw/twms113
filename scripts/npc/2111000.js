@@ -1,5 +1,7 @@
-﻿function start() {
-    if (cm.isQuestActive(6029)) {
+﻿var status = -1;
+
+function start() {
+    /*if (cm.isQuestActive(6029)) {
         if (cm.getMeso() >= 500000000) {
             cm.gainMeso(-500000000);
             cm.gainItem(4161037, 1);
@@ -22,9 +24,30 @@
             }
             cm.dispose();
         }
-        cm.sendNext("您好，我是#p2111000#");
-    }
+	}*/
+    action(1, 0, 0);
+}
 
-function action() {
-    cm.dispose();
+function action(mode, type, selection) {
+	if (mode == 1) {
+		status++;
+	} else {
+		if (status >=2 || status == 0) {
+			cm.dispose();
+			return;
+		}
+		status--;
+	}
+	if (status == 0) {
+		cm.sendSimple("您好我是#b#p2111000##k找我有什麼事情嗎?\r\n#r#L0#我要進入封閉的實驗室#k#l");
+	} else if (status == 1) {
+		if (selection == 0) {
+			if (cm.getQuestStatus(3310) == 1) {
+				cm.warp(926120100);
+			} else {
+				cm.sendNext("找我有事嗎??");
+			}
+		}
+		cm.dispose();
+	}
 }
