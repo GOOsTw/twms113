@@ -352,10 +352,10 @@ public class MapleQuestAction implements Serializable {
             case money: {
                 final int meso = MapleDataTool.getInt(data, 0);
                 if (c.getMeso() + meso < 0) { // Giving, overflow
-                    c.dropMessage(1, "楓幣不足.");
+                    c.dropMessage(1, "請確認楓幣數量。");
                     return false;
                 } else if (meso < 0 && c.getMeso() < Math.abs(meso)) { //remove meso
-                    c.dropMessage(1, "楓幣不足.");
+                    c.dropMessage(1, "楓幣不足。");
                     return false;
                 }
                 return true;

@@ -4,10 +4,6 @@ import constants.GameConstants;
 import constants.ServerConstants.PlayerGMRank;
 import client.MapleClient;
 import client.MapleStat;
-import client.inventory.Item;
-import client.inventory.MapleInventoryType;
-import constants.MapConstants;
-import handling.channel.ChannelServer;
 import scripting.NPCScriptManager;
 import tools.MaplePacketCreator;
 import server.life.MapleMonster;
@@ -15,18 +11,11 @@ import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
 import server.maps.MapleMap;
 import java.util.Arrays;
-import tools.StringUtil;
-import handling.world.World;
 import java.awt.Point;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import server.MapleItemInformationProvider;
 import server.Timer;
 import server.life.MapleLifeFactory;
 import server.life.OverrideMonsterStats;
-import server.maps.SavedLocationType;
 import tools.FilePrinter;
 
 /**
@@ -37,6 +26,20 @@ public class PlayerCommand {
 
     public static PlayerGMRank getPlayerLevelRequired() {
         return PlayerGMRank.NORMAL;
+    }
+
+    public static class help extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String[] splitted) {
+            c.getPlayer().dropNPC("\t\t #i3994014##i3994018##i3994070##i3994061##i3994005##i3991038##i3991004#\r\t\t\t\t\t\t #i3994078##i3991040#\t\t\r\n\t\t#i3991035##i3994067##i3994079##i3994071##i3994002##i3994012##i3994077#\r\r\n\t      #fMob/0100101.img/move/1##b 親愛的： #h \r\n #fMob/0100101.img/move/1##k\r\r\n\t      #fMob/0130101.img/move/1##g[以下是玩家指令]#k#fMob/0130101.img/move/1#\r\n\t  #d▇▇▆▅▄▃▂#r萬用指令區#d▂▃▄▅▆▇▇\r\n\t\t#b@ea#k - #r<解除異常+查看當前狀態>#k\r\n\t\t#b@mob#k - #r<查看身邊怪物訊息>#k\r\n\t\t#b@save#k - #r<存檔>#k\r\n\t\t#b@CGM <訊息>#k - #r<傳送訊息給GM>#k\r\n\t\t#b@dpm#k - #r<測試每分鐘平均傷害>#k\r\n\t  #g▇▇▆▅▄▃▂#dNPＣ指令區#g▂▃▄▅▆▇▇\r\n\t\t#b@丟裝/@DropCash#k - #r<丟棄點裝>#k\r\n\t\t#b@npc#k - #r<工具箱>#k\r\n\t\t#b@pk#k - #r<小遊戲>#k\r\n\t\t#b@event#k - #r<參加活動>#k\r\n\t\t#b@bspq#k - #r<BOSSPQ兌換NPC>#k");
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("@help - 幫助").toString();
+        }
     }
 
     public abstract static class OpenNPCCommand extends CommandExecute {
@@ -76,14 +79,6 @@ public class PlayerCommand {
         }
     }
 
-    public static class 丟裝 extends DropCash {
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("@丟裝 - 呼叫清除現金道具npc").toString();
-        }
-    }
-
     public static class DropCash extends OpenNPCCommand {
 
         public DropCash() {
@@ -109,23 +104,15 @@ public class PlayerCommand {
         }
     }
 
-    public static class npc extends 萬能 {
+    public static class npc extends OpenNPCCommand {
 
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("@npc - 呼叫萬能npc").toString();
-        }
-    }
-
-    public static class 萬能 extends OpenNPCCommand {
-
-        public 萬能() {
+        public npc() {
             npc = 2;
         }
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("@萬能 - 呼叫萬能npc").toString();
+            return new StringBuilder().append("@npc - 呼叫萬能npc").toString();
         }
     }
 
@@ -137,11 +124,15 @@ public class PlayerCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("@bspq - 呼叫Boss挑戰npc").toString();
+            return new StringBuilder().append("@bspq -　BSPQ兌換NPC").toString();
         }
     }
+	
+    public static class pk extends OpenNPCCommand {
 
-    public static class pk extends 猜拳 {
+        public pk() {
+            npc = 4;
+        }
 
         @Override
         public String getMessage() {
@@ -149,22 +140,7 @@ public class PlayerCommand {
         }
     }
 
-    public static class 猜拳 extends OpenNPCCommand {
-
-        public 猜拳() {
-            npc = 4;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("@猜拳 - 呼叫猜拳npc").toString();
-        }
-    }
-
-    public static class save extends 存檔 {
-    }
-
-    public static class 存檔 extends CommandExecute {
+    public static class save extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
@@ -289,14 +265,6 @@ public class PlayerCommand {
      return new StringBuilder().append("@online - 查看線上人數").toString();
      }
      }*/
-    public static class 查看 extends ea {
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("@查看 - 解卡").toString();
-        }
-    }
-
     public static class ea extends CommandExecute {
 
         @Override
@@ -345,14 +313,6 @@ public class PlayerCommand {
                     break;
             }
             return dd;
-        }
-    }
-
-    public static class 怪物 extends mob {
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("@怪物 - 查看怪物狀態").toString();
         }
     }
 
@@ -408,7 +368,7 @@ public class PlayerCommand {
             return new StringBuilder().append("@stocked - 解除卡圖").toString();
         }
     }*/
-    public static class CGM extends CommandExecute {
+   public static class CGM extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
@@ -440,27 +400,4 @@ public class PlayerCommand {
             return new StringBuilder().append("@cgm - 跟GM回報").toString();
         }
     }
-
-    public static class 幫助 extends help {
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("@幫助 - 幫助").toString();
-        }
-    }
-
-    public static class help extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String[] splitted) {
-            c.getPlayer().dropNPC("\t\t #i3994014##i3994018##i3994070##i3994061##i3994005##i3991038##i3991004#\r\t\t\t\t\t\t #i3994078##i3991040#\t\t\r\n\t\t#i3991035##i3994067##i3994079##i3994071##i3994002##i3994012##i3994077#\r\r\n\t      #fMob/0100101.img/move/1##b 親愛的： #h \r\n #fMob/0100101.img/move/1##k\r\r\n\t      #fMob/0130101.img/move/1##g[以下是玩家指令]#k#fMob/0130101.img/move/1#\r\n\t  #d▇▇▆▅▄▃▂#r萬用指令區#d▂▃▄▅▆▇▇\r\n\t\t#b@查看/@ea#k - #r<解除異常+查看當前狀態>#k\r\n\t\t#b@怪物/@mob#k - #r<查看身邊怪物訊息>#k\r\n\t\t#b@存檔/@save#k - #r<存檔>#k\r\n\t\t#b@CGM <訊息>#k - #r<傳送訊息給GM>#k\r\n\t\t#b@dpm#k - #r<測試每分鐘平均傷害>#k\r\n\t  #g▇▇▆▅▄▃▂#dNPＣ指令區#g▂▃▄▅▆▇▇\r\n\t\t#b@丟裝/@DropCash#k - #r<丟棄點裝>#k\r\n\t\t#b@萬能/@npc#k - #r<工具箱>#k\r\n\t\t#b@猜拳/@pk#k - #r<小遊戲>#k\r\n\t\t#b@event#k - #r<參加活動>#k\r\n\t\t#b@bspq#k - #r<BOSSPQ兌換NPC>#k");
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("@help - 幫助").toString();
-        }
-    }
-
 }

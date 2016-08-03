@@ -104,7 +104,7 @@ public final class MapleMap {
     private int runningOid = 100000;
     private final Lock runningOidLock = new ReentrantLock();
     private final Map<String, Integer> environment = new LinkedHashMap<>();
-    private final List<Spawns> monsterSpawn = new ArrayList<>();
+   private final List<Spawns> monsterSpawn = new ArrayList<>();
     private final AtomicInteger spawnedMonstersOnMap = new AtomicInteger(0);
     private final Map<Integer, MaplePortal> portals = new HashMap<>();
     private final List<Integer> disconnectedClients = new ArrayList<>();

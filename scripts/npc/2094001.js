@@ -49,7 +49,7 @@ function action(mode, type, selection) {
                             cm.sendOk("請清出裝備欄空間。");
                         }
                     } else {
-                        cm.sendOk("你需要有玩30場 目前總共 : " + cmp_i);
+                        cm.sendOk("你需要有玩350場 目前總共 : " + cmp_i);
                     }
                 } else if (have1_i > 0) {
                     if (cmp_i >= 200) {
