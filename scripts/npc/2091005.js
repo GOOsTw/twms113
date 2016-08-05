@@ -207,18 +207,18 @@ function get_restinFieldID(id) {
 }
 
 function get_stageId(mapid) {
-    if (mapid >= 925020100 && mapid <= 925020609) {
-        return 1;
-    } else if (mapid >= 925020700 && mapid <= 925021214) {
-        return 2;
-    } else if (mapid >= 925021800 && mapid <= 925021209) {
-        return 3;
-    } else if (mapid >= 925021300 && mapid <= 925022409) {
-        return 4;
-    } else if (mapid >= 925022500 && mapid <= 925023008) {
-        return 5;
-    } else if (mapid >= 925023100 && mapid <= 925023609) {
-        return 6;
+    if (mapid >= 925020600 && mapid <= 925020614) {
+		return 1;
+    } else if (mapid >= 925021200 && mapid <= 925021214) {
+		return 2;
+    } else if (mapid >= 925021800 && mapid <= 925021814) {
+		return 3;
+    } else if (mapid >= 925022400 && mapid <= 925022414) {
+		return 4;
+    } else if (mapid >= 925023000 && mapid <= 925023014) {
+		return 5;
+    } else if (mapid >= 925023600 && mapid <= 925023614) {
+		return 6;
     }
     return 0;
 }

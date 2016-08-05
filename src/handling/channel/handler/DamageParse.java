@@ -90,8 +90,13 @@ public class DamageParse {
             }
             int last = attackCount;
             boolean mirror_fix = false;
-            if (player.getJob() >= 411 && player.getJob() <= 412) {
-                mirror_fix = true;
+            switch (player.getJob()) {
+                case 411:
+                case 412:
+                case 1411:
+                case 1412:
+                    mirror_fix = true;
+                    break;
             }
             if (mirror_fix) {
                 last *= 2;
@@ -391,6 +396,7 @@ public class DamageParse {
                     switch (attack.skill) {
 
                         case SkillType.刺客.吸血術: //drain
+                        case SkillType.暗夜行者2.吸血:
                         case SkillType.格鬥家.損人利己: { // Energy Drain
                             int getHP = ((int) Math.min(monster.getMobMaxHp(), Math.min(((int) ((double) totDamage * (double) theSkill.getEffect(player.getSkillLevel(theSkill)).getX() / 100.0)), stats.getMaxHp() / 2)));
                             stats.setHp(stats.getHp() + getHP, true);
