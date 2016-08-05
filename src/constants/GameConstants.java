@@ -1,14 +1,17 @@
 package constants;
 
+import client.MapleCharacter;
 import client.inventory.IItem;
 import client.inventory.MapleInventoryType;
 import client.inventory.MapleWeaponType;
 import client.status.MonsterStatus;
+import handling.channel.handler.AttackInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import server.MapleStatEffect;
 import server.Randomizer;
 import server.maps.MapleMapObjectType;
 
@@ -332,6 +335,7 @@ public class GameConstants {
     public static boolean 武器(final int itemId) {
         return itemId >= 1300000 && itemId < 1500000;
     }
+
     public static MapleInventoryType getInventoryType(final IItem item) {
         MapleInventoryType type = getInventoryType(item.getItemId());
         if (type == MapleInventoryType.EQUIP && item.getPosition() < 0) {
@@ -339,6 +343,7 @@ public class GameConstants {
         }
         return type;
     }
+
     public static MapleInventoryType getInventoryType(final int itemId) {
         MapleInventoryType type = MapleInventoryType.getByType((byte) (itemId / 1000000));
         if (type == MapleInventoryType.UNDEFINED || type == null) {
@@ -358,6 +363,7 @@ public class GameConstants {
         }
         return type;
     }
+
     public static MapleWeaponType 武器種類(final int itemId) {
         int cat = itemId / 10000;
         cat = cat % 100;
@@ -1234,7 +1240,7 @@ public class GameConstants {
                 return false;
         }
     }
-    
+
     public static boolean isMarrigeRing(int itemid) {
         switch (itemid) {
             case 1112300:
@@ -1253,7 +1259,7 @@ public class GameConstants {
         }
         return false;
     }
-    
+
     public static boolean isRing(int itemId) {
         return itemId >= 1112000 && itemId < 1113000;
     }// 112xxxx - pendants, 113xxxx - belts
@@ -1969,5 +1975,178 @@ public class GameConstants {
 
     public static boolean isChair(final int itemid) {
         return itemid / 10000 == 302;
+    }
+
+    public static int getMaxDamage(int level, int jobid, int skillid) {
+        int max = 0;
+
+        if (level < 20) {
+            max += 900;
+        } else if (level < 30) {
+            max += 1800;
+        } else if (level < 40) {
+            max += 5000;
+        } else if (level < 50) {
+            max += 7000;
+        } else if (level < 60) {
+            max += 8000;
+        } else if (level < 70) {
+            max += 9000;
+        } else if (level < 80) {
+            max += 10000;
+        } else if (level < 90) {
+            max += 11000;
+        } else if (level < 100) {
+            max += 12000;
+        } else if (level < 110) {
+            max += 13000;
+        } else {
+            max = 200000;
+        }
+        if (isKOC(jobid)) {
+            max += 1000;
+        }
+        if (skillid == 21110004) {
+            max *= 3;
+        } else if (skillid == 1111005) {
+            max *= 2;
+        } else if (skillid == 21100004 || skillid == 4211006) {
+            max *= 1.5;
+        }
+        return max;
+    }
+
+    public static boolean isElseSkill(int id) {
+        switch (id) {
+            case 10001009:
+            case 20001009:
+            case 1009:   // 武陵道場技能
+            case 1020:   // 金字塔技能
+            case 10001020:
+            case 20001020:
+            case 3221001:// 光速神弩
+            case 4211006:// 楓幣炸彈
+                return true;
+        }
+        return false;
+    }
+
+    private static double getAttackRangeBySkill(AttackInfo attack) {
+        double defRange = 0;
+        switch (attack.skill) {
+            case 21120006: // 極冰暴風
+                defRange = 800000.0;
+                break;
+            case 2121007: // 火流星
+            case 2221007: // 暴風雪
+            case 2321008: // 天怒
+                defRange = 750000.0;
+                break;
+            case 2221006: // 閃電連擊
+            case 3101005: // 炸彈箭
+            case 21101003:// 強化連擊
+                defRange = 600000.0;
+                break;
+            case 2111003:
+                defRange = 400000.0;
+                break;
+            case 4001344: // 雙飛斬
+            case 1121008: // 無雙劍舞
+                defRange = 350000.0;
+                break;
+            case 2211002: // 冰風暴
+                defRange = 300000.0;
+                break;
+            case 5110001: // 蓄能激發
+            case 2311004: // 聖光
+            case 2211003: // 落雷凝聚
+            case 2001005: // 魔力爪
+                defRange = 250000.0;
+                break;
+            case 5221004:// 迅雷
+            case 2321007: // 天使之箭
+                defRange = 200000.0;
+                break;
+            case 20001000: // 蝸牛投擲術
+            case 1000: // 蝸牛投擲術
+                defRange = 120000.0;
+                break;
+        }
+        return defRange;
+    }
+
+    public static MapleWeaponType getWeaponType(final int itemId) {
+        int cat = itemId / 10000;
+        cat = cat % 100;
+        switch (cat) {
+            case 30:
+                return MapleWeaponType.單手劍;
+            case 31:
+                return MapleWeaponType.單手斧;
+            case 32:
+                return MapleWeaponType.單手棍;
+            case 33:
+                return MapleWeaponType.短劍;
+            case 34:
+                return MapleWeaponType.雙刀;
+            case 37:
+                return MapleWeaponType.長杖;
+            case 38:
+                return MapleWeaponType.短杖;
+            case 40:
+                return MapleWeaponType.雙手劍;
+            case 41:
+                return MapleWeaponType.雙手斧;
+            case 42:
+                return MapleWeaponType.雙手棍;
+            case 43:
+                return MapleWeaponType.矛;
+            case 44:
+                return MapleWeaponType.槍;
+            case 45:
+                return MapleWeaponType.弓;
+            case 46:
+                return MapleWeaponType.弩;
+            case 47:
+                return MapleWeaponType.拳套;
+            case 48:
+                return MapleWeaponType.指虎;
+            case 49:
+                return MapleWeaponType.火槍;
+        }
+        return MapleWeaponType.沒有武器;
+    }
+
+    private static double getAttackRangeByWeapon(MapleCharacter chr) {
+        IItem weapon_item = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -11);
+        MapleWeaponType weapon = weapon_item == null ? MapleWeaponType.沒有武器 : GameConstants.getWeaponType(weapon_item.getItemId());
+        switch (weapon) {
+            case 槍:       // 矛
+                return 200000;
+            case 拳套:     // 拳套
+                return 250000;
+            case 火槍:     // 火槍
+            case 弩:       // 弩
+            case 弓:       // 弓
+                return 180000;
+            default:
+                return 100000;
+        }
+    }
+
+    public static double getAttackRange(MapleCharacter chr, MapleStatEffect def, AttackInfo attack) {
+        int rangeInc = chr.getStat().defRange;// 處理遠程職業
+        double base = 450.0;// 基礎
+        double defRange = ((base + rangeInc) * (base + rangeInc));// 基礎範圍
+        if (def != null) {
+            // 計算範圍((maxX * maxX) + (maxY * maxY)) + (技能範圍 * 技能範圍))
+            defRange += def.getMaxDistanceSq() + (def.getRange() * def.getRange());
+            if (getAttackRangeBySkill(attack) != 0) {// 直接指定技能範圍
+                defRange = getAttackRangeBySkill(attack);
+            }
+        } else {// 普通攻擊
+            defRange = getAttackRangeByWeapon(chr);// 從武器獲取範圍
+        }
+        return defRange;
     }
 }

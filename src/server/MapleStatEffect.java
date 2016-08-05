@@ -1788,7 +1788,13 @@ public class MapleStatEffect implements Serializable {
         }
 
     }
-
+    
+    public final double getMaxDistanceSq() { //lt = 前面, rb = 後面;　非取得兩點位置而是玩家的相對位置以及單一方向
+        final int maxX = Math.max(Math.abs(lt == null ? 0 : lt.x), Math.abs(rb == null ? 0 : rb.x));
+        final int maxY = Math.max(Math.abs(lt == null ? 0 : lt.y), Math.abs(rb == null ? 0 : rb.y));
+        return (maxX * maxX) + (maxY * maxY);
+    }
+    
     public final int getRange() {
         return range;
     }
