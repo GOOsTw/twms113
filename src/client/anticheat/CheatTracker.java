@@ -66,7 +66,7 @@ public class CheatTracker {
      * @param tickCoint
      */
     public final void checkAttack(final int skillId, final int tickcount) {
-        short attackDelay = GameConstants.getAttackDelay(skillID);
+        short AtkDelay = GameConstants.getAttackDelay(skillId);
         /**
          * 檢查客戶端傳回的攻擊時間
          */
