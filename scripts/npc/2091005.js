@@ -172,16 +172,22 @@ function get_restinFieldID(id) {
     switch (id) {
         case 1:
             idd = 925020600;
+			break;
         case 2:
             idd = 925021200;
+			break;
         case 3:
             idd = 925021800;
+			break;
         case 4:
             idd = 925022400;
+			break;
         case 5:
             idd = 925023000;
+			break;
         case 6:
             idd = 925023600;
+			break;
     }
     for (var i = 0; i < 15; i++) {
         var canenterr = true;
@@ -201,17 +207,17 @@ function get_restinFieldID(id) {
 }
 
 function get_stageId(mapid) {
-    if (mapid >= 925020600 && mapid <= 925020614) {
+    if (mapid >= 925020100 && mapid <= 925020609) {
         return 1;
-    } else if (mapid >= 925021200 && mapid <= 925021214) {
+    } else if (mapid >= 925020700 && mapid <= 925021214) {
         return 2;
-    } else if (mapid >= 925021800 && mapid <= 925021814) {
+    } else if (mapid >= 925021800 && mapid <= 925021209) {
         return 3;
-    } else if (mapid >= 925022400 && mapid <= 925022414) {
+    } else if (mapid >= 925021300 && mapid <= 925022409) {
         return 4;
-    } else if (mapid >= 925023000 && mapid <= 925023014) {
+    } else if (mapid >= 925022500 && mapid <= 925023008) {
         return 5;
-    } else if (mapid >= 925023600 && mapid <= 925023614) {
+    } else if (mapid >= 925023100 && mapid <= 925023609) {
         return 6;
     }
     return 0;

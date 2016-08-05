@@ -127,7 +127,6 @@ public class PlayerCommand {
             return new StringBuilder().append("@bspq -　BSPQ兌換NPC").toString();
         }
     }
-	
     public static class pk extends OpenNPCCommand {
 
         public pk() {

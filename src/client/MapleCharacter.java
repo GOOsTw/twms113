@@ -145,7 +145,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             rank = 1, rankMove = 0, jobRank = 1, jobRankMove = 0, marriageId, marriageItemId = 0,
             currentrep, totalrep, linkMid = 0, coconutteam = 0, followid = 0, battleshipHP = 0,
             expression, constellation, blood, month, day, beans, beansNum, beansRange,
-            gachexp;
+            gachexp, 打怪 = 0, 吸怪 = 0, FLY_吸怪 = 0;
     private boolean canSetBeansNum;
     private Point old = new Point(0, 0);
     private boolean smega, hidden, hasSummon = false;
@@ -1871,6 +1871,30 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return true;
     }
 
+    public void add打怪() {
+        打怪++;
+    }
+
+    public int get打怪() {
+        return 打怪;
+    }
+
+    public void add吸怪() {
+        吸怪++;
+    }
+
+    public int get吸怪() {
+        return 吸怪;
+    }
+
+    public void addFly_吸怪() {
+        FLY_吸怪++;
+    }
+
+    public int getFly_吸怪() {
+        return FLY_吸怪;
+    }
+
     /**
      * @param effect
      * @param overwrite when overwrite is set no data is sent and all the
@@ -2036,6 +2060,96 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public void setMeso(int mesos) {
         meso = mesos;
+    }
+
+    public static String getCharacterNameById(int id) {
+        String name = null;
+        MapleCharacter chr = getOnlineCharacterById(id);
+        if (chr != null) {
+            return chr.getName();
+        }
+        try {
+            PreparedStatement ps = null;
+            Connection con = DatabaseConnection.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet rs;
+            ps = con.prepareStatement("select name from characters where id = ?");
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                name = rs.getString("name");
+            }
+            ps.close();
+            rs.close();
+        } catch (Exception ex) {
+        }
+        return name;
+    }
+
+    public static int getCharacterIdByName(String name) {
+        int id = -1;
+        MapleCharacter chr = getOnlineCharacterByName(name);
+        if (chr != null) {
+            return chr.getId();
+        }
+        try {
+            PreparedStatement ps = null;
+            Connection con = DatabaseConnection.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet rs;
+            ps = con.prepareStatement("select id from characters where name = ?");
+            ps.setString(1, name);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                id = rs.getInt("id");
+            }
+            ps.close();
+            rs.close();
+        } catch (Exception ex) {
+        }
+        return id;
+    }
+
+    public static MapleCharacter getOnlineCharacterById(int cid) {
+        MapleCharacter chr = null;
+        if (World.Find.findChannel(cid) >= 1) {
+            chr = ChannelServer.getInstance(World.Find.findChannel(cid)).getPlayerStorage().getCharacterById(cid);
+            if (chr != null) {
+                return chr;
+            }
+        }
+
+        return null;
+    }
+
+    public static MapleCharacter getOnlineCharacterByName(String name) {
+        MapleCharacter chr = null;
+        if (World.Find.findChannel(name) >= 1) {
+            chr = ChannelServer.getInstance(World.Find.findChannel(name)).getPlayerStorage().getCharacterByName(name);
+            if (chr != null) {
+                return chr;
+            }
+        }
+
+        return null;
+    }
+
+    public static MapleCharacter getCharacterById(int cid) {
+        MapleCharacter chr = getOnlineCharacterById(cid);
+        if (chr != null) {
+            return chr;
+        }
+        String name = getCharacterNameById(cid);
+        return name == null ? null : MapleCharacter.loadCharFromDB(cid, new MapleClient(null, null, new tools.MockIOSession()), true);
+    }
+
+    public static MapleCharacter getCharacterByName(String name) {
+        MapleCharacter chr = getOnlineCharacterByName(name);
+        if (chr != null) {
+            return chr;
+        }
+        int cid = getCharacterIdByName(name);
+        return cid == -1 ? null : MapleCharacter.loadCharFromDB(cid, new MapleClient(null, null, new tools.MockIOSession()), true);
     }
 
     public void cancelBuffStats(MapleBuffStat... stat) {

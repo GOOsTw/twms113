@@ -36,6 +36,138 @@ public class InternCommand {
         }
     }
 
+    public static class BanID extends CommandExecute {
+
+        protected boolean hellban = false;
+
+        private String getCommand() {
+            return "Ban";
+        }
+
+        @Override
+        public boolean execute(MapleClient c, String[] splitted) {
+            if (splitted.length < 2) {
+                return false;
+            }
+            StringBuilder sb = new StringBuilder(c.getPlayer().getName());
+            sb.append(" 封鎖 ").append(splitted[1]).append(": ").append(StringUtil.joinStringFrom(splitted, 2));
+            boolean offline = false;
+            boolean ban = false;
+            MapleCharacter target;
+            int id = 0;
+            String input = "null";
+            try {
+                id = Integer.parseInt(splitted[1]);
+                input = splitted[2];
+            } catch (Exception ex) {
+
+            }
+            int ch = World.Find.findChannel(id);
+            String name = c.getPlayer().getCharacterNameById(id);
+            if (ch <= 0) {
+                if (c.getPlayer().OfflineBanById(id, sb.toString())) {
+                    c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功離線封鎖 " + name + ".");
+                    ban = true;
+                    offline = true;
+                } else {
+                    c.getPlayer().dropMessage(6, "[" + getCommand() + "] 封鎖失敗 " + splitted[1]);
+                    return true;
+                }
+            } else {
+                target = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterById(id);
+                if (target != null) {
+                    if (c.getPlayer().getGMLevel() > target.getGMLevel() || c.getPlayer().hasGmLevel(5)) {
+                        sb.append(" (IP: ").append(target.getClient().getSessionIPAddress()).append(")");
+                        if (target.ban(sb.toString(), c.getPlayer().hasGmLevel(5), false, hellban)) {
+                            ban = true;
+                            c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功封鎖 " + target.getName() + ".");
+                            target.getClient().getSession().close();
+                            target.getClient().disconnect(true, false);
+                        } else {
+                            c.getPlayer().dropMessage(6, "[" + getCommand() + "] 封鎖失敗.");
+                            return true;
+                        }
+                    } else {
+                        c.getPlayer().dropMessage(6, "[" + getCommand() + "] 無法封鎖GMs...");
+                        return true;
+                    }
+                    name = target.getName();
+                }
+
+            }
+
+            String reason = "null".equals(input) ? "使用違法程式練功" : StringUtil.joinStringFrom(splitted, 2);
+            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[封鎖系統] " + name + " 因為" + reason + "而被管理員永久停權。").getBytes());
+
+            String msg = "[GM 密語] GM " + c.getPlayer().getName() + "  封鎖了 " + name + " 是否離線封鎖 " + offline + " 原因：" + reason;
+            World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, msg).getBytes());
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!BanID <玩家ID> <原因> - 封鎖玩家").toString();
+        }
+    }
+
+    public static class WarpID extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String[] splitted) {
+            if (splitted.length < 2) {
+                return false;
+            }
+            int input = 0;
+            try {
+                input = Integer.parseInt(splitted[1]);
+            } catch (Exception ex) {
+
+            }
+            int ch = World.Find.findChannel(input);
+            if (ch < 0) {
+                c.getPlayer().dropMessage(6, "玩家編號[" + input + "] 不在線上");
+                return true;
+            }
+            MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterById(input);
+            if (victim != null) {
+                if (splitted.length == 2) {
+                    c.getPlayer().changeMap(victim.getMap(), victim.getMap().findClosestSpawnpoint(victim.getPosition()));
+                } else {
+                    MapleMap target = ChannelServer.getInstance(c.getChannel()).getMapFactory().getMap(Integer.parseInt(splitted[2]));
+                    if (target == null) {
+                        c.getPlayer().dropMessage(6, "地圖不存在");
+                    } else {
+                        victim.changeMap(target, target.getPortal(0));
+                    }
+                }
+            } else {
+                try {
+                    victim = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterById(Integer.parseInt(splitted[1]));
+                    if (victim != null) {
+                        if (victim.getMapId() != c.getPlayer().getMapId()) {
+                            final MapleMap mapp = c.getChannelServer().getMapFactory().getMap(victim.getMapId());
+                            c.getPlayer().changeMap(mapp, mapp.getPortal(0));
+                        }
+                        c.getPlayer().dropMessage(6, "正在改變頻道請等待");
+                        c.getPlayer().changeChannel(ch);
+
+                    } else {
+                        c.getPlayer().dropMessage(6, "角色不存在");
+                    }
+
+                } catch (Exception e) {
+                    c.getPlayer().dropMessage(6, "出問題了 " + e.getMessage());
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!warpID [玩家編號] - 移動到某個玩家所在的地方").toString();
+        }
+    }
+
     public static class Ban extends CommandExecute {
 
         protected boolean hellban = false;

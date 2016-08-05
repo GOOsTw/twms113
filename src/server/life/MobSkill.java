@@ -52,7 +52,7 @@ public class MobSkill {
      * @param lt rb 座標
      *
      */
-    private final int skillId, skillLevel; 
+    private final int skillId, skillLevel;
     private int mpCon, spawnEffect, hp, x, y;
     private long duration, cooltime;
     private float prop;
@@ -60,6 +60,7 @@ public class MobSkill {
     private short limit;
     private List<Integer> toSummon = new ArrayList<>();
     private Point lt, rb;
+    private boolean summonOnce;
 
     //怪物技能
     public MobSkill(int skillId, int level) {
@@ -476,5 +477,13 @@ public class MobSkill {
         List<MapleMapObjectType> objectTypes = new ArrayList<>();
         objectTypes.add(objectType);
         return monster.getMap().getMapObjectsInRect(bounds, objectTypes);
+    }
+
+    public void setOnce(boolean o) {
+        this.summonOnce = o;
+    }
+
+    public boolean onlyOnce() {
+        return summonOnce;
     }
 }
