@@ -539,6 +539,7 @@ public class DamageParse {
             final CheatTracker tracker = player.getCheatTracker();
 
             tracker.setAttacksWithoutHit(true);
+            if (tracker.getAttacksWithoutHit() > 100) {
                 tracker.registerOffense(CheatingOffense.無敵, Integer.toString(tracker.getAttacksWithoutHit()));
             }
         }
