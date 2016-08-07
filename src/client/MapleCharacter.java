@@ -1895,6 +1895,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return FLY_吸怪;
     }
 
+    public void sendHackShieldDetected() {
+        this.getClient().sendPacket(MaplePacketCreator.hackShieldDetected());
+    }
+
     /**
      * @param effect
      * @param overwrite when overwrite is set no data is sent and all the

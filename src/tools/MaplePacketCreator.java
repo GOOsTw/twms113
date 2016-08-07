@@ -4800,4 +4800,14 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
+    public static MaplePacket hackShieldDetected() {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+        mplew.writeShort(SendPacketOpcode.SECURITY_CLIENT.getValue());
+        //mplew.write(0x0C);
+        //mplew.write(0x00);
+        mplew.write(0x05);
+        mplew.writeInt(0x00010501);
+        return mplew.getPacket();
+    }
+
 }

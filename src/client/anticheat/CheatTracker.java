@@ -62,10 +62,10 @@ public class CheatTracker {
     /**
      * 檢查攻擊延遲
      *
-     * @param skillID
-     * @param tickCoint
+     * @param skillId
+     * @param tickCount
      */
-    public final void checkAttack(final int skillId, final int tickcount) {
+    public final void checkAttack(final int skillId, final int tickCount) {
         short AtkDelay = GameConstants.getAttackDelay(skillId);
         /**
          * 檢查客戶端傳回的攻擊時間
@@ -98,10 +98,11 @@ public class CheatTracker {
         if (skillId == 21101003 || skillId == 5110001) {
             AtkDelay = 0;
         }
-        if ((tickcount - lastAttackTickCount) < AtkDelay) {
+        if ((tickCount - lastAttackTickCount) < AtkDelay) {
             if (chr.get().get打怪() >= 100) {
                 if (!chr.get().hasGmLevel(1)) {
                     chr.get().ban(chr.get().getName() + "攻擊速度異常，技能：" + skillId, true, true, false);
+                    chr.get().sendHackShieldDetected();
                     chr.get().getClient().getSession().close();
                     String reason = "使用違法程式練功";
                     World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[封鎖系統] " + chr.get().getName() + " 因為" + reason + "而被管理員永久停權。").getBytes());
@@ -113,10 +114,10 @@ public class CheatTracker {
             }
 
             chr.get().add打怪();
-            registerOffense(CheatingOffense.攻擊速度過快_客戶端, "攻擊速度異常，技能: " + skillId + " check: " + (tickcount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay);
+            registerOffense(CheatingOffense.攻擊速度過快_客戶端, "攻擊速度異常，技能: " + skillId + " check: " + (tickCount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay);
         }
-        chr.get().updateTick(tickcount);
-        lastAttackTickCount = tickcount;
+        chr.get().updateTick(tickCount);
+        lastAttackTickCount = tickCount;
     }
 	
     /**
@@ -211,6 +212,7 @@ public class CheatTracker {
             dropsPerSecond++;
             if (dropsPerSecond >= (dc ? 32 : 16) && chr.get() != null) {
                 if (dc) {
+                    chr.get().sendHackShieldDetected();
                     chr.get().getClient().getSession().close();
                 } else {
                 chr.get().getClient().setMonitored(true);
@@ -250,8 +252,10 @@ public class CheatTracker {
     public final void checkMsg() { //ALL types of msg. caution with number of  msgsPerSecond
         if ((System.currentTimeMillis() - lastMsgTime) < 1000) { //luckily maplestory has auto-check for too much msging
             msgsPerSecond++;
-            /*            if (msgsPerSecond > 10 && chr.get() != null) {
-             chr.get().getClient().getSession().close();
+            /*if (msgsPerSecond > 10 && chr.get() != null) {
+                chr.get().sendHackShieldDetected();
+                chr.get().getClient().getSession().close();
+                }
              }*/
         } else {
             msgsPerSecond = 0;
@@ -308,8 +312,9 @@ public class CheatTracker {
                 AutobanManager.getInstance().autoban(chrhardref.getClient(), StringUtil.makeEnumHumanReadable(offense.name()), 5000);
             } else if (type == 2) {
                 outputFileName = "斷線";
-                World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[GM密語] " + chrhardref.getName() + " 自動斷線 類別: " + offense.toString() + " 原因: " + (param == null ? "" : (" - " + param))).getBytes());
+                chrhardref.sendHackShieldDetected();
                 chrhardref.getClient().getSession().close();
+                World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[GM密語] " + chrhardref.getName() + " 自動斷線 類別: " + offense.toString() + " 原因: " + (param == null ? "" : (" - " + param))).getBytes());
             } else if (type == 3) {
                 boolean ban = true;
                 outputFileName = "封鎖";
@@ -336,10 +341,11 @@ public class CheatTracker {
                     chr.get().dropMessage("觸發違規: " + real + " param: " + (param == null ? "" : (" - " + param)));
                 } else {
                     if (ban) {
+                        chrhardref.ban(chrhardref.getName() + real, true, true, false);
+                        chrhardref.sendHackShieldDetected();
+                        chrhardref.getClient().getSession().close();
                         World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[封鎖系統] " + chrhardref.getName() + " 因為" + show + "而被管理員永久停權。").getBytes());
                         World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[GM密語] " + chrhardref.getName() + " " + real + "自動封鎖! ").getBytes());
-                        chrhardref.ban(chrhardref.getName() + real, true, true, false);
-                        chrhardref.getClient().getSession().close();
                     } else {
                     }
                 }
@@ -397,9 +403,10 @@ public class CheatTracker {
 
     public void updateTick(int newTick) {
         if (newTick == lastTickCount) { //definitely packet spamming
-/*	    if (tickSame >= 5) {
-             chr.get().getClient().getSession().close(); //i could also add a check for less than, but i'm not too worried at the moment :)
-             } else {*/
+/*	    if (tickSame >= 5) { //i could also add a check for less than, but i'm not too worried at the moment :)
+            chr.get().sendHackShieldDetected();
+            chr.get().getClient().getSession().close();
+        } else {*/
             tickSame++;
 //	    }
         } else {

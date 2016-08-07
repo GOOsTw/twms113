@@ -17,6 +17,7 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     CHANGE_CHANNEL(0x08),
     PING(0x09),
     CS_USE(0x0A),
+    SECURITY_CLIENT(0x0C),
     CHANNEL_SELECTED(0x0D),
     RELOG_RESPONSE(0x0F),
     SECONDPW_ERROR(0x10),
@@ -98,6 +99,7 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     FISHING_BOARD_UPDATE(0x69),
     AVATAR_MEGA(0x6D),
     SKILL_MACRO(0x7A),
+
     SET_FIELD(0x7B),
     SET_ITC(0x7C), //MTS
     SET_CASH_SHOP(0x7D),
