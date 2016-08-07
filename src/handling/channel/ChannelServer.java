@@ -141,7 +141,10 @@ public class ChannelServer implements Serializable {
             adminOnly = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.admin", "false"));
             canUseGMItem = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.gmitems", "false"));
             eventSM = new EventScriptManager(this, ServerProperties.getProperty("server.settings.events").split(","));
-            port = Short.parseShort(ServerProperties.getProperty("server.settings.channel" + channel + ".port", String.valueOf(DEFAULT_PORT + channel)));
+            port = Short.parseShort(ServerProperties.getProperty("server.settings.channel" + channel + ".port", "0"));
+            if (port == 0) {
+                port = (short) (channel - 1 + Short.parseShort(ServerProperties.getProperty("server.settings.channel1.port", String.valueOf(DEFAULT_PORT))));
+            }
 
         } catch (Exception e) {
             throw new RuntimeException(e);
