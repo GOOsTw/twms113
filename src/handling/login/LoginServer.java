@@ -30,6 +30,7 @@ import handling.MapleServerHandler;
 import handling.mina.MapleCodecFactory;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.WeakHashMap;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.buffer.SimpleBufferAllocator;
 import org.apache.mina.core.filterchain.IoFilter;
@@ -54,6 +55,8 @@ public class LoginServer {
     private static int maxCharacters, userLimit, usersOn = 0;
     private static boolean finishedShutdown = true;
     public static boolean autoRegister = false, adminOnly = false;
+    private static AccountStorage clients;
+    private static final Map<Integer, String> LoginMacs = new WeakHashMap<>();
 
     public static final void addChannel(final int channel) {
         load.put(channel, 0);
@@ -182,8 +185,6 @@ public class LoginServer {
             }
         }
     }
-    
-    private static AccountStorage clients;
 
     public static AccountStorage getClientStorage() {
         if (clients == null) {
@@ -198,5 +199,27 @@ public class LoginServer {
 
     public static final void removeClient(final MapleClient c) {
         getClientStorage().deregisterAccount(c);
+    }
+
+    public static final void addLoginMac(MapleClient c) {
+        if (!LoginMacs.containsKey(c.getAccID())) {
+            LoginMacs.put(c.getAccID(), c.getLoginMacs());
+        }
+    }
+
+    public static final String getLoginMac(final MapleClient c) {
+        String macs = null;
+        if (LoginMacs.containsKey(c.getAccID())) {
+            macs = LoginMacs.get(c.getAccID());
+        }
+        return macs;
+    }
+
+    public static final String removeLoginMac(final MapleClient c) {
+        String macs = null;
+        if (LoginMacs.containsKey(c.getAccID())) {
+            LoginMacs.remove(c.getAccID());
+        }
+        return macs;
     }
 }

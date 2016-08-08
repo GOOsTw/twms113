@@ -363,6 +363,8 @@ public class DamageParse {
                             break;
                     }
                 }
+                
+                player.cancelEffectFromBuffStat(MapleBuffStat.WIND_WALK);
                 final MapleStatEffect ds = player.getStatForBuff(MapleBuffStat.DARKSIGHT);
                 if (ds != null && !player.isGM()) {
                     if (ds.getSourceId() != 4330001 || !ds.makeChanceResult()) {
@@ -545,7 +547,7 @@ public class DamageParse {
             final CheatTracker tracker = player.getCheatTracker();
 
             tracker.setAttacksWithoutHit(true);
-            if (tracker.getAttacksWithoutHit() > 100) {
+            if (tracker.getAttacksWithoutHit() > 50) {
                 tracker.registerOffense(CheatingOffense.無敵, Integer.toString(tracker.getAttacksWithoutHit()));
             }
         }

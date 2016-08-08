@@ -1,158 +1,79 @@
-﻿importPackage(Packages.client.inventory);
-importPackage(Packages.tools);
-importPackage(Packages.constants);
-importPackage(Packages.server);
-importPackage(java.util);
+﻿/*
+NPC- 小貝9330022
+地點：不夜城
+*/
 
-var status = -1;
-var state = -1;
-var first = true;
-var next = false;
-var item;
-var size;
-var rewardWeights = Array();
-var rewardQuantity = Array();
-var rewardItems = Array();
-var totalWeights = Array();
-var rng = new Random();
-var time = 5;
-var msg = "";
-var next1 = true;
+var status = 0;
+var beauty = 0;
+var mhair = Array(30030, 30020, 30000, 30310, 30330, 30060, 30150, 30410, 30210, 30140, 30120, 30200);
+var fhair = Array(31050, 31040, 31000, 31150, 31310, 31300, 31160, 31100, 31410, 31030, 31080, 31070, 31340);
+var hairnew = Array();
 
 function start() {
-    var rewards = Array(
-            1302000, 1, 20,
-            1302001, 1, 30,
-			4000000, 1, 10,
-            4000001, 7, 60
-            );
-    for (var i = 0; i < rewards.length; i++) {
-        if (i % 3 == 0) {
-            rewardItems.push(rewards[i]);
-        } else if (i % 3 == 1) {
-            rewardQuantity.push(rewards[i]);
-        } else {
-            rewardWeights.push(rewards[i]);
-            var total = 0;
-            for (var k = 0; k < rewardWeights.length; k++) {
-                total += rewardWeights[k];
-            }
-            totalWeights.push(total);
-        }
-    }
-    action(1, 0, 0);
+	status = -1;
+	action(1, 0, 0);
 }
 
 function action(mode, type, selection) {
-    if (mode == 1) {
-        status++;
-    } else {
-        cm.dispose();
-        return;
-    }
-    if (first) {
-        if (status == 0) {
-            cm.sendSimple("" +
-                    "想要做什麼？？\r\n" +
-                    "#r注意！這裡獲得的東西非常稀有！！\r\n\r\n" +
-                    "#L0##b使用#k#i5222000##d#t5222000##l\r\n" +
-					"#L1##b購買#k#i5222000##d#t5222000##l\r\n" +
-                    "#L2##b沒事。");
-        } else if (status == 1) {
-            if (selection == 0) {
-                if (cm.getPlayer().getInventory(MapleInventoryType.EQUIP).getNextFreeSlot() > -1 && cm.getPlayer().getInventory(MapleInventoryType.USE).getNextFreeSlot() > -1 && cm.getPlayer().getInventory(MapleInventoryType.SETUP).getNextFreeSlot() > -1 && cm.getPlayer().getInventory(MapleInventoryType.ETC).getNextFreeSlot() > -1) {
-                    reNew();
-                    first = false;
-                } else {
-					msg = "確認背包是否滿了。";
-					next1 = false;
-                    
-                }
-			} else if (selection == 1) {
-					cm.sendYesNo("確定是否要買#t5222000#??\r\n#r一次只能買一個若重複購買\r\n則會覆蓋上一個#t5222000#這點請注意！！");
-            } else {
-                cm.dispose();
-            }
-		} else if (status == 2) {
-			if(cm.haveItem(5222000)) {
-				status = 3;
-				cm.sendYesNo("#r發現你身上已經有一個#t5222000#確定是否繼續購買??\r\n這是會蓋掉的哦！");
-			} else {		
-				status = 3;
-				cm.sendYesNo("是否要購買??");
-			}
-        } else if (status == 4) {
-			state = selection;
-			buyItem();
-			cm.dispose();
-		}
-    } else {
-        next = selection == 0;
-        if (next) {
-            if (cm.getPlayer().getInventory(MapleInventoryType.EQUIP).getNextFreeSlot() > -1 && cm.getPlayer().getInventory(MapleInventoryType.USE).getNextFreeSlot() > -1 && cm.getPlayer().getInventory(MapleInventoryType.SETUP).getNextFreeSlot() > -1 && cm.getPlayer().getInventory(MapleInventoryType.ETC).getNextFreeSlot() > -1) {
-                reNew();
-            } else {
-				msg = "確認背包是否滿了。";
-				next1 = false;
-            }
-        } else {
-            cm.dispose();
-            return;
-        }	
-    }
-	if (!next1) {
-        cm.sendNext(msg);
-        cm.dispose();
-        return;
-    }
-}
-
-function reNew() {
-    if (!cm.haveItem(5222000)) {
-        cm.sendNext("騙我T.T，你沒有月光寶盒啊！？");
-        cm.dispose();
-        return;
-    }
-    var reward = getRewardIndex();
-    cm.gainItem(5222000, -1);
-    cm.gainItem(rewardItems[reward], rewardQuantity[reward]);
-    cm.sendNext("" +
-            "你獲得了以下獎賞：\r\n" +
-            "" + rewardQuantity[reward] + "x#i" + rewardItems[reward] + "#:" + MapleItemInformationProvider.getInstance().getName(rewardItems[reward]) + "\r\n" +
-            "你目前還有" + cm.itemQuantity(5222000) + "個月光寶盒\r\n" +
-            "#L0##b繼續使用#k#i5222000#。#l\r\n" +
-            "#L1##b先不使用。");
-}
-
-function buyItem() {
-	if (!cm.haveItem(5222000)) {
-		if (cm.getPlayer().getCSPoints(1) >= 15) {
-			cm.getPlayer().modifyCSPoints(1, -15, false);
-			cm.gainItem(5222000, 1);
-        } else {
-			msg = "#d你點數不夠哦";
-            next1 = false;
-        }
+	if (mode == -1) {
+		cm.dispose();
 	} else {
-		if (cm.getPlayer().getCSPoints(1) >= 15) {
-			cm.getPlayer().modifyCSPoints(1, -15, false);
-			cm.gainItem(5222000, -1);
-			cm.gainItem(5222000, 1);
-        } else {
-			msg = "#d你點數不夠哦";
-            next1 = false;
-        }
+		if (mode == 0 && status >= 0) {
+			cm.sendNext("如果有需要再來找我唷。");
+			cm.dispose();
+			return;
+		}
+		if (mode == 1)
+			status++;
+		else
+			status--;
+		if (status == 0) {
+			cm.sendSimple("嗨，我是#p9330022# 如果你有 #b#t5150016##k 或者 #b#t5151012##k 就可以來找我唷！ 選擇一個服務: \r\n#L0#使用:#b#t5150016##k \r\n#L1#使用:#b#t5151012##k");
+		} else if (status == 1) {
+			if (selection == 0) {
+				beauty = 1;
+				hairnew = Array();
+				if (cm.getChar().getGender() == 0) {
+					for(var i = 0; i < mhair.length; i++) {
+						hairnew.push(mhair[i] + parseInt(cm.getChar().getHair() % 10));
+					}
+				} 
+				if (cm.getChar().getGender() == 1) {
+					for(var i = 0; i < fhair.length; i++) {
+						hairnew.push(fhair[i] + parseInt(cm.getChar().getHair() % 10));
+					}
+				}
+				cm.sendYesNo("你確定要使用 #b#t5150016##k #r注意:這是隨機#k");
+			} else if (selection == 1) {
+				beauty = 2;
+				haircolor = Array();
+				var current = parseInt(cm.getChar().getHair()/10)*10;
+				for(var i = 0; i < 8; i++) {
+					haircolor.push(current + i);
+				}
+				cm.sendYesNo("你確定要使用 #b#t5151012##k #r注意:這是隨機#k ？");
+			}
+		}
+		else if (status == 2){
+			cm.dispose();
+			if (beauty == 1){
+				if (cm.haveItem(5150016) == true){
+					cm.gainItem(5150016, -1);
+					cm.setHair(hairnew[Math.floor(Math.random() * hairnew.length)]);
+					cm.sendOk("你照鏡子看看吧～！");
+				} else {
+					cm.sendNext("痾.... 貌似沒有#t5150016#。");
+				}
+            }
+			if (beauty == 2){
+				if (cm.haveItem(5151012) == true){
+					cm.gainItem(5151012, -1);
+					cm.setHair(haircolor[Math.floor(Math.random() * haircolor.length)]);
+					cm.sendOk("你照鏡子看看吧～！");
+				} else {
+					cm.sendNext("痾.... 貌似沒有#t5151012#。");
+				}
+			}
+		}
 	}
 }
-
-function getRewardIndex() {
-    var weight = rng.nextInt(totalWeights[totalWeights.length - 1] + 1);
-    var retIndex = 0;
-    while (retIndex < totalWeights.length - 1) {
-        if (weight < totalWeights[retIndex + 1] && weight >= totalWeights[retIndex]) {
-            break;
-        }
-        retIndex++;
-    }
-    return retIndex;
-} 

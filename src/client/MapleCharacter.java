@@ -136,7 +136,7 @@ import tools.packet.PlayerShopPacket;
 public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Serializable {
 
     private static final long serialVersionUID = 845748950829L;
-    private String name, chalktext, BlessOfFairy_Origin, charmessage, prefix, chattitle;
+    private String name, chalktext, BlessOfFairy_Origin, charmessage, prefix, chattitle, nowmacs = "";
     private long lastCombo, lastfametime, keydown_skill, lastRecoveryTime;
     private byte dojoRecord, gmLevel, gender, initialSpawnPoint, skinColor, guildrank = 5, allianceRank = 5, world, fairyExp = 10, numClones, subcategory, fairyHour = 1; // Make this a quest record, TODO : Transfer it somehow with the current data
     private short level, mulung_energy, combo, availableCP, totalCP, fame, hpmpApUsed, job, remainingAp;
@@ -6822,5 +6822,13 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             fishing.cancel(false);
             fishing = null;
         }
+    }
+
+    public String getNowMacs() {
+        return nowmacs;
+    }
+
+    public void setNowMacs(String macs) {
+        nowmacs = macs;
     }
 }

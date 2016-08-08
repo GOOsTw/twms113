@@ -105,6 +105,7 @@ public class MapleClient {
     public transient short loginAttempt = 0;
     private final transient List<Integer> allowedChar = new LinkedList<>();
     private final transient Set<String> macs = new HashSet<>();
+    private String LoginMacs = "";
     private final transient Map<String, ScriptEngine> engines = new HashMap<>();
     private transient ScheduledFuture<?> idleTask = null;
     private transient String secondPassword; // To be used only on login
@@ -281,6 +282,14 @@ public class MapleClient {
             return false;
         }
         return true;
+    }
+
+    public final String getLoginMacs() {
+        return LoginMacs;
+    }
+
+    public void setLoginMacs(String macData) {
+        LoginMacs = macData;
     }
 
     public final Set<String> getMacs() {
@@ -560,7 +569,7 @@ public class MapleClient {
         int loginok = 5;
         try {
             Connection con = DatabaseConnection.getConnection();
-            try (PreparedStatement ps = con.prepareStatement("SELECT * FROM accounts WHERE name = ?")) {
+            try (PreparedStatement ps = con.prepareStatement("SELECT id, banned, password, salt, macs, 2ndpassword, gm, greason, tempban, gender, SessionIP FROM accounts WHERE name = ?")) {
                 ps.setString(1, account);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
@@ -568,6 +577,7 @@ public class MapleClient {
                         final String passhash = rs.getString("password");
                         final String salt = rs.getString("salt");
                         final String oldSession = rs.getString("SessionIP");
+                        setMacs(rs.getString("macs"));
                         accountId = rs.getInt("id");
                         secondPassword = rs.getString("2ndpassword");
                         gm = rs.getInt("gm") > 0;
@@ -577,7 +587,7 @@ public class MapleClient {
 
                         ps.close();
 
-                        if (banned > 0 && !gm) {
+                        if (banned > 0 && !isGm()) {
                             loginok = 3;
                         } else {
                             if (banned == -1) {
@@ -587,16 +597,7 @@ public class MapleClient {
 
                             boolean updatePasswordHash = false;
                             // Check if the passwords are correct here. :B
-                            if (passhash == null || passhash.isEmpty()) {
-                                //match by sessionIP
-                                if (oldSession != null && !oldSession.isEmpty()) {
-                                    loggedIn = getSessionIPAddress().equals(oldSession);
-                                    loginok = loggedIn ? 0 : 4;
-                                } else {
-                                    loginok = 4;
-                                    loggedIn = false;
-                                }
-                            } else if (LoginCryptoLegacy.isLegacyPassword(passhash) && LoginCryptoLegacy.checkPassword(password, passhash)) {
+                            if (LoginCryptoLegacy.isLegacyPassword(passhash) && LoginCryptoLegacy.checkPassword(password, passhash)) {
                                 // Check if a password upgrade is needed.
                                 loginok = 0;
                                 updatePasswordHash = true;
