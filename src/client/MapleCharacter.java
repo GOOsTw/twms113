@@ -1585,15 +1585,15 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return client.getChannelServer().getPlayerStorage().getCharacterById(this.master);
     }
 
-    public boolean changeFace(short item, int color) {
+    public boolean changeFace(int item, int color) {
         int newFace = ((face / 1000) * 1000) + color + (face % 10);
         if (!MapleItemInformationProvider.getInstance().faceExists(newFace)) {
-            newFace = face;
-            gainItem(item, 1);
-        } else {
             face = newFace;
             updateSingleStat(MapleStat.FACE, newFace);
             equipChanged();
+        } else {
+            newFace = face;
+            gainItem(item, 1);
         }
         return true;
     }

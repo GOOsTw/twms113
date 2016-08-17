@@ -1866,7 +1866,7 @@ public class InventoryHandler {
                     c.getPlayer().dropMessage(1, "必須等級30級以上才可以使用.");
                     break;
                 }
-                if (color >= 0 && c.getPlayer().changeFace((short) itemId, color)) {
+                if (color >= 0 && c.getPlayer().changeFace(itemId, color)) {
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(1, "使用日拋隱形眼鏡出現錯誤。");
