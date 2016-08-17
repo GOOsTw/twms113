@@ -551,19 +551,19 @@ public class MapleMapFactory {
             case 100040105: // Faust
                 mobtime = 1800;
                 monsterid = 5220002;
-                msg = "殭屍猴出現了！";
+                msg = "藍色的霧氣變得更暗時出現了殭屍猴王";
                 pos1 = new Point(1000, 278);
                 pos2 = new Point(557, 278);
                 pos3 = new Point(95, 278);
                 break;
-            case 100040106: // Faust
+            /*case 100040106: // Faust
                 mobtime = 1800;
                 monsterid = 5220002;
                 msg = "藍色的霧氣變得更暗時出現了殭屍猴王";
                 pos1 = new Point(1000, 278);
                 pos2 = new Point(557, 278);
                 pos3 = new Point(95, 278);
-                break;
+                break;*/
             case 220050100: // Timer
                 mobtime = 1500;
                 monsterid = 5220003;
