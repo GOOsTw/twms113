@@ -14,7 +14,7 @@ function start() {
     var saveLoc = cm.getSavedLocation("WORLDTOUR");
     var currLoc = cm.getMapId();
     back = ( saveLoc != -1 && (currLoc != 100000000));
-    if (cm.getJob() == 0 && cm.getJob() == 1000 && cm.getJob() == 2000) {
+    if (cm.getJob() == 0 || cm.getJob() == 1000 || cm.getJob() == 2000) {
         cost = 300;
     } else {
         cost = 3000;
