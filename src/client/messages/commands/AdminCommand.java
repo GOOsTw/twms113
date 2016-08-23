@@ -569,9 +569,9 @@ public class AdminCommand {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
-            LoginServer.autoRegister = !LoginServer.autoRegister;
-            c.getPlayer().dropMessage(0, "[autoreg] " + (LoginServer.autoRegister ? "開啟" : "關閉"));
-            System.out.println("[autoreg] " + (LoginServer.autoRegister ? "開啟" : "關閉"));
+            LoginServer.AutoRegister = !LoginServer.AutoRegister;
+            c.getPlayer().dropMessage(0, "[autoreg] " + (LoginServer.AutoRegister ? "開啟" : "關閉"));
+            System.out.println("[autoreg] " + (LoginServer.AutoRegister ? "開啟" : "關閉"));
             return true;
         }
 

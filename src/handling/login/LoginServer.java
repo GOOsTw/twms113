@@ -54,7 +54,7 @@ public class LoginServer {
     private static byte flag;
     private static int maxCharacters, userLimit, usersOn = 0;
     private static boolean finishedShutdown = true;
-    public static boolean autoRegister = false, adminOnly = false;
+    public static boolean AutoRegister = false, adminOnly = false;
     private static AccountStorage clients;
     private static final Map<Integer, String> LoginMacs = new WeakHashMap<>();
 
@@ -76,7 +76,7 @@ public class LoginServer {
             flag = Byte.parseByte(ServerProperties.getProperty("server.settings.flag"));
             adminOnly = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.admin", "false"));
             maxCharacters = Integer.parseInt(ServerProperties.getProperty("server.settings.maxCharacters", "3"));
-            autoRegister = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.autoRegister", "false"));
+            AutoRegister = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.autoRegister", "false"));
             IoBuffer.setUseDirectBuffer(false);
             IoBuffer.setAllocator(new SimpleBufferAllocator());
 
