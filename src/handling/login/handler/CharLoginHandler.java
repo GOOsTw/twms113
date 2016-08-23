@@ -136,7 +136,6 @@ public class CharLoginHandler {
                 }
 
             } else {
-
                 if (!getLoginFailedCount(c)) {
                     c.sendPacket(LoginPacket.getLoginFailed(loginok.getValue()));
 
@@ -167,11 +166,7 @@ public class CharLoginHandler {
         }
     }
 
-    
-
-    
-
-    public static final void SetGenderRequest(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleGenderSet(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         String username = slea.readMapleAsciiString();
         String password = slea.readMapleAsciiString();
         if (c.getAccountName().equals(username)) {
@@ -183,16 +178,15 @@ public class CharLoginHandler {
             c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
         } else {
             c.getSession().close();
-            return;
         }
     }
 
-    public static final void ServerListRequest(final MapleClient c) {
+    public static final void handleServerList(final MapleClient c) {
         c.sendPacket(LoginPacket.getServerList(0, LoginServer.getServerName(), LoginServer.getLoad()));
         c.sendPacket(LoginPacket.getEndOfServerList());
     }
 
-    public static final void ServerStatusRequest(final MapleClient c) {
+    public static final void handleServerStatus(final MapleClient c) {
         // 0 = Select world normally
         // 1 = "Since there are many users, you may encounter some..."
         // 2 = "The concurrent users in this world have reached the max"
@@ -207,7 +201,7 @@ public class CharLoginHandler {
         }
     }
 
-    public static final void CharlistRequest(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleCharacterList(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         slea.readByte();
         final int server = slea.readByte();
         final int channel = slea.readByte() + 1;
@@ -226,7 +220,7 @@ public class CharLoginHandler {
         }
     }
 
-    public static final void checkCharName(final String name, final MapleClient c) {
+    public static final void handleCheckCharacterName(final String name, final MapleClient c) {
         c.sendPacket(LoginPacket.charNameResponse(name,
                 !MapleCharacterUtil.canCreateChar(name) || LoginInformationProvider.getInstance().isForbiddenName(name)));
     }
