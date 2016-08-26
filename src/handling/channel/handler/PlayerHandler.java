@@ -235,6 +235,12 @@ public class PlayerHandler {
         if (chr.isGM() && chr.isInvincible()) {
             return;
         }
+        if (GameConstants.CakeMap(chr.getMapId())) {
+            MapleMap map = c.getChannelServer().getMapFactory().getMap(749020920);
+            chr.changeMap(map, map.getPortal(0));
+            chr.dropMessage(5, "因為被Cake發現，所以你被Kick Asshole。");
+            return;
+        }
         final PlayerStats stats = chr.getStat();
         if (type != -2 && type != -3 && type != -4) { // Not map damage
             monsteridfrom = slea.readInt();

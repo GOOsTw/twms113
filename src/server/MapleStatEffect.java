@@ -1016,6 +1016,16 @@ public class MapleStatEffect implements Serializable {
             localDuration = alchemistModifyVal(applyfrom, localDuration, false);
             applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.showBuffeffect(applyto.getId(), sourceid, 1), false);
         }
+        switch (sourceid) {
+            case 打手.偽裝術:
+            case 暗影神偷.煙幕彈:
+                if (GameConstants.CakeMap(applyto.getMapId())) {
+                    MapleMap map = applyto.getClient().getChannelServer().getMapFactory().getMap(749020920);
+                    applyto.changeMap(map, map.getPortal(0));
+                    applyto.dropMessage(5, "由於您使用作弊技能被蛋糕發現，結果您被蛋糕傳出地圖外。");
+                    return;
+                }
+        }
         List<Pair<MapleBuffStat, Integer>> localstatups = statups;
         ArrayList<Pair<MapleBuffStat, Integer>> Selfstat = null;
         boolean normal = true;
@@ -1788,13 +1798,13 @@ public class MapleStatEffect implements Serializable {
         }
 
     }
-    
+
     public final double getMaxDistanceSq() { //lt = 前面, rb = 後面;　非取得兩點位置而是玩家的相對位置以及單一方向
         final int maxX = Math.max(Math.abs(lt == null ? 0 : lt.x), Math.abs(rb == null ? 0 : rb.x));
         final int maxY = Math.max(Math.abs(lt == null ? 0 : lt.y), Math.abs(rb == null ? 0 : rb.y));
         return (maxX * maxX) + (maxY * maxY);
     }
-    
+
     public final int getRange() {
         return range;
     }
