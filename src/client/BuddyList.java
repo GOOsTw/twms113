@@ -254,11 +254,8 @@ public class BuddyList implements Serializable {
         this.put(new BuddyEntry(buddyName, buddyId, BuddyList.DEFAULT_GROUP, buddyChannel, false, buddyLevel, buddyJob));
 
         if (pendingReqs.isEmpty()) {
-
             client.sendPacket(MaplePacketCreator.requestBuddylistAdd(buddyId, buddyName, buddyLevel, buddyJob));
-
         } else {
-
             BuddyEntry newPair = new BuddyEntry(buddyName, buddyId, BuddyList.DEFAULT_GROUP, -1, false, buddyJob, buddyLevel);
             pendingReqs.push(newPair);
 
