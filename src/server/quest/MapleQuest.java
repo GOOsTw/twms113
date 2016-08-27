@@ -24,7 +24,7 @@ import tools.Pair;
 public class MapleQuest implements Serializable {
 
     private static final long serialVersionUID = 9179541993413738569L;
-    private static final Map<Integer, MapleQuest> quests = new LinkedHashMap<>();
+    private static final Map<Integer, MapleQuest> QUESTS = new LinkedHashMap<>();
     protected int id;
     protected List<MapleQuestRequirement> startReqs;
     protected List<MapleQuestRequirement> completeReqs;
@@ -182,24 +182,24 @@ public class MapleQuest implements Serializable {
     }
 
     public static void clearQuests() {
-        quests.clear();
+        QUESTS.clear();
         initQuests(); //test
     }
 
     public static Collection<MapleQuest> getAllInstances() {
-        return quests.values();
+        return QUESTS.values();
     }
 
     public static MapleQuest getInstance(int id) {
 
-        MapleQuest ret = quests.get(id);
+        MapleQuest ret = QUESTS.get(id);
         if (ret == null) {
             ret = new MapleQuest(id);
             try {
                 if (GameConstants.isCustomQuest(id) || !loadQuest(ret, id)) {
                     ret = new MapleCustomQuest(id);
                 }
-                quests.put(id, ret);
+                QUESTS.put(id, ret);
             } catch (Exception ex) {
                 FilePrinter.printError(FilePrinter.MapleQuest, ex, "Caused by questID " + Integer.toString(id));
                 System.out.println("[MapleQuest Error] Caused by questID " + id);

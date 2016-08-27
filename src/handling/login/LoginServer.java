@@ -179,7 +179,7 @@ public class LoginServer {
             }
             if (c.getAccID() == client.getAccID() || c == client) {
                 if (c != client) {
-                    c.unLockDisconnect();
+                    c.unLockDisconnect(false, true);
                 }
                 removeClient(c);
             }

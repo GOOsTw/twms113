@@ -61,7 +61,7 @@ public class ByteBufferLittleEndianWriter extends GenericLittleEndianWriter {
     public ByteBufferLittleEndianWriter(final int initialSize, final boolean autoExpand) {
         bb = IoBuffer.allocate(initialSize);
         bb.setAutoExpand(autoExpand);
-        setByteOutputStream(new ByteBufferOutputstream(bb));
+        super.setByteOutputStream(new ByteBufferOutputstream(bb));
     }
 
     /**

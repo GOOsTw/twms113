@@ -53,7 +53,7 @@ public class MaplePacketLittleEndianWriter extends GenericLittleEndianWriter {
      */
     public MaplePacketLittleEndianWriter(final int size) {
         this.baos = new ByteArrayOutputStream(size);
-        setByteOutputStream(new BAOSByteOutputStream(baos));
+        super.setByteOutputStream(new BAOSByteOutputStream(baos));
     }
 
     /**

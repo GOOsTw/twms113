@@ -1013,6 +1013,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
         try {
             con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+            
             con.setAutoCommit(false);
             ps = con.prepareStatement("UPDATE characters SET level = ?, fame = ?, str = ?, dex = ?, luk = ?, `int` = ?, exp = ?, hp = ?, mp = ?, maxhp = ?, maxmp = ?, sp = ?, ap = ?, gm = ?, skincolor = ?, gender = ?, job = ?, hair = ?, face = ?, map = ?, meso = ?, hpApUsed = ?, spawnpoint = ?, party = ?, buddyCapacity = ?, monsterbookcover = ?, dojo_pts = ?, dojoRecord = ?, pets = ?, subcategory = ?, marriageId = ?, currentrep = ?, totalrep = ?, charmessage = ?, expression = ?, constellation = ?, blood = ?, month = ?, day = ?, beans = ?, prefix = ?, gachexp = ?, dps = ?, name = ? WHERE id = ?");
             if (gmLevel < 1 && level > 199) {
@@ -1100,12 +1101,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.setString(44, name);
             ps.setInt(45, id);
             if (ps.executeUpdate() < 1) {
-
                 ps.close();
                 throw new DatabaseException("Character not in database (" + id + ")");
             }
             ps.close();
-
             deleteWhereCharacterId(con, "DELETE FROM skillmacros WHERE characterid = ?");
             for (int i = 0; i < 5; i++) {
                 final SkillMacro macro = skillMacros[i];
@@ -1122,7 +1121,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     ps.close();
                 }
             }
-
             deleteWhereCharacterId(con, "DELETE FROM inventoryslot WHERE characterid = ?");
             ps = con.prepareStatement("INSERT INTO inventoryslot (characterid, `equip`, `use`, `setup`, `etc`, `cash`) VALUES (?, ?, ?, ?, ?, ?)");
             ps.setInt(1, id);
@@ -1175,7 +1173,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             deleteWhereCharacterId(con, "DELETE FROM skills WHERE characterid = ?");
             ps = con.prepareStatement("INSERT INTO skills (characterid, skillid, skilllevel, masterlevel, expiration) VALUES (?, ?, ?, ?, ?)");
             ps.setInt(1, id);
-
             for (final Entry<ISkill, SkillEntry> skill : skills.entrySet()) {
                 if (GameConstants.isApplicableSkill(skill.getKey().getId())) { //do not save additional skills
                     ps.setInt(2, skill.getKey().getId());
@@ -1292,18 +1289,20 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             try {
                 if (ps != null) {
                     ps.close();
+                    ps = null;
                 }
                 if (pse != null) {
                     pse.close();
+                    pse = null;
                 }
                 if (rs != null) {
                     rs.close();
+                    rs = null;
                 }
                 if (con != null) {
                     con.setAutoCommit(true);
                     con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
                 }
-
             } catch (SQLException e) {
                 retValue = 0;
                 FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error going back to autocommit mode");

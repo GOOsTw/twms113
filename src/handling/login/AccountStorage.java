@@ -102,15 +102,6 @@ public class AccountStorage {
         return client;
     }
 
-    /*
-     public MapleCharacter getPendingCharacter(int id) {
-     for (MapleCharacter chr : pendingCharacter) {
-     if (chr.getId() == id) {
-     return chr;
-     }
-     }
-     return null;
-     }*/
     public final MapleClient getCharacterById(final int id) {
         readLock.lock();
         try {

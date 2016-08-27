@@ -67,101 +67,104 @@ public class CharLoginHandler {
         c.setAccountName(account);
         c.logout();
     }
+    
+    private static String readMacAddress(final SeekableLittleEndianAccessor slea, final MapleClient c)
+    {
+        int[] bytes = new int[6];
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = slea.readByteAsInt();
+        }
+        StringBuilder sps = new StringBuilder();
+        for (int i = 0; i < bytes.length; i++) {
+            sps.append(StringUtil.getLeftPaddedStr(Integer.toHexString(bytes[i]).toUpperCase(), '0', 2));
+            sps.append("-");
+        }
+        return sps.toString().substring(0, sps.toString().length() - 1);
+    }
 
     public static final void handleLogin(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-        String account = null;
-        String password = null;
-        try {
-            account = slea.readMapleAsciiString();
-            password = slea.readMapleAsciiString();
-        } catch (NegativeArraySizeException ex) {
 
+        String account = slea.readMapleAsciiString();
+        String password = slea.readMapleAsciiString();
+
+        if (account == null || password == null) {
+            c.getSession().close(true);
         }
-        if (account != null && password != null) {
-            int[] bytes = new int[6];
-            for (int i = 0; i < bytes.length; i++) {
-                bytes[i] = slea.readByteAsInt();
+        
+        String macData = readMacAddress(slea, c);
+        c.setMacs(macData);
+        c.setLoginMacs(macData);
+        c.setAccountName(account);
+        
+        final boolean isipBan = c.hasBannedIP();
+        final boolean ismacBan = c.hasBannedMac();
+        final boolean isbanned = isipBan || ismacBan;
+
+        LoginResponse loginok = c.login(account, password, isbanned);
+
+        final Calendar tempbannedTill = c.getTempBanCalendar();
+        String errorInfo = null;
+
+        if (loginok == LoginResponse.LOGIN_SUCCESS) {
+            if (ismacBan) {
+                MapleCharacter.ban(c.getSession().getRemoteAddress().toString().split(":")[0], "Enforcing account ban, account " + account, false, 4, false);
             }
-            StringBuilder sps = new StringBuilder();
-            for (int i = 0; i < bytes.length; i++) {
-                sps.append(StringUtil.getLeftPaddedStr(Integer.toHexString(bytes[i]).toUpperCase(), '0', 2));
-                sps.append("-");
+
+            if (!c.isSetSecondPassword()) {
+                c.sendPacket(LoginPacket.getGenderNeeded(c));
+                return;
             }
-            String macData = sps.toString();
-            macData = macData.substring(0, macData.length() - 1);
-            c.setMacs(macData);
-            c.setLoginMacs(macData);
-            c.setAccountName(account);
-            final boolean ipBan = c.hasBannedIP();
-            final boolean macBan = c.hasBannedMac();
-            final boolean ban = ipBan || macBan;
 
-            LoginResponse loginok = c.login(account, password, ban);
-
-            final Calendar tempbannedTill = c.getTempBanCalendar();
-            String errorInfo = null;
-
-            if (loginok == LoginResponse.LOGIN_SUCCESS) {
-                if (macBan) {
-                    MapleCharacter.ban(c.getSession().getRemoteAddress().toString().split(":")[0], "Enforcing account ban, account " + account, false, 4, false);
-                }
-
-                if (!c.isSetSecondPassword()) {
-                    c.sendPacket(LoginPacket.getGenderNeeded(c));
-                    return;
-                }
-
-                if (tempbannedTill.getTimeInMillis() != 0) {
-                    if (!getLoginFailedCount(c)) {
-                        c.sendPacket(LoginPacket.getTempBan(KoreanDateUtil.getTempBanTimestamp(tempbannedTill.getTimeInMillis()), c.getBanReason()));
-                    } else {
-                        c.getSession().close(true);
-                    }
-                } else {
-                    c.loginAttempt = 0;
-                    c.updateMacs(macData);
-                    LoginWorker.registerClient(c);
-                    for (ChannelServer ch : ChannelServer.getAllInstances()) {
-                        List<MapleCharacter> list = ch.getPlayerStorage().getAllCharactersThreadSafe();
-                        for (MapleCharacter chr : list) {
-                            if (chr.getAccountID() == c.getAccID()) {
-                                if (chr.getMap() != null) {
-                                    chr.getMap().removePlayer(chr);
-                                }
-                                ch.removePlayer(chr);
-                                break;
-                            }
-                        }
-                    }
-                }
-
-            } else {
+            if (tempbannedTill.getTimeInMillis() != 0) {
                 if (!getLoginFailedCount(c)) {
-                    c.sendPacket(LoginPacket.getLoginFailed(loginok.getValue()));
-
+                    c.sendPacket(LoginPacket.getTempBan(KoreanDateUtil.getTempBanTimestamp(tempbannedTill.getTimeInMillis()), c.getBanReason()));
                 } else {
                     c.getSession().close(true);
                 }
-                if (loginok == LoginResponse.NOT_REGISTERED) {
-
-                    if (LoginServer.AutoRegister) {
-                        if (account.length() >= 12) {
-                            errorInfo = "您的帳號長度太長了唷!\r\n請重新輸入.";
-                        } else {
-                            AutoRegister.createAccount(account, password, c.getSession().getRemoteAddress().toString(), macData);
-                            if (AutoRegister.success && AutoRegister.mac) {
-                                errorInfo = "帳號創建成功,請重新登入!";
-                            } else if (!AutoRegister.mac) {
-                                errorInfo = "無法註冊過多的帳號密碼唷!";
-                                AutoRegister.success = false;
-                                AutoRegister.mac = true;
+            } else {
+                c.loginAttempt = 0;
+                c.updateMacs(macData);
+                LoginWorker.registerClient(c);
+                for (ChannelServer ch : ChannelServer.getAllInstances()) {
+                    List<MapleCharacter> list = ch.getPlayerStorage().getAllCharactersThreadSafe();
+                    for (MapleCharacter chr : list) {
+                        if (chr.getAccountID() == c.getAccID()) {
+                            if (chr.getMap() != null) {
+                                chr.getMap().removePlayer(chr);
                             }
+                            ch.removePlayer(chr);
+                            break;
                         }
                     }
                 }
-                if (errorInfo != null) {
-                    c.getSession().write(MaplePacketCreator.serverNotice(1, errorInfo));
+            }
+
+        } else {
+            if (!getLoginFailedCount(c)) {
+                c.sendPacket(LoginPacket.getLoginFailed(loginok.getValue()));
+
+            } else {
+                c.getSession().close(true);
+            }
+            if (loginok == LoginResponse.NOT_REGISTERED) {
+
+                if (LoginServer.AutoRegister) {
+                    if (account.length() >= 12) {
+                        errorInfo = "您的帳號長度太長了唷!\r\n請重新輸入.";
+                    } else {
+                        AutoRegister.createAccount(account, password, c.getSession().getRemoteAddress().toString(), macData);
+                        if (AutoRegister.success && AutoRegister.mac) {
+                            errorInfo = "帳號創建成功,請重新登入!";
+                        } else if (!AutoRegister.mac) {
+                            errorInfo = "無法註冊過多的帳號密碼唷!";
+                            AutoRegister.success = false;
+                            AutoRegister.mac = true;
+                        }
+                    }
                 }
+            }
+            if (errorInfo != null) {
+                c.getSession().write(MaplePacketCreator.serverNotice(1, errorInfo));
             }
         }
     }

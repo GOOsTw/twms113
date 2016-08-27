@@ -40,6 +40,7 @@ import handling.cashshop.CashShopServer;
 import handling.login.LoginServer;
 import handling.mina.MapleCodecFactory;
 import handling.world.CheaterData;
+import handling.world.World;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import scripting.EventScriptManager;
 import server.MapleSquad;
@@ -647,85 +648,22 @@ public class ChannelServer implements Serializable {
     }
 
     public static void forceRemovePlayerByAccId(MapleClient client, int accid) {
+
         for (ChannelServer ch : ChannelServer.getAllInstances()) {
-            Collection<MapleCharacter> chrs = ch.getPlayerStorage().getAllCharactersThreadSafe();
-            for (MapleCharacter c : chrs) {
+            List<MapleCharacter> chars = ch.getPlayerStorage().getAllCharactersThreadSafe();
+            for (MapleCharacter c : chars) {
                 if (c.getAccountID() == accid) {
-                    try {
-                        if (c.getClient() != null) {
-                            if (c.getClient() != client) {
-                                c.getClient().unLockDisconnect();
-                            }
-                        }
-                    } catch (Exception ex) {
-                    }
-                    chrs = ch.getPlayerStorage().getAllCharactersThreadSafe();
-                    if (chrs.contains(c)) {
-                        ch.removePlayer(c);
-                    }
+                    c.getClient().unLockDisconnect(true, false);
+                    return;
                 }
             }
         }
-        try {
-            Collection<MapleCharacter> chrs = CashShopServer.getPlayerStorage().getAllCharactersThreadSafe();
-            for (MapleCharacter c : chrs) {
-                if (c.getAccountID() == accid) {
-                    try {
-                        if (c.getClient() != null) {
-                            if (c.getClient() != client) {
-                                c.getClient().unLockDisconnect();
-                            }
-                        }
-                    } catch (Exception ex) {
-                    }
-                }
-            }
-        } catch (Exception ex) {
 
-        }
-    }
-
-    public static void forceRemovePlayerByCharName(MapleClient client, String Name) {
-        for (ChannelServer ch : ChannelServer.getAllInstances()) {
-            Collection<MapleCharacter> chrs = ch.getPlayerStorage().getAllCharactersThreadSafe();
-            for (MapleCharacter c : chrs) {
-                if (c.getName().equalsIgnoreCase(Name)) {
-                    try {
-                        if (c.getClient() != null) {
-                            if (c.getClient() != client) {
-                                c.getClient().unLockDisconnect();
-                            }
-                        }
-                    } catch (Exception ex) {
-                    }
-                    chrs = ch.getPlayerStorage().getAllCharactersThreadSafe();
-                    if (chrs.contains(c)) {
-                        ch.removePlayer(c);
-                    }
-                    c.getMap().removePlayer(c);
-                }
-            }
-        }
-    }
-
-    public static void forceRemovePlayerByCharId(MapleClient client, int charId) {
-        for (ChannelServer ch : ChannelServer.getAllInstances()) {
-            Collection<MapleCharacter> chrs = ch.getPlayerStorage().getAllCharactersThreadSafe();
-            for (MapleCharacter c : chrs) {
-                if (c.getId() == charId) {
-                    try {
-                        if (c.getClient() != null) {
-                            if (c.getClient() != client) {
-                                c.getClient().unLockDisconnect();
-                            }
-                        }
-                    } catch (Exception ex) {
-                    }
-                    chrs = ch.getPlayerStorage().getAllCharactersThreadSafe();
-                    if (chrs.contains(c)) {
-                        ch.removePlayer(c);
-                    }
-                }
+        Collection<MapleCharacter> chrs = CashShopServer.getPlayerStorage().getAllCharactersThreadSafe();
+        for (MapleCharacter c : chrs) {
+            if (c.getAccountID() == accid) {
+                c.getClient().unLockDisconnect(false, true);
+                return;
             }
         }
     }

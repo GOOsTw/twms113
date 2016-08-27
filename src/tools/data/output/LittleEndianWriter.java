@@ -35,7 +35,7 @@ public interface LittleEndianWriter {
     /**
      * Write the number of zero bytes
      *
-     * @param b The bytes to write.
+     * @param i The bytes to write.
      */
     public void writeZeroBytes(final int i);
 

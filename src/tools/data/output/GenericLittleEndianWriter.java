@@ -69,7 +69,7 @@ public class GenericLittleEndianWriter implements LittleEndianWriter {
     /**
      * Write the number of zero bytes
      *
-     * @param b The bytes to write.
+     * @param i
      */
     @Override
     public final void writeZeroBytes(final int i) {

@@ -45,12 +45,15 @@ import tools.packet.UIPacket;
 public class MapleQuestAction implements Serializable {
 
     private static final long serialVersionUID = 9179541993413738569L;
-    private MapleQuestActionType type;
-    private MapleData data;
-    private MapleQuest quest;
+    private final MapleQuestActionType type;
+    private final MapleData data;
+    private final MapleQuest quest;
 
     /**
      * Creates a new instance of MapleQuestAction
+     * @param type
+     * @param data
+     * @param quest
      */
     public MapleQuestAction(MapleQuestActionType type, MapleData data, MapleQuest quest) {
         this.type = type;
