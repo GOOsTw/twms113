@@ -1412,8 +1412,8 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         }, 20000); //10 sec 10 sec
     }
 
-    public void 開啟小鋼珠(int type) {
-        c.sendPacket(MaplePacketCreator.openBeans(getPlayer().getBeans(), type));
+    public void 開啟小鋼珠() {
+        c.sendPacket(MaplePacketCreator.openBeans(getPlayer().getBeans()));
     }
 
     public void worldMessage(String text) {

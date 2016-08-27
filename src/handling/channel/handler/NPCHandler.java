@@ -200,7 +200,7 @@ public class NPCHandler {
                         }
                         MapleInventoryManipulator.addFromDrop(c, item, false);
                     }
-					storage.sendTakenOut(c, GameConstants.getInventoryType(item.getItemId()));
+                    storage.sendTakenOut(c, GameConstants.getInventoryType(item.getItemId()));
                     storage.saveToDB();
                 } else {
                     c.sendPacket(MaplePacketCreator.enableActions());
@@ -341,7 +341,7 @@ public class NPCHandler {
             } else if (slea.available() > 0) {
                 selection = slea.readByte();
             }
-            if (lastMsg == 4 && selection == -1) {
+            if (cm.getNpc() != 9000069 && lastMsg == 4 && selection == -1) {
                 cm.dispose();
                 return;//h4x
             }

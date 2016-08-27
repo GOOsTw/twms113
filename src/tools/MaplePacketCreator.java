@@ -4769,11 +4769,10 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static MaplePacket openBeans(int beansCount, int type) {
+    public static MaplePacket openBeans(int beansCount) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.BEANS_GAME1.getValue());
         mplew.writeInt(beansCount);
-        mplew.write(type);
         return mplew.getPacket();
     }
 
