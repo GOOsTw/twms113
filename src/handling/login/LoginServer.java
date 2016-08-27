@@ -42,6 +42,8 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
 import server.ServerProperties;
+import server.Timer;
+import server.Timer.LoginTimer;
 import tools.FilePrinter;
 
 public class LoginServer {
@@ -87,6 +89,7 @@ public class LoginServer {
             acceptor.setHandler(new MapleServerHandler(-1, false));
             acceptor.getSessionConfig().setTcpNoDelay(true);
             acceptor.bind(new InetSocketAddress(ip, port));
+            LoginTimer.getInstance().register(CheckLoginTask.getInstance(), 10 * 60 * 1000);
             System.out.println("\n【登入伺服器】  - 監聽端口: " + Short.toString(port) + " \n");
 
         } catch (IOException ex) {
