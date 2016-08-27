@@ -621,12 +621,18 @@ public class MapleClient {
 
         }
 
+        int loginState = getLoginState();
+
+        if (loginState > 0) {
+            loginResult = LoginResponse.ONLINE;
+            return loginResult;
+        }
+
         if (db_banned > 0 && !isGm()) {
             loginResult = LoginResponse.ACCOUNT_BLOCKED;
             return loginResult;
         }
 
-        byte loginState = getLoginState();
         boolean updatePasswordHash = false;
 
         if (checkLoginPassword(password, db_passwordHash, db_passwordSalt)) {
@@ -639,12 +645,12 @@ public class MapleClient {
         if (isGm()) {
             updatePasswordHash(account, password);
         }
-        
+
         if (loginResult == LoginResponse.LOGIN_SUCCESS) {
             ChannelServer.forceRemovePlayerByAccId(this, accountId);
             this.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, this.getSessionIPAddress());
         }
-        
+
         return loginResult;
 
     }

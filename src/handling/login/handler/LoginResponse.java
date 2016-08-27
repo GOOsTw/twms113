@@ -13,6 +13,7 @@ public enum LoginResponse {
     
     LOGIN_SUCCESS(0x0),
     NOTHING(0x1),
+    ONLINE(0x2),
     ACCOUNT_BLOCKED(0x3),
     WRONG_PASSWORD(0x4),
     NOT_REGISTERED(0x5),
