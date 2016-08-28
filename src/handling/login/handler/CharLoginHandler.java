@@ -95,6 +95,8 @@ public class CharLoginHandler {
             loginok = 3;
             if (macBan) {
                 MapleCharacter.ban(c.getSession().getRemoteAddress().toString().split(":")[0], "Enforcing account ban, account " + account, false, 4, false);
+            } else /*if (!macBan && ipBan)*/ {
+                c.banMacs();
             }
         } else if (loginok == 0 && (c.getGender() == 10 || c.getSecondPassword() == null)) {
             //選擇性别並設置第二組密碼
