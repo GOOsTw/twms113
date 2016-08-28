@@ -6,7 +6,6 @@ import client.inventory.MapleInventoryType;
 import client.inventory.MapleWeaponType;
 import client.status.MonsterStatus;
 import handling.channel.handler.AttackInfo;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -1258,6 +1257,10 @@ public class GameConstants {
                 return true;
         }
         return false;
+    }
+
+    public static boolean CakeMap(final int mapId) {
+        return mapId >= 749020000 && mapId <= 749020800;
     }
 
     public static boolean isRing(int itemId) {

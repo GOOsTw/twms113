@@ -403,16 +403,16 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 CharLoginHandler.handleLogin(slea, c);
                 break;
             case SERVERLIST_REQUEST:
-                CharLoginHandler.ServerListRequest(c);
+                CharLoginHandler.handleServerList(c);
                 break;
             case CHARLIST_REQUEST:
-                CharLoginHandler.CharlistRequest(slea, c);
+                CharLoginHandler.handleCharacterList(slea, c);
                 break;
             case SERVERSTATUS_REQUEST:
-                CharLoginHandler.ServerStatusRequest(c);
+                CharLoginHandler.handleServerStatus(c);
                 break;
             case CHECK_CHAR_NAME:
-                CharLoginHandler.checkCharName(slea.readMapleAsciiString(), c);
+                CharLoginHandler.handleCheckCharacterName(slea.readMapleAsciiString(), c);
                 break;
             case CREATE_CHAR:
                 CharLoginHandler.handleCreateCharacter(slea, c);
@@ -424,7 +424,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 CharLoginHandler.handleSecectCharacter(slea, c);
                 break;
             case SET_GENDER:
-                CharLoginHandler.SetGenderRequest(slea, c);
+                CharLoginHandler.handleGenderSet(slea, c);
                 break;
             case CLIENT_LOGOUT:
                 CharLoginHandler.handleLogout(slea, c);
@@ -881,6 +881,12 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 break;
             case ACCEPT_FAMILY:
                 FamilyHandler.AcceptFamily(slea, c);
+                break;
+            case BEANS_GAME1:
+                BeanGame.BeanGame1(slea, c);
+                break;
+            case BEANS_GAME2:
+                BeanGame.BeanGame2(slea, c);
                 break;
             default:
                 System.out.println("[UNHANDLED] Recv [" + header.toString() + "] found");

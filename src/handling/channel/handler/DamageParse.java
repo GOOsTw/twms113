@@ -55,7 +55,7 @@ import tools.data.input.LittleEndianAccessor;
 
 public class DamageParse {
 
-   public static void applyAttack(final AttackInfo attack, final ISkill theSkill, final MapleCharacter player, int attackCount, final double maxDamagePerMonster, final MapleStatEffect effect, final AttackType attack_type) {
+    public static void applyAttack(final AttackInfo attack, final ISkill theSkill, final MapleCharacter player, int attackCount, final double maxDamagePerMonster, final MapleStatEffect effect, final AttackType attack_type) {
         if (!player.isAlive()) {
             player.getCheatTracker().registerOffense(CheatingOffense.人物死亡攻擊);
             return;
@@ -299,36 +299,32 @@ public class DamageParse {
                         } else {
                             eachd = fixeddmg;
                         }
-                    } else {
-                        if (monsterstats.getOnlyNoramlAttack()) {
-                            eachd = attack.skill != 0 ? 0 : Math.min(eachd, (int) maxDamagePerHit);  // Convert to server calculated damage
-                        } else if (!player.isGM()) {
-                            if (Tempest) { // Monster buffed with Tempest
-                                if (eachd > monster.getMobMaxHp()) {
-                                    eachd = (int) Math.min(monster.getMobMaxHp(), Integer.MAX_VALUE);
-                                    player.getCheatTracker().registerOffense(CheatingOffense.攻擊過高_1);
-                                }
-                            } else if (!monster.isBuffed(MonsterStatus.DAMAGE_IMMUNITY) && !monster.isBuffed(MonsterStatus.WEAPON_IMMUNITY) && !monster.isBuffed(MonsterStatus.WEAPON_DAMAGE_REFLECT)) {
-                                if (eachd > maxDamagePerHit) {
-                                    player.getCheatTracker().registerOffense(CheatingOffense.攻擊過高_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
-                                    if (eachd > maxDamagePerHit * 2) {
-                                        if (eachd > maxDamagePerHit * 2.0D && maxDamagePerHit != 1) {
-                                            player.getCheatTracker().registerOffense(CheatingOffense.攻擊過高_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預計傷害: ").append((int) maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 技能: ").append(attack.skill).append("]").toString());
-                                        }
-                                        eachd = (int) (maxDamagePerHit * 2); // Convert to server calculated damage
-                                        player.getCheatTracker().registerOffense(CheatingOffense.攻擊過高_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
-                                        if (eachd >= 10000) {
-                                            player.getCheatTracker().registerOffense(CheatingOffense.攻擊過高_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
-                                        }
-                                    }
-                                }
-                            } else {
-                                if (eachd > maxDamagePerHit) {
-                                    eachd = (int) (maxDamagePerHit);
+                    } else if (monsterstats.getOnlyNoramlAttack()) {
+                        eachd = attack.skill != 0 ? 0 : Math.min(eachd, (int) maxDamagePerHit);  // Convert to server calculated damage
+                    } else if (!player.isGM()) {
+                        if (Tempest) { // Monster buffed with Tempest
+                            if (eachd > monster.getMobMaxHp()) {
+                                eachd = (int) Math.min(monster.getMobMaxHp(), Integer.MAX_VALUE);
+                                player.getCheatTracker().registerOffense(CheatingOffense.攻擊過高_1);
+                            }
+                        } else if (!monster.isBuffed(MonsterStatus.DAMAGE_IMMUNITY) && !monster.isBuffed(MonsterStatus.WEAPON_IMMUNITY) && !monster.isBuffed(MonsterStatus.WEAPON_DAMAGE_REFLECT)) {
+                            if (eachd > maxDamagePerHit) {
+                                player.getCheatTracker().registerOffense(CheatingOffense.攻擊過高_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
+                                if (eachd > maxDamagePerHit * 2) {
                                     if (eachd > maxDamagePerHit * 2.0D && maxDamagePerHit != 1) {
                                         player.getCheatTracker().registerOffense(CheatingOffense.攻擊過高_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預計傷害: ").append((int) maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 技能: ").append(attack.skill).append("]").toString());
                                     }
+                                    eachd = (int) (maxDamagePerHit * 2); // Convert to server calculated damage
+                                    player.getCheatTracker().registerOffense(CheatingOffense.攻擊過高_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
+                                    if (eachd >= 10000) {
+                                        player.getCheatTracker().registerOffense(CheatingOffense.攻擊過高_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預期: ").append(maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 使用的技能: ").append(attack.skill).append("]").toString());
+                                    }
                                 }
+                            }
+                        } else if (eachd > maxDamagePerHit) {
+                            eachd = (int) (maxDamagePerHit);
+                            if (eachd > maxDamagePerHit * 2.0D && maxDamagePerHit != 1) {
+                                player.getCheatTracker().registerOffense(CheatingOffense.攻擊過高_2, new StringBuilder().append("[傷害: ").append(eachd).append(", 預計傷害: ").append((int) maxDamagePerHit).append(", 怪物: ").append(monster.getId()).append("] [職業: ").append(player.getJob()).append(", 等級: ").append(player.getLevel()).append(", 技能: ").append(attack.skill).append("]").toString());
                             }
                         }
                     }
@@ -363,6 +359,8 @@ public class DamageParse {
                             break;
                     }
                 }
+
+                player.cancelEffectFromBuffStat(MapleBuffStat.WIND_WALK);
                 final MapleStatEffect ds = player.getStatForBuff(MapleBuffStat.DARKSIGHT);
                 if (ds != null && !player.isGM()) {
                     if (ds.getSourceId() != 4330001 || !ds.makeChanceResult()) {
@@ -545,7 +543,7 @@ public class DamageParse {
             final CheatTracker tracker = player.getCheatTracker();
 
             tracker.setAttacksWithoutHit(true);
-            if (tracker.getAttacksWithoutHit() > 100) {
+            if (tracker.getAttacksWithoutHit() > 50) {
                 tracker.registerOffense(CheatingOffense.無敵, Integer.toString(tracker.getAttacksWithoutHit()));
             }
         }
@@ -678,6 +676,34 @@ public class DamageParse {
                             return;
                         }
                     }
+                    int atk = 200000;
+                    if ((!GameConstants.isAran(player.getJob()) && player.getLevel() > 10)) {
+                        boolean ban = false;
+                        if (player.getLevel() <= 20) {
+                            atk = 1000;
+                        } else if (player.getLevel() <= 30) {
+                            atk = 2500;
+                        } else if (player.getLevel() <= 60) {
+                            atk = 8000;
+                        }
+                        if (eachd >= atk && eachd > MaxDamagePerHit) {
+                            ban = true;
+                        }
+                        if (eachd == monster.getMobMaxHp()) {
+                            ban = false;
+                        }
+                        if (player.hasGmLevel(1)) {
+                            ban = false;
+                        }
+                        if (ban) {
+                            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[封鎖系統] " + player.getName() + " 因為傷害異常而被管理員永久停權。").getBytes());
+                            World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 " + atk + " 本次傷害 " + eachd + " 技能ID " + attack.skill).getBytes());
+                            player.ban(player.getName() + "傷害異常", true, true, false);
+                            player.getClient().getSession().close();
+                            return;
+                        }
+                    }
+                    
                     if (fixeddmg != -1) {
                         eachd = monsterstats.getOnlyNoramlAttack() ? 0 : fixeddmg; // Magic is always not a normal attack
                     } else if (monsterstats.getOnlyNoramlAttack()) {

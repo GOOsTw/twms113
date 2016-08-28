@@ -17,13 +17,9 @@ import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
 import handling.world.CharacterTransfer;
 import handling.world.World;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import server.CashItemFactory;
 import server.CashItemInfo;
-import server.MTSStorage;
 import server.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
 import tools.MaplePacketCreator;
@@ -37,7 +33,6 @@ public class CashShopOperation {
         CashShopServer.getPlayerStorageMTS().deregisterPlayer(chr);
         CashShopServer.getPlayerStorage().deregisterPlayer(chr);
         c.updateLoginState(MapleClient.LOGIN_SERVER_TRANSITION, c.getSessionIPAddress());
-
         try {
             World.channelChangeData(new CharacterTransfer(chr), chr.getId(), c.getChannel());
             c.sendPacket(MaplePacketCreator.getChannelChange(ChannelServer.getInstance(c.getChannel()).getGatewayIP(), ChannelServer.getInstance(c.getChannel()).getPort()));

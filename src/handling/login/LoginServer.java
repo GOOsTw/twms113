@@ -30,6 +30,7 @@ import handling.MapleServerHandler;
 import handling.mina.MapleCodecFactory;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.WeakHashMap;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.buffer.SimpleBufferAllocator;
 import org.apache.mina.core.filterchain.IoFilter;
@@ -41,6 +42,8 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
 import server.ServerProperties;
+import server.Timer;
+import server.Timer.LoginTimer;
 import tools.FilePrinter;
 
 public class LoginServer {
@@ -53,7 +56,9 @@ public class LoginServer {
     private static byte flag;
     private static int maxCharacters, userLimit, usersOn = 0;
     private static boolean finishedShutdown = true;
-    public static boolean autoRegister = false, adminOnly = false;
+    public static boolean AutoRegister = false, adminOnly = false;
+    private static AccountStorage clients;
+    private static final Map<Integer, String> LoginMacs = new WeakHashMap<>();
 
     public static final void addChannel(final int channel) {
         load.put(channel, 0);
@@ -73,7 +78,7 @@ public class LoginServer {
             flag = Byte.parseByte(ServerProperties.getProperty("server.settings.flag"));
             adminOnly = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.admin", "false"));
             maxCharacters = Integer.parseInt(ServerProperties.getProperty("server.settings.maxCharacters", "3"));
-            autoRegister = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.autoRegister", "false"));
+            AutoRegister = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.autoRegister", "false"));
             IoBuffer.setUseDirectBuffer(false);
             IoBuffer.setAllocator(new SimpleBufferAllocator());
 
@@ -84,6 +89,7 @@ public class LoginServer {
             acceptor.setHandler(new MapleServerHandler(-1, false));
             acceptor.getSessionConfig().setTcpNoDelay(true);
             acceptor.bind(new InetSocketAddress(ip, port));
+            LoginTimer.getInstance().register(CheckLoginTask.getInstance(), 10 * 60 * 1000);
             System.out.println("\n【登入伺服器】  - 監聽端口: " + Short.toString(port) + " \n");
 
         } catch (IOException ex) {
@@ -176,14 +182,12 @@ public class LoginServer {
             }
             if (c.getAccID() == client.getAccID() || c == client) {
                 if (c != client) {
-                    c.unLockDisconnect();
+                    c.unLockDisconnect(false, true);
                 }
                 removeClient(c);
             }
         }
     }
-    
-    private static AccountStorage clients;
 
     public static AccountStorage getClientStorage() {
         if (clients == null) {
@@ -198,5 +202,27 @@ public class LoginServer {
 
     public static final void removeClient(final MapleClient c) {
         getClientStorage().deregisterAccount(c);
+    }
+
+    public static final void addLoginMac(MapleClient c) {
+        if (!LoginMacs.containsKey(c.getAccID())) {
+            LoginMacs.put(c.getAccID(), c.getLoginMacs());
+        }
+    }
+
+    public static final String getLoginMac(final MapleClient c) {
+        String macs = null;
+        if (LoginMacs.containsKey(c.getAccID())) {
+            macs = LoginMacs.get(c.getAccID());
+        }
+        return macs;
+    }
+
+    public static final String removeLoginMac(final MapleClient c) {
+        String macs = null;
+        if (LoginMacs.containsKey(c.getAccID())) {
+            LoginMacs.remove(c.getAccID());
+        }
+        return macs;
     }
 }

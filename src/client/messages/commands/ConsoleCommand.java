@@ -325,8 +325,8 @@ public class ConsoleCommand {
 
         @Override
         public int execute(String[] splitted) {
-            LoginServer.autoRegister = !LoginServer.autoRegister;
-            System.out.println("自動註冊狀態: " + (LoginServer.autoRegister ? "開啟" : "關閉"));
+            LoginServer.AutoRegister = !LoginServer.AutoRegister;
+            System.out.println("自動註冊狀態: " + (LoginServer.AutoRegister ? "開啟" : "關閉"));
             return 1;
         }
     }

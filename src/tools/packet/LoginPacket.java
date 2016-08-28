@@ -72,7 +72,8 @@ public class LoginPacket {
     public static final MaplePacket getLoginFailed(final int reason) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter(16);
 
-        /*	* 3: ID deleted or blocked
+        /*	
+         * 3: ID deleted or blocked
          * 4: Incorrect password
          * 5: Not a registered id
          * 6: System error

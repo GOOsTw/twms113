@@ -62,6 +62,7 @@ public class ByteArrayByteStream implements SeekableInputStreamBytestream {
      * Seeks the pointer the the specified position.
      *
      * @param offset The position you wish to seek to.
+     * @throws java.io.IOException
      * @see
      * net.sf.odinms.tools.data.input.SeekableInputStreamBytestream#seek(long)
      */

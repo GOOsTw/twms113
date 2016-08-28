@@ -74,6 +74,7 @@ public class ArrayMap<K, V> extends AbstractMap<K, V> implements Serializable {
          *
          * @return The key.
          */
+        @Override
         public K getKey() {
             return key;
         }
@@ -83,6 +84,7 @@ public class ArrayMap<K, V> extends AbstractMap<K, V> implements Serializable {
          *
          * @return The value.
          */
+        @Override
         public V getValue() {
             return value;
         }
@@ -90,8 +92,10 @@ public class ArrayMap<K, V> extends AbstractMap<K, V> implements Serializable {
         /**
          * Sets a new value.
          *
+         * @param newValue
          * @return The old value.
          */
+        @Override
         public V setValue(V newValue) {
             V oldValue = value;
             value = newValue;
@@ -105,7 +109,6 @@ public class ArrayMap<K, V> extends AbstractMap<K, V> implements Serializable {
          * <code>False</code> otherwise.
          */
         @Override
-        @SuppressWarnings("unchecked")
         public boolean equals(Object o) {
             if (!(o instanceof Map.Entry)) {
                 return false;
@@ -134,13 +137,13 @@ public class ArrayMap<K, V> extends AbstractMap<K, V> implements Serializable {
         }
     }
     private transient Set<? extends java.util.Map.Entry<K, V>> entries = null;
-    private ArrayList<Entry<K, V>> list;
+    private final ArrayList<Entry<K, V>> list;
 
     /**
      * Class constructor
      */
     public ArrayMap() {
-        list = new ArrayList<Entry<K, V>>();
+        list = new ArrayList<>();
     }
 
     /**
@@ -150,7 +153,7 @@ public class ArrayMap<K, V> extends AbstractMap<K, V> implements Serializable {
      * import.
      */
     public ArrayMap(Map<K, V> map) {
-        list = new ArrayList<Entry<K, V>>();
+        list = new ArrayList<>();
         putAll(map);
     }
 
@@ -160,7 +163,7 @@ public class ArrayMap<K, V> extends AbstractMap<K, V> implements Serializable {
      * @param initialCapacity The initial size of the ArrayMap.
      */
     public ArrayMap(int initialCapacity) {
-        list = new ArrayList<Entry<K, V>>(initialCapacity);
+        list = new ArrayList<>(initialCapacity);
     }
 
     /**
@@ -169,7 +172,6 @@ public class ArrayMap<K, V> extends AbstractMap<K, V> implements Serializable {
      * @return The entries in a <code>java.util.Set</code> instance.
      */
     @Override
-    @SuppressWarnings("unchecked")
     public Set<java.util.Map.Entry<K, V>> entrySet() {
         if (entries == null) {
             entries = new AbstractSet<Entry<K, V>>() {
@@ -222,11 +224,14 @@ public class ArrayMap<K, V> extends AbstractMap<K, V> implements Serializable {
             }
         }
         V oldValue = null;
-        if (i < size) {
-            oldValue = entry.getValue();
-            entry.setValue(value);
-        } else {
-            list.add(new Entry<K, V>(key, value));
+        if(entry != null)
+        {
+            if (i < size) {
+                oldValue = entry.getValue();
+                entry.setValue(value);
+            } else {
+                list.add(new Entry<>(key, value));
+            }
         }
         return oldValue;
     }

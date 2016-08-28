@@ -30,13 +30,16 @@ import client.MapleCharacter;
 import client.MapleCharacterUtil;
 import client.inventory.MapleInventory;
 import client.inventory.MapleInventoryType;
-import handling.MapleServerHandler;
+import database.DatabaseConnection;
 import handling.channel.ChannelServer;
 import handling.login.LoginInformationProvider;
 import handling.login.LoginServer;
 import handling.login.LoginWorker;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.MapleItemInformationProvider;
@@ -49,7 +52,7 @@ import tools.data.input.SeekableLittleEndianAccessor;
 
 public class CharLoginHandler {
 
-    private static boolean loginFailCount(final MapleClient c) {
+    private static boolean getLoginFailedCount(final MapleClient c) {
         c.loginAttempt++;
         return c.loginAttempt > 5;
     }
@@ -64,11 +67,9 @@ public class CharLoginHandler {
         c.setAccountName(account);
         c.logout();
     }
-
-    public static final void handleLogin(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-        final String account = slea.readMapleAsciiString();
-        final String password = slea.readMapleAsciiString();
-
+    
+    private static String readMacAddress(final SeekableLittleEndianAccessor slea, final MapleClient c)
+    {
         int[] bytes = new int[6];
         for (int i = 0; i < bytes.length; i++) {
             bytes[i] = slea.readByteAsInt();
@@ -78,89 +79,99 @@ public class CharLoginHandler {
             sps.append(StringUtil.getLeftPaddedStr(Integer.toHexString(bytes[i]).toUpperCase(), '0', 2));
             sps.append("-");
         }
-        String macData = sps.toString();
-        macData = macData.substring(0, macData.length() - 1);
-        c.setMacs(macData);
-        c.setAccountName(account);
-        final boolean ipBan = c.hasBannedIP();
-        final boolean macBan = c.hasBannedMac();
-        final boolean ban = ipBan || macBan;
+        return sps.toString().substring(0, sps.toString().length() - 1);
+    }
 
-        int loginok = c.login(account, password, ban);
+    public static final void handleLogin(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+
+        String account = slea.readMapleAsciiString();
+        String password = slea.readMapleAsciiString();
+
+        if (account == null || password == null) {
+            c.getSession().close(true);
+        }
+        
+        String macData = readMacAddress(slea, c);
+        c.setMacs(macData);
+        c.setLoginMacs(macData);
+        c.setAccountName(account);
+        
+        final boolean isipBan = c.hasBannedIP();
+        final boolean ismacBan = c.hasBannedMac();
+        final boolean isbanned = isipBan || ismacBan;
+
+        LoginResponse loginok = c.login(account, password, isbanned);
+
         final Calendar tempbannedTill = c.getTempBanCalendar();
         String errorInfo = null;
 
-        if (loginok == 0 && ban && !c.isGm()) {
-            //被封鎖IP或MAC的非GM角色成功登入處理
-            loginok = 3;
-            if (macBan) {
+        if (loginok == LoginResponse.LOGIN_SUCCESS) {
+            if (ismacBan) {
                 MapleCharacter.ban(c.getSession().getRemoteAddress().toString().split(":")[0], "Enforcing account ban, account " + account, false, 4, false);
             } else /*if (!macBan && ipBan)*/ {
                 c.banMacs();
             }
-        } else if (loginok == 0 && (c.getGender() == 10 || c.getSecondPassword() == null)) {
-            //選擇性别並設置第二組密碼
-//            c.updateLoginState(MapleClient.CHOOSE_GENDER, c.getSessionIPAddress());
-            c.sendPacket(LoginPacket.getGenderNeeded(c));
-            return;
-        } else if (loginok == 5) {
-            //帳號不存在
-            if (LoginServer.autoRegister) {
-                if (account.length() >= 12) {
-                    errorInfo = "您的帳號長度太長了唷!\r\n請重新輸入.";
-                } else {
-                    AutoRegister.createAccount(account, password, c.getSession().getRemoteAddress().toString(), macData);
-                    if (AutoRegister.success && AutoRegister.mac) {
-                        errorInfo = "帳號創建成功,請重新登入!";
-                    } else if (!AutoRegister.mac) {
-                        errorInfo = "無法註冊過多的帳號密碼唷!";
-                        AutoRegister.success = false;
-                        AutoRegister.mac = true;
-                    }
-                }
-                loginok = 1;
-            }
-        } else if (loginok == 0 && (c.getGender() == 10 || c.getSecondPassword() == null)) {
-            // 防止第一次按取消後卡角問題
-            c.sendPacket(LoginPacket.getGenderNeeded(c));
-            return;
-        }
 
-        if (loginok != 0) {
-            if (!loginFailCount(c)) {
-                c.sendPacket(LoginPacket.getLoginFailed(loginok));
-                if (errorInfo != null) {
-                    c.getSession().write(MaplePacketCreator.serverNotice(1, errorInfo));
+            if (!c.isSetSecondPassword()) {
+                c.sendPacket(LoginPacket.getGenderNeeded(c));
+                return;
+            }
+
+            if (tempbannedTill.getTimeInMillis() != 0) {
+                if (!getLoginFailedCount(c)) {
+                    c.sendPacket(LoginPacket.getTempBan(KoreanDateUtil.getTempBanTimestamp(tempbannedTill.getTimeInMillis()), c.getBanReason()));
+                } else {
+                    c.getSession().close(true);
                 }
             } else {
-                c.getSession().close(true);
-            }
-        } else if (tempbannedTill.getTimeInMillis() != 0) {
-            if (!loginFailCount(c)) {
-                c.sendPacket(LoginPacket.getTempBan(KoreanDateUtil.getTempBanTimestamp(tempbannedTill.getTimeInMillis()), c.getBanReason()));
-            } else {
-                c.getSession().close(true);
-            }
-        } else {
-            c.loginAttempt = 0;
-            c.updateMacs(macData);
-            LoginWorker.registerClient(c);
-            for (ChannelServer ch : ChannelServer.getAllInstances()) {
-                List<MapleCharacter> list = ch.getPlayerStorage().getAllCharactersThreadSafe();
-                for (MapleCharacter chr : list) {
-                    if (chr.getAccountID() == c.getAccID()) {
-                        if (chr.getMap() != null) {
-                            chr.getMap().removePlayer(chr);
+                c.loginAttempt = 0;
+                c.updateMacs(macData);
+                LoginWorker.registerClient(c);
+                for (ChannelServer ch : ChannelServer.getAllInstances()) {
+                    List<MapleCharacter> list = ch.getPlayerStorage().getAllCharactersThreadSafe();
+                    for (MapleCharacter chr : list) {
+                        if (chr.getAccountID() == c.getAccID()) {
+                            if (chr.getMap() != null) {
+                                chr.getMap().removePlayer(chr);
+                            }
+                            ch.removePlayer(chr);
+                            break;
                         }
-                        ch.removePlayer(chr);
-                        break;
                     }
                 }
+            }
+
+        } else {
+            if (!getLoginFailedCount(c)) {
+                c.sendPacket(LoginPacket.getLoginFailed(loginok.getValue()));
+
+            } else {
+                c.getSession().close(true);
+            }
+            if (loginok == LoginResponse.NOT_REGISTERED) {
+
+                if (LoginServer.AutoRegister) {
+                    if (account.length() >= 12) {
+                        errorInfo = "您的帳號長度太長了唷!\r\n請重新輸入.";
+                    } else {
+                        AutoRegister.createAccount(account, password, c.getSession().getRemoteAddress().toString(), macData);
+                        if (AutoRegister.success && AutoRegister.mac) {
+                            errorInfo = "帳號創建成功,請重新登入!";
+                        } else if (!AutoRegister.mac) {
+                            errorInfo = "無法註冊過多的帳號密碼唷!";
+                            AutoRegister.success = false;
+                            AutoRegister.mac = true;
+                        }
+                    }
+                }
+            }
+            if (errorInfo != null) {
+                c.getSession().write(MaplePacketCreator.serverNotice(1, errorInfo));
             }
         }
     }
 
-    public static final void SetGenderRequest(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleGenderSet(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         String username = slea.readMapleAsciiString();
         String password = slea.readMapleAsciiString();
         if (c.getAccountName().equals(username)) {
@@ -172,16 +183,15 @@ public class CharLoginHandler {
             c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
         } else {
             c.getSession().close();
-            return;
         }
     }
 
-    public static final void ServerListRequest(final MapleClient c) {
+    public static final void handleServerList(final MapleClient c) {
         c.sendPacket(LoginPacket.getServerList(0, LoginServer.getServerName(), LoginServer.getLoad()));
         c.sendPacket(LoginPacket.getEndOfServerList());
     }
 
-    public static final void ServerStatusRequest(final MapleClient c) {
+    public static final void handleServerStatus(final MapleClient c) {
         // 0 = Select world normally
         // 1 = "Since there are many users, you may encounter some..."
         // 2 = "The concurrent users in this world have reached the max"
@@ -196,7 +206,7 @@ public class CharLoginHandler {
         }
     }
 
-    public static final void CharlistRequest(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleCharacterList(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         slea.readByte();
         final int server = slea.readByte();
         final int channel = slea.readByte() + 1;
@@ -215,7 +225,7 @@ public class CharLoginHandler {
         }
     }
 
-    public static final void checkCharName(final String name, final MapleClient c) {
+    public static final void handleCheckCharacterName(final String name, final MapleClient c) {
         c.sendPacket(LoginPacket.charNameResponse(name,
                 !MapleCharacterUtil.canCreateChar(name) || LoginInformationProvider.getInstance().isForbiddenName(name)));
     }
@@ -384,11 +394,9 @@ public class CharLoginHandler {
             if (_2ndPassword == null) { // Client's hacking
                 c.getSession().close();
                 return;
-            } else {
-                if (!c.check2ndPassword(_2ndPassword)) { // Wrong Password
-                    //state = 12;
-                    state = 16;
-                }
+            } else if (!c.check2ndPassword(_2ndPassword)) { // Wrong Password
+                //state = 12;
+                state = 16;
             }
         }
 
@@ -402,6 +410,26 @@ public class CharLoginHandler {
     public static final void handleSecectCharacter(final SeekableLittleEndianAccessor slea, final MapleClient c) {
 
         final int charId = slea.readInt();
+
+        try {
+            PreparedStatement ps = null;
+            Connection con = DatabaseConnection.getConnection();
+            ResultSet rs;
+            ps = con.prepareStatement("select accountid from characters where id = ?");
+            ps.setInt(1, charId);
+            rs = ps.executeQuery();
+            if (!rs.next() || rs.getInt("accountid") != c.getAccID()) {
+                ps.close();
+                rs.close();
+                return;
+            }
+            ps.close();
+            rs.close();
+        } catch (Exception ex) {
+        }
+
+        LoginServer.addLoginMac(c);
+        LoginServer.removeClient(c);
         if (c.getIdleTask() != null) {
             c.getIdleTask().cancel(true);
         }

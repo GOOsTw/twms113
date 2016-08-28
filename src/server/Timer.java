@@ -21,6 +21,19 @@ public abstract class Timer {
             return instance;
         }
     }
+    
+    public static class LoginTimer extends Timer {
+        
+        private static final LoginTimer instance = new LoginTimer();
+
+        private LoginTimer() {
+            name = "LoginTimer";
+        }
+
+        public static LoginTimer getInstance() {
+            return instance;
+        }
+    }
 
     public static class MapTimer extends Timer {
 

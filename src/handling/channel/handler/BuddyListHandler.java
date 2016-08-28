@@ -47,7 +47,7 @@ public class BuddyListHandler {
     public static final void BuddyOperationHandler(final SeekableLittleEndianAccessor slea,
             final MapleClient client) {
 
-        MapleCharacter player = client.getPlayer();
+        final MapleCharacter player = client.getPlayer();
 
         final int mode = slea.readByte();
 
@@ -67,35 +67,32 @@ public class BuddyListHandler {
 
                 if (buddyName.length() > 13 || buddyGroup.length() > 16) {
                     nextPendingRequest(client);
-
                     return;
                 }
 
                 /* 檢查好友是否存在 */
-                if (oldBuddy != null && oldBuddy.getGroup().equals(buddyGroup)) {
-                    client.sendPacket(MaplePacketCreator.buddylistMessage((byte) 11));
-                    nextPendingRequest(client);
-
-                    return;
-                }
-
-                /* 如果存在，群組不一樣則改群組*/
                 if (oldBuddy != null) {
-                    oldBuddy.setGroup(buddyGroup);
-                    client.sendPacket(MaplePacketCreator.updateBuddylist(buddyList.getBuddies()));
+                    if (oldBuddy.getGroup().equals(buddyGroup)) {
+                        client.sendPacket(MaplePacketCreator.buddylistMessage((byte) 11));
+                    } else {
+                        /* 如果存在，群組不一樣則改群組*/
+                        oldBuddy.setGroup(buddyGroup);
+                        client.sendPacket(MaplePacketCreator.updateBuddylist(buddyList.getBuddies()));
+                    }
                     nextPendingRequest(client);
-
                     return;
                 }
+
                 /* 檢查好友是否滿了 */
                 if (buddyList.isFull()) {
                     client.sendPacket(MaplePacketCreator.buddylistMessage((byte) 11));
                     return;
                 }
+                
                 /* 從整個遊戲找這個名字的角色所在的頻道 */
                 int buddyChannel = World.Find.findChannel(buddyName);
                 MapleCharacter buddyChar;
-                BuddyEntry buddy = null;
+                BuddyEntry buddyEntry = null;
                 BuddyAddResult reqRes = null;
 
                 if (buddyChannel > 0) {
@@ -103,7 +100,7 @@ public class BuddyListHandler {
                             .getPlayerStorage().getCharacterByName(buddyName);
                     /* 如果是GM則無法被普通玩家加入 */
                     if (!buddyChar.isGM() || player.isGM()) {
-                        buddy = new BuddyEntry(buddyChar.getName(),
+                        buddyEntry = new BuddyEntry(buddyChar.getName(),
                                 buddyChar.getId(),
                                 buddyGroup,
                                 buddyChannel,
@@ -112,11 +109,11 @@ public class BuddyListHandler {
                                 buddyChar.getJob());
                     }
                 } else {
-                    buddy = BuddyEntry.getByNameFromDB(buddyName);
+                    buddyEntry = BuddyEntry.getByNameFromDB(buddyName);
                 }
 
                 /* 無此角色*/
-                if (buddy == null) {
+                if (buddyEntry == null) {
                     client.sendPacket(MaplePacketCreator.buddylistMessage((byte) 15));
                     nextPendingRequest(client);
                     return;
@@ -132,16 +129,14 @@ public class BuddyListHandler {
                             client.getPlayer().getJob());
                 } else {
 
-                    final int buddyCount = BuddyList.getBuddyCount(buddy.getCharacterId(), 0);
+                    final int buddyCount = BuddyList.getBuddyCount(buddyEntry.getCharacterId(), 0);
 
                     if (buddyCount == -1) {
                         throw new RuntimeException("Result set expected");
-                    } else {
-                        if (buddyCount >= BuddyList.getBuddyCapacity(buddy.getCharacterId())) {
-                            reqRes = BuddyAddResult.BUDDYLIST_FULL;
-                        }
+                    } else if (buddyCount >= BuddyList.getBuddyCapacity(buddyEntry.getCharacterId())) {
+                        reqRes = BuddyAddResult.BUDDYLIST_FULL;
                     }
-                    int pending = BuddyList.getBuddyPending(buddy.getCharacterId(), player.getId());
+                    int pending = BuddyList.getBuddyPending(buddyEntry.getCharacterId(), player.getId());
                     if (pending > -1) {
                         reqRes = BuddyAddResult.ALREADY_ON_LIST;
                     }
@@ -155,11 +150,11 @@ public class BuddyListHandler {
 
                 } else {
                     if (reqRes == BuddyAddResult.ALREADY_ON_LIST && buddyChannel > 0) {
-                        notifyRemoteChannel(client, buddyChannel, buddy.getCharacterId(), buddyGroup, ADDED);
+                        notifyRemoteChannel(client, buddyChannel, buddyEntry.getCharacterId(), buddyGroup, ADDED);
                     } else {
-                        BuddyList.addBuddyToDB(player, buddy);
+                        BuddyList.addBuddyToDB(player, buddyEntry);
                     }
-                    buddyList.put(buddy);
+                    buddyList.put(buddyEntry);
                     client.sendPacket(MaplePacketCreator.updateBuddylist(buddyList.getBuddies()));
                 }
 
@@ -188,7 +183,7 @@ public class BuddyListHandler {
                             buddyChar.getId(),
                             BuddyList.DEFAULT_GROUP,
                             buddyChannel,
-                            true,
+                            false,
                             buddyChar.getLevel(),
                             buddyChar.getJob()
                     );
@@ -211,7 +206,6 @@ public class BuddyListHandler {
                 final BuddyEntry buddy = buddyList.get(buddyCharId);
                 if (buddy != null && buddy.isVisible()) {
                     notifyRemoteChannel(client, World.Find.findChannel(buddyCharId), buddyCharId, buddy.getGroup(), DELETED);
-
                 }
                 buddyList.remove(buddyCharId);
                 client.sendPacket(MaplePacketCreator.updateBuddylist(player.getBuddylist().getBuddies()));

@@ -1866,7 +1866,7 @@ public class InventoryHandler {
                     c.getPlayer().dropMessage(1, "必須等級30級以上才可以使用.");
                     break;
                 }
-                if (color >= 0 && c.getPlayer().changeFace((short) itemId, color)) {
+                if (color >= 0 && c.getPlayer().changeFace(itemId, color)) {
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(1, "使用日拋隱形眼鏡出現錯誤。");
@@ -2036,18 +2036,25 @@ public class InventoryHandler {
                 used = true;
                 break;
             }
+            case 5201003://小鋼珠盒子(100)
             case 5201001:  //小鋼珠盒子(500)
             case 5201002: { //小鋼珠盒子(3000)
                 int ss = 0;
-                if (itemId == 5201001 || itemId == 5201002) {
-                    if (itemId == 5201001) {
+                switch (itemId) {
+                    case 5201003:
+                        ss = 100;
+                        break;
+                    case 5201001:
                         ss = 500;
-                    } else if (itemId == 5201002) {
+                        break;
+                    case 5201002:
                         ss = 3000;
-                    }
-                    c.getPlayer().gainBeans(ss);
+                        break;
+                    default:
+                        break;
                 }
-                c.getPlayer().reloadC();
+                c.getPlayer().gainBeans(ss);
+                c.sendPacket(MaplePacketCreator.updateBeans(c.getPlayer().getId(), c.getPlayer().getBeans()));
                 c.getPlayer().dropMessage(1, "小鋼珠已新增" + ss + "顆");
                 used = true;
                 break;

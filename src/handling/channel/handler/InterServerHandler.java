@@ -30,6 +30,7 @@ import client.SkillFactory;
 import handling.MaplePacket;
 import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
+import handling.login.LoginServer;
 import handling.world.CharacterTransfer;
 import handling.world.MapleMessenger;
 import handling.world.MapleMessengerCharacter;
@@ -114,17 +115,24 @@ public class InterServerHandler {
         c.setPlayer(player);
         c.setAccID(player.getAccountID());
         c.loadAccountData(player.getAccountID());
-
+        
+        String LoginMac = LoginServer.getLoginMac(c);
+        if (LoginMac != null) {
+            c.setLoginMacs(LoginMac);
+            c.getPlayer().setNowMacs(LoginMac);
+            LoginServer.removeLoginMac(c);
+        }
+        
         if (!c.CheckIPAddress()) { // Remote hack
             c.getSession().close();
             return;
         }
 
         final int state = c.getLoginState();
-        
+
         //對在線上角色做斷線
         ChannelServer.forceRemovePlayerByAccId(c, c.getAccID());
-        
+
         c.updateLoginState(MapleClient.LOGIN_LOGGEDIN, c.getSessionIPAddress());
         channelServer.addPlayer(player);
 
