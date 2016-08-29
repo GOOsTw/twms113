@@ -108,6 +108,8 @@ public class CharLoginHandler {
         if (loginok == LoginResponse.LOGIN_SUCCESS) {
             if (ismacBan) {
                 MapleCharacter.ban(c.getSession().getRemoteAddress().toString().split(":")[0], "Enforcing account ban, account " + account, false, 4, false);
+            } else /*if (!macBan && ipBan)*/ {
+                c.banMacs();
             }
 
             if (!c.isSetSecondPassword()) {
