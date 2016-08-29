@@ -96,19 +96,19 @@ public class CharLoginHandler {
         c.setLoginMacs(macData);
         c.setAccountName(account);
         
-        final boolean isipBan = c.hasBannedIP();
-        final boolean ismacBan = c.hasBannedMac();
-        final boolean isbanned = isipBan || ismacBan;
+        final boolean isIpBan = c.hasBannedIP();
+        final boolean isMacBan = c.hasBannedMac();
+        final boolean isBanned = isIpBan || isMacBan;
 
-        LoginResponse loginok = c.login(account, password, isbanned);
+        LoginResponse loginResponse = c.login(account, password, isBanned);
 
         final Calendar tempbannedTill = c.getTempBanCalendar();
         String errorInfo = null;
 
-        if (loginok == LoginResponse.LOGIN_SUCCESS) {
-            if (ismacBan) {
+        if (loginResponse == LoginResponse.LOGIN_SUCCESS) {
+            if (isMacBan && !isIpBan) {
                 MapleCharacter.ban(c.getSession().getRemoteAddress().toString().split(":")[0], "Enforcing account ban, account " + account, false, 4, false);
-            } else /*if (!macBan && ipBan)*/ {
+            } else if (!isMacBan && isIpBan) {
                 c.banMacs();
             }
 
@@ -143,12 +143,12 @@ public class CharLoginHandler {
 
         } else {
             if (!getLoginFailedCount(c)) {
-                c.sendPacket(LoginPacket.getLoginFailed(loginok.getValue()));
+                c.sendPacket(LoginPacket.getLoginFailed(loginResponse.getValue()));
 
             } else {
                 c.getSession().close(true);
             }
-            if (loginok == LoginResponse.NOT_REGISTERED) {
+            if (loginResponse == LoginResponse.NOT_REGISTERED) {
 
                 if (LoginServer.AutoRegister) {
                     if (account.length() >= 12) {
