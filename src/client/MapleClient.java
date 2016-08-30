@@ -613,6 +613,9 @@ public class MapleClient {
                     gender = rs.getByte("gender");
                     ps.close();
                 }
+                else {
+                    return LoginResponse.NOT_REGISTERED;
+                }
             }
         } catch (SQLException e) {
             loginResult = LoginResponse.SYSTEM_ERROR;

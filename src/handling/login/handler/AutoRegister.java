@@ -2,18 +2,16 @@ package handling.login.handler;
 
 import client.LoginCrypto;
 import database.DatabaseConnection;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
+import java.sql.*;
 import java.util.Calendar;
 
 public class AutoRegister {
 
     private static final int ACCOUNTS_PER_MAC = 2;
-    public static boolean autoRegister = true;
+    public static int registeredId = -1;
     public static boolean success = false;
-    public static boolean mac = true;
+    public static boolean macAllowed = true;
 
     public static boolean getAccountExists(String login) {
         boolean accountExists = false;
@@ -31,8 +29,7 @@ public class AutoRegister {
         return accountExists;
     }
 
-    public static void createAccount(String login, String pwd, String eip, String macData) {
-        String sockAddr = eip;
+    public static void createAccount(String login, String pwd, String sockAddr, String macData) {
         Connection con;
 
         try {
@@ -47,9 +44,10 @@ public class AutoRegister {
             try (PreparedStatement ipc = con.prepareStatement("SELECT Macs FROM accounts WHERE macs = ?")) {
                 ipc.setString(1, macData);
                 rs = ipc.executeQuery();
-                if (rs.first() == false || rs.last() == true && rs.getRow() < ACCOUNTS_PER_MAC) {
+                macAllowed = rs.getRow() < ACCOUNTS_PER_MAC;
+                if (rs.first() == false || rs.last() == true && macAllowed) {
                     try {
-                        try (PreparedStatement ps = con.prepareStatement("INSERT INTO accounts (name, password, email, birthday, macs, SessionIP) VALUES (?, ?, ?, ?, ?, ?)")) {
+                        try (PreparedStatement ps = con.prepareStatement("INSERT INTO accounts (name, password, email, birthday, macs, SessionIP) VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
                             Calendar c = Calendar.getInstance();
                             int year = c.get(Calendar.YEAR);
                             int month = c.get(Calendar.MONTH) + 1;
@@ -61,17 +59,22 @@ public class AutoRegister {
                             ps.setString(5, macData);
                             ps.setString(6, sockAddr.substring(1, sockAddr.lastIndexOf(':')));
                             ps.executeUpdate();
+
+                            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                                if (generatedKeys.next()) {
+                                    registeredId = generatedKeys.getInt(1);
+                                }
+                                else {
+                                    throw new SQLException("Creating user failed, no ID obtained.");
+                                }
+                            }
                         }
                         success = true;
+
                     } catch (SQLException ex) {
                         System.out.println(ex);
                         return;
                     }
-                }
-                if (rs.getRow() >= ACCOUNTS_PER_MAC) {
-                    mac = false;
-                } else {
-                    mac = true;
                 }
             }
             rs.close();

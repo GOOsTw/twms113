@@ -142,30 +142,28 @@ public class CharLoginHandler {
             }
 
         } else {
-            if (!getLoginFailedCount(c)) {
-                c.sendPacket(LoginPacket.getLoginFailed(loginResponse.getValue()));
-
-            } else {
+            if (getLoginFailedCount(c)) {
                 c.getSession().close(true);
-            }
-            if (loginResponse == LoginResponse.NOT_REGISTERED) {
+            } else if (loginResponse == LoginResponse.NOT_REGISTERED) {
 
                 if (LoginServer.AutoRegister) {
                     if (account.length() >= 12) {
                         errorInfo = "您的帳號長度太長了唷!\r\n請重新輸入.";
                     } else {
                         AutoRegister.createAccount(account, password, c.getSession().getRemoteAddress().toString(), macData);
-                        if (AutoRegister.success && AutoRegister.mac) {
-                            errorInfo = "帳號創建成功,請重新登入!";
-                        } else if (!AutoRegister.mac) {
+                        if (AutoRegister.success && AutoRegister.macAllowed) {
+                            c.setAccID(AutoRegister.registeredId);
+                            c.sendPacket(LoginPacket.getGenderNeeded(c));
+                        } else if (!AutoRegister.macAllowed) {
                             errorInfo = "無法註冊過多的帳號密碼唷!";
                             AutoRegister.success = false;
-                            AutoRegister.mac = true;
+                            AutoRegister.macAllowed = true;
                         }
                     }
                 }
             }
             if (errorInfo != null) {
+                c.sendPacket(LoginPacket.getLoginFailed(loginResponse.getValue()));
                 c.getSession().write(MaplePacketCreator.serverNotice(1, errorInfo));
             }
         }
@@ -180,7 +178,6 @@ public class CharLoginHandler {
             c.update2ndPassword();
             c.updateGender();
             c.sendPacket(LoginPacket.getGenderChanged(c));
-            c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
         } else {
             c.getSession().close();
         }
