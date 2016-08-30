@@ -1426,7 +1426,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void gainBeans(int s) {
         getPlayer().gainBeans(s);
-        c.sendPacket(MaplePacketCreator.updateBeans(c.getPlayer().getId(), s));
+        c.sendPacket(MaplePacketCreator.updateBeans(c.getPlayer().getId(), c.getPlayer().getBeans()));
     }
 
     public void warpBack(int mid, final int retmap, final int time) { //時間秒數
