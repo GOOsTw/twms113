@@ -124,7 +124,7 @@ public class InterServerHandler {
         }
         
         if (!c.CheckIPAddress()) { // Remote hack
-            c.getSession().close();
+            c.getSession().close(true);
             return;
         }
 

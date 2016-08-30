@@ -179,7 +179,7 @@ public class CharLoginHandler {
             c.updateGender();
             c.sendPacket(LoginPacket.getGenderChanged(c));
         } else {
-            c.getSession().close();
+            c.getSession().close(true);
         }
     }
 
@@ -218,7 +218,7 @@ public class CharLoginHandler {
         if (chars != null) {
             c.sendPacket(LoginPacket.getCharList(c.getSecondPassword() != null, chars, c.getCharacterSlots()));
         } else {
-            c.getSession().close();
+            c.getSession().close(true);
         }
     }
 
@@ -389,7 +389,7 @@ public class CharLoginHandler {
 
         if (c.getSecondPassword() != null) { // On the server, there's a second password
             if (_2ndPassword == null) { // Client's hacking
-                c.getSession().close();
+                c.getSession().close(true);
                 return;
             } else if (!c.check2ndPassword(_2ndPassword)) { // Wrong Password
                 //state = 12;

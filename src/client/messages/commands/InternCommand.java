@@ -81,7 +81,7 @@ public class InternCommand {
                         if (target.ban(sb.toString(), c.getPlayer().hasGmLevel(5), false, hellban)) {
                             ban = true;
                             c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功封鎖 " + target.getName() + ".");
-                            target.getClient().getSession().close();
+                            target.getClient().getSession().close(true);
                             target.getClient().disconnect(true, false);
                         } else {
                             c.getPlayer().dropMessage(6, "[" + getCommand() + "] 封鎖失敗.");
@@ -212,7 +212,7 @@ public class InternCommand {
                         if (target.ban(sb.toString(), c.getPlayer().hasGmLevel(5), false, hellban)) {
                             ban = true;
                             c.getPlayer().dropMessage(6, "[" + getCommand() + "] 成功封鎖 " + target.getName() + ".");
-                            target.getClient().getSession().close();
+                            target.getClient().getSession().close(true);
                             target.getClient().disconnect(true, false);
                         } else {
                             c.getPlayer().dropMessage(6, "[" + getCommand() + "] 封鎖失敗.");

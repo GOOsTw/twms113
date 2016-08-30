@@ -103,7 +103,7 @@ public class CheatTracker {
                 if (!chr.get().hasGmLevel(1)) {
                     chr.get().ban(chr.get().getName() + "攻擊速度異常，技能：" + skillId, true, true, false);
                     chr.get().sendHackShieldDetected();
-                    chr.get().getClient().getSession().close();
+                    chr.get().getClient().getSession().close(true);
                     String reason = "使用違法程式練功";
                     World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[封鎖系統] " + chr.get().getName() + " 因為" + reason + "而被管理員永久停權。").getBytes());
                     World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[GM密語] " + chr.get().getName() + " 攻擊無延遲自動封鎖! ").getBytes());
@@ -213,7 +213,7 @@ public class CheatTracker {
             if (dropsPerSecond >= (dc ? 32 : 16) && chr.get() != null) {
                 if (dc) {
                     chr.get().sendHackShieldDetected();
-                    chr.get().getClient().getSession().close();
+                    chr.get().getClient().getSession().close(true);
                 } else {
                 chr.get().getClient().setMonitored(true);
                 }
@@ -313,7 +313,7 @@ public class CheatTracker {
             } else if (type == 2) {
                 outputFileName = "斷線";
                 chrhardref.sendHackShieldDetected();
-                chrhardref.getClient().getSession().close();
+                chrhardref.getClient().getSession().close(true);
                 World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[GM密語] " + chrhardref.getName() + " 自動斷線 類別: " + offense.toString() + " 原因: " + (param == null ? "" : (" - " + param))).getBytes());
             } else if (type == 3) {
                 boolean ban = true;
@@ -343,7 +343,7 @@ public class CheatTracker {
                     if (ban) {
                         chrhardref.ban(chrhardref.getName() + real, true, true, false);
                         chrhardref.sendHackShieldDetected();
-                        chrhardref.getClient().getSession().close();
+                        chrhardref.getClient().getSession().close(true);
                         World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[封鎖系統] " + chrhardref.getName() + " 因為" + show + "而被管理員永久停權。").getBytes());
                         World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[GM密語] " + chrhardref.getName() + " " + real + "自動封鎖! ").getBytes());
                     } else {

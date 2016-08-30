@@ -965,7 +965,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void dc() {
         MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(c.getPlayer().getName().toString());
-        victim.getClient().getSession().close();
+        victim.getClient().getSession().close(true);
         victim.getClient().disconnect(true, false);
 
     }

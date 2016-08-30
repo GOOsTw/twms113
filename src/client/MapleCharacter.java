@@ -3886,7 +3886,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                             if (chr.getClient().getSessionIPAddress().equals(client.getSessionIPAddress())) {
                                 if (!chr.getClient().isGm()) {
                                     chr.getClient().disconnect(true, false);
-                                    chr.getClient().getSession().close();
+                                    chr.getClient().getSession().close(true);
                                 }
                             }
                         }
@@ -4049,7 +4049,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                         if (chr.getClient().getSessionIPAddress().equals(ip)) {
                             if (!chr.getClient().isGm()) {
                                 chr.getClient().disconnect(true, false);
-                                chr.getClient().getSession().close();
+                                chr.getClient().getSession().close(true);
                             }
                         }
                     }

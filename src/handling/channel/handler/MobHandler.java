@@ -203,7 +203,7 @@ public class MobHandler {
             if (slea.available() < 9 || slea.available() > 17) { //9.. 0 -> endPos? -> endPos again? -> 0 -> 0
                 System.err.println("slea.available != 17 (movement parsing error)");
                 System.err.println(slea.toString(true));
-                c.getSession().close();
+                c.getSession().close(true);
                 return;
             }
 
