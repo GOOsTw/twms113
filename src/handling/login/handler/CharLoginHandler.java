@@ -52,7 +52,7 @@ import tools.data.input.SeekableLittleEndianAccessor;
 
 public class CharLoginHandler {
 
-    private static boolean getLoginFailedCount(final MapleClient c) {
+    private static boolean loginFailed(final MapleClient c) {
         c.loginAttempt++;
         return c.loginAttempt > 5;
     }
@@ -102,50 +102,56 @@ public class CharLoginHandler {
 
         LoginResponse loginResponse = c.login(account, password, isBanned);
 
-        final Calendar tempbannedTill = c.getTempBanCalendar();
+        final Calendar tempBannedTill = c.getTempBanCalendar();
         String errorInfo = null;
 
-        if (loginResponse == LoginResponse.LOGIN_SUCCESS) {
-            if (isMacBan && !isIpBan) {
-                MapleCharacter.ban(c.getSession().getRemoteAddress().toString().split(":")[0], "Enforcing account ban, account " + account, false, 4, false);
-            } else if (!isMacBan && isIpBan) {
-                c.banMacs();
-            }
+        if (loginResponse != LoginResponse.LOGIN_SUCCESS && loginFailed(c)) { // Left-to-right evaluation
+            c.getSession().close(true);
+            return;
+        }
+        switch (loginResponse) {
 
-            if (!c.isSetSecondPassword()) {
-                c.sendPacket(LoginPacket.getGenderNeeded(c));
-                return;
-            }
-
-            if (tempbannedTill.getTimeInMillis() != 0) {
-                if (!getLoginFailedCount(c)) {
-                    c.sendPacket(LoginPacket.getTempBan(KoreanDateUtil.getTempBanTimestamp(tempbannedTill.getTimeInMillis()), c.getBanReason()));
-                } else {
-                    c.getSession().close(true);
+            case LOGIN_SUCCESS:
+                if (isMacBan && !isIpBan) {
+                    MapleCharacter.ban(c.getSession().getRemoteAddress().toString().split(":")[0], "Enforcing account ban, account " + account, false, 4, false);
+                } else if (!isMacBan && isIpBan) {
+                    c.banMacs();
                 }
-            } else {
-                c.loginAttempt = 0;
-                c.updateMacs(macData);
-                LoginWorker.registerClient(c);
-                for (ChannelServer ch : ChannelServer.getAllInstances()) {
-                    List<MapleCharacter> list = ch.getPlayerStorage().getAllCharactersThreadSafe();
-                    for (MapleCharacter chr : list) {
-                        if (chr.getAccountID() == c.getAccID()) {
-                            if (chr.getMap() != null) {
-                                chr.getMap().removePlayer(chr);
+
+                if (!c.isSetSecondPassword()) {
+                    c.sendPacket(LoginPacket.getGenderNeeded(c));
+                    return;
+                }
+
+                if (tempBannedTill.getTimeInMillis() != 0) {
+                    if (!loginFailed(c)) {
+                        c.sendPacket(LoginPacket.getTempBan(KoreanDateUtil.getTempBanTimestamp(tempBannedTill.getTimeInMillis()), c.getBanReason()));
+                    } else {
+                        c.getSession().close(true);
+                    }
+                } else {
+                    c.loginAttempt = 0;
+                    c.updateMacs(macData);
+                    LoginWorker.registerClient(c);
+                    for (ChannelServer ch : ChannelServer.getAllInstances()) {
+                        List<MapleCharacter> list = ch.getPlayerStorage().getAllCharactersThreadSafe();
+                        for (MapleCharacter chr : list) {
+                            if (chr.getAccountID() == c.getAccID()) {
+                                if (chr.getMap() != null) {
+                                    chr.getMap().removePlayer(chr);
+                                }
+                                ch.removePlayer(chr);
+                                break;
                             }
-                            ch.removePlayer(chr);
-                            break;
                         }
                     }
                 }
-            }
-
-        } else {
-            if (getLoginFailedCount(c)) {
-                c.getSession().close(true);
-            } else if (loginResponse == LoginResponse.NOT_REGISTERED) {
-
+                return;
+            case ACCOUNT_BLOCKED:
+                break;
+            case WRONG_PASSWORD:
+                break;
+            case NOT_REGISTERED:
                 if (LoginServer.AutoRegister) {
                     if (account.length() >= 12) {
                         errorInfo = "您的帳號長度太長了唷!\r\n請重新輸入.";
@@ -154,6 +160,7 @@ public class CharLoginHandler {
                         if (AutoRegister.success && AutoRegister.macAllowed) {
                             c.setAccID(AutoRegister.registeredId);
                             c.sendPacket(LoginPacket.getGenderNeeded(c));
+                            return;
                         } else if (!AutoRegister.macAllowed) {
                             errorInfo = "無法註冊過多的帳號密碼唷!";
                             AutoRegister.success = false;
@@ -161,12 +168,22 @@ public class CharLoginHandler {
                         }
                     }
                 }
-            }
-            if (errorInfo != null) {
-                c.sendPacket(LoginPacket.getLoginFailed(loginResponse.getValue()));
-                c.getSession().write(MaplePacketCreator.serverNotice(1, errorInfo));
-            }
+                break;
+            case ALREADY_LOGININ:
+                // TODO: Auto logout
+                break;
+            case SYSTEM_ERROR:
+                errorInfo = "系統錯誤(錯誤代碼:0)";
+                break;
+            case SYSYEM_ERROR2:
+                errorInfo = "系統錯誤(錯誤代碼:1)";
+                break;
         }
+
+        if (errorInfo != null) {
+            c.getSession().write(MaplePacketCreator.serverNotice(1, errorInfo));
+        }
+        c.sendPacket(LoginPacket.getLoginFailed(loginResponse.getValue()));
     }
 
     public static final void handleGenderSet(final SeekableLittleEndianAccessor slea, final MapleClient c) {

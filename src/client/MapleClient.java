@@ -618,44 +618,34 @@ public class MapleClient {
                 }
             }
         } catch (SQLException e) {
-            loginResult = LoginResponse.SYSTEM_ERROR;
             FilePrinter.print(FilePrinter.LoginError, "Account : " + account + " login raise some exception !" + e.getMessage());
-            return loginResult;
+            return LoginResponse.SYSTEM_ERROR;
 
         }
 
-        int loginState = getLoginState();
-
-        if (loginState > 0) {
-            loginResult = LoginResponse.ONLINE;
-            return loginResult;
+        if (!checkLoginPassword(password, db_passwordHash, db_passwordSalt)) {
+            loggedIn = false;
+            return LoginResponse.WRONG_PASSWORD;
         }
 
         if (db_banned > 0 && !isGm()) {
-            loginResult = LoginResponse.ACCOUNT_BLOCKED;
-            return loginResult;
+            return LoginResponse.ACCOUNT_BLOCKED;
+        }
+
+        int loginState = getLoginState();
+        if (loginState > 0) {
+            return LoginResponse.ALREADY_LOGININ;
         }
 
         boolean updatePasswordHash = false;
-
-        if (checkLoginPassword(password, db_passwordHash, db_passwordSalt)) {
-            loginResult = LoginResponse.LOGIN_SUCCESS;
-        } else {
-            loggedIn = false;
-            loginResult = LoginResponse.WRONG_PASSWORD;
-        }
-
         if (isGm()) {
             updatePasswordHash(account, password);
         }
 
-        if (loginResult == LoginResponse.LOGIN_SUCCESS) {
-            ChannelServer.forceRemovePlayerByAccId(this, accountId);
-            this.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, this.getSessionIPAddress());
-        }
+        ChannelServer.forceRemovePlayerByAccId(this, accountId);
+        this.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, this.getSessionIPAddress());
 
-        return loginResult;
-
+        return LoginResponse.LOGIN_SUCCESS;
     }
 
     public final void unLockDisconnect(boolean removeFromChannel, boolean fromCS) {
