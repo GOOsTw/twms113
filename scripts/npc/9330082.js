@@ -92,7 +92,7 @@ function action(mode, type, selection) {
             if (cm.haveItem(itemid, sel)) {
                 intPoints += (pricemultipy * sel);
                 record.setCustomData("" + intPoints + "");
-                cm.gainItem(itemid, -sel);
+                cm.gainItem(itemid, -selection);
                 cm.sendOk("完成! 請查看你的點數。");
             } else {
                 cm.sendOk("你沒有可兌換的道具");
