@@ -1332,7 +1332,7 @@ public class PlayerHandler {
      }
      public void setcharmessage(final MapleClient c, String s) {
      c.getPlayer().setcharmessage(s);
-     c.sendPacket(MaplePacketCreator.updateBeans(c.getPlayer().getId(), s));
+     c.sendPacket(MaplePacketCreator.updateBalls(c.getPlayer().getId(), s));
      }*/
     public static void ShowExpChair(SeekableLittleEndianAccessor slea, MapleClient client) {
 

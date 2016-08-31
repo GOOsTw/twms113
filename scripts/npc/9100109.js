@@ -1,5 +1,5 @@
 /*
-	Name: GMS-like Gachapon
+	Name: TMS-like Pachinko Gachapon
 	Place: New Leaf City
  */
 
@@ -12,10 +12,10 @@ function action(mode, type, selection) {
         status--;
     }
     if (status == 0) {
-        if (cm.haveItem(5220000)) {
-            cm.sendYesNo("You have some #bGachapon Tickets#k there.\r\nWould you like to try your luck?");
+        if (cm.haveItem(4110010)) {
+            cm.sendYesNo("你有 #b小鋼珠轉蛋券#k \r\n想要試試運氣嗎？");
         } else {
-            cm.sendOk("You don't have a single ticket with you. Please buy the ticket at the department store before coming back to me. Thank you.");
+            cm.sendOk("你沒有半張小鋼珠轉蛋券。請從旁邊美眉身上購買。");
             cm.safeDispose();
         }
     } else if (status == 1) {
@@ -39,10 +39,10 @@ function action(mode, type, selection) {
         }
 
         if (item != -1) {
-            cm.gainItem(5220000, -1);
-            cm.sendOk("You have obtained #b#t" + item + "##k.");
+            cm.gainItem(4110010, -1);
+            cm.sendOk("您得到了 #b#t" + item + "##k。");
         } else {
-            cm.sendOk("Please check your item inventory and see if you have the ticket, or if the inventory is full.");
+            cm.sendOk("請檢查背包是否有足夠空間。");
         }
         cm.safeDispose();
     }

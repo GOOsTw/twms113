@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import client.MapleClient;
-import database.DatabaseConnection;
 import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
 import handling.cashshop.handler.*;
@@ -882,11 +881,11 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case ACCEPT_FAMILY:
                 FamilyHandler.AcceptFamily(slea, c);
                 break;
-            case BEANS_GAME1:
-                BeanGame.BeanGame1(slea, c);
+            case PACHINKO_GAME:
+                PachinkoHandler.handlePachinkoGame(slea, c);
                 break;
-            case BEANS_GAME2:
-                BeanGame.BeanGame2(slea, c);
+            case PACHINKO_EXIT:
+                PachinkoHandler.handlePachinkoExit(slea, c);
                 break;
             default:
                 System.out.println("[UNHANDLED] Recv [" + header.toString() + "] found");

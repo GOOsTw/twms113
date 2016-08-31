@@ -4769,36 +4769,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static MaplePacket openBeans(int beansCount) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendPacketOpcode.BEANS_GAME1.getValue());
-        mplew.writeInt(beansCount);
-        return mplew.getPacket();
-    }
-
-    public static MaplePacket updateBeans(int cid, int beansCount) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendPacketOpcode.UPDATE_BEANS.getValue());
-        mplew.writeInt(cid);
-        mplew.writeInt(beansCount);
-        mplew.writeInt(0);
-        return mplew.getPacket();
-    }
-
-    public static MaplePacket showBeans(int size, int Pos, int Type) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-        mplew.writeShort(SendPacketOpcode.BEANS_GAME2.getValue());
-        mplew.write(0);
-        mplew.write(size);
-        mplew.writeShort(Pos);
-        mplew.write(Type);
-        mplew.writeInt(1/*Number*/);
-        //System.out.println("���鞊��"+bean.getNumber());
-        //System.out.println("鞊����"+mplew.getPacket());
-        //mplew.write(HexTool.getByteArrayFromHexString("DA 01 00 05 BD 0F 01 60 00 00 00 FF 0E 01 61 00 00 00 69 0E 01 62 00 00 00 05 0F 01 63 00 00 00 C6 0F 01 64 00 00 00"));
-        return mplew.getPacket();
-    }
-
     public static MaplePacket hackShieldDetected() {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.SECURITY_CLIENT.getValue());

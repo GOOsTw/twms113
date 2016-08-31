@@ -57,7 +57,6 @@ import java.io.Serializable;
 import client.anticheat.CheatTracker;
 import client.inventory.Equip;
 import client.inventory.ModifyInventory;
-import constants.MapConstants;
 import constants.ServerConstants;
 import database.DatabaseConnection;
 import database.DatabaseException;
@@ -112,11 +111,7 @@ import server.FishingRewardFactory;
 import server.FishingRewardFactory.FishingReward;
 import tools.MaplePacketCreator;
 import tools.Pair;
-import tools.packet.MTSCSPacket;
-import tools.packet.MobPacket;
-import tools.packet.PetPacket;
-import tools.packet.MonsterCarnivalPacket;
-import tools.packet.UIPacket;
+import tools.packet.*;
 import server.MapleCarnivalChallenge;
 import server.MapleInventoryManipulator;
 import server.Timer.BuffTimer;
@@ -131,10 +126,9 @@ import server.movement.LifeMovementFragment;
 import tools.ConcurrentEnumMap;
 import tools.FilePrinter;
 import tools.HexTool;
-import tools.packet.PlayerShopPacket;
 
 public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Serializable {
-
+    public int pachinkoLight = 0, pachinkoOpenStage = 0, pachinkoOpenTime;
     private static final long serialVersionUID = 845748950829L;
     private String name, chalktext, BlessOfFairy_Origin, charmessage, prefix, chattitle, nowmacs = "";
     private long lastCombo, lastfametime, keydown_skill, lastRecoveryTime;
@@ -144,7 +138,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             guildid = 0, fallcounter = 0, maplepoints, acash, chair, itemEffect, points, vpoints,
             rank = 1, rankMove = 0, jobRank = 1, jobRankMove = 0, marriageId, marriageItemId = 0,
             currentrep, totalrep, linkMid = 0, coconutteam = 0, followid = 0, battleshipHP = 0,
-            expression, constellation, blood, month, day, beans, beansNum, beansRange,
+            expression, constellation, blood, month, day, pachinkoBalls, beansNum, beansRange,
             gachexp, 打怪 = 0, 吸怪 = 0, FLY_吸怪 = 0;
     private boolean canSetBeansNum;
     private Point old = new Point(0, 0);
@@ -271,7 +265,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.exp = 0;
         ret.gmLevel = 0;
         ret.job = (short) (type == 1 ? 0 : (type == 0 ? 1000 : (type == 3 ? 2001 : (type == 4 ? 3000 : 2000))));
-        ret.beans = 0;
+        ret.pachinkoBalls = 0;
         ret.meso = 0;
         ret.level = 1;
         ret.remainingAp = 0;
@@ -339,7 +333,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.hpmpApUsed = ct.hpApUsed;
         ret.remainingSp = ct.remainingSp;
         ret.remainingAp = ct.remainingAp;
-        ret.beans = ct.beans;
+        ret.pachinkoBalls = ct.beans;
         ret.meso = ct.meso;
         ret.gmLevel = ct.gmLevel;
         ret.skinColor = ct.skinColor;
@@ -504,7 +498,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 ret.remainingSp[i] = Integer.parseInt(sp[i]);
             }
             ret.remainingAp = rs.getShort("ap");
-            ret.beans = rs.getInt("beans");
+            ret.pachinkoBalls = rs.getInt("beans");
             ret.meso = rs.getInt("meso");
             ret.gmLevel = rs.getByte("gm");
             ret.skinColor = rs.getByte("skincolor");
@@ -1094,7 +1088,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.setInt(37, blood);
             ps.setInt(38, month);
             ps.setInt(39, day);
-            ps.setInt(40, beans);
+            ps.setInt(40, pachinkoBalls);
             ps.setString(41, prefix);
             ps.setInt(42, gachexp);
             ps.setLong(43, dps);
@@ -5844,7 +5838,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.client = cloneClient;
         ret.exp = 0;
         ret.meso = 0;
-        ret.beans = beans;
+        ret.pachinkoBalls = pachinkoBalls;
         ret.blood = blood;
         ret.month = month;
         ret.day = day;
@@ -6612,16 +6606,17 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return coconutteam;
     }
 
-    public int getBeans() {
-        return beans;
+    public int getBalls() {
+        return pachinkoBalls;
     }
 
-    public void gainBeans(int s) {
-        beans += s;
+    public void gainBalls(int s) {
+        pachinkoBalls += s;
+        this.getClient().sendPacket(PachinkoPacket.updateBalls(this.getId(), pachinkoBalls));
     }
 
-    public void setBeans(int s) {
-        beans = s;
+    public void setBalls(int s) {
+        pachinkoBalls = s;
     }
 
     public int getBeansNum() {

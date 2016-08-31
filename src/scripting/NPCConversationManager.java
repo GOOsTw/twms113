@@ -53,6 +53,7 @@ import server.maps.AramiaFireWorks;
 import server.quest.MapleQuest;
 import tools.MaplePacketCreator;
 import tools.Pair;
+import tools.packet.PachinkoPacket;
 import tools.packet.PlayerShopPacket;
 import server.MapleItemInformationProvider;
 import handling.channel.ChannelServer;
@@ -1412,21 +1413,20 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         }, 20000); //10 sec 10 sec
     }
 
-    public void 開啟小鋼珠() {
-        c.sendPacket(MaplePacketCreator.openBeans(getPlayer().getBeans()));
+    public void showPachinko() {
+        c.sendPacket(PachinkoPacket.showPachinko(getPlayer().getBalls()));
     }
 
     public void worldMessage(String text) {
         World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, text).getBytes());
     }
 
-    public int getBeans() {
-        return getClient().getPlayer().getBeans();
+    public int getBalls() {
+        return getClient().getPlayer().getBalls();
     }
 
-    public void gainBeans(int s) {
-        getPlayer().gainBeans(s);
-        c.sendPacket(MaplePacketCreator.updateBeans(c.getPlayer().getId(), c.getPlayer().getBeans()));
+    public void gainBalls(int s) {
+        getPlayer().gainBalls(s);
     }
 
     public void warpBack(int mid, final int retmap, final int time) { //時間秒數

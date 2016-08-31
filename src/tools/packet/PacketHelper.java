@@ -43,7 +43,6 @@ import client.MapleQuestStatus;
 import client.inventory.IItem;
 import client.SkillEntry;
 import client.inventory.Equip;
-import client.inventory.IEquip;
 import server.MapleItemInformationProvider;
 import tools.Pair;
 import server.movement.LifeMovementFragment;
@@ -194,7 +193,7 @@ public class PacketHelper {
     public static void addInventoryInfo(MaplePacketLittleEndianWriter mplew, MapleCharacter chr) {
         mplew.writeInt(chr.getMeso()); // mesos
         mplew.writeInt(chr.getId());
-        mplew.writeInt(chr.getBeans());
+        mplew.writeInt(chr.getBalls());
         mplew.writeInt(0);
         mplew.write(chr.getInventory(MapleInventoryType.EQUIP).getSlotLimit()); // equip slots
         mplew.write(chr.getInventory(MapleInventoryType.USE).getSlotLimit()); // use slots

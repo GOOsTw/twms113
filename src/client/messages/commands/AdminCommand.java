@@ -2750,6 +2750,7 @@ public class AdminCommand {
             gotomaps.put("phantom", 610010000);
             gotomaps.put("cwk", 610030000);
             gotomaps.put("rien", 140000000);
+            gotomaps.put("pachinko", 809030000);
         }
 
         @Override

@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 
 import client.inventory.IItem;
-import client.inventory.Item;
 import client.SkillFactory;
 import constants.GameConstants;
 import client.inventory.MapleInventoryIdentifier;
@@ -27,6 +26,7 @@ public class MapleShop {
     private static final Set<Integer> rechargeableItems = new LinkedHashSet<>();
     private final int id;
     private final int npcId;
+    private final int currency;
     private final List<MapleShopItem> items;
 
     static {
@@ -62,6 +62,17 @@ public class MapleShop {
     private MapleShop(int id, int npcId) {
         this.id = id;
         this.npcId = npcId;
+        this.currency = 0;
+        items = new LinkedList<>();
+    }
+
+    /**
+     * Creates a new instance of MapleShop with specific currency
+     */
+    private MapleShop(int id, int npcId, int currency) {
+        this.id = id;
+        this.npcId = npcId;
+        this.currency = currency;
         items = new LinkedList<>();
     }
 
@@ -87,23 +98,28 @@ public class MapleShop {
         }
         
         MapleShopItem item = findById(itemId);
-        
-        if (item != null && item.getPrice() > 0 && item.getReqItem() == 0) {
-            
+        if (item == null) {
+            c.getPlayer().dropMessage(1, "無法購買此道具.");
+            c.getSession().write(MaplePacketCreator.confirmShopTransaction((byte) 0x20));
+            return;
+        }
+
+        if (item.getPrice() > 0 && item.getReqItem() == 0) {
             final int price = GameConstants.可充值道具(itemId) ? item.getPrice() : (item.getPrice() * quantity);
-            
-            if (price >= 0 && c.getPlayer().getMeso() >= price) {
+            final int money = (currency == 1 ? c.getPlayer().getBalls() : c.getPlayer().getMeso());
+
+            if (price >= 0 && money >= price) {
                 if (MapleInventoryManipulator.checkSpace(c, itemId, quantity, "")) {
-                    
-                    c.getPlayer().gainMeso(-price, false);
-                    
+                    if (currency == 1)
+                        c.getPlayer().gainBalls(-price);
+                    else
+                        c.getPlayer().gainMeso(-price, false);
+
                     if (GameConstants.寵物(itemId)) {
                         MapleInventoryManipulator.addById(c, itemId, quantity, "", MaplePet.createPet(itemId, MapleInventoryIdentifier.getInstance()), -1);
                     } else {
-                        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-
                         if (GameConstants.可充值道具(itemId)) {
-                            quantity = ii.getSlotMax(c, item.getItemId());
+                            quantity = MapleItemInformationProvider.getInstance().getSlotMax(c, item.getItemId());
                         }
 
                         MapleInventoryManipulator.addById(c, itemId, quantity);
@@ -113,16 +129,14 @@ public class MapleShop {
                 }
                 c.sendPacket(MaplePacketCreator.confirmShopTransaction((byte) 0));
             }
-        } else if (item != null && item.getReqItem() > 0 && quantity == 1 && c.getPlayer().haveItem(item.getReqItem(), item.getReqItemQ(), false, true)) {
+        } else if (item.getReqItem() > 0 && quantity == 1 && c.getPlayer().haveItem(item.getReqItem(), item.getReqItemQ(), false, true)) {
             if (MapleInventoryManipulator.checkSpace(c, itemId, quantity, "")) {
                 MapleInventoryManipulator.removeById(c, GameConstants.getInventoryType(item.getReqItem()), item.getReqItem(), item.getReqItemQ(), false, false);
                 if (GameConstants.寵物(itemId)) {
                     MapleInventoryManipulator.addById(c, itemId, quantity, "", MaplePet.createPet(itemId, MapleInventoryIdentifier.getInstance()), -1);
                 } else {
-                    MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-
                     if (GameConstants.可充值道具(itemId)) {
-                        quantity = ii.getSlotMax(c, item.getItemId());
+                        quantity = MapleItemInformationProvider.getInstance().getSlotMax(c, item.getItemId());
                     }
                     MapleInventoryManipulator.addById(c, itemId, quantity);
                 }
@@ -222,7 +236,12 @@ public class MapleShop {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 shopId = rs.getInt("shopid");
-                ret = new MapleShop(shopId, rs.getInt("npcid"));
+                int currency = 1;
+                //////////// TODO: currency = rs.getInt("currency");
+                if (shopId == 1001) ////////////// Temporary workaround for Pachinko
+                    ret = new MapleShop(shopId, rs.getInt("npcid"), currency);
+                else
+                    ret = new MapleShop(shopId, rs.getInt("npcid"));
                 rs.close();
                 ps.close();
             } else {

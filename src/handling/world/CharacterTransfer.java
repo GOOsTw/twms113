@@ -91,7 +91,7 @@ public class CharacterTransfer implements Externalizable {
         this.hpApUsed = chr.getHpMpApUsed();
         this.remainingAp = chr.getRemainingAp();
         this.remainingSp = chr.getRemainingSps();
-        this.beans = chr.getBeans();
+        this.beans = chr.getBalls();
         this.meso = chr.getMeso();
         this.skinColor = chr.getSkinColor();
         this.job = chr.getJob();

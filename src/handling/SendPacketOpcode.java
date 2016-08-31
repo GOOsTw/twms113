@@ -270,9 +270,9 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
     ENGLISH_QUIZ,
     RPS_GAME,
     UPDATE_BEANS,
-    BEANS_TIPS,
-    BEANS_GAME1,
-    BEANS_GAME2,
+    PACHINKO_MARQUEE,
+    PACHINKO_SHOW,
+    PACHINKO_ACT,
     NEW_YEAR_CARD_RES;
     private short code = -2;
 

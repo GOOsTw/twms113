@@ -2053,8 +2053,7 @@ public class InventoryHandler {
                     default:
                         break;
                 }
-                c.getPlayer().gainBeans(ss);
-                c.sendPacket(MaplePacketCreator.updateBeans(c.getPlayer().getId(), c.getPlayer().getBeans()));
+                c.getPlayer().gainBalls(ss);
                 c.getPlayer().dropMessage(1, "小鋼珠已新增" + ss + "顆");
                 used = true;
                 break;
