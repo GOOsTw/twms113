@@ -7,31 +7,31 @@ DELETE FROM `drop_data` where id = 9600024;
 DELETE FROM `drop_data` where id = 9600025;
 DELETE FROM `drop_data` where id = 9600026;
 
-/*§p™˜§H*/
+/*Â∞èÈáë‰∫∫*/
 INSERT INTO `drop_data`  VALUES (NULL, 9600019, 4000406, 1, 1, 0, 500000);
 INSERT INTO `drop_data`  VALUES (NULL, 9600019, 2044701, 1, 1, 0, 700);
 INSERT INTO `drop_data`  VALUES (NULL, 9600019, 4006001, 1, 1, 0, 10000);
-/*§pª…§H*/
+/*Â∞èÈäÖ‰∫∫*/
 INSERT INTO `drop_data`  VALUES (NULL, 9600020, 4000407, 1, 1, 0, 500000);
 INSERT INTO `drop_data`  VALUES (NULL, 9600020, 2041022, 1, 1, 0, 700);
-/*•®§∆™˜§H*/
+/*Â∑®ÂåñÈáë‰∫∫*/
 INSERT INTO `drop_data`  VALUES (NULL, 9600021, 4000404, 1, 1, 0, 500000);
 INSERT INTO `drop_data`  VALUES (NULL, 9600021, 4004001, 1, 1, 0, 10000);
 INSERT INTO `drop_data`  VALUES (NULL, 9600021, 4006001, 1, 1, 0, 10000);
 INSERT INTO `drop_data`  VALUES (NULL, 9600021, 2043301, 1, 1, 0, 700);
 INSERT INTO `drop_data`  VALUES (NULL, 9600021, 2040602, 1, 1, 0, 700);
-/*•®§∆ª»§H*/
+/*Â∑®ÂåñÈäÄ‰∫∫*/
 INSERT INTO `drop_data`  VALUES (NULL, 9600022, 4000405, 1, 1, 0, 500000);
 INSERT INTO `drop_data`  VALUES (NULL, 9600022, 4004001, 1, 1, 0, 10000);
-/*ª…§H*/
+/*ÈäÖ‰∫∫*/
 INSERT INTO `drop_data`  VALUES (NULL, 9600022, 4000401, 1, 1, 0, 500000);
 INSERT INTO `drop_data`  VALUES (NULL, 9600021, 4004001, 1, 1, 0, 10000);
 INSERT INTO `drop_data`  VALUES (NULL, 9600021, 4006001, 1, 1, 0, 10000);
-/*ª»§H*/
+/*ÈäÄ‰∫∫*/
 INSERT INTO `drop_data`  VALUES (NULL, 9600022, 4000402, 1, 1, 0, 500000);
 INSERT INTO `drop_data`  VALUES (NULL, 9600019, 2040001, 1, 1, 0, 700);
 INSERT INTO `drop_data`  VALUES (NULL, 9600019, 2041022, 1, 1, 0, 700);
-/*™Z™LßØπ¨*/
+/*Ê≠¶ÊûóÂ¶ñÂÉß*/
 INSERT INTO `drop_data`  VALUES (NULL, 9600025, 4021000, 1, 1, 0, 50000);
 INSERT INTO `drop_data`  VALUES (NULL, 9600025, 4021001, 1, 1, 0, 50000);
 INSERT INTO `drop_data`  VALUES (NULL, 9600025, 4021002, 1, 1, 0, 50000);
@@ -46,7 +46,7 @@ INSERT INTO `drop_data`  VALUES (NULL, 9600025, 2040513, 1, 1, 0, 50000);
 INSERT INTO `drop_data`  VALUES (NULL, 9600025, 2040516, 1, 1, 0, 50000);
 INSERT INTO `drop_data`  VALUES (NULL, 9600025, 2040708, 1, 1, 0, 50000);
 INSERT INTO `drop_data`  VALUES (NULL, 9600025, 2040705, 1, 1, 0, 50000);
-/*™Z™LßØπ¨§¿®≠*/
+/*Ê≠¶ÊûóÂ¶ñÂÉßÂàÜË∫´*/
 INSERT INTO `drop_data`  VALUES (NULL, 9600026, 4021000, 1, 1, 0, 50000);
 INSERT INTO `drop_data`  VALUES (NULL, 9600026, 4021001, 1, 1, 0, 50000);
 INSERT INTO `drop_data`  VALUES (NULL, 9600026, 4021002, 1, 1, 0, 50000);
