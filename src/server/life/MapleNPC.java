@@ -27,7 +27,7 @@ import tools.MaplePacketCreator;
 
 public class MapleNPC extends AbstractLoadedMapleLife {
 
-    private String name = "MISSINGNO";
+    private String name = "[NoName]";
     private boolean custom = false;
 
     public MapleNPC(final int id, final String name) {

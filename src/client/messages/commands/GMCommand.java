@@ -241,18 +241,14 @@ public class GMCommand {
                 return false;
             }
             String msg = splitted[2];
-            MapleNPC npc = MapleLifeFactory.getNPC(Integer.parseInt(splitted[1]));
-            if(npc != null)
-            {
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getNPCTalk(npc.getId(), (byte) 0, msg, "00 00", (byte) 0).getBytes());
-                return true;
+            int npcId = Integer.parseInt(splitted[1]);
+            MapleNPC npc = MapleLifeFactory.getNPC(npcId);
+            if(npc != null) {
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getNPCTalk(npcId, (byte) 0, msg, "00 00", (byte) 0).getBytes());
+            } else {
+                c.getPlayer().dropMessage(5, "很抱歉，此NPC "+ splitted[1] +" 不存在.");
             }
-            else 
-            {
-                c.getPlayer().dropMessage(5, "很抱歉，此NPCID:"+ splitted[1] +"不存在.");
-                return true;
-            }
-                
+            return true;
         }
 
         @Override

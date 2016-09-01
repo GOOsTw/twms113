@@ -51,13 +51,6 @@ public class CustomNPC extends MapleNPC {
             ps.setInt(2, mapId);
             ps.setInt(3, channel);
             ps.execute();
-            ChannelServer ch = ChannelServer.getInstance(channel);
-            if (ch != null) {
-                MapleMap map = ch.getMapFactory().getMap(mapId);
-                if (map != null) {
-                    map.removeNpc(npcId, true);
-                }
-            }
         } catch (SQLException ex) {
             FilePrinter.printError("CustomNPC.txt", ex, "deleteFromDB");
         }
@@ -75,7 +68,6 @@ public class CustomNPC extends MapleNPC {
     
     public static CustomNPC loadFromDB(final int npcId, final int mapId, final int channel) {
 
-        CustomNPC ret = null;
         Connection con = DatabaseConnection.getConnection();
 
         try (PreparedStatement ps = con.prepareStatement("SELECT * FROM custom_npcs WHERE npcId = ? and map = ? and channel = ?")) {
@@ -84,7 +76,7 @@ public class CustomNPC extends MapleNPC {
             ps.setInt(3, channel);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    ret = new CustomNPC(rs.getInt("npcId"), rs.getString("name"), rs.getInt("map"), rs.getInt("channel"));
+                    CustomNPC ret = new CustomNPC(rs.getInt("npcId"), rs.getString("name"), rs.getInt("map"), rs.getInt("channel"));
                     ret.setCustom(true);
                     Point pos = new Point(rs.getInt("x"), rs.getInt("y"));
                     ret.setPosition(pos);
@@ -92,12 +84,14 @@ public class CustomNPC extends MapleNPC {
                     ret.setFh(rs.getInt("foothold"));
                     ret.setRx0((int) (pos.getX() + 50));
                     ret.setRx1((int) (pos.getX() - 50));
+                    return ret;
                 }
             }
         } catch (SQLException ex) {
             FilePrinter.printError("CustomNPC.txt", ex, "loadFromDB");
+            return null;
         }
-        return ret;
+        return null;
     }
 
     public static List<CustomNPC> loadAll(int mapId, int channel) {

@@ -51,7 +51,7 @@ public class NPCScriptManager extends AbstractScriptManager {
         lock.lock();
         try {
             MapleNPC CheckNpc = MapleLifeFactory.getNPC(npc);
-            if (CheckNpc == null || CheckNpc.getName().equalsIgnoreCase("MISSINGNO")) {
+            if (CheckNpc == null) {
                 if (c.getPlayer().isGM()) {
                     c.getPlayer().dropMessage("NPC " + npc + " 不存在");
                 }

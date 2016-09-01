@@ -1305,14 +1305,16 @@ public final class MapleMap {
 
     public final void spawnNpc(final int id, final Point pos) {
         final MapleNPC npc = MapleLifeFactory.getNPC(id);
-        npc.setPosition(pos);
-        npc.setCy(pos.y);
-        npc.setRx0(pos.x + 50);
-        npc.setRx1(pos.x - 50);
-        npc.setFh(getFootholds().findBelow(pos).getId());
-        npc.setCustom(true);
-        addMapObject(npc);
-        broadcastMessage(MaplePacketCreator.spawnNPC(npc, true));
+        if (npc != null) {
+            npc.setPosition(pos);
+            npc.setCy(pos.y);
+            npc.setRx0(pos.x + 50);
+            npc.setRx1(pos.x - 50);
+            npc.setFh(getFootholds().findBelow(pos).getId());
+            npc.setCustom(true);
+            addMapObject(npc);
+            broadcastMessage(MaplePacketCreator.spawnNPC(npc, true));
+        }
     }
 
     public final void removeNpc(final int npcid) {

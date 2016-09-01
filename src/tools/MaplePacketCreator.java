@@ -379,12 +379,13 @@ public class MaplePacketCreator {
     private static MaplePacket serverMessage(int type, int channel, String message, boolean megaEar) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
-        /*	* 0: [Notice]<br>
-         * 1: Popup<br>
-         * 2: Megaphone<br>
-         * 3: Super Megaphone<br>
-         * 4: Scrolling message at top<br>
-         * 5: Pink Text<br>
+        /*
+         * 0: [Notice]
+         * 1: Popup
+         * 2: Megaphone
+         * 3: Super Megaphone
+         * 4: Scrolling message at top
+         * 5: Pink Text
          * 6: Lightblue Text
          * 8: Item megaphone
          * 9: Heart megaphone
@@ -394,7 +395,8 @@ public class MaplePacketCreator {
          * 13: End of file =.="
          * 14: Green Gachapon box
          * 15: Red Gachapon box
-         * 18: Blue Notice (again)*/
+         * 18: Blue Notice (again)
+         */
         mplew.writeShort(SendPacketOpcode.SERVERMESSAGE.getValue());
         mplew.write(type);
         if (type == 4) {
@@ -4772,8 +4774,6 @@ public class MaplePacketCreator {
     public static MaplePacket hackShieldDetected() {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.SECURITY_CLIENT.getValue());
-        //mplew.write(0x0C);
-        //mplew.write(0x00);
         mplew.write(0x05);
         mplew.writeInt(0x00010501);
         return mplew.getPacket();

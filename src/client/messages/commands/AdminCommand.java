@@ -722,7 +722,7 @@ public class AdminCommand {
             } catch (NumberFormatException asd) {
             }
             MapleNPC npc = MapleLifeFactory.getNPC(npcid);
-            if (npc != null && !npc.getName().equalsIgnoreCase("MISSINGNO")) {
+            if (npc != null) {
                 NPCScriptManager.getInstance().start(c, npcid);
             } else {
                 c.getPlayer().dropMessage(6, "未知NPC");
@@ -2921,26 +2921,28 @@ public class AdminCommand {
 
             int npcId = Integer.parseInt(splitted[1]);
             MapleNPC npc = MapleLifeFactory.getNPC(npcId);
-            if (npc != null && !npc.getName().equals("MISSINGNO")) {
+            if (npc != null) {
+                c.getPlayer().getMap().removeNpc(npcId, true);
                 CustomNPC cnpc = new CustomNPC(npc.getId(), npc.getName(), c.getPlayer().getMapId(), c.getChannel());
                 cnpc.setPosition(c.getPlayer().getPosition());
                 cnpc.setCy(c.getPlayer().getPosition().y);
                 cnpc.setRx0(c.getPlayer().getPosition().x + 50);
                 cnpc.setRx1(c.getPlayer().getPosition().x - 50);
                 cnpc.setFh(c.getPlayer().getMap().getFootholds().findBelow(c.getPlayer().getPosition()).getId());
-                cnpc.saveToDB();
+                if (splitted.length > 2 && splitted[2].equals("true")) {
+                    cnpc.saveToDB();
+                }
                 c.getPlayer().getMap().addMapObject(cnpc);
                 c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.spawnNPC(cnpc, true));
             } else {
                 c.getPlayer().dropMessage(6, "你輸入不正確的NPC編號");
-
             }
             return true;
         }
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!npc <npcid> - <true/false> - 呼叫自訂NPC 第二個參數為是否儲存NPC在這張地圖").toString();
+            return new StringBuilder().append("!npc <npcId> [true/false] - 放置自訂NPC，第二個參數為是否儲存到DB，預設false").toString();
         }
     }
 
@@ -2950,8 +2952,11 @@ public class AdminCommand {
         public boolean execute(MapleClient c, String splitted[]) {
             int npcId = Integer.parseInt(splitted[1]);
             CustomNPC cnpc = CustomNPC.loadFromDB(npcId, c.getPlayer().getMapId(), c.getChannel());
-            if (cnpc != null && !cnpc.getName().equals("MISSINGNO")) {
-                cnpc.deleteFromDB();
+            if (cnpc != null) {
+                c.getPlayer().getMap().removeNpc(npcId, true);
+                if (splitted.length > 2 && splitted[2].equals("true")) {
+                    cnpc.deleteFromDB();
+                }
             } else {
                 c.getPlayer().dropMessage(6, "你輸入不正確的NPC編號");
             }
@@ -2960,7 +2965,7 @@ public class AdminCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!removenpc <npcid> <true/false> - 刪除自訂NPC 第二個參數為是否刪除NPC在這張地圖").toString();
+            return new StringBuilder().append("!removenpc <npcid> [true/false] - 刪除自訂NPC，第二個參數為是否從DB刪除，預設false").toString();
         }
     }
 

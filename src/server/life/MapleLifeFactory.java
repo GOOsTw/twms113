@@ -121,7 +121,7 @@ public class MapleLifeFactory {
             stats.setExplosiveReward(MapleDataTool.getIntConvert("explosiveReward", monsterInfoData, 0) > 0);
             stats.setFfaLoot(MapleDataTool.getIntConvert("publicReward", monsterInfoData, 0) > 0);
             stats.setUndead(MapleDataTool.getIntConvert("undead", monsterInfoData, 0) > 0);
-            stats.setName(MapleDataTool.getString(mid + "/name", mobStringData, "MISSINGNO"));
+            stats.setName(MapleDataTool.getString(mid + "/name", mobStringData, "[NoName]"));
             stats.setBuffToGive(MapleDataTool.getIntConvert("buff", monsterInfoData, -1));
             stats.setFriendly(MapleDataTool.getIntConvert("damagedByMob", monsterInfoData, 0) > 0);
             stats.setExplosiveReward(MapleDataTool.getIntConvert("explosiveReward", monsterInfoData, 0) > 0);
@@ -259,10 +259,11 @@ public class MapleLifeFactory {
 
     public static MapleNPC getNPC(final int nid) {
         String name = npcNames.get(nid);
-        if (name == null || nid <= 0) {
-            name = MapleDataTool.getString(nid + "/name", npcStringData, "MISSINGNO");
+        if (name == null) {
+            name = MapleDataTool.getString(nid + "/name", npcStringData, null);
+            if (name == null)
+                return null;
             npcNames.put(nid, name);
-            return null;
         }
         if (name.contains("Maple TV")) {
             return null;
