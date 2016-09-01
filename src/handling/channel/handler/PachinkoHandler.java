@@ -41,7 +41,8 @@ public class PachinkoHandler {
         } else if (type == 6) {
             slea.readByte();
             int count = slea.readByte();
-            chr.gainBalls(-count);
+            if (chr.pachinkoOpenStage != 0)
+                chr.gainBalls(-count);
         } else if (type == 7) {
             slea.readInt();
             int now = slea.readInt();
@@ -53,6 +54,10 @@ public class PachinkoHandler {
             } else if (now - chr.pachinkoOpenTime > 5000) {
                 chr.pachinkoOpenStage = 4;
                 c.sendPacket(PachinkoPacket.rewardBalls(100, 4));
+                chr.gainBalls(100);
+            } else {
+                chr.pachinkoOpenStage = 1;
+                c.sendPacket(PachinkoPacket.rewardBalls(100, 1));
                 chr.gainBalls(100);
             }
         }
