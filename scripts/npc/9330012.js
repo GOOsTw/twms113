@@ -81,7 +81,7 @@ function action(mode, type, selection) {
             } else if (selection == 7) {
                 newWepName = "#t1482020#";
                 newWepId = 1482020;
-                leaves = 100;
+                leaves = 3000;
                 cost = 3500000;
             } else if (selection == 8) {
                 newWepName = "#t1092030#";
