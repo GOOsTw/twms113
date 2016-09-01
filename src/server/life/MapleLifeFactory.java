@@ -259,9 +259,10 @@ public class MapleLifeFactory {
 
     public static MapleNPC getNPC(final int nid) {
         String name = npcNames.get(nid);
-        if (name == null) {
+        if (name == null || nid <= 0) {
             name = MapleDataTool.getString(nid + "/name", npcStringData, "MISSINGNO");
             npcNames.put(nid, name);
+            return null;
         }
         if (name.contains("Maple TV")) {
             return null;

@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 import server.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
 import server.life.MapleLifeFactory;
+import server.life.MapleNPC;
 import server.maps.MapleMap;
 import tools.ArrayMap;
 import tools.MaplePacketCreator;
@@ -239,10 +240,19 @@ public class GMCommand {
             if (splitted.length <= 2) {
                 return false;
             }
-            int npcid = Integer.parseInt(splitted[1]);
             String msg = splitted[2];
-            World.Broadcast.broadcastMessage(MaplePacketCreator.getNPCTalk(npcid, (byte) 0, msg, "00 00", (byte) 0).getBytes());
-            return true;
+            MapleNPC npc = MapleLifeFactory.getNPC(Integer.parseInt(splitted[1]));
+            if(npc != null)
+            {
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getNPCTalk(npc.getId(), (byte) 0, msg, "00 00", (byte) 0).getBytes());
+                return true;
+            }
+            else 
+            {
+                c.getPlayer().dropMessage(5, "很抱歉，此NPCID:"+ splitted[1] +"不存在.");
+                return true;
+            }
+                
         }
 
         @Override
