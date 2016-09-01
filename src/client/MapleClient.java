@@ -20,7 +20,6 @@
  */
 package client;
 
-import constants.GameConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,7 +40,6 @@ import javax.script.ScriptEngine;
 import database.DatabaseConnection;
 import database.DatabaseException;
 import handling.MaplePacket;
-import handling.MapleServerHandler;
 import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
 import handling.login.handler.LoginResponse;
@@ -68,7 +66,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.mina.core.session.IoSession;
-import server.AutoGiveCSPoints;
 
 import server.Timer.PingTimer;
 import server.quest.MapleQuest;
@@ -562,13 +559,25 @@ public class MapleClient {
         return loginok;
     }
 
-    private boolean updatePasswordHash(String account, String password) {
+    private boolean updateSaltedPasswordHash(String password) {
         Connection con = DatabaseConnection.getConnection();
         try (PreparedStatement pss = con.prepareStatement("UPDATE `accounts` SET `password` = ?, `salt` = ? WHERE id = ?")) {
             final String newSalt = LoginCrypto.makeSalt();
             pss.setString(1, LoginCrypto.makeSaltedSha512Hash(password, newSalt));
             pss.setString(2, newSalt);
             pss.setInt(3, accountId);
+            pss.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            return false;
+        }
+    }
+
+    private boolean updatePasswordHash(String password) {
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement pss = con.prepareStatement("UPDATE `accounts` SET `password` = ? WHERE id = ?")) {
+            pss.setString(1, LoginCrypto.hexSha1(password));
+            pss.setInt(2, accountId);
             pss.executeUpdate();
             return true;
         } catch (SQLException ex) {
@@ -588,8 +597,13 @@ public class MapleClient {
         return LoginCrypto.checkSaltedSha512Hash(hash, password, salt);
     }
 
-    public LoginResponse login(String account, String password, boolean isIPBanned) {
-        LoginResponse loginResult = LoginResponse.WRONG_PASSWORD;
+    public LoginResponse login(String account, String password) {
+        if (hasBannedIP()) {
+            return LoginResponse.IP_NOT_ALLOWED;
+        } else if (hasBannedMac()) {
+            return LoginResponse.ACCOUNT_BLOCKED;
+        }
+
         int db_banned = 0;
         String db_passwordHash = "";
         String db_passwordSalt = "";
@@ -623,9 +637,14 @@ public class MapleClient {
 
         }
 
+        boolean updatePasswordHash = false;
         if (!checkLoginPassword(password, db_passwordHash, db_passwordSalt)) {
-            loggedIn = false;
-            return LoginResponse.WRONG_PASSWORD;
+            if (password.equals(db_passwordHash)) {
+                updatePasswordHash = true;
+            } else {
+                loggedIn = false;
+                return LoginResponse.WRONG_PASSWORD;
+            }
         }
 
         if (db_banned > 0 && !isGm()) {
@@ -634,12 +653,13 @@ public class MapleClient {
 
         int loginState = getLoginState();
         if (loginState > 0) {
-            return LoginResponse.ALREADY_LOGININ;
+            return LoginResponse.ALREADY_LOGGED_IN;
         }
 
-        boolean updatePasswordHash = false;
         if (isGm()) {
-            updatePasswordHash(account, password);
+            updateSaltedPasswordHash(password);
+        } else if (updatePasswordHash) {
+            updatePasswordHash(password);
         }
 
         ChannelServer.forceRemovePlayerByAccId(this, accountId);
@@ -1155,7 +1175,7 @@ public class MapleClient {
     }
 
     public final boolean isSetSecondPassword() {
-        return !(this.gender == 10 || this.secondPassword == null);
+        return !(this.gender == 10 || this.secondPassword == null || this.secondPassword.isEmpty());
     }
 
     public boolean check2ndPassword(String secondPassword) {

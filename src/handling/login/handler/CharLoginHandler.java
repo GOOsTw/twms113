@@ -95,12 +95,8 @@ public class CharLoginHandler {
         c.setMacs(macData);
         c.setLoginMacs(macData);
         c.setAccountName(account);
-        
-        final boolean isIpBan = c.hasBannedIP();
-        final boolean isMacBan = c.hasBannedMac();
-        final boolean isBanned = isIpBan || isMacBan;
 
-        LoginResponse loginResponse = c.login(account, password, isBanned);
+        LoginResponse loginResponse = c.login(account, password);
 
         final Calendar tempBannedTill = c.getTempBanCalendar();
         String errorInfo = null;
@@ -112,12 +108,6 @@ public class CharLoginHandler {
         switch (loginResponse) {
 
             case LOGIN_SUCCESS:
-                if (isMacBan && !isIpBan) {
-                    MapleCharacter.ban(c.getSession().getRemoteAddress().toString().split(":")[0], "Enforcing account ban, account " + account, false, 4, false);
-                } else if (!isMacBan && isIpBan) {
-                    c.banMacs();
-                }
-
                 if (!c.isSetSecondPassword()) {
                     c.sendPacket(LoginPacket.getGenderNeeded(c));
                     return;
@@ -147,10 +137,6 @@ public class CharLoginHandler {
                     }
                 }
                 return;
-            case ACCOUNT_BLOCKED:
-                break;
-            case WRONG_PASSWORD:
-                break;
             case NOT_REGISTERED:
                 if (LoginServer.AutoRegister) {
                     if (account.length() >= 12) {
@@ -169,21 +155,23 @@ public class CharLoginHandler {
                     }
                 }
                 break;
-            case ALREADY_LOGININ:
+            case ALREADY_LOGGED_IN:
                 // TODO: Auto logout
                 break;
             case SYSTEM_ERROR:
                 errorInfo = "系統錯誤(錯誤代碼:0)";
                 break;
-            case SYSYEM_ERROR2:
+            case SYSTEM_ERROR2:
                 errorInfo = "系統錯誤(錯誤代碼:1)";
                 break;
         }
 
         if (errorInfo != null) {
             c.getSession().write(MaplePacketCreator.serverNotice(1, errorInfo));
+            c.sendPacket(LoginPacket.getLoginFailed(LoginResponse.NOP.getValue()));
+        } else {
+            c.sendPacket(LoginPacket.getLoginFailed(loginResponse.getValue()));
         }
-        c.sendPacket(LoginPacket.getLoginFailed(loginResponse.getValue()));
     }
 
     public static final void handleGenderSet(final SeekableLittleEndianAccessor slea, final MapleClient c) {
