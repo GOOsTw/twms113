@@ -133,6 +133,7 @@ public class CommandProcessor {
                     sendDisplayMessage(c, "你沒有權限可以使用指令.", type);
                     return true;
                 }
+                // 開始處理指令(GM區)
                 if (c.getPlayer() != null) {
                     boolean ret = false;
                     try {
@@ -152,6 +153,7 @@ public class CommandProcessor {
                     }
                     return true;
                 }
+
             }
         }
         return false;

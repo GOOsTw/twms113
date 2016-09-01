@@ -324,6 +324,9 @@ public class InternCommand {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length < 3) {
+                return false;
+            }
             final MapleCharacter victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             final int reason = Integer.parseInt(splitted[2]);
             final int numDay = Integer.parseInt(splitted[3]);
@@ -344,7 +347,7 @@ public class InternCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!tempban <玩家名稱> - 暫時鎖定玩家").toString();
+            return new StringBuilder().append("!tempban <玩家名稱> <理由> <時間> - 暫時鎖定玩家").toString();
         }
     }
 
@@ -599,7 +602,7 @@ public class InternCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!spy <玩家名字>> - 觀察玩家").toString();
+            return new StringBuilder().append("!spy <玩家名字> - 觀察玩家").toString();
         }
     }
 
@@ -897,6 +900,9 @@ public class InternCommand {
 
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
+            if (splitted.length < 2) {
+                return false;
+            }
             World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(5, "<GM聊天視窗>" + "頻道" + c.getPlayer().getClient().getChannel() + " [" + c.getPlayer().getName() + "] : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
             return true;
         }
