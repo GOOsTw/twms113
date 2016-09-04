@@ -290,6 +290,8 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                         ChannelServer.getInstance(ch).removePlayer(client.getPlayer());
                         client.disconnect(true, isCashShop);
                     }
+                } else {
+                    client.disconnect(false, false);
                 }
             }
 
