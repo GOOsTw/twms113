@@ -55,7 +55,10 @@ function action(mode, type, selection) {
 		}
 		cm.sendYesNo("你真的想要買 #r" + amount + " #t" + item[selected] + "##k? 費用是 " + cost[selected] + " 楓幣 每個 #t" + item[selected] + "#, 總共費用是 #r" + totalcost + " 楓幣#k");
 	} else if (status == 3) {
-		if (cm.getMeso() < totalcost || !cm.canHold(item[selected])) {
+		if (!cm.canHold(item[selected])) {
+			cm.sendNext("請注意您的背包似乎滿了。");
+			cm.dispose();
+		} else if (cm.getMeso() < totalcost) {
 			cm.sendNext("你確定你的楓幣足夠嗎，如果沒有至少也要有 #r" + totalcost + "#k 楓幣.");
 			cm.dispose();
 		} else {
