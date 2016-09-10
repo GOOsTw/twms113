@@ -88,7 +88,7 @@ public class BuddyListHandler {
                     client.sendPacket(MaplePacketCreator.buddylistMessage((byte) 11));
                     return;
                 }
-                
+
                 /* 從整個遊戲找這個名字的角色所在的頻道 */
                 int buddyChannel = World.Find.findChannel(buddyName);
                 MapleCharacter buddyChar;
@@ -122,11 +122,11 @@ public class BuddyListHandler {
                 /* 傳給對方好友邀請 */
                 if (buddyChannel > 0) {
                     reqRes = World.Buddy.requestBuddyAdd(buddyName,
-                            client.getChannel(),
-                            client.getPlayer().getId(),
-                            client.getPlayer().getName(),
-                            client.getPlayer().getLevel(),
-                            client.getPlayer().getJob());
+                            player.getClient().getChannel(),
+                            player.getId(),
+                            player.getName(),
+                            player.getLevel(),
+                            player.getJob());
                 } else {
 
                     final int buddyCount = BuddyList.getBuddyCount(buddyEntry.getCharacterId(), 0);
@@ -143,11 +143,8 @@ public class BuddyListHandler {
                 }
 
                 if (reqRes == BuddyAddResult.BUDDYLIST_FULL) {
-
                     client.sendPacket(MaplePacketCreator.buddylistMessage((byte) 12));
-
                     break;
-
                 } else {
                     if (reqRes == BuddyAddResult.ALREADY_ON_LIST && buddyChannel > 0) {
                         notifyRemoteChannel(client, buddyChannel, buddyEntry.getCharacterId(), buddyGroup, ADDED);
@@ -157,7 +154,6 @@ public class BuddyListHandler {
                     buddyList.put(buddyEntry);
                     client.sendPacket(MaplePacketCreator.updateBuddylist(buddyList.getBuddies()));
                 }
-
                 nextPendingRequest(client);
                 break;
             }
