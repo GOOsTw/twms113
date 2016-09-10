@@ -41,13 +41,14 @@ import java.util.List;
 
 public class CharacterTransfer implements Externalizable {
 
-    public int characterid, accountid, exp, 
+    public int characterid, accountid, exp,
             beans, meso, hair, face, mapid, guildid,
             partyid, messengerid, mBookCover, dojo, ACash, MaplePoints,
             mount_itemid, mount_exp, points, vpoints, marriageId,
             familyid, seniorid, junior1, junior2, currentrep, totalrep, expression, constellation, blood, month, day, battleshipHP, gachexp;
     public byte channel, dojoRecord, gender, gmLevel, guildrank, alliancerank, clonez, fairyExp, buddysize, world, initialSpawnPoint, skinColor, mount_level, mount_Fatigue, subcategory;
     public long lastfametime, TranferTime, dps;
+    public long[] lastTime;
     public String name, accountname, BlessOfFairy, chalkboard, charmessage, prefix;
     public short level, fame, str, dex, int_, luk, maxhp, maxmp, hp, mp, remainingAp, hpApUsed, job;
     public Object inventorys, skillmacro, storage, cs;
@@ -67,6 +68,7 @@ public class CharacterTransfer implements Externalizable {
     }
 
     public CharacterTransfer(final MapleCharacter chr) {
+        this.lastTime = chr.getCheatTracker().getLastGMspam();
         this.GM聊天 = chr.getGMChat();
         this.characterid = chr.getId();
         this.accountid = chr.getAccountID();
@@ -201,6 +203,7 @@ public class CharacterTransfer implements Externalizable {
 
     @Override
     public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
+        this.lastTime = (long[]) in.readObject();
         this.GM聊天 = in.readBoolean();
         this.characterid = in.readInt();
         this.accountid = in.readInt();
@@ -355,13 +358,14 @@ public class CharacterTransfer implements Externalizable {
         for (int i = 0; i < 3; i++) {
             this.petStore[i] = in.readByte();
         }
-        
+
         this.lastfametime = in.readLong();
         TranferTime = System.currentTimeMillis();
     }
 
     @Override
     public void writeExternal(final ObjectOutput out) throws IOException {
+        out.writeObject(this.lastTime);
         out.writeBoolean(this.GM聊天);
         out.writeInt(this.characterid);
         out.writeInt(this.accountid);
@@ -527,7 +531,7 @@ public class CharacterTransfer implements Externalizable {
         for (int i = 0; i < petStore.length; i++) {
             out.writeByte(petStore[i]);
         }
-        
+
         out.writeLong(this.lastfametime);
     }
 }

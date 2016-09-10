@@ -311,6 +311,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (!isChannel) {
             ret.client.setChannel(ct.channel);
         }
+		ret.getCheatTracker().lastTime = ct.lastTime;
         ret.GM聊天 = ct.GM聊天;
         ret.id = ct.characterid;
         ret.name = ct.name;

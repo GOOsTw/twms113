@@ -51,14 +51,14 @@ public class CheatTracker {
     private int gm_message = 100;
     private int lastTickCount = 0, tickSame = 0;
     private long lastASmegaTime = 0;
-    private long[] lastTime = new long[6];
+    public long[] lastTime = new long[6];
 
     public CheatTracker(final MapleCharacter chr) {
         this.chr = new WeakReference<>(chr);
         invalidationTask = CheatTimer.getInstance().register(new InvalidationTask(), 60000);
         takingDamageSince = System.currentTimeMillis();
     }
-	
+
     /**
      * 檢查攻擊延遲
      *
@@ -119,7 +119,7 @@ public class CheatTracker {
         chr.get().updateTick(tickCount);
         lastAttackTickCount = tickCount;
     }
-	
+
     /**
      * 檢查角色受到傷害
      *
@@ -155,7 +155,7 @@ public class CheatTracker {
             numZeroDamageTaken = 0;
         }
     }
-	
+
     /**
      * 檢查相同傷害
      *
@@ -180,7 +180,7 @@ public class CheatTracker {
         summonSummonTime = System.currentTimeMillis();
         numSequentialSummonAttack = 0;
     }
-	
+
     /**
      * 檢查召喚獸攻擊
      *
@@ -201,7 +201,7 @@ public class CheatTracker {
     public final void checkDrop() {
         checkDrop(false);
     }
-	
+
     /**
      * 檢查掉落
      *
@@ -215,7 +215,7 @@ public class CheatTracker {
                     chr.get().sendHackShieldDetected();
                     chr.get().getClient().getSession().close(true);
                 } else {
-                chr.get().getClient().setMonitored(true);
+                    chr.get().getClient().setMonitored(true);
                 }
             }
         } else {
@@ -339,15 +339,13 @@ public class CheatTracker {
 
                 if (chr.get().hasGmLevel(1)) {
                     chr.get().dropMessage("觸發違規: " + real + " param: " + (param == null ? "" : (" - " + param)));
+                } else if (ban) {
+                    chrhardref.ban(chrhardref.getName() + real, true, true, false);
+                    chrhardref.sendHackShieldDetected();
+                    chrhardref.getClient().getSession().close();
+                    World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[封鎖系統] " + chrhardref.getName() + " 因為" + show + "而被管理員永久停權。").getBytes());
+                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[GM密語] " + chrhardref.getName() + " " + real + "自動封鎖! ").getBytes());
                 } else {
-                    if (ban) {
-                        chrhardref.ban(chrhardref.getName() + real, true, true, false);
-                        chrhardref.sendHackShieldDetected();
-                        chrhardref.getClient().getSession().close(true);
-                        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[封鎖系統] " + chrhardref.getName() + " 因為" + show + "而被管理員永久停權。").getBytes());
-                        World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[GM密語] " + chrhardref.getName() + " " + real + "自動封鎖! ").getBytes());
-                    } else {
-                    }
                 }
             }
             gm_message = 100;
@@ -487,6 +485,10 @@ public class CheatTracker {
         }
         invalidationTask = null;
 
+    }
+
+    public long[] getLastGMspam() {
+        return lastTime;
     }
 
     private final class InvalidationTask implements Runnable {
