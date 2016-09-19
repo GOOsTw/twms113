@@ -1,4 +1,4 @@
-function enter(pi) {
+﻿function enter(pi) {
     if (pi.getJob() >= 1000) {
         if (pi.haveItem(4032179)) { // Search warrent
             pi.playerMessage("The erev search begins.");
