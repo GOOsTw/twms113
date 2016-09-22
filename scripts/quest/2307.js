@@ -27,7 +27,9 @@ function start(mode, type, selection) {
     } else if (status == 2) {
         qm.sendNext("我不知道事情的細節，所以想找你幫幫忙，你可能會節省更多的時間幫助蘑菇王國，我送你一封信，請你把它交給門衛。 \r\n\r\n#fUI/UIWindow.img/QuestIcon/4/0#\r\n#v4032375# #t4032375#");
     } else if (status == 3) {
-        qm.gainItem(4032375, 1);
+		if (!qm.haveItem(4032375)) {
+			qm.gainItem(4032375, 1);
+		}
         qm.forceStartQuest();
         qm.sendYesNo("如果你現在想去蘑菇城堡的話，我可以送你去。你確定要去嗎？");
     } else if (status == 4) {
