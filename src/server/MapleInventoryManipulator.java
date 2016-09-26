@@ -571,9 +571,11 @@ public class MapleInventoryManipulator {
         }
 
         boolean itemChanged = false;
-        if (MapleItemInformationProvider.getInstance().isUntradeableOnEquip(source.getItemId())) {
-            source.setFlag((byte) ItemFlag.UNTRADEABLE.getValue());
-            itemChanged = true;
+        if (!GameConstants.isTimelessItem(source.getItemId()) && source.getFlag() != ItemFlag.LOCK.getValue()) {
+            if (MapleItemInformationProvider.getInstance().isUntradeableOnEquip(source.getItemId())) {
+                source.setFlag((byte) ItemFlag.UNTRADEABLE.getValue());
+                itemChanged = true;
+            }
         }
 
         if (GameConstants.isGMEquip(source.getItemId()) && !c.getPlayer().isGM() && !c.getChannelServer().canUseGMItem()) {
