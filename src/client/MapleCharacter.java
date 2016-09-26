@@ -131,7 +131,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public int pachinkoLight = 0, pachinkoOpenStage = 0, pachinkoOpenTime;
     private static final long serialVersionUID = 845748950829L;
     private String name, chalktext, BlessOfFairy_Origin, charmessage, prefix, chattitle, nowmacs = "";
-    private long lastCombo, lastfametime, keydown_skill, lastRecoveryTime;
+    private long lastCombo, lastfametime, keydown_skill, lastRecoveryTime, lastSummonTime;
     private byte dojoRecord, gmLevel, gender, initialSpawnPoint, skinColor, guildrank = 5, allianceRank = 5, world, fairyExp = 10, numClones, subcategory, fairyHour = 1; // Make this a quest record, TODO : Transfer it somehow with the current data
     private short level, mulung_energy, combo, availableCP, totalCP, fame, hpmpApUsed, job, remainingAp;
     private int accountid, id, meso, exp, hair, face, mapid, bookCover, dojo,
@@ -187,7 +187,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private MapleInventory[] inventory;
     private SkillMacro[] skillMacros = new SkillMacro[5];
     private MapleKeyLayout keylayout;
-    private transient ScheduledFuture<?> beholderHealingSchedule, beholderBuffSchedule, BerserkSchedule,
+    private transient ScheduledFuture<?> BerserkSchedule,
             dragonBloodSchedule, fairySchedule, mapTimeLimitTask, fishing;
     private long nextConsume = 0, pqStartTime = 0;
     private transient Event_PyramidSubway pyramidSubway = null;
@@ -226,6 +226,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             keydown_skill = 0;
             lastRecoveryTime = 0;
             smega = true;
+            lastSummonTime =0;
             petStore = new byte[3];
             for (int i = 0; i < petStore.length; i++) {
                 petStore[i] = (byte) -1;
@@ -1747,8 +1748,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             checkBerserk();
         } else if (effect.isMonsterRiding_()) {
             getMount().startSchedule();
-        } else if (effect.isBeholder()) {
-            prepareBeholderEffect();
         } else if (effect.isRecovery()) {
             prepareRecovery();
         }
@@ -1822,16 +1821,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                         map.removeMapObject(summon);
                         removeVisibleMapObject(summon);
                         summons.remove(summonId);
-                        if (summon.getSkill() == 1321007) {
-                            if (beholderHealingSchedule != null) {
-                                beholderHealingSchedule.cancel(false);
-                                beholderHealingSchedule = null;
-                            }
-                            if (beholderBuffSchedule != null) {
-                                beholderBuffSchedule.cancel(false);
-                                beholderBuffSchedule = null;
-                            }
-                        }
                     }
                 } else if (stat == MapleBuffStat.DRAGONBLOOD) {
                     if (dragonBloodSchedule != null) {
@@ -5076,52 +5065,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
     }
 
-    private void prepareBeholderEffect() {
-        if (beholderHealingSchedule != null) {
-            beholderHealingSchedule.cancel(false);
-        }
-        if (beholderBuffSchedule != null) {
-            beholderBuffSchedule.cancel(false);
-        }
-        ISkill bHealing = SkillFactory.getSkill(1320008);
-        final int bHealingLvl = getSkillLevel(bHealing);
-        final int berserkLvl = getSkillLevel(SkillFactory.getSkill(1320006));
-
-        if (bHealingLvl > 0) {
-            final MapleStatEffect healEffect = bHealing.getEffect(bHealingLvl);
-            int healInterval = healEffect.getX() * 1000;
-            beholderHealingSchedule = BuffTimer.getInstance().register(new Runnable() {
-
-                @Override
-                public void run() {
-                    int remhppercentage = (int) Math.ceil((getStat().getHp() * 100.0) / getStat().getMaxHp());
-                    if (berserkLvl == 0 || remhppercentage >= berserkLvl + 10) {
-                        addHP(healEffect.getHp());
-                    }
-                    //client.sendPacket(MaplePacketCreator.showOwnBuffEffect(1321007, 2));
-                    //map.broadcastMessage(MaplePacketCreator.summonSkill(getId(), 1321007, 5));
-                    //map.broadcastMessage(MapleCharacter.this, MaplePacketCreator.showBuffeffect(getId(), 1321007, 2), false);
-                }
-            }, healInterval, healInterval);
-        }
-        ISkill bBuff = SkillFactory.getSkill(1320009);
-        final int bBuffLvl = getSkillLevel(bBuff);
-        if (bBuffLvl > 0) {
-            final MapleStatEffect buffEffect = bBuff.getEffect(bBuffLvl);
-            int buffInterval = buffEffect.getX() * 1000;
-            beholderBuffSchedule = BuffTimer.getInstance().register(new Runnable() {
-
-                @Override
-                public void run() {
-                    buffEffect.applyTo(MapleCharacter.this);
-                    client.sendPacket(MaplePacketCreator.showOwnBuffEffect(1321007, 2));
-                    map.broadcastMessage(MaplePacketCreator.summonSkill(getId(), 1321007, Randomizer.nextInt(3) + 6));
-                    map.broadcastMessage(MapleCharacter.this, MaplePacketCreator.showBuffeffect(getId(), 1321007, 2), false);
-                }
-            }, buffInterval, buffInterval);
-        }
-    }
-
     public void setChalkboard(String text) {
         this.chalktext = text;
         map.broadcastMessage(MTSCSPacket.useChalkboard(getId(), text));
@@ -6560,6 +6503,17 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         mapp.removePlayer(this);
         mapp.addPlayer(this);
     }
+    
+    public boolean canSummon() {
+        return canSummon(5000);
+    }
+    public boolean canSummon(int g) {
+        if (lastSummonTime + g < System.currentTimeMillis()) {
+            lastSummonTime = System.currentTimeMillis();
+            return true;
+        }
+        return false;
+    }
 
     public String getcharmessage() {
         //System.err.println("CharMessage(get)");
@@ -6801,14 +6755,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             BerserkSchedule.cancel(false);
             BerserkSchedule = null;
         }
-        if (beholderHealingSchedule != null) {
-            beholderHealingSchedule.cancel(false);
-            beholderHealingSchedule = null;
-        }
-        if (beholderBuffSchedule != null) {
-            beholderBuffSchedule.cancel(false);
-            beholderBuffSchedule = null;
-        }
         if (dragonBloodSchedule != null) {
             dragonBloodSchedule.cancel(false);
             dragonBloodSchedule = null;
@@ -6833,5 +6779,14 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public void setNowMacs(String macs) {
         nowmacs = macs;
+    }
+    
+     public void showInfo(String caption, boolean pink, String msg) {
+        short type = (short) (pink ? 5 : -5);
+        if (caption != null && !caption.isEmpty()) {
+            msg = "[" + caption + "] " + msg;
+        }
+        dropMessage(type, msg);
+        dropMessage(-1, msg);
     }
 }

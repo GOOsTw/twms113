@@ -539,6 +539,8 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case ARAN_COMBO:
                 PlayerHandler.AranCombo(c, c.getPlayer());
                 break;
+            case CP_UserCalcDamageStatSetRequest://wat does it do?
+                break;
             case SKILL_MACRO:
                 PlayerHandler.ChangeSkillMacro(slea, c.getPlayer());
                 break;
@@ -753,6 +755,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case DAMAGE_SUMMON:
                 slea.skip(4);
                 SummonHandler.DamageSummon(slea, c.getPlayer());
+                break;
+            case CP_SummonedSkill:
+                SummonHandler.SubSummon(slea, c.getPlayer());
                 break;
             case MOVE_SUMMON:
                 SummonHandler.MoveSummon(slea, c.getPlayer());
