@@ -69,6 +69,7 @@ import handling.world.guild.MapleBBSThread.MapleBBSReply;
 import handling.world.guild.MapleGuildAlliance;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.TreeMap;
 import server.MapleItemInformationProvider;
 import server.MapleShopItem;
 import server.MapleStatEffect;
@@ -411,14 +412,14 @@ public class MaplePacketCreator {
     public static MaplePacket getGachaponMega(final String message, final IItem item, int channel) {
         return broadcastMessage(13, channel, new String[]{message}, false, item);
     }
-    
+
     public static MaplePacket broadcastMessage(int type, String message) {
         if (type < 0 || type > 6 || type == 3) {
             type = 6;
         }
         return broadcastMessage(type, 0, new String[]{message}, false, null);
     }
-    
+
     private static MaplePacket broadcastMessage(int type, int channel, String[] message, boolean bool, final IItem item) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
@@ -1502,7 +1503,7 @@ public class MaplePacketCreator {
 
         return mplew.getPacket();
     }
-    
+
     public static final MaplePacket showInfo(String info) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.SHOW_STATUS_INFO.getValue());
@@ -4540,37 +4541,43 @@ public class MaplePacketCreator {
         mplew.write(6);
         mplew.writeInt(0);
         mplew.writeInt(itemSearch);
-        int size = 0;
-
-        for (HiredMerchant hm : hms) {
-            size += hm.searchItem(itemSearch).size();
-        }
-        mplew.writeInt(size);
+        final Map<MaplePlayerShopItem, HiredMerchant> resultItems = new TreeMap(new Comparator<MaplePlayerShopItem>() {
+            @Override
+            public int compare(final MaplePlayerShopItem o1, final MaplePlayerShopItem o2) {
+                int val1 = o1.price;
+                int val2 = o2.price;
+                return (val1 < val2 ? -1 : (val1 == val2 ? 0 : 1));
+            }
+        });
         for (HiredMerchant hm : hms) {
             final List<MaplePlayerShopItem> items = hm.searchItem(itemSearch);
             for (MaplePlayerShopItem item : items) {
-                mplew.writeMapleAsciiString(hm.getOwnerName());
-                mplew.writeInt(hm.getMap().getId());
-                mplew.writeMapleAsciiString(hm.getDescription());
-                mplew.writeInt(item.item.getQuantity()); //I THINK.
-                mplew.writeInt(item.bundles); //I THINK.
-                mplew.writeInt(item.price);
-                switch (InventoryHandler.OWL_ID) {
-                    case 0:
-                        mplew.writeInt(hm.getOwnerId()); //store ID
-                        break;
-                    case 1:
-                        mplew.writeInt(hm.getStoreId());
-                        break;
-                    default:
-                        mplew.writeInt(hm.getObjectId());
-                        break;
-                }
-                mplew.write(hm.getFreeSlot() == -1 ? 1 : 0);
-                mplew.write(GameConstants.getInventoryType(itemSearch).getType()); //position?
-                if (GameConstants.getInventoryType(itemSearch) == MapleInventoryType.EQUIP) {
-                    PacketHelper.addItemInfo(mplew, item.item, true, true);
-                }
+                resultItems.put(item, hm);
+            }
+        }
+        mplew.writeInt(resultItems.size());
+        for (Map.Entry<MaplePlayerShopItem, HiredMerchant> entry : resultItems.entrySet()) {
+            mplew.writeMapleAsciiString(entry.getValue().getOwnerName());
+            mplew.writeInt(entry.getValue().getMap().getId());
+            mplew.writeMapleAsciiString(entry.getValue().getDescription());
+            mplew.writeInt(entry.getKey().item.getQuantity()); //I THINK.
+            mplew.writeInt(entry.getKey().bundles); //I THINK.
+            mplew.writeInt(entry.getKey().price);
+            switch (InventoryHandler.OWL_ID) {
+                case 0:
+                    mplew.writeInt(entry.getValue().getOwnerId()); //store ID
+                    break;
+                case 1:
+                    mplew.writeInt(entry.getValue().getStoreId());
+                    break;
+                default:
+                    mplew.writeInt(entry.getValue().getObjectId());
+                    break;
+            }
+            mplew.write(entry.getValue().getFreeSlot() == -1 ? 1 : 0);
+            mplew.write(GameConstants.getInventoryType(itemSearch).getType()); //position?
+            if (GameConstants.getInventoryType(itemSearch) == MapleInventoryType.EQUIP) {
+                PacketHelper.addItemInfo(mplew, entry.getKey().item, true, true);
             }
         }
         return mplew.getPacket();
