@@ -252,8 +252,10 @@ public class MapleStatEffect implements Serializable {
                     break;
                 case 11101002://終極攻擊
                 case 21120002://終極攻擊
+                     statups.add(new Pair<>(MapleBuffStat.FINAL_MELEE_ATTACK, ret.x));
+                    break;
                 case 13101002://終極攻擊
-                    statups.add(new Pair<>(MapleBuffStat.FINALATTACK, ret.x));
+                    statups.add(new Pair<>(MapleBuffStat.FINAL_SHOOT_ATTACK, ret.x));
                     break;
                 case 3101004://無形之箭
                 case 3201004://無形之箭
