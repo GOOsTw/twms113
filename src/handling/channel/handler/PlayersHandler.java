@@ -264,7 +264,7 @@ public class PlayersHandler {
             c.getPlayer().setFollowInitiator(false);
             tt.getClient().sendPacket(MaplePacketCreator.followRequest(c.getPlayer().getId()));
         } else {
-            c.sendPacket(MaplePacketCreator.serverNotice(1, "You are too far away."));
+            c.sendPacket(MaplePacketCreator.getPopupMsg("You are too far away."));
         }
     }
 
@@ -290,7 +290,7 @@ public class PlayersHandler {
                     tt.setFollowId(0);
                     c.getPlayer().setFollowId(0);
                 }
-                c.sendPacket(MaplePacketCreator.serverNotice(1, "你還太淺！"));
+                c.sendPacket(MaplePacketCreator.getPopupMsg("你還太淺！"));
             }
         } else {
             c.getPlayer().setFollowId(0);

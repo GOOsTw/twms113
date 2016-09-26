@@ -97,10 +97,10 @@ public class InternCommand {
             }
 
             String reason = "null".equals(input) ? "使用違法程式練功" : StringUtil.joinStringFrom(splitted, 2);
-            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[封鎖系統] " + name + " 因為" + reason + "而被管理員永久停權。").getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice( "[封鎖系統] " + name + " 因為" + reason + "而被管理員永久停權。").getBytes());
 
             String msg = "[GM 密語] GM " + c.getPlayer().getName() + "  封鎖了 " + name + " 是否離線封鎖 " + offline + " 原因：" + reason;
-            World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, msg).getBytes());
+            World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice( msg).getBytes());
             return true;
         }
 
@@ -225,10 +225,10 @@ public class InternCommand {
                 }
             }
             String reason = "null".equals(input) ? "使用違法程式練功" : StringUtil.joinStringFrom(splitted, 2);
-            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[封鎖系統] " + splitted[1] + " 因為" + reason + "而被管理員永久停權。").getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice( "[封鎖系統] " + splitted[1] + " 因為" + reason + "而被管理員永久停權。").getBytes());
 
             String msg = "[GM 密語] GM " + c.getPlayer().getName() + "  封鎖了 " + splitted[1] + " 是否離線封鎖 " + offline + " 原因：" + reason;
-            World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, msg).getBytes());
+            World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice( msg).getBytes());
             return true;
         }
 
@@ -444,7 +444,7 @@ public class InternCommand {
             int accID = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(input).getAccountID();
             BlackConfig.setBlackList(accID, input);
             String msg = "[GM 密語] GM " + c.getPlayer().getName() + " 在回報系統黑單了 " + input;
-            World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, msg).getBytes());
+            World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice( msg).getBytes());
             FilePrinter.print("PlayerBlackList.txt", "\r\n  " + FilePrinter.getLocalDateString() + " GM :" + c.getPlayer().getName() + " 在回報系統黑單了 " + input);
             return true;
         }
@@ -610,13 +610,13 @@ public class InternCommand {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
-            boolean hh = c.getPlayer().get精靈商人訊息();
+            boolean hh = c.getPlayer().getSwitchHiredMerchant();
             if (hh) {
-                c.getPlayer().get精靈商人訊息(false);
+                c.getPlayer().getSwitchHiredMerchant(false);
             } else {
-                c.getPlayer().get精靈商人訊息(true);
+                c.getPlayer().getSwitchHiredMerchant(true);
             }
-            hh = c.getPlayer().get精靈商人訊息();
+            hh = c.getPlayer().getSwitchHiredMerchant();
             c.getPlayer().dropMessage(6, "[精靈商人購買訊息] " + (hh ? "開啟" : "關閉"));
             return true;
         }
@@ -903,7 +903,7 @@ public class InternCommand {
             if (splitted.length < 2) {
                 return false;
             }
-            World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(5, "<GM聊天視窗>" + "頻道" + c.getPlayer().getClient().getChannel() + " [" + c.getPlayer().getName() + "] : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
+            World.Broadcast.broadcastGMMessage(MaplePacketCreator.getErrorNotice( "<GM聊天視窗>" + "頻道" + c.getPlayer().getClient().getChannel() + " [" + c.getPlayer().getName() + "] : " + StringUtil.joinStringFrom(splitted, 1)).getBytes());
             return true;
         }
 

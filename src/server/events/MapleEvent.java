@@ -155,7 +155,7 @@ public abstract class MapleEvent {
                 if (e.isRunning) {
                     for (int i : e.mapid) {
                         if (cserv.getEvent() == i) {
-                            e.broadcast(MaplePacketCreator.serverNotice(0, "距離活動開始只剩一分鐘!"));
+                            e.broadcast(MaplePacketCreator.serverNotice("距離活動開始只剩一分鐘!"));
                             e.broadcast(MaplePacketCreator.getClock(60));
                             EventTimer.getInstance().schedule(new Runnable() {
 
@@ -199,7 +199,7 @@ public abstract class MapleEvent {
                 for (int i : e.mapid) {
                     if (chr.getMapId() == i) {
                         e.startEvent();
-                        chr.getMap().broadcastMessage(MaplePacketCreator.serverNotice(5, String.valueOf(t) + " 活動開始。"));
+                        chr.getMap().broadcastMessage(MaplePacketCreator.getErrorNotice(String.valueOf(t) + " 活動開始。"));
                     }
                 }
             }
@@ -217,7 +217,7 @@ public abstract class MapleEvent {
         }
         cserv.setEvent(cserv.getEvent(event).mapid[0]);
         cserv.getEvent(event).reset();
-        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(0, "活動 " + String.valueOf(event) + " 即將在頻道 " + cserv.getChannel() + " 舉行 , 參加指令@event 要參加的玩家請到頻道 " + cserv.getChannel()).getBytes());
+        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice("活動 " + String.valueOf(event) + " 即將在頻道 " + cserv.getChannel() + " 舉行 , 參加指令@event 要參加的玩家請到頻道 " + cserv.getChannel()).getBytes());
         return "";
     }
 }

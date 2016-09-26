@@ -99,6 +99,11 @@ public class GenericLittleEndianWriter implements LittleEndianWriter {
     public final void write(final byte b) {
         bos.writeByte(b);
     }
+    
+    @Override
+    public final void write(final boolean b) {
+        bos.writeByte(b ? (byte)1 : (byte)0);
+    }
 
     @Override
     public final void write(final int b) {

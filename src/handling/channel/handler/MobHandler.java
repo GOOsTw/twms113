@@ -176,7 +176,7 @@ public class MobHandler {
                     chr.add吸怪();
                     if (c.getPlayer().get吸怪() % 50 == 0 || reduce_x > max_x) {
                         c.getPlayer().getCheatTracker().registerOffense(CheatingOffense.怪物全圖吸, "(地圖: " + chr.getMapId() + " 怪物數量:" + chr.get吸怪() + ")");
-                        World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[GM密語] " + chr.getName() + " (編號: " + chr.getId() + ")使用吸怪(" + chr.get吸怪() + ")! - 地圖:" + chr.getMapId() + "(" + chr.getMap().getMapName() + ")").getBytes());
+                        World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + chr.getName() + " (編號: " + chr.getId() + ")使用吸怪(" + chr.get吸怪() + ")! - 地圖:" + chr.getMapId() + "(" + chr.getMap().getMapName() + ")").getBytes());
                     }
                 }
             }
@@ -217,7 +217,7 @@ public class MobHandler {
     public static final void handleFriendlyDamage(final SeekableLittleEndianAccessor slea, MapleClient c) {
         final MapleCharacter chr = c.getPlayer();
         final MapleMap map = chr.getMap();
-        
+
         final MapleMonster mobfrom = map.getMonsterByOid(slea.readInt());
         slea.skip(4); // Player ID
         final MapleMonster mobto = map.getMonsterByOid(slea.readInt());
@@ -242,7 +242,7 @@ public class MobHandler {
                     break;
                 }
             }
-            map.broadcastMessage(MaplePacketCreator.serverNotice(6, "Your party has failed to protect the monster."));
+            map.broadcastMessage(MaplePacketCreator.getItemNotice("Your party has failed to protect the monster."));
             final MapleMap mapp = chr.getClient().getChannelServer().getMapFactory().getMap(921120001);
             for (MapleCharacter chrz : map.getCharactersThreadsafe()) {
                 chrz.changeMap(mapp, mapp.getPortal(0));
@@ -253,7 +253,7 @@ public class MobHandler {
     }
 
     public static final void handleMonsterBomb(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-        
+
         final MapleCharacter chr = c.getPlayer();
         final MapleMonster monster = chr.getMap().getMonsterByOid(slea.readInt());
 
@@ -267,10 +267,10 @@ public class MobHandler {
     }
 
     public static final void handleAutoAggro(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-        
+
         final MapleCharacter chr = c.getPlayer();
         final MapleMonster monster = chr.getMap().getMonsterByOid(slea.readInt());
-        
+
         if (chr == null || chr.getMap() == null || chr.isHidden()) { //no evidence :)
             return;
         }
@@ -318,7 +318,7 @@ public class MobHandler {
     }
 
     public static final void handleMobNode(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-        final MapleCharacter chr  = c.getPlayer();
+        final MapleCharacter chr = c.getPlayer();
         final MapleMonster mob_from = chr.getMap().getMonsterByOid(slea.readInt()); // From
         final int newNode = slea.readInt();
         final int nodeSize = chr.getMap().getNodes().size();
@@ -355,7 +355,7 @@ public class MobHandler {
 
                 }
                 if (newMap > 0) {
-                    chr.getMap().broadcastMessage(MaplePacketCreator.serverNotice(5, "Proceed to the next stage."));
+                    chr.getMap().broadcastMessage(MaplePacketCreator.getErrorNotice("Proceed to the next stage."));
                     chr.getMap().removeMonster(mob_from);
                 }
             }

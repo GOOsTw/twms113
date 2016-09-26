@@ -73,6 +73,36 @@ import tools.FilePrinter;
 import tools.HexTool;
 import tools.MaplePacketCreator;
 import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
+import static java.lang.Thread.sleep;
 
 public class MapleClient {
 
@@ -522,7 +552,7 @@ public class MapleClient {
                                             pss.setString(1, login);
                                             pss.executeUpdate();
                                         }
-                                        sendPacket(MaplePacketCreator.serverNotice(1, "帳號解卡成功,請重新登入!"));
+                                        sendPacket(MaplePacketCreator.getPopupMsg("帳號解卡成功,請重新登入!"));
                                     } catch (SQLException se) {
                                     }
                                 }
@@ -626,8 +656,7 @@ public class MapleClient {
                     tempban = getTempBanCalendar(rs);
                     gender = rs.getByte("gender");
                     ps.close();
-                }
-                else {
+                } else {
                     return LoginResponse.NOT_REGISTERED;
                 }
             }
@@ -669,7 +698,7 @@ public class MapleClient {
     }
 
     public final void unLockDisconnect(boolean removeFromChannel, boolean fromCS) {
-        sendPacket(MaplePacketCreator.serverNotice(1, "當前賬號在別處登入\r\n若不是你本人操作請及時更改密碼。"));
+        sendPacket(MaplePacketCreator.getPopupMsg("當前賬號在別處登入\r\n若不是你本人操作請及時更改密碼。"));
         this.disconnect(removeFromChannel, fromCS);
     }
 

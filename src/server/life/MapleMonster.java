@@ -782,7 +782,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     //重置雷克斯副本的npc
     public final void resetShammos(MapleClient c) {
         map.killAllMonsters(true);
-        map.broadcastMessage(MaplePacketCreator.serverNotice(5, "A player has moved too far from Shammos. Shammos is going back to the start."));
+        map.broadcastMessage(MaplePacketCreator.getErrorNotice("A player has moved too far from Shammos. Shammos is going back to the start."));
         for (MapleCharacter chr : map.getCharactersThreadsafe()) {
             chr.changeMap(chr.getMap(), chr.getMap().getPortal(0));
         }

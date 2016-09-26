@@ -203,7 +203,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public int master = 0, apprentice = 0;
     private boolean testingdps = false;
     private long dps;
-    private boolean 精靈商人購買開關 = false, 玩家私聊1 = false, 玩家私聊2 = false, 玩家私聊3 = false, GMinfo = false, 聊天稱號 = false, GM聊天 = false;
+    private boolean switchHiredMerchant = false, 玩家私聊1 = false, 玩家私聊2 = false, 玩家私聊3 = false, GMinfo = false, 聊天稱號 = false, GM聊天 = false;
     private boolean isShowDebugInfo = false;
 
     private MapleCharacter(final boolean ChannelServer) {
@@ -1707,7 +1707,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                         final FishingReward item = FishingRewardFactory.getInstance().getNextRewardItemId();
                         if (item != null) {
                             if (!MapleInventoryManipulator.checkSpace(client, item.getItemId(), 1, getName())) {
-                                client.sendPacket(MaplePacketCreator.serverNotice(5, "你的背包已滿"));
+                                client.sendPacket(MaplePacketCreator.getErrorNotice("你的背包已滿"));
                                 cancelFishingTask();
                                 return;
                             }
@@ -3319,7 +3319,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             if (pendingSkills != null) {
                 for (Integer z : pendingSkills) {
                     client.sendPacket(MaplePacketCreator.updateSkill(z, 0, 0, -1));
-                    client.sendPacket(MaplePacketCreator.serverNotice(5, "[" + SkillFactory.getSkillName(z) + "] 技能已經過期，系統自動從技能欄位移除。"));
+                    client.sendPacket(MaplePacketCreator.getErrorNotice("[" + SkillFactory.getSkillName(z) + "] 技能已經過期，系統自動從技能欄位移除。"));
                 }
             } //not real msg
             pendingSkills = null;
@@ -3446,12 +3446,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
     }
 
-    public void get精靈商人訊息(boolean xx) {
-        精靈商人購買開關 = xx;
+    public void getSwitchHiredMerchant(boolean xx) {
+        switchHiredMerchant = xx;
     }
 
-    public boolean get精靈商人訊息() {
-        return 精靈商人購買開關;
+    public boolean getSwitchHiredMerchant() {
+        return switchHiredMerchant;
     }
 
     public void get玩家私聊1(boolean xx) {
@@ -3742,7 +3742,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
             sb.append(getName());
             sb.append(" 達到了等級200級！請大家一起恭喜他！");
-            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, sb.toString()).getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(sb.toString()).getBytes());
         }
         if (GameConstants.isKOC(job) && level == 120 && !isGM()) {
             final StringBuilder sb = new StringBuilder("[恭喜] ");
@@ -3754,7 +3754,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
             sb.append(getName());
             sb.append(" 達到了皇家騎士團峰頂等級120級！請大家一起恭喜他！");
-            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, sb.toString()).getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(sb.toString()).getBytes());
         }
 
         maxhp = (short) Math.min(30000, Math.abs(maxhp));
@@ -5335,9 +5335,17 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             case -2:
                 client.sendPacket(PlayerShopPacket.shopChat(message, 0)); //0 or what
                 break;
-            default:
-                client.sendPacket(MaplePacketCreator.serverNotice(type, message));
+            case -3:
+                client.sendPacket(MaplePacketCreator.getChatText(getId(), message, isGM(), 0));
                 break;
+            case -4:
+                client.sendPacket(MaplePacketCreator.getChatText(getId(), message, isGM(), 1));
+                break;
+            case -5:
+                client.sendPacket(MaplePacketCreator.showInfo(message));
+                break;
+            default:
+                client.sendPacket(MaplePacketCreator.broadcastMessage(type, message));
         }
     }
 
@@ -6686,11 +6694,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public void giftMedal(int id) {
         if (!this.getInventory(MapleInventoryType.EQUIP).isFull() && this.getInventory(MapleInventoryType.EQUIP).countById(id) == 0 && this.getInventory(MapleInventoryType.EQUIPPED).countById(id) == 0) {
             MapleInventoryManipulator.addById(client, id, (short) 1);
-            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[恭喜]" + getName() + "剛才得到了 " + MapleItemInformationProvider.getInstance().getName(id) + "！").getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[恭喜]" + getName() + "剛才得到了 " + MapleItemInformationProvider.getInstance().getName(id) + "！").getBytes());
         } else if (this.getInventory(MapleInventoryType.EQUIP).countById(id) == 0 && this.getInventory(MapleInventoryType.EQUIPPED).countById(id) == 0) {
             MapleInventoryManipulator.drop(client, MapleInventoryType.EQUIP, (byte) 1, (byte) 1);
             MapleInventoryManipulator.addById(client, id, (short) 1);
-            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[恭喜]" + getName() + "剛才得到了 " + MapleItemInformationProvider.getInstance().getName(id) + "！").getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[恭喜]" + getName() + "剛才得到了 " + MapleItemInformationProvider.getInstance().getName(id) + "！").getBytes());
         }
     }
 

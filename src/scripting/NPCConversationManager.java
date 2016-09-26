@@ -487,16 +487,15 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             }
             final byte rareness = GameConstants.gachaponRareItem(item.getItemId());
             if (rareness == 1) {
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName(), " : 被他抽到了，大家恭喜他吧！", item, rareness).getBytes());
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName() + " : 被他抽到了，大家恭喜他吧！", item, c.getChannel()).getBytes());
             } else if (rareness == 2) {
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName(), " : 被他成功轉到了，大家恭喜他吧！", item, rareness).getBytes());
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName() + " : 被他成功轉到了，大家恭喜他吧！", item, c.getChannel()).getBytes());
             } else if (rareness > 2) {
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName(), " : 被他從楓葉轉蛋機轉到了，大家恭喜他吧！", item, rareness).getBytes());
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName() + " : 被他從楓葉轉蛋機轉到了，大家恭喜他吧！", item, c.getChannel()).getBytes());
             }
 
             return item.getItemId();
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return -1;
     }
@@ -685,9 +684,8 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             final boolean ret = c.getChannelServer().addMapleSquad(squad, type);
             if (ret) {
                 final MapleMap map = c.getPlayer().getMap();
-
                 map.broadcastMessage(MaplePacketCreator.getClock(minutes * 60));
-                map.broadcastMessage(MaplePacketCreator.serverNotice(6, c.getPlayer().getName() + startText));
+                map.broadcastMessage(MaplePacketCreator.getItemNotice(c.getPlayer().getName() + startText));
             } else {
                 squad.clear();
             }
@@ -799,7 +797,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
 
     public void increaseGuildCapacity() {
         if (c.getPlayer().getMeso() < 250000) {
-            c.sendPacket(MaplePacketCreator.serverNotice(1, "You do not have enough mesos."));
+            c.sendPacket(MaplePacketCreator.getPopupMsg("You do not have enough mesos."));
             return;
         }
         final int gid = c.getPlayer().getGuildId();
@@ -1418,7 +1416,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public void worldMessage(String text) {
-        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, text).getBytes());
+        World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(text).getBytes());
     }
 
     public int getBalls() {

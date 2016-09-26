@@ -105,8 +105,8 @@ public class CheatTracker {
                     chr.get().sendHackShieldDetected();
                     chr.get().getClient().getSession().close(true);
                     String reason = "使用違法程式練功";
-                    World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[封鎖系統] " + chr.get().getName() + " 因為" + reason + "而被管理員永久停權。").getBytes());
-                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[GM密語] " + chr.get().getName() + " 攻擊無延遲自動封鎖! ").getBytes());
+                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + chr.get().getName() + " 因為" + reason + "而被管理員永久停權。").getBytes());
+                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + chr.get().getName() + " 攻擊無延遲自動封鎖! ").getBytes());
                 } else {
                     chr.get().dropMessage("觸發攻擊速度封鎖");
                 }
@@ -314,7 +314,7 @@ public class CheatTracker {
                 outputFileName = "斷線";
                 chrhardref.sendHackShieldDetected();
                 chrhardref.getClient().getSession().close(true);
-                World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[GM密語] " + chrhardref.getName() + " 自動斷線 類別: " + offense.toString() + " 原因: " + (param == null ? "" : (" - " + param))).getBytes());
+                World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + chrhardref.getName() + " 自動斷線 類別: " + offense.toString() + " 原因: " + (param == null ? "" : (" - " + param))).getBytes());
             } else if (type == 3) {
                 boolean ban = true;
                 outputFileName = "封鎖";
@@ -334,7 +334,7 @@ public class CheatTracker {
                     real = "使用全圖打";
                 } else {
                     ban = false;
-                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[GM密語] " + MapleCharacterUtil.makeMapleReadable(chrhardref.getName()) + " (編號: " + chrhardref.getId() + " )使用外掛! " + StringUtil.makeEnumHumanReadable(offense.name()) + (param == null ? "" : (" - " + param))).getBytes());
+                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + MapleCharacterUtil.makeMapleReadable(chrhardref.getName()) + " (編號: " + chrhardref.getId() + " )使用外掛! " + StringUtil.makeEnumHumanReadable(offense.name()) + (param == null ? "" : (" - " + param))).getBytes());
                 }
 
                 if (chr.get().hasGmLevel(1)) {
@@ -343,8 +343,8 @@ public class CheatTracker {
                     chrhardref.ban(chrhardref.getName() + real, true, true, false);
                     chrhardref.sendHackShieldDetected();
                     chrhardref.getClient().getSession().close();
-                    World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[封鎖系統] " + chrhardref.getName() + " 因為" + show + "而被管理員永久停權。").getBytes());
-                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[GM密語] " + chrhardref.getName() + " " + real + "自動封鎖! ").getBytes());
+                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + chrhardref.getName() + " 因為" + show + "而被管理員永久停權。").getBytes());
+                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + chrhardref.getName() + " " + real + "自動封鎖! ").getBytes());
                 } else {
                 }
             }
@@ -387,10 +387,10 @@ public class CheatTracker {
                         break;
                 }
                 if (gm_message % 5 == 0) {
-                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[GM密語] " + chrhardref.getName() + " (編號:" + chrhardref.getId() + ")疑似外掛! " + show + (param == null ? "" : (" - " + param))).getBytes());
+                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + chrhardref.getName() + " (編號:" + chrhardref.getId() + ")疑似外掛! " + show + (param == null ? "" : (" - " + param))).getBytes());
                 }
                 if (gm_message == 0) {
-                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[封號系統] " + chrhardref.getName() + " (編號: " + chrhardref.getId() + " )疑似外掛！" + show + (param == null ? "" : (" - " + param))).getBytes());
+                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[封號系統] " + chrhardref.getName() + " (編號: " + chrhardref.getId() + " )疑似外掛！" + show + (param == null ? "" : (" - " + param))).getBytes());
                     AutobanManager.getInstance().autoban(chrhardref.getClient(), StringUtil.makeEnumHumanReadable(offense.name()), 5000);
                     gm_message = 100;
                 }

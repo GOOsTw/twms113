@@ -119,7 +119,7 @@ public class ChatHandler {
                     }
                 }
             } else {
-                c.sendPacket(MaplePacketCreator.serverNotice(6, "在這個地方不能說話。"));
+                c.sendPacket(MaplePacketCreator.getItemNotice( "在這個地方不能說話。"));
             }
         }
     }
@@ -134,7 +134,7 @@ public class ChatHandler {
         }
         final String chattext = slea.readMapleAsciiString();
         if (chr == null || !chr.getCanTalk()) {
-            c.sendPacket(MaplePacketCreator.serverNotice(6, "在這個地方不能說話。"));
+            c.sendPacket(MaplePacketCreator.getItemNotice( "在這個地方不能說話。"));
             return;
         }
         if (CommandProcessor.processCommand(c, chattext, CommandType.NORMAL)) {
@@ -337,7 +337,7 @@ public class ChatHandler {
             }
             case 6: { // Whisper
                 if (!c.getPlayer().getCanTalk()) {
-                    c.sendPacket(MaplePacketCreator.serverNotice(6, "在這個地方不能說話。"));
+                    c.sendPacket(MaplePacketCreator.getItemNotice( "在這個地方不能說話。"));
                     return;
                 }
                 c.getPlayer().getCheatTracker().checkMsg();

@@ -347,7 +347,7 @@ public class EventManager {
 
     public void broadcastServerMsg(final int type, final String msg, final boolean weather) {
         if (!weather) {
-            getChannelServer().broadcastPacket(MaplePacketCreator.serverNotice(type, msg));
+            getChannelServer().broadcastPacket(MaplePacketCreator.broadcastMessage(type, msg));
         } else {
             for (MapleMap load : getMapFactory().getAllMaps()) {
                 if (load.getCharactersSize() > 0) {

@@ -99,7 +99,7 @@ public class MapleOxQuiz extends MapleEvent {
                     }
                 }
                 if (toSend.getCharactersSize() - number <= 1 || timesAsked == 10) {
-                    toSend.broadcastMessage(MaplePacketCreator.serverNotice(6, "本次活動已經結束。"));
+                    toSend.broadcastMessage(MaplePacketCreator.getItemNotice("本次活動已經結束。"));
                     unreset();
                     for (MapleCharacter chr : toSend.getCharactersThreadsafe()) {
                         if (chr != null && !chr.isGM() && chr.isAlive()) {

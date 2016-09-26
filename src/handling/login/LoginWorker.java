@@ -35,7 +35,7 @@ public class LoginWorker {
 
     public static void registerClient(final MapleClient c) {
         if (LoginServer.isAdminOnly() && !c.isGm()) {
-            c.sendPacket(MaplePacketCreator.serverNotice(1, "當前伺服器只能管理員登入.\r\n我們目前正在測試一些問題\r\n請稍後在嘗試。"));
+            c.sendPacket(MaplePacketCreator.getPopupMsg("當前伺服器只能管理員登入.\r\n我們目前正在測試一些問題\r\n請稍後在嘗試。"));
             c.sendPacket(LoginPacket.getLoginFailed(7));
             return;
         }

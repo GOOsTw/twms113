@@ -121,7 +121,7 @@ public class ConsoleCommand {
                                 }
                             }
                         }
-                        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "關鍵時刻開放囉，沒有30等以上的玩家是得不到的。").getBytes());
+                        World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice( "關鍵時刻開放囉，沒有30等以上的玩家是得不到的。").getBytes());
                         ts.cancel(false);
                         ts = null;
                     }
@@ -161,7 +161,7 @@ public class ConsoleCommand {
                                 ts.cancel(false);
                                 return;
                             }
-                            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "[楓之谷公告] 伺服器將在 " + minutesLeft + "分鐘後關閉. 請盡速@save儲存角色 並且下線.").getBytes());
+                            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice( "[楓之谷公告] 伺服器將在 " + minutesLeft + "分鐘後關閉. 請盡速@save儲存角色 並且下線.").getBytes());
                             System.out.println("本伺服器將在 " + minutesLeft + "分鐘後關閉.");
                             minutesLeft--;
                         }
@@ -499,7 +499,7 @@ public class ConsoleCommand {
                 StringBuilder sb = new StringBuilder();
                 sb.append("[伺服器公告] ");
                 sb.append(StringUtil.joinStringFrom(splitted, 1));
-                World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, sb.toString()).getBytes());
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice( sb.toString()).getBytes());
             } else {
                 System.out.println("指令規則: say <message>");
                 return 0;

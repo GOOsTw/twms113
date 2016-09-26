@@ -71,7 +71,7 @@ public class MapleFitness extends MapleEvent {
             }
         }, this.time);
 
-        broadcast(MaplePacketCreator.serverNotice(0, "活動已經開始，請通過中間的入口開始遊戲。"));
+        broadcast(MaplePacketCreator.serverNotice( "活動已經開始，請通過中間的入口開始遊戲。"));
     }
 
     public boolean isTimerStarted() {
@@ -119,29 +119,29 @@ public class MapleFitness extends MapleEvent {
             public void run() {
                 final long timeLeft = getTimeLeft();
                 if (timeLeft > 9000 && timeLeft < 11000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "你還有10秒左右的時間，那些你不能擊敗的玩家，我希望你下次贏得勝利，回頭見。"));
+                    broadcast(MaplePacketCreator.serverNotice( "你還有10秒左右的時間，那些你不能擊敗的玩家，我希望你下次贏得勝利，回頭見。"));
                 } else if (timeLeft > 11000 && timeLeft < 101000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "好吧，你剩下沒有多少時間了，請抓緊時間衝向終點。"));
+                    broadcast(MaplePacketCreator.serverNotice( "好吧，你剩下沒有多少時間了，請抓緊時間衝向終點。"));
                 } else if (timeLeft > 101000 && timeLeft < 241000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "這已經是最後了不要放棄，豐富的大獎等著你！"));
+                    broadcast(MaplePacketCreator.serverNotice( "這已經是最後了不要放棄，豐富的大獎等著你！"));
                 } else if (timeLeft > 241000 && timeLeft < 301000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "這跳完就剩下一階了加油！"));
+                    broadcast(MaplePacketCreator.serverNotice( "這跳完就剩下一階了加油！"));
                 } else if (timeLeft > 301000 && timeLeft < 361000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "請小心掉落。"));
+                    broadcast(MaplePacketCreator.serverNotice( "請小心掉落。"));
                 } else if (timeLeft > 361000 && timeLeft < 501000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "請小心HP歸零。"));
+                    broadcast(MaplePacketCreator.serverNotice( "請小心HP歸零。"));
                 } else if (timeLeft > 501000 && timeLeft < 601000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "請小心猴子。"));
+                    broadcast(MaplePacketCreator.serverNotice( "請小心猴子。"));
                 } else if (timeLeft > 601000 && timeLeft < 661000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "第二階的技巧請利用猴子。"));
+                    broadcast(MaplePacketCreator.serverNotice( "第二階的技巧請利用猴子。"));
                 } else if (timeLeft > 661000 && timeLeft < 701000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "請小心HP歸零。"));
+                    broadcast(MaplePacketCreator.serverNotice( "請小心HP歸零。"));
                 } else if (timeLeft > 701000 && timeLeft < 781000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "大家知道 [終極忍耐] 很好玩的！"));
+                    broadcast(MaplePacketCreator.serverNotice( "大家知道 [終極忍耐] 很好玩的！"));
                 } else if (timeLeft > 781000 && timeLeft < 841000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "有可能會小LAG一下不過不需要擔心。"));
+                    broadcast(MaplePacketCreator.serverNotice( "有可能會小LAG一下不過不需要擔心。"));
                 } else if (timeLeft > 841000) {
-                    broadcast(MaplePacketCreator.serverNotice(0, "[終極忍耐] 總共有四階，如果你碰巧在遊戲過程中死亡，你會從遊戲中消失，所以請注意這一點。"));
+                    broadcast(MaplePacketCreator.serverNotice( "[終極忍耐] 總共有四階，如果你碰巧在遊戲過程中死亡，你會從遊戲中消失，所以請注意這一點。"));
                 }
             }
         }, 90000);

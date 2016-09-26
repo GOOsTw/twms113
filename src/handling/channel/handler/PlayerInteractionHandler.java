@@ -522,7 +522,7 @@ public class PlayerInteractionHandler {
                 final IMaplePlayerShop merchant = chr.getPlayerShop();
                 if (merchant != null && merchant.getShopType() == 1 && merchant.isOwner(chr) && merchant.isAvailable()) {
                     c.sendPacket(PlayerShopPacket.shopErrorMessage(0x15, 0));
-                    c.sendPacket(MaplePacketCreator.serverNotice(1, "請去找富蘭德里領取你的裝備和楓幣"));
+                    c.sendPacket(MaplePacketCreator.getPopupMsg("請去找富蘭德里領取你的裝備和楓幣"));
                     c.sendPacket(MaplePacketCreator.enableActions());
                     merchant.removeAllVisitors(-1, -1);
                     chr.setPlayerShop(null);

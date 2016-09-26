@@ -484,7 +484,7 @@ public abstract class AbstractPlayerInteraction {
     }
 
     public final void worldMessage(final int type, final String message) {
-        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(type, message).getBytes());
+        World.Broadcast.broadcastMessage(MaplePacketCreator.broadcastMessage(type, message).getBytes());
     }
 
     // default playerMessage and mapMessage to use type 5
@@ -501,16 +501,16 @@ public abstract class AbstractPlayerInteraction {
     }
 
     public final void playerMessage(final int type, final String message) {
-        c.sendPacket(MaplePacketCreator.serverNotice(type, message));
+        getClient().sendPacket(MaplePacketCreator.broadcastMessage(type, message));
     }
 
     public final void mapMessage(final int type, final String message) {
-        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.serverNotice(type, message));
+        getClient().getPlayer().getMap().broadcastMessage(MaplePacketCreator.broadcastMessage(type, message));
     }
 
     public final void guildMessage(final int type, final String message) {
         if (getPlayer().getGuildId() > 0) {
-            World.Guild.guildPacket(getPlayer().getGuildId(), MaplePacketCreator.serverNotice(type, message));
+            World.Guild.guildPacket(getPlayer().getGuildId(), MaplePacketCreator.broadcastMessage(type, message));
         }
     }
 
