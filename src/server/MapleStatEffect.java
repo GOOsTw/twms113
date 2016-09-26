@@ -1752,8 +1752,9 @@ public class MapleStatEffect implements Serializable {
 
     public final boolean isFinalAttack() {
         switch (sourceid) {
-            case 13101002:
             case 11101002:
+            case 13101002:
+            case 21120002:
                 return skill;
         }
         return false;
