@@ -4816,4 +4816,35 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
+    public static MaplePacket sendLieDetector(final byte[] image) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.LIE_DETECTOR.getValue());
+        mplew.write(6); // 1 = not attacking, 2 = tested, 3 = going through 
+
+        mplew.write(4); // 2 give invalid pointer (suppose to be admin macro) 
+        mplew.write(1); // the time >0 is always 1 minute 
+        if (image == null) {
+            mplew.writeInt(0);
+            return mplew.getPacket();
+        }
+        mplew.writeInt(image.length);
+        mplew.write(image);
+
+        return mplew.getPacket();
+    }
+
+    public static MaplePacket LieDetectorResponse(final byte msg) {
+        return LieDetectorResponse(msg, (byte) 0);
+    }
+
+    public static MaplePacket LieDetectorResponse(final byte msg, final byte msg2) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.LIE_DETECTOR.getValue());
+        mplew.write(msg); // 1 = not attacking, 2 = tested, 3 = going through 
+        mplew.write(msg2);
+
+        return mplew.getPacket();
+    }
 }

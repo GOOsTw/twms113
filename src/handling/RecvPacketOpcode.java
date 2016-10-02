@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 public enum RecvPacketOpcode implements WritableIntValueHolder {
-    
+
     LOGIN_PASSWORD(0x01),
     SERVERLIST_REQUEST(0x03),
     CHARLIST_REQUEST(0x04),
@@ -23,9 +23,8 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     HELLO_CHANNEL(0xDA),
     SET_GENDER(0x19),
     CLIENT_LOGOUT(0x1A),
-    
     // CHANNEL
-    
+
     CHANGE_MAP(0x1E),
     CHANGE_CHANNEL(0x1F),
     ENTER_CASH_SHOP(0x20),
@@ -85,6 +84,9 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     CHANGE_MAP_SPECIAL,
     USE_INNER_PORTAL,
     TROCK_ADD_MAP,
+    LIE_DETECTOR,
+    LIE_DETECTOR_SKILL,
+    LIE_DETECTOR_RESPONSE,
     QUEST_ACTION,
     CP_UserCalcDamageStatSetRequest,
     SKILL_MACRO,

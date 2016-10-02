@@ -536,6 +536,13 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case TROCK_ADD_MAP:
                 PlayerHandler.TrockAddMap(slea, c, c.getPlayer());
                 break;
+            case LIE_DETECTOR:
+            case LIE_DETECTOR_SKILL:
+                LieDetectorHandler.LieDetector(slea, c, c.getPlayer(), header == RecvPacketOpcode.LIE_DETECTOR);
+                break;
+            case LIE_DETECTOR_RESPONSE:
+                LieDetectorHandler.LieDetectorResponse(slea, c);
+                break;
             case ARAN_COMBO:
                 PlayerHandler.AranCombo(c, c.getPlayer());
                 break;
