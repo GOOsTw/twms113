@@ -29,14 +29,17 @@ import client.ISkill;
 import client.MapleBuffStat;
 import client.MapleClient;
 import client.MapleCharacter;
+import static client.MapleJob.黑騎士;
 import client.SkillFactory;
 import client.SummonSkillEntry;
 import client.status.MonsterStatusEffect;
 import client.anticheat.CheatingOffense;
 import client.status.MonsterStatus;
+import constants.SkillType;
 import java.util.Map;
 import server.MapleStatEffect;
 import server.AutobanManager;
+import server.Randomizer;
 import server.movement.LifeMovementFragment;
 import server.life.MapleMonster;
 import server.life.SummonAttackEntry;
@@ -46,12 +49,49 @@ import server.maps.MapleMapObject;
 import server.maps.MapleMapObjectType;
 import server.maps.SummonMovementType;
 import tools.MaplePacketCreator;
+import tools.data.input.LittleEndianAccessor;
 import tools.packet.MobPacket;
-import tools.data.input.SeekableLittleEndianAccessor;
 
 public class SummonHandler {
 
-    public static final void MoveSummon(final SeekableLittleEndianAccessor slea, final MapleCharacter chr) {
+    
+    public static final void SubSummon(final LittleEndianAccessor slea, final MapleCharacter chr) {
+        final MapleMapObject obj = chr.getMap().getMapObject(slea.readInt(), MapleMapObjectType.SUMMON);
+        if (obj == null || !(obj instanceof MapleSummon)) {
+            return;
+        }
+        final MapleSummon sum = (MapleSummon) obj;
+        if (sum.getOwnerId() != chr.getId() || sum.getSkillLevel() <= 0 || !chr.isAlive()) {
+            return;
+        }
+        switch (sum.getSkill()) {
+            case SkillType.黑騎士.暗之靈魂: // 黑暗之魂
+                ISkill bHealing = SkillFactory.getSkill(slea.readInt());
+                final int bHealingLvl = chr.getSkillLevel(bHealing);
+                if (bHealingLvl <= 0 || bHealing == null) {
+                    return;
+                }
+                final MapleStatEffect healEffect = bHealing.getEffect(bHealingLvl);
+                if (bHealing.getId() == SkillType.黑騎士.黑暗守護) {
+                    healEffect.applyTo(chr);
+                } else if (bHealing.getId() == SkillType.黑騎士.闇靈治癒) {
+                    if (!chr.canSummon(healEffect.getX() * 1000)) {
+                        return;
+                    }
+                    chr.addHP(healEffect.getHp());
+                }
+                chr.getClient().sendPacket(MaplePacketCreator.showOwnBuffEffect(sum.getSkill(), 2));
+                chr.getMap().broadcastMessage(MaplePacketCreator.summonSkill(chr.getId(), sum.getSkill(), bHealing.getId() == SkillType.黑騎士.闇靈治癒 ? 5 : (Randomizer.nextInt(3) + 6)));
+                chr.getMap().broadcastMessage(chr, MaplePacketCreator.showBuffeffect(chr.getId(), sum.getSkill(), 2), false);
+                break;
+            default:
+                if (chr.isShowDebugInfo()) {
+                    chr.showInfo("子召喚獸", true, "未處理的子召喚獸::" + sum.getSkill());
+                }
+        }
+    }
+    
+    public static final void MoveSummon(final LittleEndianAccessor slea, final MapleCharacter chr) {
         final int oid = slea.readInt();
         Point startPos = new Point(slea.readShort(), slea.readShort());
         List<LifeMovementFragment> res = MovementParse.parseMovement(slea, 4);
@@ -72,7 +112,7 @@ public class SummonHandler {
         }
     }
 
-    public static final void DamageSummon(final SeekableLittleEndianAccessor slea, final MapleCharacter chr) {
+    public static final void DamageSummon(final LittleEndianAccessor slea, final MapleCharacter chr) {
         final int unkByte = slea.readByte();
         final int damage = slea.readInt();
         final int monsterIdFrom = slea.readInt();
@@ -94,7 +134,7 @@ public class SummonHandler {
         }
     }
 
-    public static void SummonAttack(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static void SummonAttack(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         if (chr == null || !chr.isAlive()) {
             return;
         }

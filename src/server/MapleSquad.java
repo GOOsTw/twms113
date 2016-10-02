@@ -98,7 +98,7 @@ public class MapleSquad {
                     final MapleSquad squad = new MapleSquad(ch, type.name(), lead, expiration, toSay);
                     if (ChannelServer.getInstance(ch).addMapleSquad(squad, type.name())) {
                         getBeginMap().broadcastMessage(MaplePacketCreator.getClock(expiration / 1000));
-                        getBeginMap().broadcastMessage(MaplePacketCreator.serverNotice(6, nextPlayerId + toSay));
+                        getBeginMap().broadcastMessage(MaplePacketCreator.getItemNotice( nextPlayerId + toSay));
                         type.queuedPlayers.get(ch).add(new Pair<>(nextPlayerId, "成功"));
                     } else {
                         squad.clear();
@@ -109,11 +109,11 @@ public class MapleSquad {
                     if (lead != null) {
                         lead.dropMessage(6, "遠征隊已經結束了，由於沒有在正確的頻道裡。");
                     }
-                    getBeginMap().broadcastMessage(MaplePacketCreator.serverNotice(6, nextPlayerId + "遠征隊已經結束了，由於有成員沒有在地圖內"));
+                    getBeginMap().broadcastMessage(MaplePacketCreator.getItemNotice( nextPlayerId + "遠征隊已經結束了，由於有成員沒有在地圖內"));
                     type.queuedPlayers.get(ch).add(new Pair<String, String>(nextPlayerId, "不在地圖內"));
                 }
             } else {
-                getBeginMap().broadcastMessage(MaplePacketCreator.serverNotice(6, nextPlayerId + "'遠征隊已經結束了，由於有成員沒有在線上"));
+                getBeginMap().broadcastMessage(MaplePacketCreator.getItemNotice( nextPlayerId + "'遠征隊已經結束了，由於有成員沒有在線上"));
                 type.queuedPlayers.get(ch).add(new Pair<String, String>(nextPlayerId, "沒有上線"));
             }
         }

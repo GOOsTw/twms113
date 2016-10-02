@@ -215,7 +215,7 @@ public class AdminCommand {
                         message.append("[楓之谷公告] 伺服器將在 ");
                         message.append(minutesLeft);
                         message.append("分鐘後關閉. ");
-                        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, message.toString()).getBytes());
+                        World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(message.toString()).getBytes());
                         World.Broadcast.broadcastMessage(MaplePacketCreator.serverMessage(message.toString()).getBytes());
                         minutesLeft--;
                     }
@@ -791,7 +791,7 @@ public class AdminCommand {
                                 }
                             }
                         }
-                        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "關鍵時刻開放囉，沒有30等以上的玩家是得不到的。").getBytes());
+                        World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("關鍵時刻開放囉，沒有30等以上的玩家是得不到的。").getBytes());
                         ts.cancel(false);
                         ts = null;
                     }
@@ -1113,7 +1113,7 @@ public class AdminCommand {
                 sb.append(c.getPlayer().getName());
                 sb.append("] ");
                 sb.append(StringUtil.joinStringFrom(splitted, 1));
-                World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, sb.toString()).getBytes());
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(sb.toString()).getBytes());
             } else {
                 return false;
             }
@@ -1368,12 +1368,12 @@ public class AdminCommand {
                 if (c.getPlayer().getMapId() == 109020001) {
                     sec = 10;
                     c.getPlayer().dropMessage(5, "已經關閉活動入口，１０秒後開始活動。");
-                    World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "頻道:" + c.getChannel() + "活動目前已經關閉大門口，１０秒後開始活動。").getBytes());
+                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("頻道:" + c.getChannel() + "活動目前已經關閉大門口，１０秒後開始活動。").getBytes());
                     c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getClock(sec));
                 } else {
                     sec = 60;
                     c.getPlayer().dropMessage(5, "已經關閉活動入口，６０秒後開始活動。");
-                    World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "頻道:" + c.getChannel() + "活動目前已經關閉大門口，６０秒後開始活動。").getBytes());
+                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("頻道:" + c.getChannel() + "活動目前已經關閉大門口，６０秒後開始活動。").getBytes());
                     c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getClock(sec));
                 }
                 ts = EventTimer.getInstance().register(new Runnable() {
@@ -1637,7 +1637,7 @@ public class AdminCommand {
                         try {
                             World.Guild.leaveGuild(c.getPlayer().getMGC());
                         } catch (Exception e) {
-                            c.sendPacket(MaplePacketCreator.serverNotice(5, "無法連接到世界伺服器，請稍後再嘗試。"));
+                            c.sendPacket(MaplePacketCreator.getErrorNotice("無法連接到世界伺服器，請稍後再嘗試。"));
                             return false;
                         }
                         c.sendPacket(MaplePacketCreator.showGuildInfo(null));
@@ -1681,7 +1681,7 @@ public class AdminCommand {
                 victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             }
             try {
-                World.Broadcast.broadcastSmega(MaplePacketCreator.serverNotice(3, victim == null ? c.getChannel() : victim.getClient().getChannel(), victim == null ? splitted[1] : victim.getName() + " : " + StringUtil.joinStringFrom(splitted, 2), true).getBytes());
+                World.Broadcast.broadcastSmega(MaplePacketCreator.getSuperMegaphone(victim == null ? splitted[1] : victim.getName() + " : " + StringUtil.joinStringFrom(splitted, 2), true, victim == null ? c.getChannel() : victim.getClient().getChannel()).getBytes());
             } catch (Exception e) {
                 return false;
             }

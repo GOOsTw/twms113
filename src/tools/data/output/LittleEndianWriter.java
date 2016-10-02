@@ -54,6 +54,8 @@ public interface LittleEndianWriter {
     public void write(final byte b);
 
     public void write(final int b);
+    
+    public void write(final boolean b);
 
     /**
      * Writes an integer to the sequence.

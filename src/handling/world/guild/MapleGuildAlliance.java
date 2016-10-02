@@ -227,7 +227,7 @@ public class MapleGuildAlliance implements java.io.Serializable {
     public void setNotice(String newNotice) {
         this.notice = newNotice;
         broadcast(MaplePacketCreator.getAllianceUpdate(this));
-        broadcast(MaplePacketCreator.serverNotice(5, "聯盟公告事項 : " + newNotice));
+        broadcast(MaplePacketCreator.getErrorNotice("聯盟公告事項 : " + newNotice));
         saveToDb();
     }
 
@@ -339,7 +339,7 @@ public class MapleGuildAlliance implements java.io.Serializable {
         guilds[g] = guilds[0];
         guilds[0] = oldGuild;
         if (leaderName != null) {
-            broadcast(MaplePacketCreator.serverNotice(5, leaderName + " 已經成為公會聯盟會長。"));
+            broadcast(MaplePacketCreator.getErrorNotice(leaderName + " 已經成為公會聯盟會長。"));
         }
         broadcast(MaplePacketCreator.changeAllianceLeader(allianceid, leaderid, c));
         broadcast(MaplePacketCreator.updateAllianceLeader(allianceid, leaderid, c));

@@ -69,6 +69,7 @@ import handling.world.guild.MapleBBSThread.MapleBBSReply;
 import handling.world.guild.MapleGuildAlliance;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.TreeMap;
 import server.MapleItemInformationProvider;
 import server.MapleShopItem;
 import server.MapleStatEffect;
@@ -360,119 +361,158 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
+    public static MaplePacket serverNotice(String message) {
+        return broadcastMessage(0, 0, new String[]{message}, false, null);
+    }
+
+    public static MaplePacket getPopupMsg(String message) {
+        return broadcastMessage(1, 0, new String[]{message}, false, null);
+    }
+
+    public static MaplePacket getMegaphone(String message) {
+        return broadcastMessage(2, 0, new String[]{message}, false, null);
+    }
+
+    public static MaplePacket getSuperMegaphone(String message, boolean whisper, int channel) {
+        return broadcastMessage(3, channel, new String[]{message}, whisper, null);
+    }
+
     public static MaplePacket serverMessage(String message) {
-        return serverMessage(4, 0, message, false);
+        return broadcastMessage(4, 0, new String[]{message}, true, null);
     }
 
-    public static MaplePacket serverNotice(int type, String message) {
-        return serverMessage(type, 0, message, false);
+    public static MaplePacket getErrorNotice(String message) {
+        return broadcastMessage(5, 0, new String[]{message}, true, null);
     }
 
-    public static MaplePacket serverNotice(int type, int channel, String message) {
-        return serverMessage(type, channel, message, false);
+    public static MaplePacket getItemNotice(String message) {
+        return getItemNotice(message, 0);
     }
 
-    public static MaplePacket serverNotice(int type, int channel, String message, boolean smegaEar) {
-        return serverMessage(type, channel, message, smegaEar);
+    public static MaplePacket getItemNotice(String message, int itemId) {
+        return broadcastMessage(6, itemId, new String[]{message}, true, null);
     }
 
-    private static MaplePacket serverMessage(int type, int channel, String message, boolean megaEar) {
+    public static MaplePacket itemMegaphone(String message, boolean whisper, int channel, IItem item) {
+        return broadcastMessage(8, channel, new String[]{message}, whisper, item);
+    }
+
+    public static MaplePacket tripleSmega(List<String> message, boolean ear, int channel) {
+        return broadcastMessage(10, channel, (String[]) message.toArray(new String[message.size()]), ear, null);
+    }
+
+    public static MaplePacket getHeartSmega(String message, boolean ear, int channel) {
+        return broadcastMessage(11, channel, new String[]{message}, ear, null);
+    }
+
+    public static MaplePacket getSkullSmega(String message, boolean ear, int channel) {
+        return broadcastMessage(12, channel, new String[]{message}, ear, null);
+    }
+
+    public static MaplePacket getGachaponMega(final String message, final IItem item, int channel) {
+        return broadcastMessage(13, channel, new String[]{message}, false, item);
+    }
+
+    public static MaplePacket broadcastMessage(int type, String message) {
+        if (type < 0 || type > 6 || type == 3) {
+            type = 6;
+        }
+        return broadcastMessage(type, 0, new String[]{message}, false, null);
+    }
+
+    private static MaplePacket broadcastMessage(int type, int channel, String[] message, boolean bool, final IItem item) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         /*
-         * 0: [Notice]
-         * 1: Popup
-         * 2: Megaphone
-         * 3: Super Megaphone
-         * 4: Scrolling message at top
-         * 5: Pink Text
-         * 6: Lightblue Text
-         * 8: Item megaphone
-         * 9: Heart megaphone
-         * 10: Skull Super megaphone
-         * 11: Green megaphone message?
-         * 12: Three line of megaphone text
-         * 13: End of file =.="
-         * 14: Green Gachapon box
-         * 15: Red Gachapon box
-         * 18: Blue Notice (again)
+         * 0: [公告事項]%s
+         * 1: 彈窗訊息
+         * 2: 頻道喇叭
+         * 3: 高效能喇叭
+         * 4: 頂部滾動消息
+         * 5: 紅色訊息
+         * 6: 藍色訊息
+         * 7: ?
+         * 8: 道具喇叭
+         * 9: ?
+         * 10: 三行喇叭
+         * 11: 愛心喇叭
+         * 12: 骷髏喇叭
+         * 13: 綠色道具廣播喇叭
          */
         mplew.writeShort(SendPacketOpcode.SERVERMESSAGE.getValue());
         mplew.write(type);
         if (type == 4) {
-            mplew.write(1);
+            mplew.write(bool); // 頂部滾動消息開關
         }
-        mplew.writeMapleAsciiString(message);
 
-        switch (type) {
-            case 3:
-            case 9:
-            case 10:
-                mplew.write(channel - 1); // channel
-                mplew.write(megaEar ? 1 : 0);
-                break;
-            case 6:
-            case 18:
-                mplew.writeInt(channel >= 1000000 && channel < 6000000 ? channel : 0); //cash itemID, displayed in yellow by the {name}
-                //E.G. All new EXP coupon {Ruby EXP Coupon} is now available in the Cash Shop!
-                //with Ruby Exp Coupon being in yellow and with item info
-                break;
-        }
-        return mplew.getPacket();
-    }
+        if (type != 4 || bool) {
+            mplew.writeMapleAsciiString(message == null || message.length < 1 ? "" : message[0]);
 
-    public static MaplePacket getGachaponMega(final String name, final String message, final IItem item, final byte rareness) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        mplew.writeShort(SendPacketOpcode.SERVERMESSAGE.getValue());
-        mplew.write(/*rareness == 2 ? 15 : */13);
-        mplew.writeMapleAsciiString(name + message);
-        mplew.writeInt(0); // 0~3 i think
-        PacketHelper.addItemInfo(mplew, item, true, true);
-        return mplew.getPacket();
-    }
-
-    public static MaplePacket tripleSmega(List<String> message, boolean ear, int channel) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        mplew.writeShort(SendPacketOpcode.SERVERMESSAGE.getValue());
-        //mplew.write(12);
-        mplew.write(0x0A);
-        if (message.get(0) != null) {
-            mplew.writeMapleAsciiString(message.get(0));
-        }
-        mplew.write(message.size());
-        for (int i = 1; i < message.size(); i++) {
-            if (message.get(i) != null) {
-                mplew.writeMapleAsciiString(message.get(i));
+            switch (type) {
+                case 3:
+                case 11:
+                case 12:
+                    mplew.write(channel - 1); // 頻道(從0開始)
+                    mplew.write(bool ? 1 : 0); // 能否密語
+                    break;
+                case 8:
+                    mplew.write(channel - 1); // 頻道(從0開始)
+                    mplew.write(bool ? 1 : 0); // 能否密語
+                    mplew.write(item != null);
+                    if (item != null) {
+                        PacketHelper.addItemInfo(mplew, item, true, true);
+                    }
+                    break;
+                case 9:
+                    mplew.write(channel - 1); // 頻道(從0開始)
+                    break;
+                case 10:
+                    int lines = message == null ? 0 : message.length;
+                    mplew.write(lines);
+                    if (lines > 1) {
+                        mplew.writeMapleAsciiString(message == null || message.length < 2 ? "" : message[1]);
+                    }
+                    if (lines > 2) {
+                        mplew.writeMapleAsciiString(message == null || message.length < 2 ? "" : message[2]);
+                    }
+                    mplew.write(channel - 1); // 頻道(從0開始)
+                    mplew.write(bool ? 1 : 0); // 能否密語
+                    break;
+                case 13:
+                    mplew.writeInt(channel - 1); // 頻道(從0開始)
+                    PacketHelper.addItemInfo(mplew, item, true, true);
+                    break;
             }
         }
-        mplew.write(channel - 1);
-        mplew.write(ear ? 1 : 0);
 
-        return mplew.getPacket();
-    }
-
-    public static MaplePacket HeartSmega(List<String> message, boolean ear, int channel) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        mplew.writeShort(SendPacketOpcode.SERVERMESSAGE.getValue());
-        mplew.write(11);
-        mplew.writeMapleAsciiString(message.get(0));
-        mplew.write(channel - 1);
-        mplew.write(ear ? 1 : 0);
-
-        return mplew.getPacket();
-    }
-
-    public static MaplePacket SkullSmega(List<String> message, boolean ear, int channel) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        mplew.writeShort(SendPacketOpcode.SERVERMESSAGE.getValue());
-        mplew.write(12);
-        mplew.writeMapleAsciiString(message.get(0));
-        mplew.write(channel - 1);
-        mplew.write(ear ? 1 : 0);
+        switch (type) {
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+            case 8:
+            case 9: // 黑人問號臉???
+            case 10:
+            case 11:
+            case 12:
+                break;
+            case 13:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                // 道具ID, 點擊顯示訊息,訊息內容的"{}"(包括{}符號)裡面都會替換為黃色道具名稱
+                mplew.writeInt(channel >= 1000000 && channel < 6000000 ? channel : 0);
+                break;
+            case 7:
+                mplew.writeInt(-1); // ???黑人問號臉, 什麼鬼, 一直報錯
+                break;
+        }
 
         return mplew.getPacket();
     }
@@ -494,23 +534,6 @@ public class MaplePacketCreator {
         mplew.write(ear ? 1 : 0);
         PacketHelper.addCharLook(mplew, chr, true);
 
-        return mplew.getPacket();
-    }
-
-    public static MaplePacket itemMegaphone(String msg, boolean whisper, int channel, IItem item) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        mplew.writeShort(SendPacketOpcode.SERVERMESSAGE.getValue());
-        mplew.write(8);
-        mplew.writeMapleAsciiString(msg);
-        mplew.write(channel - 1);
-        mplew.write(whisper ? 1 : 0);
-
-        if (item == null) {
-            mplew.write(0);
-        } else {
-            PacketHelper.addItemInfo(mplew, item, false, false);
-        }
         return mplew.getPacket();
     }
 
@@ -1478,6 +1501,14 @@ public class MaplePacketCreator {
         mplew.writeShort(quest);
         mplew.writeMapleAsciiString(data);
 
+        return mplew.getPacket();
+    }
+
+    public static final MaplePacket showInfo(String info) {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+        mplew.writeShort(SendPacketOpcode.SHOW_STATUS_INFO.getValue());
+        mplew.write(0x0E);
+        mplew.writeMapleAsciiString(info);
         return mplew.getPacket();
     }
 
@@ -2646,7 +2677,7 @@ public class MaplePacketCreator {
          * 16: 已經加入其他組
          * 17: 隊伍成員已滿
          * 19: 目前頻道內找不到該腳色
-        */
+         */
         mplew.writeShort(SendPacketOpcode.PARTY_OPERATION.getValue());
         mplew.write(message);
 
@@ -4510,37 +4541,43 @@ public class MaplePacketCreator {
         mplew.write(6);
         mplew.writeInt(0);
         mplew.writeInt(itemSearch);
-        int size = 0;
-
-        for (HiredMerchant hm : hms) {
-            size += hm.searchItem(itemSearch).size();
-        }
-        mplew.writeInt(size);
+        final Map<MaplePlayerShopItem, HiredMerchant> resultItems = new TreeMap(new Comparator<MaplePlayerShopItem>() {
+            @Override
+            public int compare(final MaplePlayerShopItem o1, final MaplePlayerShopItem o2) {
+                int val1 = o1.price;
+                int val2 = o2.price;
+                return (val1 < val2 ? -1 : (val1 == val2 ? 0 : 1));
+            }
+        });
         for (HiredMerchant hm : hms) {
             final List<MaplePlayerShopItem> items = hm.searchItem(itemSearch);
             for (MaplePlayerShopItem item : items) {
-                mplew.writeMapleAsciiString(hm.getOwnerName());
-                mplew.writeInt(hm.getMap().getId());
-                mplew.writeMapleAsciiString(hm.getDescription());
-                mplew.writeInt(item.item.getQuantity()); //I THINK.
-                mplew.writeInt(item.bundles); //I THINK.
-                mplew.writeInt(item.price);
-                switch (InventoryHandler.OWL_ID) {
-                    case 0:
-                        mplew.writeInt(hm.getOwnerId()); //store ID
-                        break;
-                    case 1:
-                        mplew.writeInt(hm.getStoreId());
-                        break;
-                    default:
-                        mplew.writeInt(hm.getObjectId());
-                        break;
-                }
-                mplew.write(hm.getFreeSlot() == -1 ? 1 : 0);
-                mplew.write(GameConstants.getInventoryType(itemSearch).getType()); //position?
-                if (GameConstants.getInventoryType(itemSearch) == MapleInventoryType.EQUIP) {
-                    PacketHelper.addItemInfo(mplew, item.item, true, true);
-                }
+                resultItems.put(item, hm);
+            }
+        }
+        mplew.writeInt(resultItems.size());
+        for (Map.Entry<MaplePlayerShopItem, HiredMerchant> entry : resultItems.entrySet()) {
+            mplew.writeMapleAsciiString(entry.getValue().getOwnerName());
+            mplew.writeInt(entry.getValue().getMap().getId());
+            mplew.writeMapleAsciiString(entry.getValue().getDescription());
+            mplew.writeInt(entry.getKey().item.getQuantity()); //I THINK.
+            mplew.writeInt(entry.getKey().bundles); //I THINK.
+            mplew.writeInt(entry.getKey().price);
+            switch (InventoryHandler.OWL_ID) {
+                case 0:
+                    mplew.writeInt(entry.getValue().getOwnerId()); //store ID
+                    break;
+                case 1:
+                    mplew.writeInt(entry.getValue().getStoreId());
+                    break;
+                default:
+                    mplew.writeInt(entry.getValue().getObjectId());
+                    break;
+            }
+            mplew.write(entry.getValue().getFreeSlot() == -1 ? 1 : 0);
+            mplew.write(GameConstants.getInventoryType(itemSearch).getType()); //position?
+            if (GameConstants.getInventoryType(itemSearch) == MapleInventoryType.EQUIP) {
+                PacketHelper.addItemInfo(mplew, entry.getKey().item, true, true);
             }
         }
         return mplew.getPacket();

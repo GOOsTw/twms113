@@ -167,7 +167,7 @@ public class CharLoginHandler {
         }
 
         if (errorInfo != null) {
-            c.getSession().write(MaplePacketCreator.serverNotice(1, errorInfo));
+            c.getSession().write(MaplePacketCreator.getPopupMsg( errorInfo));
             c.sendPacket(LoginPacket.getLoginFailed(LoginResponse.NOP.getValue()));
         } else {
             c.sendPacket(LoginPacket.getLoginFailed(loginResponse.getValue()));
@@ -235,7 +235,7 @@ public class CharLoginHandler {
     public static final void handleCreateCharacter(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         final String name = slea.readMapleAsciiString();
         if (name.contains("Admin") || name.contains("admin") || name.contains("GameMaster") || name.contains("gamemaster")) {
-            c.sendPacket(MaplePacketCreator.serverNotice(1, "這個名字是非法的喔，請在想一個新名字。"));
+            c.sendPacket(MaplePacketCreator.getPopupMsg("這個名字是非法的喔，請在想一個新名字。"));
             c.sendPacket(LoginPacket.getLoginFailed(1));
             return;
         }

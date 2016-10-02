@@ -177,7 +177,7 @@ public class GMCommand {
             }
             sb.append(StringUtil.joinStringFrom(splitted, joinmod));
 
-            MaplePacket packet = MaplePacketCreator.serverNotice(type, sb.toString());
+            MaplePacket packet = MaplePacketCreator.broadcastMessage(type, sb.toString());
             if (range == 0) {
                 c.getPlayer().getMap().broadcastMessage(packet);
             } else if (range == 1) {

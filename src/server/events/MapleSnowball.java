@@ -205,7 +205,7 @@ public class MapleSnowball extends MapleEvent {
                                 sb.getSnowBall(i).setInvis(true);
                                 map.broadcastMessage(MaplePacketCreator.rollSnowball(i + 2, sb.getSnowBall(0), sb.getSnowBall(1))); //inviseble
                             }
-                            chr.getMap().broadcastMessage(MaplePacketCreator.serverNotice(6, "[恭喜] " + (team == 0 ? "藍隊" : "紅隊") + " 贏得勝利!"));
+                            chr.getMap().broadcastMessage(MaplePacketCreator.getItemNotice("[恭喜] " + (team == 0 ? "藍隊" : "紅隊") + " 贏得勝利!"));
 
                             for (MapleCharacter chrz : chr.getMap().getCharactersThreadsafe()) {
                                 if ((team == 0 && chrz.getPosition().y > -80) || (team == 1 && chrz.getPosition().y <= -80)) { //winner

@@ -100,7 +100,7 @@ public class SpawnPointAreaBoss extends Spawns {
         map.spawnMonster(monster, -2);
 
         if (msg != null) {
-            map.broadcastMessage(MaplePacketCreator.serverNotice(6, msg));
+            map.broadcastMessage(MaplePacketCreator.getItemNotice( msg));
         }
         return monster;
     }

@@ -104,7 +104,7 @@ public final class MapleMap {
     private int runningOid = 100000;
     private final Lock runningOidLock = new ReentrantLock();
     private final Map<String, Integer> environment = new LinkedHashMap<>();
-   private final List<Spawns> monsterSpawn = new ArrayList<>();
+    private final List<Spawns> monsterSpawn = new ArrayList<>();
     private final AtomicInteger spawnedMonstersOnMap = new AtomicInteger(0);
     private final Map<Integer, MaplePortal> portals = new HashMap<>();
     private final List<Integer> disconnectedClients = new ArrayList<>();
@@ -641,7 +641,7 @@ public final class MapleMap {
         SpeedRunType type = SpeedRunType.NULL;
         final MapleSquad sqd = getSquadByMap();
         if (mobid == 8810018 && mapid == 240060200 && !chr.isGM()) { // Horntail
-            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "經過無數次的挑戰，" + chr.getName() + "所帶領的隊伍終於擊破了闇黑龍王的遠征隊！你們才是龍之林的真正英雄~").getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("經過無數次的挑戰，" + chr.getName() + "所帶領的隊伍終於擊破了闇黑龍王的遠征隊！你們才是龍之林的真正英雄~").getBytes());
             /*for (MapleCharacter c : getCharactersThreadsafe()) {
              c.finishAchievement(16);
              }*/
@@ -653,7 +653,7 @@ public final class MapleMap {
                 doShrine(true);
             }
         } else if (mobid == 9410066 && mapid == 741000000) {
-            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, "經過鞭炮的洗禮，舞龍舞獅終於被嚇跑了，啾咪谷向大家說聲新年快樂~~").getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("經過鞭炮的洗禮，舞龍舞獅終於被嚇跑了，啾咪谷向大家說聲新年快樂~~").getBytes());
         } else if (mobid == 8810122 && mapid == 240060201) { // Horntail
 
             FilePrinter.print(FilePrinter.HorntailLog, MapDebug_Log());
@@ -727,7 +727,7 @@ public final class MapleMap {
                 }
             }
         } else if (mobid == 8820001 && mapid == 270050100 && !chr.isGM()) {
-            World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice(6, chr.getName() + " 經過帶領的隊伍經過無數次的挑戰，終於擊破了時間的寵兒－皮卡丘的遠征隊！你們才是時間神殿的真正英雄~").getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(chr.getName() + " 經過帶領的隊伍經過無數次的挑戰，終於擊破了時間的寵兒－皮卡丘的遠征隊！你們才是時間神殿的真正英雄~").getBytes());
             /*for (MapleCharacter c : getCharactersThreadsafe()) {
              c.finishAchievement(17);
              }*/
@@ -809,7 +809,7 @@ public final class MapleMap {
             if (speedRunStart > 0 && speedRunLeader.length() > 0) {
                 long endTime = System.currentTimeMillis();
                 String time = StringUtil.getReadableMillis(speedRunStart, endTime);
-                broadcastMessage(MaplePacketCreator.serverNotice(5, speedRunLeader + "'遠征隊花了 " + time + " 時間打敗了 " + type + "!"));
+                broadcastMessage(MaplePacketCreator.getErrorNotice(speedRunLeader + "'遠征隊花了 " + time + " 時間打敗了 " + type + "!"));
                 getRankAndAdd(speedRunLeader, time, type, (endTime - speedRunStart), (sqd == null ? null : sqd.getMembers()));
                 endSpeedRun();
             }
@@ -924,7 +924,7 @@ public final class MapleMap {
                 monster.killed();
             }
         }
-        this.broadcastMessage(MaplePacketCreator.serverNotice(6, "由於受詛咒的岩石被摧殘，然而被詛咒的蝴蝶精消失了。"));
+        this.broadcastMessage(MaplePacketCreator.getItemNotice("由於受詛咒的岩石被摧殘，然而被詛咒的蝴蝶精消失了。"));
     }
 
     public final void killAllMonsters(final boolean animate) {
@@ -1927,7 +1927,7 @@ public final class MapleMap {
             broadcastMessage(chr, MaplePacketCreator.spawnPlayerMapobject(chr), false);
             if (chr.isGM() && speedRunStart > 0) {
                 endSpeedRun();
-                broadcastMessage(MaplePacketCreator.serverNotice(5, "由於遠征隊隊長離開了，所以遠征隊任務失敗。"));
+                broadcastMessage(MaplePacketCreator.getErrorNotice("由於遠征隊隊長離開了，所以遠征隊任務失敗。"));
             }
         }
 
@@ -2744,12 +2744,10 @@ public final class MapleMap {
                 mo.sendSpawnData(chr.getClient());
             }
         } else // monster left view range
-        {
-            if (mo.getType() != MapleMapObjectType.SUMMON && mo.getPosition().distanceSq(chr.getPosition()) > GameConstants.maxViewRangeSq()) {
+         if (mo.getType() != MapleMapObjectType.SUMMON && mo.getPosition().distanceSq(chr.getPosition()) > GameConstants.maxViewRangeSq()) {
                 chr.removeVisibleMapObject(mo);
                 mo.sendDestroyData(chr.getClient());
             }
-        }
     }
 
     public void moveMonster(MapleMonster monster, Point reportedPos) {
@@ -3334,7 +3332,7 @@ public final class MapleMap {
         }
         if (speedRunStart > 0 && speedRunLeader.equalsIgnoreCase(chr)) {
             if (size > 0) {
-                broadcastMessage(MaplePacketCreator.serverNotice(5, "由於遠征隊隊長離開了，所以遠征隊任務失敗。"));
+                broadcastMessage(MaplePacketCreator.getErrorNotice("由於遠征隊隊長離開了，所以遠征隊任務失敗。"));
             }
             endSpeedRun();
         }

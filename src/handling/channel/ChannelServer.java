@@ -179,7 +179,7 @@ public class ChannelServer implements Serializable {
         if (finishedShutdown) {
             return;
         }
-        broadcastPacket(MaplePacketCreator.serverNotice(0, "【頻道" + String.valueOf(this.getChannel()) + "】 這個頻道正在關閉中."));
+        broadcastPacket(MaplePacketCreator.serverNotice("【頻道" + String.valueOf(this.getChannel()) + "】 這個頻道正在關閉中."));
         shutdown = true;
 
         System.out.println("【頻道" + String.valueOf(this.getChannel()) + "】 儲存角色資料...");

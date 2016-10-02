@@ -75,7 +75,7 @@ public class MapleOla extends MapleEvent {
             }
         }, this.time);
 
-        broadcast(MaplePacketCreator.serverNotice(0, "活動已經開始，請通過中間的入口開始遊戲。"));
+        broadcast(MaplePacketCreator.serverNotice( "活動已經開始，請通過中間的入口開始遊戲。"));
     }
 
     public boolean isTimerStarted() {

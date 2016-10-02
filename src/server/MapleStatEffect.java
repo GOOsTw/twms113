@@ -252,8 +252,10 @@ public class MapleStatEffect implements Serializable {
                     break;
                 case 11101002://終極攻擊
                 case 21120002://終極攻擊
+                     statups.add(new Pair<>(MapleBuffStat.FINAL_MELEE_ATTACK, ret.x));
+                    break;
                 case 13101002://終極攻擊
-                    statups.add(new Pair<>(MapleBuffStat.FINALATTACK, ret.x));
+                    statups.add(new Pair<>(MapleBuffStat.FINAL_SHOOT_ATTACK, ret.x));
                     break;
                 case 3101004://無形之箭
                 case 3201004://無形之箭
@@ -1186,6 +1188,10 @@ public class MapleStatEffect implements Serializable {
 
     private int calcHPChange(final MapleCharacter applyfrom, final boolean primary) {
         int hpchange = 0;
+        if (this.sourceid == 9001000
+                || this.sourceid == 9101000) {
+            hpchange = 500000;
+        }
         if (hp != 0) {
             if (!skill) {
                 if (primary) {
@@ -1388,7 +1394,7 @@ public class MapleStatEffect implements Serializable {
     }
 
     public final boolean isHeal() {
-        return sourceid == 2301002;
+        return skill && (sourceid == 2301002 || sourceid == 9101000 || sourceid == 9001000);
     }
 
     public final boolean isResurrection() {
@@ -1588,7 +1594,7 @@ public class MapleStatEffect implements Serializable {
     }
 
     private boolean isDispel() {
-        return skill && (sourceid == 2311001 || sourceid == 9001000);
+        return skill && (sourceid == 2311001 || sourceid == 9101000 || sourceid == 9001000);
     }
 
     private boolean isHeroWill() {
@@ -1748,8 +1754,9 @@ public class MapleStatEffect implements Serializable {
 
     public final boolean isFinalAttack() {
         switch (sourceid) {
-            case 13101002:
             case 11101002:
+            case 13101002:
+            case 21120002:
                 return skill;
         }
         return false;

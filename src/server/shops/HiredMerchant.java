@@ -89,7 +89,7 @@ public class HiredMerchant extends AbstractPlayerStore {
         final short perbundle = newItem.getQuantity();
         final int theQuantity = (pItem.price * quantity);
         newItem.setQuantity((short) (quantity * perbundle));
-        MapleCharacter Owner = getMCOwnerWorld();
+        MapleCharacter owner = getMCOwnerWorld();
 
         byte flag = newItem.getFlag();
 
@@ -105,25 +105,24 @@ public class HiredMerchant extends AbstractPlayerStore {
         }
         if (MapleInventoryManipulator.addFromDrop(c, newItem, false)) {
             pItem.bundles -= quantity; // Number remaining in the store
-
             final int gainmeso = getMeso() + (pItem.price * quantity);
             setMeso(gainmeso - GameConstants.EntrustedStoreTax(gainmeso));
             c.getPlayer().gainMeso(-pItem.price * quantity, false);
             FilePrinter.print("HiredMerchantBuyLog.txt", "角色名字:" + c.getPlayer().getName() + " 從: " + getOwnerName() + " 的精靈商人購買了" + MapleItemInformationProvider.getInstance().getName(newItem.getItemId()) + " (" + newItem.getItemId() + ") x" + quantity + " 單個價錢為 : " + pItem.price + " 購買時間:" + FilePrinter.getLocalDateString());
+            final StringBuilder sb = new StringBuilder("[GM 密語] 玩家 " + c.getPlayer().getName() + " 從  " + getOwnerName() + " 的精靈商人購買了 " + MapleItemInformationProvider.getInstance().getName(newItem.getItemId()) + "(" + newItem.getItemId() + ") x" + quantity + " 單個價錢為 : " + pItem.price);
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
-                for (MapleCharacter chr : cserv.getPlayerStorage().getAllCharacters()) {
-                    if (chr.get精靈商人訊息()) {
-                        String msg = "[精靈商人] 主人:" + getOwnerName() + " 道具: " + MapleItemInformationProvider.getInstance().getName(newItem.getItemId()) + " (" + perbundle + ") × " + quantity + " 已被玩家:" + c.getPlayer().getName() + " 購買，還剩下：" + pItem.bundles + " 個";
-                        broadcastGMMessage(MaplePacketCreator.serverNotice(6, msg).getBytes());
+                for (MapleCharacter chr : cserv.getPlayerStorage().getAllCharactersThreadSafe()) {
+                    if (chr.getSwitchHiredMerchant()) {
+                        chr.dropMessage(sb.toString());
                     }
                 }
             }
-            if (Owner != null) {
+            if (owner != null) {
                 if (pItem.bundles < 1) {
-                    Owner.dropMessage(5, "道具: " + MapleItemInformationProvider.getInstance().getName(newItem.getItemId()) + " (" + perbundle + ") × " + quantity + " 已被其他玩家購買完畢了，請補貨0.0");
+                    owner.dropMessage(5, "道具: " + MapleItemInformationProvider.getInstance().getName(newItem.getItemId()) + " (" + perbundle + ") × " + quantity + " 已被其他玩家購買完畢了，請補貨0.0");
                     return;
                 }
-                Owner.dropMessage(5, "道具: " + MapleItemInformationProvider.getInstance().getName(newItem.getItemId()) + " (" + perbundle + ") × " + quantity + " 已被其他玩家購買，還剩下：" + pItem.bundles + " 個");
+                owner.dropMessage(5, "道具: " + MapleItemInformationProvider.getInstance().getName(newItem.getItemId()) + " (" + perbundle + ") × " + quantity + " 已被其他玩家購買，還剩下：" + pItem.bundles + " 個");
             }
         } else {
             c.getPlayer().dropMessage(1, "您的背包滿了，請檢查您的背包！");
