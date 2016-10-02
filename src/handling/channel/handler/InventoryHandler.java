@@ -1334,14 +1334,13 @@ public class InventoryHandler {
                 if (item != null && item.getOwner().equals("")) {
                     boolean change = true;
                     for (String z : GameConstants.RESERVED) {
-                        if (c.getPlayer().getName().indexOf(z) != -1 || item.getOwner().indexOf(z) != -1) {
+                        if (c.getPlayer().getName().contains(z) || item.getOwner().contains(z)) {
                             change = false;
                         }
                     }
                     if (change) {
                         item.setOwner(c.getPlayer().getName());
-                        c.getPlayer().forceReAddItem(item, MapleInventoryType.EQUIPPED);
-                        c.getPlayer().reloadC();
+                        c.getPlayer().forceReAddItem_Flag(item, MapleInventoryType.EQUIPPED);
                         c.getPlayer().dropMessage(5, "刻名成功！");
                         used = true;
                     }
@@ -1520,12 +1519,11 @@ public class InventoryHandler {
                         return;
                     }
                     if (c.getPlayer().isPlayer()) {
-                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getMegaphone(sb.toString()));
                         System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
                     } else if (c.getPlayer().isGM()) {
-                        c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getMegaphone(sb.toString()));
                         System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
                     }
+                    c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getMegaphone(sb.toString()));
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
@@ -1568,12 +1566,11 @@ public class InventoryHandler {
                     sb.append(message);
 
                     if (c.getPlayer().isPlayer()) {
-                        c.getChannelServer().broadcastSmega(MaplePacketCreator.getMegaphone(sb.toString()).getBytes());
                         System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
                     } else if (c.getPlayer().isGM()) {
-                        c.getChannelServer().broadcastSmega(MaplePacketCreator.getMegaphone(sb.toString()).getBytes());
                         System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
                     }
+                    c.getChannelServer().broadcastSmega(MaplePacketCreator.getMegaphone(sb.toString()).getBytes());
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
@@ -1607,12 +1604,11 @@ public class InventoryHandler {
                     final boolean ear = slea.readByte() > 0;
 
                     if (c.getPlayer().isPlayer()) {
-                        World.Broadcast.broadcastSmega(MaplePacketCreator.tripleSmega(messages, ear, c.getChannel()).getBytes());
                         System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + messages);
                     } else if (c.getPlayer().isGM()) {
-                        World.Broadcast.broadcastSmega(MaplePacketCreator.tripleSmega(messages, ear, c.getChannel()).getBytes());
                         System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + messages);
                     }
+                    World.Broadcast.broadcastSmega(MaplePacketCreator.tripleSmega(messages, ear, c.getChannel()).getBytes());
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
@@ -1691,12 +1687,11 @@ public class InventoryHandler {
                         return;
                     }
                     if (c.getPlayer().isPlayer()) {
-                        World.Broadcast.broadcastSmega(MaplePacketCreator.getSkullSmega(msg, ear, c.getChannel()).getBytes());
                         System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
                     } else if (c.getPlayer().isGM()) {
-                        World.Broadcast.broadcastSmega(MaplePacketCreator.getSkullSmega(msg, ear, c.getChannel()).getBytes());
                         System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
                     }
+                    World.Broadcast.broadcastSmega(MaplePacketCreator.getSkullSmega(msg, ear, c.getChannel()).getBytes());
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
@@ -1781,12 +1776,11 @@ public class InventoryHandler {
                         return;
                     }
                     if (c.getPlayer().isPlayer()) {
-                        World.Broadcast.broadcastSmega(MaplePacketCreator.itemMegaphone(sb.toString(), ear, c.getChannel(), item).getBytes());
                         System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
                     } else if (c.getPlayer().isGM()) {
-                        World.Broadcast.broadcastSmega(MaplePacketCreator.itemMegaphone(sb.toString(), ear, c.getChannel(), item).getBytes());
                         System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
-                    }
+                    } 
+                    World.Broadcast.broadcastSmega(MaplePacketCreator.itemMegaphone(sb.toString(), ear, c.getChannel(), item).getBytes());
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
@@ -2148,13 +2142,12 @@ public class InventoryHandler {
                         c.sendPacket(MaplePacketCreator.enableActions());
                         return;
                     }
-                    if (c.getPlayer().isPlayer()) {
-                        World.Broadcast.broadcastSmega(MaplePacketCreator.getAvatarMega(c.getPlayer(), c.getChannel(), itemId, text, ear).getBytes());
+                    if (c.getPlayer().isPlayer()) {  
                         System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + text);
                     } else if (c.getPlayer().isGM()) {
-                        World.Broadcast.broadcastSmega(MaplePacketCreator.getAvatarMega(c.getPlayer(), c.getChannel(), itemId, text, ear).getBytes());
                         System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + text);
                     }
+                    World.Broadcast.broadcastSmega(MaplePacketCreator.getAvatarMega(c.getPlayer(), c.getChannel(), itemId, text, ear).getBytes());
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");

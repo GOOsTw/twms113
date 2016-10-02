@@ -692,7 +692,7 @@ public class MapleStatEffect implements Serializable {
         } else if (isSpiritClaw() && !applyto.isClone()) {
             MapleInventory use = applyto.getInventory(MapleInventoryType.USE);
             IItem item;
-            for (int i = 0; i < use.getSlotLimit(); i++) { // impose order...
+            for (int i = 0; i <= use.getSlotLimit(); i++) { // impose order...
                 item = use.getItem((byte) i);
                 if (item != null) {
                     if (GameConstants.飛鏢(item.getItemId()) && item.getQuantity() >= 200) {
