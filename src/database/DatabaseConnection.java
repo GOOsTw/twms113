@@ -213,6 +213,29 @@ public class DatabaseConnection {
         return datasource;
     }
     
+    private static Connection connectToDB_Old() {
+
+        try {
+            Properties props = new Properties();
+            props.put("user", dbUser);
+            props.put("password", dbPass);
+            props.put("autoReconnect", "true");
+            props.put("characterEncoding", "UTF8");
+            props.put("connectTimeout", "2000000");
+            props.put("serverTimezone", "Asia/Taipei");
+            Connection con = DriverManager.getConnection(dbUrl, props);
+
+            PreparedStatement ps;
+            ps = con.prepareStatement("SET time_zone = '+08:00'");
+            ps.execute();
+            ps.close();
+           
+            return con;
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+    
     private static Connection connectToDB() {
         try {
             return getDataSource().getConnection();
