@@ -120,13 +120,14 @@ public class AdminCommand {
 
     }
     
- public static class antiMacro extends CommandExecute {
+    public static class antiMacro extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             if (c.getPlayer() != null) {
-                if(!c.getPlayer().getAntiMacro().startLieDetector(c.getPlayer().getName(), false, false))
+                if (!c.getPlayer().getAntiMacro().startLieDetector(c.getPlayer().getName(), false, false)) {
                     c.getPlayer().dropMessage(5, "測謊測試失敗");
+                }
             }
             return true;
         }
@@ -137,6 +138,7 @@ public class AdminCommand {
         }
 
     }
+    
     public static class 聊天紀錄存檔 extends logChat {
 
         @Override

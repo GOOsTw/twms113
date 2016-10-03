@@ -57,7 +57,6 @@ public class ConsoleCommand {
             System.out.println("記憶體最大限制 :" + maxMemory.toString());
             System.out.println("已申請記憶體 :" + allocatedMemory.toString());
             System.out.println("尚未使用記憶體 :" + freeMemory.toString());
-
             return 1;
         }
 
