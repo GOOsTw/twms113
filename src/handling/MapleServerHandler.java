@@ -422,7 +422,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 CharLoginHandler.handleDeleteCharacter(slea, c);
                 break;
             case CHAR_SELECT:
-                CharLoginHandler.handleSecectCharacter(slea, c);
+                CharLoginHandler.handleSelectCharacter(slea, c);
                 break;
             case SET_GENDER:
                 CharLoginHandler.handleGenderSet(slea, c);
@@ -535,6 +535,13 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 break;
             case TROCK_ADD_MAP:
                 PlayerHandler.TrockAddMap(slea, c, c.getPlayer());
+                break;
+            case LIE_DETECTOR:
+            case LIE_DETECTOR_SKILL:
+                LieDetectorHandler.LieDetector(slea, c, c.getPlayer(), header == RecvPacketOpcode.LIE_DETECTOR);
+                break;
+            case LIE_DETECTOR_RESPONSE:
+                LieDetectorHandler.LieDetectorResponse(slea, c);
                 break;
             case ARAN_COMBO:
                 PlayerHandler.AranCombo(c, c.getPlayer());

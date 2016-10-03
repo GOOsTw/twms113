@@ -119,7 +119,26 @@ public class AdminCommand {
         }
 
     }
+    
+    public static class antiMacro extends CommandExecute {
 
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            if (c.getPlayer() != null) {
+                if (!c.getPlayer().getAntiMacro().startLieDetector(c.getPlayer().getName(), false, false)) {
+                    c.getPlayer().dropMessage(5, "測謊測試失敗");
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!antiMacro - 測謊測試").toString();
+        }
+
+    }
+    
     public static class 聊天紀錄存檔 extends logChat {
 
         @Override
@@ -1479,7 +1498,7 @@ public class AdminCommand {
             if (splitted.length < 2) {
                 return false;
             }
-            com.mysql.jdbc.Connection dcon = (com.mysql.jdbc.Connection) DatabaseConnection.getConnection();
+            Connection dcon = (Connection) DatabaseConnection.getConnection();
             try {
                 int id = 0, quantity = 0;
                 String name = splitted[2];
@@ -1627,7 +1646,7 @@ public class AdminCommand {
             if (splitted.length != 2) {
                 return false;
             }
-            com.mysql.jdbc.Connection dcon = (com.mysql.jdbc.Connection) DatabaseConnection.getConnection();
+            Connection dcon = (Connection) DatabaseConnection.getConnection();
             try {
                 com.mysql.jdbc.PreparedStatement ps = (com.mysql.jdbc.PreparedStatement) dcon.prepareStatement("SELECT guildid FROM guilds WHERE name = ?");
                 ps.setString(1, splitted[1]);

@@ -2733,6 +2733,20 @@ public final class MapleMap {
         }
         return null;
     }
+    
+    public final MapleCharacter getCharacterByName(final String name) {
+        charactersLock.readLock().lock();
+        try {
+            for (MapleCharacter mc : characters) {
+                if (mc.getName().equals(name)) {
+                    return mc;
+                }
+            }
+        } finally {
+            charactersLock.readLock().unlock();
+        }
+        return null;
+    }
 
     public final void updateMapObjectVisibility(final MapleCharacter chr, final MapleMapObject mo) {
         if (chr == null || chr.isClone()) {

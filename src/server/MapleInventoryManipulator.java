@@ -573,8 +573,10 @@ public class MapleInventoryManipulator {
         boolean itemChanged = false;
         if (!GameConstants.isTimelessItem(source.getItemId()) && source.getFlag() != ItemFlag.LOCK.getValue()) {
             if (MapleItemInformationProvider.getInstance().isUntradeableOnEquip(source.getItemId())) {
-                source.setFlag((byte) ItemFlag.UNTRADEABLE.getValue());
-                itemChanged = true;
+                if (!ItemFlag.UNTRADEABLE.check(source.getFlag())) {
+                    source.setFlag((byte) ItemFlag.UNTRADEABLE.getValue());
+                    itemChanged = true;
+                }
             }
         }
 

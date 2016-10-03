@@ -51,7 +51,7 @@ import handling.world.World;
 import handling.world.family.MapleFamilyCharacter;
 import handling.world.guild.MapleGuildCharacter;
 import java.io.UnsupportedEncodingException;
-import static java.lang.Thread.sleep;
+import static java.lang.Math.log;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -63,49 +63,19 @@ import tools.packet.LoginPacket;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.mina.core.session.IoSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import server.Timer.PingTimer;
 import server.quest.MapleQuest;
 import tools.FilePrinter;
 import tools.HexTool;
 import tools.MaplePacketCreator;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
-import static java.lang.Thread.sleep;
 
 public class MapleClient {
 
+    private static final Logger log = LoggerFactory.getLogger(MapleClient.class);
     public static final transient byte LOGIN_NOTLOGGEDIN = 0;
     public static final transient byte LOGIN_SERVER_TRANSITION = 1;
     public static final transient byte LOGIN_LOGGEDIN = 2;
@@ -771,8 +741,7 @@ public class MapleClient {
 
             }
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-            Logger.getLogger(MapleClient.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            log.error("", ex);
 
         }
     }
@@ -1069,9 +1038,10 @@ public class MapleClient {
                     player = null;
                 }
             }
-        }
-        if (!serverTransition && isLoggedIn()) {
-            updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, getSessionIPAddress());
+
+            if (!serverTransition && isLoggedIn()) {
+                updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, getSessionIPAddress());
+            }
         }
     }
 

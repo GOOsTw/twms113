@@ -208,6 +208,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private long dps;
     private boolean switchHiredMerchant = false, 玩家私聊1 = false, 玩家私聊2 = false, 玩家私聊3 = false, GMinfo = false, 聊天稱號 = false, GM聊天 = false;
     private boolean isShowDebugInfo = false;
+    private transient MapleLieDetector antiMacro;
 
     private MapleCharacter(final boolean ChannelServer) {
         this.setStance(0);
@@ -460,7 +461,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.mount = new MapleMount(ret, ct.mount_itemid, GameConstants.isKOC(ret.job) ? 10001004 : (GameConstants.isAran(ret.job) ? 20001004 : 1004), ct.mount_Fatigue, ct.mount_level, ct.mount_exp);
 
         ret.stats.recalcLocalStats(true);
-
+        ret.antiMacro = new MapleLieDetector(ret);
         ret.giveCSpointsLasttime = ct.giveCSpointsLasttime;
 
         return ret;
@@ -816,6 +817,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 rs.close();
 
                 ret.stats.recalcLocalStats(true);
+                ret.antiMacro = new MapleLieDetector(ret);
             } else { // Not channel server
                 for (Pair<IItem, MapleInventoryType> mit : ItemLoader.INVENTORY.loadItems(true, charid).values()) {
                     ret.getInventory(mit.getRight()).addFromDB(mit.getLeft());
@@ -2693,6 +2695,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     private void changeMapInternal(final MapleMap to, final Point pos, MaplePacket warpPacket, final MaplePortal pto) {
+        if (getAntiMacro().inProgress()) {
+            dropMessage(5, "You cannot use it in the middle of the Lie Detector Test.");
+            return;
+        }
         if (to == null) {
             return;
         }
@@ -2718,6 +2724,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void leaveMap() {
+        antiMacro.reset(); // reset lie detector  
         //controlled.clear();
         visibleMapObjectsLock.writeLock().lock();
         try {
@@ -6847,5 +6854,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
         dropMessage(type, msg);
         dropMessage(-1, msg);
+    }
+
+    public final MapleLieDetector getAntiMacro() {
+        return antiMacro;
     }
 }

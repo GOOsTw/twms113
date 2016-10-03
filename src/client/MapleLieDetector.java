@@ -31,7 +31,7 @@ public class MapleLieDetector {
     }
 
     public final boolean startLieDetector(final String tester, final boolean isItem, final boolean anotherAttempt) {
-        if (!anotherAttempt && (chr.isClone() || (isPassed() && isItem) || inProgress() || attempt == 2/* || answer != null || tester != null*/)) {
+        if (!anotherAttempt && (chr.isClone() || (isPassed() && isItem) || inProgress() || attempt == 2)) {
             return false;
         }
         Captcha captcha = CapchtaFactory.getInstance().getCaptcha();
@@ -46,6 +46,7 @@ public class MapleLieDetector {
         this.attempt++;
 
         chr.getClient().getSession().write(MaplePacketCreator.sendLieDetector(image));
+        
         EtcTimer.getInstance().schedule(new Runnable() {
             @Override
             public void run() {
@@ -53,7 +54,7 @@ public class MapleLieDetector {
                     if (attempt >= 2) {
                         final MapleCharacter search_chr = chr.getMap().getCharacterByName(tester);
                         if (search_chr != null && search_chr.getId() != chr.getId()) {
-                            search_chr.dropMessage(5, "The user has failed the Lie Detector Test. You'll be rewarded 7000 mesos from the user.");
+                            search_chr.dropMessage(5, search_chr.getName() + "沒通過測謊機測試，你將獲得7000楓幣.");
                             search_chr.gainMeso(7000, true);
                         }
                         end();
@@ -65,7 +66,7 @@ public class MapleLieDetector {
                     }
                 }
             }
-        }, 60000); // 60 secs 
+        }, 60000);
         return true;
     }
 
