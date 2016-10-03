@@ -23,8 +23,8 @@ function init() {
 function scheduleNew() {
     em.setProperty("docked", "true");
     em.setProperty("entry", "true");
-    KC_docked.broadcastMessage(MaplePacketCreator.serverNotice(6, "地鐵列車到站了。"));
-    NLC_docked.broadcastMessage(MaplePacketCreator.serverNotice(6, "地鐵列車到站了。"));
+    KC_docked.broadcastMessage(MaplePacketCreator.getItemNotice("地鐵列車到站了。"));
+    NLC_docked.broadcastMessage(MaplePacketCreator.getItemNotice("地鐵列車到站了。"));
     em.schedule("stopEntry", closeTime);
     em.schedule("takeoff", beginTime);
 }
@@ -43,8 +43,8 @@ function takeoff() {
     while (temp2.hasNext()) {
         temp2.next().changeMap(Subway_to_KC, Subway_to_KC.getPortal(0));
     }
-    KC_docked.broadcastMessage(MaplePacketCreator.serverNotice(6, "地鐵列車已經離開了."));
-    NLC_docked.broadcastMessage(MaplePacketCreator.serverNotice(6, "地鐵列車已經離開了."));
+    KC_docked.broadcastMessage(MaplePacketCreator.getItemNotice("地鐵列車已經離開了."));
+    NLC_docked.broadcastMessage(MaplePacketCreator.getItemNotice("地鐵列車已經離開了."));
     var temp = rideTime / 1000;
     Subway_to_KC.broadcastMessage(MaplePacketCreator.getClock(temp));
     Subway_to_NLC.broadcastMessage(MaplePacketCreator.getClock(temp));
