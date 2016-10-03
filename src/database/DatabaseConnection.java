@@ -81,7 +81,6 @@ public class DatabaseConnection {
 
     public static Connection getConnection() {
 
-
         Thread cThread = Thread.currentThread();
         Integer threadID = (int) cThread.getId();
         ConWrapper ret;
@@ -212,11 +211,18 @@ public class DatabaseConnection {
         }
         return datasource;
     }
-    
+
     private static Connection connectToDB_Old() {
 
         try {
             Properties props = new Properties();
+            String dbDriver = "com.mysql.jdvc.Driver";
+            String database = ServerProperties.getProperty("server.settings.db.name", "twms");
+            String host = ServerProperties.getProperty("server.settings.db.ip", "localhost");
+            String dbUser = ServerProperties.getProperty("server.settings.db.user", "root");
+            String dbPass = ServerProperties.getProperty("server.settings.db.password", "");
+            String dbUrl = "jdbc:mysql://" + host + ":3306/" + database;//+ "?autoReconnect=true&characterEncoding=UTF8&connectTimeout=120000000";
+
             props.put("user", dbUser);
             props.put("password", dbPass);
             props.put("autoReconnect", "true");
@@ -229,13 +235,13 @@ public class DatabaseConnection {
             ps = con.prepareStatement("SET time_zone = '+08:00'");
             ps.execute();
             ps.close();
-           
+
             return con;
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
     }
-    
+
     private static Connection connectToDB() {
         try {
             return getDataSource().getConnection();
