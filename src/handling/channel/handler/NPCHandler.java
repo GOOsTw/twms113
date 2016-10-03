@@ -105,15 +105,13 @@ public class NPCHandler {
     }
 
     public static final void QuestAction(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+        
         chr.getQuestLock().lock();
         try {
             final byte action = slea.readByte();
             short quest = slea.readShort();
             if (quest < 0) { //questid 50000 and above, WILL cast to negative, this was tested.
                 quest += 65536; //probably not the best fix, but whatever
-            }
-            if (chr == null) {
-                return;
             }
             final MapleQuest q = MapleQuest.getInstance(quest);
             switch (action) {

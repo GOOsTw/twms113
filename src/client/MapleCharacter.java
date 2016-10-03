@@ -199,7 +199,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private String teleportname = "";
     private boolean isSaveing = false;
     private static final ReentrantLock saveLock = new ReentrantLock();// 鎖對象
-    private static final ReentrantLock questLock = new ReentrantLock();
+    private final ReentrantLock questLock = new ReentrantLock();
     private long giveCSpointsLasttime = 0;
     private static final String[] ariantroomleader = new String[3]; // 沙漠競技場PQ
     private static final int[] ariantroomslot = new int[3]; // 沙漠競技場PQ
@@ -6861,10 +6861,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return antiMacro;
     }
 
-    public static ReentrantLock getQuestLock() {
+    public ReentrantLock getQuestLock() {
         return questLock;
     }
-    
-    
-    
+
 }
