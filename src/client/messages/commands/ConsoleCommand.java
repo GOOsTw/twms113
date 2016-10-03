@@ -6,7 +6,6 @@
 package client.messages.commands;
 
 import client.MapleCharacter;
-import client.MapleClient;
 import database.DatabaseConnection;
 import handling.RecvPacketOpcode;
 import handling.SendPacketOpcode;
@@ -20,6 +19,7 @@ import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.sql.Connection;
 import scripting.NPCScriptManager;
 import scripting.PortalScriptManager;
 import scripting.ReactorScriptManager;
@@ -29,7 +29,6 @@ import server.MapleShopFactory;
 import server.ShutdownServer;
 import server.Timer;
 import server.life.MapleMonsterInformationProvider;
-import static tools.FilePrinter.MapleQuest;
 import tools.MaplePacketCreator;
 import tools.StringUtil;
 
@@ -182,7 +181,7 @@ public class ConsoleCommand {
         @Override
         public int execute(String[] splitted) {
             try {
-                com.mysql.jdbc.Connection dcon = (com.mysql.jdbc.Connection) DatabaseConnection.getConnection();
+                Connection dcon = (Connection) DatabaseConnection.getConnection();
                 com.mysql.jdbc.PreparedStatement ps = (com.mysql.jdbc.PreparedStatement) dcon.prepareStatement("UPDATE accounts SET loggedin = 0 WHERE loggedin = 1");
                 ps.executeUpdate();
                 ps.close();

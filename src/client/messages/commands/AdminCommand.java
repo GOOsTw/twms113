@@ -1496,7 +1496,7 @@ public class AdminCommand {
             if (splitted.length < 2) {
                 return false;
             }
-            com.mysql.jdbc.Connection dcon = (com.mysql.jdbc.Connection) DatabaseConnection.getConnection();
+            Connection dcon = (Connection) DatabaseConnection.getConnection();
             try {
                 int id = 0, quantity = 0;
                 String name = splitted[2];
@@ -1644,7 +1644,7 @@ public class AdminCommand {
             if (splitted.length != 2) {
                 return false;
             }
-            com.mysql.jdbc.Connection dcon = (com.mysql.jdbc.Connection) DatabaseConnection.getConnection();
+            Connection dcon = (Connection) DatabaseConnection.getConnection();
             try {
                 com.mysql.jdbc.PreparedStatement ps = (com.mysql.jdbc.PreparedStatement) dcon.prepareStatement("SELECT guildid FROM guilds WHERE name = ?");
                 ps.setString(1, splitted[1]);
