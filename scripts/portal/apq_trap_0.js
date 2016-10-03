@@ -1,3 +1,5 @@
+importPackage(Packages.tools.MaplePacketCreator);
+
 function enter(pi) {
     var map = pi.getPlayer().getMap();
     var reactor = map.getReactorByName("gate00");
@@ -6,7 +8,7 @@ function enter(pi) {
         pi.warp(670010600, 2);
         return true;
     } else {
-        pi.getClient().getSession().write(org.rise.tools.MaplePacketCreator.serverNotice(5, "The gate is closed."));
+        pi.getClient().getSession().write(MaplePacketCreator.getErrorNotice("The gate is closed."));
         return false;
     }
 }
