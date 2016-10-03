@@ -31,7 +31,7 @@ public class MapleLieDetector {
     }
 
     public final boolean startLieDetector(final String tester, final boolean isItem, final boolean anotherAttempt) {
-        if (!anotherAttempt && (chr.isClone() || (isPassed() && isItem) || inProgress() || attempt == 2/* || answer != null || tester != null*/)) {
+        if (!anotherAttempt && (chr.isClone() || (isPassed() && isItem) || inProgress() || attempt == 2)) {
             return false;
         }
         Captcha captcha = CapchtaFactory.getInstance().getCaptcha();
@@ -46,6 +46,7 @@ public class MapleLieDetector {
         this.attempt++;
 
         chr.getClient().getSession().write(MaplePacketCreator.sendLieDetector(image));
+        
         EtcTimer.getInstance().schedule(new Runnable() {
             @Override
             public void run() {

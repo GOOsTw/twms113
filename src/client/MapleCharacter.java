@@ -817,6 +817,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 rs.close();
 
                 ret.stats.recalcLocalStats(true);
+                ret.antiMacro = new MapleLieDetector(ret);
             } else { // Not channel server
                 for (Pair<IItem, MapleInventoryType> mit : ItemLoader.INVENTORY.loadItems(true, charid).values()) {
                     ret.getInventory(mit.getRight()).addFromDB(mit.getLeft());

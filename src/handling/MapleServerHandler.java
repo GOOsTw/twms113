@@ -422,7 +422,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 CharLoginHandler.handleDeleteCharacter(slea, c);
                 break;
             case CHAR_SELECT:
-                CharLoginHandler.handleSecectCharacter(slea, c);
+                CharLoginHandler.handleSelectCharacter(slea, c);
                 break;
             case SET_GENDER:
                 CharLoginHandler.handleGenderSet(slea, c);

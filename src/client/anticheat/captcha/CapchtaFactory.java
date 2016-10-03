@@ -88,7 +88,7 @@ public class CapchtaFactory {
             Rectangle2D rect = fntStyle1.getStringBounds(chr, g2dImage.getFontRenderContext());
             g2dImage.setFont(fntStyle1);
             int x = SPACING / 3 + i * SPACING;
-            int y = IMAGE_HEIGHT - ((Double) (rect.getMaxX() * 1.5)).intValue();
+            int y = IMAGE_HEIGHT - ((Double) (rect.getMaxX() * 1)).intValue();
             g2dImage.setColor(new Color(random.nextInt(128), random.nextInt(128), random.nextInt(128)));
             AffineTransform orig = g2dImage.getTransform();
             double radius = (-1 * Math.PI / 4) + random.nextDouble() * (Math.PI / 2);

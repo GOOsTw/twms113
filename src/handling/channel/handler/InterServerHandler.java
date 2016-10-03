@@ -129,6 +129,12 @@ public class InterServerHandler {
         }
 
         final int state = c.getLoginState();
+        
+        if(state != MapleClient.LOGIN_SERVER_TRANSITION && state != MapleClient.CHANGE_CHANNEL) {
+              c.getSession().close(true);
+              return;
+        }
+        
 
         //對在線上角色做斷線
         ChannelServer.forceRemovePlayerByAccId(c, c.getAccID());

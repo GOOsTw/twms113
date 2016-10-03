@@ -37,7 +37,7 @@ public class LieDetectorHandler {
                 return;
             }
         } else if (!chr.isGM() && chr.getJob() != 800) { // Manager using skill. Lie Detector Skill 
-            c.getSession().close();
+            c.getSession().close(true);
             return;
         }
         if ((FieldLimitType.PotionUse.check(chr.getMap().getFieldLimit()) && isItem) || chr.getMap().getReturnMapId() == chr.getMapId() || chr.getMap().getReturnMapId() == 999999999) {
@@ -45,28 +45,28 @@ public class LieDetectorHandler {
             c.getSession().write(MaplePacketCreator.enableActions());
             return;
         }
-        final MapleCharacter search_chr = chr.getMap().getCharacterByName(target);
-        if (search_chr == null || search_chr.getId() == chr.getId() || search_chr.isGM() && !chr.isGM()) {
-            chr.dropMessage(1, "The user cannot be found.");
+        final MapleCharacter targetChar = chr.getMap().getCharacterByName(target);
+        if (targetChar == null || targetChar.getId() == chr.getId() || targetChar.isGM() && !chr.isGM()) {
+            chr.dropMessage(1, "使用者不存在");
             c.getSession().write(MaplePacketCreator.enableActions());
             return;
         }
-        if (search_chr.getEventInstance() != null) {
-            chr.dropMessage(5, "You may not use the Lie Detector on this area.");
+        if (targetChar.getEventInstance() != null) {
+            chr.dropMessage(5, "你無法在這裡使用測謊機");
             c.getSession().write(MaplePacketCreator.enableActions());
             return;
         }
-        if (search_chr.getAntiMacro().inProgress()) {
+        if (targetChar.getAntiMacro().inProgress()) {
             c.getSession().write(MaplePacketCreator.LieDetectorResponse((byte) 3));
             c.getSession().write(MaplePacketCreator.enableActions());
             return;
         }
-        if (search_chr.getAntiMacro().isPassed() && isItem || search_chr.getAntiMacro().getAttempt() == 2) {
+        if (targetChar.getAntiMacro().isPassed() && isItem || targetChar.getAntiMacro().getAttempt() == 2) {
             c.getSession().write(MaplePacketCreator.LieDetectorResponse((byte) 2));
             c.getSession().write(MaplePacketCreator.enableActions());
             return;
         }
-        if (!search_chr.getAntiMacro().startLieDetector(chr.getName(), isItem, false)) {
+        if (!targetChar.getAntiMacro().startLieDetector(chr.getName(), isItem, false)) {
             chr.dropMessage(5, "Sorry! The Captcha Server is not available now, please try again later."); //error occured, usually cannot access to captcha server 
             c.getSession().write(MaplePacketCreator.enableActions());
             return;
@@ -74,7 +74,7 @@ public class LieDetectorHandler {
         if (isItem) {
             MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, slot, (short) 1, false);
         }
-        search_chr.dropMessage(5, chr.getName() + " has used the Lie Detector Test.");
+        targetChar.dropMessage(5, chr.getName() + " has used the Lie Detector Test.");
     }
 
     public static void LieDetectorResponse(final SeekableLittleEndianAccessor slea, final MapleClient c) { // Person who typed 

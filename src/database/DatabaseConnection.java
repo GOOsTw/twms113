@@ -16,6 +16,9 @@
  */
 package database;
 
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -26,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +48,8 @@ public class DatabaseConnection {
     private static final HashMap<Integer, ConWrapper> connections
             = new HashMap();
     private final static Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
-    private static String dbDriver = "", dbUrl = "", dbUser = "", dbPass = "";
+    private static HikariDataSource datasource;
+    private static final int maxConnection = 500;
     private static final long connectionTimeOut = 30 * 60 * 1000;
     private static final ReentrantLock lock = new ReentrantLock();// 锁对象
 
@@ -75,9 +81,6 @@ public class DatabaseConnection {
 
     public static Connection getConnection() {
 
-        if (!isInitialized()) {
-            InitDB();
-        }
 
         Thread cThread = Thread.currentThread();
         Integer threadID = (int) cThread.getId();
@@ -185,42 +188,42 @@ public class DatabaseConnection {
         }
     }
 
-    private static Connection connectToDB() {
+    public static DataSource getDataSource() {
+        if (datasource == null) {
+            HikariConfig config = new HikariConfig();
 
-        try {
-            Properties props = new Properties();
-            props.put("user", dbUser);
-            props.put("password", dbPass);
-            props.put("autoReconnect", "true");
-            props.put("characterEncoding", "UTF8");
-            props.put("connectTimeout", "2000000");
-            props.put("serverTimezone", "Asia/Taipei");
-            Connection con = DriverManager.getConnection(dbUrl, props);
+            String database = ServerProperties.getProperty("server.settings.db.name", "twms");
+            String host = ServerProperties.getProperty("server.settings.db.ip", "localhost");
+            String dbUser = ServerProperties.getProperty("server.settings.db.user", "root");
+            String dbPass = ServerProperties.getProperty("server.settings.db.password", "");
+            config.setDataSourceClassName(MysqlDataSource.class.getName());
+            config.addDataSourceProperty("serverName", host);
+            config.addDataSourceProperty("port", 3306);
+            config.addDataSourceProperty("databaseName", database);
+            config.addDataSourceProperty("user", dbUser);
+            config.addDataSourceProperty("password", dbPass);
+            config.setPoolName("springHikariCP");
 
-            PreparedStatement ps;
-            ps = con.prepareStatement("SET time_zone = '+08:00'");
-            ps.execute();
-            ps.close();
-           
-            return con;
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
+            config.setMaximumPoolSize(maxConnection);
+            config.addDataSourceProperty("cachePrepStmts", "true");
+            config.addDataSourceProperty("prepStmtCacheSize", "250");
+            config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+            datasource = new HikariDataSource(config);
         }
+        return datasource;
+    }
+    
+    private static Connection connectToDB() {
+        try {
+            return getDataSource().getConnection();
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     public static boolean isInitialized() {
-        return !dbUser.equals("");
-    }
-
-    public static void InitDB() {
-
-        dbDriver = "com.mysql.jdvc.Driver";
-        String db = ServerProperties.getProperty("server.settings.db.name", "twms");
-        String ip = ServerProperties.getProperty("server.settings.db.ip", "localhost");
-        dbUrl = "jdbc:mysql://" + ip + ":3306/" + db;//+ "?autoReconnect=true&characterEncoding=UTF8&connectTimeout=120000000";
-
-        dbUser = ServerProperties.getProperty("server.settings.db.user");
-        dbPass = ServerProperties.getProperty("server.settings.db.password");
+        return datasource != null;
     }
 
     public static void closeTimeout() {
