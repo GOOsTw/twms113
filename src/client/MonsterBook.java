@@ -85,11 +85,10 @@ public class MonsterBook implements Serializable {
         return new MonsterBook(cards);
     }
 
-    public final void saveCards(final int charid) throws SQLException {
+    public final void saveCards(final int charid, Connection con) throws SQLException {
         if (!changed || cards.isEmpty()) {
             return;
         }
-        final Connection con = DatabaseConnection.getConnection();
         PreparedStatement ps = con.prepareStatement("DELETE FROM monsterbook WHERE charid = ?");
         ps.setInt(1, charid);
         ps.execute();

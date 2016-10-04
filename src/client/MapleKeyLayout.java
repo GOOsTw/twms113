@@ -66,12 +66,10 @@ public class MapleKeyLayout implements Serializable {
         }
     }
 
-    public final void saveKeys(final int charid) throws SQLException {
+    public final void saveToDb(final int charid, Connection con) throws SQLException {
         if (!changed || keymap.isEmpty()) {
             return;
         }
-        Connection con = DatabaseConnection.getConnection();
-
         PreparedStatement ps = con.prepareStatement("DELETE FROM keymap WHERE characterid = ?");
         ps.setInt(1, charid);
         ps.execute();
