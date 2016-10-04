@@ -166,7 +166,7 @@ public class MapleSummon extends AbstractAnimatedMapleMapObject {
         }
         final long STime_TC = System.currentTimeMillis() - tickcount;
         final long S_C_Difference = Server_ClientSummonTickDiff - STime_TC;
-        if (S_C_Difference > 200) {
+        if (S_C_Difference > 300) {
             chr.getCheatTracker().registerOffense(CheatingOffense.召喚獸無延遲);
         }
         Summon_tickResetCount++;

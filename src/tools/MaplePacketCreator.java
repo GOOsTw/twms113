@@ -1967,7 +1967,7 @@ public class MaplePacketCreator {
         if (buffs.keySet().contains(MapleBuffStat.GM_HIDE)) {
             mplew.writeInt(buffs.get(MapleBuffStat.GM_HIDE));
         }
-        if (buffs.keySet().contains(MapleBuffStat.BUFF_57)) {
+        if (buffs.keySet().contains(MapleBuffStat.BERSERK_FURY)) {
         }
         if (buffs.keySet().contains(MapleBuffStat.ILLUSION)) {
         }

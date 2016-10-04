@@ -57,11 +57,10 @@ public class MapleMount implements Serializable {
         this.owner = new WeakReference<>(owner);
     }
 
-    public void saveMount(final int charid) {
+    public void saveMount(final int charid, Connection con) {
         if (!changed) {
             return;
         }
-        Connection con = DatabaseConnection.getConnection();
         try (PreparedStatement ps = con.prepareStatement("UPDATE mountdata set `Level` = ?, `Exp` = ?, `Fatigue` = ? WHERE characterid = ?")) {
             ps.setByte(1, level);
             ps.setInt(2, exp);
