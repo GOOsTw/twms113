@@ -4835,10 +4835,10 @@ public class MaplePacketCreator {
     }
 
     public static MaplePacket LieDetectorResponse(final byte msg) {
-        return LieDetectorResponse(msg, (byte) 0);
+        return AntiMacroResponse(msg, (byte) 0);
     }
 
-    public static MaplePacket LieDetectorResponse(final byte msg, final byte msg2) {
+    public static MaplePacket AntiMacroResponse(final byte msg, final byte msg2) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.LIE_DETECTOR.getValue());
