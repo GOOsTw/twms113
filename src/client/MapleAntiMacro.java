@@ -17,21 +17,21 @@ import tools.Pair;
  *
  * @author Weber
  */
-public class MapleLieDetector {
+public class MapleAntiMacro {
 
-    public MapleCharacter chr;
-    public byte type; // 0 = Normal, 1 = Admin Macro (Manager Skill) 
+    public MapleCharacter player;
+    public AntiMacroType type; // 0 = Normal, 1 = Admin Macro (Manager Skill) 
     public int attempt;
     public String tester, answer;
     public boolean inProgress, passed;
 
-    public MapleLieDetector(final MapleCharacter c) {
-        this.chr = c;
+    public MapleAntiMacro(final MapleCharacter c) {
+        this.player = c;
         reset();
     }
 
-    public final boolean startLieDetector(final String tester, final boolean isItem, final boolean anotherAttempt) {
-        if (!anotherAttempt && (chr.isClone() || (isPassed() && isItem) || inProgress() || attempt == 2)) {
+    public final boolean startAntiMacro(final String tester, final boolean isItem, final boolean anotherAttempt) {
+        if (!anotherAttempt && (player.isClone() || (isPassed() && isItem) || inProgress() || attempt == 2)) {
             return false;
         }
         Captcha captcha = CapchtaFactory.getInstance().getCaptcha();
@@ -42,31 +42,31 @@ public class MapleLieDetector {
         this.answer = captcha.getAnswer();
         this.tester = tester;
         this.inProgress = true;
-        this.type = (byte) (isItem ? 0 : 1);
+        this.type = (isItem ? AntiMacroType.NORMAL : AntiMacroType.ADMIN_SKILL);
         this.attempt++;
 
-        chr.getClient().getSession().write(MaplePacketCreator.sendLieDetector(image));
+        player.getClient().getSession().write(MaplePacketCreator.sendLieDetector(image));
         
         EtcTimer.getInstance().schedule(new Runnable() {
             @Override
             public void run() {
-                if (!isPassed() && chr != null) {
+                if (!isPassed() && player != null) {
                     if (attempt >= 2) {
-                        final MapleCharacter search_chr = chr.getMap().getCharacterByName(tester);
-                        if (search_chr != null && search_chr.getId() != chr.getId()) {
-                            search_chr.dropMessage(5, search_chr.getName() + "沒通過測謊機測試，你將獲得7000楓幣.");
-                            search_chr.gainMeso(7000, true);
+                        final MapleCharacter testerChar = player.getMap().getCharacterByName(tester);
+                        if (testerChar != null && testerChar.getId() != player.getId()) {
+                            testerChar.dropMessage(5, testerChar.getName() + "沒通過測謊機測試，你將獲得7000楓幣.");
+                            testerChar.gainMeso(7000, true);
                         }
                         end();
-                        chr.getClient().getSession().write(MaplePacketCreator.LieDetectorResponse((byte) 7, (byte) 4));
-                        final MapleMap to = chr.getMap().getReturnMap();
-                        chr.changeMap(to, to.getPortal(0));
+                        player.getClient().getSession().write(MaplePacketCreator.AntiMacroResponse((byte) 7, (byte) 4));
+                        final MapleMap to = player.getMap().getReturnMap();
+                        player.changeMap(to, to.getPortal(0));
                     } else { // can have another attempt 
-                        startLieDetector(tester, isItem, true);
+                        startAntiMacro(tester, isItem, true);
                     }
                 }
             }
-        }, 60000);
+        }, 60 * 1000);
         return true;
     }
 
@@ -74,7 +74,7 @@ public class MapleLieDetector {
         return attempt;
     }
 
-    public final byte getLastType() {
+    public final AntiMacroType getLastType() {
         return type;
     }
 

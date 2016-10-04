@@ -209,7 +209,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private long dps;
     private boolean switchHiredMerchant = false, 玩家私聊1 = false, 玩家私聊2 = false, 玩家私聊3 = false, GMinfo = false, 聊天稱號 = false, GM聊天 = false;
     private boolean isShowDebugInfo = false;
-    private transient MapleLieDetector antiMacro;
+    private transient MapleAntiMacro antiMacro;
 
     private MapleCharacter(final boolean ChannelServer) {
         this.setStance(0);
@@ -462,7 +462,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.mount = new MapleMount(ret, ct.mount_itemid, GameConstants.isKOC(ret.job) ? 10001004 : (GameConstants.isAran(ret.job) ? 20001004 : 1004), ct.mount_Fatigue, ct.mount_level, ct.mount_exp);
 
         ret.stats.recalcLocalStats(true);
-        ret.antiMacro = new MapleLieDetector(ret);
+        ret.antiMacro = new MapleAntiMacro(ret);
         ret.giveCSpointsLasttime = ct.giveCSpointsLasttime;
 
         return ret;
@@ -818,7 +818,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 rs.close();
 
                 ret.stats.recalcLocalStats(true);
-                ret.antiMacro = new MapleLieDetector(ret);
+                ret.antiMacro = new MapleAntiMacro(ret);
             } else { // Not channel server
                 for (Pair<IItem, MapleInventoryType> mit : ItemLoader.INVENTORY.loadItems(true, charid).values()) {
                     ret.getInventory(mit.getRight()).addFromDB(mit.getLeft());
@@ -1246,7 +1246,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             PlayerNPC.updateByCharId(this);
             keylayout.saveToDb(id, con);
             mount.saveMount(id, con);
-            monsterbook.saveCards(id,con);
+            monsterbook.saveCards(id, con);
 
             deleteWhereCharacterId(con, "DELETE FROM wishlist WHERE characterid = ?");
             for (int i = 0; i < getWishlistSize(); i++) {
@@ -6856,7 +6856,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         dropMessage(-1, msg);
     }
 
-    public final MapleLieDetector getAntiMacro() {
+    public final MapleAntiMacro getAntiMacro() {
         return antiMacro;
     }
 
