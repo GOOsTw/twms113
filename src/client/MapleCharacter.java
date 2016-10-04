@@ -209,7 +209,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private long dps;
     private boolean switchHiredMerchant = false, 玩家私聊1 = false, 玩家私聊2 = false, 玩家私聊3 = false, GMinfo = false, 聊天稱號 = false, GM聊天 = false;
     private boolean isShowDebugInfo = false;
-    private transient MapleLieDetector antiMacro;
+    private transient MapleAntiMacro antiMacro;
 
     private MapleCharacter(final boolean ChannelServer) {
         this.setStance(0);
@@ -462,7 +462,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.mount = new MapleMount(ret, ct.mount_itemid, GameConstants.isKOC(ret.job) ? 10001004 : (GameConstants.isAran(ret.job) ? 20001004 : 1004), ct.mount_Fatigue, ct.mount_level, ct.mount_exp);
 
         ret.stats.recalcLocalStats(true);
-        ret.antiMacro = new MapleLieDetector(ret);
+        ret.antiMacro = new MapleAntiMacro(ret);
         ret.giveCSpointsLasttime = ct.giveCSpointsLasttime;
 
         return ret;
@@ -818,7 +818,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 rs.close();
 
                 ret.stats.recalcLocalStats(true);
-                ret.antiMacro = new MapleLieDetector(ret);
+                ret.antiMacro = new MapleAntiMacro(ret);
             } else { // Not channel server
                 for (Pair<IItem, MapleInventoryType> mit : ItemLoader.INVENTORY.loadItems(true, charid).values()) {
                     ret.getInventory(mit.getRight()).addFromDB(mit.getLeft());
@@ -1010,7 +1010,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         Connection con = DatabaseConnection.getConnection();
 
         PreparedStatement ps = null;
-        PreparedStatement pse = null;
+        PreparedStatement ps2 = null;
         ResultSet rs = null;
 
         try {
@@ -1018,6 +1018,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
             con.setAutoCommit(false);
             ps = con.prepareStatement("UPDATE characters SET level = ?, fame = ?, str = ?, dex = ?, luk = ?, `int` = ?, exp = ?, hp = ?, mp = ?, maxhp = ?, maxmp = ?, sp = ?, ap = ?, gm = ?, skincolor = ?, gender = ?, job = ?, hair = ?, face = ?, map = ?, meso = ?, hpApUsed = ?, spawnpoint = ?, party = ?, buddyCapacity = ?, monsterbookcover = ?, dojo_pts = ?, dojoRecord = ?, pets = ?, subcategory = ?, marriageId = ?, currentrep = ?, totalrep = ?, charmessage = ?, expression = ?, constellation = ?, blood = ?, month = ?, day = ?, beans = ?, prefix = ?, gachexp = ?, dps = ?, name = ? WHERE id = ?");
+
             if (gmLevel < 1 && level > 199) {
                 ps.setInt(1, GameConstants.isKOC(job) ? 120 : 200);
             } else {
@@ -1047,23 +1048,25 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.setShort(17, job);
             ps.setInt(18, hair);
             ps.setInt(19, face);
+            int savedMap = mapid;
+
             if (!fromcs && map != null) {
                 if (map.getForcedReturnId() != 999999999) {
-                    ps.setInt(20, map.getForcedReturnId());
+                    savedMap = map.getForcedReturnId();
                 } else {
-                    ps.setInt(20, stats.getHp() < 1 ? map.getReturnMapId() : map.getId());
+                    savedMap = stats.getHp() < 1 ? map.getReturnMapId() : map.getId();
+
                 }
-            } else {
-                ps.setInt(20, mapid);
             }
+            ps.setInt(20, savedMap);
             ps.setInt(21, meso);
             ps.setShort(22, hpmpApUsed);
-            if (map == null) {
-                ps.setByte(23, (byte) 0);
-            } else {
-                final MaplePortal closest = map.findClosestSpawnpoint(getPosition());
-                ps.setByte(23, (byte) (closest != null ? closest.getId() : 0));
+            int savedSpawnPoint = 0;
+            final MaplePortal closest = map.findClosestSpawnpoint(getPosition());
+            if (map != null && closest != null) {
+                savedSpawnPoint = closest.getId();
             }
+            ps.setInt(23, savedSpawnPoint);
             ps.setInt(24, party != null ? party.getId() : -1);
             ps.setShort(25, buddylist.getCapacity());
             ps.setInt(26, bookCover);
@@ -1072,9 +1075,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             final StringBuilder petz = new StringBuilder();
             int petLength = 0;
             for (final MaplePet pet : pets) {
-                pet.saveToDb();
+                pet.saveToDb(con);
                 if (pet.getSummoned()) {
-
                     petz.append(pet.getInventoryPosition());
                     petz.append(",");
                     petLength++;
@@ -1148,7 +1150,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
             deleteWhereCharacterId(con, "DELETE FROM queststatus WHERE characterid = ?");
             ps = con.prepareStatement("INSERT INTO queststatus (`queststatusid`, `characterid`, `quest`, `status`, `time`, `forfeited`, `customData`) VALUES (DEFAULT, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-            pse = con.prepareStatement("INSERT INTO queststatusmobs VALUES (DEFAULT, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            ps2 = con.prepareStatement("INSERT INTO queststatusmobs VALUES (DEFAULT, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, id);
             for (final MapleQuestStatus q : quests.values()) {
                 ps.setInt(2, q.getQuest().getId());
@@ -1161,16 +1163,16 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 rs.next();
                 if (q.hasMobKills()) {
                     for (int mob : q.getMobKills().keySet()) {
-                        pse.setInt(1, rs.getInt(1));
-                        pse.setInt(2, mob);
-                        pse.setInt(3, q.getMobKills(mob));
-                        pse.executeUpdate();
+                        ps2.setInt(1, rs.getInt(1));
+                        ps2.setInt(2, mob);
+                        ps2.setInt(3, q.getMobKills(mob));
+                        ps2.executeUpdate();
                     }
                 }
                 rs.close();
             }
             ps.close();
-            pse.close();
+            ps2.close();
 
             deleteWhereCharacterId(con, "DELETE FROM skills WHERE characterid = ?");
             ps = con.prepareStatement("INSERT INTO skills (characterid, skillid, skilllevel, masterlevel, expiration) VALUES (?, ?, ?, ?, ?)");
@@ -1242,9 +1244,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
 
             PlayerNPC.updateByCharId(this);
-            keylayout.saveKeys(id);
-            mount.saveMount(id);
-            monsterbook.saveCards(id);
+            keylayout.saveToDb(id, con);
+            mount.saveMount(id, con);
+            monsterbook.saveCards(id, con);
 
             deleteWhereCharacterId(con, "DELETE FROM wishlist WHERE characterid = ?");
             for (int i = 0; i < getWishlistSize(); i++) {
@@ -1291,15 +1293,12 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             try {
                 if (ps != null) {
                     ps.close();
-                    ps = null;
                 }
-                if (pse != null) {
-                    pse.close();
-                    pse = null;
+                if (ps2 != null) {
+                    ps2.close();
                 }
                 if (rs != null) {
                     rs.close();
-                    rs = null;
                 }
                 if (con != null) {
                     con.setAutoCommit(true);
@@ -6802,7 +6801,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         dropMessage(-1, msg);
     }
 
-    public final MapleLieDetector getAntiMacro() {
+    public final MapleAntiMacro getAntiMacro() {
         return antiMacro;
     }
 

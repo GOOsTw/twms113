@@ -7,7 +7,7 @@ package handling.channel.handler;
 
 import client.MapleCharacter;
 import client.MapleClient;
-import client.MapleLieDetector;
+import client.MapleAntiMacro;
 import client.inventory.IItem;
 import client.inventory.MapleInventoryType;
 import server.MapleInventoryManipulator;
@@ -20,18 +20,20 @@ import tools.data.input.SeekableLittleEndianAccessor;
  *
  * @author Weber
  */
-public class LieDetectorHandler {
+public class AntiMacroHandler {
 
     public static void LieDetector(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr, final boolean isItem) { // Person who used 
+
         if (chr == null || chr.getMap() == null) {
             return;
         }
-        final String target = slea.readMapleAsciiString();
-        byte slot = 0;
+        final String targetName = slea.readMapleAsciiString();
+        final MapleCharacter targetChar = chr.getMap().getCharacterByName(targetName);
+        byte itemSlot = 0;
         if (isItem) {
-            slot = (byte) slea.readShort(); // 01 00 (first pos in use) 
+            itemSlot = (byte) slea.readShort(); // 01 00 (first pos in use) 
             final int itemId = slea.readInt(); // B0 6A 21 00 
-            final IItem toUse = chr.getInventory(MapleInventoryType.USE).getItem(slot);
+            final IItem toUse = chr.getInventory(MapleInventoryType.USE).getItem(itemSlot);
             if (toUse == null || toUse.getQuantity() <= 0 || toUse.getItemId() != itemId || itemId != 2190000) {
                 c.getSession().write(MaplePacketCreator.enableActions());
                 return;
@@ -41,11 +43,11 @@ public class LieDetectorHandler {
             return;
         }
         if ((FieldLimitType.PotionUse.check(chr.getMap().getFieldLimit()) && isItem) || chr.getMap().getReturnMapId() == chr.getMapId() || chr.getMap().getReturnMapId() == 999999999) {
-            chr.dropMessage(5, "You may not use the Lie Detector on this area.");
+            chr.dropMessage(5, "你無法在這裡使用測謊機");
             c.getSession().write(MaplePacketCreator.enableActions());
             return;
         }
-        final MapleCharacter targetChar = chr.getMap().getCharacterByName(target);
+
         if (targetChar == null || targetChar.getId() == chr.getId() || targetChar.isGM() && !chr.isGM()) {
             chr.dropMessage(1, "使用者不存在");
             c.getSession().write(MaplePacketCreator.enableActions());
@@ -66,15 +68,15 @@ public class LieDetectorHandler {
             c.getSession().write(MaplePacketCreator.enableActions());
             return;
         }
-        if (!targetChar.getAntiMacro().startLieDetector(chr.getName(), isItem, false)) {
-            chr.dropMessage(5, "Sorry! The Captcha Server is not available now, please try again later."); //error occured, usually cannot access to captcha server 
+        if (!targetChar.getAntiMacro().startAntiMacro(chr.getName(), isItem, false)) {
+            chr.dropMessage(5, "目前測謊機有狀況，無法使用"); //error occured, usually cannot access to captcha server 
             c.getSession().write(MaplePacketCreator.enableActions());
             return;
         }
         if (isItem) {
-            MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, slot, (short) 1, false);
+            MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.USE, itemSlot, (short) 1, false);
         }
-        targetChar.dropMessage(5, chr.getName() + " has used the Lie Detector Test.");
+        targetChar.dropMessage(5, chr.getName() + " 使用了測謊機");
     }
 
     public static void LieDetectorResponse(final SeekableLittleEndianAccessor slea, final MapleClient c) { // Person who typed 
@@ -83,29 +85,32 @@ public class LieDetectorHandler {
         }
         final String answer = slea.readMapleAsciiString();
 
-        final MapleLieDetector ld = c.getPlayer().getAntiMacro();
-        if (!ld.inProgress() || (ld.isPassed() && ld.getLastType() == 0) || ld.getAnswer() == null || answer.length() <= 0) {
+        final MapleAntiMacro target = c.getPlayer().getAntiMacro();
+        if (!target.inProgress()
+                || (target.isPassed() && target.getLastType().getValue() == 0)
+                || target.getAnswer() == null 
+                || answer.length() <= 0) {
             c.getSession().write(MaplePacketCreator.enableActions());
             return;
         }
-        if (answer.equals(ld.getAnswer())) {
-            final MapleCharacter search_chr = c.getPlayer().getMap().getCharacterByName(ld.getTester());
+        if (answer.equals(target.getAnswer())) {
+            final MapleCharacter search_chr = c.getPlayer().getMap().getCharacterByName(target.getTester());
             if (search_chr != null && search_chr.getId() != c.getPlayer().getId()) {
                 search_chr.dropMessage(5, "The user have passed the Lie Detector Test.");
             }
-            c.getSession().write(MaplePacketCreator.LieDetectorResponse((byte) 9, (byte) 1));
+            c.getSession().write(MaplePacketCreator.AntiMacroResponse((byte) 9, (byte) 1));
             c.getPlayer().gainMeso(5000, true);
-            ld.end();
-        } else if (ld.getAttempt() < 2) { // redo again 
-            ld.startLieDetector(ld.getTester(), ld.getLastType() == 0, true); // new attempt 
+            target.end();
+        } else if (target.getAttempt() < 2) { // redo again 
+            target.startAntiMacro(target.getTester(), target.getLastType().getValue() == 0, true); // new attempt 
         } else {
-            final MapleCharacter search_chr = c.getPlayer().getMap().getCharacterByName(ld.getTester());
+            final MapleCharacter search_chr = c.getPlayer().getMap().getCharacterByName(target.getTester());
             if (search_chr != null && search_chr.getId() != c.getPlayer().getId()) {
                 search_chr.dropMessage(5, "The user has failed the Lie Detector Test. You'll be rewarded 7000 mesos from the user.");
                 search_chr.gainMeso(7000, true);
             }
-            ld.end();
-            c.getPlayer().getClient().getSession().write(MaplePacketCreator.LieDetectorResponse((byte) 7, (byte) 4));
+            target.end();
+            c.getPlayer().getClient().getSession().write(MaplePacketCreator.AntiMacroResponse((byte) 7, (byte) 4));
             final MapleMap to = c.getPlayer().getMap().getReturnMap();
             c.getPlayer().changeMap(to, to.getPortal(0));
         }
