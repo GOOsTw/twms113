@@ -366,7 +366,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     @Override
     public void sessionIdle(final IoSession session, final IdleStatus status) throws Exception {
         final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
-
         if (client != null) {
             client.sendPing();
         } else {
