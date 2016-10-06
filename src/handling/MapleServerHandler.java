@@ -20,6 +20,7 @@
  */
 package handling;
 
+import handling.channel.handler.AntiMacroHandler;
 import constants.ServerConstants;
 import java.util.Arrays;
 import java.util.Map;
