@@ -672,12 +672,14 @@ public class MapleStatEffect implements Serializable {
             stat.setHp(stat.getHp() + hpchange);
         }
         if (mpchange != 0) {
-            if (mpchange < 0 && (-mpchange) > stat.getMp()) {
+            if (mpchange < 0 || (-mpchange) > stat.getMp()) {
+                if(stat.getMp() < 0)
+                    applyto.getClient().getSession().close(true);
                 return false;
             }
             //short converting needs math.min cuz of overflow
             stat.setMp(stat.getMp() + mpchange);
-
+            
             hpmpupdate.add(new Pair<>(MapleStat.MP, Integer.valueOf(stat.getMp())));
         }
         hpmpupdate.add(new Pair<>(MapleStat.HP, Integer.valueOf(stat.getHp())));

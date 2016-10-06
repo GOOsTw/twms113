@@ -208,7 +208,7 @@ public class PlayerHandler {
     }
 
     public static final void TakeDamage(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
-        //System.out.println(slea.toString());
+     
         if (slea.available() < 4) { //封包長度少於4byte Return 避免Null
             return;
         }
