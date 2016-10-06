@@ -538,10 +538,10 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 break;
             case LIE_DETECTOR:
             case LIE_DETECTOR_SKILL:
-                AntiMacroHandler.LieDetector(slea, c, c.getPlayer(), header == RecvPacketOpcode.LIE_DETECTOR);
+                AntiMacroHandler.handleAntiMacro(slea, c, c.getPlayer(), header == RecvPacketOpcode.LIE_DETECTOR);
                 break;
             case LIE_DETECTOR_RESPONSE:
-                AntiMacroHandler.LieDetectorResponse(slea, c);
+                AntiMacroHandler.AntiMacroResponse(slea, c);
                 break;
             case ARAN_COMBO:
                 PlayerHandler.AranCombo(c, c.getPlayer());
@@ -570,7 +570,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 PlayersHandler.TouchReactor(slea, c);
                 break;
             case CLOSE_CHALKBOARD:
-                c.getPlayer().setChalkboard(null);
+                c.getPlayer().setChalkBoardText(null);
                 break;
             case ITEM_MAKER:
                 ItemMakerHandler.ItemMaker(slea, c);

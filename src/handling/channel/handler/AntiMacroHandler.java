@@ -22,7 +22,7 @@ import tools.data.input.SeekableLittleEndianAccessor;
  */
 public class AntiMacroHandler {
 
-    public static void LieDetector(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr, final boolean isItem) { // Person who used 
+    public static void handleAntiMacro(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr, final boolean isItem) { // Person who used 
 
         if (chr == null || chr.getMap() == null) {
             return;
@@ -79,7 +79,7 @@ public class AntiMacroHandler {
         targetChar.dropMessage(5, chr.getName() + " 使用了測謊機");
     }
 
-    public static void LieDetectorResponse(final SeekableLittleEndianAccessor slea, final MapleClient c) { // Person who typed 
+    public static void AntiMacroResponse(final SeekableLittleEndianAccessor slea, final MapleClient c) { // Person who typed 
         if (c.getPlayer() == null || c.getPlayer().getMap() == null) {
             return;
         }

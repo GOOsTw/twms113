@@ -397,7 +397,7 @@ public class PlayerHandler {
             short combo = chr.getCombo();
             final long curr = System.currentTimeMillis();
 
-            if (combo > 0 && (curr - chr.getLastCombo()) > 7000) {
+            if (combo > 0 && (curr - chr.getLastComboTime()) > 7000) {
                 combo = 0;
             } else {
                 if (combo == 9 && c.getPlayer().getQuestStatus(10370) == 0) {
@@ -1150,7 +1150,7 @@ public class PlayerHandler {
                 chr.cancelBuffStats(MapleBuffStat.MESO_RATE);
             }
             if (!MapConstants.isEventMap(chr.getMapId()) || !MapConstants.isBlackFM(chr.getMapId())) {
-                chr.setChalkboard(null);
+                chr.setChalkBoardText(null);
             }
             if (chr.isTestingDPS()) {
                 final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
