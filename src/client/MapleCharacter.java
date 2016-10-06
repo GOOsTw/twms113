@@ -2697,10 +2697,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     private void changeMapInternal(final MapleMap to, final Point pos, MaplePacket warpPacket, final MaplePortal pto) {
-        if(MapleAntiMacro.isAntiNow(getName())) {
-            this.dropMessage(5, "測謊中無法移動地圖");
-            return;
-        }
         if (to == null) {
             return;
         }

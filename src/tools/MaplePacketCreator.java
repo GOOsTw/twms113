@@ -4912,6 +4912,7 @@ public class MaplePacketCreator {
                 return mplew.getPacket();
             }
             mplew.write(times); // 次數 - 1
+            mplew.writeInt(image.length);
             mplew.write(image);
             if (antiMode == 2) {
             }
