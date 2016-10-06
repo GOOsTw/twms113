@@ -24,7 +24,7 @@ import javax.imageio.ImageIO;
  *
  * @author Weber
  */
-public class CapchtaFactory {
+public class CaptchaFactory {
 
     private final static int IMAGE_WIDTH = 194;
 
@@ -42,9 +42,9 @@ public class CapchtaFactory {
 
     private final Random random = new Random();
 
-    private final static CapchtaFactory INSTANCE = new CapchtaFactory();
+    private final static CaptchaFactory INSTANCE = new CaptchaFactory();
 
-    public static CapchtaFactory getInstance() {
+    public static CaptchaFactory getInstance() {
         return INSTANCE;
     }
 
@@ -61,7 +61,7 @@ public class CapchtaFactory {
         try {
             ImageIO.write(biImage, "jpeg", osImage);
         } catch (IOException ex) {
-            Logger.getLogger(CapchtaFactory.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CaptchaFactory.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
         return new Captcha(answer, osImage.toByteArray());

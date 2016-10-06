@@ -65,6 +65,7 @@ import database.DatabaseException;
 import handling.MaplePacket;
 import handling.channel.ChannelServer;
 import handling.world.CharacterTransfer;
+import handling.world.MapleAntiMacro;
 import handling.world.MapleMessenger;
 import handling.world.MapleMessengerCharacter;
 import handling.world.MapleParty;
@@ -209,7 +210,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private long dps;
     private boolean switchHiredMerchant = false, 玩家私聊1 = false, 玩家私聊2 = false, 玩家私聊3 = false, GMinfo = false, 聊天稱號 = false, GM聊天 = false;
     private boolean isShowDebugInfo = false;
-    private transient MapleAntiMacro antiMacro;
 
     private MapleCharacter(final boolean isChannelServer) {
         super.setStance(0);
@@ -462,7 +462,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.mount = new MapleMount(ret, ct.mount_itemid, GameConstants.isKOC(ret.job) ? 10001004 : (GameConstants.isAran(ret.job) ? 20001004 : 1004), ct.mount_Fatigue, ct.mount_level, ct.mount_exp);
 
         ret.stats.recalcLocalStats(true);
-        ret.antiMacro = new MapleAntiMacro(ret);
         ret.giveCSpointsLasttime = ct.giveCSpointsLasttime;
 
         return ret;
@@ -816,9 +815,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 ret.mount = new MapleMount(ret, mount != null ? mount.getItemId() : 0, ret.job > 1000 && ret.job < 2000 ? 10001004 : (ret.job >= 2000 ? (ret.job == 2001 || ret.job >= 2200 ? 20011004 : (ret.job >= 3000 ? 30001004 : 20001004)) : 1004), rs.getByte("Fatigue"), rs.getByte("Level"), rs.getInt("Exp"));
                 ps.close();
                 rs.close();
-
                 ret.stats.recalcLocalStats(true);
-                ret.antiMacro = new MapleAntiMacro(ret);
             } else { // Not channel server
                 for (Pair<IItem, MapleInventoryType> mit : ItemLoader.INVENTORY.loadItems(true, charid).values()) {
                     ret.getInventory(mit.getRight()).addFromDB(mit.getLeft());
@@ -2675,6 +2672,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
          finishAchievement(7);
          }*/
     }
+    
+    public void changeMap(final int mapid) {
+        final MapleMap target = client.getChannelServer().getMapFactory().getMap(mapid);
+        changeMap(target, target.getPortal(0));
+    }
 
     public void changeMapBanish(final int mapid, final String portal, final String msg) {
         dropMessage(5, msg);
@@ -2695,8 +2697,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     private void changeMapInternal(final MapleMap to, final Point pos, MaplePacket warpPacket, final MaplePortal pto) {
-        if (getAntiMacro().inProgress()) {
-            dropMessage(5, "You cannot use it in the middle of the Lie Detector Test.");
+        if(MapleAntiMacro.isAntiNow(getName())) {
+            this.dropMessage(5, "測謊中無法移動地圖");
             return;
         }
         if (to == null) {
@@ -2724,7 +2726,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void leaveMap() {
-        antiMacro.reset(); // reset lie detector  
+        MapleAntiMacro.stopAnti(getName());
         //controlled.clear();
         visibleMapObjectsLock.writeLock().lock();
         try {
@@ -6741,13 +6743,28 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         dropMessage(type, msg);
         dropMessage(-1, msg);
     }
+    
+     public int addAntiMacroFailureTimes() {
+        int times = getAntiMacroFailureTimes();
+        setAntiMacroFailureTimes(++times);
+        return times;
+    }
 
-    public final MapleAntiMacro getAntiMacro() {
-        return antiMacro;
+    public void setAntiMacroFailureTimes(int times) {
+        updateOneInfo(99999, "AntiMacroWorning", String.valueOf(times));
+    }
+
+    public int getAntiMacroFailureTimes() {
+        String timesStr = getOneInfo(99999, "AntiMacroWorning");
+        if (timesStr == null) {
+            setAntiMacroFailureTimes(0);
+            return 0;
+        }
+        return Integer.parseInt(timesStr);
     }
 
     public ReentrantLock getQuestLock() {
         return questLock;
     }
-
+    
 }

@@ -536,12 +536,12 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case TROCK_ADD_MAP:
                 PlayerHandler.TrockAddMap(slea, c, c.getPlayer());
                 break;
-            case LIE_DETECTOR:
-            case LIE_DETECTOR_SKILL:
-                AntiMacroHandler.handleAntiMacro(slea, c, c.getPlayer(), header == RecvPacketOpcode.LIE_DETECTOR);
+            case ANTI_MACRO_ITEM_REQUEST:
+            case ANTI_MACRO_SKILL_REQUEST:
+                AntiMacroHandler.AntiMacro(slea, c, c.getPlayer(), header == RecvPacketOpcode.ANTI_MACRO_ITEM_REQUEST);
                 break;
-            case LIE_DETECTOR_RESPONSE:
-                AntiMacroHandler.AntiMacroResponse(slea, c);
+            case ANTI_MACRO_RESPONSE:
+                AntiMacroHandler.OldAntiMacroQuestion(slea, c, c.getPlayer());
                 break;
             case ARAN_COMBO:
                 PlayerHandler.AranCombo(c, c.getPlayer());
