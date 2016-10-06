@@ -823,9 +823,9 @@ public class DamageParse {
         // Calculate Sharp eye bonus
         elemMaxDamagePerMob += ((double) elemMaxDamagePerMob / 100) * sharpEye;
 //	if (skill.isChargeSkill()) {
-//	    elemMaxDamagePerMob = (float) ((90 * ((System.currentTimeMillis() - chr.getKeyDownSkill_Time()) / 1000) + 10) * elemMaxDamagePerMob * 0.01);
+//	    elemMaxDamagePerMob = (float) ((90 * ((System.currentTimeMillis() - chr.getKeyDownSkillTime()) / 1000) + 10) * elemMaxDamagePerMob * 0.01);
 //	}
-//      if (skill.isChargeSkill() && chr.getKeyDownSkill_Time() == 0) {
+//      if (skill.isChargeSkill() && chr.getKeyDownSkillTime() == 0) {
 //          return 1;
 //      }
 //        elemMaxDamagePerMob += (elemMaxDamagePerMob * (mobstats.isBoss() ? stats.bossdam_r : stats.dam_r)) / 100;
@@ -1006,9 +1006,9 @@ public class DamageParse {
         elementalMaxDamagePerMonster += ((double) elementalMaxDamagePerMonster / 100.0) * CriticalDamagePercent;
 
 //	if (theSkill.isChargeSkill()) {
-//	    elementalMaxDamagePerMonster = (double) (90 * (System.currentTimeMillis() - player.getKeyDownSkill_Time()) / 2000 + 10) * elementalMaxDamagePerMonster * 0.01;
+//	    elementalMaxDamagePerMonster = (double) (90 * (System.currentTimeMillis() - player.getKeyDownSkillTime()) / 2000 + 10) * elementalMaxDamagePerMonster * 0.01;
 //	}
-        if (theSkill != null && theSkill.isChargeSkill() && player.getKeyDownSkill_Time() == 0) {
+        if (theSkill != null && theSkill.isChargeSkill() && player.getKeyDownSkillTime() == 0) {
             return 0;
         }
         final MapleStatEffect homing = player.getStatForBuff(MapleBuffStat.HOMING_BEACON);

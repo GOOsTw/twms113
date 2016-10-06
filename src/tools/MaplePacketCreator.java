@@ -67,6 +67,7 @@ import handling.world.World;
 import handling.world.guild.MapleBBSThread;
 import handling.world.guild.MapleBBSThread.MapleBBSReply;
 import handling.world.guild.MapleGuildAlliance;
+import java.io.File;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -1967,7 +1968,7 @@ public class MaplePacketCreator {
         if (buffs.keySet().contains(MapleBuffStat.GM_HIDE)) {
             mplew.writeInt(buffs.get(MapleBuffStat.GM_HIDE));
         }
-        if (buffs.keySet().contains(MapleBuffStat.BUFF_57)) {
+        if (buffs.keySet().contains(MapleBuffStat.BERSERK_FURY)) {
         }
         if (buffs.keySet().contains(MapleBuffStat.ILLUSION)) {
         }
@@ -4816,35 +4817,107 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static MaplePacket sendLieDetector(final byte[] image) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+    public static class AntiMacro {
 
-        mplew.writeShort(SendPacketOpcode.LIE_DETECTOR.getValue());
-        mplew.write(6); // 1 = not attacking, 2 = tested, 3 = going through 
+        public static MaplePacket cantFindPlayer() {
+            return antiMacroResult((byte) 0, (byte) 0, null, null, 0);
+        }
 
-        mplew.write(4); // 2 give invalid pointer (suppose to be admin macro) 
-        mplew.write(1); // the time >0 is always 1 minute 
-        if (image == null) {
-            mplew.writeInt(0);
+        public static MaplePacket nonAttack() {
+            return antiMacroResult((byte) 1, (byte) 0, null, null, 0);
+        }
+
+        public static MaplePacket alreadyPass() {
+            return antiMacroResult((byte) 2, (byte) 0, null, null, 0);
+        }
+
+        public static MaplePacket antiMacroNow() {
+            return antiMacroResult((byte) 3, (byte) 0, null, null, 0);
+        }
+
+        public static MaplePacket screenshot(String str) {
+            return antiMacroResult((byte) 4, (byte) 0, str, null, 0);
+        }
+
+        public static MaplePacket antiMsg(int mode, String str) {
+            return antiMacroResult((byte) 5, (byte) mode, str, null, 0);
+        }
+
+        public static MaplePacket getImage(byte action, byte[] image, int times) {
+            return antiMacroResult((byte) 6, action, null, image, times);
+        }
+
+        public static MaplePacket failure(int mode) {
+            return antiMacroResult((byte) 7, (byte) mode, null, null, 0);
+        }
+
+        public static MaplePacket failureScreenshot(String str) {
+            return antiMacroResult((byte) 8, (byte) 2, str, null, 0);
+        }
+
+        public static MaplePacket success(int mode) {
+            return antiMacroResult((byte) 9, (byte) mode, null, null, 0);
+        }
+
+        public static MaplePacket successMsg(int mode, String str) {
+            return antiMacroResult((byte) 10, (byte) mode, str, null, 0);
+        }
+
+        private static MaplePacket antiMacroResult(byte type, byte antiMode, String str, byte[] image, int times) {
+            MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+            mplew.writeShort(SendPacketOpcode.ANTI_MACRO_RESULT.getValue());
+            /*
+            type
+            0 - 找不到該角色！
+            1 - 無法對非攻擊狀態的角色使用。
+            2 - 該角色已通過測謊機的偵測。
+            3 - 該角色目前正在接受測謊機的測試。
+            4 - %s_Screenshot儲存完畢！完成外掛檢測公告。
+            5 - antiMode == 1 : 對%s使用測謊機。
+                antiMode == 2 : %s_Screenshot儲存完畢！啟動測謊機功能。
+            6 - antiMode != 2 : 請輸入您所看到的內容。
+                antiMode == 2 : 請輸入下列顯示的內容\n若未正確輸入，會被判斷為\n使用不當程式進行遊戲而遭到懲處！
+            7 - antiMode != 2 : 經測謊機測試，判定您以不正當的方式進行遊戲，請勿使用非法程式，以免帳號遭到鎖定。
+                antiMode == 2 : 管理者檢測結果，被判定為不法程式使用者而遭到懲處。
+            8 - antiMode == 2 : %s_Screenshot儲存完畢！被偵測為外掛。
+            9 - antiMode != 1 && 2 : 您已經通過測謊機的監測！感謝您的協助…祝您有個美好的一天~
+                antiMode == 1 : 感謝您接受測謊機的測試，提供您5000楓幣作為獎勵！
+                antiMode == 2 : 感謝您對楓之谷GM檢測的協助與合作。
+            10 - antiMode == 2 : %s_通過測謊機檢測。
+             */
+            mplew.write(type);
+            mplew.write(antiMode); //2 = 顯示訊息/儲存截圖/楓之谷管理員圖片(mode 6)
+            if (type != 6) {
+                if (type == 7 || type == 9) {
+                }
+                if (type == 7 || type == 9) {
+                }
+                switch (type) {
+                    case 4:
+                        mplew.writeMapleAsciiString(str);
+                        break;
+                    case 5:
+                        mplew.writeMapleAsciiString(str);
+                        break;
+                    case 10:
+                        mplew.writeMapleAsciiString(str);
+                        break;
+                    default:
+                        if (type != 8) {
+                            return mplew.getPacket();
+                        }
+                        mplew.writeMapleAsciiString(str);
+                }
+                return mplew.getPacket();
+            }
+            mplew.write(times); // 次數 - 1
+            mplew.writeInt(image.length);
+            mplew.write(image);
+            if (antiMode == 2) {
+            }
+
             return mplew.getPacket();
         }
-        mplew.writeInt(image.length);
-        mplew.write(image);
-
-        return mplew.getPacket();
-    }
-
-    public static MaplePacket LieDetectorResponse(final byte msg) {
-        return LieDetectorResponse(msg, (byte) 0);
-    }
-
-    public static MaplePacket LieDetectorResponse(final byte msg, final byte msg2) {
-        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
-
-        mplew.writeShort(SendPacketOpcode.LIE_DETECTOR.getValue());
-        mplew.write(msg); // 1 = not attacking, 2 = tested, 3 = going through 
-        mplew.write(msg2);
-
-        return mplew.getPacket();
     }
 }

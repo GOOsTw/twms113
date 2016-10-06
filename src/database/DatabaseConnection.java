@@ -202,7 +202,6 @@ public class DatabaseConnection {
             config.addDataSourceProperty("user", dbUser);
             config.addDataSourceProperty("password", dbPass);
             config.setPoolName("springHikariCP");
-
             config.setMaximumPoolSize(maxConnection);
             config.addDataSourceProperty("cachePrepStmts", "true");
             config.addDataSourceProperty("prepStmtCacheSize", "250");

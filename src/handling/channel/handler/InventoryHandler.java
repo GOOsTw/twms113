@@ -2101,7 +2101,7 @@ public class InventoryHandler {
                 if (MapConstants.isEventMap(c.getPlayer().getMapId())) {
                     c.getPlayer().dropMessage(1, "請勿在活動地圖使用黑板！");
                 } else {
-                    c.getPlayer().setChalkboard(slea.readMapleAsciiString());
+                    c.getPlayer().setChalkBoardText(slea.readMapleAsciiString());
                 }
                 break;
             }

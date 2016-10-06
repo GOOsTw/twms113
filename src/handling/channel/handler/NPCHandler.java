@@ -105,75 +105,78 @@ public class NPCHandler {
     }
 
     public static final void QuestAction(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
-        final byte action = slea.readByte();
-        short quest = slea.readShort();
-        if (quest < 0) { //questid 50000 and above, WILL cast to negative, this was tested.
-            quest += 65536; //probably not the best fix, but whatever
-        }
-        if (chr == null) {
-            return;
-        }
-        final MapleQuest q = MapleQuest.getInstance(quest);
-        switch (action) {
-            case 0: { // Restore lost item
-                chr.updateTick(slea.readInt());
-                final int itemid = slea.readInt();
-                MapleQuest.getInstance(quest).RestoreLostItem(chr, itemid);
-                break;
+        
+        chr.getQuestLock().lock();
+        try {
+            final byte action = slea.readByte();
+            short quest = slea.readShort();
+            if (quest < 0) { //questid 50000 and above, WILL cast to negative, this was tested.
+                quest += 65536; //probably not the best fix, but whatever
             }
-            case 1: { // Start Quest
-                final int npc = slea.readInt();
-                if (npc == 0 && quest > 0) {
-                    q.forceStart(chr, npc, null);
-                } else if (quest == 2001 || quest == 8511 || quest == 21301 || quest == 21302 || quest == 3083) {
-                    q.forceStart(chr, npc, null);
-                } else if (quest == 8512) {
-                    q.start(chr, npc);
-                } else if (!q.hasStartScript()) {
-                    q.start(chr, npc);
+            final MapleQuest q = MapleQuest.getInstance(quest);
+            switch (action) {
+                case 0: { // Restore lost item
+                    chr.updateTick(slea.readInt());
+                    final int itemid = slea.readInt();
+                    MapleQuest.getInstance(quest).RestoreLostItem(chr, itemid);
+                    break;
                 }
-                break;
-            }
-            case 2: { // Complete Quest
-                final int npc = slea.readInt();
-                chr.updateTick(slea.readInt());
+                case 1: { // Start Quest
+                    final int npc = slea.readInt();
+                    if (npc == 0 && quest > 0) {
+                        q.forceStart(chr, npc, null);
+                    } else if (quest == 2001 || quest == 8511 || quest == 21301 || quest == 21302 || quest == 3083) {
+                        q.forceStart(chr, npc, null);
+                    } else if (quest == 8512) {
+                        q.start(chr, npc);
+                    } else if (!q.hasStartScript()) {
+                        q.start(chr, npc);
+                    }
+                    break;
+                }
+                case 2: { // Complete Quest
+                    final int npc = slea.readInt();
+                    chr.updateTick(slea.readInt());
 
-                if (slea.available() >= 4) {
-                    q.complete(chr, npc, slea.readInt());
-                } else {
-                    q.complete(chr, npc);
+                    if (slea.available() >= 4) {
+                        q.complete(chr, npc, slea.readInt());
+                    } else {
+                        q.complete(chr, npc);
+                    }
+                    // c.sendPacket(MaplePacketCreator.completeQuest(c.getPlayer(), quest));
+                    //c.sendPacket(MaplePacketCreator.updateQuestInfo(c.getPlayer(), quest, npc, (byte)14));
+                    // 6 = start quest
+                    // 7 = unknown error
+                    // 8 = equip is full
+                    // 9 = not enough mesos
+                    // 11 = due to the equipment currently being worn wtf o.o
+                    // 12 = you may not posess more than one of this item
+                    break;
                 }
-                // c.sendPacket(MaplePacketCreator.completeQuest(c.getPlayer(), quest));
-                //c.sendPacket(MaplePacketCreator.updateQuestInfo(c.getPlayer(), quest, npc, (byte)14));
-                // 6 = start quest
-                // 7 = unknown error
-                // 8 = equip is full
-                // 9 = not enough mesos
-                // 11 = due to the equipment currently being worn wtf o.o
-                // 12 = you may not posess more than one of this item
-                break;
-            }
-            case 3: { // Forefit Quest
-                if (GameConstants.canForfeit(q.getId())) {
-                    q.forfeit(chr);
-                } else {
-                    chr.dropMessage(1, "你不能放棄這個任務。");
+                case 3: { // Forefit Quest
+                    if (GameConstants.canForfeit(q.getId())) {
+                        q.forfeit(chr);
+                    } else {
+                        chr.dropMessage(1, "你不能放棄這個任務。");
+                    }
+                    break;
                 }
-                break;
+                case 4: { // Scripted Start Quest
+                    final int npc = slea.readInt();
+                    NPCScriptManager.getInstance().startQuest(c, npc, quest);
+                    slea.readInt();
+                    break;
+                }
+                case 5: { // Scripted End Quest
+                    final int npc = slea.readInt();
+                    NPCScriptManager.getInstance().endQuest(c, npc, quest, false);
+                    c.sendPacket(MaplePacketCreator.showSpecialEffect(9)); // Quest completion
+                    chr.getMap().broadcastMessage(chr, MaplePacketCreator.showSpecialEffect(chr.getId(), 9), false);
+                    break;
+                }
             }
-            case 4: { // Scripted Start Quest
-                final int npc = slea.readInt();
-                NPCScriptManager.getInstance().startQuest(c, npc, quest);
-                slea.readInt();
-                break;
-            }
-            case 5: { // Scripted End Quest
-                final int npc = slea.readInt();
-                NPCScriptManager.getInstance().endQuest(c, npc, quest, false);
-                c.sendPacket(MaplePacketCreator.showSpecialEffect(9)); // Quest completion
-                chr.getMap().broadcastMessage(chr, MaplePacketCreator.showSpecialEffect(chr.getId(), 9), false);
-                break;
-            }
+        } finally {
+            chr.getQuestLock().unlock();
         }
     }
 
