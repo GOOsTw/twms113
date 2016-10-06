@@ -1632,7 +1632,15 @@ public class InventoryHandler {
                     final StringBuilder sb = new StringBuilder();
                     addMedalString(c.getPlayer(), sb);
                     String msg = sb + c.getPlayer().getName() + " : " + message;
-                    if (c.getPlayer().isPlayer()) {
+                   if (c.getPlayer().isPlayer() && message.contains("幹")
+                            || message.contains("豬")
+                            || message.contains("笨")
+                            || message.contains("靠")
+                            || message.contains("腦包")
+                            || message.contains("腦")
+                            || message.contains("智障")
+                            || message.contains("白目")
+                            || message.contains("白吃")) {
                         c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
                         c.sendPacket(MaplePacketCreator.enableActions());
                         return;
@@ -1667,12 +1675,6 @@ public class InventoryHandler {
                     final StringBuilder sb = new StringBuilder();
                     addMedalString(c.getPlayer(), sb);
                     String msg = sb + c.getPlayer().getName() + " : " + message;
-                    if (c.getPlayer().isPlayer()) {
-                        c.getPlayer().dropMessage("說髒話是不禮貌的，請勿說髒話。");
-                        c.sendPacket(MaplePacketCreator.enableActions());
-                        return;
-                    }
-                    final boolean ear = slea.readByte() != 0;
                     if (c.getPlayer().isPlayer() && message.contains("幹")
                             || message.contains("豬")
                             || message.contains("笨")
@@ -1686,6 +1688,8 @@ public class InventoryHandler {
                         c.sendPacket(MaplePacketCreator.enableActions());
                         return;
                     }
+                    final boolean ear = slea.readByte() != 0;
+
                     if (c.getPlayer().isPlayer()) {
                         System.out.println("[玩家廣播頻道 " + c.getPlayer().getName() + "] : " + message);
                     } else if (c.getPlayer().isGM()) {
