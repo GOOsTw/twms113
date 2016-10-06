@@ -3178,97 +3178,42 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
     }
 
-    public void gainExpMonster(int gain, final boolean show, final boolean white, byte pty, final byte classBounsExpPercent, final byte Premium_Bonus_EXP_PERCENT, MapleMonster mob) {
-        if (this == null || !isAlive()) {
-            return;
-        }
-        // 受詛咒狀態，經驗砍半
-        if (hasDisease(MapleDisease.CURSE)) {
-            gain /= 2;
-        }
-        // 伺服器經驗值倍數加成
-        gain = (int) exp * (getLevel() < 10 ? GameConstants.getExpRate_Below10(getJob()) : ChannelServer.getInstance(map.getChannel()).getExpRate());
-        gain = Math.min(Integer.MAX_VALUE, gain);
-        // 組隊經驗值 處理
-        int Party_Bonus_EXP = 0;
-        if (pty > 1) {
-            Party_Bonus_EXP = gain;
-            pty = (byte) Math.min(pty, 6);
-            Party_Bonus_EXP *= (5 * (pty * (3 + (1 + pty) / 2)) - 20) / 100.0; //(15+5*2)+(15+5*3)+...+(15+5*n)
-//            if (map != null && mob.getStats().isPartyBonus() && map.getPartyBonusRate() > 0 && mob.getStats().getPartyBonusRate() > 0) {
-//                Party_Bonus_EXP *= 1 + (mob.getStats().getPartyBonusRate() * Math.min(4, pty) / 100.0);
-//            }
-            Party_Bonus_EXP *= 1 + (Premium_Bonus_EXP_PERCENT / 100.0);
-        }
-        // 獲得追加經驗值 處理
-        int Additional_Bonus_EXP = gain;
-        // 挑釁
-        final MonsterStatusEffect ms = mob.getBuff(MonsterStatus.SHOWDOWN);
-        if (ms != null) {
-            Additional_Bonus_EXP *= 1 + (ms.getX() / 100.0);
-        }
-        // 祈禱
-        final Integer holySymbol = getBuffedValue(MapleBuffStat.HOLY_SYMBOL);
-        if (holySymbol != null) {
-            Additional_Bonus_EXP *= 1 + (holySymbol.doubleValue() / 100.0);
-        }
-        // 經驗值倍率模式
-        double lastexp = getStat().realExpBuff - 100.0 <= 0 ? 100 : getStat().realExpBuff - 100;
-        Additional_Bonus_EXP *= getEXPMod() * (int) (lastexp / 100.0);
-        Additional_Bonus_EXP = Math.min(Integer.MAX_VALUE, Additional_Bonus_EXP);
-        int Class_Bonus_EXP = 0;
-        if (classBounsExpPercent > 0) {
-            Class_Bonus_EXP = (int) ((gain / 100.0) * classBounsExpPercent);
-        }
-        int Premium_Bonus_EXP = 0;
-        if (Premium_Bonus_EXP_PERCENT > 0) {
-            Premium_Bonus_EXP = (int) ((gain / 100.0) * Premium_Bonus_EXP_PERCENT);
-        }
-        int Equipment_Bonus_EXP = (int) ((gain / 100.0) * getStat().equipmentBonusExp);
-        if (getStat().equippedFairy) {
-            Equipment_Bonus_EXP += (int) ((gain / 100.0) * getFairyExp());
-        }
+     public void gainExpMonster(final int gain, final boolean show, final boolean white, final byte pty, int Class_Bonus_EXP, int Equipment_Bonus_EXP, int Premium_Bonus_EXP) {
         expirationTask(true, false);
-        // 總經驗
-        int total = gain + Party_Bonus_EXP + Additional_Bonus_EXP + Class_Bonus_EXP + Equipment_Bonus_EXP + Premium_Bonus_EXP;
-        total = Math.min(Integer.MAX_VALUE, total);
+        int total = gain + Class_Bonus_EXP + Equipment_Bonus_EXP + Premium_Bonus_EXP;
+        int partyinc = 0;
         int prevexp = getExp();
-        if (gain > 0 && total < gain && isShowDebugInfo()) { //just in case
-            showInfo("經驗處理", true, "總經驗: " + total + "基礎經驗: " + gain);
+        if (pty > 1) {
+            partyinc = (int) (((float) (gain / 20.0)) * (pty + 1));
+            total += partyinc;
+        }
+
+        if (gain > 0 && total < gain) { //just in case
+            total = Integer.MAX_VALUE;
         }
         if (total > 0) {
             stats.checkEquipLevels(this, total);
         }
-        int maxLevel = 200;
+
         int needed = GameConstants.getExpNeededForLevel(level);
-        if (GameConstants.isKOC(job) && level >= 120) { //皇家騎士團最高等級
+        if (GameConstants.isKOC(job) && level >= 120) {
+            return;
+        }
+        if (level >= 200) {
             if (exp + total > needed) {
                 setExp(needed);
             } else {
                 exp += total;
             }
-        } else if (level >= maxLevel) {
-            setExp(0);
         } else {
             boolean leveled = false;
-            if (exp + total >= needed || exp >= needed) {
-                boolean levelUpTimesLimit = true; // 連續升等限制
+            if (exp + total >= needed) {
                 exp += total;
-                while (exp > needed) {
-                    levelUp();
-                    leveled = true;
-                    needed = GameConstants.getExpNeededForLevel(level);
-                    if (levelUpTimesLimit) {
-                        break;
-                    }
-                }
-                if (level >= maxLevel) {
-                    setExp(0);
-                } else {
-                    needed = GameConstants.getExpNeededForLevel(level);
-                    if (exp >= needed) {
-                        setExp(needed);
-                    }
+                levelUp();
+                leveled = true;
+                needed = GameConstants.getExpNeededForLevel(level);
+                if (exp > needed) {
+                    setExp(needed);
                 }
             } else {
                 exp += total;
@@ -3277,17 +3222,17 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 familyRep(prevexp, needed, leveled);
             }
         }
-        if (total != 0) {
+        if (gain != 0) {
             if (exp < 0) { // After adding, and negative
-                if (total > 0) {
+                if (gain > 0) {
                     setExp(GameConstants.getExpNeededForLevel(level));
-                } else if (total < 0) {
+                } else if (gain < 0) {
                     setExp(0);
                 }
             }
             updateSingleStat(MapleStat.EXP, getExp());
             if (show) { // still show the expgain even if it's not there
-                client.sendPacket(MaplePacketCreator.GainEXP_Monster(gain + Additional_Bonus_EXP, white, Party_Bonus_EXP, Class_Bonus_EXP, Equipment_Bonus_EXP, Premium_Bonus_EXP));
+                client.sendPacket(MaplePacketCreator.GainEXP_Monster(gain, white, partyinc, Class_Bonus_EXP, Equipment_Bonus_EXP, Premium_Bonus_EXP));
             }
         }
     }
