@@ -2722,7 +2722,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void leaveMap() {
-        MapleAntiMacro.stopAnti(getName());
         //controlled.clear();
         visibleMapObjectsLock.writeLock().lock();
         try {
