@@ -366,7 +366,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     @Override
     public void sessionIdle(final IoSession session, final IdleStatus status) throws Exception {
         final MapleClient client = (MapleClient) session.getAttribute(MapleClient.CLIENT_KEY);
-
         if (client != null) {
             client.sendPing();
         } else {
@@ -536,12 +535,12 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case TROCK_ADD_MAP:
                 PlayerHandler.TrockAddMap(slea, c, c.getPlayer());
                 break;
-            case LIE_DETECTOR:
-            case LIE_DETECTOR_SKILL:
-                AntiMacroHandler.LieDetector(slea, c, c.getPlayer(), header == RecvPacketOpcode.LIE_DETECTOR);
+            case ANTI_MACRO_ITEM_REQUEST:
+            case ANTI_MACRO_SKILL_REQUEST:
+                AntiMacroHandler.AntiMacro(slea, c, c.getPlayer(), header == RecvPacketOpcode.ANTI_MACRO_ITEM_REQUEST);
                 break;
-            case LIE_DETECTOR_RESPONSE:
-                AntiMacroHandler.LieDetectorResponse(slea, c);
+            case ANTI_MACRO_RESPONSE:
+                AntiMacroHandler.OldAntiMacroQuestion(slea, c, c.getPlayer());
                 break;
             case ARAN_COMBO:
                 PlayerHandler.AranCombo(c, c.getPlayer());
@@ -570,7 +569,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 PlayersHandler.TouchReactor(slea, c);
                 break;
             case CLOSE_CHALKBOARD:
-                c.getPlayer().setChalkboard(null);
+                c.getPlayer().setChalkBoardText(null);
                 break;
             case ITEM_MAKER:
                 ItemMakerHandler.ItemMaker(slea, c);

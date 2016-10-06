@@ -161,7 +161,7 @@ public class ChannelServer implements Serializable {
 
         this.serverHandler = new MapleServerHandler(channel, false);
         acceptor.setHandler(serverHandler);
-        acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 30);
+        acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 15);
         acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new MapleCodecFactory()));
         acceptor.getSessionConfig().setTcpNoDelay(true);
         players = new PlayerStorage(channel);

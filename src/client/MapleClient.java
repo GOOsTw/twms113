@@ -1254,7 +1254,6 @@ public class MapleClient {
                 try {
                     if (getLatency() < 0) {
                         MapleClient.this.setReceiving(false);
-                        MapleClient.this.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, MapleClient.this.getSessionIPAddress());
                         getSession().close(true);
                     }
                 } catch (final NullPointerException e) {

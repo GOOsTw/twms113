@@ -184,7 +184,7 @@ public abstract class AbstractPlayerInteraction {
     }
 
     public final void cancelChalkboard() {
-        c.getPlayer().setChalkboard(null);
+        c.getPlayer().setChalkBoardText(null);
     }
 
     public final MapleMap getMap_Instanced(final int map) {

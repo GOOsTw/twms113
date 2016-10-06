@@ -28,6 +28,7 @@ import handling.mina.MapleCodecFactory;
 import java.util.Iterator;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.buffer.SimpleBufferAllocator;
+import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
@@ -57,6 +58,8 @@ public class CashShopServer {
 
         acceptor = new NioSocketAcceptor();
         acceptor.getSessionConfig().setTcpNoDelay(true);
+        acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 15);
+
         acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new MapleCodecFactory()));
         acceptor.getSessionConfig().setKeepAlive(false);
         players = new PlayerStorage(-10);
@@ -79,11 +82,11 @@ public class CashShopServer {
     public static final String getIP() {
         return bindIP;
     }
-    
+
     public static final String getGatewayIP() {
         return gatewayIP;
     }
-    
+
     public static final PlayerStorage getPlayerStorage() {
         return players;
     }

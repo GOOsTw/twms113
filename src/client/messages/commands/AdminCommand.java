@@ -78,6 +78,7 @@ import java.util.concurrent.ScheduledFuture;
 import scripting.NPCScriptManager;
 import server.ServerProperties;
 import handling.login.LoginServer;
+import handling.world.MapleAntiMacro;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -119,13 +120,13 @@ public class AdminCommand {
         }
 
     }
-    
+
     public static class antiMacro extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             if (c.getPlayer() != null) {
-                if (!c.getPlayer().getAntiMacro().startAntiMacro(c.getPlayer().getName(), false, false)) {
+                if (!MapleAntiMacro.startAntiMacro(c.getPlayer(), c.getPlayer(), (byte)MapleAntiMacro.GM_SKILL_ANTI)) {
                     c.getPlayer().dropMessage(5, "測謊測試失敗");
                 }
             }
@@ -138,7 +139,7 @@ public class AdminCommand {
         }
 
     }
-    
+
     public static class 聊天紀錄存檔 extends logChat {
 
         @Override

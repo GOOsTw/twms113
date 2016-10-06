@@ -85,7 +85,7 @@ public class LoginServer {
             acceptor = new NioSocketAcceptor();
             acceptor.getFilterChain().addLast("codec", (IoFilter) new ProtocolCodecFilter(new MapleCodecFactory()));
 
-            acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 30);
+            acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 15);
             acceptor.setHandler(new MapleServerHandler(-1, false));
             acceptor.getSessionConfig().setTcpNoDelay(true);
             acceptor.bind(new InetSocketAddress(ip, port));
