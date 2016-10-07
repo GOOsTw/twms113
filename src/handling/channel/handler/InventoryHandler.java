@@ -1632,7 +1632,7 @@ public class InventoryHandler {
                     final StringBuilder sb = new StringBuilder();
                     addMedalString(c.getPlayer(), sb);
                     String msg = sb + c.getPlayer().getName() + " : " + message;
-                   if (c.getPlayer().isPlayer() && message.contains("幹")
+                    if (c.getPlayer().isPlayer() && message.contains("幹")
                             || message.contains("豬")
                             || message.contains("笨")
                             || message.contains("靠")
@@ -1742,6 +1742,7 @@ public class InventoryHandler {
                     } else if (c.getPlayer().isGM()) {
                         World.Broadcast.broadcastSmega(MaplePacketCreator.getSuperMegaphone(sb.toString(), ear, c.getChannel()).getBytes());
                     }
+                    used = true;
                     break;
                 }
             }
