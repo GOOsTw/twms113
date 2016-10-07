@@ -283,12 +283,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
             if (client != null) {
                 if (client.getPlayer() != null) {
-                    client.getPlayer().saveToDB(true, isCashShop);
                     if (!(client.getLoginState() == MapleClient.CASH_SHOP_TRANSITION
                             || client.getLoginState() == MapleClient.CHANGE_CHANNEL
-                            || client.getLoginState() == MapleClient.LOGIN_SERVER_TRANSITION) && client.getPlayer() != null) {
-                        int ch = World.Find.findChannel(client.getPlayer().getId());
-                        ChannelServer.getInstance(ch).removePlayer(client.getPlayer());
+                            || client.getLoginState() == MapleClient.LOGIN_SERVER_TRANSITION)) {
                         client.disconnect(true, isCashShop);
                     }
                 } else {
