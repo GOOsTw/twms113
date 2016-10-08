@@ -846,11 +846,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         PreparedStatement pse = null;
         ResultSet rs = null;
         try {
+            con.setSavepoint();
             con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             con.setAutoCommit(false);
-
             ps = con.prepareStatement("INSERT INTO characters (level, fame, str, dex, luk, `int`, exp, hp, mp, maxhp, maxmp, sp, ap, gm, skincolor, gender, job, hair, face, map, meso, hpApUsed, spawnpoint, party, buddyCapacity, monsterbookcover, dojo_pts, dojoRecord, pets, subcategory, marriageId, currentrep, totalrep, prefix, accountid, name, world) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-
             ps.setInt(1, 1); // Level
             ps.setShort(2, (short) 0); // Fame
             final PlayerStats stat = chr.stats;
@@ -951,11 +950,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
             ItemLoader.INVENTORY.saveItems(listing, con, chr.id);
 
-            /* // SEA 102
-             final int[] array1 = {2, 3, 4, 5, 6, 7, 16, 17, 18, 19, 23, 25, 26, 27, 31, 34, 37, 38, 41, 44, 45, 46, 50, 57, 59, 60, 61, 62, 63, 64, 65, 8, 9, 24, 30};
-             final int[] array2 = {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 4, 5, 6, 6, 6, 6, 6, 6, 6, 4, 4, 4, 4};
-             final int[] array3 = {10, 12, 13, 18, 6, 11, 8, 5, 0, 4, 1, 19, 14, 15, 3, 17, 9, 20, 22, 50, 51, 52, 7, 53, 100, 101, 102, 103, 104, 105, 106, 16, 23, 24, 2};
-             */
             int[] array1 = {2, 3, 4, 5, 6, 7, 16, 17, 18, 19, 23, 25, 26, 27, 29, 31, 34, 35, 37, 38, 40, 41, 43, 44, 45, 46, 48, 50, 56, 57, 59, 60, 61, 62, 63, 64, 65};
             int[] array2 = {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 4, 4, 4, 5, 5, 6, 6, 6, 6, 6, 6, 6};
             int[] array3 = {10, 12, 13, 18, 24, 21, 8, 5, 0, 4, 1, 19, 14, 15, 52, 2, 17, 11, 3, 20, 16, 23, 9, 50, 51, 6, 22, 7, 53, 54, 100, 101, 102, 103, 104, 105, 106};
@@ -969,10 +963,16 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 ps.execute();
             }
             ps.close();
-
             con.commit();
         } catch (SQLException | DatabaseException e) {
             FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error saving character data");
+            try {
+                if (con.isClosed() || !con.isValid(1)) {
+                    DatabaseConnection.close();
+                }
+            } catch (SQLException ex) {
+                DatabaseConnection.close();
+            }
             try {
                 con.rollback();
             } catch (SQLException ex) {
@@ -1306,7 +1306,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     }
                 } catch (SQLException e) {
                     DatabaseConnection.close();
-                  
+
                 }
 
             } catch (SQLException e) {
