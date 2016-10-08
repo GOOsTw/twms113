@@ -200,12 +200,13 @@ public class DatabaseConnection {
             config.addDataSourceProperty("port", 3306);
             config.addDataSourceProperty("databaseName", database);
             config.addDataSourceProperty("user", dbUser);
-            config.addDataSourceProperty("characterEncoding","utf8");
-config.addDataSourceProperty("useUnicode","true");
+            config.addDataSourceProperty("characterEncoding", "utf8");
+            config.addDataSourceProperty("useUnicode", "true");
             config.addDataSourceProperty("password", dbPass);
             config.setPoolName("springHikariCP");
             config.setMaximumPoolSize(maxConnection);
-            config.setIdleTimeout(connectionTimeOut);
+            config.setMaxLifetime(connectionTimeOut);
+            config.setIdleTimeout(5);
             config.addDataSourceProperty("cachePrepStmts", "true");
             config.addDataSourceProperty("prepStmtCacheSize", "250");
             config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");

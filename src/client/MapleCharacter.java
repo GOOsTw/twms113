@@ -966,13 +966,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             con.commit();
         } catch (SQLException | DatabaseException e) {
             FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error saving character data");
-            try {
-                if (con.isClosed() || !con.isValid(1)) {
-                    DatabaseConnection.close();
-                }
-            } catch (SQLException ex) {
-                DatabaseConnection.close();
-            }
+
             try {
                 con.rollback();
             } catch (SQLException ex) {
@@ -1282,9 +1276,18 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             retValue = 0;
             FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error saving character data");
             try {
+                try {
+                    if (con.isClosed() || !con.isValid(1)) {
+                        DatabaseConnection.close();
+                    }
+                } catch (SQLException ex) {
+                    DatabaseConnection.close();
+                }
                 if (con != null) {
                     con.rollback();
                 }
+                this.saveToDBCount++;
+                
             } catch (SQLException ex) {
                 FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error Rolling Back");
             }
@@ -1308,7 +1311,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     DatabaseConnection.close();
 
                 }
-
             } catch (SQLException e) {
                 retValue = 0;
                 FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error going back to autocommit mode");
