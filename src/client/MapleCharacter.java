@@ -210,6 +210,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private long dps;
     private boolean switchHiredMerchant = false, 玩家私聊1 = false, 玩家私聊2 = false, 玩家私聊3 = false, GMinfo = false, 聊天稱號 = false, GM聊天 = false;
     private boolean isShowDebugInfo = false;
+    private int saveToDBCount = 0;
 
     private MapleCharacter(final boolean isChannelServer) {
         super.setStance(0);
@@ -1011,9 +1012,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ResultSet rs = null;
 
         try {
-            con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 
+            con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             con.setAutoCommit(false);
+
             ps = con.prepareStatement("UPDATE characters SET level = ?, fame = ?, str = ?, dex = ?, luk = ?, `int` = ?, exp = ?, hp = ?, mp = ?, maxhp = ?, maxmp = ?, sp = ?, ap = ?, gm = ?, skincolor = ?, gender = ?, job = ?, hair = ?, face = ?, map = ?, meso = ?, hpApUsed = ?, spawnpoint = ?, party = ?, buddyCapacity = ?, monsterbookcover = ?, dojo_pts = ?, dojoRecord = ?, pets = ?, subcategory = ?, marriageId = ?, currentrep = ?, totalrep = ?, charmessage = ?, expression = ?, constellation = ?, blood = ?, month = ?, day = ?, beans = ?, prefix = ?, gachexp = ?, dps = ?, name = ? WHERE id = ?");
 
             if (gmLevel < 1 && level > 199) {
@@ -1297,15 +1299,22 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 if (rs != null) {
                     rs.close();
                 }
-                if (con != null) {
-                    con.setAutoCommit(true);
-                    con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+                try {
+                    if (con != null) {
+                        con.setAutoCommit(true);
+                        con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+                    }
+                } catch (SQLException e) {
+                    DatabaseConnection.close();
+                  
                 }
+
             } catch (SQLException e) {
                 retValue = 0;
                 FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error going back to autocommit mode");
             }
             isSaveing = false;
+            this.saveToDBCount = 0;
             saveLock.unlock();
         }
         return retValue;
@@ -2672,7 +2681,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
          finishAchievement(7);
          }*/
     }
-    
+
     public void changeMap(final int mapid) {
         final MapleMap target = client.getChannelServer().getMapFactory().getMap(mapid);
         changeMap(target, target.getPortal(0));
@@ -3175,7 +3184,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
     }
 
-     public void gainExpMonster(final int gain, final boolean show, final boolean white, final byte pty, int Class_Bonus_EXP, int Equipment_Bonus_EXP, int Premium_Bonus_EXP) {
+    public void gainExpMonster(final int gain, final boolean show, final boolean white, final byte pty, int Class_Bonus_EXP, int Equipment_Bonus_EXP, int Premium_Bonus_EXP) {
         expirationTask(true, false);
         int total = gain + Class_Bonus_EXP + Equipment_Bonus_EXP + Premium_Bonus_EXP;
         int partyinc = 0;
@@ -6738,8 +6747,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         dropMessage(type, msg);
         dropMessage(-1, msg);
     }
-    
-     public int addAntiMacroFailureTimes() {
+
+    public int addAntiMacroFailureTimes() {
         int times = getAntiMacroFailureTimes();
         setAntiMacroFailureTimes(++times);
         return times;
@@ -6761,5 +6770,5 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public ReentrantLock getQuestLock() {
         return questLock;
     }
-    
+
 }

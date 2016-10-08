@@ -172,7 +172,7 @@ public class MobHandler {
                 if (GeneallyDistance_x > max_x) {
                     max_x = GeneallyDistance_x;
                 }
-                if (((reduce_x > GeneallyDistance_x || reduce_y > GeneallyDistance_y) && reduce_y != 0) || (reduce_x > Check_x && reduce_y == 0) || reduce_x > max_x) {
+                if (((reduce_x > GeneallyDistance_x || reduce_y > GeneallyDistance_y) && reduce_y != 0) || (reduce_x > Check_x && reduce_y == 0) || reduce_x > max_x ) {
                     chr.add吸怪();
                     if (c.getPlayer().get吸怪() % 50 == 0 || reduce_x > max_x) {
                         c.getPlayer().getCheatTracker().registerOffense(CheatingOffense.怪物全圖吸, "(地圖: " + chr.getMapId() + " 怪物數量:" + chr.get吸怪() + ")");

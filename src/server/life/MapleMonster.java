@@ -1087,6 +1087,8 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         statusEff.setCancelTask(aniTime);
 
         if (poison && getHp() > 1) { // 中毒[POISON]
+            if(from == null)
+                return;
             final int poisonDamage = (int) Math.min(Short.MAX_VALUE, (long) (getMobMaxHp() / (70.0 - from.getSkillLevel(statusEff.getSkill())) + 0.999));
             statusEff.setValue(status, poisonDamage);
             statusEff.setX(poisonDamage);
