@@ -1287,7 +1287,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     con.rollback();
                 }
                 this.saveToDBCount++;
-                
+
             } catch (SQLException ex) {
                 FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error Rolling Back");
             }
@@ -1316,8 +1316,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 FilePrinter.printError("MapleCharacter.txt", e, "[charsave] Error going back to autocommit mode");
             }
             isSaveing = false;
-            this.saveToDBCount = 0;
+
             saveLock.unlock();
+        }
+        if (retValue == 1) {
+            this.saveToDBCount = 0;
         }
         return retValue;
     }
