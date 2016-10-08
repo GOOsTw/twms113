@@ -42,6 +42,7 @@ public class CashShopOperation {
             c.setReceiving(false);
         }
     }
+    
 
     public static void EnterCashShop(final int playerid, final MapleClient client) {
         CharacterTransfer transfer = CashShopServer.getPlayerStorage().getPendingCharacter(playerid);

@@ -67,9 +67,8 @@ public class CharLoginHandler {
         c.setAccountName(account);
         c.logout();
     }
-    
-    private static String readMacAddress(final SeekableLittleEndianAccessor slea, final MapleClient c)
-    {
+
+    private static String readMacAddress(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         int[] bytes = new int[6];
         for (int i = 0; i < bytes.length; i++) {
             bytes[i] = slea.readByteAsInt();
@@ -90,7 +89,7 @@ public class CharLoginHandler {
         if (account == null || password == null) {
             c.getSession().close(true);
         }
-        
+
         String macData = readMacAddress(slea, c);
         c.setMacs(macData);
         c.setLoginMacs(macData);
@@ -156,7 +155,9 @@ public class CharLoginHandler {
                 }
                 break;
             case ALREADY_LOGGED_IN:
-                // TODO: Auto logout
+                ChannelServer.forceRemovePlayerByAccId(c, c.getAccID());
+                c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
+                errorInfo = "解卡成功，重新登入";
                 break;
             case SYSTEM_ERROR:
                 errorInfo = "系統錯誤(錯誤代碼:0)";
@@ -167,7 +168,7 @@ public class CharLoginHandler {
         }
 
         if (errorInfo != null) {
-            c.getSession().write(MaplePacketCreator.getPopupMsg( errorInfo));
+            c.getSession().write(MaplePacketCreator.getPopupMsg(errorInfo));
             c.sendPacket(LoginPacket.getLoginFailed(LoginResponse.NOP.getValue()));
         } else {
             c.sendPacket(LoginPacket.getLoginFailed(loginResponse.getValue()));
@@ -435,7 +436,7 @@ public class CharLoginHandler {
         if (c.getIdleTask() != null) {
             c.getIdleTask().cancel(true);
         }
-        
+
         c.updateLoginState(MapleClient.LOGIN_SERVER_TRANSITION, c.getSessionIPAddress());
 
         byte[] ip = {127, 0, 0, 1};
