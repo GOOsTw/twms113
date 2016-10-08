@@ -206,7 +206,7 @@ public class DatabaseConnection {
             config.setPoolName("springHikariCP");
             config.setMaximumPoolSize(maxConnection);
             config.setMaxLifetime(connectionTimeOut);
-            config.setIdleTimeout(5);
+            config.setIdleTimeout(60 * 1000);
             config.addDataSourceProperty("cachePrepStmts", "true");
             config.addDataSourceProperty("prepStmtCacheSize", "250");
             config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
