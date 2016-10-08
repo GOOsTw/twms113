@@ -98,6 +98,9 @@ public class CheatTracker {
         if (skillId == 21101003 || skillId == 5110001) {
             AtkDelay = 0;
         }
+        if (chr.get().isShowDebugInfo()) {
+            chr.get().dropMessage(5, "SS攻擊速度檢測，間隔:" + (tickCount - lastAttackTickCount) + "，最大限度：" + AtkDelay);
+        }
         if ((tickCount - lastAttackTickCount) < AtkDelay) {
             if (chr.get().get打怪() >= 100) {
                 if (!chr.get().hasGmLevel(1)) {
@@ -114,7 +117,7 @@ public class CheatTracker {
             }
 
             chr.get().add打怪();
-            registerOffense(CheatingOffense.攻擊速度過快_客戶端, "攻擊速度異常，技能: " + skillId + " check: " + (tickCount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay);
+            registerOffense(CheatingOffense.攻擊速度過快_伺服器端, "攻擊速度異常，技能: " + skillId + " check: " + (tickCount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay);
         }
         chr.get().updateTick(tickCount);
         lastAttackTickCount = tickCount;

@@ -61,7 +61,7 @@ public class DamageParse {
             return;
         }
         if (attack.real) {
-            //   player.getCheatTracker().checkAttack(attack.skill, attack.lastAttackTickCount);
+            player.getCheatTracker().checkAttack(attack.skill, attack.lastAttackTickCount);
         }
 
         if (attack.skill != 0) {
@@ -555,7 +555,7 @@ public class DamageParse {
             return;
         }
         if (attack.real) {
-            //player.getCheatTracker().checkAttackDelay(attack.skill, attack.lastAttackTickCount);
+            player.getCheatTracker().checkAttack(attack.skill, attack.lastAttackTickCount);
         }
 
         if (attack.hits > effect.getAttackCount() || attack.targets > effect.getMobCount()) {
