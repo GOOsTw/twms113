@@ -658,12 +658,22 @@ public class EventInstanceManager {
         if (disposed) {
             return;
         }
+        for (MapleCharacter chr : chars) {
+            if (chr.isShowDebugInfo()) {
+                chr.dropMessage("setProperty: " + key + " -> " + value);
+            }
+        }
         props.setProperty(key, value);
     }
 
     public final Object setProperty(final String key, final String value, final boolean prev) {
         if (disposed) {
             return null;
+        }
+        for (MapleCharacter chr : chars) {
+            if (chr.isShowDebugInfo()) {
+                chr.dropMessage("setProperty: " + key + " -> " + value);
+            }
         }
         return props.setProperty(key, value);
     }

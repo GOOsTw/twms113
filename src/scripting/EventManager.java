@@ -90,7 +90,6 @@ public class EventManager {
                 } catch (ScriptException | NoSuchMethodException ex) {
                     System.out.println("Event name : " + name + ", method Name : " + methodName + ":\n" + ex);
                     FilePrinter.printError("EventManager.txt", "Event name : " + name + ", method Name : " + methodName + ":\n" + ex);
-
                 }
             }
         }, delay);

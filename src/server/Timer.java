@@ -160,11 +160,11 @@ public abstract class Timer {
             }
         };
 
-        final ScheduledThreadPoolExecutor stpe = new ScheduledThreadPoolExecutor(3, thread);
+        final ScheduledThreadPoolExecutor stpe = new ScheduledThreadPoolExecutor(8, thread);
         stpe.setKeepAliveTime(10, TimeUnit.MINUTES);
         stpe.allowCoreThreadTimeOut(true);
-        stpe.setCorePoolSize(4);
-        stpe.setMaximumPoolSize(8);
+        stpe.setCorePoolSize(16);
+        stpe.setMaximumPoolSize(32);
         stpe.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
         ses = stpe;
     }
