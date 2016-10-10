@@ -126,7 +126,7 @@ public class AdminCommand {
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             if (c.getPlayer() != null) {
-                if (!MapleAntiMacro.startAntiMacro(c.getPlayer(), c.getPlayer(), (byte)MapleAntiMacro.GM_SKILL_ANTI)) {
+                if (!MapleAntiMacro.startAntiMacro(c.getPlayer(), c.getPlayer(), (byte) MapleAntiMacro.GM_SKILL_ANTI)) {
                     c.getPlayer().dropMessage(5, "測謊測試失敗");
                 }
             }
@@ -1340,6 +1340,31 @@ public class AdminCommand {
         public String getMessage() {
             return new StringBuilder().append("!mobvac - 全圖吸物開關").toString();
         }
+    }
+
+    public static class TimerStatus extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String[] splitted) {
+            c.getPlayer().dropMessage("BoatTimer : " + Timer.BoatTimer.getInstance().getTaskCount());
+            c.getPlayer().dropMessage("EventTimer : " + Timer.EventTimer.getInstance().getTaskCount());
+            c.getPlayer().dropMessage("BuffTimer : " + Timer.BuffTimer.getInstance().getTaskCount());
+            c.getPlayer().dropMessage("CheatTimer : " + Timer.CheatTimer.getInstance().getTaskCount());
+            c.getPlayer().dropMessage("CloneTimer : " + Timer.CloneTimer.getInstance().getTaskCount());
+            c.getPlayer().dropMessage("EtcTimer : " + Timer.EtcTimer.getInstance().getTaskCount());
+            c.getPlayer().dropMessage("LoginTimer : " + Timer.LoginTimer.getInstance().getTaskCount());
+            c.getPlayer().dropMessage("MapTimer : " + Timer.MapTimer.getInstance().getTaskCount());
+            c.getPlayer().dropMessage("MobTimer : " + Timer.MobTimer.getInstance().getTaskCount());
+            c.getPlayer().dropMessage("PingTimer : " + Timer.PingTimer.getInstance().getTaskCount());
+            c.getPlayer().dropMessage("WorldTimer : " + Timer.WorldTimer.getInstance().getTaskCount());
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!TimerStatus - TimerStatus").toString();
+        }
+
     }
 
     public static class Song extends CommandExecute {
