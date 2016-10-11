@@ -144,7 +144,8 @@ public class CharLoginHandler {
                 }
                 break;
             case ALREADY_LOGGED_IN:
-                LoginServer.getClientStorage().getClientByName(c.getAccountName()).getSession().close(true);
+                if(LoginServer.getClientStorage().getClientByName(c.getAccountName()) != null)
+                    LoginServer.getClientStorage().getClientByName(c.getAccountName()).getSession().close(true);
                 ChannelServer.forceRemovePlayerByAccId(c, c.getAccID());
                 c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
                 errorInfo = "解卡成功，重新登入";

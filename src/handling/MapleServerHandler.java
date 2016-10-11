@@ -199,7 +199,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
     @Override
     public void sessionOpened(final IoSession session) throws Exception {
-        session.getConfig().setBothIdleTime(180);//set timeout seconds, must
+        session.getConfig().setBothIdleTime(15);//set timeout seconds, must
         // Start of IP checking
         final String address = session.getRemoteAddress().toString().split(":")[0];
 
