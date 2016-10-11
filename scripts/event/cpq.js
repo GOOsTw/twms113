@@ -41,11 +41,11 @@ function playerEntry(eim, player) {
 
 function registerCarnivalParty(eim, carnivalParty) {
     if (eim.getProperty("red").equals("-1")) {
-        eim.setProperty("red", carnivalParty.getLeader().getId().ToString());
+        eim.setProperty("red", ""+carnivalParty.getLeader().getId());
         eim.schedule("end", 3 * 60 * 1000); // 3 minutes
         eim.broadcastPlayerMsg(5, "接下來的三分鐘您的隊伍可以找尋其他人挑戰。");
     } else {
-        eim.setProperty("blue", carnivalParty.getLeader().getId().ToString());
+        eim.setProperty("blue", ""+carnivalParty.getLeader().getId());
         eim.schedule("check", 1000);
         eim.broadcastPlayerMsg(5, "正在檢測是否有偷渡者...");
     }
