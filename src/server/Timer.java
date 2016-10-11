@@ -154,7 +154,7 @@ public abstract class Timer {
 
     protected ScheduledThreadPoolExecutor ses;
     protected String file, name;
-    
+
     public void start() {
         if (ses != null && !ses.isShutdown() && !ses.isTerminated()) {
             return;
@@ -217,6 +217,10 @@ public abstract class Timer {
 
     public long getTaskCount() {
         return ses.getTaskCount();
+    }
+
+    public int getQueueTaskCount() {
+        return ses.getQueue().size();
     }
 
     private static class LoggingSaveRunnable implements Runnable {

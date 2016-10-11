@@ -1346,17 +1346,20 @@ public class AdminCommand {
 
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
-            c.getPlayer().dropMessage("BoatTimer : " + Timer.BoatTimer.getInstance().getTaskCount());
-            c.getPlayer().dropMessage("EventTimer : " + Timer.EventTimer.getInstance().getTaskCount());
-            c.getPlayer().dropMessage("BuffTimer : " + Timer.BuffTimer.getInstance().getTaskCount());
-            c.getPlayer().dropMessage("CheatTimer : " + Timer.CheatTimer.getInstance().getTaskCount());
-            c.getPlayer().dropMessage("CloneTimer : " + Timer.CloneTimer.getInstance().getTaskCount());
-            c.getPlayer().dropMessage("EtcTimer : " + Timer.EtcTimer.getInstance().getTaskCount());
-            c.getPlayer().dropMessage("LoginTimer : " + Timer.LoginTimer.getInstance().getTaskCount());
-            c.getPlayer().dropMessage("MapTimer : " + Timer.MapTimer.getInstance().getTaskCount());
-            c.getPlayer().dropMessage("MobTimer : " + Timer.MobTimer.getInstance().getTaskCount());
-            c.getPlayer().dropMessage("PingTimer : " + Timer.PingTimer.getInstance().getTaskCount());
-            c.getPlayer().dropMessage("WorldTimer : " + Timer.WorldTimer.getInstance().getTaskCount());
+            StringBuilder sb = new StringBuilder();
+            sb.append("BoatTimer : ").append(Timer.BoatTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("EventTimer : ").append(Timer.EventTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("BuffTimer : ").append(Timer.BuffTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("CheatTimer : ").append(Timer.CheatTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("CloneTimer : ").append(Timer.CloneTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("EtcTimer : ").append(Timer.EtcTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("LoginTimer : ").append(Timer.LoginTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("MapTimer : ").append(Timer.MapTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("PingTimer : ").append(Timer.PingTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("WorldTimer : ").append(Timer.WorldTimer.getInstance().getQueueTaskCount()).append("\n");
+
+            c.getPlayer().dropMessage(sb.toString());
+
             return true;
         }
 
