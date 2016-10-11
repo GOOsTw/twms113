@@ -121,19 +121,8 @@ public class CharLoginHandler {
                 } else {
                     c.loginAttempt = 0;
                     c.updateMacs(macData);
+                    ChannelServer.forceRemovePlayerByAccId(c, c.getAccID());
                     LoginWorker.registerClient(c);
-                    for (ChannelServer ch : ChannelServer.getAllInstances()) {
-                        List<MapleCharacter> list = ch.getPlayerStorage().getAllCharactersThreadSafe();
-                        for (MapleCharacter chr : list) {
-                            if (chr.getAccountID() == c.getAccID()) {
-                                if (chr.getMap() != null) {
-                                    chr.getMap().removePlayer(chr);
-                                }
-                                ch.removePlayer(chr);
-                                break;
-                            }
-                        }
-                    }
                 }
                 return;
             case NOT_REGISTERED:
