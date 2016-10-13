@@ -32,7 +32,7 @@ function action(mode, _type, selection) {
                         var item = MapleInventoryManipulator.addbyId_Gachapon(cm.getPlayer().getClient(), gashaponItem.getItemId(), 1);
                         if(gashaponItem != null) { 
                             if(gashaponItem.canShowMsg())
-                                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[卷軸轉蛋機] " + cm.getPlayer().getName(), " : 被他從轉蛋屋的卷軸轉蛋機轉到了，大家恭喜他吧！", item, 3).getBytes());
+                                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[卷軸轉蛋機] " + cm.getPlayer().getName() +  " : 被他從轉蛋屋的卷軸轉蛋機轉到了，大家恭喜他吧！", item, cm.getChannelNumber()).getBytes());
                             cm.gainItem(requireItem, -1);
                             cm.sendOk("恭喜你轉到了#b#i" + gashaponItem.getItemId() + "##k。");
                         } else {
