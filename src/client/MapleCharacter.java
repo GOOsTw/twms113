@@ -143,7 +143,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             rank = 1, rankMove = 0, jobRank = 1, jobRankMove = 0, marriageId, marriageItemId = 0,
             currentrep, totalrep, linkMid = 0, coconutteam = 0, followid = 0, battleshipHP = 0,
             expression, constellation, blood, month, day, pachinkoBalls, beansNum, beansRange,
-            gachexp, 打怪 = 0, 吸怪 = 0, FLY_吸怪 = 0;
+            gachexp;
     private boolean canSetBeansNum;
     private Point old = new Point(0, 0);
     private boolean smega, hidden, hasSummon = false;
@@ -1870,29 +1870,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return true;
     }
 
-    public void add打怪() {
-        打怪++;
-    }
-
-    public int get打怪() {
-        return 打怪;
-    }
-
-    public void add吸怪() {
-        吸怪++;
-    }
-
-    public int get吸怪() {
-        return 吸怪;
-    }
-
-    public void addFly_吸怪() {
-        FLY_吸怪++;
-    }
-
-    public int getFly_吸怪() {
-        return FLY_吸怪;
-    }
+    
 
     public void sendHackShieldDetected() {
         this.getClient().sendPacket(MaplePacketCreator.hackShieldDetected());

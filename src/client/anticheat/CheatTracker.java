@@ -19,6 +19,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import server.AutobanManager;
 import server.Timer.CheatTimer;
+import server.life.MapleMonster;
+import server.movement.AbstractLifeMovement;
+import server.movement.LifeMovement;
+import server.movement.LifeMovementFragment;
 import tools.MaplePacketCreator;
 import tools.StringUtil;
 
@@ -52,6 +56,7 @@ public class CheatTracker {
     private int lastTickCount = 0, tickSame = 0;
     private long lastASmegaTime = 0;
     public long[] lastTime = new long[6];
+    public int 打怪 = 0, 吸怪 = 0, FLY_吸怪 = 0;
 
     public CheatTracker(final MapleCharacter chr) {
         this.chr = new WeakReference<>(chr);
@@ -102,7 +107,7 @@ public class CheatTracker {
             chr.get().dropMessage(5, "SS攻擊速度檢測，間隔:" + (tickCount - lastAttackTickCount) + "，最大限度：" + AtkDelay);
         }
         if ((tickCount - lastAttackTickCount) < AtkDelay) {
-            if (chr.get().get打怪() >= 100) {
+            if (打怪 >= 100) {
                 if (!chr.get().hasGmLevel(1)) {
                     chr.get().ban("攻擊速度異常，技能: " + skillId + " check: " + (tickCount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay, true, true, false);
                     chr.get().sendHackShieldDetected();
@@ -115,7 +120,7 @@ public class CheatTracker {
                 }
                 return;
             }
-            chr.get().add打怪();
+            打怪++;
             registerOffense(CheatingOffense.攻擊速度過快_伺服器端, "攻擊速度異常，技能: " + skillId + " check: " + (tickCount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay);
         }
         chr.get().updateTick(tickCount);
@@ -491,6 +496,77 @@ public class CheatTracker {
 
     public long[] getLastGMspam() {
         return lastTime;
+    }
+    
+    public void checkMonsterMovment(MapleMonster monster, List<LifeMovementFragment> res, Point startPos)
+    {
+        try {
+            boolean fly = monster.getStats().getFly();
+            Point endPos = null;
+            int reduce_x = 0;
+            int reduce_y = 0;
+            for (LifeMovementFragment move : res) {
+                if ((move instanceof AbstractLifeMovement)) {
+                    endPos = ((LifeMovement) move).getPosition();
+                    try {
+                        reduce_x = Math.abs(startPos.x - endPos.x);
+                        reduce_y = Math.abs(startPos.y - endPos.y);
+                    } catch (Exception ex) {
+                    }
+                }
+            }
+
+            if (!fly) {
+                int GeneallyDistance_y = 150;
+                int GeneallyDistance_x = 200;
+                int Check_x = 250;
+                int max_x = 450;
+                switch (chr.get().getMapId()) {
+                    case 100040001:
+                    case 926013500:
+                        GeneallyDistance_y = 200;
+                        break;
+                    case 200010300:
+                        GeneallyDistance_x = 1000;
+                        GeneallyDistance_y = 500;
+                        break;
+                    case 220010600:
+                    case 926013300:
+                        GeneallyDistance_x = 200;
+                        break;
+                    case 211040001:
+                        GeneallyDistance_x = 220;
+                        break;
+                    case 101030105:
+                        GeneallyDistance_x = 250;
+                        break;
+                    case 541020500:
+                        Check_x = 300;
+                        break;
+                }
+                switch (monster.getId()) {
+                    case 4230100:
+                        GeneallyDistance_y = 200;
+                        break;
+                    case 9410066:
+                        Check_x = 1000;
+                        break;
+                }
+                if (GeneallyDistance_x > max_x) {
+                    max_x = GeneallyDistance_x;
+                }
+                if (((reduce_x > GeneallyDistance_x || reduce_y > GeneallyDistance_y) && reduce_y != 0) || (reduce_x > Check_x && reduce_y == 0) || reduce_x > max_x ) {
+                    吸怪++;
+                    if (吸怪 % 50 == 0 || reduce_x > max_x) {
+                        chr.get().getCheatTracker().registerOffense(CheatingOffense.怪物全圖吸, "(地圖: " +  chr.get().getMapId() + " 怪物數量:" +  吸怪 + ")");
+                        World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " +  chr.get().getName() + " (編號: " +  chr.get().getId() + ")使用吸怪(" +  吸怪 + ")! - 地圖:" +  chr.get().getMapId() + "(" +  chr.get().getMap().getMapName() + ")").getBytes());
+                    }
+                }
+            }
+
+        } catch (Exception ex) {
+
+        }
     }
 
     private final class InvalidationTask implements Runnable {
