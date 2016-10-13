@@ -717,7 +717,7 @@ public class GameConstants {
                 return 900;
             case 5121003: // Energy Orb
             case 2311004: // Shining Ray
-                return 930;
+                return 530;
             case 13111007: // Wind Shot
                 return 960;
             case 14101006: // Vampire

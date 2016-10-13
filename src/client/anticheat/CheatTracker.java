@@ -108,14 +108,13 @@ public class CheatTracker {
                     chr.get().sendHackShieldDetected();
                     chr.get().getClient().getSession().close(true);
                     String reason = "使用違法程式練功";
-                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + chr.get().getName() + " 因為" + reason + "而被管理員永久停權。").getBytes());
+                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[自動封鎖系統] " + chr.get().getName() + " 因為" + reason + "而被管理員永久停權。").getBytes());
                     World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + chr.get().getName() + " 攻擊無延遲自動封鎖! ").getBytes());
                 } else {
                     chr.get().dropMessage("觸發攻擊速度封鎖");
                 }
                 return;
             }
-
             chr.get().add打怪();
             registerOffense(CheatingOffense.攻擊速度過快_伺服器端, "攻擊速度異常，技能: " + skillId + " check: " + (tickCount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay);
         }
