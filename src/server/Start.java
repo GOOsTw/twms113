@@ -78,7 +78,6 @@ public class Start {
         BoatTimer.getInstance().start();
         EventTimer.getInstance().start();
         BuffTimer.getInstance().start();
-        WorldTimer.getInstance().register(CloseSQLConnections, 30 * 60 * 1000);
         LoginInformationProvider.getInstance();
         FishingRewardFactory.getInstance();
         MapleQuest.initQuests();
