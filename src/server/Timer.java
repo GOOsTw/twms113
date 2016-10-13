@@ -176,8 +176,8 @@ public abstract class Timer {
         final ScheduledThreadPoolExecutor stpe = new ScheduledThreadPoolExecutor(8, thread);
         stpe.setKeepAliveTime(10, TimeUnit.MINUTES);
         stpe.allowCoreThreadTimeOut(true);
-        stpe.setCorePoolSize(32);
-        stpe.setMaximumPoolSize(64);
+        stpe.setCorePoolSize(16);
+        stpe.setMaximumPoolSize(32);
         stpe.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
         ses = stpe;
     }
