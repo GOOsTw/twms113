@@ -104,7 +104,7 @@ public class CheatTracker {
         if ((tickCount - lastAttackTickCount) < AtkDelay) {
             if (chr.get().get打怪() >= 100) {
                 if (!chr.get().hasGmLevel(1)) {
-                    chr.get().ban(chr.get().getName() + "攻擊速度異常，技能：" + skillId, true, true, false);
+                    chr.get().ban("攻擊速度異常，技能: " + skillId + " check: " + (tickCount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay, true, true, false);
                     chr.get().sendHackShieldDetected();
                     chr.get().getClient().getSession().close(true);
                     String reason = "使用違法程式練功";
