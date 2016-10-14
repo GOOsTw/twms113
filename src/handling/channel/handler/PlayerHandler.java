@@ -1066,11 +1066,6 @@ public class PlayerHandler {
                 c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.movePlayer(chr.getId(), res, Original_Pos), false);
             }
 
-//	    if (chr.isHidden()) {
-//		chr.setLastRes(res2);
-//	    } else { //original POS? or end POS?
-//		map.broadcastMessage(chr, MaplePacketCreator.movePlayer(chr.getId(), res, Original_Pos), false);
-//	    }
             MovementParse.updatePosition(res, chr, 0);
             final Point pos = chr.getPosition();
             map.movePlayer(chr, pos);
