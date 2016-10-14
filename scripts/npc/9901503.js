@@ -138,7 +138,7 @@ function action(mode, type, selection) {
                 } else if (selection == 3) { // get insode
                     if (cm.getSquad("ChaosHT") != null) {
                         var dd = cm.getEventManager("ChaosHorntail");
-                        dd.startInstance(cm.getSquad("ChaosHT"), cm.getMap());
+                        dd.startSquadInstance(cm.getSquad("ChaosHT"), cm.getMap());
                     } else {
                         cm.sendOk("Due to an unknown error, the request for squad has been denied.");
                     }

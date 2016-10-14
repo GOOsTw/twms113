@@ -162,7 +162,7 @@ function action(mode, type, selection) {
             } else if (selection == 3) { // get insode
                 if (cm.getSquad("Aufheben") != null) {
                     var dd = cm.getEventManager("Aufhaven");
-                    dd.startInstance(cm.getSquad("Aufheben"), cm.getMap());
+                    dd.startSquadInstance(cm.getSquad("Aufheben"), cm.getMap());
                 } else {
                     cm.sendOk("由於未知的錯誤，對遠征隊的要求被拒絕。");
                 }

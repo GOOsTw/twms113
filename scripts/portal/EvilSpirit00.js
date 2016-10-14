@@ -33,7 +33,7 @@ function enter(pi) {
             nextmap.resetFully();
             pi.setBossLog("badgod");
             pi.playPortalSE();
-            em.startInstance(pi.getParty(), pi.getMap());
+            em.startPartyInstance(pi.getParty(), pi.getMap());
             return true;
         } else {
             pi.playerMessage(6, "裡面有人正在挑戰，請稍後再嘗試。");

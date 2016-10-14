@@ -167,7 +167,7 @@ function action(mode, type, selection) {
             } else if (selection == 3) { // get insode
                 if (cm.getSquad("Nibergen_squad") != null) {
                     var dd = cm.getEventManager("Nibergen");
-                    dd.startInstance(cm.getSquad("Nibergen_squad"), cm.getMap());
+                    dd.startSquadInstance(cm.getSquad("Nibergen_squad"), cm.getMap());
                 } else {
                     cm.sendOk("由於未知的錯誤，對遠征隊的要求被拒絕。");
                 }

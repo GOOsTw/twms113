@@ -349,7 +349,7 @@ public class CheatTracker {
                 } else if (ban) {
                     chrhardref.ban(chrhardref.getName() + real, true, true, false);
                     chrhardref.sendHackShieldDetected();
-                    chrhardref.getClient().getSession().close();
+                    chrhardref.getClient().disconnect(true, false);
                     World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + chrhardref.getName() + " 因為" + show + "而被管理員永久停權。").getBytes());
                     World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + chrhardref.getName() + " " + real + "自動封鎖! ").getBytes());
                 } else {

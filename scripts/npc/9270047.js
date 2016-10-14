@@ -214,7 +214,7 @@ function action(mode, type, selection) {
 			} else if (selection == 3) { // get insode
 				if (cm.getSquad("ScarTar") != null) {
 					var dd = cm.getEventManager("ScarTarBattle");
-					dd.startInstance(cm.getSquad("ScarTar"), cm.getMap(), 160108);
+					dd.startSquadInstance(cm.getSquad("ScarTar"), cm.getMap(), 160108);
 				} else {
 					cm.sendOk("由於未知的錯誤，操作失敗。");
 				}

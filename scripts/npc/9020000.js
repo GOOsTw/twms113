@@ -41,7 +41,7 @@ function start() {
             } else {
                 var prop = em.getProperty("state");
                 if (prop == null || prop.equals("0")) {
-                    em.startInstance(cm.getParty(), cm.getMap());
+                    em.startPartyInstance(cm.getParty(), cm.getMap());
                 } else {
                     cm.sendOk("已經有隊伍在裡面挑戰了。");
                     cm.dispose();

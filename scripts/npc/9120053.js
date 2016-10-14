@@ -163,7 +163,7 @@ function action(mode, type, selection) {
             } else if (selection == 3) { // get insode
                 if (cm.getSquad("Core_Blaze") != null) {
                     var dd = cm.getEventManager("CoreBlaze");
-                    dd.startInstance(cm.getSquad("Core_Blaze"), cm.getMap());
+                    dd.startSquadInstance(cm.getSquad("Core_Blaze"), cm.getMap());
                 } else {
                     cm.sendOk("由於未知的錯誤，對遠征隊的要求被拒絕。");
                 }

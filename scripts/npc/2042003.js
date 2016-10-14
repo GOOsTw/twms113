@@ -13,7 +13,7 @@ function action(mode, type, selection) {
     }
     status++;
     if (status == 1) {
-        cm.warp(980000000, 0);
+        cm.getEventInstance().dispose();
         cm.dispose();
     }
 }

@@ -20,7 +20,7 @@ function action(mode, type, selection) {
                         if (q == null) {
                             cm.sendOk("Unknown error occured");
                         } else {
-                            q.startInstance(cm.getParty(), cm.getMap());
+                            q.startPartyInstance(cm.getParty(), cm.getMap());
                         }
                     } else {
                         cm.sendOk("You are not the leader of the party, please ask your leader to talk to me.");
@@ -56,7 +56,7 @@ function action(mode, type, selection) {
                         if (q == null) {
                             cm.sendOk("Unknown error occured");
                         } else {
-                            q.startInstance(cm.getParty(), cm.getMap());
+                            q.startPartyInstance(cm.getParty(), cm.getMap());
                         }
                     } else {
                         cm.sendOk("You are not the leader of the party, please ask your leader to talk to me.");
@@ -74,7 +74,7 @@ function action(mode, type, selection) {
                         if (q == null) {
                             cm.sendOk("Unknown error occured");
                         } else {
-                            q.startInstance(cm.getParty(), cm.getMap());
+                            q.startPartyInstance(cm.getParty(), cm.getMap());
                         }
                     } else {
                         cm.sendOk("You are not the leader of the party, please ask your leader to talk to me.");

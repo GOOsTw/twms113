@@ -9,7 +9,7 @@
         } else {
             var prop = ddz.getProperty("state");
             if (prop == null || prop.equals("0")) {
-                ddz.startInstance(cm.getParty(), cm.getMap());
+                ddz.startPartyInstance(cm.getParty(), cm.getMap());
             } else {
                 cm.sendOk("別人挑戰了，請稍後重試了一下.");
             }

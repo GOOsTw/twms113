@@ -197,7 +197,7 @@ function action(mode, type, selection) {
                 } else if (selection == 3) { // get insode
                     if (cm.getSquad("ScarTar") != null) {
                         var dd = cm.getEventManager("ScarTarBattle");
-                        dd.startInstance(cm.getSquad("ScarTar"), cm.getMap());
+                        dd.startSquadInstance(cm.getSquad("ScarTar"), cm.getMap());
                         //			dd.startInstance(cm.getSquad("ScarTar"), cm.getMap(), 160108);
                     } else {
                         cm.sendOk("Due to an unknown error, the request for squad has been denied.");

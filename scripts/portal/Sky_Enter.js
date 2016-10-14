@@ -32,7 +32,7 @@ function enter(pi) {
             } else {
                 var prop = em.getProperty("state");
                 if (prop == null || prop.equals("0")) {
-                    em.startInstance(pi.getParty(), pi.getMap());
+                    em.startPartyInstance(pi.getParty(), pi.getMap());
                 } else {
                     pi.playerMessage(5, "Someone is already attempting this boss.");
                 }

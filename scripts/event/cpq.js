@@ -1,4 +1,5 @@
-﻿ importPackage(Packages.tools);
+﻿importPackage(Packages.tools);
+
 
 var exitMap = 0;
 var waitingMap = 1;
@@ -25,9 +26,9 @@ function setup(mapid) {
     eim.setProperty("forfeit", "false");
     eim.setProperty("blue", "-1");
     eim.setProperty("red", "-1");
+    eim.setProperty("step", "0");
     var portal = eim.getMapInstance(reviveMap).getPortal("pt00");
     portal.setScriptName("MCrevive1");
-    //em.schedule("timeOut", 30 * 60000);
     eim.setProperty("started", "false");
     return eim;
 }
@@ -41,13 +42,15 @@ function playerEntry(eim, player) {
 
 function registerCarnivalParty(eim, carnivalParty) {
     if (eim.getProperty("red").equals("-1")) {
-        eim.setProperty("red", ""+carnivalParty.getLeader().getId());
-        eim.schedule("end", 3 * 60 * 1000); // 3 minutes
+        eim.setProperty("step", "1");
+        eim.setProperty("red", "" + carnivalParty.getLeader().getId());
+        eim.startEventTimer(3 * 60 * 1000);
         eim.broadcastPlayerMsg(5, "接下來的三分鐘您的隊伍可以找尋其他人挑戰。");
     } else {
-        eim.setProperty("blue", ""+carnivalParty.getLeader().getId());
-        eim.schedule("check", 1000);
+        eim.setProperty("step", "2");
+        eim.setProperty("blue", "" + carnivalParty.getLeader().getId());
         eim.broadcastPlayerMsg(5, "正在檢測是否有偷渡者...");
+        check();
     }
 }
 
@@ -61,11 +64,11 @@ function disbandParty(eim) {
     //if (eim.getProperty("started").equals("true")) {
     //    warpOut(eim);
     //} else {
-    disposeAll(eim);
+    dispose(eim);
     //}
 }
 
-function disposeAll(eim) {
+function dispose(eim) {
     var iter = eim.getPlayers().iterator();
     while (iter.hasNext()) {
         var player = iter.next();
@@ -97,7 +100,7 @@ function getParty(eim, property) {
     var chr = em.getChannelServer().getPlayerStorage().getCharacterById(parseInt(eim.getProperty(property)));
     if (chr == null) {
         eim.broadcastPlayerMsg(5, "隊伍的隊長 " + property + " 找不到。");
-        disposeAll(eim);
+        dispose(eim);
         return null;
     } else {
         return chr.getCarnivalParty();
@@ -118,12 +121,13 @@ function start(eim) {
 function check(eim) {
     var ck = eim.check();
     if (ck) {
+        eim.setProperty("step", "3");
         eim.broadcastPlayerMsg(5, "檢測..目前無異常....!");
-        eim.schedule("start", 10000);
+        eim.startEventTimer(10 * 1000);
         eim.broadcastPlayerMsg(5, "10秒後將開戰！！");
     } else {
         eim.broadcastPlayerMsg(5, "檢測..發現異常!! 即將傳回去");
-        disposeAll(eim);
+        dispose(eim);
     }
 }
 
@@ -143,14 +147,14 @@ function monsterValue(eim, mobId) {
 
 function end(eim) {
     if (!eim.getProperty("started").equals("true")) {
-        disposeAll(eim);
+        dispose(eim);
     }
 }
 
 function warpOut(eim) {
     if (!eim.getProperty("started").equals("true")) {
         if (eim.getProperty("blue").equals("-1")) {
-            disposeAll(eim);
+            dispose(eim);
         }
     } else {
         var blueParty = getParty(eim, "blue");
@@ -168,9 +172,15 @@ function warpOut(eim) {
 
 function scheduledTimeout(eim) {
     eim.stopEventTimer();
+
     if (!eim.getProperty("started").equals("true")) {
-        if (eim.getProperty("blue").equals("-1")) {
-            disposeAll(eim);
+        // not start
+        if (eim.getProperty("step").equals("3")) {
+            start()
+        } else {
+            if (eim.getProperty("blue").equals("-1")) {
+                dispose(eim);
+            }
         }
     } else {
         var blueParty = getParty(eim, "blue");
@@ -204,12 +214,13 @@ function playerDisconnected(eim, player) {
     eim.unregisterPlayer(player);
     player.getCarnivalParty().removeMember(player);
     eim.broadcastPlayerMsg(5, player.getName() + " 離開了怪物擂台1");
-    disposeAll(eim);
+    dispose(eim);
 }
 
 function onMapLoad(eim, chr) {
     if (!eim.getProperty("started").equals("true")) {
-        disposeAll(eim);
+        if(eim.getProperty("step").equals("3"))
+            dispose(eim);
     } else if (chr.getCarnivalParty().getTeam() == 0) {
         var blueParty = getParty(eim, "blue");
         chr.startMonsterCarnival(blueParty.getAvailableCP(), blueParty.getTotalCP());

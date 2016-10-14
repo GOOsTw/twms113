@@ -120,7 +120,7 @@ function action(mode, type, selection) {
                     } else {
                         var prop = em.getProperty("started");
                         if (prop.equals("false") || prop == null) {
-                            em.startInstance(cm.getParty(), cm.getMap());
+                            em.startPartyInstance(cm.getParty(), cm.getMap());
                         } else {
                             cm.sendOk("另一個組隊已經開始了調查任務，請稍後再來。");
                         }

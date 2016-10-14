@@ -153,7 +153,7 @@ function action(mode, type, selection) {
             } else if (selection == 3) { // get insode
                 if (cm.getSquad("BossBalrog") != null) {
                     var dd = cm.getEventManager("BossBalrog");
-                    dd.startInstance(cm.getSquad("BossBalrog"), cm.getMap());
+                    dd.startSquadInstance(cm.getSquad("BossBalrog"), cm.getMap());
                     cm.dispose();
                 } else {
                     cm.sendOk("由於未知的錯誤，操作失敗。");

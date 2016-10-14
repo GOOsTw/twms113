@@ -197,7 +197,7 @@ function action(mode, type, selection) {
                 } else if (selection == 3) { // get insode
                     if (cm.getSquad("VonLeon") != null) {
                         var dd = cm.getEventManager("VonLeonBattle");
-                        dd.startInstance(cm.getSquad("VonLeon"), cm.getMap(), 160107);
+                        dd.startSquadInstance(cm.getSquad("VonLeon"), cm.getMap(), 160107);
                     } else {
                         cm.sendOk("Due to an unknown error, the request for squad has been denied.");
                     }

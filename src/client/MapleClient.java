@@ -933,6 +933,7 @@ public class MapleClient {
     public final void disconnect(final boolean RemoveInChannelServer, final boolean fromCS, final boolean shutdown) {
 
         if (player != null && isLoggedIn()) {
+            this.setReceiving(false);
             MapleMap map = player.getMap();
             final MapleParty party = player.getParty();
             final boolean clone = player.isClone();

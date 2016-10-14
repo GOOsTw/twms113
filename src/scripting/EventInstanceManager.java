@@ -218,7 +218,7 @@ public class EventInstanceManager {
         }
         return ret;
     }
-    
+
     public boolean hasMonster(MapleMonster monster) {
         return mobs.contains(monster);
     }
@@ -502,6 +502,12 @@ public class EventInstanceManager {
     }
 
     public void dispose() {
+        try {
+            em.getIv().invokeFunction("dispose", this);
+        } catch (ScriptException | NoSuchMethodException ex) {
+            FilePrinter.printError("EventInstanceManager.txt", "Event name" + em.getName() + ", Instance name : " + name + ", method Name : dispose:\n" + ex);
+            System.out.println("Event name" + em.getName() + ", Instance name : " + name + ", method Name : dispose:\n" + ex);
+        }
         wL.lock();
         try {
             dispose_NoLock();

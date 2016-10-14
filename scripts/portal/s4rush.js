@@ -14,7 +14,7 @@ function enter(pi) {
 			  if (em == null) {
 			      pi.playerMessage("尚未找到副本，請聯繫管理員。");
 			  } else {
-			      em.startInstance(pi.getParty(), pi.getMap());
+			      em.startPartyInstance(pi.getParty(), pi.getMap());
 			      return true;
 			  }
 		      }

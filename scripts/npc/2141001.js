@@ -142,7 +142,7 @@ function action(mode, type, selection) {
                 } else if (selection == 3) { // get insode
                     if (cm.getSquad("PinkBean") != null) {
                         var dd = cm.getEventManager("PinkBeanBattle");
-                        dd.startInstance(cm.getSquad("PinkBean"), cm.getMap());
+                        dd.startSquadInstance(cm.getSquad("PinkBean"), cm.getMap());
                     } else {
                         cm.sendOk("由於未知的錯誤，操作失敗。");
                     }

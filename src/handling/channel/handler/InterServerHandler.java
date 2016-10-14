@@ -125,7 +125,6 @@ public class InterServerHandler {
         String LoginMac = LoginServer.getLoginMac(c);
         if (LoginMac != null) {
             c.setLoginMacs(LoginMac);
-            c.getPlayer().setNowMacs(LoginMac);
             LoginServer.removeLoginMac(c);
         }
 

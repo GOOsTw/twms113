@@ -44,7 +44,7 @@ function action(mode, type, selection) {
                     cm.sendOk("The PQ is #rclosed#k for now.");
                 } else {
                     cm.sendOk("You may enter"); //ENTER PQ
-                    em.startInstance(cm.getParty(), cm.getMap());
+                    em.startPartyInstance(cm.getParty(), cm.getMap());
                     var party = cm.getEventInstance().getPlayers();
                     cm.removeFromParty(4001106, party);
                 }

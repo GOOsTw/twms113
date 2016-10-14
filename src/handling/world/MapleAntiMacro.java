@@ -216,7 +216,7 @@ public class MapleAntiMacro {
             final Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DATE, 7);
             victim.tempban("測謊機連續失敗5次。", cal, 1, false);
-            victim.getClient().getSession().close();
+            victim.getClient().disconnect(true, false);
             victim.getClient().disconnect(true, false);
 
             String msg = "[GM 密語] " + victim.getName() + "  因為測謊機連續失敗5次而被封鎖一個禮拜。";
