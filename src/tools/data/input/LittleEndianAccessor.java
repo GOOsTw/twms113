@@ -82,7 +82,12 @@ public interface LittleEndianAccessor {
      * @return The bytes read.
      */
     byte[] read(int num);
-
+    
+    /**
+     * Read a boolean
+     */
+    boolean readBool();
+    
     /**
      * Reads a floating point integer.
      *

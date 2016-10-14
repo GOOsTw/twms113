@@ -250,4 +250,10 @@ public class GenericLittleEndianAccessor implements LittleEndianAccessor {
     public final String toString(final boolean b) {
         return bs.toString(b);
     }
+    
+    @Override
+    public boolean readBool()
+    {
+        return bs.readByte() > 0;
+    }
 }
