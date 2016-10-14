@@ -23,7 +23,6 @@ package scripting;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.WeakHashMap;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.ScheduledFuture;
 import javax.script.Invocable;
@@ -58,12 +57,12 @@ import tools.FilePrinter;
 
 public class EventManager {
 
-    private static int[] eventChannel = new int[2];
-    private Invocable iv;
-    private int channel;
-    private Map<String, EventInstanceManager> instances = new WeakHashMap<String, EventInstanceManager>();
-    private Properties props = new Properties();
-    private String name;
+    private final static int[] eventChannel = new int[2];
+    private final Invocable iv;
+    private final int channel;
+    private final Map<String, EventInstanceManager> instances = new WeakHashMap<>();
+    private final Properties props = new Properties();
+    private final String name;
 
     public EventManager(ChannelServer cserv, Invocable iv, String name) {
         this.iv = iv;
@@ -90,7 +89,6 @@ public class EventManager {
                 } catch (ScriptException | NoSuchMethodException ex) {
                     System.out.println("Event name : " + name + ", method Name : " + methodName + ":\n" + ex);
                     FilePrinter.printError("EventManager.txt", "Event name : " + name + ", method Name : " + methodName + ":\n" + ex);
-
                 }
             }
         }, delay);
@@ -145,6 +143,8 @@ public class EventManager {
 
     public EventInstanceManager newInstance(String name) {
         EventInstanceManager ret = new EventInstanceManager(this, name, channel);
+        if(this.instances.containsKey(name))
+            this.instances.get(name).dispose();
         instances.put(name, ret);
         return ret;
     }
@@ -193,42 +193,20 @@ public class EventManager {
             FilePrinter.printError("EventManager.txt", "Event name : " + name + ", method Name : setup:\n" + ex);
         }
     }
-
-    public void startInstance(String mapid, MapleCharacter chr) {
+    
+    public void startInstance(MapleCharacter character) {
         try {
-            EventInstanceManager eim = (EventInstanceManager) iv.invokeFunction("setup", (Object) mapid);
-            eim.registerCarnivalParty(chr, chr.getMap(), (byte) 0);
-        } catch (ScriptException | NoSuchMethodException ex) {
-            System.out.println("Event name : " + name + ", method Name : setup:\n" + ex);
-            FilePrinter.printError("EventManager.txt", "Event name : " + name + ", method Name : setup:\n" + ex);
-        }
-    }
-
-    public void startInstance_Party(String mapid, MapleCharacter chr) {
-        try {
-            EventInstanceManager eim = (EventInstanceManager) iv.invokeFunction("setup", (Object) mapid);
-            eim.registerParty(chr.getParty(), chr.getMap());
-        } catch (ScriptException | NoSuchMethodException ex) {
-            System.out.println("Event name : " + name + ", method Name : setup:\n" + ex);
-            FilePrinter.printError("EventManager.txt", "Event name : " + name + ", method Name : setup:\n" + ex);
-        }
-    }
-
-    //GPQ
-    public void startInstance(MapleCharacter character, String leader) {
-        try {
-            EventInstanceManager eim = (EventInstanceManager) (iv.invokeFunction("setup", (Object) null));
+            EventInstanceManager eim = (EventInstanceManager) (iv.invokeFunction("setup", character.getId()));
             eim.registerPlayer(character);
-            eim.setProperty("leader", leader);
-            eim.setProperty("guildid", String.valueOf(character.getGuildId()));
-            setProperty("guildid", String.valueOf(character.getGuildId()));
-        } catch (ScriptException | NoSuchMethodException ex) {
-            System.out.println("Event name : " + name + ", method Name : setup-Guild:\n" + ex);
-            FilePrinter.printError("EventManager.txt", "Event name : " + name + ", method Name : setup-Guild:\n" + ex);
+        } catch (NoSuchMethodException ex) {
+            startInstanceWithoutCharId(character);
+        } catch (ScriptException ex) {
+            System.out.println("Event name : " + name + ", method Name : setup-character:\n" + ex);
+            FilePrinter.printError("EventManager.txt", "Event name : " + name + ", method Name : setup-character:\n" + ex);
         }
     }
 
-    public void startInstance_CharID(MapleCharacter character) {
+    private void startInstanceWithoutCharId(MapleCharacter character) {
         try {
             EventInstanceManager eim = (EventInstanceManager) (iv.invokeFunction("setup", character.getId()));
             eim.registerPlayer(character);
@@ -238,35 +216,51 @@ public class EventManager {
         }
     }
 
-    public void startInstance(MapleCharacter character) {
+    public void startCarnivalInstance(int mapid, MapleCharacter chr) {
+        startCarnivalInstance(String.valueOf(mapid), chr);
+    }
+
+    public void startCarnivalInstance(String mapid, MapleCharacter chr) {
         try {
-            EventInstanceManager eim = (EventInstanceManager) (iv.invokeFunction("setup", (Object) null));
-            eim.registerPlayer(character);
+            EventInstanceManager eim = (EventInstanceManager) iv.invokeFunction("setup", (Object) mapid);
+            eim.registerCarnivalParty(chr, chr.getMap(), (byte) 0);
         } catch (ScriptException | NoSuchMethodException ex) {
-            System.out.println("Event name : " + name + ", method Name : setup-character:\n" + ex);
-            FilePrinter.printError("EventManager.txt", "Event name : " + name + ", method Name : setup-character:\n" + ex);
+            System.out.println("Event name : " + name + ", method Name : setup:\n" + ex);
+            FilePrinter.printError("EventManager.txt", "Event name : " + name + ", method Name : setup:\n" + ex);
         }
     }
 
-    //PQ method: starts a PQ
-    public void startInstance(MapleParty party, MapleMap map) {
+    public void startMapInstance(int mapid, MapleCharacter chr) {
+        startMapInstance(String.valueOf(mapid), chr);
+    }
+
+    public void startMapInstance(String mapid, MapleCharacter chr) {
+        try {
+            EventInstanceManager eim = (EventInstanceManager) iv.invokeFunction("setup", (Object) mapid);
+            eim.registerParty(chr.getParty(), chr.getMap());
+        } catch (ScriptException | NoSuchMethodException ex) {
+            System.out.println("Event name : " + name + ", method Name : setup:\n" + ex);
+            FilePrinter.printError("EventManager.txt", "Event name : " + name + ", method Name : setup:\n" + ex);
+        }
+    }
+    
+    public void startPartyInstance(MapleParty party, MapleMap map) {
         try {
             EventInstanceManager eim = (EventInstanceManager) (iv.invokeFunction("setup", party.getId()));
             eim.registerParty(party, map);
+        } catch (NoSuchMethodException ex) {
+            startPartyInstanceWithoutPartyId(party, map, ex);
         } catch (ScriptException ex) {
             System.out.println("Event name : " + name + ", method Name : setup-partyid:\n" + ex);
             FilePrinter.printError("EventManager.txt", "Event name : " + name + ", method Name : setup-partyid:\n" + ex);
-        } catch (NoSuchMethodException ex) {
-            //ignore
-            startInstance_NoID(party, map, ex);
         }
     }
-
-    public void startInstance_NoID(MapleParty party, MapleMap map) {
-        startInstance_NoID(party, map, null);
+    
+    private void startPartyInstanceWithoutPartyId(MapleParty party, MapleMap map) {
+        startPartyInstanceWithoutPartyId(party, map, null);
     }
 
-    public void startInstance_NoID(MapleParty party, MapleMap map, final Exception old) {
+    private void startPartyInstanceWithoutPartyId(MapleParty party, MapleMap map, final Exception old) {
         try {
             EventInstanceManager eim = (EventInstanceManager) (iv.invokeFunction("setup", (Object) null));
             eim.registerParty(party, map);
@@ -276,22 +270,26 @@ public class EventManager {
         }
     }
 
-    //non-PQ method for starting instance
-    public void startInstance(EventInstanceManager eim, String leader) {
+    //GPQ
+    public void startGuildInstance(MapleCharacter character) {
         try {
-            iv.invokeFunction("setup", eim);
-            eim.setProperty("leader", leader);
+            EventInstanceManager eim = (EventInstanceManager) (iv.invokeFunction("setup", (Object) null));
+            eim.registerPlayer(character);
+            eim.setProperty("leader", character.getName());
+            eim.setProperty("guildid", String.valueOf(character.getGuildId()));
         } catch (ScriptException | NoSuchMethodException ex) {
-            System.out.println("Event name : " + name + ", method Name : setup-leader:\n" + ex);
-            FilePrinter.printError("EventManager.txt", "Event name : " + name + ", method Name : setup-leader:\n" + ex);
+            System.out.println("Event name : " + name + ", method Name : setup-Guild:\n" + ex);
+            FilePrinter.printError("EventManager.txt", "Event name : " + name + ", method Name : setup-Guild:\n" + ex);
         }
     }
 
-    public void startInstance(MapleSquad squad, MapleMap map) {
-        startInstance(squad, map, -1);
+    
+
+    public void startSquadInstance(MapleSquad squad, MapleMap map) {
+        startSquadInstance(squad, map, -1);
     }
 
-    public void startInstance(MapleSquad squad, MapleMap map, int questID) {
+    public void startSquadInstance(MapleSquad squad, MapleMap map, int questID) {
         if (squad.getStatus() == 0) {
             return; //we dont like cleared squads
         }

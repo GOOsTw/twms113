@@ -57,7 +57,7 @@ function action(mode, type, selection) {
                         for (var i = 4001100; i < 4001101; i++) {
                             cm.givePartyItems(i, 0, true);
                         }
-                        em.startInstance(cm.getParty(), cm.getMap());
+                        em.startPartyInstance(cm.getParty(), cm.getMap());
                         cm.dispose();
                         return;
                     } else {

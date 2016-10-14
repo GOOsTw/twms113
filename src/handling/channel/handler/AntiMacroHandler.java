@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package handling;
+package handling.channel.handler;
 
 import client.MapleCharacter;
 import client.MapleClient;

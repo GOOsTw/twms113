@@ -89,7 +89,6 @@ public class LoginServer {
             acceptor.setHandler(new MapleServerHandler(-1, false));
             acceptor.getSessionConfig().setTcpNoDelay(true);
             acceptor.bind(new InetSocketAddress(ip, port));
-            LoginTimer.getInstance().register(CheckLoginTask.getInstance(), 10 * 60 * 1000);
             System.out.println("\n【登入伺服器】  - 監聽端口: " + Short.toString(port) + " \n");
 
         } catch (IOException ex) {

@@ -24,6 +24,7 @@ import client.MapleStat;
 import client.SkillFactory;
 import client.PlayerStats;
 import client.Skill;
+import client.anticheat.CheatingOffense;
 import client.status.MonsterStatus;
 import client.status.MonsterStatusEffect;
 import constants.SkillType.*;
@@ -252,7 +253,7 @@ public class MapleStatEffect implements Serializable {
                     break;
                 case 11101002://終極攻擊
                 case 21120002://終極攻擊
-                     statups.add(new Pair<>(MapleBuffStat.FINAL_MELEE_ATTACK, ret.x));
+                    statups.add(new Pair<>(MapleBuffStat.FINAL_MELEE_ATTACK, ret.x));
                     break;
                 case 13101002://終極攻擊
                     statups.add(new Pair<>(MapleBuffStat.FINAL_SHOOT_ATTACK, ret.x));
@@ -677,6 +678,10 @@ public class MapleStatEffect implements Serializable {
             }
             //short converting needs math.min cuz of overflow
             stat.setMp(stat.getMp() + mpchange);
+
+            if (stat.getMp() < 0) {
+                applyto.getCheatTracker().registerOffense(CheatingOffense.異常魔力耗損);
+            }
 
             hpmpupdate.add(new Pair<>(MapleStat.MP, Integer.valueOf(stat.getMp())));
         }

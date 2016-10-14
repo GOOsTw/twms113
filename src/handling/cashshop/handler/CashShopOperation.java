@@ -50,19 +50,27 @@ public class CashShopOperation {
             transfer = CashShopServer.getPlayerStorageMTS().getPendingCharacter(playerid);
             mts = true;
             if (transfer == null) {
-                client.disconnect(false, false);
+                client.getSession().close(true);
                 return;
             }
         }
+        MapleClient oldClient = World.Client.getClient(playerid);
+
+        if (oldClient != null) {
+            if (oldClient.getPlayer() != null) {
+                oldClient.disconnect(true, false);
+            }
+        }
+
         MapleCharacter chr = MapleCharacter.ReconstructChr(transfer, client, false);
 
         chr.reloadCSPoints();
-        client.setPlayer(chr);
+
         client.setAccID(chr.getAccountID());
         client.loadAccountData(chr.getAccountID());
 
         if (!client.CheckIPAddress()) { // Remote hack
-            client.disconnect(false, true);
+            client.getSession().close(true);
             return;
         }
 
@@ -74,15 +82,15 @@ public class CashShopOperation {
                 allowLogin = true;
             }
         }
-        // System.out.println( state );
 
+        // System.out.println( state );
         if (!allowLogin) {
             client.disconnect(false, false);
             return;
         }
 
+        client.setPlayer(chr);
         client.updateLoginState(MapleClient.LOGIN_CS_LOGGEDIN, client.getSessionIPAddress());
-
         if (mts) {
             CashShopServer.getPlayerStorageMTS().registerPlayer(chr);
             client.sendPacket(MTSCSPacket.startMTS(chr, client));

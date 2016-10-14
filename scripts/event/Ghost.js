@@ -101,14 +101,14 @@ function leftParty(eim, player) {
 }
 
 function disbandParty(eim) {
-    //if (eim.getProperty("started").equals("true")) {
-    //    warpOut(eim);
-    //} else {
     disposeAll(eim);
-    //}
 }
 
 function disposeAll(eim) {
+    eim.dispose();
+}
+
+function dispose() {
     var iter = eim.getPlayers().iterator();
     while (iter.hasNext()) {
         var player = iter.next();
@@ -118,7 +118,6 @@ function disposeAll(eim) {
             player.getCarnivalParty().removeMember(player);
         }
     }
-    eim.dispose();
 }
 
 function playerExit(eim, player) {
@@ -163,8 +162,8 @@ function start(eim) {
 
 function monsterKilled(eim, chr, cp) {
     //if (eim.getProperty("boss").equals("false")) {
-    //	eim.setProperty(chr.getId() + "-Ghost_Point", (parseInt(eim.getProperty(chr.getId() + "-Ghost_Point")) + cp) + "");
-    //	broadcastUpdate(eim, chr);
+    //  eim.setProperty(chr.getId() + "-Ghost_Point", (parseInt(eim.getProperty(chr.getId() + "-Ghost_Point")) + cp) + "");
+    //  broadcastUpdate(eim, chr);
     //} else {//give to whole partyy
     var iter = eim.getPlayers().iterator();
     while (iter.hasNext()) {

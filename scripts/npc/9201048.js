@@ -51,7 +51,7 @@ function action(mode, type, selection) {
                     if (em == null) {
                         cm.sendOk("請稍後再嘗試。");
                     } else {
-                        em.startInstance(cm.getPlayer().getParty(), cm.getPlayer().getMap());
+                        em.startPartyInstance(cm.getPlayer().getParty(), cm.getPlayer().getMap());
                     }
                 } else {
                     cm.sendOk("隊伍成員必須有6個以上都在這裡。");

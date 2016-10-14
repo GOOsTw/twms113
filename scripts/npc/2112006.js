@@ -31,7 +31,7 @@ function action(mode, type, selection) {
                     size += (ccPlayer.isGM() ? 4 : 1);
                 }
                 if (next && (cm.getPlayer().isGM() || size == 4)) {
-                    em.startInstance(cm.getPlayer().getParty(), cm.getPlayer().getMap());
+                    em.startPartyInstance(cm.getPlayer().getParty(), cm.getPlayer().getMap());
                 } else {
                     cm.sendOk("All 4 members of your party must be here and above level 71.");
                 }

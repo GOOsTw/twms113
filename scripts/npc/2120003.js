@@ -19,7 +19,7 @@ function action(mode, type, selection) {
 		}
 		cm.sendNext("蒐集到解夢鑰匙了嗎？讓我來幫你解夢吧！看看你在萬聖節會出現什麼樣的夢，解夢鑰匙就由我來拿走吧！");
 	} else if (status == 1) {
-		if (randTalk >= 3) {
+		if (false) {
 			cm.sendNext("夢裡面的南瓜正在睡覺呢~如果你帶一些南瓜碎片，他有可能會喚醒也說不定？");
 			cm.gainItem(4001337, -1);
 			cm.dispose();
@@ -35,7 +35,7 @@ function action(mode, type, selection) {
 			} else {
 				var prop = em.getProperty("state");
 				if (prop.equals("0") || prop == null) {
-					em.startInstance(cm.getPlayer(), cm.getMap());
+					em.startInstance(cm.getPlayer());
 					cm.setBossLog("Ghostbaby");
 					cm.gainItem(4001337, -1);
 					cm.dispose();

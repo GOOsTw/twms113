@@ -28,6 +28,7 @@ import client.MapleStat;
 import client.MapleCharacter;
 import handling.MaplePacket;
 import handling.SendPacketOpcode;
+import java.awt.Point;
 import server.movement.LifeMovementFragment;
 import tools.MaplePacketCreator;
 import tools.data.output.MaplePacketLittleEndianWriter;
@@ -119,13 +120,13 @@ public class PetPacket {
         return mplew.getPacket();
     }
 
-    public static final MaplePacket movePet(final int cid, final int pid, final byte slot, final List<LifeMovementFragment> moves) {
+    public static final MaplePacket movePet(final int cid, Point startPos, final byte slot, final List<LifeMovementFragment> moves) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.MOVE_PET.getValue());
         mplew.writeInt(cid);
         mplew.write(slot);
-        mplew.writeInt/*Long*/(pid);
+        mplew.writePos(startPos);
         PacketHelper.serializeMovementList(mplew, moves);
 
         return mplew.getPacket();

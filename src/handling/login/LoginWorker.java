@@ -62,6 +62,7 @@ public class LoginWorker {
         }
 
         if (c.finishLogin() == 0) {
+            LoginServer.addClient(c);
             c.sendPacket(LoginPacket.getAuthSuccessRequest(c));
             c.sendPacket(LoginPacket.getServerList(0, LoginServer.getServerName(), LoginServer.getLoad()));
             c.sendPacket(LoginPacket.getEndOfServerList());

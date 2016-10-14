@@ -126,7 +126,7 @@ public class AdminCommand {
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
             if (c.getPlayer() != null) {
-                if (!MapleAntiMacro.startAntiMacro(c.getPlayer(), c.getPlayer(), (byte)MapleAntiMacro.GM_SKILL_ANTI)) {
+                if (!MapleAntiMacro.startAntiMacro(c.getPlayer(), c.getPlayer(), (byte) MapleAntiMacro.GM_SKILL_ANTI)) {
                     c.getPlayer().dropMessage(5, "測謊測試失敗");
                 }
             }
@@ -1340,6 +1340,34 @@ public class AdminCommand {
         public String getMessage() {
             return new StringBuilder().append("!mobvac - 全圖吸物開關").toString();
         }
+    }
+
+    public static class TimerStatus extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String[] splitted) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("BoatTimer : ").append(Timer.BoatTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("EventTimer : ").append(Timer.EventTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("BuffTimer : ").append(Timer.BuffTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("CheatTimer : ").append(Timer.CheatTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("CloneTimer : ").append(Timer.CloneTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("EtcTimer : ").append(Timer.EtcTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("LoginTimer : ").append(Timer.LoginTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("MapTimer : ").append(Timer.MapTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("PingTimer : ").append(Timer.PingTimer.getInstance().getQueueTaskCount()).append("\n");
+            sb.append("WorldTimer : ").append(Timer.WorldTimer.getInstance().getQueueTaskCount()).append("\n");
+
+            c.getPlayer().dropMessage(sb.toString());
+
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!TimerStatus - TimerStatus").toString();
+        }
+
     }
 
     public static class Song extends CommandExecute {

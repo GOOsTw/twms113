@@ -34,7 +34,6 @@ public class MovementParse {
     public static final List<LifeMovementFragment> parseMovement(final LittleEndianAccessor lea, int kind) {
         final List<LifeMovementFragment> res = new ArrayList<>();
         final byte numCommands = lea.readByte();
-
         for (byte i = 0; i < numCommands; i++) {
             byte command = lea.readByte();
             switch (command) {

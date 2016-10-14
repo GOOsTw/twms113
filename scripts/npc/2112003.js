@@ -31,7 +31,7 @@ function action(mode, type, selection) {
                     size += (ccPlayer.isGM() ? 4 : 1);
                 }
                 if (next && (cm.getPlayer().isGM() || size >= 4)) {
-                    em.startInstance(cm.getPlayer().getParty(), cm.getPlayer().getMap());
+                    em.startPartyInstance(cm.getPlayer().getParty(), cm.getPlayer().getMap());
                 } else {
                     cm.sendOk("請你的隊員大於4個人(含)都要70等以上(含)120等以下(120也可)都要在這張地圖再來找我");
                 }

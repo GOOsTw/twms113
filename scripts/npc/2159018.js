@@ -37,7 +37,7 @@ function action(mode, type, selection) {
                     } else {
                         var prop = em.getProperty("state");
                         if (prop.equals("0") || prop == null) {
-                            em.startInstance(cm.getPlayer().getParty(), cm.getPlayer().getMap(), 70);
+                            em.startPartyInstance(cm.getPlayer().getParty(), cm.getPlayer().getMap(), 70);
                         } else {
                             cm.sendOk("Another party quest has already entered this channel.");
                         }

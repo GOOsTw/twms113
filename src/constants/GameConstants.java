@@ -693,7 +693,7 @@ public class GameConstants {
             case 2001005: // Magic Claw
             case 12001003: // Magic Claw
             case 2001004: // Energy Bolt
-            case 2301005: // Holy Arrow
+
             case 2121001: // Big Bang
             case 2221001: // Big Bang
             case 2321001: // Big Bang
@@ -706,6 +706,8 @@ public class GameConstants {
             case 12111006: // Fire Strike
             case 11101004: // Soul Blade
                 return 750;
+            case 2301005: // Holy Arrow
+                return 500;
             case 15111007: // Shark Wave
             case 2111006: // Elemental Composition
             case 2211006: // Elemental Composition
@@ -717,7 +719,7 @@ public class GameConstants {
                 return 900;
             case 5121003: // Energy Orb
             case 2311004: // Shining Ray
-                return 930;
+                return 530;
             case 13111007: // Wind Shot
                 return 960;
             case 14101006: // Vampire

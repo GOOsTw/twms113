@@ -83,29 +83,34 @@ public class NPCHandler {
     }
 
     public static final void handleNPCTalk(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
-        if (chr == null || chr.getMap() == null) {
-            return;
-        }
-        final MapleNPC npc = chr.getMap().getNPCByOid(slea.readInt());
+        chr.getQuestLock().lock();
+        try {
+            if (chr == null || chr.getMap() == null) {
+                return;
+            }
+            final MapleNPC npc = chr.getMap().getNPCByOid(slea.readInt());
 
-        if (npc == null) {
-            return;
-        }
-        if (chr.getConversation() != 0) {
-            chr.dropMessage(5, "你現在不能攻擊或不能跟npc對話,請在對話框打 @解卡/@ea 來解除異常狀態");
-            return;
-        }
+            if (npc == null) {
+                return;
+            }
+            if (chr.getConversation() != 0) {
+                chr.dropMessage(5, "你現在不能攻擊或不能跟npc對話,請在對話框打 @解卡/@ea 來解除異常狀態");
+                return;
+            }
 
-        if (npc.hasShop()) {
-            chr.setConversation(1);
-            npc.sendShop(c);
-        } else {
-            NPCScriptManager.getInstance().start(c, npc.getId());
+            if (npc.hasShop()) {
+                chr.setConversation(1);
+                npc.sendShop(c);
+            } else {
+                NPCScriptManager.getInstance().start(c, npc.getId());
+            }
+        } finally {
+            chr.getQuestLock().unlock();
         }
     }
 
     public static final void QuestAction(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
-        
+
         chr.getQuestLock().lock();
         try {
             final byte action = slea.readByte();
@@ -315,54 +320,66 @@ public class NPCHandler {
     }
 
     public static final void NPCMoreTalk(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-        final byte lastMsg = slea.readByte(); // 00 (last msg type I think)
-        final byte action = slea.readByte(); // 00 = end chat, 01 == follow
-
-        final NPCConversationManager cm = NPCScriptManager.getInstance().getCM(c);
-
-        if (c == null || c.getPlayer() == null || cm == null || c.getPlayer().getConversation() == 0 || cm.getLastMsg() != lastMsg) {
+        MapleCharacter chr = c.getPlayer();
+        if(chr == null)
             return;
-        }
-        cm.setLastMsg((byte) -1);
-        if (lastMsg == 2) {
-            if (action != 0) {
-                cm.setGetText(slea.readMapleAsciiString());
-                if (cm.getType() == 0) {
-                    NPCScriptManager.getInstance().startQuest(c, action, lastMsg, -1);
-                } else if (cm.getType() == 1) {
-                    NPCScriptManager.getInstance().endQuest(c, action, lastMsg, -1);
+        chr.getQuestLock().lock();
+        try {
+            final byte lastMsg = slea.readByte(); // 00 (last msg type I think)
+            final byte action = slea.readByte(); // 00 = end chat, 01 == follow
+
+            final NPCConversationManager cm = NPCScriptManager.getInstance().getCM(c);
+
+            if (cm == null || c.getPlayer().getConversation() == 0 || cm.getLastMsg() != lastMsg) {
+                return;
+            }
+            cm.setLastMsg((byte) -1);
+            if (lastMsg == 2) {
+                if (action != 0) {
+                    cm.setGetText(slea.readMapleAsciiString());
+                    switch (cm.getType()) {
+                        case 0:
+                            NPCScriptManager.getInstance().startQuest(c, action, lastMsg, -1);
+                            break;
+                        case 1:
+                            NPCScriptManager.getInstance().endQuest(c, action, lastMsg, -1);
+                            break;
+                        default:
+                            NPCScriptManager.getInstance().action(c, action, lastMsg, -1);
+                            break;
+                    }
                 } else {
-                    NPCScriptManager.getInstance().action(c, action, lastMsg, -1);
+                    cm.dispose();
                 }
             } else {
-                cm.dispose();
-            }
-        } else {
-            int selection = -1;
-            if (slea.available() >= 4) {
-                selection = slea.readInt();
-            } else if (slea.available() > 0) {
-                selection = slea.readByte();
-            }
-            if (cm.getNpc() != 9000069 && lastMsg == 4 && selection == -1) {
-                cm.dispose();
-                return;//h4x
-            }
-            if (selection >= -1 && action != -1) {
-                switch (cm.getType()) {
-                    case 0:
-                        NPCScriptManager.getInstance().startQuest(c, action, lastMsg, selection);
-                        break;
-                    case 1:
-                        NPCScriptManager.getInstance().endQuest(c, action, lastMsg, selection);
-                        break;
-                    default:
-                        NPCScriptManager.getInstance().action(c, action, lastMsg, selection);
-                        break;
+                int selection = -1;
+                if (slea.available() >= 4) {
+                    selection = slea.readInt();
+                } else if (slea.available() > 0) {
+                    selection = slea.readByte();
                 }
-            } else {
-                cm.dispose();
+                if (cm.getNpc() != 9000069 && lastMsg == 4 && selection == -1) {
+                    cm.dispose();
+                    return;//h4x
+                }
+                if (selection >= -1 && action != -1) {
+                    switch (cm.getType()) {
+                        case 0:
+                            NPCScriptManager.getInstance().startQuest(c, action, lastMsg, selection);
+                            break;
+                        case 1:
+                            NPCScriptManager.getInstance().endQuest(c, action, lastMsg, selection);
+                            break;
+                        default:
+                            NPCScriptManager.getInstance().action(c, action, lastMsg, selection);
+                            break;
+                    }
+                } else {
+                    cm.dispose();
+                }
             }
+        } finally {
+            chr.getQuestLock().unlock();
         }
     }
 

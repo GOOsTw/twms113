@@ -254,7 +254,7 @@ function action(mode, type, selection) {
 			} else if (selection == 3) { // get insode
 				if (cm.getSquad("Horntail") != null) {
 					var dd = cm.getEventManager("HorntailBattle");
-					dd.startInstance(cm.getSquad("Horntail"), cm.getMap(), 160100);
+					dd.startSquadInstance(cm.getSquad("Horntail"), cm.getMap(), 160100);
 				} else {
 					cm.sendNext("由於未知的錯誤，遠征隊的請求被拒絕了。");
 				}

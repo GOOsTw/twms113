@@ -40,6 +40,7 @@ import server.life.MapleLifeFactory;
 import server.maps.ReactorDropEntry;
 import server.maps.MapleReactor;
 import server.life.MapleMonster;
+import tools.MaplePacketCreator;
 
 /**
  *
@@ -196,6 +197,14 @@ public class ReactorActionManager extends AbstractPlayerInteraction {
             for (MapleMonster mons : getMap().getAllMonstersThreadsafe()) {
                 mons.dispelSkill(skil.getMobSkill());
             }
+        }
+    }
+    
+    public void showEffect(boolean broadcast, String effect) {
+        if (broadcast) {
+            getPlayer().getMap().broadcastMessage(MaplePacketCreator.showEffect(effect));
+        } else {
+            getClient().sendPacket(MaplePacketCreator.showEffect(effect));
         }
     }
 }

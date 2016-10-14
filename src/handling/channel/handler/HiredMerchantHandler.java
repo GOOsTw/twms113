@@ -70,7 +70,7 @@ public class HiredMerchantHandler {
                     break;
             }
         } else {
-            c.getSession().close(true);
+            c.disconnect(true, false);
         }
     }
 

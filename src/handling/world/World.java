@@ -878,20 +878,59 @@ public class World {
 
     public static class Client {
 
-        private static final ArrayList<MapleClient> clients = new ArrayList();
+        private static final Map<Integer, MapleClient> clients = new HashMap();
 
-        public static void addClient(MapleClient c) {
-            if (!clients.contains(c)) {
-                clients.add(c);
+        private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+        public static void addClient(Integer accountId, MapleClient c) {
+            lock.readLock().lock();
+            try {
+                if (!clients.containsKey(accountId)) {
+                    lock.readLock().unlock();
+                    lock.writeLock().lock();
+                    try {
+                        clients.put(accountId, c);
+                    } finally {
+                        lock.readLock().lock();
+                        lock.writeLock().unlock();
+                    }
+                }
+            } finally {
+                lock.readLock().unlock();
             }
         }
 
-        public static boolean removeClient(MapleClient c) {
-            return clients.remove(c);
+        public static void removeClient(Integer accountId) {
+            lock.readLock().lock();
+            try {
+                if (clients.containsKey(accountId)) {
+                    lock.readLock().unlock();
+                    lock.writeLock().lock();
+                    try {
+                        clients.remove(accountId);
+                    } finally {
+                        lock.readLock().lock();
+                        lock.writeLock().unlock();
+                    }
+                }
+            } finally {
+                lock.readLock().unlock();
+            }
         }
 
-        public static ArrayList<MapleClient> getClients() {
-            return clients;
+        public static MapleClient getClient(Integer accountId) {
+            MapleClient ret = null;
+            lock.readLock().lock();
+            try {
+                ret = clients.get(accountId);
+            } finally {
+                lock.readLock().unlock();
+            }
+            return ret;
+        }
+
+        public static Collection<MapleClient> getClients() {
+            return clients.values();
         }
     }
 

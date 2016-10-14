@@ -38,8 +38,8 @@ function action(mode, type, selection) {
                 size++;
             }
             if (next && size >= 2) {
-                if (em.getInstance("Olivia" + s) == null) {
-                    em.startInstance_Party("" + s, cm.getPlayer());
+                if (em.getInstance("Olivia" + mapId) == null) {
+                    em.startMapInstance(s, cm.getPlayer());
                 } else {
                     cm.sendOk("Another party quest has already entered this channel.");
                 }

@@ -158,7 +158,6 @@ public abstract class MapleEvent {
                             e.broadcast(MaplePacketCreator.serverNotice("距離活動開始只剩一分鐘!"));
                             e.broadcast(MaplePacketCreator.getClock(60));
                             EventTimer.getInstance().schedule(new Runnable() {
-
                                 @Override
                                 public void run() {
                                     e.startEvent();

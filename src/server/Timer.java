@@ -21,9 +21,9 @@ public abstract class Timer {
             return instance;
         }
     }
-    
+
     public static class LoginTimer extends Timer {
-        
+
         private static final LoginTimer instance = new LoginTimer();
 
         private LoginTimer() {
@@ -139,7 +139,20 @@ public abstract class Timer {
         }
     }
 
-    private ScheduledThreadPoolExecutor ses;
+    public static class BoatTimer extends Timer {
+
+        private static final BoatTimer instance = new BoatTimer();
+
+        private BoatTimer() {
+            name = "BoatTimer";
+        }
+
+        public static BoatTimer getInstance() {
+            return instance;
+        }
+    }
+
+    protected ScheduledThreadPoolExecutor ses;
     protected String file, name;
 
     public void start() {
@@ -160,11 +173,11 @@ public abstract class Timer {
             }
         };
 
-        final ScheduledThreadPoolExecutor stpe = new ScheduledThreadPoolExecutor(3, thread);
+        final ScheduledThreadPoolExecutor stpe = new ScheduledThreadPoolExecutor(8, thread);
         stpe.setKeepAliveTime(10, TimeUnit.MINUTES);
         stpe.allowCoreThreadTimeOut(true);
-        stpe.setCorePoolSize(4);
-        stpe.setMaximumPoolSize(8);
+        stpe.setCorePoolSize(16);
+        stpe.setMaximumPoolSize(32);
         stpe.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
         ses = stpe;
     }
@@ -200,6 +213,14 @@ public abstract class Timer {
 
     public ScheduledFuture<?> scheduleAtTimestamp(Runnable r, long timestamp) {
         return schedule(r, timestamp - System.currentTimeMillis());
+    }
+
+    public long getTaskCount() {
+        return ses.getTaskCount();
+    }
+
+    public int getQueueTaskCount() {
+        return ses.getQueue().size();
     }
 
     private static class LoggingSaveRunnable implements Runnable {

@@ -95,8 +95,7 @@ public class SummonHandler {
         final int oid = slea.readInt();
         Point startPos = new Point(slea.readShort(), slea.readShort());
         List<LifeMovementFragment> res = MovementParse.parseMovement(slea, 4);
-//        slea.skip(4); //startPOS
-//        final List<LifeMovementFragment> res = MovementParse.parseMovement(slea, 4);
+
         if (chr == null) {
             return;
         }

@@ -208,7 +208,7 @@ public class PlayerHandler {
     }
 
     public static final void TakeDamage(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
-        //System.out.println(slea.toString());
+     
         if (slea.available() < 4) { //封包長度少於4byte Return 避免Null
             return;
         }
@@ -238,7 +238,7 @@ public class PlayerHandler {
         if (GameConstants.CakeMap(chr.getMapId())) {
             MapleMap map = c.getChannelServer().getMapFactory().getMap(749020920);
             chr.changeMap(map, map.getPortal(0));
-            chr.dropMessage(5, "因為被Cake發現，所以你被Kick Asshole。");
+            chr.dropMessage(5, "被發現了！於是被傳送到出口了。");
             return;
         }
         final PlayerStats stats = chr.getStat();
@@ -1015,7 +1015,7 @@ public class PlayerHandler {
             return;
         }
         final Point Original_Pos = chr.getPosition(); // 4 bytes Added on v.80 MSEA
-        slea.skip(33);
+        slea.skip(29);
 
         /**
          *
@@ -1033,6 +1033,7 @@ public class PlayerHandler {
          * 00 00 B4 FE C9 00 EA FE D7 00
          */
         // log.trace("Movement command received: unk1 {} unk2 {}", new Object[] { unk1, unk2 });
+        Point startPos = slea.readPos();
         List<LifeMovementFragment> res;
         try {
             res = MovementParse.parseMovement(slea, 1);
@@ -1040,12 +1041,21 @@ public class PlayerHandler {
             System.out.println("AIOBE Type1:\n" + slea.toString(true));
             return;
         }
+        
+        int unk = slea.readByte();
+        for (int i = 0;; i += 2) {
+            if (i >= unk) {
+                break;
+            }
+            slea.readByte();
+        }
+
+        slea.readShort();
+        slea.readShort();
+        slea.readShort();
+        slea.readShort();
 
         if (res != null && c.getPlayer().getMap() != null) { // TODO more validation of input data
-            if (slea.available() < 13 || slea.available() > 26) {
-                FilePrinter.printError("MovementParseError.txt", "角色名稱: " + c.getPlayer().getName() + " 職業 :" + String.valueOf(c.getPlayer().getJob()) + "\r\n" + "slea.available != 13-26 (movement parsing error)\n" + slea.toString(true));
-                return;
-            }
             final List<LifeMovementFragment> res2 = new ArrayList<>(res);
             final MapleMap map = c.getPlayer().getMap();
 
@@ -1056,11 +1066,6 @@ public class PlayerHandler {
                 c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.movePlayer(chr.getId(), res, Original_Pos), false);
             }
 
-//	    if (chr.isHidden()) {
-//		chr.setLastRes(res2);
-//	    } else { //original POS? or end POS?
-//		map.broadcastMessage(chr, MaplePacketCreator.movePlayer(chr.getId(), res, Original_Pos), false);
-//	    }
             MovementParse.updatePosition(res, chr, 0);
             final Point pos = chr.getPosition();
             map.movePlayer(chr, pos);
@@ -1081,7 +1086,6 @@ public class PlayerHandler {
                     final MapleCharacter clone = clones[i].get();
                     final List<LifeMovementFragment> res3 = new ArrayList<>(res2);
                     CloneTimer.getInstance().schedule(new Runnable() {
-
                         @Override
                         public void run() {
                             try {

@@ -37,8 +37,8 @@ function action(mode, type, selection) {
                     size += (ccPlayer.isGM() ? 2 : 1);
                 }
                 if (next && size >= 2) {
-                    if (em.getInstance("Visitor" + selection) == null) {
-                        em.startInstance_Party("" + selection, cm.getPlayer());
+                    if (em.getInstance("Visitor" + mapId) == null) {
+                        em.startMapInstance(selection, cm.getPlayer());
                     } else {
                         cm.sendOk("Another party quest has already entered this channel.");
                     }

@@ -152,7 +152,14 @@ function changedMap(eim, player, mapid) {
 }
 
 function playerDisconnected(eim, player) {
-    return 0;
+    var squad = getChannelServer().getMapleSquad("CWKPQ").getMapleSquad("CWKPQ");
+    if (squad != null) {
+        squad.removeMember(player.getName());
+        if (squad.getLeaderName().equals(chr.getName())) {
+            em.setProperty("leader", "false");
+        }
+    }
+    return 1;
 }
 
 function monsterValue(eim, mobId) {

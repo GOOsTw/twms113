@@ -12,7 +12,7 @@
         } else {
             var dd = cm.getEventManager("ElementThanatos");
             if (dd != null) {
-                dd.startInstance(cm.getParty(), cm.getMap());
+                dd.startPartyInstance(cm.getParty(), cm.getMap());
             } else {
                 cm.sendOk("未知的錯誤。");
             }

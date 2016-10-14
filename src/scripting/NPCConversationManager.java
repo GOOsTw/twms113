@@ -1432,7 +1432,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         MapleMap warpMap = c.getChannelServer().getMapFactory().getMap(mid);
         c.getPlayer().changeMap(warpMap, warpMap.getPortal(0));
         c.sendPacket(MaplePacketCreator.getClock(time));
-        Timer.EventTimer.getInstance().schedule(new Runnable() {
+        Timer.BoatTimer.getInstance().schedule(new Runnable() {
             @Override
             public void run() {
                 MapleMap warpMap = c.getChannelServer().getMapFactory().getMap(retmap);

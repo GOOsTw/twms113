@@ -31,6 +31,7 @@ public class ShutdownServer implements Runnable, ShutdownServerMBean {
         MapTimer.getInstance().stop();
         MobTimer.getInstance().stop();
         BuffTimer.getInstance().stop();
+        BoatTimer.getInstance().stop();
         CloneTimer.getInstance().stop();
         EtcTimer.getInstance().stop();
         System.out.println("Timer 關閉完成");

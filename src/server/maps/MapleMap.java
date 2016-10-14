@@ -587,6 +587,14 @@ public final class MapleMap {
         removeMapObject(monster);
     }
 
+    private void killMonster(final MapleMonster monster, byte animation) { // For mobs with removeAfter
+        spawnedMonstersOnMap.decrementAndGet();
+        monster.setHp(0);
+        monster.spawnRevives(this);
+        broadcastMessage(MobPacket.killMonster(monster.getObjectId(), 1));
+        removeMapObject(monster);
+    }
+
     public final void killMonster(final MapleMonster monster, final MapleCharacter chr, final boolean withDrops, final boolean second, byte animation) {
         killMonster(monster, chr, withDrops, second, animation, 0);
     }
@@ -1431,14 +1439,13 @@ public final class MapleMap {
 
         if (ra > 0) {
             MapTimer.getInstance().schedule(new Runnable() {
-
                 @Override
                 public final void run() {
                     if (monster != null && monster == getMapObject(monster.getObjectId(), monster.getType())) {
-                        killMonster(monster);
+                       killMonster(monster);
                     }
                 }
-            }, ra * 1000);
+            }, ra * 1000 + this.spawnedMonstersOnMap.get() * 50);
         }
     }
 
@@ -2733,7 +2740,7 @@ public final class MapleMap {
         }
         return null;
     }
-    
+
     public final MapleCharacter getCharacterByName(final String name) {
         charactersLock.readLock().lock();
         try {
@@ -2758,10 +2765,12 @@ public final class MapleMap {
                 mo.sendSpawnData(chr.getClient());
             }
         } else // monster left view range
-         if (mo.getType() != MapleMapObjectType.SUMMON && mo.getPosition().distanceSq(chr.getPosition()) > GameConstants.maxViewRangeSq()) {
+        {
+            if (mo.getType() != MapleMapObjectType.SUMMON && mo.getPosition().distanceSq(chr.getPosition()) > GameConstants.maxViewRangeSq()) {
                 chr.removeVisibleMapObject(mo);
                 mo.sendDestroyData(chr.getClient());
             }
+        }
     }
 
     public void moveMonster(MapleMonster monster, Point reportedPos) {

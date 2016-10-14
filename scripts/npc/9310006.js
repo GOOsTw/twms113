@@ -36,7 +36,7 @@ function start() {
             } else {
                 var prop = em.getProperty("state");
                 if (prop.equals("0") || prop == null) {
-                    em.startInstance(cm.getParty(), cm.getMap());
+                    em.startPartyInstance(cm.getParty(), cm.getMap());
                     cm.dispose();
                     return;
                 } else {

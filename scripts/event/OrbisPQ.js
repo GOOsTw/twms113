@@ -11,7 +11,7 @@ function init() {
     em.setProperty("leader", "true");
 }
 
-function setup(eim, leaderid) {
+function setup(eim, mapid) {
     em.getProperties().clear();
     em.setProperty("state", "1");
     em.setProperty("leader", "true");

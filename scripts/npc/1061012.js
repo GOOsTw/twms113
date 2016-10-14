@@ -16,7 +16,7 @@
             } else if (em.getProperty("started").equals("true")) {
                 cm.sendOk("已經有隊伍正在挑戰，請稍後再嘗試。");
             } else {
-                em.startInstance(cm.getParty(), cm.getMap());
+                em.startPartyInstance(cm.getParty(), cm.getMap());
             }
         }
     }

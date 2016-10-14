@@ -30,7 +30,7 @@ function action(mode, type, selection) {
                 if (em == null || em.getInstance("MonsterPark" + maps[selection]) != null) {
                     cm.sendOk("Someone is already attempting Monster Park.");
                 } else {
-                    em.startInstance_Party("" + maps[selection], cm.getPlayer());
+                    em.startMapInstance(maps[selection], cm.getPlayer());
                 }
             }
         }

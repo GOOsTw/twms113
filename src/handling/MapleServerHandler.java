@@ -20,6 +20,7 @@
  */
 package handling;
 
+import handling.channel.handler.AntiMacroHandler;
 import constants.ServerConstants;
 import java.util.Arrays;
 import java.util.Map;
@@ -198,7 +199,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
     @Override
     public void sessionOpened(final IoSession session) throws Exception {
-        session.getConfig().setBothIdleTime(180);//set timeout seconds, must
+        session.getConfig().setBothIdleTime(15);//set timeout seconds, must
         // Start of IP checking
         final String address = session.getRemoteAddress().toString().split(":")[0];
 
@@ -282,18 +283,17 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
             if (client != null) {
                 if (client.getPlayer() != null) {
-                    client.getPlayer().saveToDB(true, isCashShop);
                     if (!(client.getLoginState() == MapleClient.CASH_SHOP_TRANSITION
                             || client.getLoginState() == MapleClient.CHANGE_CHANNEL
-                            || client.getLoginState() == MapleClient.LOGIN_SERVER_TRANSITION) && client.getPlayer() != null) {
-                        int ch = World.Find.findChannel(client.getPlayer().getId());
-                        ChannelServer.getInstance(ch).removePlayer(client.getPlayer());
+                            || client.getLoginState() == MapleClient.LOGIN_SERVER_TRANSITION)) {
                         client.disconnect(true, isCashShop);
                     }
                 } else {
                     client.disconnect(false, false);
                 }
             }
+            if(client.getAccID() > 0)
+                World.Client.removeClient(client.getAccID());
 
             if (client != null) {
                 session.removeAttribute(MapleClient.CLIENT_KEY);

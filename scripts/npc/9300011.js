@@ -33,7 +33,7 @@ function action(mode, type, selection) {
                                 cm.dispose();
                                 break;
                             } else {
-                                q.startInstance(cm.getParty(), cm.getMap());
+                                q.startPartyInstance(cm.getParty(), cm.getMap());
                             }
                         } else {
                             cm.sendOk("全部隊友必須達到70等.");
@@ -75,7 +75,7 @@ function action(mode, type, selection) {
                                 cm.dispose();
                                 break;
                             } else {
-                                q.startInstance(cm.getParty(), cm.getMap());
+                                q.startPartyInstance(cm.getParty(), cm.getMap());
                             }
                         } else {
                             cm.sendOk("全部隊友必須達到100等.");
@@ -116,7 +116,7 @@ function action(mode, type, selection) {
                                 cm.sendOk("找不到腳本，請聯繫GM！");
                                 cm.dispose();
                             } else {
-                                q.startInstance(cm.getParty(), cm.getMap());
+                                q.startPartyInstance(cm.getParty(), cm.getMap());
                             }
                         } else {
                             cm.sendOk("全部隊友必須達到120等.");
@@ -157,7 +157,7 @@ function action(mode, type, selection) {
                                 cm.sendOk("找不到腳本，請聯繫GM！");
                                 cm.dispose();
                             } else {
-                                q.startInstance(cm.getParty(), cm.getMap());
+                                q.startPartyInstance(cm.getParty(), cm.getMap());
                             }
                         } else {
                             cm.sendOk("全部隊友必須達到160等.");

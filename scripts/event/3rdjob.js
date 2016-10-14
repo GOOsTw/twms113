@@ -101,3 +101,7 @@ function leftParty(eim, player) {
 function disbandParty(eim, player) {
 
 }
+
+function dispose() {
+    
+}

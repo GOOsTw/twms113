@@ -890,7 +890,14 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
     //設定事件例子
     public final void setEventInstance(final EventInstanceManager eventInstance) {
+        if (this.eventInstance == eventInstance) {
+            return;
+        }
+        EventInstanceManager eim = this.eventInstance;
         this.eventInstance = eventInstance;
+          if (eim != null && eim.hasMonster(this)) {
+            eim.unregisterMonster(this);
+        }
     }
 
     //得到目前事件例子 傳回 事件例子
@@ -1087,6 +1094,9 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         statusEff.setCancelTask(aniTime);
 
         if (poison && getHp() > 1) { // 中毒[POISON]
+            if (from == null) {
+                return;
+            }
             final int poisonDamage = (int) Math.min(Short.MAX_VALUE, (long) (getMobMaxHp() / (70.0 - from.getSkillLevel(statusEff.getSkill())) + 0.999));
             statusEff.setValue(status, poisonDamage);
             statusEff.setX(poisonDamage);

@@ -44,7 +44,7 @@ function action(mode, type, selection) {
                 if (!cm.haveItem(5451000)) {
                     cm.gainMeso(-30000000);
                 }
-                em.startInstance_CharID(cm.getPlayer());
+                em.startInstance(cm.getPlayer());
             }
             cm.dispose();
         } else {

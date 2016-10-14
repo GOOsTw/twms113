@@ -37,7 +37,7 @@ function action(mode, type, selection) {
                 if (em == null) {
                     cm.sendOk("找不到腳本，請聯繫GM！！");
                 } else {
-                    em.startInstance(cm.getPlayer().getParty(), cm.getPlayer().getMap());
+                    em.startPartyInstance(cm.getPlayer().getParty(), cm.getPlayer().getMap());
                 }
             } else {
                 cm.sendOk("目前有人在打囉～");

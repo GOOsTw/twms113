@@ -112,34 +112,39 @@ public class InterServerHandler {
             player = MapleCharacter.ReconstructChr(transfer, c, true);
         }
 
-        c.setPlayer(player);
+        MapleClient oldClient = World.Client.getClient(player.getAccountID());
+
+        if (oldClient != null) {
+            oldClient.disconnect(true, false);
+        }
+        
+        World.Client.addClient(player.getAccountID(), c);
         c.setAccID(player.getAccountID());
         c.loadAccountData(player.getAccountID());
-        
+
         String LoginMac = LoginServer.getLoginMac(c);
         if (LoginMac != null) {
             c.setLoginMacs(LoginMac);
-            c.getPlayer().setNowMacs(LoginMac);
             LoginServer.removeLoginMac(c);
         }
-        
+
         if (!c.CheckIPAddress()) { // Remote hack
             c.getSession().close(true);
             return;
         }
 
         final int state = c.getLoginState();
-        
-        if(state != MapleClient.LOGIN_SERVER_TRANSITION && state != MapleClient.CHANGE_CHANNEL) {
-              c.getSession().close(true);
-              return;
+
+        if (state != MapleClient.LOGIN_SERVER_TRANSITION && state != MapleClient.CHANGE_CHANNEL) {
+            c.getSession().close(true);
+            return;
         }
-        
 
         //對在線上角色做斷線
         ChannelServer.forceRemovePlayerByAccId(c, c.getAccID());
 
         c.updateLoginState(MapleClient.LOGIN_LOGGEDIN, c.getSessionIPAddress());
+        c.setPlayer(player);
         channelServer.addPlayer(player);
 
         c.sendPacket(MaplePacketCreator.getCharInfo(player));

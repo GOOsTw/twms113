@@ -28,7 +28,7 @@ function action(mode, type, selection) {
                     } else {
                         var prop = ddz.getProperty("state");
                         if (prop == null || prop.equals("0")) {
-                            ddz.startInstance(cm.getParty(), cm.getMap());
+                            ddz.startPartyInstance(cm.getParty(), cm.getMap());
                         } else {
                             cm.sendOk("別人已經在努力保護Tylus，請稍後重試了一下.");
                         }

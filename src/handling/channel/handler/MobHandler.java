@@ -48,9 +48,11 @@ public class MobHandler {
     public static final void MoveMonster(final SeekableLittleEndianAccessor slea, final MapleClient c) {
 
         final MapleCharacter chr = c.getPlayer();
+
         if (chr == null || chr.getMap() == null) {
             return;
         }
+
         final int objectId = slea.readInt();
         final MapleMonster monster = chr.getMap().getMonsterByOid(objectId);
 
@@ -60,14 +62,15 @@ public class MobHandler {
         }
 
         final short moveid = slea.readShort();
-        final boolean useSkill = slea.readByte() > 0;
-        final byte skill = slea.readByte();
-        final int unk2 = slea.readInt();
+        final boolean useSkill = slea.readBool();
+        final byte mobSkillId = slea.readByte();
+        final int bForcedStop = slea.readInt();
 
         int realskill = 0;
         int level = 0;
 
         if (useSkill) {
+
             final byte size = monster.getNoSkills();
             boolean used = false;
 
@@ -99,117 +102,54 @@ public class MobHandler {
             }
         }
         slea.read(1);
-        byte unk = slea.readByte();
-        if (unk == 0x12) {
-            slea.read(2);
-        }
-        slea.read(11);
+        slea.read(4);
+        slea.read(4);
+        slea.read(4);
         final Point startPos = slea.readPos();
         final List<LifeMovementFragment> res;
         try {
             res = MovementParse.parseMovement(slea, 2);
         } catch (ArrayIndexOutOfBoundsException e) {
-            //   System.err.println("怪物移動錯誤Move_life :  AIOBE Type2");
-            //  World.Broadcast.broadcastGMMessage(MaplePacketCreator.serverNotice(6, "[GM密語] " + chr.getName() + " (編號: " + chr.getId() + ") 怪物移動錯誤(" + monster.getId() + ")! - 地圖:" + chr.getMapId()), true);
             return;
         }
+
+        int unk = slea.readByte();
+
+        for (int i = 0;; i += 2) {
+            if (i >= unk) {
+                break;
+            }
+            slea.readByte();
+        }
+
+        slea.readShort();
+        slea.readShort();
+        slea.readShort();
+        slea.readShort();
+
         final MapleCharacter controller = monster.getController();
         MapleMap map = chr.getMap();
 
-        try {
-            boolean fly = monster.getStats().getFly();
-            Point endPos = null;
-            int reduce_x = 0;
-            int reduce_y = 0;
-            for (LifeMovementFragment move : res) {
-                if ((move instanceof AbstractLifeMovement)) {
-                    endPos = ((LifeMovement) move).getPosition();
-                    //System.out.println(startPos+ " || " + endPos);
-                    try {
-                        reduce_x = Math.abs(startPos.x - endPos.x);
-                        reduce_y = Math.abs(startPos.y - endPos.y);
-                    } catch (Exception ex) {
-                    }
-                }
-            }
+        controller.getCheatTracker().checkMonsterMovment(monster, res, startPos);
 
-            if (!fly) {
-                int GeneallyDistance_y = 150;
-                int GeneallyDistance_x = 200;
-                int Check_x = 250;
-                int max_x = 450;
-                switch (chr.getMapId()) {
-                    case 100040001:
-                    case 926013500:
-                        GeneallyDistance_y = 200;
-                        break;
-                    case 200010300:
-                        GeneallyDistance_x = 1000;
-                        GeneallyDistance_y = 500;
-                        break;
-                    case 220010600:
-                    case 926013300:
-                        GeneallyDistance_x = 200;
-                        break;
-                    case 211040001:
-                        GeneallyDistance_x = 220;
-                        break;
-                    case 101030105:
-                        GeneallyDistance_x = 250;
-                        break;
-                    case 541020500:
-                        Check_x = 300;
-                        break;
-                }
-                switch (monster.getId()) {
-                    case 4230100:
-                        GeneallyDistance_y = 200;
-                        break;
-                    case 9410066:
-                        Check_x = 1000;
-                        break;
-                }
-                if (GeneallyDistance_x > max_x) {
-                    max_x = GeneallyDistance_x;
-                }
-                if (((reduce_x > GeneallyDistance_x || reduce_y > GeneallyDistance_y) && reduce_y != 0) || (reduce_x > Check_x && reduce_y == 0) || reduce_x > max_x) {
-                    chr.add吸怪();
-                    if (c.getPlayer().get吸怪() % 50 == 0 || reduce_x > max_x) {
-                        c.getPlayer().getCheatTracker().registerOffense(CheatingOffense.怪物全圖吸, "(地圖: " + chr.getMapId() + " 怪物數量:" + chr.get吸怪() + ")");
-                        World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + chr.getName() + " (編號: " + chr.getId() + ")使用吸怪(" + chr.get吸怪() + ")! - 地圖:" + chr.getMapId() + "(" + chr.getMap().getMapName() + ")").getBytes());
-                    }
-                }
-            }
-
-        } catch (Exception ex) {
-
-        }
         c.sendPacket(MobPacket.moveMonsterResponse(monster.getObjectId(), moveid, monster.getMp(), monster.isControllerHasAggro(), realskill, level));
 
         if (controller != c.getPlayer()) {
             if (monster.isAttackedBy(c.getPlayer())) {// aggro and controller change
                 monster.switchController(c.getPlayer(), true);
-            } else if (controller != null && controller.getMapId() == monster.getMap().getId()) {
+            } else if (controller.getMapId() == monster.getMap().getId()) {
                 monster.setController(null);
                 return;
             }
-        } else if (skill == -1 && monster.isControllerKnowsAboutAggro() && !monster.getStats().getMobile() && !monster.isFirstAttack()) {
+        } else if (mobSkillId == -1 && monster.isControllerKnowsAboutAggro() && !monster.getStats().getMobile() && !monster.isFirstAttack()) {
             monster.setControllerHasAggro(false);
             monster.setControllerKnowsAboutAggro(false);
         }
 
         if (res != null) {
-
-            if (slea.available() < 9 || slea.available() > 17) { //9.. 0 -> endPos? -> endPos again? -> 0 -> 0
-                System.err.println("slea.available != 17 (movement parsing error)");
-                System.err.println(slea.toString(true));
-                c.getSession().close(true);
-                return;
-            }
-
             MovementParse.updatePosition(res, monster, -1);
             map.moveMonster(monster, monster.getPosition());
-            map.broadcastMessage(chr, MobPacket.moveMonster(useSkill, skill, unk2, monster.getObjectId(), startPos, monster.getPosition(), res), monster.getPosition());
+            map.broadcastMessage(chr, MobPacket.moveMonster(useSkill, mobSkillId, bForcedStop, monster.getObjectId(), startPos, monster.getPosition(), res), monster.getPosition());
         }
 
     }

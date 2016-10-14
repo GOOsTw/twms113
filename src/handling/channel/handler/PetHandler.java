@@ -32,6 +32,7 @@ import constants.GameConstants;
 import client.inventory.PetCommand;
 import client.inventory.PetDataFactory;
 import handling.world.MaplePartyCharacter;
+import java.awt.Point;
 import java.util.LinkedList;
 import java.util.concurrent.locks.Lock;
 import server.Randomizer;
@@ -225,7 +226,8 @@ public class PetHandler {
 
     public static final void MovePet(final SeekableLittleEndianAccessor slea, final MapleCharacter chr) {
         final int petId = slea.readInt();
-        slea.skip(8);
+        slea.skip(4);
+        Point startPos = slea.readPos();
         final List<LifeMovementFragment> res = MovementParse.parseMovement(slea, 3);
 
         if (res != null && chr != null && !res.isEmpty()) { // map crash hack
@@ -234,7 +236,7 @@ public class PetHandler {
                 return;
             }
             chr.getPet(slot).updatePosition(res);
-            chr.getMap().broadcastMessage(chr, PetPacket.movePet(chr.getId(), petId, slot, res), false);
+            chr.getMap().broadcastMessage(chr, PetPacket.movePet(chr.getId(), startPos, slot, res), false);
             if (chr.getPlayerShop() != null || chr.getConversation() > 0 || chr.getTrade() != null) { //hack
                 return;
             }

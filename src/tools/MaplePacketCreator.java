@@ -1053,8 +1053,7 @@ public class MaplePacketCreator {
 
         mplew.writeShort(SendPacketOpcode.MOVE_PLAYER.getValue());
         mplew.writeInt(cid);
-//        mplew.writePos(startPos);
-        mplew.writeInt(0);
+        mplew.writePos(startPos);
         PacketHelper.serializeMovementList(mplew, moves);
 
         return mplew.getPacket();

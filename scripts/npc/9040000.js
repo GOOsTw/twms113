@@ -46,7 +46,7 @@ function action(mode, type, selection) {
                         for (var i = 0; i < GQItems.length; i++) {
                             cm.removeAll(GQItems[i]);
                         }
-                        em.startInstance(cm.getPlayer(), cm.getPlayer().getName());
+                        em.startGuildInstance(cm.getPlayer());
                         em.setProperty("state", "0");
                         cm.guildMessage("公會已經開始公會守護戰 <頻道:" + cm.getClient().getChannel() + "> 請公會成員盡速來到遺跡發掘對營地參加公會守護戰。");
                     } else {
