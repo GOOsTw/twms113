@@ -10,7 +10,7 @@ function getFieldResult() {
     var found = false;
     for (var i = 0; i < 6; i++) {
         if (getCPQField(i + 1) != "") {
-            selStr += "\r\n#b#L" + i + 100 + "# " + getCPQField(i + 1) + "#l#k";
+            selStr += "\r\n#b#L" + (i+1)*100 + "# " + getCPQField(i + 1) + "#l#k";
             found = true;
         }
     }
@@ -91,7 +91,7 @@ function action(mode, type, selection) {
             }
             cm.dispose();
         } else {
-            var mapid = 980000000 + (((selection-100) + 1) * 100);
+            var mapid = 980000000 + selection;
             var eim = cm.getEventManager("cpq").getInstance("cpq" + mapid);
             if (eim == null) {
                 cm.getEventManager("cpq").startCarnivalInstance(mapid, cm.getPlayer());
@@ -109,91 +109,6 @@ function action(mode, type, selection) {
         cm.dispose();
     }
 }
-
-/*       
-      
-
-            var mapid = 980000000 + ((selection + 1) * 100);
-            if (cm.getEventManager("cpq").getInstance("cpq" + mapid) == null) {
-                if ((cm.getParty() != null && 1 < cm.getParty().getMembers().size() && cm.getParty().getMembers().size() < (selection == 4 || selection == 5 || selection == 8 ? 4 : 3)) || cm.getPlayer().isGM()) {
-                    if (checkLevelsAndMap(30, 50) == 1) {
-                        cm.sendOk("隊伍裡有人等級不符合。");
-                        cm.dispose();
-                    } else if (checkLevelsAndMap(30, 50) == 2) {
-                        cm.sendOk("在地圖上找不到您的隊友。");
-                        cm.dispose();
-                    } else {
-                        cm.getEventManager("cpq").startCarnivalInstance(mapid, cm.getPlayer());
-                        cm.dispose();
-                    }
-                } else {
-                    cm.sendOk("您的隊伍人數不足。");
-                }
-            } else if (cm.getParty() != null && cm.getEventManager("cpq").getInstance("cpq" + mapid).getPlayerCount() == cm.getParty().getMembers().size()) {
-                if (checkLevelsAndMap(30, 50) == 1) {
-                    cm.sendOk("隊伍裡有人等級不符合。");
-                    cm.dispose();
-                } else if (checkLevelsAndMap(30, 50) == 2) {
-                    cm.sendOk("在地圖上找不到您的隊友。");
-                    cm.dispose();
-                } else {
-                    var pt = cm.getPlayer().getParty();
-                    if (pt.getMembers().size() < 2) {
-                        cm.sendOk("需要 2 人以上才可以擂台！！");
-                        cm.dispose();
-                    } else {
-                        //Send challenge packet here
-                        var owner = cm.getChannelServer().getPlayerStorage().getCharacterByName(cm.getEventManager("cpq").getInstance("cpq" + mapid).getPlayers().get(0).getParty().getLeader().getName());
-                        owner.addCarnivalRequest(cm.getCarnivalChallenge(cm.getChar()));
-                        //if (owner.getConversation() != 1) {
-                        cm.openNpc(owner.getClient(), 2042001);
-                        //}
-                        cm.sendOk("您的挑戰已經發送。");
-                        cm.dispose();
-                    }
-                }
-            } else {
-                cm.sendOk("隊伍人數不相符。");
-                cm.dispose();
-            }
-        } else {
-            cm.dispose();
-        }
-    } else if (status == 2) {
-        if (selection == 0) {
-            if (!cm.haveItem(4001129, 50)) {
-                cm.sendOk("很抱歉您並沒有#t4001129# #b50#k個");
-            } else if (!cm.canHold(1122007, 1)) {
-                cm.sendOk("請清出空間.");
-            } else {
-                cm.gainItem(1122007, 1, true);
-                cm.gainItem(4001129, -50);
-            }
-            cm.dispose();
-        } else if (selection == 1) {
-            if (!cm.haveItem(4001129, 30)) {
-                cm.sendOk("很抱歉您並沒有#t4001129# #b30#k個");
-            } else if (!cm.canHold(2041211, 1)) {
-                cm.sendOk("請清出空間.");
-            } else {
-                cm.gainItem(2041211, 1);
-                cm.gainItem(4001129, -30);
-            }
-            cm.dispose();
-        } else if (selection == 2) {
-            if (!cm.haveItem(4001254, 50)) {
-                cm.sendOk("很抱歉您並沒有#t4001254# #b50#k個");
-            } else if (!cm.canHold(1122058, 1)) {
-                cm.sendOk("請清出空間.");
-            } else {
-                cm.gainItem(1122058, 1, true);
-                cm.gainItem(4001254, -50);
-            }
-            cm.dispose();
-        }
-    }
-}
-*/
 
 function checkLevelsAndMap(lowestlevel, highestlevel) {
     var party = cm.getParty().getMembers();

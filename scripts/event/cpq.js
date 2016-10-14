@@ -61,12 +61,9 @@ function leftParty(eim, player) {
 }
 
 function disbandParty(eim) {
-    //if (eim.getProperty("started").equals("true")) {
-    //    warpOut(eim);
-    //} else {
     dispose(eim);
-    //}
 }
+
 
 function dispose(eim) {
     var iter = eim.getPlayers().iterator();
@@ -76,7 +73,6 @@ function dispose(eim) {
         player.changeMap(eim.getMapInstance(exitMap), eim.getMapInstance(exitMap).getPortal(0));
         player.getCarnivalParty().removeMember(player);
     }
-    eim.dispose();
 }
 
 function playerExit(eim, player) {
