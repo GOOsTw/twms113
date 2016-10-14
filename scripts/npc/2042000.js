@@ -10,7 +10,7 @@ function getFieldResult() {
     var found = false;
     for (var i = 0; i < 6; i++) {
         if (getCPQField(i + 1) != "") {
-            selStr += "\r\n#b#L" + (i+1)*100 + "# " + getCPQField(i + 1) + "#l#k";
+            selStr += "\r\n#b#L" + (i + 1) * 100 + "# " + getCPQField(i + 1) + "#l#k";
             found = true;
         }
     }
@@ -41,7 +41,7 @@ function action(mode, type, selection) {
             } else {
                 if (cm.isLeader()) {
                     var pt = cm.getPlayer().getParty();
-                    if (pt.getMembers().size() < 1) {
+                    if (pt.getMembers().size() < 2) {
                         cm.sendOk("需要 2 人以上才可以擂台！！");
                         cm.dispose();
                     }
@@ -57,9 +57,11 @@ function action(mode, type, selection) {
                         cm.sendSimple(fields.selStr);
                     } else {
                         cm.sendSimple("目前沒有房間.");
+                        cm.dispose();
                     }
                 } else {
                     cm.sendSimple("請叫你的隊長來找我");
+                    cm.dispose();
                 }
             }
         }
