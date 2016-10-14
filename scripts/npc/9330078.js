@@ -6,8 +6,6 @@ function start() {
 
 function action(mode, type, selection) {
 	if (mode != 1) {
-		if (mode == 0)
-			cm.sendOk("需要的時候，再來找我吧。");
 		cm.dispose();
 		return;
 	}
@@ -22,14 +20,9 @@ function action(mode, type, selection) {
 			} else {
 				var prop = em.getProperty("state");
 				if (prop == null || prop.equals("0")) {
-					if(cm.getPlayer().hasChallageJP()){
-						cm.getPlayer().cancelChallageJP();
-					}
-					if (cm.getPlayer().canChallageJP()) {
-						em.startInstance(cm.getPlayer(), cm.getMap());
-					}
+					em.startInstance(cm.getPlayer());
 				} else {
-					cm.sendOk("已經有人在裡面挑戰了。");
+					cm.sendOk("看來已經有人試圖點燃蠟燭耶！");
 					cm.dispose();
 					return;
 				}

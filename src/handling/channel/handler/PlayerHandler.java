@@ -238,7 +238,7 @@ public class PlayerHandler {
         if (GameConstants.CakeMap(chr.getMapId())) {
             MapleMap map = c.getChannelServer().getMapFactory().getMap(749020920);
             chr.changeMap(map, map.getPortal(0));
-            chr.dropMessage(5, "因為被Cake發現，所以你被Kick Asshole。");
+            chr.dropMessage(5, "被發現了！於是被傳送到出口了。");
             return;
         }
         final PlayerStats stats = chr.getStat();

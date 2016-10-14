@@ -12,16 +12,6 @@ function setup(eim, leaderid) {
 	em.setProperty("leader", "true");
 
 	var eim = em.newInstance("Cake");
-	eim.setInstanceMap(749020000).resetFully(); //四週年蛋糕地圖1-9
-	eim.setInstanceMap(749020100).resetFully();
-	eim.setInstanceMap(749020200).resetFully();
-	eim.setInstanceMap(749020300).resetFully();
-	eim.setInstanceMap(749020400).resetFully();
-	eim.setInstanceMap(749020500).resetFully();
-	eim.setInstanceMap(749020600).resetFully();
-	eim.setInstanceMap(749020700).resetFully();
-	eim.setInstanceMap(749020800).resetFully();
-
 	eim.startEventTimer(3 * 60 * 1000);
 	return eim;
 }
