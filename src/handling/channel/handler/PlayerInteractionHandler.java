@@ -311,7 +311,7 @@ public class PlayerInteractionHandler {
                                     c.getChannelServer().addPlayerShop(playershop);
                                 }
                             } else {
-                                c.getSession().close(true);
+                                c.disconnect(true, false);
                             }
                         }
                     }

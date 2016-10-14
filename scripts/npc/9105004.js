@@ -71,7 +71,7 @@ function action(mode, type, selection) {
                     }
                     if (next && size >= 4) {
                         if (em.getInstance("Christmas" + s) == null) {
-                            em.startInstance_Party("" + s, cm.getPlayer());
+                            em.startMapInstance(s, cm.getPlayer());
                         } else {
                             cm.sendOk("請確認你的其他隊員有沒有在這邊");
                         }

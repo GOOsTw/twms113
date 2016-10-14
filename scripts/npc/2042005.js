@@ -60,7 +60,7 @@ function action(mode, type, selection) {
                         cm.sendOk("在地圖上找不到您的隊友。");
                         cm.dispose();
                     } else {
-                        cm.getEventManager("cpq2").startInstance("" + mapid, cm.getPlayer());
+                        cm.getEventManager("cpq2").startCarnivalInstance(mapid, cm.getPlayer());
                         cm.dispose();
                     }
                 } else {

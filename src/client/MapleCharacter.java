@@ -995,6 +995,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (isClone()) {
             return -1;
         }
+
         saveLock.lock();
         isSaveing = true;
         int retValue = 1;
@@ -1181,6 +1182,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
             ps.close();
 
+            deleteWhereCharacterId(con, "DELETE FROM skills_cooldowns WHERE charid = ?");
             List<MapleCoolDownValueHolder> cd = getCooldowns();
             if (dc && cd.size() > 0) {
                 ps = con.prepareStatement("INSERT INTO skills_cooldowns (charid, SkillID, StartTime, length) VALUES (?, ?, ?, ?)");
@@ -1869,8 +1871,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         lastMDTime = System.currentTimeMillis();
         return true;
     }
-
-    
 
     public void sendHackShieldDetected() {
         this.getClient().sendPacket(MaplePacketCreator.hackShieldDetected());
@@ -3866,7 +3866,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                             if (chr.getClient().getSessionIPAddress().equals(client.getSessionIPAddress())) {
                                 if (!chr.getClient().isGm()) {
                                     chr.getClient().disconnect(true, false);
-                                    chr.getClient().getSession().close(true);
                                 }
                             }
                         }
@@ -4029,7 +4028,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                         if (chr.getClient().getSessionIPAddress().equals(ip)) {
                             if (!chr.getClient().isGm()) {
                                 chr.getClient().disconnect(true, false);
-                                chr.getClient().getSession().close(true);
                             }
                         }
                     }
@@ -4435,7 +4433,13 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void setEventInstance(EventInstanceManager eventInstance) {
+        if(this.eventInstance == eventInstance)
+            return;
+        EventInstanceManager eim = this.eventInstance;
         this.eventInstance = eventInstance;
+        if (eim != null && eim.hasPlayer(this)) {
+            eim.unregisterPlayer(this);
+        }
     }
 
     public void addDoor(MapleDoor door) {

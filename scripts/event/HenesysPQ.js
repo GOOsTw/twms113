@@ -5,10 +5,10 @@ function init() {
     em.setProperty("leader", "true");
 }
 
-function setup(eim, leaderid) {
+function setup(eim, mapid) {
     em.setProperty("state", "1");
     em.setProperty("leader", "true");
-    var eim = em.newInstance("HenesysPQ" + leaderid);
+    var eim = em.newInstance("HenesysPQ" + mapid);
     em.setProperty("stage", "0");
     var map = eim.setInstanceMap(910010000);
     map.resetFully();

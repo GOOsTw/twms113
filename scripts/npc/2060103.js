@@ -56,7 +56,7 @@ function action(mode, type, selection) {
                                 cm.sendOk("Everyone in your party isnt in this map.");
                                 cm.dispose();
                             } else {
-                                cm.getEventManager("Ghost").startInstance("" + selection, cm.getPlayer());
+                                cm.getEventManager("Ghost").startCarnivalInstance(selection, cm.getPlayer());
                                 cm.dispose();
                             }
                         } else {

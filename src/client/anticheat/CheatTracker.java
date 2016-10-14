@@ -111,7 +111,7 @@ public class CheatTracker {
                 if (!chr.get().hasGmLevel(1)) {
                     chr.get().ban("攻擊速度異常，技能: " + skillId + " check: " + (tickCount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay, true, true, false);
                     chr.get().sendHackShieldDetected();
-                    chr.get().getClient().getSession().close(true);
+                    chr.get().getClient().disconnect(true, false);
                     String reason = "使用違法程式練功";
                     World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[自動封鎖系統] " + chr.get().getName() + " 因為" + reason + "而被管理員永久停權。").getBytes());
                     World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + chr.get().getName() + " 攻擊無延遲自動封鎖! ").getBytes());
@@ -220,7 +220,7 @@ public class CheatTracker {
             if (dropsPerSecond >= (dc ? 32 : 16) && chr.get() != null) {
                 if (dc) {
                     chr.get().sendHackShieldDetected();
-                    chr.get().getClient().getSession().close(true);
+                    chr.get().getClient().disconnect(true, false);
                 } else {
                     chr.get().getClient().setMonitored(true);
                 }
@@ -320,7 +320,7 @@ public class CheatTracker {
             } else if (type == 2) {
                 outputFileName = "斷線";
                 chrhardref.sendHackShieldDetected();
-                chrhardref.getClient().getSession().close(true);
+                chrhardref.getClient().disconnect(true, false);
                 World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + chrhardref.getName() + " 自動斷線 類別: " + offense.toString() + " 原因: " + (param == null ? "" : (" - " + param))).getBytes());
             } else if (type == 3) {
                 boolean ban = true;

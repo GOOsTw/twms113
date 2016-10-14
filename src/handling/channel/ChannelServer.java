@@ -662,7 +662,7 @@ public class ChannelServer implements Serializable {
         Collection<MapleCharacter> chrs = CashShopServer.getPlayerStorage().getAllCharactersThreadSafe();
         for (MapleCharacter c : chrs) {
             if (c.getAccountID() == accid) {
-                c.getClient().unLockDisconnect(false, true);
+                c.getClient().unLockDisconnect(true, true);
                 return;
             }
         }

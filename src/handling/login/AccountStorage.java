@@ -128,7 +128,6 @@ public class AccountStorage {
                 c = itr.next();
                 if (!c.isGm() || !checkGM) {
                     c.disconnect(false, false, true);
-                    c.getSession().close(true);
                     itr.remove();
                 }
             }

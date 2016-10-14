@@ -43,7 +43,7 @@ function action(mode, type, selection) {
                     if (em == null) {
                         cm.sendOk("I don't wanna see Rex at the moment. Please try again later.");
                     } else {
-                        em.startInstance(cm.getPlayer().getParty(), cm.getPlayer().getMap());
+                        em.startPartyInstance(cm.getPlayer().getParty(), cm.getPlayer().getMap());
                     }
                 } else {
                     cm.sendOk("All 3+ members of your party must be here and level 75 or greater.");

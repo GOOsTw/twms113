@@ -142,7 +142,7 @@ function action(mode, type, selection) {
                         if (cm.haveItem(4032012, 1)) {
                             cm.gainItem(4032012, -1);
                             var dd = cm.getEventManager("CWKPQ");
-                            dd.startInstance(cm.getSquad("CWKPQ"), cm.getMap());
+                            dd.startSquadInstance(cm.getSquad("CWKPQ"), cm.getMap());
                         } else {
                             cm.sendOk("Where is my Crimson Heart?");
                         }

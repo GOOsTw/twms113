@@ -1086,7 +1086,6 @@ public class PlayerHandler {
                     final MapleCharacter clone = clones[i].get();
                     final List<LifeMovementFragment> res3 = new ArrayList<>(res2);
                     CloneTimer.getInstance().schedule(new Runnable() {
-
                         @Override
                         public void run() {
                             try {

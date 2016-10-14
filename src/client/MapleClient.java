@@ -892,7 +892,7 @@ public class MapleClient {
             }
             player.changeRemoval(true);
             if (player.getEventInstance() != null) {
-                player.getEventInstance().playerDisconnected(player, player.getId());
+                player.getEventInstance().playerDisconnected(player);
             }
             if (player.getMap() != null) {
                 switch (player.getMapId()) {
@@ -1005,6 +1005,7 @@ public class MapleClient {
                         ch.removePlayer(idz, namez);
                     }
                     player = null;
+                    
                 }
             } else {
                 final int ch = World.Find.findChannel(idz);
@@ -1036,12 +1037,18 @@ public class MapleClient {
                         CashShopServer.getPlayerStorage().deregisterPlayer(idz, namez);
                     }
                     player = null;
+                    
                 }
             }
 
             if (!serverTransition && isLoggedIn()) {
                 updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, getSessionIPAddress());
             }
+            
+            if(player == null) {
+                this.getSession().close(true);
+            }
+
         }
     }
 
@@ -1254,10 +1261,10 @@ public class MapleClient {
                 try {
                     if (getLatency() < 0) {
                         MapleClient.this.setReceiving(false);
-                        getSession().close(true);
+                        MapleClient.this.disconnect(true, false);
                     }
                 } catch (final NullPointerException e) {
-                    getSession().close(true);
+                    MapleClient.this.disconnect(true, false);
                 }
             }
         }, 15000); // note: idletime gets added to this too

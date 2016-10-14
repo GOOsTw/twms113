@@ -75,7 +75,7 @@ function action(mode, type, selection) {
                                 cm.dispose();
                                 break;
                             } else {
-                                q.startInstance(cm.getParty(), cm.getMap());
+                                q.startPartyInstance(cm.getParty(), cm.getMap());
                             }
                         } else {
                             cm.sendOk("全部隊友必須達到100等.");
