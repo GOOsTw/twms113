@@ -292,6 +292,8 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                     client.disconnect(false, false);
                 }
             }
+            if(client.getAccID() > 0)
+                World.Client.removeClient(client);
 
             if (client != null) {
                 session.removeAttribute(MapleClient.CLIENT_KEY);
