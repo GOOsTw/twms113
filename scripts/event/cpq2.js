@@ -66,6 +66,11 @@ function disbandParty(eim) {
 }
 
 function disposeAll(eim) {
+    eim.dispose();
+}
+
+function dispose()
+{
     var iter = eim.getPlayers().iterator();
     while (iter.hasNext()) {
         var player = iter.next();
@@ -75,7 +80,6 @@ function disposeAll(eim) {
             player.getCarnivalParty().removeMember(player);
         }
     }
-    eim.dispose();
 }
 
 function playerExit(eim, player) {
