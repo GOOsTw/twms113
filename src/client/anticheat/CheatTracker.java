@@ -129,7 +129,7 @@ public class CheatTracker {
             打怪++;
             registerOffense(CheatingOffense.攻擊速度過快_伺服器端, "攻擊速度異常，技能: " + skillId + " check: " + (tickCount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay);
         }
-        this.updateAttackTick(tickCount);
+        this.updateTick(tickCount);
     }
 
     /**
@@ -427,7 +427,7 @@ public class CheatTracker {
                 attTickSame++;
             }
         } else if (newTick < lastAttackTickCount) {
-            chr.get().dropMessage(5, "att:" + (newTick - lastAttackTickCount));
+            //chr.get().dropMessage(5, "att:" + (newTick - lastAttackTickCount));
             //chr.get().sendHackShieldDetected();
             //chr.get().getClient().disconnect(true, false);
         } else {
@@ -449,9 +449,7 @@ public class CheatTracker {
                 tickSame++;
             }
         } else if (newTick < lastTickCount) {
-            chr.get().dropMessage(5, "item:" + (newTick - lastTickCount));
-            //chr.get().sendHackShieldDetected();
-            //chr.get().getClient().disconnect(true, false);
+            //chr.get().dropMessage(5, "item:" + (newTick - lastTickCount));
         } else {
             tickSame = 0;
         }
