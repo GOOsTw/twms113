@@ -89,7 +89,7 @@ public class InventoryHandler {
         if (c.getPlayer().getPlayerShop() != null || c.getPlayer().getConversation() > 0 || c.getPlayer().getTrade() != null) { //hack
             return;
         }
-        c.getPlayer().updateTick(slea.readInt());
+        
         final MapleInventoryType type = MapleInventoryType.getByType(slea.readByte()); //04
         final short src = slea.readShort();                                            //01 00
         final short dst = slea.readShort();                                            //00 00
@@ -113,7 +113,7 @@ public class InventoryHandler {
     }
 
     public static final void ItemSort(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-        c.getPlayer().updateTick(slea.readInt());
+        
 
         final MapleInventoryType pInvType = MapleInventoryType.getByType(slea.readByte());
         if (pInvType == MapleInventoryType.UNDEFINED) {
@@ -150,7 +150,7 @@ public class InventoryHandler {
         // [41 00] [E5 1D 55 00] [01]
         // [32 00] [01] [01] // Sent after
 
-        c.getPlayer().updateTick(slea.readInt());
+        
         final byte mode = slea.readByte();
         final MapleInventoryType invType = MapleInventoryType.getByType(mode);
         MapleInventory Inv = c.getPlayer().getInventory(invType);
@@ -246,7 +246,7 @@ public class InventoryHandler {
             c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
-        c.getPlayer().updateTick(slea.readInt());
+        
         final byte slot = (byte) slea.readShort();
         final int itemId = slea.readInt();
         final IItem toUse = chr.getInventory(MapleInventoryType.USE).getItem(slot);
@@ -2270,7 +2270,7 @@ public class InventoryHandler {
             c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
-        chr.updateTick(slea.readInt());
+        
         slea.skip(1); // [4] Seems to be tickcount, [1] always 0
         final Point clientPickPos = slea.readPos();
         final MapleMapObject ob = chr.getMap().getMapObject(slea.readInt(), MapleMapObjectType.ITEM);
@@ -2560,7 +2560,7 @@ public class InventoryHandler {
     public static final int OWL_ID = 2; //don't change. 0 = owner ID, 1 = store ID, 2 = object ID
 
     public static final void UseSkillBook(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
-        slea.skip(4);
+       
         final byte slot = (byte) slea.readShort();
         final int itemId = slea.readInt();
         final IItem toUse = chr.getInventory(MapleInventoryType.USE).getItem(slot);

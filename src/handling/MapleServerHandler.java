@@ -575,21 +575,26 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 ItemMakerHandler.ItemMaker(slea, c);
                 break;
             case ITEM_SORT:
+                c.getPlayer().updateTick(slea.readInt());
                 InventoryHandler.ItemSort(slea, c);
                 break;
             case ITEM_GATHER:
+                c.getPlayer().updateTick(slea.readInt());
                 InventoryHandler.ItemGather(slea, c);
                 break;
             case ITEM_MOVE:
+                c.getPlayer().updateTick(slea.readInt());
                 InventoryHandler.ItemMove(slea, c);
                 break;
             case ITEM_PICKUP:
+                c.getPlayer().updateTick(slea.readInt());
                 InventoryHandler.PlayerPickup(slea, c, c.getPlayer());
                 break;
             case USE_CASH_ITEM:
                 InventoryHandler.UseCashItem(slea, c);
                 break;
             case USE_ITEM:
+                c.getPlayer().updateTick(slea.readInt());
                 InventoryHandler.UseItem(slea, c, c.getPlayer());
                 break;
             case USE_MAGNIFY_GLASS:
@@ -620,7 +625,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 InventoryHandler.UseTreasureChest(slea, c, c.getPlayer());
                 break;
             case USE_SKILL_BOOK:
-//                c.getPlayer().updateTick(slea.readInt());
+                c.getPlayer().updateTick(slea.readInt());
                 InventoryHandler.UseSkillBook(slea, c, c.getPlayer());
                 break;
             case USE_CATCH_ITEM:

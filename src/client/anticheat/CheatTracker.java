@@ -71,6 +71,12 @@ public class CheatTracker {
      * @param tickCount
      */
     public final void checkAttack(final int skillId, final int tickCount) {
+
+        //時間攻擊
+        if (tickCount < this.lastAttackTickCount) {
+            chr.get().getClient().disconnect(true, false);
+        }
+
         short AtkDelay = GameConstants.getAttackDelay(skillId);
         /**
          * 檢查客戶端傳回的攻擊時間
@@ -408,12 +414,15 @@ public class CheatTracker {
 
     public void updateTick(int newTick) {
         if (newTick == lastTickCount) { //definitely packet spamming
-/*	    if (tickSame >= 5) { //i could also add a check for less than, but i'm not too worried at the moment :)
+            if (tickSame >= 5) { //i could also add a check for less than, but i'm not too worried at the moment :)
+                chr.get().sendHackShieldDetected();
+                chr.get().getClient().disconnect(true, false);
+            } else {
+                tickSame++;
+            }
+        } else if (newTick < lastTickCount) {
             chr.get().sendHackShieldDetected();
-            chr.get().getClient().getSession().close();
-        } else {*/
-            tickSame++;
-//	    }
+            chr.get().getClient().disconnect(true, false);
         } else {
             tickSame = 0;
         }
@@ -497,73 +506,41 @@ public class CheatTracker {
     public long[] getLastGMspam() {
         return lastTime;
     }
-    
-    public void checkMonsterMovment(MapleMonster monster, List<LifeMovementFragment> res, Point startPos)
-    {
+
+    private long sameDirectionTimes;
+
+    public void checkMonsterMovment(MapleMonster monster, List<LifeMovementFragment> res, Point startPos) {
         try {
+            if (chr.get() != null && monster.getController() != chr.get()) {
+                return;
+            }
             boolean fly = monster.getStats().getFly();
-            Point endPos = null;
-            int reduce_x = 0;
-            int reduce_y = 0;
-            for (LifeMovementFragment move : res) {
-                if ((move instanceof AbstractLifeMovement)) {
-                    endPos = ((LifeMovement) move).getPosition();
-                    try {
-                        reduce_x = Math.abs(startPos.x - endPos.x);
-                        reduce_y = Math.abs(startPos.y - endPos.y);
-                    } catch (Exception ex) {
+            Point lastPos = new Point(startPos);
+            for (LifeMovementFragment mov : res) {
+                Point nextPos = mov.getPosition();
+                boolean moveRight = nextPos.x > lastPos.y;
+                if (moveRight) {
+                    if (sameDirectionTimes > 0) {
+                        sameDirectionTimes++;
+                    } else {
+                        sameDirectionTimes = 1;
+                    }
+                } else if (sameDirectionTimes < 0) {
+                    sameDirectionTimes--;
+                } else {
+                    sameDirectionTimes = -1;
+                }
+                if (chr.get() != null) {
+                    if (chr.get().isShowDebugInfo()) {
+                        chr.get().dropMessage(5, "怪物移動數值 : " + nextPos.distanceSq(lastPos));
                     }
                 }
             }
-
-            if (!fly) {
-                int GeneallyDistance_y = 150;
-                int GeneallyDistance_x = 200;
-                int Check_x = 250;
-                int max_x = 450;
-                switch (chr.get().getMapId()) {
-                    case 100040001:
-                    case 926013500:
-                        GeneallyDistance_y = 200;
-                        break;
-                    case 200010300:
-                        GeneallyDistance_x = 1000;
-                        GeneallyDistance_y = 500;
-                        break;
-                    case 220010600:
-                    case 926013300:
-                        GeneallyDistance_x = 200;
-                        break;
-                    case 211040001:
-                        GeneallyDistance_x = 220;
-                        break;
-                    case 101030105:
-                        GeneallyDistance_x = 250;
-                        break;
-                    case 541020500:
-                        Check_x = 300;
-                        break;
-                }
-                switch (monster.getId()) {
-                    case 4230100:
-                        GeneallyDistance_y = 200;
-                        break;
-                    case 9410066:
-                        Check_x = 1000;
-                        break;
-                }
-                if (GeneallyDistance_x > max_x) {
-                    max_x = GeneallyDistance_x;
-                }
-                if (((reduce_x > GeneallyDistance_x || reduce_y > GeneallyDistance_y) && reduce_y != 0) || (reduce_x > Check_x && reduce_y == 0) || reduce_x > max_x ) {
-                    吸怪++;
-                    if (吸怪 % 50 == 0 || reduce_x > max_x) {
-                        chr.get().getCheatTracker().registerOffense(CheatingOffense.怪物全圖吸, "(地圖: " +  chr.get().getMapId() + " 怪物數量:" +  吸怪 + ")");
-                        World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " +  chr.get().getName() + " (編號: " +  chr.get().getId() + ")使用吸怪(" +  吸怪 + ")! - 地圖:" +  chr.get().getMapId() + "(" +  chr.get().getMap().getMapName() + ")").getBytes());
-                    }
+            if (chr.get() != null) {
+                if (chr.get().isShowDebugInfo()) {
+                    chr.get().dropMessage(5, "怪物方向數值 : " + this.sameDirectionTimes);
                 }
             }
-
         } catch (Exception ex) {
 
         }

@@ -604,6 +604,7 @@ public class PlayerHandler {
             return;
         }
         final AttackInfo attack = DamageParse.Modify_AttackCrit(DamageParse.parseDmgM(slea), chr, 1);
+        chr.updateTick(attack.lastAttackTickCount);
         final boolean mirror = chr.getBuffedValue(MapleBuffStat.MIRROR_IMAGE) != null;
         double maxdamage = chr.getStat().getCurrentMaxBaseDamage();
         int attackCount = (chr.getJob() >= 430 && chr.getJob() <= 434 ? 2 : 1), skillLevel = 0;
@@ -720,6 +721,7 @@ public class PlayerHandler {
                 final double maxdamage2 = maxdamage;
                 final MapleStatEffect eff2 = effect;
                 final AttackInfo attack2 = DamageParse.DivideAttack(attack, chr.isGM() ? 1 : 4);
+                
                 CloneTimer.getInstance().schedule(new Runnable() {
 
                     @Override
@@ -741,7 +743,7 @@ public class PlayerHandler {
             return;
         }
         final AttackInfo attack = DamageParse.Modify_AttackCrit(DamageParse.parseDmgR(slea), chr, 2);
-
+        chr.updateTick(attack.lastAttackTickCount);
         int bulletCount = 1;
         int skillLevel = 0;
         MapleStatEffect effect = null;
@@ -902,6 +904,7 @@ public class PlayerHandler {
             return;
         }
         final AttackInfo attack = DamageParse.Modify_AttackCrit(DamageParse.parseDmgMa(slea), chr, 3);
+        chr.updateTick(attack.lastAttackTickCount);
         final ISkill skill = SkillFactory.getSkill(GameConstants.getLinkedAranSkill(attack.skill));
         final int skillLevel = chr.getSkillLevel(skill);
         final MapleStatEffect effect = attack.getAttackEffect(chr, skillLevel, skill);
