@@ -105,7 +105,6 @@ public class AutobanManager implements Runnable {
                 World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[自動偵測系統] 玩家" + c.getPlayer().getName() + "已遭到系統鎖定7天。呼籲其他玩家千萬不要開外掛，感謝！").getBytes());
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, 7);
-		//c.getPlayer().tempban(sb.toString(), cal, 1, false);
                 c.getPlayer().ban(sb.toString(), false, true, false);
                 c.disconnect(true, false);
             } else {
