@@ -110,7 +110,6 @@ public class PlayerHandler {
         if (slea.available() > 8 && chr != null) { // else = pet auto pot
             chr.updateTick(slea.readInt());
             final int numChanges = slea.readInt();
-
             for (int i = 0; i < numChanges; i++) {
                 chr.changeKeybinding(slea.readInt(), slea.readByte(), slea.readInt());
             }
@@ -604,7 +603,6 @@ public class PlayerHandler {
             return;
         }
         final AttackInfo attack = DamageParse.Modify_AttackCrit(DamageParse.parseDmgM(slea), chr, 1);
-        chr.updateTick(attack.lastAttackTickCount);
         final boolean mirror = chr.getBuffedValue(MapleBuffStat.MIRROR_IMAGE) != null;
         double maxdamage = chr.getStat().getCurrentMaxBaseDamage();
         int attackCount = (chr.getJob() >= 430 && chr.getJob() <= 434 ? 2 : 1), skillLevel = 0;
@@ -743,7 +741,6 @@ public class PlayerHandler {
             return;
         }
         final AttackInfo attack = DamageParse.Modify_AttackCrit(DamageParse.parseDmgR(slea), chr, 2);
-        chr.updateTick(attack.lastAttackTickCount);
         int bulletCount = 1;
         int skillLevel = 0;
         MapleStatEffect effect = null;
@@ -904,7 +901,6 @@ public class PlayerHandler {
             return;
         }
         final AttackInfo attack = DamageParse.Modify_AttackCrit(DamageParse.parseDmgMa(slea), chr, 3);
-        chr.updateTick(attack.lastAttackTickCount);
         final ISkill skill = SkillFactory.getSkill(GameConstants.getLinkedAranSkill(attack.skill));
         final int skillLevel = chr.getSkillLevel(skill);
         final MapleStatEffect effect = attack.getAttackEffect(chr, skillLevel, skill);
@@ -985,10 +981,8 @@ public class PlayerHandler {
         if (chr == null) {
             return;
         }
-        chr.updateTick(slea.readInt());
-        /*        if (slea.available() >= 8) {
-         slea.skip(4);
-         }*/
+       chr.updateTick(slea.readInt());
+
         final int healHP = slea.readShort();
         final int healMP = slea.readShort();
 
@@ -1142,9 +1136,7 @@ public class PlayerHandler {
 
             final int targetid = slea.readInt(); // FF FF FF FF
             final MaplePortal portal = chr.getMap().getPortal(slea.readMapleAsciiString());
-            /*            if (slea.available() >= 7) {
-             chr.updateTick(slea.readInt());
-             }*/
+
             slea.skip(1);
             final boolean wheel = slea.readShort() > 0 && !MapConstants.isEventMap(chr.getMapId()) && chr.haveItem(5510000, 1, false, true);
             if (!MapConstants.CanUseDropCard(chr.getMapId()) && chr.getBuffSource(MapleBuffStat.DROP_RATE) == 2382040) {

@@ -459,7 +459,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case CHAR_INFO_REQUEST:
                 c.getPlayer().updateTick(slea.readInt());
                 PlayerHandler.CharInfoRequest(slea.readInt(), c, c.getPlayer());
-                //System.err.println("CHAR_INFO_REQUEST");
                 break;
             case CLOSE_RANGE_ATTACK:
                 PlayerHandler.closeRangeAttack(slea, c, c.getPlayer(), false);
@@ -587,7 +586,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 InventoryHandler.ItemMove(slea, c);
                 break;
             case ITEM_PICKUP:
-                c.getPlayer().updateTick(slea.readInt());
+                slea.readInt();
                 InventoryHandler.PlayerPickup(slea, c, c.getPlayer());
                 break;
             case USE_CASH_ITEM:

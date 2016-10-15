@@ -89,7 +89,6 @@ public class InventoryHandler {
         if (c.getPlayer().getPlayerShop() != null || c.getPlayer().getConversation() > 0 || c.getPlayer().getTrade() != null) { //hack
             return;
         }
-        
         final MapleInventoryType type = MapleInventoryType.getByType(slea.readByte()); //04
         final short src = slea.readShort();                                            //01 00
         final short dst = slea.readShort();                                            //00 00

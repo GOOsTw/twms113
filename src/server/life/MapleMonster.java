@@ -98,6 +98,8 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     private ScheduledFuture<?> dropItemSchedule;
     private boolean shouldDropItem = false;
     private long lastAbsorbMP;
+    
+    private Point lastMovePoint = new Point();
 
     private int belongsTo = -1;
     private long endBelong;
@@ -1945,5 +1947,13 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
     public void setBelongTo(MapleCharacter chr) {
         belongsTo = chr.getId();
+    }
+    
+    public void setLastMovePoint(Point point) {
+        this.lastMovePoint = point;
+    }
+    
+    public Point getLastMovePoint() {
+        return this.lastMovePoint;
     }
 }

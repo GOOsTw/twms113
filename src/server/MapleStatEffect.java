@@ -673,15 +673,18 @@ public class MapleStatEffect implements Serializable {
             stat.setHp(stat.getHp() + hpchange);
         }
         if (mpchange != 0) {
+            
+            if (stat.getMp() + mpchange < 0) {
+                applyto.getCheatTracker().registerOffense(CheatingOffense.異常魔力耗損);
+                return false;
+            }
+         
+            
             if (mpchange < 0 && (-mpchange) > stat.getMp()) {
                 return false;
             }
-            //short converting needs math.min cuz of overflow
+            
             stat.setMp(stat.getMp() + mpchange);
-
-            if (stat.getMp() < 0) {
-                applyto.getCheatTracker().registerOffense(CheatingOffense.異常魔力耗損);
-            }
 
             hpmpupdate.add(new Pair<>(MapleStat.MP, Integer.valueOf(stat.getMp())));
         }
