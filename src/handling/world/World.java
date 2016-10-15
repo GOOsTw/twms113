@@ -316,7 +316,7 @@ public class World {
         public static BuddyAddResult requestBuddyAdd(String addName, int addChannel, int cidFrom, String nameFrom, int levelFrom, int jobFrom) {
             int ch = Find.findChannel(cidFrom);
             if (ch > 0) {
-                final MapleCharacter addChar = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(addName);
+                final MapleCharacter addChar = World.getStorage(addChannel).getCharacterByName(addName);
                 if (addChar != null) {
                     final BuddyList buddylist = addChar.getBuddylist();
                     if (buddylist.isFull()) {
