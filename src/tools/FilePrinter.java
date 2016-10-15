@@ -29,6 +29,7 @@ public class FilePrinter {
     public static final String GuildChatLog = "聊天紀錄/公會聊天/";
     public static final String WishperChatLog = "聊天紀錄/密語聊天.txt";
     public static final String OtherChatLog = "聊天紀錄/其他聊天/";
+    public static final String Disconnected = "Sessions/Disconnected.txt";
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
     private static final SimpleDateFormat sdf_ = new SimpleDateFormat("yyyy-MM-dd");

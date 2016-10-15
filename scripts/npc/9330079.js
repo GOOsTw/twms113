@@ -29,7 +29,7 @@ function action(mode, type, selection) {
         cm.dispose();
     } else if (status == 2) {
     	cm.gainItem(1302085, 1);
-    	cm.warpBack(749020900, 749020920, 60);
+    	cm.warpBack(749020900, 749020920, 60, "時間到了，自動傳回離開的地圖！");
         cm.dispose();
     }
 }
