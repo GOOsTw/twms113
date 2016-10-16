@@ -449,7 +449,8 @@ public class CheatTracker {
                 tickSame++;
             }
         } else if (newTick < lastTickCount) {
-            //chr.get().dropMessage(5, "item:" + (newTick - lastTickCount));
+            chr.get().sendHackShieldDetected();
+            chr.get().getClient().disconnect(true, false);
         } else {
             tickSame = 0;
         }
