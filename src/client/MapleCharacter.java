@@ -6353,6 +6353,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void updateTick(int newTick) {
+        //System.out.println("updateTick: " +  new Throwable().getStackTrace()[1].toString());
         anticheat.updateTick(newTick);
     }
 

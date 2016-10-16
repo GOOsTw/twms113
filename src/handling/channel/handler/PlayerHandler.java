@@ -981,7 +981,7 @@ public class PlayerHandler {
         if (chr == null) {
             return;
         }
-       chr.updateTick(slea.readInt());
+       slea.read(4);
 
         final int healHP = slea.readShort();
         final int healMP = slea.readShort();
