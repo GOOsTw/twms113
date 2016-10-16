@@ -58,7 +58,7 @@ public class Start {
             ps = con.prepareStatement(sql);
             ps.setString(1, dbname);
 
-            String[] tables = {"queststatus", "questactions", "questinfo", "questrequirements", "queststatusmobs", "skillmacros", "skills", "skills_cooldowns", "zaksquads", "player_variables", "inventoryslot", "savedlocations", "achievements", "buddies", "trocklocations", "regrocklocations"};
+            String[] tables = {"queststatus", "questactions", "questinfo", "questrequirements", "queststatusmobs", "skillmacros", "skills", "skills_cooldowns","player_variables", "inventoryslot", "savedlocations", "achievements", "buddies", "trocklocations", "regrocklocations"};
 
             for (String s : tables) {
                 ps.setString(2, s);
