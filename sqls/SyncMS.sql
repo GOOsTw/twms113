@@ -233,12 +233,12 @@ DROP TABLE IF EXISTS `bosslog2`;
 CREATE TABLE `bosslog2` (
   `bosslogid` int(11) NOT NULL AUTO_INCREMENT,
   `accountid` int(11) NOT NULL,
-  `bossid` varchar(20) CHARACTER SET utf8 NOT NULL,
+  `bossid` varchar(20) NOT NULL,
   `lastattempt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`bosslogid`),
   KEY `accountid` (`accountid`),
   CONSTRAINT `bosslog2_ibfk_1` FOREIGN KEY (`accountid`) REFERENCES `accounts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `buddies`;
@@ -30764,7 +30764,7 @@ CREATE TABLE `player_variables` (
   PRIMARY KEY (`id`),
   KEY `characterid` (`characterid`),
   CONSTRAINT `player_variables_ibfk_1` FOREIGN KEY (`characterid`) REFERENCES `characters` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `questactions`;
@@ -35910,4 +35910,4 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `readable_cheatlog` AS sele
 DROP TABLE IF EXISTS `readable_last_hour_cheatlog`;
 CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `readable_last_hour_cheatlog` AS select `a`.`name` AS `accountname`,`a`.`id` AS `accountid`,`c`.`name` AS `name`,`c`.`id` AS `characterid`,sum(`cl`.`count`) AS `numrepos` from ((`cheatlog` `cl` join `characters` `c`) join `accounts` `a`) where ((`cl`.`id` = `c`.`id`) and (`a`.`id` = `c`.`accountid`) and (timestampdiff(HOUR,`cl`.`lastoffensetime`,now()) < 1) and (`a`.`banned` = 0)) group by `cl`.`id` order by sum(`cl`.`count`) desc;
 
--- 2016-10-16 17:37:07
+-- 2016-10-19 17:34:56
