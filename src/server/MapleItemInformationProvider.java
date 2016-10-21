@@ -79,6 +79,7 @@ public class MapleItemInformationProvider {
     protected final Map<Byte, StructSetItem> setItems = new HashMap<>();
     protected final Map<Integer, Pair<Integer, List<Integer>>> questItems = new HashMap<>();
     protected final Map<Integer, String> faceList = new HashMap<>();
+    protected Map<Integer, Pair<Integer, Integer>> chairRecovery = new HashMap();
 
     protected MapleItemInformationProvider() {
         System.out.println("【讀取中】 MapleItemInformationProvider :::");
@@ -205,6 +206,20 @@ public class MapleItemInformationProvider {
         return instance;
     }
 
+    public Pair<Integer, Integer> getChairRecovery(int itemId) {
+        if (itemId / 10000 != 301) {
+            return null;
+        }
+        if (chairRecovery.containsKey(itemId)) {
+            return (Pair) chairRecovery.get(itemId);
+        }
+        int recoveryHP = MapleDataTool.getIntConvert("info/recoveryHP", getItemData(itemId), 0);
+        int recoveryMP = MapleDataTool.getIntConvert("info/recoveryMP", getItemData(itemId), 0);
+        Pair ret = new Pair(recoveryHP, recoveryMP);
+        chairRecovery.put(itemId, ret);
+        return ret;
+    }
+    
     public final List<Pair<Integer, String>> getAllItems() {
         if (!itemNameCache.isEmpty()) {
             return itemNameCache;
