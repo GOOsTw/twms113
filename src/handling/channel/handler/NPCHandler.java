@@ -85,7 +85,7 @@ public class NPCHandler {
     public static final void handleNPCTalk(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         chr.getQuestLock().lock();
         try {
-            if (chr == null || chr.getMap() == null) {
+            if (chr.getMap() == null) {
                 return;
             }
             final MapleNPC npc = chr.getMap().getNPCByOid(slea.readInt());
@@ -144,9 +144,16 @@ public class NPCHandler {
                     chr.updateTick(slea.readInt());
 
                     if (slea.available() >= 4) {
-                        q.complete(chr, npc, slea.readInt());
-                    } else {
+                        int quest_id = slea.readInt();
+                        if (chr.getQuestStatus(quest_id) != 2) {
+                            q.complete(chr, npc, slea.readInt());
+                        } else {
+                            c.sendPacket(MaplePacketCreator.enableActions());
+                        }
+                    } else if (chr.getQuestStatus(npc) != 2) {
                         q.complete(chr, npc);
+                    } else {
+                        c.sendPacket(MaplePacketCreator.enableActions());
                     }
                     // c.sendPacket(MaplePacketCreator.completeQuest(c.getPlayer(), quest));
                     //c.sendPacket(MaplePacketCreator.updateQuestInfo(c.getPlayer(), quest, npc, (byte)14));
