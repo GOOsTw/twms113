@@ -144,13 +144,13 @@ public class NPCHandler {
                     chr.updateTick(slea.readInt());
 
                     if (slea.available() >= 4) {
-                        int quest_id = slea.readInt();
-                        if (chr.getQuestStatus(quest_id) != 2) {
-                            q.complete(chr, npc, quest_id);
+                        int selection = slea.readInt();
+                        if (chr.getQuestStatus(quest) != 2) {
+                            q.complete(chr, npc, selection);
                         } else {
                             c.sendPacket(MaplePacketCreator.enableActions());
                         }
-                    } else if (chr.getQuestStatus(npc) != 2) {
+                    } else if (chr.getQuestStatus(quest) != 2) {
                         q.complete(chr, npc);
                     } else {
                         c.sendPacket(MaplePacketCreator.enableActions());

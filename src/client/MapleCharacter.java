@@ -6343,7 +6343,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         disposeClones();
         NPCScriptManager.getInstance().dispose(client);
     }
-    
+
     public void checkAttackTick(int newTick) {
         anticheat.checkAttackTick(newTick);
     }
