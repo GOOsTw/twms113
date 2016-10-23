@@ -123,7 +123,8 @@ public class NPCHandler {
             switch (action) {
                 case 0: { // Restore lost item
                     if (chr.getQuestStatus(quest) != 0) {
-                        chr.updateTick(slea.readInt());
+                        final int tick = slea.readInt();
+                        // chr.updateTick(tick);
                         final int itemid = slea.readInt();
                         MapleQuest.getInstance(quest).RestoreLostItem(chr, itemid);
                     }
@@ -144,7 +145,8 @@ public class NPCHandler {
                 }
                 case 2: { // Complete Quest
                     final int npc = slea.readInt();
-                    chr.updateTick(slea.readInt());
+                    final int tick = slea.readInt();
+                    // chr.updateTick(tick);
 
                     if (slea.available() >= 4) {
                         int selection = slea.readInt();
@@ -156,7 +158,7 @@ public class NPCHandler {
                     } else if (chr.getQuestStatus(quest) != 2) {
                         q.complete(chr, npc);
                     } else {
-                        FilePrinter.print("任務BUG.txt", chr.getName() + "可能有使用任務BUG疑慮，任務代號: " + quest , true);
+                        FilePrinter.print("任務BUG.txt", chr.getName() + "可能有使用任務BUG疑慮，任務代號: " + quest, true);
                         c.sendPacket(MaplePacketCreator.enableActions());
                     }
                     // c.sendPacket(MaplePacketCreator.completeQuest(c.getPlayer(), quest));
