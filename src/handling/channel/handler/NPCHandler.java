@@ -23,6 +23,7 @@ import scripting.NPCScriptManager;
 import scripting.NPCConversationManager;
 import server.MapleItemInformationProvider;
 import tools.ArrayMap;
+import tools.FilePrinter;
 import tools.MaplePacketCreator;
 import tools.Pair;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -121,9 +122,11 @@ public class NPCHandler {
             final MapleQuest q = MapleQuest.getInstance(quest);
             switch (action) {
                 case 0: { // Restore lost item
-                    chr.updateTick(slea.readInt());
-                    final int itemid = slea.readInt();
-                    MapleQuest.getInstance(quest).RestoreLostItem(chr, itemid);
+                    if (chr.getQuestStatus(quest) != 0) {
+                        chr.updateTick(slea.readInt());
+                        final int itemid = slea.readInt();
+                        MapleQuest.getInstance(quest).RestoreLostItem(chr, itemid);
+                    }
                     break;
                 }
                 case 1: { // Start Quest
@@ -153,6 +156,7 @@ public class NPCHandler {
                     } else if (chr.getQuestStatus(quest) != 2) {
                         q.complete(chr, npc);
                     } else {
+                        FilePrinter.print("任務BUG.txt", chr.getName() + "可能有使用任務BUG疑慮，任務代號: " + quest , true);
                         c.sendPacket(MaplePacketCreator.enableActions());
                     }
                     // c.sendPacket(MaplePacketCreator.completeQuest(c.getPlayer(), quest));
