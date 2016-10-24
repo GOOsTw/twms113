@@ -41,7 +41,7 @@ function action(mode, type, selection) {
             } else {
                 if (cm.isLeader()) {
                     var pt = cm.getPlayer().getParty();
-                    if (pt.getMembers().size() < 2) {
+                    if (pt.getMembers().size() < 2 && !cm.getPlayer().isGM()) {
                         cm.sendOk("需要 2 人以上才可以擂台！！");
                         cm.dispose();
                     }

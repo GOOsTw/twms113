@@ -981,7 +981,7 @@ public class PlayerHandler {
         if (chr == null) {
             return;
         }
-        slea.read(4);
+        slea.readInt();
 
         final int healHP = slea.readShort();
         final int healMP = slea.readShort();

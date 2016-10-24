@@ -1899,9 +1899,14 @@ public class GameConstants {
     }
 
     public static boolean isCarnivalMaps(int mapid) {
-        return mapid / 100000 == 9800 && (mapid % 10 == 1 || mapid % 1000 == 100);
-
+        return mapid / 100000 == 9800 
+                && (mapid % 10 == 1 || mapid % 1000 == 100);
     }
+    
+     public static boolean isCarnivalRestMaps(int mapid) {
+          return mapid / 100000 == 9800 
+                && (mapid % 10 == 2 || mapid % 1000 == 100);
+     }
 
     public static boolean isForceRespawn(int mapid) {
         switch (mapid) {

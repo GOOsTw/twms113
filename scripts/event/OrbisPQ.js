@@ -133,6 +133,9 @@ function scheduledTimeout(eim) {
     end(eim);
 }
 
+function dispose() {
+}
+
 function changedMap(eim, player, mapid) {
     if (mapid < 920010000 || mapid > 920011100) {
         eim.unregisterPlayer(player);

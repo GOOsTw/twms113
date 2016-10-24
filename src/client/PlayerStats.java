@@ -1270,6 +1270,10 @@ public class PlayerStats implements Serializable {
             eff = bx.getEffect(bof);
             shouldHealHP += eff.getHp();
         }
+        if(GameConstants.isCarnivalRestMaps(chr.get().getMapId())) {
+            shouldHealHP = 100;
+            shouldHealMP = 100;
+        }
         return shouldHealHP;
     }
 
