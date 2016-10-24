@@ -151,6 +151,9 @@ function playerDisconnected(eim, player) {
     return 0;
 }
 
+function dispose() {
+}
+
 function monsterValue(eim, mobId) {
     if (mobId == 9300049 && em.getProperty("stage7").equals("0")) { //dark nep
         eim.broadcastPlayerMsg(6, "遠古精靈出現了！");
