@@ -108,7 +108,7 @@ public class PlayerHandler {
 
     public static final void ChangeKeymap(final SeekableLittleEndianAccessor slea, final MapleCharacter chr) {
         if (slea.available() > 8 && chr != null) { // else = pet auto pot
-            chr.updateTick(slea.readInt());
+            slea.readInt();
             final int numChanges = slea.readInt();
             for (int i = 0; i < numChanges; i++) {
                 chr.changeKeybinding(slea.readInt(), slea.readByte(), slea.readInt());
