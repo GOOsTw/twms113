@@ -99,7 +99,7 @@ public class CheatTracker {
         }
         // 狂郎
         if (GameConstants.isAran(chr.get().getJob())) {
-            AtkDelay /= 1.4;// 407
+            AtkDelay /= 1.9;// 407
         }
         // 海盜、拳霸
         if (chr.get().getJob() >= 500 && chr.get().getJob() <= 512) {
@@ -110,7 +110,7 @@ public class CheatTracker {
             AtkDelay = 0;
         }
         if (chr.get().isShowDebugInfo()) {
-            chr.get().dropMessage(5, "SS攻擊速度檢測，間隔:" + (tickCount - lastAttackTickCount) + "，最大限度：" + AtkDelay);
+            chr.get().dropMessage(5, "SS攻擊速度檢測，間隔:" + (tickCount - lastAttackTickCount) + "，最低限度：" + AtkDelay);
         }
         if ((tickCount - lastAttackTickCount) < AtkDelay) {
             if (打怪 >= 100) {
