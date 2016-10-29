@@ -292,10 +292,10 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                     client.disconnect(false, false);
                 }
             }
-            if(client.getAccID() > 0)
-                World.Client.removeClient(client.getAccID());
-
             if (client != null) {
+                if (client.getAccID() > 0) {
+                    World.Client.removeClient(client.getAccID());
+                }
                 session.removeAttribute(MapleClient.CLIENT_KEY);
             }
 
@@ -459,7 +459,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case CHAR_INFO_REQUEST:
                 c.getPlayer().updateTick(slea.readInt());
                 PlayerHandler.CharInfoRequest(slea.readInt(), c, c.getPlayer());
-                //System.err.println("CHAR_INFO_REQUEST");
                 break;
             case CLOSE_RANGE_ATTACK:
                 PlayerHandler.closeRangeAttack(slea, c, c.getPlayer(), false);
@@ -575,21 +574,26 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 ItemMakerHandler.ItemMaker(slea, c);
                 break;
             case ITEM_SORT:
+                c.getPlayer().updateTick(slea.readInt());
                 InventoryHandler.ItemSort(slea, c);
                 break;
             case ITEM_GATHER:
+                c.getPlayer().updateTick(slea.readInt());
                 InventoryHandler.ItemGather(slea, c);
                 break;
             case ITEM_MOVE:
+                c.getPlayer().updateTick(slea.readInt());
                 InventoryHandler.ItemMove(slea, c);
                 break;
             case ITEM_PICKUP:
+                slea.readInt();
                 InventoryHandler.PlayerPickup(slea, c, c.getPlayer());
                 break;
             case USE_CASH_ITEM:
                 InventoryHandler.UseCashItem(slea, c);
                 break;
             case USE_ITEM:
+                c.getPlayer().updateTick(slea.readInt());
                 InventoryHandler.UseItem(slea, c, c.getPlayer());
                 break;
             case USE_MAGNIFY_GLASS:
@@ -620,7 +624,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 InventoryHandler.UseTreasureChest(slea, c, c.getPlayer());
                 break;
             case USE_SKILL_BOOK:
-//                c.getPlayer().updateTick(slea.readInt());
+                c.getPlayer().updateTick(slea.readInt());
                 InventoryHandler.UseSkillBook(slea, c, c.getPlayer());
                 break;
             case USE_CATCH_ITEM:

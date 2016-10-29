@@ -34,18 +34,18 @@ import tools.FilePrinter;
 import server.life.MapleNPC;
 
 public class NPCScriptManager extends AbstractScriptManager {
-
+    
     private final Map<MapleClient, NPCConversationManager> cms = new WeakHashMap<MapleClient, NPCConversationManager>();
     private static final NPCScriptManager instance = new NPCScriptManager();
-
+    
     public static final NPCScriptManager getInstance() {
         return instance;
     }
-
+    
     public final void start(final MapleClient c, final int npc) {
         start(c, npc, null);
     }
-
+    
     public final void start(final MapleClient c, final int npc, String script) {
         final Lock lock = c.getNPCLock();
         lock.lock();
@@ -81,7 +81,7 @@ public class NPCScriptManager extends AbstractScriptManager {
                     dispose(c);
                     return;
                 }
-
+                
                 cms.put(c, cm);
                 scriptengine.put("cm", cm);
                 scriptengine.put("npcid", npc);
@@ -95,7 +95,7 @@ public class NPCScriptManager extends AbstractScriptManager {
             } else {
                 c.getPlayer().dropMessage(5, "你現在不能攻擊或不能跟npc對話,請在對話框打 @解卡/@ea 來解除異常狀態");
             }
-
+            
         } catch (final ScriptException | NoSuchMethodException e) {
             System.err.println("NPC 腳本錯誤, 它ID為 : " + npc + "." + e);
             if (c.getPlayer().isGM()) {
@@ -107,8 +107,7 @@ public class NPCScriptManager extends AbstractScriptManager {
             lock.unlock();
         }
     }
-
-
+    
     public final void action(final MapleClient c, final byte mode, final byte type, final int selection) {
         if (mode != -1) {
             final NPCConversationManager cm = cms.get(c);
@@ -118,7 +117,7 @@ public class NPCScriptManager extends AbstractScriptManager {
             final Lock lock = c.getNPCLock();
             lock.lock();
             try {
-
+                
                 if (cm.pendingDisposal) {
                     dispose(c);
                 } else {
@@ -137,7 +136,7 @@ public class NPCScriptManager extends AbstractScriptManager {
             }
         }
     }
-
+    
     public final void startQuest(final MapleClient c, final int npc, final int quest) {
         if (!MapleQuest.getInstance(quest).canStart(c.getPlayer(), npc)) {
             return;
@@ -156,7 +155,6 @@ public class NPCScriptManager extends AbstractScriptManager {
                 final NPCConversationManager cm = new NPCConversationManager(c, npc, quest, null, (byte) 0, iv);
                 cms.put(c, cm);
                 scriptengine.put("qm", cm);
-
                 c.getPlayer().setConversation(1);
                 c.setClickedNPC();
                 if (c.getPlayer().isGM()) {
@@ -175,7 +173,7 @@ public class NPCScriptManager extends AbstractScriptManager {
             lock.unlock();
         }
     }
-
+    
     public final void startQuest(final MapleClient c, final byte mode, final byte type, final int selection) {
         final Lock lock = c.getNPCLock();
         final NPCConversationManager cm = cms.get(c);
@@ -201,7 +199,7 @@ public class NPCScriptManager extends AbstractScriptManager {
             lock.unlock();
         }
     }
-
+    
     public final void endQuest(final MapleClient c, final int npc, final int quest, final boolean customEnd) {
         if (!customEnd && !MapleQuest.getInstance(quest).canComplete(c.getPlayer(), null)) {
             return;
@@ -220,7 +218,7 @@ public class NPCScriptManager extends AbstractScriptManager {
                 final NPCConversationManager cm = new NPCConversationManager(c, npc, quest, null, (byte) 1, iv);
                 cms.put(c, cm);
                 scriptengine.put("qm", cm);
-
+                
                 c.getPlayer().setConversation(1);
                 c.setClickedNPC();
                 //System.out.println("NPCID started: " + npc + " endquest " + quest);
@@ -239,7 +237,7 @@ public class NPCScriptManager extends AbstractScriptManager {
             lock.unlock();
         }
     }
-
+    
     public final void endQuest(final MapleClient c, final byte mode, final byte type, final int selection) {
         final Lock lock = c.getNPCLock();
         final NPCConversationManager cm = cms.get(c);
@@ -265,7 +263,7 @@ public class NPCScriptManager extends AbstractScriptManager {
             lock.unlock();
         }
     }
-
+    
     public final void dispose(final MapleClient c) {
         final NPCConversationManager npccm = cms.get(c);
         if (npccm != null) {
@@ -282,7 +280,7 @@ public class NPCScriptManager extends AbstractScriptManager {
             c.getPlayer().setConversation(0);
         }
     }
-
+    
     public final NPCConversationManager getCM(final MapleClient c) {
         return cms.get(c);
     }

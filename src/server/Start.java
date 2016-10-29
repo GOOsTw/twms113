@@ -16,7 +16,9 @@ import handling.world.family.MapleFamilyBuff;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.Timer.*;
@@ -35,19 +37,60 @@ public class Start {
         }
     }
 
-    public final static void main(final String args[]) {
+    private static void checkDatabase() throws Exception {
+        try {
+            Connection con = DatabaseConnection.getConnection();
+            String dbname = "";
+
+            PreparedStatement ps = con.prepareStatement("SELECT DATABASE() as dbname");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                dbname = rs.getString("dbname");
+            }
+            rs.close();
+            ps.close();
+
+            String sql = "SELECT `AUTO_INCREMENT` as max_id \n"
+                    + "FROM  INFORMATION_SCHEMA.TABLES\n"
+                    + "WHERE TABLE_SCHEMA = ?\n"
+                    + "AND   TABLE_NAME   = ?;";
+            ps = con.prepareStatement(sql);
+            ps.setString(1, dbname);
+
+            String[] tables = {"queststatus", "questactions", "questinfo", "questrequirements", "queststatusmobs", "skillmacros", "skills", "skills_cooldowns","player_variables", "inventoryslot", "savedlocations", "achievements", "buddies", "trocklocations", "regrocklocations"};
+
+            for (String s : tables) {
+                ps.setString(2, s);
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    int max = rs.getInt("max_id");
+                    try {
+                        if (max > (Integer.MAX_VALUE / 2)) {
+                            throw new Exception("疑似資料庫索引值過大，請整理好再開服");
+                        }
+                    } catch (Exception e) {
+                        throw new Exception("疑似資料庫索引值過大，請整理好再開服");
+                    }
+                }
+            }
+
+        } catch (Exception ex) {
+            throw new RuntimeException("疑似資料庫索引值過大，請整理好再開服");
+        }
+    }
+
+    public final static void main(final String args[]) throws Exception {
 
         System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
         System.setProperty("file.encoding", "utf-8");
 
-        
         System.out.println("【台版楓之谷模擬器】");
         System.out.println("【版本】 v113");
 
         boolean adminMode = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.admin"));
         boolean autoReg = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.autoRegister"));
         boolean gmitems = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.gmitems"));
-        
 
         if (adminMode) {
             System.out.println("【管理員模式】開啟");
@@ -60,14 +103,16 @@ public class Start {
         } else {
             System.out.println("【自動註冊】關閉");
         }
-        
+
         if (gmitems) {
             System.out.println("【允許玩家使用管理員物品】開啟");
         } else {
             System.out.println("【允許玩家使用管理員物品】關閉");
         }
-        
+
         resetAllLoginState();
+
+        checkDatabase();
 
         World.init();
         WorldTimer.getInstance().start();
@@ -101,19 +146,19 @@ public class Start {
 
         System.out.println("【啟動中】 CashShop Items:::");
         CashShopServer.setup();
-        
+
         CheatTimer.getInstance().register(AutobanManager.getInstance(), 60000);
-        
+
         Runtime.getRuntime().addShutdownHook(new Thread(ShutdownServer.getInstance()));
-        
+
         SpeedRunner.getInstance().loadSpeedRuns();
-        
+
         World.registerRespawn();
         LoginServer.setOn();
         System.out.println("【伺服器開啟完畢】");
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        
+
         while (!World.isShutDown) {
             try {
                 System.out.print(">>");
@@ -124,8 +169,8 @@ public class Start {
                 ConsoleCommandProcessor.processCommand(cmd);
             } catch (IOException ex) {
                 //Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
-            } catch(Exception ex) {
-                
+            } catch (Exception ex) {
+
             }
         }
     }

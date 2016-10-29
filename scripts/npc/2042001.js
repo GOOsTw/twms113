@@ -24,10 +24,10 @@ function action(mode, type, selection) {
         if (checkLevelsAndMap(30, 50) == 1) {
             cm.sendOk("隊伍裡有人等級不符合。");
             cm.dispose();
-        } else if (checkLevelsAndMap(30, 50) == 2) {
+        } else if (checkLevelsAndMap(30, 50) == 2 ) {
             cm.sendOk("在地圖上找不到您的隊友。");
             cm.dispose();
-        } else if (pt.getMembers().size() < 2) {
+        } else if (pt.getMembers().size() < 2 && !cm.getPlayer().isGM()) {
             cm.sendOk("需要 2 人以上才可以擂台！！");
             cm.dispose();
         } else {

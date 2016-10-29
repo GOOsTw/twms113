@@ -39,6 +39,25 @@ function playerEntry(eim, player) {
     player.tryPartyQuest(1301);
 }
 
+function check(eim) {
+    var ck = true;
+    var iter = eim.getPlayers().iterator();
+    while (iter.hasNext()) {
+        var player = iter.next()
+        if (player.getLevel() < 30 || player.getLevel() > 50) {
+            ck = false;
+            break;
+        }
+    }
+    if (ck) {
+        eim.broadcastPlayerMsg(5, "檢測..目前無異常....!");
+        eim.startEventTimer(10 * 1000);
+        eim.broadcastPlayerMsg(5, "10秒後將開戰！！");
+    } else {
+        eim.broadcastPlayerMsg(5, "檢測..發現異常!! 即將傳回去");
+        disposeAll(eim);
+    }
+}
 
 function registerCarnivalParty(eim, carnivalParty) {
     if (eim.getProperty("red").equals("-1")) {
@@ -50,9 +69,11 @@ function registerCarnivalParty(eim, carnivalParty) {
         eim.setProperty("step", "2");
         eim.setProperty("blue", "" + carnivalParty.getLeader().getId());
         eim.broadcastPlayerMsg(5, "正在檢測是否有偷渡者...");
-        check();
+        check(eim);
     }
 }
+
+
 
 function playerDead(eim, player) {}
 
@@ -114,19 +135,6 @@ function start(eim) {
         redP.warp(eim.getMapInstance(fieldMap), "red00");
 }
 
-function check(eim) {
-    var ck = eim.check();
-    if (ck) {
-        eim.setProperty("step", "3");
-        eim.broadcastPlayerMsg(5, "檢測..目前無異常....!");
-        eim.startEventTimer(10 * 1000);
-        eim.broadcastPlayerMsg(5, "10秒後將開戰！！");
-    } else {
-        eim.broadcastPlayerMsg(5, "檢測..發現異常!! 即將傳回去");
-        dispose(eim);
-    }
-}
-
 function monsterKilled(eim, chr, cp) {
     chr.getCarnivalParty().addCP(chr, cp);
     chr.CPUpdate(false, chr.getAvailableCP(), chr.getTotalCP(), 0);
@@ -171,8 +179,8 @@ function scheduledTimeout(eim) {
 
     if (!eim.getProperty("started").equals("true")) {
         // not start
-        if (eim.getProperty("step").equals("3")) {
-            start()
+        if (eim.getProperty("step").equals("2")) {
+            start(eim)
         } else {
             if (eim.getProperty("blue").equals("-1")) {
                 dispose(eim);

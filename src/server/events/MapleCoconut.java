@@ -58,9 +58,7 @@ public class MapleCoconut extends MapleEvent {
     }
 
     public MapleCoconuts getCoconut(int id) {
-        //if(coconuts.size() > id)
         return coconuts.get(id);
-        //return null;
     }
 
     public List<MapleCoconuts> getAllCoconuts() {
@@ -138,7 +136,6 @@ public class MapleCoconut extends MapleEvent {
         getMap(0).broadcastMessage(MaplePacketCreator.getClock(360));
 
         EventTimer.getInstance().schedule(new Runnable() {
-
             @Override
             public void run() {
                 if (getMapleScore() == getStoryScore()) {

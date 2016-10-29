@@ -4435,8 +4435,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void setEventInstance(EventInstanceManager eventInstance) {
-        if(this.eventInstance == eventInstance)
+        if (this.eventInstance == eventInstance) {
             return;
+        }
         EventInstanceManager eim = this.eventInstance;
         this.eventInstance = eventInstance;
         if (eim != null && eim.hasPlayer(this)) {
@@ -6346,7 +6347,16 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         NPCScriptManager.getInstance().dispose(client);
     }
 
+    public void checkAttackTick(int newTick) {
+        anticheat.checkAttackTick(newTick);
+    }
+
+    public void updateAttackTick(int newTick) {
+        anticheat.updateAttackTick(newTick);
+    }
+
     public void updateTick(int newTick) {
+        //System.out.println("updateTick: " +  new Throwable().getStackTrace()[1].toString());
         anticheat.updateTick(newTick);
     }
 

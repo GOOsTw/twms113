@@ -108,9 +108,8 @@ public class PlayerHandler {
 
     public static final void ChangeKeymap(final SeekableLittleEndianAccessor slea, final MapleCharacter chr) {
         if (slea.available() > 8 && chr != null) { // else = pet auto pot
-            chr.updateTick(slea.readInt());
+            slea.readInt();
             final int numChanges = slea.readInt();
-
             for (int i = 0; i < numChanges; i++) {
                 chr.changeKeybinding(slea.readInt(), slea.readByte(), slea.readInt());
             }
@@ -208,7 +207,7 @@ public class PlayerHandler {
     }
 
     public static final void TakeDamage(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
-     
+
         if (slea.available() < 4) { //封包長度少於4byte Return 避免Null
             return;
         }
@@ -720,6 +719,7 @@ public class PlayerHandler {
                 final double maxdamage2 = maxdamage;
                 final MapleStatEffect eff2 = effect;
                 final AttackInfo attack2 = DamageParse.DivideAttack(attack, chr.isGM() ? 1 : 4);
+
                 CloneTimer.getInstance().schedule(new Runnable() {
 
                     @Override
@@ -741,7 +741,6 @@ public class PlayerHandler {
             return;
         }
         final AttackInfo attack = DamageParse.Modify_AttackCrit(DamageParse.parseDmgR(slea), chr, 2);
-
         int bulletCount = 1;
         int skillLevel = 0;
         MapleStatEffect effect = null;
@@ -982,10 +981,8 @@ public class PlayerHandler {
         if (chr == null) {
             return;
         }
-        chr.updateTick(slea.readInt());
-        /*        if (slea.available() >= 8) {
-         slea.skip(4);
-         }*/
+        slea.readInt();
+
         final int healHP = slea.readShort();
         final int healMP = slea.readShort();
 
@@ -1010,30 +1007,13 @@ public class PlayerHandler {
     }
 
     public static final void MovePlayer(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
-//	slea.skip(5); // unknown
+
         if (chr == null) {
             return;
         }
-        final Point Original_Pos = chr.getPosition(); // 4 bytes Added on v.80 MSEA
         slea.skip(29);
 
-        /**
-         *
-         * FF FF 01 FF FF FF FF FF FF FF FF 2A 8E 66 CB 8E 7D 17 FC 4A BF D5 CE
-         * B4 FE D7 00 0B 00 B4 FE D7 00 00 00 00 00 71 00 04 96 00 00 B7 FE D7
-         * 00 54 00 00 00 71 00 02 3C 00 00 BB FE D7 00 0C 00 00 00 71 00 04 5A
-         * 00 14 0C 00 00 00 04 00 00 00 BB FE D6 00 0C 00 00 00 71 00 04 00 00
-         * 02 8A 02 00 00 06 00 00 00 CE FE D7 00 44 01 00 00 00 00 06 1E 00 00
-         * EA FE D7 00 84 00 00 00 71 00 04 78 00 00 EA FE D6 00 84 00 00 00 71
-         * 00 08 00 00 02 77 FF F2 FE 06 00 00 00 E1 FE C9 00 77 FF 6A FF 00 00
-         * 06 3C 00 11 00 00 40 04 00 00 00 00 00 B4 FE C9 00 EA FE D7 00 Now:
-         * D7 00 44 01 00 00 00 00 06 1E 00 00 EA FE D7 00 84 00 00 00 71 00 04
-         * 78 00 00 EA FE D6 00 84 00 00 00 71 00 08 00 00 02 77 FF F2 FE 06 00
-         * 00 00 E1 FE C9 00 77 FF 6A FF 00 00 06 3C 00 11 00 00 40 04 00 00 00
-         * 00 00 B4 FE C9 00 EA FE D7 00
-         */
-        // log.trace("Movement command received: unk1 {} unk2 {}", new Object[] { unk1, unk2 });
-        Point startPos = slea.readPos();
+        final Point startPos = slea.readPos();
         List<LifeMovementFragment> res;
         try {
             res = MovementParse.parseMovement(slea, 1);
@@ -1041,7 +1021,7 @@ public class PlayerHandler {
             System.out.println("AIOBE Type1:\n" + slea.toString(true));
             return;
         }
-        
+
         int unk = slea.readByte();
         for (int i = 0;; i += 2) {
             if (i >= unk) {
@@ -1055,15 +1035,23 @@ public class PlayerHandler {
         slea.readShort();
         slea.readShort();
 
+        Point lastPoint = new Point(startPos);
+        for (LifeMovementFragment mov : res) {
+            if (chr.isShowDebugInfo()) {
+                chr.dropMessage("移動到: " + mov.getPosition().x + "," + mov.getPosition().y +", 距離 = " + mov.getPosition().distance(lastPoint));
+            }
+            lastPoint = mov.getPosition();
+        }
+
         if (res != null && c.getPlayer().getMap() != null) { // TODO more validation of input data
             final List<LifeMovementFragment> res2 = new ArrayList<>(res);
             final MapleMap map = c.getPlayer().getMap();
 
             if (chr.isHidden()) {
                 chr.setLastRes(res2);
-                c.getPlayer().getMap().broadcastGMMessage(chr, MaplePacketCreator.movePlayer(chr.getId(), res, Original_Pos), false);
+                c.getPlayer().getMap().broadcastGMMessage(chr, MaplePacketCreator.movePlayer(chr.getId(), res, startPos), false);
             } else {
-                c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.movePlayer(chr.getId(), res, Original_Pos), false);
+                c.getPlayer().getMap().broadcastMessage(c.getPlayer(), MaplePacketCreator.movePlayer(chr.getId(), res, startPos), false);
             }
 
             MovementParse.updatePosition(res, chr, 0);
@@ -1073,7 +1061,7 @@ public class PlayerHandler {
                 final MapleCharacter fol = map.getCharacterById(chr.getFollowId());
                 if (fol != null) {
                     final Point original_pos = fol.getPosition();
-                    fol.getClient().sendPacket(MaplePacketCreator.moveFollow(Original_Pos, original_pos, pos, res));
+                    fol.getClient().sendPacket(MaplePacketCreator.moveFollow(startPos, original_pos, pos, res));
                     MovementParse.updatePosition(res, fol, 0);
                     map.broadcastMessage(fol, MaplePacketCreator.movePlayer(fol.getId(), res, original_pos), false);
                 } else {
@@ -1093,7 +1081,7 @@ public class PlayerHandler {
                                     if (clone.isHidden()) {
                                         clone.setLastRes(res3);
                                     } else {
-                                        map.broadcastMessage(clone, MaplePacketCreator.movePlayer(clone.getId(), res3, Original_Pos), false);
+                                        map.broadcastMessage(clone, MaplePacketCreator.movePlayer(clone.getId(), res3, startPos), false);
                                     }
                                     MovementParse.updatePosition(res3, clone, 0);
                                     map.movePlayer(clone, pos);
@@ -1139,9 +1127,7 @@ public class PlayerHandler {
 
             final int targetid = slea.readInt(); // FF FF FF FF
             final MaplePortal portal = chr.getMap().getPortal(slea.readMapleAsciiString());
-            /*            if (slea.available() >= 7) {
-             chr.updateTick(slea.readInt());
-             }*/
+
             slea.skip(1);
             final boolean wheel = slea.readShort() > 0 && !MapConstants.isEventMap(chr.getMapId()) && chr.haveItem(5510000, 1, false, true);
             if (!MapConstants.CanUseDropCard(chr.getMapId()) && chr.getBuffSource(MapleBuffStat.DROP_RATE) == 2382040) {
@@ -1272,17 +1258,19 @@ public class PlayerHandler {
             return;
         }
         final MaplePortal portal = chr.getMap().getPortal(slea.readMapleAsciiString());
-        final int toX = slea.readShort();
-        final int toY = slea.readShort();
-//	slea.readShort(); // Original X pos
-//	slea.readShort(); // Original Y pos
+
+        Point targetPos = slea.readPos();
+        Point startPos = slea.readPos();
 
         if (portal == null) {
             return;
-        } else if (portal.getPosition().distanceSq(chr.getPosition()) > 22500) {
+        } else if (startPos.distanceSq(chr.getPosition()) > 22500) {
             chr.getCheatTracker().registerOffense(CheatingOffense.使用過遠傳點);
         }
-        chr.getMap().movePlayer(chr, new Point(toX, toY));
+        if (chr.isShowDebugInfo()) {
+            chr.dropMessage("過傳點距離: " + startPos.distance(chr.getPosition()));
+        }
+        chr.getMap().movePlayer(chr, new Point(targetPos.x, targetPos.y));
         chr.checkFollow();
     }
 

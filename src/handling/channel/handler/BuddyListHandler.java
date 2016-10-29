@@ -122,13 +122,13 @@ public class BuddyListHandler {
                 /* 傳給對方好友邀請 */
                 if (buddyChannel > 0) {
                     reqRes = World.Buddy.requestBuddyAdd(buddyName,
-                            player.getClient().getChannel(),
+                            buddyChannel,
                             player.getId(),
                             player.getName(),
                             player.getLevel(),
                             player.getJob());
                 } else {
-
+                    // 好友離線
                     final int buddyCount = BuddyList.getBuddyCount(buddyEntry.getCharacterId(), 0);
 
                     if (buddyCount == -1) {
@@ -145,8 +145,9 @@ public class BuddyListHandler {
                 if (reqRes == BuddyAddResult.BUDDYLIST_FULL) {
                     client.sendPacket(MaplePacketCreator.buddylistMessage((byte) 12));
                     break;
+                } else if (reqRes == BuddyAddResult.ALREADY_ON_LIST) {
                 } else {
-                    if (reqRes == BuddyAddResult.ALREADY_ON_LIST && buddyChannel > 0) {
+                    if (buddyChannel > 0) {
                         notifyRemoteChannel(client, buddyChannel, buddyEntry.getCharacterId(), buddyGroup, ADDED);
                     } else {
                         BuddyList.addBuddyToDB(player, buddyEntry);
@@ -170,7 +171,7 @@ public class BuddyListHandler {
                 final int buddyChannel = World.Find.findChannel(buddyCharId);
                 BuddyEntry buddy;
 
-                if (buddyChannel < 0) {
+                if (buddyChannel <= 0) {
                     buddy = BuddyEntry.getByIdfFromDB(buddyCharId);
                 } else {
                     final MapleCharacter buddyChar = ChannelServer.getInstance(buddyChannel).getPlayerStorage().getCharacterById(buddyCharId);
@@ -179,7 +180,7 @@ public class BuddyListHandler {
                             buddyChar.getId(),
                             BuddyList.DEFAULT_GROUP,
                             buddyChannel,
-                            false,
+                            true,
                             buddyChar.getLevel(),
                             buddyChar.getJob()
                     );

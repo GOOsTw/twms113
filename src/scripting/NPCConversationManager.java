@@ -1427,7 +1427,11 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
         getPlayer().gainBalls(s);
     }
 
-    public void warpBack(int mid, final int retmap, final int time) { //時間秒數
+    public void warpBack(int mid, final int retmap, final int time) {
+        warpBack(mid, retmap, time, "已經到達目的地了!");
+    }
+
+    public void warpBack(int mid, final int retmap, final int time, final String msg) { //時間秒數
 
         MapleMap warpMap = c.getChannelServer().getMapFactory().getMap(mid);
         c.getPlayer().changeMap(warpMap, warpMap.getPortal(0));
@@ -1439,10 +1443,12 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
                 if (c.getPlayer() != null) {
                     c.sendPacket(MaplePacketCreator.stopClock());
                     c.getPlayer().changeMap(warpMap, warpMap.getPortal(0));
-                    c.getPlayer().dropMessage(6, "已經到達目的地了!");
+                    if (!msg.equals("")) {
+                        c.getPlayer().dropMessage(6, msg);
+                    }
                 }
             }
-        }, 1000 * time); //設定時間, (1 秒 = 1000)
+        }, 1000 * time);
     }
 
     // 轉蛋

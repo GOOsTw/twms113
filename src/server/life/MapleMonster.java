@@ -99,6 +99,8 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     private boolean shouldDropItem = false;
     private long lastAbsorbMP;
 
+    private Point lastMovePoint = new Point();
+
     private int belongsTo = -1;
     private long endBelong;
 
@@ -895,9 +897,6 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
         EventInstanceManager eim = this.eventInstance;
         this.eventInstance = eventInstance;
-          if (eim != null && eim.hasMonster(this)) {
-            eim.unregisterMonster(this);
-        }
     }
 
     //得到目前事件例子 傳回 事件例子
@@ -1945,5 +1944,13 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
     public void setBelongTo(MapleCharacter chr) {
         belongsTo = chr.getId();
+    }
+
+    public void setLastMovePoint(Point point) {
+        this.lastMovePoint = point;
+    }
+
+    public Point getLastMovePoint() {
+        return this.lastMovePoint;
     }
 }

@@ -23,6 +23,7 @@ import scripting.NPCScriptManager;
 import scripting.NPCConversationManager;
 import server.MapleItemInformationProvider;
 import tools.ArrayMap;
+import tools.FilePrinter;
 import tools.MaplePacketCreator;
 import tools.Pair;
 import tools.data.input.SeekableLittleEndianAccessor;
@@ -85,7 +86,7 @@ public class NPCHandler {
     public static final void handleNPCTalk(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         chr.getQuestLock().lock();
         try {
-            if (chr == null || chr.getMap() == null) {
+            if (chr.getMap() == null) {
                 return;
             }
             final MapleNPC npc = chr.getMap().getNPCByOid(slea.readInt());
@@ -121,9 +122,12 @@ public class NPCHandler {
             final MapleQuest q = MapleQuest.getInstance(quest);
             switch (action) {
                 case 0: { // Restore lost item
-                    chr.updateTick(slea.readInt());
-                    final int itemid = slea.readInt();
-                    MapleQuest.getInstance(quest).RestoreLostItem(chr, itemid);
+                    if (chr.getQuestStatus(quest) != 0) {
+                        final int tick = slea.readInt();
+                        // chr.updateTick(tick);
+                        final int itemid = slea.readInt();
+                        MapleQuest.getInstance(quest).RestoreLostItem(chr, itemid);
+                    }
                     break;
                 }
                 case 1: { // Start Quest
@@ -141,12 +145,21 @@ public class NPCHandler {
                 }
                 case 2: { // Complete Quest
                     final int npc = slea.readInt();
-                    chr.updateTick(slea.readInt());
+                    final int tick = slea.readInt();
+                    // chr.updateTick(tick);
 
                     if (slea.available() >= 4) {
-                        q.complete(chr, npc, slea.readInt());
-                    } else {
+                        int selection = slea.readInt();
+                        if (chr.getQuestStatus(quest) != 2) {
+                            q.complete(chr, npc, selection);
+                        } else {
+                            c.sendPacket(MaplePacketCreator.enableActions());
+                        }
+                    } else if (chr.getQuestStatus(quest) != 2) {
                         q.complete(chr, npc);
+                    } else {
+                        FilePrinter.print("任務BUG.txt", chr.getName() + "可能有使用任務BUG疑慮，任務代號: " + quest, true);
+                        c.sendPacket(MaplePacketCreator.enableActions());
                     }
                     // c.sendPacket(MaplePacketCreator.completeQuest(c.getPlayer(), quest));
                     //c.sendPacket(MaplePacketCreator.updateQuestInfo(c.getPlayer(), quest, npc, (byte)14));
@@ -321,8 +334,9 @@ public class NPCHandler {
 
     public static final void NPCMoreTalk(final SeekableLittleEndianAccessor slea, final MapleClient c) {
         MapleCharacter chr = c.getPlayer();
-        if(chr == null)
+        if (chr == null) {
             return;
+        }
         chr.getQuestLock().lock();
         try {
             final byte lastMsg = slea.readByte(); // 00 (last msg type I think)
@@ -451,39 +465,57 @@ public class NPCHandler {
     }
 
     public static final void UpdateQuest(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-        final MapleQuest quest = MapleQuest.getInstance(slea.readShort());
-        if (quest != null) {
-            c.getPlayer().updateQuest(c.getPlayer().getQuest(quest), true);
+        MapleCharacter chr = c.getPlayer();
+        if (chr == null) {
+            return;
+        }
+        chr.getQuestLock().lock();
+        try {
+            final MapleQuest quest = MapleQuest.getInstance(slea.readShort());
+            if (quest != null) {
+                c.getPlayer().updateQuest(c.getPlayer().getQuest(quest), true);
+            }
+        } finally {
+            chr.getQuestLock().unlock();
         }
     }
 
     public static final void UseItemQuest(final SeekableLittleEndianAccessor slea, final MapleClient c) {
-        final short slot = slea.readShort();
-        final int itemId = slea.readInt();
-        final IItem item = c.getPlayer().getInventory(MapleInventoryType.ETC).getItem(slot);
-        final short qid = slea.readShort();
-        slea.readShort();
-        final MapleQuest quest = MapleQuest.getInstance(qid);
-        final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-        Pair<Integer, List<Integer>> questItemInfo;
-        boolean found = false;
-        for (IItem i : c.getPlayer().getInventory(MapleInventoryType.ETC)) {
-            if (i.getItemId() / 10000 == 422) {
-                questItemInfo = ii.questItemInfo(i.getItemId());
-                if (questItemInfo != null && questItemInfo.getLeft() == qid && questItemInfo.getRight().contains(itemId)) {
-                    found = true;
-                    break; //i believe it's any order
+        MapleCharacter chr = c.getPlayer();
+        if (chr == null) {
+            return;
+        }
+        chr.getQuestLock().lock();
+        try {
+            final short slot = slea.readShort();
+            final int itemId = slea.readInt();
+            final IItem item = c.getPlayer().getInventory(MapleInventoryType.ETC).getItem(slot);
+            final short qid = slea.readShort();
+            slea.readShort();
+            final MapleQuest quest = MapleQuest.getInstance(qid);
+            final MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+            Pair<Integer, List<Integer>> questItemInfo;
+            boolean found = false;
+            for (IItem i : c.getPlayer().getInventory(MapleInventoryType.ETC)) {
+                if (i.getItemId() / 10000 == 422) {
+                    questItemInfo = ii.questItemInfo(i.getItemId());
+                    if (questItemInfo != null && questItemInfo.getLeft() == qid && questItemInfo.getRight().contains(itemId)) {
+                        found = true;
+                        break; //i believe it's any order
+                    }
                 }
             }
-        }
-        if (quest != null && found && item != null && item.getQuantity() > 0 && item.getItemId() == itemId) {
-            final int newData = slea.readInt();
-            final MapleQuestStatus stats = c.getPlayer().getQuestNoAdd(quest);
-            if (stats != null && stats.getStatus() == 1) {
-                stats.setCustomData(String.valueOf(newData));
-                c.getPlayer().updateQuest(stats, true);
-                MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.ETC, slot, (short) 1, false);
+            if (quest != null && found && item != null && item.getQuantity() > 0 && item.getItemId() == itemId) {
+                final int newData = slea.readInt();
+                final MapleQuestStatus stats = c.getPlayer().getQuestNoAdd(quest);
+                if (stats != null && stats.getStatus() == 1) {
+                    stats.setCustomData(String.valueOf(newData));
+                    c.getPlayer().updateQuest(stats, true);
+                    MapleInventoryManipulator.removeFromSlot(c, MapleInventoryType.ETC, slot, (short) 1, false);
+                }
             }
+        } finally {
+            chr.getQuestLock().unlock();
         }
     }
 

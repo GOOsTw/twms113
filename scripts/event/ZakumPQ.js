@@ -39,6 +39,9 @@ function scheduledTimeout(eim) {
     disposePlayerBelow(eim, 100, 280090000);
 }
 
+function dispose()  {
+}
+
 function changedMap(eim, player, mapid) {
     switch (mapid) {
         case 280010000:

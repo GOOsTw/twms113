@@ -35,7 +35,7 @@ function action(mode, type, selected) {
             } else {
                 var prop = em.getProperty("state");
                 if (prop.equals("0") || prop == null) {
-                    em.startInstance(cm.getPlayer(), cm.getMap());
+                    em.startInstance(cm.getPlayer());
                     cm.dispose();
                     return;
                 } else {

@@ -23,6 +23,8 @@ function start(mode, type, selection) {
         } else if (status == 3) {
             if (!qm.haveItem(2010007)) {
                 qm.gainItem(2010007, 1);
+		if(qm.getPlayer().getHp() >= 30)
+		    qm.getPlayer().addHP(-30);
             }
             qm.sendNext("請把它吃完然後\r\n我等等會給你#r神秘小禮物#k。 請務必收下啊。 使用後你會變得更強壯。 打開消耗欄，雙擊一下蘋果 很簡單的，按一下鍵盤的 #bI#k就能了喔！");
         } else if (status == 4) {

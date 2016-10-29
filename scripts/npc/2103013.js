@@ -97,6 +97,7 @@ function action(mode, type, selection) {
                 if (!cm.start_PyramidSubway(selection)) {
                     cm.sendOk("目前金字塔副本滿人，請稍後再嘗試。");
                 }
+                cm.dispose();
             } else if (cont_ && !cm.isLeader()) {
                 cm.sendOk("請找您的隊長來找我說話。");
             }
@@ -110,6 +111,7 @@ function action(mode, type, selection) {
                 } else {
                     cm.sendOk("目前金字塔副本滿人，請稍後再嘗試。");
                 }
+                cm.dispose();
             }
         } else if (section == 3) {
             if (selection == 0) {
