@@ -278,7 +278,7 @@ public class MapleTrade {
             c.setTrade(new MapleTrade((byte) 0, c));
             c.getClient().sendPacket(MaplePacketCreator.getTradeStart(c.getClient(), c.getTrade(), (byte) 0));
         } else {
-            c.getClient().sendPacket(MaplePacketCreator.getErrorNotice( "你已經在交易中。"));
+            c.getClient().sendPacket(MaplePacketCreator.getErrorNotice("你已經在交易中。"));
         }
     }
 
@@ -286,7 +286,7 @@ public class MapleTrade {
         if (World.isShutDown) {
             c1.getTrade().cancel1(c1.getClient());
             c1.setTrade(null);
-            c1.getClient().sendPacket(MaplePacketCreator.getErrorNotice( "目前無法交易。"));
+            c1.getClient().sendPacket(MaplePacketCreator.getErrorNotice("目前無法交易。"));
             return;
         }
         if (c1 == null || c1.getTrade() == null) {
@@ -295,13 +295,13 @@ public class MapleTrade {
         if (c2 == null || c2.getPlayerShop() != null) {
             c1.getTrade().cancel1(c1.getClient());
             c1.setTrade(null);
-            c1.getClient().sendPacket(MaplePacketCreator.getErrorNotice( "對方正在忙碌中。"));
+            c1.getClient().sendPacket(MaplePacketCreator.getErrorNotice("對方正在忙碌中。"));
             return;
         }
         if (c2.getGMLevel() > c1.getGMLevel()) {
             c1.getTrade().cancel1(c1.getClient());
             c1.setTrade(null);
-            c1.getClient().sendPacket(MaplePacketCreator.getErrorNotice( "無法跟管理員進行交易。"));
+            c1.getClient().sendPacket(MaplePacketCreator.getErrorNotice("無法跟管理員進行交易。"));
             return;
         }
         if (c2 != null && c2.getTrade() == null) {
@@ -310,7 +310,7 @@ public class MapleTrade {
             c1.getTrade().setPartner(c2.getTrade());
             c2.getClient().sendPacket(MaplePacketCreator.getTradeInvite(c1));
         } else {
-            c1.getClient().sendPacket(MaplePacketCreator.getErrorNotice( c2.getName() + "忙碌中。"));
+            c1.getClient().sendPacket(MaplePacketCreator.getErrorNotice(c2.getName() + "忙碌中。"));
         }
     }
 
@@ -322,7 +322,7 @@ public class MapleTrade {
 //            c1.dropMessage(-2, "System : Use @tradehelp to see the list of trading commands");
 //            c2.dropMessage(-2, "System : Use @tradehelp to see the list of trading commands");
         } else {
-            c1.getClient().sendPacket(MaplePacketCreator.getErrorNotice( "交易已經被關閉."));
+            c1.getClient().sendPacket(MaplePacketCreator.getErrorNotice("交易已經被關閉."));
         }
     }
 

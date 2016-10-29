@@ -368,7 +368,7 @@ public class EventInstanceManager {
     }
 
     public void playerDisconnected(final MapleCharacter chr) {
-        if (disposed) {
+        if (disposed || em == null) {
             return;
         }
         byte ret;
@@ -380,7 +380,7 @@ public class EventInstanceManager {
 
         wL.lock();
         try {
-            if (disposed) {
+            if (disposed || em == null) {
                 return;
             }
             disconnects.add(chr.getId());

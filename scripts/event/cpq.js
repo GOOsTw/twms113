@@ -155,10 +155,10 @@ function warpOut(eim) {
     } else {
         var blueParty = getParty(eim, "blue");
         var redParty = getParty(eim, "red");
-        if (blueParty.isWinner()) {
+        if (blueParty != null && blueParty.isWinner()) {
             blueParty.warp(eim.getMapInstance(winnerMap), 0);
             redParty.warp(eim.getMapInstance(loserMap), 0);
-        } else {
+        } else if(redParty != null){
             redParty.warp(eim.getMapInstance(winnerMap), 0);
             blueParty.warp(eim.getMapInstance(loserMap), 0);
         }

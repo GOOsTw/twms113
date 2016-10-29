@@ -70,6 +70,8 @@ function changedMap(eim, player, mapid) {
 }
 
 function scheduledTimeout(eim) {
+    if( eim == null )
+        return;
     var num = parseInt(eim.getProperty("monster_number"));
     if (num < monster.length) {
         monsterSpawn(eim);

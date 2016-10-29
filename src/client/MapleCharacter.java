@@ -2691,6 +2691,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (to == null) {
             return;
         }
+        if(this.getTrade() != null) {
+            MapleTrade.cancelTrade(this.getTrade(), this.getClient());
+        }
         final int nowmapid = map.getId();
         if (eventInstance != null) {
             eventInstance.changedMap(this, to.getId());
