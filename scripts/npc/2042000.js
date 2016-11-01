@@ -78,7 +78,7 @@ function action(mode, type, selection) {
                 cm.sendOk("背包請清出空間.");
             } else {
                 cm.gainItem(gainItems[selection], 1, true);
-                cm.gainItem(gainItem[selection], requiedCount[selection] * -1);
+                cm.gainItem(4001129, requiedCount[selection] * -1, true);
             }
             cm.dispose();
 
@@ -89,7 +89,7 @@ function action(mode, type, selection) {
                 cm.sendOk("背包請清出空間.");
             } else {
                 cm.gainItem(1122058, 1, true);
-                cm.gainItem(4001254, -50);
+                cm.gainItem(4001254, -50, true);
             }
             cm.dispose();
         } else {
