@@ -668,6 +668,7 @@ public class MapleClient {
     }
 
     public final void unLockDisconnect(boolean removeFromChannel, boolean fromCS) {
+        this.setReceiving(false);
         this.disconnect(removeFromChannel, fromCS);
     }
 
