@@ -738,10 +738,6 @@ public class PlayerInteractionHandler {
                     if (game.isOpen()) {
                         break;
                     }
-                    /* if (game.getLoser() != game.getVisitorSlot(chr)) {
-                     game.broadcastToVisitors(PlayerShopPacket.shopChat("不能放在通過 " + chr.getName() + ". 失敗者: " + game.getLoser() + " 遊客: " + game.getVisitorSlot(chr), game.getVisitorSlot(chr)));
-                     return;
-                     }*/
                     if (slea.readByte() != game.getTurn()) {
                         game.broadcastToVisitors(PlayerShopPacket.shopChat("不能放在通過 " + chr.getName() + ". 失敗者: " + game.getLoser() + " 遊客: " + game.getVisitorSlot(chr) + " 是否為真: " + game.getTurn(), game.getVisitorSlot(chr)));
                         return;

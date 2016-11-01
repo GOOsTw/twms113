@@ -598,6 +598,23 @@ public abstract class AbstractPlayerInteraction {
         return true;
     }
 
+    public final void warpPartyInMap(final int targetMapId, final int map) {
+        if (getPlayer().getParty() == null || getPlayer().getParty().getMembers().size() == 1) {
+            warp(targetMapId, 0);
+            return;
+        }
+        final MapleMap target = getMap(targetMapId);
+        final int cMap = getPlayer().getMapId();
+
+        for (final MaplePartyCharacter chr : getPlayer().getParty().getMembers()) {
+            final MapleCharacter curChar = getChannelServer().getPlayerStorage().getCharacterById(chr.getId());
+            if (curChar != null && (curChar.getMapId() == cMap || curChar.getEventInstance() == getPlayer().getEventInstance())) {
+                if(curChar.getMapId() == map)
+                    curChar.changeMap(target, target.getPortal(0));
+            }
+        }
+    }
+
     public final void warpParty(final int mapId) {
         if (getPlayer().getParty() == null || getPlayer().getParty().getMembers().size() == 1) {
             warp(mapId, 0);

@@ -158,7 +158,7 @@ function action(mode, type, selection) {
     } else {
         if (mode == 1) {
             if (cm.isLeader()) {
-                cm.warpParty(925020002);
+                cm.warpPartyInMap(925020002, cm.getMapId());
             } else {
                 cm.warp(925020002);
             }
