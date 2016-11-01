@@ -66,7 +66,6 @@ public class InterServerHandler {
             c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
-        int res = chr.saveToDB(false, false);
 
         if (chr.isTestingDPS()) {
             final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
