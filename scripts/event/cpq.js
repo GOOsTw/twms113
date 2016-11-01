@@ -40,6 +40,7 @@ function playerEntry(eim, player) {
 }
 
 function check(eim) {
+    eim.stopEventTimer();
     var ck = true;
     var iter = eim.getPlayers().iterator();
     while (iter.hasNext()) {
