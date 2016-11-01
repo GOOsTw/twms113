@@ -91,8 +91,9 @@ public class InterServerHandler {
         c.updateLoginState(MapleClient.CHANGE_CHANNEL, c.getSessionIPAddress());
 
         chr.getMap().removePlayer(chr);
-        c.setPlayer(null);
+        chr.saveToDB(true, false);
         chr.expirationTask(true, false);
+        c.setPlayer(null);
         c.setReceiving(false);
         c.sendPacket(MaplePacketCreator.getChannelChange(CashShopServer.getGatewayIP().split(":")[0], Integer.parseInt(CashShopServer.getGatewayIP().split(":")[1])));
     }
@@ -158,7 +159,7 @@ public class InterServerHandler {
 
             for (MapleCoolDownValueHolder cooldown : player.getCooldowns()) {
                 if (c.getPlayer().skillisCooling(cooldown.skillId)) {
-                    c.sendPacket(MaplePacketCreator.skillCooldown(cooldown.skillId, (int) (System.currentTimeMillis()/1000 - cooldown.startTime/1000)));
+                    c.sendPacket(MaplePacketCreator.skillCooldown(cooldown.skillId, (int) (System.currentTimeMillis() / 1000 - cooldown.startTime / 1000)));
                 }
             }
 
