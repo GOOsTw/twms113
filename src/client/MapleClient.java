@@ -668,7 +668,6 @@ public class MapleClient {
     }
 
     public final void unLockDisconnect(boolean removeFromChannel, boolean fromCS) {
-        sendPacket(MaplePacketCreator.getPopupMsg("當前賬號在別處登入\r\n若不是你本人操作請及時更改密碼。"));
         this.disconnect(removeFromChannel, fromCS);
     }
 

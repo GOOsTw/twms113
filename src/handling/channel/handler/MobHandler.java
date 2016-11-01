@@ -130,20 +130,21 @@ public class MobHandler {
         final MapleCharacter controller = monster.getController();
         MapleMap map = chr.getMap();
 
-        controller.getCheatTracker().checkMonsterMovment(monster, res, startPos);
-
         c.sendPacket(MobPacket.moveMonsterResponse(monster.getObjectId(), moveid, monster.getMp(), monster.isControllerHasAggro(), realskill, level));
 
         if (controller != c.getPlayer()) {
             if (monster.isAttackedBy(c.getPlayer())) {// aggro and controller change
                 monster.switchController(c.getPlayer(), true);
-            } else if (controller.getMapId() == monster.getMap().getId()) {
-                monster.setController(null);
+            } else if (controller != null && controller.getMapId() != monster.getMap().getId()) {
+                monster.switchController(c.getPlayer(), true);
+            } else {
                 return;
             }
         } else if (mobSkillId == -1 && monster.isControllerKnowsAboutAggro() && !monster.getStats().getMobile() && !monster.isFirstAttack()) {
             monster.setControllerHasAggro(false);
             monster.setControllerKnowsAboutAggro(false);
+        } else if (controller != null) {
+            controller.getCheatTracker().checkMonsterMovment(monster, res, startPos);
         }
 
         if (res != null) {
