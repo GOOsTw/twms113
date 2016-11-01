@@ -9,6 +9,8 @@ function start() {
         for (var i = 0; i< 20; i++) {
             cm.spawnMonster(2220100, 5, 184);
         }
-	}
+    } else if (!cm.isQuestActive(20718)) {
+        cm.playerMessage("任務尚未執行");
+    }
     cm.dispose();
 }

@@ -37,10 +37,12 @@ import client.inventory.MaplePet;
 import server.quest.MapleQuest;
 import tools.Pair;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 public class CharacterTransfer implements Externalizable {
-
+    
     public int characterid, accountid, exp,
             beans, meso, hair, face, mapid, guildid,
             partyid, messengerid, mBookCover, dojo, ACash, MaplePoints,
@@ -63,10 +65,11 @@ public class CharacterTransfer implements Externalizable {
     public final Map<Integer, SkillEntry> Skills = new LinkedHashMap<>(); // Skillid instead of Skill.java, as it's huge. Cant be transporting Skill.java and MapleStatEffect.java
     public long giveCSpointsLasttime = 0;
     public boolean GM聊天;
-
+    private HashMap<String, String> playervariables = new HashMap<>();
+    
     public CharacterTransfer() {
     }
-
+    
     public CharacterTransfer(final MapleCharacter chr) {
         this.lastTime = chr.getCheatTracker().getLastGMspam();
         this.GM聊天 = chr.getGMChat();
@@ -138,7 +141,7 @@ public class CharacterTransfer implements Externalizable {
                 uneq = true;
                 this.petStore[i] = (byte) Math.max(this.petStore[i], pet.getInventoryPosition());
             }
-
+            
         }
         if (uneq) {
             chr.unequipAllPets();
@@ -147,9 +150,9 @@ public class CharacterTransfer implements Externalizable {
             this.buddies.put(qs, qs.isVisible());
         }
         this.buddysize = chr.getBuddyCapacity();
-
+        
         this.partyid = chr.getPartyId();
-
+        
         if (chr.getMessenger() != null) {
             this.messengerid = chr.getMessenger().getId();
         } else {
@@ -162,20 +165,20 @@ public class CharacterTransfer implements Externalizable {
         this.mBookCover = chr.getMonsterBookCover();
         this.dojo = chr.getDojo();
         this.dojoRecord = (byte) chr.getDojoRecord();
-
+        
         this.InfoQuest = chr.getInfoQuest_Map();
-
+        
         for (final Map.Entry<MapleQuest, MapleQuestStatus> qs : chr.getQuest_Map().entrySet()) {
             this.Quest.put(qs.getKey().getId(), qs.getValue());
         }
-
+        
         this.mbook = chr.getMonsterBook().getCards();
         this.inventorys = chr.getInventorys();
-
+        
         for (final Map.Entry<ISkill, SkillEntry> qs : chr.getSkills().entrySet()) {
             this.Skills.put(qs.getKey().getId(), qs.getValue());
         }
-
+        
         this.BlessOfFairy = chr.getBlessOfFairyOrigin();
         this.chalkboard = chr.getChalkboard();
         this.skillmacro = chr.getMacros();
@@ -190,17 +193,18 @@ public class CharacterTransfer implements Externalizable {
         this.lastfametime = chr.getLastFameTime();
         this.storage = chr.getStorage();
         this.cs = chr.getCashInventory();
-
+        
         final MapleMount mount = chr.getMount();
         this.mount_itemid = mount.getItemId();
         this.mount_Fatigue = mount.getFatigue();
         this.mount_level = mount.getLevel();
         this.mount_exp = mount.getExp();
         this.giveCSpointsLasttime = chr.getGiveCSpointsLasttime();
-
+        this.playervariables = chr.getPlayervariables();
+        
         TranferTime = System.currentTimeMillis();
     }
-
+    
     @Override
     public void readExternal(final ObjectInput in) throws IOException, ClassNotFoundException {
         this.lastTime = (long[]) in.readObject();
@@ -289,67 +293,67 @@ public class CharacterTransfer implements Externalizable {
         this.prefix = in.readUTF();
         this.gachexp = in.readInt();
         this.dps = in.readLong();
-
+        
         final int mbooksize = in.readShort();
         for (int i = 0; i < mbooksize; i++) {
             this.mbook.put(in.readInt(), in.readInt());
         }
-
+        
         final int skillsize = in.readShort();
         for (int i = 0; i < skillsize; i++) {
             this.Skills.put(in.readInt(), new SkillEntry(in.readByte(), in.readByte(), in.readLong()));
         }
-
+        
         this.buddysize = in.readByte();
         final short addedbuddysize = in.readShort();
         for (int i = 0; i < addedbuddysize; i++) {
             buddies.put(new BuddyEntry(in.readUTF(), in.readInt(), in.readUTF(), in.readInt(), in.readBoolean(), in.readInt(), in.readInt()), in.readBoolean());
         }
-
+        
         final int questsize = in.readShort();
         for (int i = 0; i < questsize; i++) {
             this.Quest.put(in.readInt(), in.readObject());
         }
-
+        
         final int achievesize = in.readShort();
         for (int i = 0; i < achievesize; i++) {
             this.finishedAchievements.add(in.readInt());
         }
-
+        
         final int famesize = in.readInt();
         for (int i = 0; i < famesize; i++) {
             this.famedcharacters.add(in.readInt());
         }
-
+        
         final int savesize = in.readShort();
         savedlocation = new int[savesize];
         for (int i = 0; i < savesize; i++) {
             savedlocation[i] = in.readInt();
         }
-
+        
         final int wsize = in.readShort();
         wishlist = new int[wsize];
         for (int i = 0; i < wsize; i++) {
             wishlist[i] = in.readInt();
         }
-
+        
         final int rsize = in.readShort();
         rocks = new int[rsize];
         for (int i = 0; i < rsize; i++) {
             rocks[i] = in.readInt();
         }
-
+        
         final int resize = in.readShort();
         regrocks = new int[resize];
         for (int i = 0; i < resize; i++) {
             regrocks[i] = in.readInt();
         }
-
+        
         final int infosize = in.readShort();
         for (int i = 0; i < infosize; i++) {
             this.InfoQuest.put(in.readInt(), in.readUTF());
         }
-
+        
         final int keysize = in.readInt();
         for (int i = 0; i < keysize; i++) {
             this.keymap.put(in.readInt(), new Pair<>(in.readByte(), in.readInt()));
@@ -358,11 +362,15 @@ public class CharacterTransfer implements Externalizable {
         for (int i = 0; i < 3; i++) {
             this.petStore[i] = in.readByte();
         }
-
+        final int playerVariable_size = in.readInt();
+        for (int i = 0; i < playerVariable_size; i++) {
+            this.playervariables.put(in.readUTF(), in.readUTF());
+        }
+        
         this.lastfametime = in.readLong();
         TranferTime = System.currentTimeMillis();
     }
-
+    
     @Override
     public void writeExternal(final ObjectOutput out) throws IOException {
         out.writeObject(this.lastTime);
@@ -416,7 +424,7 @@ public class CharacterTransfer implements Externalizable {
             out.writeUTF(this.chalkboard);
         }
         out.writeByte(this.clonez);
-
+        
         out.writeObject(this.skillmacro);
         out.writeLong(this.lastfametime);
         out.writeObject(this.storage);
@@ -450,13 +458,13 @@ public class CharacterTransfer implements Externalizable {
         out.writeUTF(this.prefix);
         out.writeInt(this.gachexp);
         out.writeLong(this.dps);
-
+        
         out.writeShort(this.mbook.size());
         for (Map.Entry<Integer, Integer> ms : this.mbook.entrySet()) {
             out.writeInt(ms.getKey());
             out.writeInt(ms.getValue());
         }
-
+        
         out.writeShort(this.Skills.size());
         for (final Map.Entry<Integer, SkillEntry> qs : this.Skills.entrySet()) {
             out.writeInt(qs.getKey()); // Questid instead of Skill, as it's huge :(
@@ -465,7 +473,7 @@ public class CharacterTransfer implements Externalizable {
             out.writeLong(qs.getValue().expiration);
             // Bless of fairy is transported here too.
         }
-
+        
         out.writeByte(this.buddysize);
         out.writeShort(this.buddies.size());
         for (final Map.Entry<BuddyEntry, Boolean> qs : this.buddies.entrySet()) {
@@ -478,49 +486,49 @@ public class CharacterTransfer implements Externalizable {
             out.writeInt(qs.getKey().getJob());
             out.writeBoolean(qs.getValue());
         }
-
+        
         out.writeShort(this.Quest.size());
         for (final Map.Entry<Integer, Object> qs : this.Quest.entrySet()) {
             out.writeInt(qs.getKey()); // Questid instead of MapleQuest, as it's huge :(
             out.writeObject(qs.getValue());
         }
-
+        
         out.writeShort(this.finishedAchievements.size());
         for (final Integer zz : finishedAchievements) {
             out.writeInt(zz);
         }
-
+        
         out.writeInt(this.famedcharacters.size());
         for (final Integer zz : famedcharacters) {
             out.writeInt(zz);
         }
-
+        
         out.writeShort(this.savedlocation.length);
         for (int zz : savedlocation) {
             out.writeInt(zz);
         }
-
+        
         out.writeShort(this.wishlist.length);
         for (int zz : wishlist) {
             out.writeInt(zz);
         }
-
+        
         out.writeShort(this.rocks.length);
         for (int zz : rocks) {
             out.writeInt(zz);
         }
-
+        
         out.writeShort(this.regrocks.length);
         for (int zz : regrocks) {
             out.writeInt(zz);
         }
-
+        
         out.writeShort(this.InfoQuest.size());
         for (final Map.Entry<Integer, String> qs : this.InfoQuest.entrySet()) {
             out.writeInt(qs.getKey());
             out.writeUTF(qs.getValue());
         }
-
+        
         out.writeInt(this.keymap.size());
         for (final Map.Entry<Integer, Pair<Byte, Integer>> qs : this.keymap.entrySet()) {
             out.writeInt(qs.getKey());
@@ -531,7 +539,13 @@ public class CharacterTransfer implements Externalizable {
         for (int i = 0; i < petStore.length; i++) {
             out.writeByte(petStore[i]);
         }
-
+        
+        out.writeInt(this.playervariables.size());
+        for (Entry<String, String> entry : this.playervariables.entrySet()) {
+            out.writeUTF(entry.getKey());
+            out.writeUTF(entry.getValue());
+        }
+        
         out.writeLong(this.lastfametime);
     }
 }

@@ -211,6 +211,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private boolean switchHiredMerchant = false, 玩家私聊1 = false, 玩家私聊2 = false, 玩家私聊3 = false, GMinfo = false, 聊天稱號 = false, GM聊天 = false;
     private boolean isShowDebugInfo = false;
     private int saveToDBCount = 0;
+    private final HashMap<String, String> playervariables = new HashMap<>();
 
     private MapleCharacter(final boolean isChannelServer) {
         super.setStance(0);
@@ -791,6 +792,16 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 rs.close();
                 ps.close();
 
+                ps = con.prepareStatement("SELECT * FROM player_variables WHERE characterid = ?");
+                ps.setInt(1, charid);
+                rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    String name = rs.getString("name");
+                    String value = rs.getString("value");
+                    ret.playervariables.put(name, value);
+                }
+
                 ps = con.prepareStatement("SELECT mapid FROM regrocklocations WHERE characterid = ?");
                 ps.setInt(1, charid);
                 rs = ps.executeQuery();
@@ -817,6 +828,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 ps.close();
                 rs.close();
                 ret.stats.recalcLocalStats(true);
+
             } else { // Not channel server
                 for (Pair<IItem, MapleInventoryType> mit : ItemLoader.INVENTORY.loadItems(true, charid).values()) {
                     ret.getInventory(mit.getRight()).addFromDB(mit.getLeft());
@@ -1178,6 +1190,16 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     ps.setLong(5, skill.getValue().expiration);
                     ps.execute();
                 }
+            }
+            ps.close();
+
+            deleteWhereCharacterId(con, "DELETE FROM player_variables WHERE characterid = ?");
+            ps = con.prepareStatement("INSERT INTO player_variables (characterid, name, value) VALUES (?, ?, ?)");
+            for (Entry<String, String> entry : this.playervariables.entrySet()) {
+                ps.setInt(1, getId());
+                ps.setString(2, entry.getKey());
+                ps.setString(3, entry.getValue());
+                ps.execute();
             }
             ps.close();
 
@@ -2691,7 +2713,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (to == null) {
             return;
         }
-        if(this.getTrade() != null) {
+        if (this.getTrade() != null) {
             MapleTrade.cancelTrade(this.getTrade(), this.getClient());
         }
         final int nowmapid = map.getId();
@@ -6638,71 +6660,19 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void setPlayerVariable(String name, String value) {
-        try {
-            Connection con = DatabaseConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM player_variables WHERE name = ? AND characterid = ?");
-            ps.setString(1, name);
-            ps.setInt(2, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                ps.close();
-                ps = con.prepareStatement("UPDATE player_variables SET value = ? WHERE characterid = ? AND name = ?");
-                ps.setString(1, value);
-                ps.setInt(2, id);
-                ps.setString(3, name);
-            } else {
-                ps = con.prepareStatement("INSERT INTO player_variables (characterid, name, value) VALUES (?, ?, ?)");
-                ps.setInt(1, id);
-                ps.setString(2, name);
-                ps.setString(3, value);
-            }
-            ps.close();
-            rs.close();
-        } catch (SQLException ex) {
-            System.out.println("Error setting player variable: " + ex);
-        }
+        playervariables.put(name, value);
     }
 
     public String getPlayerVariable(String name) {
-        try {
-            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM player_variables WHERE name = ? AND characterid = ?");
-            ps.setString(1, name);
-            ps.setInt(2, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                String value = rs.getString("value");
-                ps.close();
-                rs.close();
-                return value;
-            } else {
-                ps.close();
-                rs.close();
-                return null;
-            }
-        } catch (SQLException ex) {
-            System.out.println("Error getting player variable: " + ex);
-            return null;
+        if (playervariables.containsKey(name)) {
+            return playervariables.get(name);
         }
+        return null;
     }
 
     public void deletePlayerVariable(String name) {
-        try {
-            PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement("SELECT * FROM player_variables WHERE name = ? AND characterid = ?");
-            ps.setString(1, name);
-            ps.setInt(2, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                ps.close();
-                rs.close();
-                ps = DatabaseConnection.getConnection().prepareStatement("DELETE FROM player_variables WHERE name = ? AND characterid = ?");
-                ps.setString(1, name);
-                ps.setInt(2, id);
-                ps.execute();
-            }
-            ps.close();
-            rs.close();
-        } catch (SQLException ex) {
-            System.out.println("Error deleting player variable: " + ex);
+        if (playervariables.containsKey(name)) {
+            playervariables.remove(name);
         }
     }
 
@@ -6761,4 +6731,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return questLock;
     }
 
+    public HashMap<String, String> getPlayervariables() {
+        return playervariables;
+    }
 }

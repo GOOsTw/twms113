@@ -927,7 +927,7 @@ public class MapleClient {
     }
 
     public final void disconnect(final boolean RemoveInChannelServer, final boolean fromCS) {
-       // System.out.println("中斷連線" +  new Throwable().getStackTrace()[1].toString());
+        // System.out.println("中斷連線" +  new Throwable().getStackTrace()[1].toString());
         disconnect(RemoveInChannelServer, fromCS, false);
     }
 
@@ -1006,7 +1006,7 @@ public class MapleClient {
                         ch.removePlayer(idz, namez);
                     }
                     player = null;
-                    
+
                 }
             } else {
                 final int ch = World.Find.findChannel(idz);
@@ -1038,15 +1038,15 @@ public class MapleClient {
                         CashShopServer.getPlayerStorage().deregisterPlayer(idz, namez);
                     }
                     player = null;
-                    
+
                 }
             }
 
             if (!serverTransition && isLoggedIn()) {
                 updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, getSessionIPAddress());
             }
-            
-            if(player == null) {
+
+            if (player == null) {
                 this.getSession().close(true);
             }
 
