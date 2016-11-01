@@ -247,7 +247,8 @@ public class NPCHandler {
                     return;
                 }
                 if (chr.getMeso() < 100) {
-                    chr.dropMessage(1, "你沒有足夠的楓幣放倉庫道具。");
+                    c.sendPacket(MaplePacketCreator.getStorageNotEnoughMoney());
+                    return;
                 } else {
                     IItem item = chr.getInventory(type).getItem(slot).copy();
 

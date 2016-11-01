@@ -2519,6 +2519,15 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
+    public static MaplePacket getStorageNotEnoughMoney() {
+        MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
+
+        mplew.writeShort(SendPacketOpcode.OPEN_STORAGE.getValue());
+        mplew.write(0x10);
+
+        return mplew.getPacket();
+    }
+
     public static MaplePacket getStorageFull() {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
