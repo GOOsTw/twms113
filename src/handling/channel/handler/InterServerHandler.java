@@ -25,6 +25,7 @@ import java.util.List;
 import client.BuddyEntry;
 import client.MapleCharacter;
 import client.MapleClient;
+import client.MapleCoolDownValueHolder;
 import client.MapleQuestStatus;
 import client.SkillFactory;
 import handling.MaplePacket;
@@ -67,9 +68,6 @@ public class InterServerHandler {
         }
         int res = chr.saveToDB(false, false);
 
-        if (res == 1) {
-            chr.dropMessage(5, "角色保存成功！");
-        }
         if (chr.isTestingDPS()) {
             final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
             if (chr.getMap() != null) {
@@ -94,10 +92,10 @@ public class InterServerHandler {
         c.updateLoginState(MapleClient.CHANGE_CHANNEL, c.getSessionIPAddress());
 
         chr.getMap().removePlayer(chr);
-        c.sendPacket(MaplePacketCreator.getChannelChange(CashShopServer.getGatewayIP().split(":")[0], Integer.parseInt(CashShopServer.getGatewayIP().split(":")[1])));
-        c.getPlayer().expirationTask(true, false);
         c.setPlayer(null);
+        chr.expirationTask(true, false);
         c.setReceiving(false);
+        c.sendPacket(MaplePacketCreator.getChannelChange(CashShopServer.getGatewayIP().split(":")[0], Integer.parseInt(CashShopServer.getGatewayIP().split(":")[1])));
     }
 
     public static final void LoggedIn(final int playerid, final MapleClient c) {
@@ -117,7 +115,7 @@ public class InterServerHandler {
         if (oldClient != null) {
             oldClient.disconnect(true, false);
         }
-        
+
         World.Client.addClient(player.getAccountID(), c);
         c.setAccID(player.getAccountID());
         c.loadAccountData(player.getAccountID());
@@ -158,6 +156,12 @@ public class InterServerHandler {
             player.silentGiveBuffs(PlayerBuffStorage.getBuffsFromStorage(player.getId()));
             player.giveCoolDowns(PlayerBuffStorage.getCooldownsFromStorage(player.getId()));
             player.giveSilentDebuff(PlayerBuffStorage.getDiseaseFromStorage(player.getId()));
+
+            for (MapleCoolDownValueHolder cooldown : player.getCooldowns()) {
+                if (c.getPlayer().skillisCooling(cooldown.skillId)) {
+                    c.sendPacket(MaplePacketCreator.skillCooldown(cooldown.skillId, (int) (System.currentTimeMillis()/1000 - cooldown.startTime/1000)));
+                }
+            }
 
             // Start of buddylist
             final Collection<Integer> buddyIds = player.getBuddylist().getBuddiesIds();

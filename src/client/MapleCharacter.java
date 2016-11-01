@@ -4843,7 +4843,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 coolDowns.put(cooldown.skillId, cooldown);
             }
         } else {
-
             Connection con = DatabaseConnection.getConnection();
             ResultSet rs;
             try (PreparedStatement ps = con.prepareStatement("SELECT SkillID,StartTime,length FROM skills_cooldowns WHERE charid = ?")) {

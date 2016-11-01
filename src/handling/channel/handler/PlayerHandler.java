@@ -525,7 +525,7 @@ public class PlayerHandler {
         }
         final MapleStatEffect effect = skill.getEffect(chr.getSkillLevel(GameConstants.getLinkedAranSkill(skillid)));
 
-        if (effect.getCooldown() > 0 && !chr.isGM()) {
+        if (effect.getCooldown() > 0) {
             if (chr.skillisCooling(skillid)) {
                 c.sendPacket(MaplePacketCreator.enableActions());
                 return;
