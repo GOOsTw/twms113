@@ -801,6 +801,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     String value = rs.getString("value");
                     ret.playervariables.put(name, value);
                 }
+                rs.close();;
+                ps.close();
 
                 ps = con.prepareStatement("SELECT mapid FROM regrocklocations WHERE characterid = ?");
                 ps.setInt(1, charid);

@@ -368,7 +368,7 @@ public class EventInstanceManager {
     }
 
     public void playerDisconnected(final MapleCharacter chr) {
-        if (disposed || em == null) {
+        if (disposed || em == null || em.getIv() == null) {
             return;
         }
         byte ret;
@@ -377,10 +377,9 @@ public class EventInstanceManager {
         } catch (ScriptException | NoSuchMethodException e) {
             ret = 0;
         }
-
         wL.lock();
         try {
-            if (disposed || em == null) {
+            if (disposed || em == null || em.getIv() == null) {
                 return;
             }
             disconnects.add(chr.getId());

@@ -165,3 +165,7 @@ function onMapLoad(eim, player) {
 }
 
 function cancelSchedule() {}
+
+function dispose(eim) {
+    
+}

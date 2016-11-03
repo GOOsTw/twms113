@@ -59,7 +59,8 @@ public class LoginServer {
     public static boolean AutoRegister = false, adminOnly = false;
     private static AccountStorage clients;
     private static final Map<Integer, String> LoginMacs = new WeakHashMap<>();
-
+    private static final Map<String, Integer> loginTimeStamp = new HashMap();
+    
     public static final void addChannel(final int channel) {
         load.put(channel, 0);
     }
@@ -224,4 +225,5 @@ public class LoginServer {
         }
         return macs;
     }
+    
 }

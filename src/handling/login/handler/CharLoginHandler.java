@@ -125,6 +125,9 @@ public class CharLoginHandler {
                     LoginWorker.registerClient(c);
                 }
                 return;
+            case WRONG_PASSWORD:
+               
+                break;
             case NOT_REGISTERED:
                 if (LoginServer.AutoRegister) {
                     if (account.length() >= 12) {

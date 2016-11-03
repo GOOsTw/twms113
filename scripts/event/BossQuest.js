@@ -93,6 +93,10 @@ function playerExit(eim, player) {
     }
 }
 
+function dispose(eim) {
+    
+}
+
 function removePlayer(eim, player) {
     var party = eim.getPlayers();
     var dispose = false;

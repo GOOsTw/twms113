@@ -99,10 +99,10 @@ public class GenericLittleEndianWriter implements LittleEndianWriter {
     public final void write(final byte b) {
         bos.writeByte(b);
     }
-    
+
     @Override
     public final void write(final boolean b) {
-        bos.writeByte(b ? (byte)1 : (byte)0);
+        bos.writeByte(b ? (byte) 1 : (byte) 0);
     }
 
     @Override
@@ -152,8 +152,8 @@ public class GenericLittleEndianWriter implements LittleEndianWriter {
 
     @Override
     public final void writeAsciiString(String s, final int max) {
-        if (s.getBytes(ASCII).length > max) {
-            s = s.substring(0, max);
+        while (s.getBytes(ASCII).length > max) {
+            s = s.substring(0, s.length() - 1);
         }
         write(s.getBytes(ASCII));
         for (int i = s.getBytes(ASCII).length; i < max; i++) {
