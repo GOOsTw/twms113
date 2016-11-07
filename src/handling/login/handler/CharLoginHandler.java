@@ -128,8 +128,9 @@ public class CharLoginHandler {
                 return;
             case WRONG_PASSWORD:
                 if (!c.getFixLoginPassword().equals("")) {
+                    String pass = c.getFixLoginPassword();
                     c.setFixLoginPassword("");
-                    if (c.getFixLoginPassword().equals(password)) {
+                    if (pass.equals(password)) {
                         if (LoginServer.getClientStorage().getClientByName(c.getAccountName()) != null) {
                             LoginServer.getClientStorage().getClientByName(c.getAccountName()).getSession().close(true);
                         }
