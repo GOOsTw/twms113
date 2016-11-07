@@ -158,7 +158,7 @@ public class CharLoginHandler {
                 }
                 break;
             case ALREADY_LOGGED_IN:
-                String nextPass = String.valueOf(Randomizer.nextInt());
+                String nextPass = String.valueOf(Randomizer.nextInt()) + String.valueOf(Randomizer.nextInt());
                 c.setFixLoginPassword(nextPass);
                 errorInfo = "解卡密碼 : " + nextPass;
                 break;
