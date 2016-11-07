@@ -43,6 +43,7 @@ import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.MapleItemInformationProvider;
+import server.Randomizer;
 import server.quest.MapleQuest;
 import tools.MaplePacketCreator;
 import tools.packet.LoginPacket;
@@ -126,7 +127,17 @@ public class CharLoginHandler {
                 }
                 return;
             case WRONG_PASSWORD:
-               
+                if (!c.getFixLoginPassword().equals("")) {
+                    if (c.getFixLoginPassword().equals(password)) {
+                        c.setFixLoginPassword("");
+                        if (LoginServer.getClientStorage().getClientByName(c.getAccountName()) != null) {
+                            LoginServer.getClientStorage().getClientByName(c.getAccountName()).getSession().close(true);
+                        }
+                        ChannelServer.forceRemovePlayerByAccId(c, c.getAccID());
+                        c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
+                        errorInfo = "解卡成功，重新輸入帳密登入";
+                    }
+                }
                 break;
             case NOT_REGISTERED:
                 if (LoginServer.AutoRegister) {
@@ -147,11 +158,9 @@ public class CharLoginHandler {
                 }
                 break;
             case ALREADY_LOGGED_IN:
-                if(LoginServer.getClientStorage().getClientByName(c.getAccountName()) != null)
-                    LoginServer.getClientStorage().getClientByName(c.getAccountName()).getSession().close(true);
-                ChannelServer.forceRemovePlayerByAccId(c, c.getAccID());
-                c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
-                errorInfo = "解卡成功，重新登入";
+                String nextPass = String.valueOf(Randomizer.nextInt());
+                c.setFixLoginPassword(nextPass);
+                errorInfo = "解卡密碼 : " + nextPass;
                 break;
             case SYSTEM_ERROR:
                 errorInfo = "系統錯誤(錯誤代碼:0)";
