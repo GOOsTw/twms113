@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import client.BuddyEntry;
+import client.MapleBuffStat;
 
 import client.MapleCharacter;
 import client.MapleClient;
@@ -44,6 +45,7 @@ import server.maps.MapleMap;
 import server.maps.MapleMapItem;
 import tools.CollectionUtil;
 import tools.MaplePacketCreator;
+import tools.Pair;
 import tools.packet.PetPacket;
 
 public class World {
@@ -1471,6 +1473,17 @@ public class World {
                 chr.dispelDebuff(m.disease);
             }
         }
+
+        List<MapleBuffStat> shouldCancel = new ArrayList<>();
+        for (PlayerBuffValueHolder buff : chr.getAllBuffs()) {
+            if (buff.startTime + buff.localDuration < now) {
+                for (Pair<MapleBuffStat, Integer> b : buff.statup) {
+                    shouldCancel.add(b.left);
+                }
+            }
+        }
+        chr.cancelBuffStats(shouldCancel);
+
         if (numTimes % 100 == 0) { //we're parsing through the characters anyway (:
             for (MaplePet pet : chr.getSummonedPets()) {
                 if (pet.getSummoned()) {

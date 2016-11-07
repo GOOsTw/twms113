@@ -1775,11 +1775,15 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
     }
 
-    public void registerEffect(MapleStatEffect effect, long starttime, ScheduledFuture<?> schedule, int from) {
-        registerEffect(effect, starttime, schedule, effect.getStatups(), false, effect.getDuration(), from);
+    public void registerEffect(MapleStatEffect effect, long starttime, int from) {
+        registerEffect(effect, starttime, effect.getStatups(), false, effect.getDuration(), from);
     }
 
-    public void registerEffect(MapleStatEffect effect, long starttime, ScheduledFuture<?> schedule, List<Pair<MapleBuffStat, Integer>> statups, boolean silent, final int localDuration, final int cid) {
+    public void registerEffect(MapleStatEffect effect, long starttime, int duration, int from) {
+        registerEffect(effect, starttime, effect.getStatups(), false, duration, from);
+    }
+
+    public void registerEffect(MapleStatEffect effect, long starttime, List<Pair<MapleBuffStat, Integer>> statups, boolean silent, final int localDuration, final int cid) {
         if (effect.isHide() && isGM()) {
             this.hidden = true;
             map.broadcastMessage(this, MaplePacketCreator.removePlayerFromMap(getId()), false);
@@ -1807,7 +1811,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                     battleshipHP = value; //copy this as well
                 }
             }
-            final MapleBuffStatValueHolder mbsvh = new MapleBuffStatValueHolder(effect, starttime, schedule, value, localDuration, cid);
+            final MapleBuffStatValueHolder mbsvh = new MapleBuffStatValueHolder(effect, starttime, value, localDuration, cid);
             effects.put(statup.getLeft(), mbsvh);
         }
         if (clonez > 0) {
@@ -1876,11 +1880,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 }
             }
         }
-        for (MapleBuffStatValueHolder cancelEffectCancelTasks : effectsToCancel) {
-            if (getBuffStatsFromStatEffect(cancelEffectCancelTasks.effect, cancelEffectCancelTasks.startTime).isEmpty()) {
-                if (cancelEffectCancelTasks.schedule != null) {
-                    cancelEffectCancelTasks.schedule.cancel(false);
-                }
+        for (MapleBuffStatValueHolder cancelBuf : effectsToCancel) {
+            if (getBuffStatsFromStatEffect(cancelBuf.effect, cancelBuf.startTime).isEmpty()) {
+                cancelBuf.localDuration = 0;
             }
         }
         return clonez;
@@ -2156,6 +2158,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return cid == -1 ? null : MapleCharacter.loadCharFromDB(cid, new MapleClient(null, null, new tools.MockIOSession()), true);
     }
 
+    public void cancelBuffStats(List<MapleBuffStat> stat) {
+        unRegisterBuffStats(stat);
+        cancelPlayerBuffs(stat);
+    }
+
     public void cancelBuffStats(MapleBuffStat... stat) {
         List<MapleBuffStat> buffStatList = Arrays.asList(stat);
         unRegisterBuffStats(buffStatList);
@@ -2164,7 +2171,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public void cancelEffectFromBuffStat(MapleBuffStat stat) {
         if (effects.get(stat) != null) {
-            cancelEffect(effects.get(stat).effect, false, -1);
+            effects.get(stat).localDuration = 0;
+            //cancelEffect(effects.get(stat).effect, false, -1);
         }
     }
 
@@ -2187,8 +2195,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (!isHidden()) {
             final LinkedList<MapleBuffStatValueHolder> allBuffs = new LinkedList<>(effects.values());
             for (MapleBuffStatValueHolder mbsvh : allBuffs) {
-                if (mbsvh.effect.isSkill() && mbsvh.schedule != null && !mbsvh.effect.isMorph() && !mbsvh.effect.isEnergyCharge()) {
-                    cancelEffect(mbsvh.effect, false, mbsvh.startTime);
+                if (mbsvh.effect.isSkill() && !mbsvh.effect.isMorph() && !mbsvh.effect.isEnergyCharge()) {
+                    mbsvh.localDuration = 0;
+                    //cancelEffect(mbsvh.effect, false, mbsvh.startTime);
                 }
             }
         }
@@ -2222,11 +2231,13 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         for (MapleBuffStatValueHolder mbsvh : allBuffs) {
             if (skillid == 0) {
                 if (mbsvh.effect.isSkill() && (mbsvh.effect.getSourceId() == 4331003 || mbsvh.effect.getSourceId() == 4331002 || mbsvh.effect.getSourceId() == 4341002 || mbsvh.effect.getSourceId() == 22131001 || mbsvh.effect.getSourceId() == 1321007 || mbsvh.effect.getSourceId() == 2121005 || mbsvh.effect.getSourceId() == 2221005 || mbsvh.effect.getSourceId() == 2311006 || mbsvh.effect.getSourceId() == 2321003 || mbsvh.effect.getSourceId() == 3111002 || mbsvh.effect.getSourceId() == 3111005 || mbsvh.effect.getSourceId() == 3211002 || mbsvh.effect.getSourceId() == 3211005 || mbsvh.effect.getSourceId() == 4111002)) {
-                    cancelEffect(mbsvh.effect, false, mbsvh.startTime);
+                    mbsvh.localDuration = 0;
+                    //cancelEffect(mbsvh.effect, false, mbsvh.startTime);
                     break;
                 }
             } else if (mbsvh.effect.isSkill() && mbsvh.effect.getSourceId() == skillid) {
-                cancelEffect(mbsvh.effect, false, mbsvh.startTime);
+                mbsvh.localDuration = 0;
+                //cancelEffect(mbsvh.effect, false, mbsvh.startTime);
                 break;
             }
         }

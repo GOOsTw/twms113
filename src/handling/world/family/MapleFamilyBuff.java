@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import server.MapleItemInformationProvider;
 import server.MapleStatEffect;
-import server.MapleStatEffect.CancelEffectAction;
 import server.Timer.BuffTimer;
 import tools.MaplePacketCreator;
 import tools.Pair;
@@ -36,7 +35,6 @@ import tools.Pair;
 public class MapleFamilyBuff {
 
     //todo; read from somewhere
-
     private static final int event = 2; //numevents
     // 0=tele, 1=summ, 2=drop, 3=exp, 4=both
     // questrecords used for time: 190000 to 190010
@@ -45,13 +43,13 @@ public class MapleFamilyBuff {
     private static final int[] effect = {0, 0};
     private static final int[] rep = {0, 0}; //70% of normal in gms O_O
     private static final String[] name = {
-            "立刻移動至家族成員",
-            "立刻召喚家族成員"
-        };
+        "立刻移動至家族成員",
+        "立刻召喚家族成員"
+    };
 
     private static final String[] desc = {"[對象] 自己\n[效果] 移動到想要的上線家族成員所在地圖。",
-            "[對象] 1個家族對象\n[效果] 召喚指定的上線家族成員到自己所在的地圖。"
-        };
+        "[對象] 1個家族對象\n[效果] 召喚指定的上線家族成員到自己所在的地圖。"
+    };
 
     private final static List<MapleFamilyBuffEntry> buffEntries;
 
@@ -124,9 +122,9 @@ public class MapleFamilyBuff {
             final MapleStatEffect eff = MapleItemInformationProvider.getInstance().getItemEffect(getEffectId());
             chr.cancelEffect(eff, true, -1, effects);
             final long starttime = System.currentTimeMillis();
-            final CancelEffectAction cancelAction = new CancelEffectAction(chr, eff, starttime);
-            final ScheduledFuture<?> schedule = BuffTimer.getInstance().schedule(cancelAction, ((starttime + (duration * 60000)) - starttime));
-            chr.registerEffect(eff, starttime, schedule, effects, false, duration, chr.getId());
+            //final CancelEffectAction cancelAction = new CancelEffectAction(chr, eff, starttime);
+            //final ScheduledFuture<?> schedule = BuffTimer.getInstance().schedule(cancelAction, ((starttime + (duration * 60000)) - starttime));
+            chr.registerEffect(eff, starttime, effects, false, duration * 60000, chr.getId());
         }
     }
 }

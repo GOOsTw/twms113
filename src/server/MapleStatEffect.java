@@ -673,17 +673,16 @@ public class MapleStatEffect implements Serializable {
             stat.setHp(stat.getHp() + hpchange);
         }
         if (mpchange != 0) {
-            
+
             if (stat.getMp() + mpchange < 0) {
                 applyto.getCheatTracker().registerOffense(CheatingOffense.異常魔力耗損);
                 return false;
             }
-         
-            
+
             if (mpchange < 0 && (-mpchange) > stat.getMp()) {
                 return false;
             }
-            
+
             stat.setMp(stat.getMp() + mpchange);
 
             hpmpupdate.add(new Pair<>(MapleStat.MP, Integer.valueOf(stat.getMp())));
@@ -973,8 +972,7 @@ public class MapleStatEffect implements Serializable {
     }
 
     public final void silentApplyBuff(final MapleCharacter chr, final long starttime, final int localDuration, final List<Pair<MapleBuffStat, Integer>> statup, final int cid) {
-        chr.registerEffect(this, starttime, BuffTimer.getInstance().schedule(new CancelEffectAction(chr, this, starttime),
-                ((starttime + localDuration) - System.currentTimeMillis())), statup, true, localDuration, cid);
+        chr.registerEffect(this, starttime, statup, true, localDuration, cid);
 
         final SummonMovementType summonMovementType = getSummonMovementType();
         if (summonMovementType != null) {
@@ -997,9 +995,9 @@ public class MapleStatEffect implements Serializable {
         applyto.getClient().sendPacket(MaplePacketCreator.giveBuff(sourceid, 99999, stat, this)); // Hackish timing, todo find out
 
         final long starttime = System.currentTimeMillis();
-        final CancelEffectAction cancelAction = new CancelEffectAction(applyto, this, starttime);
-        final ScheduledFuture<?> schedule = Timer.BuffTimer.getInstance().schedule(cancelAction, ((starttime + 99999) - System.currentTimeMillis()));
-        applyto.registerEffect(this, starttime, null, applyto.getId());
+        // final CancelEffectAction cancelAction = new CancelEffectAction(applyto, this, starttime);
+        //   final ScheduledFuture<?> schedule = Timer.BuffTimer.getInstance().schedule(cancelAction, ((starttime + 99999) - System.currentTimeMillis()));
+        applyto.registerEffect(this, starttime, 99999, applyto.getId());
     }
 
     public final void applyEnergyBuff(final MapleCharacter applyto, final boolean infinity) {
@@ -1008,14 +1006,14 @@ public class MapleStatEffect implements Serializable {
         final long starttime = System.currentTimeMillis();
         if (infinity) {
             applyto.getClient().sendPacket(MaplePacketCreator.giveEnergyChargeTest(0, duration / 1000));
-            applyto.registerEffect(this, starttime, null, applyto.getId());
+            applyto.registerEffect(this, starttime, applyto.getId());
         } else {
             applyto.cancelEffect(this, true, -1);
             applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveEnergyChargeTest(applyto.getId(), 10000, duration / 1000), false);
-            final CancelEffectAction cancelAction = new CancelEffectAction(applyto, this, starttime);
-            final ScheduledFuture<?> schedule = BuffTimer.getInstance().schedule(cancelAction, ((starttime + duration) - System.currentTimeMillis()));
+            //final CancelEffectAction cancelAction = new CancelEffectAction(applyto, this, starttime);
+            //final ScheduledFuture<?> schedule = BuffTimer.getInstance().schedule(cancelAction, ((starttime + duration) - System.currentTimeMillis()));
             this.statups = Collections.singletonList(new Pair<>(MapleBuffStat.ENERGY_CHARGE, 10000));
-            applyto.registerEffect(this, starttime, schedule, stat, false, duration, applyto.getId());
+            applyto.registerEffect(this, starttime, stat, false, duration, applyto.getId());
             this.statups = stat;
         }
     }
@@ -1159,10 +1157,10 @@ public class MapleStatEffect implements Serializable {
             applyto.getClient().sendPacket(MaplePacketCreator.giveBuff((skill ? sourceid : -sourceid), localDuration, Selfstat == null ? statups : Selfstat, this));
         }
         final long starttime = System.currentTimeMillis();
-        final CancelEffectAction cancelAction = new CancelEffectAction(applyto, this, starttime);
+        //final CancelEffectAction cancelAction = new CancelEffectAction(applyto, this, starttime);
 
-        final ScheduledFuture<?> schedule = BuffTimer.getInstance().schedule(cancelAction, ((starttime + localDuration) - System.currentTimeMillis()));
-        applyto.registerEffect(this, starttime, schedule, Selfstat == null ? localstatups : Selfstat,
+        //final ScheduledFuture<?> schedule = BuffTimer.getInstance().schedule(cancelAction, ((starttime + localDuration) - System.currentTimeMillis()));
+        applyto.registerEffect(this, starttime, Selfstat == null ? localstatups : Selfstat,
                 false, localDuration, applyfrom.getId());
     }
 
@@ -1790,28 +1788,6 @@ public class MapleStatEffect implements Serializable {
 
     public final short getProb() {
         return prop;
-    }
-
-    public static class CancelEffectAction implements Runnable {
-
-        private MapleStatEffect effect;
-        private WeakReference<MapleCharacter> target;
-        private long startTime;
-
-        public CancelEffectAction(final MapleCharacter target, final MapleStatEffect effect, final long startTime) {
-            this.effect = effect;
-            this.target = new WeakReference<>(target);
-            this.startTime = startTime;
-        }
-
-        @Override
-        public void run() {
-            final MapleCharacter realTarget = target.get();
-            if (realTarget != null && !realTarget.isClone()) {
-                realTarget.cancelEffect(effect, false, startTime);
-            }
-        }
-
     }
 
     public final double getMaxDistanceSq() { //lt = 前面, rb = 後面;　非取得兩點位置而是玩家的相對位置以及單一方向
