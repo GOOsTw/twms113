@@ -1482,7 +1482,9 @@ public class World {
                 }
             }
         }
-        chr.cancelBuffStats(shouldCancel);
+        if (shouldCancel.size() > 0) {
+            chr.cancelBuffStats(shouldCancel);
+        }
 
         if (numTimes % 100 == 0) { //we're parsing through the characters anyway (:
             for (MaplePet pet : chr.getSummonedPets()) {
