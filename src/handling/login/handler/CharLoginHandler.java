@@ -159,7 +159,7 @@ public class CharLoginHandler {
                 }
                 break;
             case ALREADY_LOGGED_IN:
-                String nextPass = String.valueOf(Randomizer.nextInt()) + String.valueOf(Randomizer.nextInt());
+                String nextPass = String.valueOf(Randomizer.nextInt()).replace("-", "");
                 c.setFixLoginPassword(nextPass);
                 errorInfo = "解卡密碼 : " + nextPass;
                 break;
@@ -172,8 +172,8 @@ public class CharLoginHandler {
         }
 
         if (errorInfo != null) {
-            c.getSession().write(MaplePacketCreator.getPopupMsg(errorInfo));
             c.sendPacket(LoginPacket.getLoginFailed(LoginResponse.NOP.getValue()));
+            c.getSession().write(MaplePacketCreator.getPopupMsg(errorInfo));
         } else {
             c.sendPacket(LoginPacket.getLoginFailed(loginResponse.getValue()));
         }
