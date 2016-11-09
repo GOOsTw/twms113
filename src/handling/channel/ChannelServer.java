@@ -654,6 +654,7 @@ public class ChannelServer implements Serializable {
             for (MapleCharacter c : chars) {
                 if (c.getAccountID() == accid) {
                     c.getClient().unLockDisconnect(true, false);
+                    World.Client.removeClient(accid);
                     return true;
                 }
             }
@@ -663,10 +664,11 @@ public class ChannelServer implements Serializable {
         for (MapleCharacter c : chrs) {
             if (c.getAccountID() == accid) {
                 c.getClient().unLockDisconnect(true, true);
+                World.Client.removeClient(accid);
                 return false;
             }
         }
-        
+
         return false;
     }
 

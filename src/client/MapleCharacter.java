@@ -1069,9 +1069,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             ps.setInt(21, meso);
             ps.setShort(22, hpmpApUsed);
             int savedSpawnPoint = 0;
-            final MaplePortal closest = map.findClosestSpawnpoint(getPosition());
-            if (map != null && closest != null) {
-                savedSpawnPoint = closest.getId();
+            if (map != null) {
+                final MaplePortal closest = map.findClosestSpawnpoint(getPosition());
+                if (closest != null) {
+                    savedSpawnPoint = closest.getId();
+                }
             }
             ps.setInt(23, savedSpawnPoint);
             ps.setInt(24, party != null ? party.getId() : -1);

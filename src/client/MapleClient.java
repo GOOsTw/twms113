@@ -1561,5 +1561,4 @@ public class MapleClient {
         this.fixLoginPassword = fixLoginPassword;
     }
 
-    
 }

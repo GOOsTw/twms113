@@ -127,7 +127,7 @@ public class AccountStorage {
             while (itr.hasNext()) {
                 c = itr.next();
                 if (!c.isGm() || !checkGM) {
-                    c.disconnect(false, false, true);
+                    c.disconnect(true, false, true);
                     itr.remove();
                 }
             }
@@ -144,7 +144,7 @@ public class AccountStorage {
             while (itr.hasNext()) {
                 c = itr.next();
                 if (c.getPlayer().getGMLevel() < cl.getPlayer().getGMLevel()) {
-                    c.disconnect(false, false, true);
+                    c.disconnect(true, false, true);
                     c.getSession().close(true);
                     itr.remove();
                 }

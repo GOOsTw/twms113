@@ -35,6 +35,7 @@ import handling.channel.ChannelServer;
 import handling.login.LoginInformationProvider;
 import handling.login.LoginServer;
 import handling.login.LoginWorker;
+import handling.world.World;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.Connection;
@@ -84,98 +85,114 @@ public class CharLoginHandler {
 
     public static final void handleLogin(final SeekableLittleEndianAccessor slea, final MapleClient c) {
 
-        String account = slea.readMapleAsciiString();
-        String password = slea.readMapleAsciiString();
+        LoginServer.getLoginLock().lock();
 
-        if (account == null || password == null) {
-            c.getSession().close(true);
-        }
+        try {
+            String account = slea.readMapleAsciiString();
+            String password = slea.readMapleAsciiString();
 
-        String macData = readMacAddress(slea, c);
-        c.setMacs(macData);
-        c.setLoginMacs(macData);
-        c.setAccountName(account);
+            if (account == null || password == null) {
+                c.getSession().close(true);
+            }
 
-        LoginResponse loginResponse = c.login(account, password);
+            String macData = readMacAddress(slea, c);
+            c.setMacs(macData);
+            c.setLoginMacs(macData);
+            c.setAccountName(account);
 
-        final Calendar tempBannedTill = c.getTempBanCalendar();
-        String errorInfo = null;
+            LoginResponse loginResponse = c.login(account, password);
 
-        if (loginResponse != LoginResponse.LOGIN_SUCCESS && loginFailed(c)) { // Left-to-right evaluation
-            c.getSession().close(true);
-            return;
-        }
-        switch (loginResponse) {
+            final Calendar tempBannedTill = c.getTempBanCalendar();
+            String errorInfo = null;
 
-            case LOGIN_SUCCESS:
-                if (!c.isSetSecondPassword()) {
-                    c.sendPacket(LoginPacket.getGenderNeeded(c));
-                    return;
-                }
-
-                if (tempBannedTill.getTimeInMillis() != 0) {
-                    if (!loginFailed(c)) {
-                        c.sendPacket(LoginPacket.getTempBan(KoreanDateUtil.getTempBanTimestamp(tempBannedTill.getTimeInMillis()), c.getBanReason()));
-                    } else {
-                        c.getSession().close(true);
-                    }
-                } else {
-                    c.loginAttempt = 0;
-                    c.updateMacs(macData);
-                    ChannelServer.forceRemovePlayerByAccId(c, c.getAccID());
-                    LoginWorker.registerClient(c);
-                }
+            if (loginResponse != LoginResponse.LOGIN_SUCCESS && loginFailed(c)) { // Left-to-right evaluation
+                c.getSession().close(true);
                 return;
-            case WRONG_PASSWORD:
-                if (!c.getFixLoginPassword().equals("")) {
-                    String pass = c.getFixLoginPassword();
-                    c.setFixLoginPassword("");
-                    if (pass.equals(password)) {
-                        if (LoginServer.getClientStorage().getClientByName(c.getAccountName()) != null) {
-                            LoginServer.getClientStorage().getClientByName(c.getAccountName()).getSession().close(true);
-                        }
-                        ChannelServer.forceRemovePlayerByAccId(c, c.getAccID());
-                        c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
-                        errorInfo = "解卡成功，重新輸入帳密登入";
-                    }
-                }
-                break;
-            case NOT_REGISTERED:
-                if (LoginServer.AutoRegister) {
-                    if (account.length() >= 12) {
-                        errorInfo = "您的帳號長度太長了唷!\r\n請重新輸入.";
-                    } else {
-                        AutoRegister.createAccount(account, password, c.getSession().getRemoteAddress().toString(), macData);
-                        if (AutoRegister.success && AutoRegister.macAllowed) {
-                            c.setAccID(AutoRegister.registeredId);
-                            c.sendPacket(LoginPacket.getGenderNeeded(c));
-                            return;
-                        } else if (!AutoRegister.macAllowed) {
-                            errorInfo = "無法註冊過多的帳號密碼唷!";
-                            AutoRegister.success = false;
-                            AutoRegister.macAllowed = true;
-                        }
-                    }
-                }
-                break;
-            case ALREADY_LOGGED_IN:
-                String nextPass = String.valueOf(Randomizer.nextInt()).replace("-", "");
-                c.setFixLoginPassword(nextPass);
-                errorInfo = "解卡密碼 : " + nextPass;
-                break;
-            case SYSTEM_ERROR:
-                errorInfo = "系統錯誤(錯誤代碼:0)";
-                break;
-            case SYSTEM_ERROR2:
-                errorInfo = "系統錯誤(錯誤代碼:1)";
-                break;
-        }
+            }
+            switch (loginResponse) {
 
-        if (errorInfo != null) {
-            c.sendPacket(LoginPacket.getLoginFailed(LoginResponse.NOP.getValue()));
-            c.getSession().write(MaplePacketCreator.getPopupMsg(errorInfo));
-        } else {
-            c.sendPacket(LoginPacket.getLoginFailed(loginResponse.getValue()));
+                case LOGIN_SUCCESS:
+                    if (!c.isSetSecondPassword()) {
+                        c.sendPacket(LoginPacket.getGenderNeeded(c));
+                        return;
+                    }
+
+                    if (tempBannedTill.getTimeInMillis() != 0) {
+                        if (!loginFailed(c)) {
+                            c.sendPacket(LoginPacket.getTempBan(KoreanDateUtil.getTempBanTimestamp(tempBannedTill.getTimeInMillis()), c.getBanReason()));
+                        } else {
+                            c.getSession().close(true);
+                        }
+                    } else {
+                        c.loginAttempt = 0;
+                        c.updateMacs(macData);
+
+                        LoginWorker.registerClient(c);
+                    }
+                    return;
+                case WRONG_PASSWORD:
+                    if (!c.getFixLoginPassword().equals("")) {
+                        String pass = c.getFixLoginPassword();
+                        c.setFixLoginPassword("");
+                        if (pass.equals(password)) {
+                            if (LoginServer.getClientStorage().getClientByName(c.getAccountName()) != null) {
+                                LoginServer.getClientStorage().getClientByName(c.getAccountName()).getSession().close(true);
+                            }
+                            ChannelServer.forceRemovePlayerByAccId(c, c.getAccID());
+                            if (World.Client.getClient(c.getAccID()) != null) {
+                                MapleClient oldClient = World.Client.getClient(c.getAccID());
+                                oldClient.disconnect(true, oldClient.getChannel() > 0);
+                                World.Client.removeClient(c.getAccID());
+                            }
+                            c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
+                            errorInfo = "解卡成功，重新輸入帳密登入";
+                        }
+                    }
+                    break;
+                case NOT_REGISTERED:
+                    if (LoginServer.AutoRegister) {
+                        if (account.length() >= 12) {
+                            errorInfo = "您的帳號長度太長了唷!\r\n請重新輸入.";
+                        } else {
+                            AutoRegister.createAccount(account, password, c.getSession().getRemoteAddress().toString(), macData);
+                            if (AutoRegister.success && AutoRegister.macAllowed) {
+                                c.setAccID(AutoRegister.registeredId);
+                                c.sendPacket(LoginPacket.getGenderNeeded(c));
+                                return;
+                            } else if (!AutoRegister.macAllowed) {
+                                errorInfo = "無法註冊過多的帳號密碼唷!";
+                                AutoRegister.success = false;
+                                AutoRegister.macAllowed = true;
+                            }
+                        }
+                    }
+                    break;
+                case ALREADY_LOGGED_IN:
+
+                    String nextPass = String.valueOf(Randomizer.nextInt()).replace("-", "");
+                    c.setFixLoginPassword(nextPass);
+                    errorInfo = "解卡密碼 : " + nextPass;
+
+                    break;
+                case SYSTEM_ERROR:
+                    errorInfo = "系統錯誤(錯誤代碼:0)";
+                    break;
+                case SYSTEM_ERROR2:
+                    errorInfo = "系統錯誤(錯誤代碼:1)";
+                    break;
+            }
+
+            if (errorInfo != null) {
+                c.sendPacket(LoginPacket.getLoginFailed(LoginResponse.NOP.getValue()));
+                c.getSession().write(MaplePacketCreator.getPopupMsg(errorInfo));
+            } else {
+                c.sendPacket(LoginPacket.getLoginFailed(loginResponse.getValue()));
+            }
+        } catch (Exception e) {
+            String x;
+            x = e.getLocalizedMessage();
+        } finally {
+            LoginServer.getLoginLock().unlock();
         }
     }
 

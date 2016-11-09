@@ -31,6 +31,7 @@ import handling.mina.MapleCodecFactory;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.WeakHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.buffer.SimpleBufferAllocator;
 import org.apache.mina.core.filterchain.IoFilter;
@@ -60,6 +61,8 @@ public class LoginServer {
     private static AccountStorage clients;
     private static final Map<Integer, String> LoginMacs = new WeakHashMap<>();
     private static final Map<String, Integer> loginTimeStamp = new HashMap();
+    private static final ReentrantLock loginLock = new ReentrantLock();// 鎖對象
+    private static final Map<String, Long> loginTimeMap = new HashMap();
     
     public static final void addChannel(final int channel) {
         load.put(channel, 0);
@@ -182,7 +185,8 @@ public class LoginServer {
             }
             if (c.getAccID() == client.getAccID() || c == client) {
                 if (c != client) {
-                    c.unLockDisconnect(false, true);
+                    c.unLockDisconnect(true, false);
+                    
                 }
                 removeClient(c);
             }
@@ -225,5 +229,10 @@ public class LoginServer {
         }
         return macs;
     }
-    
+
+    public static ReentrantLock getLoginLock() {
+        return loginLock;
+    }
+
+  
 }
