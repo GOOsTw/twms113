@@ -34,7 +34,7 @@ public class CashShopOperation {
         CashShopServer.getPlayerStorage().deregisterPlayer(chr);
         int loginStatus = c.getLoginState();
         if(loginStatus != MapleClient.LOGIN_CS_LOGGEDIN) {
-            c.disconnect(false, false);
+            c.disconnect(false, true);
             return;
         }
         c.updateLoginState(MapleClient.LOGIN_SERVER_TRANSITION, c.getSessionIPAddress());

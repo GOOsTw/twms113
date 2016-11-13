@@ -43,6 +43,7 @@ import client.MapleQuestStatus;
 import client.inventory.IItem;
 import client.SkillEntry;
 import client.inventory.Equip;
+import java.util.LinkedList;
 import server.MapleItemInformationProvider;
 import tools.Pair;
 import server.movement.LifeMovementFragment;
@@ -252,6 +253,8 @@ public class PacketHelper {
         mplew.write(0);
     }
 
+    
+    
     public static final void addCharStats(final MaplePacketLittleEndianWriter mplew, final MapleCharacter chr) {
         mplew.writeInt(chr.getId()); // character id
         mplew.writeAsciiString(chr.getName(), 15);

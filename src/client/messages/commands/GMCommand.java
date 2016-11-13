@@ -17,6 +17,8 @@ import handling.channel.ChannelServer;
 import handling.world.World;
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import server.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
@@ -426,7 +428,7 @@ public class GMCommand {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
-            java.util.Map<Pair<Short, Short>, MapleInventoryType> eqs = new ArrayMap<>();
+            Map<Pair<Short, Short>, MapleInventoryType> eqs = new HashMap<>();
             switch (splitted[1]) {
                 case "全部":
                     for (MapleInventoryType type : MapleInventoryType.values()) {
