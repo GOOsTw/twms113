@@ -1054,7 +1054,6 @@ public class MapleClient {
             }
 
         } else {
-            getSession().close(true);
         }
     }
 
