@@ -99,7 +99,7 @@ public class CheatTracker {
         }
         // 狂郎
         if (GameConstants.isAran(chr.get().getJob())) {
-            AtkDelay /= 1.9;// 407
+            AtkDelay /= 2.4;// 407
         }
         // 海盜、拳霸
         if (chr.get().getJob() >= 500 && chr.get().getJob() <= 512) {
