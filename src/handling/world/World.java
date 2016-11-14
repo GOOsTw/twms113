@@ -1478,6 +1478,7 @@ public class World {
         for (PlayerBuffValueHolder buff : chr.getAllBuffs()) {
             if (buff.startTime + buff.localDuration < now) {
                 for (Pair<MapleBuffStat, Integer> b : buff.statup) {
+                    chr.cancelEffect(buff.effect, false, buff.startTime);
                     shouldCancel.add(b.left);
                 }
             }

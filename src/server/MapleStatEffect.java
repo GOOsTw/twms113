@@ -998,7 +998,6 @@ public class MapleStatEffect implements Serializable {
 
     public final void applyEnergyBuff(final MapleCharacter applyto, final boolean infinity) {
         final List<Pair<MapleBuffStat, Integer>> stat = this.statups;
-
         final long starttime = System.currentTimeMillis();
         if (infinity) {
             applyto.getClient().sendPacket(MaplePacketCreator.giveEnergyChargeTest(0, duration / 1000));
@@ -1006,8 +1005,6 @@ public class MapleStatEffect implements Serializable {
         } else {
             applyto.cancelEffect(this, true, -1);
             applyto.getMap().broadcastMessage(applyto, MaplePacketCreator.giveEnergyChargeTest(applyto.getId(), 10000, duration / 1000), false);
-            //final CancelEffectAction cancelAction = new CancelEffectAction(applyto, this, starttime);
-            //final ScheduledFuture<?> schedule = BuffTimer.getInstance().schedule(cancelAction, ((starttime + duration) - System.currentTimeMillis()));
             this.statups = Collections.singletonList(new Pair<>(MapleBuffStat.ENERGY_CHARGE, 10000));
             applyto.registerEffect(this, starttime, stat, false, duration, applyto.getId());
             this.statups = stat;

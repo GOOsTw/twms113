@@ -2323,7 +2323,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public void cancelMagicDoor() {
         final LinkedList<MapleBuffStatValueHolder> allBuffs = new LinkedList<>(effects.values());
-
         for (MapleBuffStatValueHolder mbsvh : allBuffs) {
             if (mbsvh.effect.isMagicDoor()) {
                 cancelEffect(mbsvh.effect, false, mbsvh.startTime);
