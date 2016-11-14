@@ -1927,7 +1927,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
         final boolean clonez = unRegisterBuffStats(buffstats);
         if (effect.isMagicDoor()) {
-            // remove for all on maps
             if (canUseMD()) {
                 if (!getDoors().isEmpty()) {
                     MapleDoor door = getDoors().iterator().next();
