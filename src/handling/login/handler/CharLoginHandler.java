@@ -472,8 +472,9 @@ public class CharLoginHandler {
             Logger.getLogger(CharLoginHandler.class.getName()).log(Level.SEVERE, "getIP Error", ex);
         }
         int port = ChannelServer.getInstance(c.getChannel()).getPort();
-        c.sendPacket(MaplePacketCreator.getServerIP(ip, port, charId));
         c.setReceiving(false);
+        c.sendPacket(MaplePacketCreator.getServerIP(ip, port, charId));
+
     }
 
 }
