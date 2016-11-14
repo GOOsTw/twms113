@@ -101,8 +101,8 @@ public class CharLoginHandler {
             c.setAccountName(account);
 
             LoginResponse loginResponse = c.login(account, password);
-            
-            if(loginResponse == LoginResponse.LOGIN_SUCCESS && c.getLastLogin() + 3 * 1000 > System.currentTimeMillis()) {
+
+            if (loginResponse == LoginResponse.LOGIN_SUCCESS && c.getLastLogin() + 3 * 1000 > System.currentTimeMillis()) {
                 loginResponse = LoginResponse.LOGIN_DELAY;
             }
 
@@ -154,7 +154,7 @@ public class CharLoginHandler {
                     }
                     break;
                 case LOGIN_DELAY:
-                    
+
                     break;
                 case NOT_REGISTERED:
                     if (LoginServer.AutoRegister) {
@@ -464,9 +464,7 @@ public class CharLoginHandler {
         if (c.getIdleTask() != null) {
             c.getIdleTask().cancel(true);
         }
-
         c.updateLoginState(MapleClient.LOGIN_SERVER_TRANSITION, c.getSessionIPAddress());
-
         byte[] ip = {127, 0, 0, 1};
         try {
             ip = InetAddress.getByName(ChannelServer.getInstance(c.getChannel()).getGatewayIP()).getAddress();
@@ -475,6 +473,7 @@ public class CharLoginHandler {
         }
         int port = ChannelServer.getInstance(c.getChannel()).getPort();
         c.sendPacket(MaplePacketCreator.getServerIP(ip, port, charId));
+        c.setReceiving(false);
     }
 
 }

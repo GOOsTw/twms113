@@ -37,7 +37,7 @@ public class CashShopOperation {
             c.disconnect(false, true);
             return;
         }
-        c.updateLoginState(MapleClient.LOGIN_SERVER_TRANSITION, c.getSessionIPAddress());
+        c.updateLoginState(MapleClient.CASH_SHOP_TRANSITION, c.getSessionIPAddress());
         try {
             World.channelChangeData(new CharacterTransfer(chr), chr.getId(), c.getChannel());
             c.sendPacket(MaplePacketCreator.getChannelChange(ChannelServer.getInstance(c.getChannel()).getGatewayIP(), ChannelServer.getInstance(c.getChannel()).getPort()));

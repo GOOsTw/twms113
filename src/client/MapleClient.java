@@ -64,6 +64,7 @@ import tools.packet.LoginPacket;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -789,13 +790,18 @@ public class MapleClient {
     }
 
     public final void updateLoginState(final int newstate, final String SessionID) { // TODO hide?
+     //   java.util.logging.Logger.getLogger(MapleClient.class.getName()).log(Level.SEVERE, "Status : " + newstate );
         Connection con = DatabaseConnection.getConnection();
+        try {
+            con.setAutoCommit(true);
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(MapleClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
         try (PreparedStatement ps = con.prepareStatement("UPDATE accounts SET loggedin = ?, SessionIP = ?, lastlogin = CURRENT_TIMESTAMP() WHERE id = ?")) {
             ps.setInt(1, newstate);
             ps.setString(2, SessionID);
             ps.setInt(3, getAccID());
             ps.executeUpdate();
-
         } catch (SQLException e) {
             System.out.println("error updating login state" + e);
         }
