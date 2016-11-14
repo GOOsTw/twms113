@@ -659,9 +659,6 @@ public class MapleClient {
             updatePasswordHash(password);
         }
 
-        ChannelServer.forceRemovePlayerByAccId(this, accountId);
-        this.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, this.getSessionIPAddress());
-
         return LoginResponse.LOGIN_SUCCESS;
     }
 

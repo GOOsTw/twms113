@@ -102,7 +102,7 @@ public class CharLoginHandler {
 
             LoginResponse loginResponse = c.login(account, password);
             
-            if(c.getLastLogin() + 10 * 1000 < System.currentTimeMillis()) {
+            if(loginResponse == LoginResponse.LOGIN_SUCCESS && c.getLastLogin() + 3 * 1000 > System.currentTimeMillis()) {
                 loginResponse = LoginResponse.LOGIN_DELAY;
             }
 
