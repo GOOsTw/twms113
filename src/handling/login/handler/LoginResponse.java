@@ -12,6 +12,7 @@ package handling.login.handler;
 public enum LoginResponse {
     
     LOGIN_SUCCESS(0x0),
+    LOGIN_DELAY(0x7),
     NOP(0x1),
     ACCOUNT_BLOCKED(0x3),
     WRONG_PASSWORD(0x4),

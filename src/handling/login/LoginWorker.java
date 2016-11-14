@@ -75,7 +75,6 @@ public class LoginWorker {
             }, 10 * 60 * 10000));
         } else {
             c.sendPacket(LoginPacket.getLoginFailed(7));
-
         }
     }
 }

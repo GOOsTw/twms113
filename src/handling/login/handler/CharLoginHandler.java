@@ -101,6 +101,10 @@ public class CharLoginHandler {
             c.setAccountName(account);
 
             LoginResponse loginResponse = c.login(account, password);
+            
+            if(c.getLastLogin() + 5 * 1000 * 60 < System.currentTimeMillis()) {
+                loginResponse = LoginResponse.LOGIN_DELAY;
+            }
 
             final Calendar tempBannedTill = c.getTempBanCalendar();
             String errorInfo = null;
@@ -148,6 +152,9 @@ public class CharLoginHandler {
                             errorInfo = "解卡成功，重新輸入帳密登入";
                         }
                     }
+                    break;
+                case LOGIN_DELAY:
+                    
                     break;
                 case NOT_REGISTERED:
                     if (LoginServer.AutoRegister) {

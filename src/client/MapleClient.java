@@ -42,6 +42,7 @@ import database.DatabaseException;
 import handling.MaplePacket;
 import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
+import handling.login.LoginServer;
 import handling.login.handler.LoginResponse;
 import handling.world.MapleMessengerCharacter;
 import handling.world.MapleParty;
@@ -100,7 +101,7 @@ public class MapleClient {
     private transient long lastPong = 0, lastPing = 0;
     private boolean monitored = false, receiving = true;
     private boolean gm;
-
+    private long lastLogin = 0;
     private byte bannedReason = 1, gender = -1;
     public transient short loginAttempt = 0;
     private final transient List<Integer> allowedChar = new LinkedList<>();
@@ -112,7 +113,6 @@ public class MapleClient {
     private final transient Lock mutex = new ReentrantLock(true);
     private final transient Lock npcMutex = new ReentrantLock();
     private long lastNpcClick = 0;
-    private final static Lock loginMutex = new ReentrantLock(true);
 
     public MapleClient(MapleAESOFB send, MapleAESOFB receive, IoSession session) {
         this.send = send;
@@ -471,17 +471,14 @@ public class MapleClient {
     }
 
     public int finishLogin() {
-        loginMutex.lock();
-        try {
-            final byte state = getLoginState();
-            if (state > MapleClient.LOGIN_NOTLOGGEDIN && state != MapleClient.LOGIN_WAITING) { // already loggedin
-                loggedIn = false;
-                return 7;
-            }
-            updateLoginState(MapleClient.LOGIN_LOGGEDIN, getSessionIPAddress());
-        } finally {
-            loginMutex.unlock();
+
+        final byte state = getLoginState();
+        if (state > MapleClient.LOGIN_NOTLOGGEDIN && state != MapleClient.LOGIN_WAITING) { // already loggedin
+            loggedIn = false;
+            return 7;
         }
+        updateLoginState(MapleClient.LOGIN_LOGGEDIN, getSessionIPAddress());
+
         return 0;
     }
 
@@ -855,9 +852,9 @@ public class MapleClient {
                 }
                 birthday = rs.getInt("bday");
                 state = rs.getByte("loggedin");
-
-                if (state == MapleClient.LOGIN_SERVER_TRANSITION || state == MapleClient.CHANGE_CHANNEL) {
-                    if (rs.getTimestamp("lastlogin").getTime() + 20000 < System.currentTimeMillis()) { // connecting to chanserver timeout
+                lastLogin = rs.getTimestamp("lastlogin").getTime();
+                if (state == MapleClient.LOGIN_SERVER_TRANSITION || state == MapleClient.CASH_SHOP_TRANSITION || state == MapleClient.CHANGE_CHANNEL) {
+                    if (rs.getTimestamp("lastlogin").getTime() + 5 * 1000 * 60 < System.currentTimeMillis()) { // connecting to chanserver timeout
                         state = MapleClient.LOGIN_NOTLOGGEDIN;
                         updateLoginState(state, getSessionIPAddress());
                     }
@@ -1561,4 +1558,28 @@ public class MapleClient {
         this.fixLoginPassword = fixLoginPassword;
     }
 
+    public long getLastLogin() {
+        Connection con = DatabaseConnection.getConnection();
+        try {
+            PreparedStatement ps;
+            ps = con.prepareStatement("SELECT lastlogin FROM accounts WHERE id = ?");
+            ps.setInt(1, getAccID());
+            byte state;
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    ps.close();
+                    throw new DatabaseException("Everything sucks");
+                }
+               
+                lastLogin = rs.getTimestamp("lastlogin").getTime();
+                rs.close();
+            }
+            ps.close();
+            return lastLogin;
+        } catch(SQLException | DatabaseException  ex) {
+           return System.currentTimeMillis();
+        }
+    }
+
+    
 }
