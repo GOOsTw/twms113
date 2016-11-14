@@ -82,6 +82,7 @@ import tools.data.input.SeekableLittleEndianAccessor;
 import tools.MaplePacketCreator;
 import tools.packet.PlayerShopPacket;
 import server.maps.MapleKite;
+import tools.FilePrinter;
 
 public class InventoryHandler {
 
@@ -103,6 +104,11 @@ public class InventoryHandler {
             if (checkq < 1 || c.getPlayer().getInventory(type).getItem(src) == null) {
                 c.sendPacket(MaplePacketCreator.enableActions());
                 //     World.Broadcast.broadcastGMMessage(CWvsContext.getItemNotice( c.getPlayer().getName() + " --- Possibly attempting drop dupe! Go investigate"));
+                return;
+            }
+            if(type == MapleInventoryType.CASH) {
+                FilePrinter.print("違法丟商城裝備.txt", "角色:" + c.getPlayer().getName());
+                c.sendPacket(MaplePacketCreator.enableActions());
                 return;
             }
             MapleInventoryManipulator.drop(c, type, src, quantity);
