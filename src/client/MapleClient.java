@@ -930,8 +930,8 @@ public class MapleClient {
     }
 
     public final void disconnect(final boolean RemoveInChannelServer, final boolean fromCS, final boolean shutdown) {
+        this.setReceiving(false);
         if (player != null && isLoggedIn()) {
-            this.setReceiving(false);
             MapleMap map = player.getMap();
             final MapleParty party = player.getParty();
             final boolean clone = player.isClone();
@@ -1570,16 +1570,15 @@ public class MapleClient {
                     ps.close();
                     throw new DatabaseException("Everything sucks");
                 }
-               
+
                 lastLogin = rs.getTimestamp("lastlogin").getTime();
                 rs.close();
             }
             ps.close();
             return lastLogin;
-        } catch(SQLException | DatabaseException  ex) {
-           return System.currentTimeMillis();
+        } catch (SQLException | DatabaseException ex) {
+            return System.currentTimeMillis();
         }
     }
 
-    
 }

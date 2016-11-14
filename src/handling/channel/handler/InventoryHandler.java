@@ -93,7 +93,7 @@ public class InventoryHandler {
         final MapleInventoryType type = MapleInventoryType.getByType(slea.readByte()); //04
         final short src = slea.readShort();                                            //01 00
         final short dst = slea.readShort();                                            //00 00
-        long checkq = slea.readShort();
+        final long checkq = slea.readShort();
         final short quantity = (short) (int) checkq;                                       //53 01
 
         if (src < 0 && dst > 0) {
@@ -103,8 +103,7 @@ public class InventoryHandler {
         } else if (dst == 0) {
             if (checkq < 1 || c.getPlayer().getInventory(type).getItem(src) == null) {
                 c.sendPacket(MaplePacketCreator.enableActions());
-                //     World.Broadcast.broadcastGMMessage(CWvsContext.getItemNotice( c.getPlayer().getName() + " --- Possibly attempting drop dupe! Go investigate"));
-                return;
+              return;
             }
             if(type == MapleInventoryType.CASH) {
                 FilePrinter.print("違法丟商城裝備.txt", "角色:" + c.getPlayer().getName());
