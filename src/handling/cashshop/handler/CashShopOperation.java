@@ -33,17 +33,16 @@ public class CashShopOperation {
         CashShopServer.getPlayerStorageMTS().deregisterPlayer(chr);
         CashShopServer.getPlayerStorage().deregisterPlayer(chr);
         int loginStatus = c.getLoginState();
-        if(loginStatus != MapleClient.LOGIN_CS_LOGGEDIN) {
+        if (loginStatus != MapleClient.LOGIN_CS_LOGGEDIN) {
             c.disconnect(false, true);
             return;
         }
-        c.updateLoginState(MapleClient.CASH_SHOP_TRANSITION, c.getSessionIPAddress());
+        c.updateLoginState(MapleClient.CHANGE_CHANNEL, c.getSessionIPAddress());
         try {
             World.channelChangeData(new CharacterTransfer(chr), chr.getId(), c.getChannel());
             c.sendPacket(MaplePacketCreator.getChannelChange(ChannelServer.getInstance(c.getChannel()).getGatewayIP(), ChannelServer.getInstance(c.getChannel()).getPort()));
         } finally {
             c.disconnect(false, true);
-           
         }
     }
 
@@ -70,9 +69,10 @@ public class CashShopOperation {
             oldClient.disconnect(true, false);
         }
         World.Client.addClient(chr.getAccountID(), client);
-        
-        if(shouldReload)
+
+        if (shouldReload) {
             chr = MapleCharacter.ReconstructChr(transfer, client, false);
+        }
         chr.reloadCSPoints();
 
         client.setAccID(chr.getAccountID());
@@ -85,7 +85,7 @@ public class CashShopOperation {
 
         final int state = client.getLoginState();
         boolean allowLogin = false;
-        if (state == MapleClient.LOGIN_SERVER_TRANSITION || state == MapleClient.CHANGE_CHANNEL) {
+        if (state == MapleClient.CASH_SHOP_TRANSITION) {
             if (!World.isConnected(chr.getName())) {
                 allowLogin = true;
             }

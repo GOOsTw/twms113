@@ -1009,7 +1009,6 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (isClone()) {
             return -1;
         }
-
         saveLock.lock();
         isSaveing = true;
         int retValue = 1;

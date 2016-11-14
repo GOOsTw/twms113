@@ -88,7 +88,7 @@ public class InterServerHandler {
         PlayerBuffStorage.addDiseaseToStorage(chr.getId(), chr.getAllDiseases());
         World.channelChangeData(new CharacterTransfer(chr), chr.getId(), mts ? -20 : -10);
         ch.removePlayer(chr);
-        c.updateLoginState(MapleClient.CHANGE_CHANNEL, c.getSessionIPAddress());
+        c.updateLoginState(MapleClient.CASH_SHOP_TRANSITION, c.getSessionIPAddress());
 
         chr.getMap().removePlayer(chr);
         chr.saveToDB(true, false);
@@ -137,7 +137,7 @@ public class InterServerHandler {
 
         final int state = c.getLoginState();
 
-        if (state != MapleClient.LOGIN_SERVER_TRANSITION && state != MapleClient.CHANGE_CHANNEL) {
+        if (state != MapleClient.LOGIN_SERVER_TRANSITION && state != MapleClient.CHANGE_CHANNEL && state != MapleClient.CASH_SHOP_TRANSITION) {
             c.getSession().close(true);
             return;
         }

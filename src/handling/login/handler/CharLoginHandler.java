@@ -440,6 +440,10 @@ public class CharLoginHandler {
 
     public static final void handleSelectCharacter(final SeekableLittleEndianAccessor slea, final MapleClient c) {
 
+        if (c.getLoginState() != 2 || c.getPlayer() != null) {
+            return;
+        }
+        c.updateLoginState(MapleClient.LOGIN_SERVER_TRANSITION, c.getSessionIPAddress());
         final int charId = slea.readInt();
 
         try {
@@ -464,7 +468,7 @@ public class CharLoginHandler {
         if (c.getIdleTask() != null) {
             c.getIdleTask().cancel(true);
         }
-        c.updateLoginState(MapleClient.LOGIN_SERVER_TRANSITION, c.getSessionIPAddress());
+
         byte[] ip = {127, 0, 0, 1};
         try {
             ip = InetAddress.getByName(ChannelServer.getInstance(c.getChannel()).getGatewayIP()).getAddress();

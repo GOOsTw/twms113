@@ -790,7 +790,9 @@ public class MapleClient {
     }
 
     public final void updateLoginState(final int newstate, final String SessionID) { // TODO hide?
-     //   java.util.logging.Logger.getLogger(MapleClient.class.getName()).log(Level.SEVERE, "Status : " + newstate );
+        java.util.logging.Logger.getLogger(MapleClient.class.getName()).log(Level.INFO, "LoginState => " + newstate);
+        java.util.logging.Logger.getLogger(MapleClient.class.getName()).log(Level.INFO, "Call : " +new Throwable().getStackTrace()[1].toString());
+        
         Connection con = DatabaseConnection.getConnection();
         try {
             con.setAutoCommit(true);
@@ -809,7 +811,7 @@ public class MapleClient {
             loggedIn = false;
             serverTransition = false;
         } else {
-            serverTransition = (newstate == MapleClient.LOGIN_SERVER_TRANSITION || newstate == MapleClient.CHANGE_CHANNEL);
+            serverTransition = (newstate == MapleClient.LOGIN_SERVER_TRANSITION || newstate == MapleClient.CHANGE_CHANNEL || newstate == MapleClient.CASH_SHOP_TRANSITION);
             loggedIn = !serverTransition;
         }
     }
@@ -1051,6 +1053,8 @@ public class MapleClient {
                 this.getSession().close(true);
             }
 
+        } else {
+            getSession().close(true);
         }
     }
 
