@@ -40,7 +40,6 @@ function playerEntry(eim, player) {
 }
 
 function check(eim) {
-    eim.stopEventTimer();
     var ck = true;
     var iter = eim.getPlayers().iterator();
     while (iter.hasNext()) {
@@ -70,6 +69,7 @@ function registerCarnivalParty(eim, carnivalParty) {
         eim.setProperty("step", "2");
         eim.setProperty("blue", "" + carnivalParty.getLeader().getId());
         eim.broadcastPlayerMsg(5, "正在檢測是否有偷渡者...");
+        eim.stopEventTimer();
         check(eim);
     }
 }
@@ -127,6 +127,7 @@ function getParty(eim, property) {
 
 function start(eim) {
     eim.setProperty("started", "true");
+    eim.stopEventTimer();
     eim.startEventTimer(10 * 60 * 1000);
     var blueP = getParty(eim, "blue");
     if (blueP != null)
