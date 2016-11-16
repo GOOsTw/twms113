@@ -118,6 +118,8 @@ public class InterServerHandler {
             if(oldClient.getPlayer() != null)
                 shouldReload = true;
             oldClient.disconnect(true, false);
+            c.getSession().close(true);
+            return;
         }
 
         World.Client.addClient(player.getAccountID(), c);

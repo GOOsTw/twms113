@@ -67,6 +67,8 @@ public class CashShopOperation {
                 shouldReload = true;
             }
             oldClient.disconnect(true, false);
+            client.getSession().close(true);
+            return;
         }
         World.Client.addClient(chr.getAccountID(), client);
 

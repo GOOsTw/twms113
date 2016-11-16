@@ -115,8 +115,6 @@ public class PacketHelper {
         for (final Entry<ISkill, SkillEntry> skill : skills.entrySet()) {
             mplew.writeInt(skill.getKey().getId());
             mplew.writeInt(skill.getValue().skillevel);
-//            addExpirationTime(mplew, skill.getValue().expiration);
-
             if (skill.getKey().isFourthJob()) {
                 mplew.writeInt(skill.getValue().masterlevel);
             }
