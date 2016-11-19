@@ -55,6 +55,7 @@ import java.io.UnsupportedEncodingException;
 import static java.lang.Math.log;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import server.maps.MapleMap;
@@ -790,9 +791,6 @@ public class MapleClient {
     }
 
     public final void updateLoginState(final int newstate, final String SessionID) { // TODO hide?
-        java.util.logging.Logger.getLogger(MapleClient.class.getName()).log(Level.INFO, "LoginState => " + newstate);
-        java.util.logging.Logger.getLogger(MapleClient.class.getName()).log(Level.INFO, "Call : " +new Throwable().getStackTrace()[1].toString());
-        
         Connection con = DatabaseConnection.getConnection();
         try {
             con.setAutoCommit(true);
@@ -857,9 +855,14 @@ public class MapleClient {
                 }
                 birthday = rs.getInt("bday");
                 state = rs.getByte("loggedin");
-                lastLogin = rs.getTimestamp("lastlogin").getTime();
+                Timestamp lastLoginT = rs.getTimestamp("lastlogin");
+                if (lastLoginT != null) {
+                    lastLogin = lastLoginT.getTime();
+                } else {
+                    lastLogin = System.currentTimeMillis() - 5 * 1000;
+                }
                 if (state == MapleClient.LOGIN_SERVER_TRANSITION || state == MapleClient.CASH_SHOP_TRANSITION || state == MapleClient.CHANGE_CHANNEL) {
-                    if (rs.getTimestamp("lastlogin").getTime() + 5 * 1000 * 60 < System.currentTimeMillis()) { // connecting to chanserver timeout
+                    if (lastLogin + 5 * 1000 * 60 < System.currentTimeMillis()) { // connecting to chanserver timeout
                         state = MapleClient.LOGIN_NOTLOGGEDIN;
                         updateLoginState(state, getSessionIPAddress());
                     }
@@ -1576,8 +1579,12 @@ public class MapleClient {
                     ps.close();
                     throw new DatabaseException("Everything sucks");
                 }
-
-                lastLogin = rs.getTimestamp("lastlogin").getTime();
+                Timestamp lastLoginT = rs.getTimestamp("lastlogin");
+                if (lastLoginT != null) {
+                    lastLogin = lastLoginT.getTime();
+                } else {
+                    lastLogin = System.currentTimeMillis() - 5 * 1000;
+                }
                 rs.close();
             }
             ps.close();

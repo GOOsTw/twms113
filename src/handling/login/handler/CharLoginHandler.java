@@ -147,7 +147,6 @@ public class CharLoginHandler {
                                 MapleClient oldClient = World.Client.getClient(c.getAccID());
                                 oldClient.disconnect(true, oldClient.getChannel() > 0);
                                 World.Client.removeClient(c.getAccID());
-                                c.getSession().close(true);
                             }
                             c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
                             errorInfo = "解卡成功，重新輸入帳密登入";
