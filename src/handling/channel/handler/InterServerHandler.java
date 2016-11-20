@@ -110,13 +110,11 @@ public class InterServerHandler {
             player = MapleCharacter.ReconstructChr(transfer, c, true);
         }
 
-        boolean shouldReload = false;
+        boolean shouldReload;
         
         MapleClient oldClient = World.Client.getClient(player.getAccountID());
 
         if (oldClient != null) {
-            if(oldClient.getPlayer() != null)
-                shouldReload = true;
             oldClient.disconnect(true, false);
             c.getSession().close(true);
             return;

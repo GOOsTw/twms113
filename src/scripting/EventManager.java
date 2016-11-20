@@ -56,7 +56,6 @@ import database.DatabaseConnection;
 import tools.FilePrinter;
 
 public class EventManager {
-
     private final static int[] eventChannel = new int[2];
     private final Invocable iv;
     private final int channel;
@@ -143,8 +142,9 @@ public class EventManager {
 
     public EventInstanceManager newInstance(String name) {
         EventInstanceManager ret = new EventInstanceManager(this, name, channel);
-        if(this.instances.containsKey(name))
+        if (this.instances.containsKey(name)) {
             this.instances.get(name).dispose();
+        }
         instances.put(name, ret);
         return ret;
     }
@@ -193,7 +193,7 @@ public class EventManager {
             FilePrinter.printError("EventManager.txt", "Event name : " + name + ", method Name : setup:\n" + ex);
         }
     }
-    
+
     public void startInstance(MapleCharacter character) {
         try {
             EventInstanceManager eim = (EventInstanceManager) (iv.invokeFunction("setup", character.getId()));
@@ -243,7 +243,7 @@ public class EventManager {
             FilePrinter.printError("EventManager.txt", "Event name : " + name + ", method Name : setup:\n" + ex);
         }
     }
-    
+
     public void startPartyInstance(MapleParty party, MapleMap map) {
         try {
             EventInstanceManager eim = (EventInstanceManager) (iv.invokeFunction("setup", party.getId()));
@@ -255,7 +255,7 @@ public class EventManager {
             FilePrinter.printError("EventManager.txt", "Event name : " + name + ", method Name : setup-partyid:\n" + ex);
         }
     }
-    
+
     private void startPartyInstanceWithoutPartyId(MapleParty party, MapleMap map) {
         startPartyInstanceWithoutPartyId(party, map, null);
     }
@@ -282,8 +282,6 @@ public class EventManager {
             FilePrinter.printError("EventManager.txt", "Event name : " + name + ", method Name : setup-Guild:\n" + ex);
         }
     }
-
-    
 
     public void startSquadInstance(MapleSquad squad, MapleMap map) {
         startSquadInstance(squad, map, -1);
@@ -368,9 +366,13 @@ public class EventManager {
         if (cs == null || cs.getEvent() > -1) {
             return false;
         }
+
         MapleEventType t = null;
         while (t == null) {
             for (MapleEventType x : MapleEventType.values()) {
+                if (cs.getEvent(x) == null) {
+                    return false;
+                }
                 if (Randomizer.nextInt(MapleEventType.values().length) == 0) {
                     t = x;
                     break;

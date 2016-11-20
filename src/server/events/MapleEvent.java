@@ -152,6 +152,8 @@ public abstract class MapleEvent {
         if (auto) {
             for (MapleEventType t : MapleEventType.values()) {
                 final MapleEvent e = cserv.getEvent(t);
+                  if(e == null)
+                continue;
                 if (e.isRunning) {
                     for (int i : e.mapid) {
                         if (cserv.getEvent() == i) {
@@ -178,6 +180,8 @@ public abstract class MapleEvent {
         } //o_o
         for (MapleEventType t : MapleEventType.values()) {
             final MapleEvent e = ChannelServer.getInstance(channel).getEvent(t);
+            if(e == null)
+                continue;
             if (e.isRunning) {
                 if (chr.getMapId() == 109050000) { //finished map
                     e.finished(chr);
@@ -194,6 +198,8 @@ public abstract class MapleEvent {
     public static final void onStartEvent(final MapleCharacter chr) {
         for (MapleEventType t : MapleEventType.values()) {
             final MapleEvent e = chr.getClient().getChannelServer().getEvent(t);
+            if(e == null)
+                continue;
             if (e.isRunning) {
                 for (int i : e.mapid) {
                     if (chr.getMapId() == i) {

@@ -120,13 +120,13 @@ public class ChannelServer implements Serializable {
         if (!events.isEmpty()) {
             return;
         }
-//        events.put(MapleEventType.打瓶蓋, new MapleCoconut(channel, MapleEventType.打瓶蓋.mapids));
-//        events.put(MapleEventType.打果子, new MapleCoconut(channel, MapleEventType.打果子.mapids));
-//        events.put(MapleEventType.終極忍耐, new MapleFitness(channel, MapleEventType.終極忍耐.mapids));
-//        events.put(MapleEventType.爬繩子, new MapleOla(channel, MapleEventType.爬繩子.mapids));
-//        events.put(MapleEventType.是非題大考驗, new MapleOxQuiz(channel, MapleEventType.是非題大考驗.mapids));
-//        events.put(MapleEventType.滾雪球, new MapleSnowball(channel, MapleEventType.滾雪球.mapids));
-//        events.put(MapleEventType.尋寶, new MapleJewel(channel, MapleEventType.尋寶.mapids));
+        events.put(MapleEventType.打瓶蓋, new MapleCoconut(channel, MapleEventType.打瓶蓋.mapids));
+        events.put(MapleEventType.打果子, new MapleCoconut(channel, MapleEventType.打果子.mapids));
+        events.put(MapleEventType.終極忍耐, new MapleFitness(channel, MapleEventType.終極忍耐.mapids));
+        events.put(MapleEventType.爬繩子, new MapleOla(channel, MapleEventType.爬繩子.mapids));
+        events.put(MapleEventType.是非題大考驗, new MapleOxQuiz(channel, MapleEventType.是非題大考驗.mapids));
+        events.put(MapleEventType.滾雪球, new MapleSnowball(channel, MapleEventType.滾雪球.mapids));
+        events.put(MapleEventType.尋寶, new MapleJewel(channel, MapleEventType.尋寶.mapids));
     }
 
     public final void setup() {
