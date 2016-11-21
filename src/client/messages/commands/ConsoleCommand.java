@@ -78,7 +78,6 @@ public class ConsoleCommand {
                 try {
                     t = new Thread(server.ShutdownServer.getInstance());
                     t.start();
-
                 } catch (Exception ex) {
                     Logger.getLogger(ConsoleCommand.class.getName()).log(Level.SEVERE, null, ex);
                 }

@@ -58,11 +58,18 @@ public class ShutdownServer implements Runnable, ShutdownServerMBean {
         System.out.println("家族資料儲存完畢");
 
         Set<Integer> channels = ChannelServer.getAllChannels();
+        
+        for (Integer channel : channels) {
+             try {
+                ChannelServer cs = ChannelServer.getInstance(channel);
+                cs.getPlayerStorage().disconnectAll();
+            } catch (Exception e) {
+            }
+        }
 
         for (Integer channel : channels) {
             try {
                 ChannelServer cs = ChannelServer.getInstance(channel);
-                cs.saveAll();
                 cs.setPrepareShutdown();
                 cs.shutdown();
             } catch (Exception e) {

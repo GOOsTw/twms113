@@ -457,6 +457,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
         if (exp > 0) {
 
+            
             // 檢查怪物有無 SHOWDOWN Buff
             final MonsterStatusEffect mse = stati.get(MonsterStatus.SHOWDOWN);
             if (mse != null) {
@@ -1787,7 +1788,6 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         if (mse != null) {
             showdown += mse.getX();
         }
-
         ISkill steal = SkillFactory.getSkill(4201004);
         final int level = chr.getSkillLevel(steal), chServerrate = ChannelServer.getInstance(chr.getClient().getChannel()).getDropRate();
         if (level > 0 && !getStats().isBoss() && stolen == -1 && steal.getEffect(level).makeChanceResult()) {
