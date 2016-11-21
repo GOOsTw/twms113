@@ -49,14 +49,8 @@ function check(eim) {
             break;
         }
     }
-    if (ck) {
-        eim.broadcastPlayerMsg(5, "檢測..目前無異常....!");
-        eim.startEventTimer(10 * 1000);
-        eim.broadcastPlayerMsg(5, "10秒後將開戰！！");
-    } else {
-        eim.broadcastPlayerMsg(5, "檢測..發現異常!! 即將傳回去");
-        disposeAll(eim);
-    }
+    return ck;
+    
 }
 
 function registerCarnivalParty(eim, carnivalParty) {
@@ -70,7 +64,16 @@ function registerCarnivalParty(eim, carnivalParty) {
         eim.setProperty("blue", "" + carnivalParty.getLeader().getId());
         eim.broadcastPlayerMsg(5, "正在檢測是否有偷渡者...");
         eim.stopEventTimer();
-        check(eim);
+        var res = check(eim);
+        if(res) {
+            eim.broadcastPlayerMsg(5, "檢測..目前無異常....!");
+            start(eim);
+        }
+        else {
+            eim.broadcastPlayerMsg(5, "檢測..發現異常!! 即將傳回去");
+            eim.dispose();
+        }
+
     }
 }
 
@@ -83,7 +86,7 @@ function leftParty(eim, player) {
 }
 
 function disbandParty(eim) {
-    dispose(eim);
+    eim.dispose();
 }
 
 
@@ -118,7 +121,7 @@ function getParty(eim, property) {
     var chr = em.getChannelServer().getPlayerStorage().getCharacterById(parseInt(eim.getProperty(property)));
     if (chr == null) {
         eim.broadcastPlayerMsg(5, "隊伍的隊長 " + property + " 找不到。");
-        dispose(eim);
+        eim.dispose();
         return null;
     } else {
         return chr.getCarnivalParty();
@@ -126,8 +129,8 @@ function getParty(eim, property) {
 }
 
 function start(eim) {
+    eim.setProperty("step", "3");
     eim.setProperty("started", "true");
-    eim.stopEventTimer();
     eim.startEventTimer(10 * 60 * 1000);
     var blueP = getParty(eim, "blue");
     if (blueP != null)
@@ -153,14 +156,14 @@ function monsterValue(eim, mobId) {
 
 function end(eim) {
     if (!eim.getProperty("started").equals("true")) {
-        dispose(eim);
+        eim.dispose();
     }
 }
 
 function warpOut(eim) {
     if (!eim.getProperty("started").equals("true")) {
         if (eim.getProperty("blue").equals("-1")) {
-            dispose(eim);
+            eim.dispose();
         }
     } else {
         var blueParty = getParty(eim, "blue");
@@ -178,16 +181,8 @@ function warpOut(eim) {
 
 function scheduledTimeout(eim) {
     eim.stopEventTimer();
-
     if (!eim.getProperty("started").equals("true")) {
-        // not start
-        if (eim.getProperty("step").equals("2")) {
-            start(eim)
-        } else {
-            if (eim.getProperty("blue").equals("-1")) {
-                dispose(eim);
-            }
-        }
+        eim.dispose();
     } else {
         var blueParty = getParty(eim, "blue");
         var redParty = getParty(eim, "red");
@@ -219,14 +214,15 @@ function playerDisconnected(eim, player) {
     player.setMap(eim.getMapInstance(exitMap));
     eim.unregisterPlayer(player);
     player.getCarnivalParty().removeMember(player);
+    eim.stopEventTimer();
     eim.broadcastPlayerMsg(5, player.getName() + " 離開了怪物擂台1");
-    dispose(eim);
+    eim.dispose();
 }
 
 function onMapLoad(eim, chr) {
     if (!eim.getProperty("started").equals("true")) {
         if(eim.getProperty("step").equals("3"))
-            dispose(eim);
+            eim.dispose();
     } else if (chr.getCarnivalParty().getTeam() == 0) {
         var blueParty = getParty(eim, "blue");
         chr.startMonsterCarnival(blueParty.getAvailableCP(), blueParty.getTotalCP());

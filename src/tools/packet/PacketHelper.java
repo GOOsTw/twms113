@@ -331,10 +331,6 @@ public class PacketHelper {
         mplew.writeLong(getTime(time));
     }
 
-    public static final void addItemInfo(final MaplePacketLittleEndianWriter mplew, final IItem item, final boolean zeroPosition) {
-        addItemInfo(mplew, item, zeroPosition);
-    }
-
     public static final void addItemInfo(final MaplePacketLittleEndianWriter mplew, final IItem item, final boolean zeroPosition, final boolean leaveOut) {
 
         MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
