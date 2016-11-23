@@ -1760,9 +1760,6 @@ public class MaplePacketCreator {
         List<MapleBuffStat> st = new ArrayList<>();
         st.add(MapleBuffStat.ENERGY_CHARGE);
         writeBuffState(mplew, st);
-        /*        mplew.writeShort(0);
-         mplew.writeInt(0);
-         mplew.writeInt(1555445060); //?*/
         mplew.writeShort(0);
         mplew.writeInt(Math.min(bar, 10000)); // 0 = no bar, 10000 = full bar
         mplew.writeLong(0); //skillid, but its 0 here
