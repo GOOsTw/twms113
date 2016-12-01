@@ -188,7 +188,8 @@ public class CharLoginHandler {
                     errorInfo = "系統錯誤(錯誤代碼:1)";
                     break;
             }
-
+            c.setAccID(-1);
+            c.setAccountName("");
             if (errorInfo != null) {
                 c.sendPacket(LoginPacket.getLoginFailed(LoginResponse.NOP.getValue()));
                 c.getSession().write(MaplePacketCreator.getPopupMsg(errorInfo));

@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 
 import client.MapleClient;
 import handling.channel.ChannelServer;
+import handling.world.World;
 import server.Timer.PingTimer;
 import tools.packet.LoginPacket;
 import tools.MaplePacketCreator;
@@ -62,6 +63,7 @@ public class LoginWorker {
         }
 
         if (c.finishLogin() == 0) {
+            World.Client.addClient(c.getAccID(), c);
             LoginServer.addClient(c);
             c.sendPacket(LoginPacket.getAuthSuccessRequest(c));
             c.sendPacket(LoginPacket.getServerList(0, LoginServer.getServerName(), LoginServer.getLoad()));
