@@ -648,31 +648,6 @@ public class ChannelServer implements Serializable {
         return instances.size();
     }
 
-    public static boolean forceRemovePlayerByAccId(MapleClient client, int accid) {
-
-        for (ChannelServer ch : ChannelServer.getAllInstances()) {
-            List<MapleCharacter> chars = ch.getPlayerStorage().getAllCharactersThreadSafe();
-            for (MapleCharacter c : chars) {
-                if (c.getAccountID() == accid) {
-                    c.getClient().unLockDisconnect(true, false);
-                    World.Client.removeClient(accid);
-                    return true;
-                }
-            }
-        }
-
-        Collection<MapleCharacter> chrs = CashShopServer.getPlayerStorage().getAllCharactersThreadSafe();
-        for (MapleCharacter c : chrs) {
-            if (c.getAccountID() == accid) {
-                c.getClient().unLockDisconnect(true, true);
-                World.Client.removeClient(accid);
-                return false;
-            }
-        }
-
-        return false;
-    }
-
     public static final Set<Integer> getChannels() {
         return new HashSet<>(instances.keySet());
     }

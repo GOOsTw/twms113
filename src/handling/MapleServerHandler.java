@@ -294,7 +294,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             }
             if (client != null) {
                 if (client.getAccID() > 0) {
-                    World.Client.removeClient(client.getAccID());
+                    if (World.Client.getClient(client.getAccID()) == client) {
+                        World.Client.removeClient(client.getAccID());
+                    }
                 }
                 session.removeAttribute(MapleClient.CLIENT_KEY);
             }

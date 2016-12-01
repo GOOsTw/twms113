@@ -135,6 +135,7 @@ public class CharLoginHandler {
                     }
                     return;
                 case WRONG_PASSWORD:
+
                     if (!c.getFixLoginPassword().equals("")) {
                         String pass = c.getFixLoginPassword();
                         c.setFixLoginPassword("");
@@ -142,7 +143,6 @@ public class CharLoginHandler {
                             if (LoginServer.getClientStorage().getClientByName(c.getAccountName()) != null) {
                                 LoginServer.getClientStorage().getClientByName(c.getAccountName()).getSession().close(true);
                             }
-                            ChannelServer.forceRemovePlayerByAccId(c, c.getAccID());
                             if (World.Client.getClient(c.getAccID()) != null) {
                                 MapleClient oldClient = World.Client.getClient(c.getAccID());
                                 oldClient.disconnect(true, oldClient.getChannel() > 0);

@@ -120,8 +120,9 @@ public class InterServerHandler {
             return;
         }
 
-        World.Client.addClient(player.getAccountID(), c);
+        
         c.setAccID(player.getAccountID());
+        World.Client.addClient(player.getAccountID(), c);
         c.loadAccountData(player.getAccountID());
 
         String LoginMac = LoginServer.getLoginMac(c);
@@ -141,12 +142,6 @@ public class InterServerHandler {
             c.getSession().close(true);
             return;
         }
-
-        //對在線上角色做斷線
-        shouldReload = ChannelServer.forceRemovePlayerByAccId(c, c.getAccID());
-        
-        if(shouldReload)
-            player = MapleCharacter.loadCharFromDB(playerid, c, true);
 
         c.updateLoginState(MapleClient.LOGIN_LOGGEDIN, c.getSessionIPAddress());
         c.setPlayer(player);
