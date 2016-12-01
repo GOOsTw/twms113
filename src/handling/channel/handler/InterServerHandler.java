@@ -110,19 +110,12 @@ public class InterServerHandler {
             player = MapleCharacter.ReconstructChr(transfer, c, true);
         }
 
-        boolean shouldReload;
         
-        MapleClient oldClient = World.Client.getClient(player.getAccountID());
-
-        if (oldClient != null) {
-            oldClient.disconnect(true, false);
-            c.getSession().close(true);
-            return;
-        }
 
         
+
         c.setAccID(player.getAccountID());
-        World.Client.addClient(player.getAccountID(), c);
+
         c.loadAccountData(player.getAccountID());
 
         String LoginMac = LoginServer.getLoginMac(c);
@@ -142,7 +135,14 @@ public class InterServerHandler {
             c.getSession().close(true);
             return;
         }
-
+        
+        MapleClient oldClient = World.Client.getClient(player.getAccountID());
+        if (oldClient != null) {
+            oldClient.disconnect(true, false);
+            c.getSession().close(true);
+            return;
+        }
+        World.Client.addClient(player.getAccountID(), c);
         c.updateLoginState(MapleClient.LOGIN_LOGGEDIN, c.getSessionIPAddress());
         c.setPlayer(player);
         channelServer.addPlayer(player);

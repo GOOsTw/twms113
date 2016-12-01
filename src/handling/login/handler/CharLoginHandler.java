@@ -175,11 +175,12 @@ public class CharLoginHandler {
                     }
                     break;
                 case ALREADY_LOGGED_IN:
-
+                    if (c.getLastLogin() + 3 * 1000 > System.currentTimeMillis()) {
+                        break;
+                    }
                     String nextPass = String.valueOf(Randomizer.nextInt()).replace("-", "");
                     c.setFixLoginPassword(nextPass);
                     errorInfo = "解卡密碼 : " + nextPass;
-
                     break;
                 case SYSTEM_ERROR:
                     errorInfo = "系統錯誤(錯誤代碼:0)";
