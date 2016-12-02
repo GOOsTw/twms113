@@ -60,9 +60,9 @@ public class ServerConstants {
     public static final long CSPOINTS_PERIOD = 60 * 60 * 1000;
     public static final int CHANNEL_COUNT = 200;
     public static final double RATE_MONSTER_HP = 1.5;
-    public static final double RATE_BOSS_HP = 1;
+    public static final double RATE_BOSS_HP = 1.7;
     public static final double RATE_SINGLE_PLAYER_EXP = 1;
-    public static final double RATE_PARTY_EXP = 1.2;
+    public static final double RATE_PARTY_EXP = 1.0;
     public static final String CashShop_Key = "a;!%dfb_=*-a123d9{P~";
     public static final String Login_Key = "pWv]xq:SPTCtk^LGnU9F";
     public static final String[] Channel_Key = {"a56=-_dcSAgb",

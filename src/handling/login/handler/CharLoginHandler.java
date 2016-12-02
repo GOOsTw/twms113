@@ -88,8 +88,8 @@ public class CharLoginHandler {
         LoginServer.getLoginLock().lock();
 
         try {
-            String account = slea.readMapleAsciiString();
-            String password = slea.readMapleAsciiString();
+            String account = slea.readMapleAsciiString().trim();
+            String password = slea.readMapleAsciiString().trim();
 
             if (account == null || password == null) {
                 c.getSession().close(true);

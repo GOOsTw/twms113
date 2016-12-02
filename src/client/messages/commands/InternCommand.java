@@ -774,13 +774,24 @@ public class InternCommand {
 
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
+            int page = 1;
+            if (splitted.length > 1) {
+                page = Integer.parseInt(splitted[1]);
+            }
+            int i = 0;
             int total = 0;
             int curConnected = c.getChannelServer().getConnectedClients();
-            c.getPlayer().dropMessage(6, "-------------------------------------------------------------------------------------");
+            int totalPage = curConnected / 10 + 1;
+            
+            c.getPlayer().dropMessage(6, "-----------------------------伺服器人數 (" + page + "/"+ totalPage + "--------------------------------------");
             c.getPlayer().dropMessage(6, new StringBuilder().append("頻道: ").append(c.getChannelServer().getChannel()).append(" 線上人數: ").append(curConnected).toString());
             total += curConnected;
             for (MapleCharacter chr : c.getChannelServer().getPlayerStorage().getAllCharacters()) {
                 if (chr != null && c.getPlayer().getGMLevel() >= chr.getGMLevel()) {
+                    i++;
+                    if(i < 10 * (page-1)) {
+                        continue;
+                    }
                     StringBuilder ret = new StringBuilder();
                     ret.append(" 角色暱稱 ");
                     ret.append(StringUtil.getRightPaddedStr(chr.getName(), ' ', 13));
@@ -795,11 +806,15 @@ public class InternCommand {
                         ret.append(chr.getMapId()).append(" - ").append(chr.getMap().getMapName());
                         c.getPlayer().dropMessage(6, ret.toString());
                     }
+                    
+                    if(i < 10 * page) {
+                        break;
+                    }
                 }
             }
             c.getPlayer().dropMessage(6, new StringBuilder().append("當前頻道總計線上人數: ").append(total).toString());
             c.getPlayer().dropMessage(6, "-------------------------------------------------------------------------------------");
-            int channelOnline = c.getChannelServer().getConnectedClients();
+            
             int totalOnline = 0;
             /*伺服器總人數*/
             for (ChannelServer cserv : ChannelServer.getAllInstances()) {
@@ -813,7 +828,7 @@ public class InternCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!online - 查看線上人數").toString();
+            return new StringBuilder().append("!online <第幾頁>- 查看線上人數(每頁10個)").toString();
         }
     }
 

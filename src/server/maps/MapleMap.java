@@ -661,7 +661,7 @@ public final class MapleMap {
                 doShrine(true);
             }
         } else if (mobid == 9410066 && mapid == 741000000) {
-            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("經過鞭炮的洗禮，舞龍舞獅終於被嚇跑了，啾咪谷向大家說聲新年快樂~~").getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("經過鞭炮的洗禮，舞龍舞獅終於被嚇跑了，醉夢谷向大家說聲新年快樂~~").getBytes());
         } else if (mobid == 8810122 && mapid == 240060201) { // Horntail
 
             FilePrinter.print(FilePrinter.HorntailLog, MapDebug_Log());
