@@ -19,7 +19,7 @@ import client.inventory.ModifyInventory;
 import client.messages.CommandProcessorUtil;
 import constants.GameConstants;
 import database.DatabaseConnection;
-import handling.MaplePacket;
+
 import handling.RecvPacketOpcode;
 import handling.SendPacketOpcode;
 import handling.channel.ChannelServer;
@@ -30,18 +30,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
-import provider.MapleData;
-import provider.MapleDataProvider;
-import provider.MapleDataProviderFactory;
-import provider.MapleDataTool;
 import scripting.EventManager;
 import scripting.PortalScriptManager;
 import scripting.ReactorScriptManager;
@@ -76,12 +69,9 @@ import tools.StringUtil;
 import tools.packet.MobPacket;
 import java.util.concurrent.ScheduledFuture;
 import scripting.NPCScriptManager;
-import server.ServerProperties;
 import handling.login.LoginServer;
 import handling.world.MapleAntiMacro;
-import java.rmi.RemoteException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.LinkedHashSet;
 import server.CashItemFactory;
@@ -92,7 +82,7 @@ import server.events.MapleOxQuizFactory;
 import server.gashapon.GashaponFactory;
 import server.life.CustomNPC;
 import tools.HexTool;
-import tools.data.output.MaplePacketLittleEndianWriter;
+import tools.data.MaplePacketLittleEndianWriter;
 
 /**
  *
@@ -235,8 +225,8 @@ public class AdminCommand {
                         message.append("[楓之谷公告] 伺服器將在 ");
                         message.append(minutesLeft);
                         message.append("分鐘後關閉. ");
-                        World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(message.toString()).getBytes());
-                        World.Broadcast.broadcastMessage(MaplePacketCreator.serverMessage(message.toString()).getBytes());
+                        World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(message.toString()));
+                        World.Broadcast.broadcastMessage(MaplePacketCreator.serverMessage(message.toString()));
                         minutesLeft--;
                     }
                 }, 60000);
@@ -811,7 +801,7 @@ public class AdminCommand {
                                 }
                             }
                         }
-                        World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("關鍵時刻開放囉，沒有30等以上的玩家是得不到的。").getBytes());
+                        World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("關鍵時刻開放囉，沒有30等以上的玩家是得不到的。"));
                         ts.cancel(false);
                         ts = null;
                     }
@@ -1110,7 +1100,7 @@ public class AdminCommand {
                 for (ChannelServer ch : ChannelServer.getAllInstances()) {
                     ch.setServerMessage(sb.toString());
                 }
-                World.Broadcast.broadcastMessage(MaplePacketCreator.serverMessage(sb.toString()).getBytes());
+                World.Broadcast.broadcastMessage(MaplePacketCreator.serverMessage(sb.toString()));
             } else {
                 return false;
             }
@@ -1133,7 +1123,7 @@ public class AdminCommand {
                 sb.append(c.getPlayer().getName());
                 sb.append("] ");
                 sb.append(StringUtil.joinStringFrom(splitted, 1));
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(sb.toString()).getBytes());
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(sb.toString()));
             } else {
                 return false;
             }
@@ -1416,12 +1406,12 @@ public class AdminCommand {
                 if (c.getPlayer().getMapId() == 109020001) {
                     sec = 10;
                     c.getPlayer().dropMessage(5, "已經關閉活動入口，１０秒後開始活動。");
-                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("頻道:" + c.getChannel() + "活動目前已經關閉大門口，１０秒後開始活動。").getBytes());
+                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("頻道:" + c.getChannel() + "活動目前已經關閉大門口，１０秒後開始活動。"));
                     c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getClock(sec));
                 } else {
                     sec = 60;
                     c.getPlayer().dropMessage(5, "已經關閉活動入口，６０秒後開始活動。");
-                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("頻道:" + c.getChannel() + "活動目前已經關閉大門口，６０秒後開始活動。").getBytes());
+                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("頻道:" + c.getChannel() + "活動目前已經關閉大門口，６０秒後開始活動。"));
                     c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.getClock(sec));
                 }
                 ts = EventTimer.getInstance().register(new Runnable() {
@@ -1729,7 +1719,7 @@ public class AdminCommand {
                 victim = c.getChannelServer().getPlayerStorage().getCharacterByName(splitted[1]);
             }
             try {
-                World.Broadcast.broadcastSmega(MaplePacketCreator.getSuperMegaphone(victim == null ? splitted[1] : victim.getName() + " : " + StringUtil.joinStringFrom(splitted, 2), true, victim == null ? c.getChannel() : victim.getClient().getChannel()).getBytes());
+                World.Broadcast.broadcastSmega(MaplePacketCreator.getSuperMegaphone(victim == null ? splitted[1] : victim.getName() + " : " + StringUtil.joinStringFrom(splitted, 2), true, victim == null ? c.getChannel() : victim.getClient().getChannel()));
             } catch (Exception e) {
                 return false;
             }

@@ -232,4 +232,36 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
             throw new RuntimeException("Failed to load recvops", e);
         }
     }
+
+    public static boolean isSpamHeader(RecvPacketOpcode header) {
+        switch (header.name()) {
+            case "PONG":
+            case "NPC_ACTION":
+            case "MOVE_LIFE":
+            case "MOVE_PLAYER":
+            case "MOVE_ANDROID":
+            case "MOVE_SUMMON":
+            case "MOVE_PET":
+            case "AUTO_AGGRO":
+            case "HEAL_OVER_TIME":
+            case "BUTTON_PRESSED":
+            case "STRANGE_DATA":
+            case "SYSTEM_PROCESS_LIST":
+            case "PINKBEAN_YOYO_REQUEST":
+            case "CANCEL_DEBUFF":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static String nameOf(short value) {
+        for (RecvPacketOpcode header : RecvPacketOpcode.values()) {
+            if (header.getValue() == value) {
+                return header.name();
+            }
+        }
+        return "UNKNOWN";
+    }
+
 }

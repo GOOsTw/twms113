@@ -26,12 +26,13 @@ import tools.ArrayMap;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
 import tools.Pair;
-import tools.data.input.SeekableLittleEndianAccessor;
-import tools.data.output.MaplePacketLittleEndianWriter;
+import tools.data.LittleEndianAccessor;
+import tools.data.MaplePacketLittleEndianWriter;
+
 
 public class NPCHandler {
 
-    public static final void handleNPCAnimation(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleNPCAnimation(final LittleEndianAccessor slea, final MapleClient c) {
 
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.NPC_ACTION.getValue());
@@ -39,7 +40,7 @@ public class NPCHandler {
         c.sendPacket(mplew.getPacket());
     }
 
-    public static final void handleNPCShop(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleNPCShop(final LittleEndianAccessor slea, final MapleClient c) {
         MapleCharacter player = c.getPlayer();
         final byte bmode = slea.readByte();
         if (player == null) {
@@ -83,7 +84,7 @@ public class NPCHandler {
         }
     }
 
-    public static final void handleNPCTalk(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void handleNPCTalk(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         chr.getQuestLock().lock();
         try {
             if (chr.getMap() == null) {
@@ -110,7 +111,7 @@ public class NPCHandler {
         }
     }
 
-    public static final void QuestAction(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void QuestAction(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
 
         chr.getQuestLock().lock();
         try {
@@ -198,7 +199,7 @@ public class NPCHandler {
         }
     }
 
-    public static final void Storage(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void Storage(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         final byte mode = slea.readByte();
         if (chr == null) {
             return;
@@ -333,7 +334,7 @@ public class NPCHandler {
         }
     }
 
-    public static final void NPCMoreTalk(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void NPCMoreTalk(final LittleEndianAccessor slea, final MapleClient c) {
         MapleCharacter chr = c.getPlayer();
         if (chr == null) {
             return;
@@ -436,7 +437,7 @@ public class NPCHandler {
         }
     }
 
-    public static final void repair(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void repair(final LittleEndianAccessor slea, final MapleClient c) {
         if (c.getPlayer().getMapId() != 240000000 || slea.available() < 4) { //leafre for now
             return;
         }
@@ -465,7 +466,7 @@ public class NPCHandler {
         c.getPlayer().forceReAddItem(eq.copy(), type);
     }
 
-    public static final void UpdateQuest(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void UpdateQuest(final LittleEndianAccessor slea, final MapleClient c) {
         MapleCharacter chr = c.getPlayer();
         if (chr == null) {
             return;
@@ -481,7 +482,7 @@ public class NPCHandler {
         }
     }
 
-    public static final void UseItemQuest(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void UseItemQuest(final LittleEndianAccessor slea, final MapleClient c) {
         MapleCharacter chr = c.getPlayer();
         if (chr == null) {
             return;
@@ -520,7 +521,7 @@ public class NPCHandler {
         }
     }
 
-    public static final void RPSGame(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void RPSGame(final LittleEndianAccessor slea, final MapleClient c) {
         if (slea.available() == 0 || !c.getPlayer().getMap().containsNPC(9209002)) {
             if (c.getPlayer().getRPS() != null) {
                 c.getPlayer().getRPS().dispose(c);

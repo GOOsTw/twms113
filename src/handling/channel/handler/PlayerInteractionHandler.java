@@ -42,8 +42,9 @@ import server.maps.MapleMapObjectType;
 import server.shops.MapleMiniGame;
 import tools.MaplePacketCreator;
 import tools.packet.PlayerShopPacket;
-import tools.data.input.SeekableLittleEndianAccessor;
+
 import scripting.NPCScriptManager;
+import tools.data.LittleEndianAccessor;
 
 public class PlayerInteractionHandler {
 
@@ -90,7 +91,7 @@ public class PlayerInteractionHandler {
             MOVE_OMOK = 0x3D,
             SELECT_CARD = 0x41;
 
-    public static final void PlayerInteraction(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void PlayerInteraction(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         if (chr == null) {
             return;
         }

@@ -36,6 +36,13 @@ public class ShutdownServer implements Runnable, ShutdownServerMBean {
         EtcTimer.getInstance().stop();
         System.out.println("Timer 關閉完成");
 
+        try {
+            LoginServer.shutdown();
+            System.out.println("登陸伺服器關閉完成.");
+        } catch (Exception e) {
+            System.out.println("登陸伺服器關閉失敗");
+        }
+
         for (handling.channel.ChannelServer cserv : handling.channel.ChannelServer.getAllInstances()) {
             cserv.closeAllMerchant();
         }
@@ -58,9 +65,9 @@ public class ShutdownServer implements Runnable, ShutdownServerMBean {
         System.out.println("家族資料儲存完畢");
 
         Set<Integer> channels = ChannelServer.getAllChannels();
-        
+
         for (Integer channel : channels) {
-             try {
+            try {
                 ChannelServer cs = ChannelServer.getInstance(channel);
                 cs.getPlayerStorage().disconnectAll();
             } catch (Exception e) {
@@ -76,12 +83,7 @@ public class ShutdownServer implements Runnable, ShutdownServerMBean {
                 System.out.println("頻道" + String.valueOf(channel) + " 關閉失敗.");
             }
         }
-        try {
-            LoginServer.shutdown();
-            System.out.println("登陸伺服器關閉完成.");
-        } catch (Exception e) {
-            System.out.println("登陸伺服器關閉失敗");
-        }
+
         try {
             CashShopServer.shutdown();
             System.out.println("購物商城伺服器關閉完成.");

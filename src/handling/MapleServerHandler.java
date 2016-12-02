@@ -54,25 +54,24 @@ import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import tools.MapleAESOFB;
 import tools.packet.LoginPacket;
-import tools.data.input.ByteArrayByteStream;
-import tools.data.input.GenericSeekableLittleEndianAccessor;
-import tools.data.input.SeekableLittleEndianAccessor;
 import tools.Pair;
 
 import server.MTSStorage;
 import server.ServerProperties;
 import tools.FilePrinter;
 import tools.HexTool;
+import tools.MaplePacketCreator;
+import tools.data.ByteArrayByteStream;
+import tools.data.LittleEndianAccessor;
 
 public class MapleServerHandler extends IoHandlerAdapter implements MapleServerHandlerMBean {
 
-    public static final boolean isLogPackets = true;
+    public static final boolean isLogPackets = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.packetLog", "false"));
     private int channel = -1;
     private boolean isCashShop;
     private final List<String> blockedIP = new ArrayList<>();
     private final Map<String, Pair<Long, Byte>> tracker = new ConcurrentHashMap<>();
     private static final String nl = System.getProperty("line.separator");
-
     private static boolean debugMode = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.debug", "false"));
     private static final EnumSet<RecvPacketOpcode> blocked = EnumSet.noneOf(RecvPacketOpcode.class);
 
@@ -91,7 +90,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     private static final ReentrantReadWriteLock packetLogLock = new ReentrantReadWriteLock();
     private static final File packetLogFile = new File("PacketLog.txt");
 
-    public static void log(SeekableLittleEndianAccessor packet, RecvPacketOpcode op, MapleClient c, IoSession io) {
+    public static void log(LittleEndianAccessor packet, RecvPacketOpcode op, MapleClient c, IoSession io) {
         if (blocked.contains(op)) {
             return;
         }
@@ -123,15 +122,15 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
         private static final String nl = System.getProperty("line.separator");
         private String ip, accName, accId, chrName;
-        private SeekableLittleEndianAccessor packet;
+        private LittleEndianAccessor packet;
         private long timestamp;
         private RecvPacketOpcode op;
 
-        public LoggedPacket(SeekableLittleEndianAccessor p, RecvPacketOpcode op, String ip, int id, String accName, String chrName) {
+        public LoggedPacket(LittleEndianAccessor p, RecvPacketOpcode op, String ip, int id, String accName, String chrName) {
             setInfo(p, op, ip, id, accName, chrName);
         }
 
-        public final void setInfo(SeekableLittleEndianAccessor p, RecvPacketOpcode op, String ip, int id, String accName, String chrName) {
+        public final void setInfo(LittleEndianAccessor p, RecvPacketOpcode op, String ip, int id, String accName, String chrName) {
             this.ip = ip;
             this.op = op;
             packet = p;
@@ -186,10 +185,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
     @Override
     public void messageSent(final IoSession session, final Object message) throws Exception {
-        final Runnable r = ((MaplePacket) message).getOnSend();
-        if (r != null) {
-            r.run();
-        }
         super.messageSent(session, message);
     }
 
@@ -309,7 +304,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     @Override
     public void messageReceived(final IoSession session, final Object message) {
         try {
-            final SeekableLittleEndianAccessor slea = new GenericSeekableLittleEndianAccessor(new ByteArrayByteStream((byte[]) message));
+            final LittleEndianAccessor slea = new LittleEndianAccessor(new ByteArrayByteStream((byte[]) message));
             if (slea.available() < 2) {
                 return;
             }
@@ -351,6 +346,9 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                         slea.skip((int) pos);
                         String currp = slea.toString();
                         FilePrinter.printError("PacketHandleException.txt", e.getSuppressed()[0] + "\r\n" + e.getSuppressed()[1] + "\r\nAll: " + allp + "\r\nCurrent: " + currp);
+                        if (c.getPlayer() != null && c.getPlayer().isShowDebugInfo()) {
+                            c.getPlayer().showInfo("數據包異常", true, "包頭:" + recv.name() + "(0x" + Integer.toHexString(header_num).toUpperCase() + ")");
+                        }
                     }
                     return;
                 }
@@ -359,6 +357,13 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 final StringBuilder sb = new StringBuilder("[Recv] 未處理 : ");
                 sb.append(tools.HexTool.toString((byte[]) message)).append("\n").append(tools.HexTool.toStringFromAscii((byte[]) message)).append("\n");;
                 System.out.println(sb.toString());
+            }
+            if (isLogPackets) {
+                final byte[] packet = slea.read((int) slea.available());
+                final StringBuilder sb = new StringBuilder("發現未知用戶端數據包 - (包頭:0x" + Integer.toHexString(header_num) + ")");
+                sb.append(":\r\n").append(HexTool.toString(packet)).append("\r\n").append(HexTool.toStringFromAscii(packet));
+                System.err.println(sb.toString());
+                FilePrinter.print("未知封包.txt", sb.toString());
             }
         } catch (Exception e) {
         }
@@ -377,7 +382,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
         super.sessionIdle(session, status);
     }
 
-    public static final void handlePacket(final RecvPacketOpcode header, final SeekableLittleEndianAccessor slea, final MapleClient c, final boolean cs) throws Exception {
+    public static final void handlePacket(final RecvPacketOpcode header, final LittleEndianAccessor slea, final MapleClient c, final boolean cs) throws Exception {
         switch (header) {
             case TOBY_SHIELD_START: {
 
@@ -450,7 +455,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 if (c.getPlayer().isGM()) {
                     InterServerHandler.EnterCashShop(c, c.getPlayer(), true);
                 } else {
-                    c.sendPacket(tools.MaplePacketCreator.enableActions());
+                    c.sendPacket(MaplePacketCreator.enableActions());
                     c.getPlayer().dropMessage(5, "目前拍賣系統不開放。");
                 }
                 //InterServerHandler.EnterCashShop(c, c.getPlayer(), true);

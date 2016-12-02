@@ -25,7 +25,8 @@ import handling.world.World;
 import handling.world.guild.MapleBBSThread;
 import java.util.List;
 import tools.MaplePacketCreator;
-import tools.data.input.SeekableLittleEndianAccessor;
+import tools.data.LittleEndianAccessor;
+
 
 public class BBSHandler {
 
@@ -65,7 +66,7 @@ public class BBSHandler {
         return in;
     }
 
-    public static final void HandleBBS(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void HandleBBS(final LittleEndianAccessor slea, final MapleClient c) {
 
         if (c.getPlayer().getGuildId() <= 0) {
             return;

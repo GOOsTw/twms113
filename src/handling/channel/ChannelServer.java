@@ -33,14 +33,10 @@ import java.util.Map;
 import client.MapleCharacter;
 import client.MapleClient;
 import constants.ServerConstants;
-import handling.ByteArrayMaplePacket;
-import handling.MaplePacket;
 import handling.MapleServerHandler;
-import handling.cashshop.CashShopServer;
 import handling.login.LoginServer;
 import handling.mina.MapleCodecFactory;
 import handling.world.CheaterData;
-import handling.world.World;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import scripting.EventScriptManager;
 import server.MapleSquad;
@@ -246,15 +242,15 @@ public class ChannelServer implements Serializable {
         broadcastPacket(MaplePacketCreator.serverMessage(serverMessage));
     }
 
-    public final void broadcastPacket(final MaplePacket data) {
+    public final void broadcastPacket(final byte[] data) {
         getPlayerStorage().broadcastPacket(data);
     }
 
-    public final void broadcastSmegaPacket(final MaplePacket data) {
+    public final void broadcastSmegaPacket(final byte[] data) {
         getPlayerStorage().broadcastSmegaPacket(data);
     }
 
-    public final void broadcastGMPacket(final MaplePacket data) {
+    public final void broadcastGMPacket(final byte[] data) {
         getPlayerStorage().broadcastGMPacket(data);
     }
 
@@ -581,15 +577,15 @@ public class ChannelServer implements Serializable {
     }
 
     public void broadcastMessage(byte[] message) {
-        broadcastPacket(new ByteArrayMaplePacket(message));
+        broadcastPacket(message);
     }
 
     public void broadcastSmega(byte[] message) {
-        broadcastSmegaPacket(new ByteArrayMaplePacket(message));
+        broadcastSmegaPacket(message);
     }
 
     public void broadcastGMMessage(byte[] message) {
-        broadcastGMPacket(new ByteArrayMaplePacket(message));
+        broadcastGMPacket(message);
     }
 
     public void giveCSPoints() {

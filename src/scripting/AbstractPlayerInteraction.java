@@ -484,7 +484,7 @@ public abstract class AbstractPlayerInteraction {
     }
 
     public final void worldMessage(final int type, final String message) {
-        World.Broadcast.broadcastMessage(MaplePacketCreator.broadcastMessage(type, message).getBytes());
+        World.Broadcast.broadcastMessage(MaplePacketCreator.broadcastMessage(type, message));
     }
 
     // default playerMessage and mapMessage to use type 5

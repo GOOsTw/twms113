@@ -38,11 +38,12 @@ import server.MapleItemInformationProvider;
 import server.MapleInventoryManipulator;
 import tools.Pair;
 import tools.MaplePacketCreator;
-import tools.data.input.SeekableLittleEndianAccessor;
+import tools.data.LittleEndianAccessor;
+
 
 public class ItemMakerHandler {
 
-    public static final void ItemMaker(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void ItemMaker(final LittleEndianAccessor slea, final MapleClient c) {
         //System.out.println(slea.toString()); //change?
         final int makerType = slea.readInt();
 

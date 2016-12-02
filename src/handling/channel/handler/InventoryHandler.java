@@ -78,15 +78,16 @@ import server.shops.IMaplePlayerShop;
 import tools.Pair;
 import tools.packet.MTSCSPacket;
 import tools.packet.PetPacket;
-import tools.data.input.SeekableLittleEndianAccessor;
+
 import tools.MaplePacketCreator;
 import tools.packet.PlayerShopPacket;
 import server.maps.MapleKite;
 import tools.FilePrinter;
+import tools.data.LittleEndianAccessor;
 
 public class InventoryHandler {
 
-    public static final void ItemMove(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void ItemMove(final LittleEndianAccessor slea, final MapleClient c) {
         if (c.getPlayer().getPlayerShop() != null || c.getPlayer().getConversation() > 0 || c.getPlayer().getTrade() != null) { //hack
             return;
         }
@@ -116,7 +117,7 @@ public class InventoryHandler {
         }
     }
 
-    public static final void ItemSort(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void ItemSort(final LittleEndianAccessor slea, final MapleClient c) {
         
 
         final MapleInventoryType pInvType = MapleInventoryType.getByType(slea.readByte());
@@ -150,7 +151,7 @@ public class InventoryHandler {
         c.sendPacket(MaplePacketCreator.enableActions());
     }
 
-    public static final void ItemGather(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void ItemGather(final LittleEndianAccessor slea, final MapleClient c) {
         // [41 00] [E5 1D 55 00] [01]
         // [32 00] [01] [01] // Sent after
 
@@ -239,7 +240,7 @@ public class InventoryHandler {
         return false;
     }
 
-    public static final void UseItem(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void UseItem(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         if (chr == null || !chr.isAlive() || chr.getMapId() == 749040100 || chr.getMap() == null/* || chr.hasDisease(MapleDisease.POTION)*/) {
             c.sendPacket(MaplePacketCreator.enableActions());
             return;
@@ -272,7 +273,7 @@ public class InventoryHandler {
         }
     }
 
-    public static final void UseReturnScroll(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void UseReturnScroll(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         if (!chr.isAlive() || chr.getMapId() == 749040100) {
             c.sendPacket(MaplePacketCreator.enableActions());
             return;
@@ -297,7 +298,7 @@ public class InventoryHandler {
         }
     }
 
-    public static final void UseMagnify(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void UseMagnify(final LittleEndianAccessor slea, final MapleClient c) {
         c.getPlayer().updateTick(slea.readInt());
         final IItem magnify = c.getPlayer().getInventory(MapleInventoryType.USE).getItem((byte) slea.readShort());
         final IItem toReveal = c.getPlayer().getInventory(MapleInventoryType.EQUIP).getItem((byte) slea.readShort());
@@ -515,7 +516,7 @@ public class InventoryHandler {
         return true;
     }
 
-    public static final void UseCatchItem(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void UseCatchItem(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         c.getPlayer().updateTick(slea.readInt());
         final byte slot = (byte) slea.readShort();
         final int itemid = slea.readInt();
@@ -584,7 +585,7 @@ public class InventoryHandler {
         c.sendPacket(MaplePacketCreator.enableActions());
     }
 
-    public static final void UseMountFood(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void UseMountFood(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         c.getPlayer().updateTick(slea.readInt());
         final byte slot = (byte) slea.readShort();
         final int itemid = slea.readInt(); //2260000 usually
@@ -611,7 +612,7 @@ public class InventoryHandler {
         c.sendPacket(MaplePacketCreator.enableActions());
     }
 
-    public static final void UseScriptedNPCItem(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void UseScriptedNPCItem(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         c.getPlayer().updateTick(slea.readInt());
         final byte slot = (byte) slea.readShort();
         final int itemId = slea.readInt();
@@ -828,7 +829,7 @@ public class InventoryHandler {
         c.sendPacket(MaplePacketCreator.enableActions());
     }
 
-    public static final void UseSummonBag(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void UseSummonBag(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         if (!chr.isAlive()) {
             c.sendPacket(MaplePacketCreator.enableActions());
             return;
@@ -863,7 +864,7 @@ public class InventoryHandler {
         c.sendPacket(MaplePacketCreator.enableActions());
     }
 
-    public static final void UseTreasureChest(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void UseTreasureChest(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         final short slot = slea.readShort();
         final int itemid = slea.readInt();
 
@@ -913,7 +914,7 @@ public class InventoryHandler {
                 c.sendPacket(MaplePacketCreator.getShowItemGain(reward, (short) amount, true));
 
                 if (rareness > 0) {
-                    World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("	恭喜 " + c.getPlayer().getName() + " : 從" + box + "抽到！", item, c.getChannel()).getBytes());
+                    World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("	恭喜 " + c.getPlayer().getName() + " : 從" + box + "抽到！", item, c.getChannel()));
                 }
             } else {
                 chr.dropMessage(5, "你有一個欄位滿了，請空出來再打開" + box + "！");
@@ -927,7 +928,7 @@ public class InventoryHandler {
     }
 
     @SuppressWarnings("empty-statement")
-    public static final void UseCashItem(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void UseCashItem(final LittleEndianAccessor slea, final MapleClient c) {
 //        c.getPlayer().updateTick(slea.readInt());
         final byte slot = (byte) slea.readShort();
         final int itemId = slea.readInt();
@@ -1574,7 +1575,7 @@ public class InventoryHandler {
                     } else if (c.getPlayer().isGM()) {
                         System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
                     }
-                    c.getChannelServer().broadcastSmega(MaplePacketCreator.getMegaphone(sb.toString()).getBytes());
+                    c.getChannelServer().broadcastSmega(MaplePacketCreator.getMegaphone(sb.toString()));
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
@@ -1612,7 +1613,7 @@ public class InventoryHandler {
                     } else if (c.getPlayer().isGM()) {
                         System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + messages);
                     }
-                    World.Broadcast.broadcastSmega(MaplePacketCreator.tripleSmega(messages, ear, c.getChannel()).getBytes());
+                    World.Broadcast.broadcastSmega(MaplePacketCreator.tripleSmega(messages, ear, c.getChannel()));
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
@@ -1652,9 +1653,9 @@ public class InventoryHandler {
                     final boolean ear = slea.readByte() != 0;
 
                     if (c.getPlayer().isPlayer()) {
-                        World.Broadcast.broadcastSmega(MaplePacketCreator.getHeartSmega(msg, ear, c.getChannel()).getBytes());
+                        World.Broadcast.broadcastSmega(MaplePacketCreator.getHeartSmega(msg, ear, c.getChannel()));
                     } else if (c.getPlayer().isGM()) {
-                        World.Broadcast.broadcastSmega(MaplePacketCreator.getHeartSmega(msg, ear, c.getChannel()).getBytes());
+                        World.Broadcast.broadcastSmega(MaplePacketCreator.getHeartSmega(msg, ear, c.getChannel()));
                     }
                     used = true;
                 } else {
@@ -1699,7 +1700,7 @@ public class InventoryHandler {
                     } else if (c.getPlayer().isGM()) {
                         System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
                     }
-                    World.Broadcast.broadcastSmega(MaplePacketCreator.getSkullSmega(msg, ear, c.getChannel()).getBytes());
+                    World.Broadcast.broadcastSmega(MaplePacketCreator.getSkullSmega(msg, ear, c.getChannel()));
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
@@ -1742,9 +1743,9 @@ public class InventoryHandler {
                         return;
                     }
                     if (c.getPlayer().isPlayer()) {
-                        World.Broadcast.broadcastSmega(MaplePacketCreator.getSuperMegaphone(sb.toString(), ear, c.getChannel()).getBytes());
+                        World.Broadcast.broadcastSmega(MaplePacketCreator.getSuperMegaphone(sb.toString(), ear, c.getChannel()));
                     } else if (c.getPlayer().isGM()) {
-                        World.Broadcast.broadcastSmega(MaplePacketCreator.getSuperMegaphone(sb.toString(), ear, c.getChannel()).getBytes());
+                        World.Broadcast.broadcastSmega(MaplePacketCreator.getSuperMegaphone(sb.toString(), ear, c.getChannel()));
                     }
                     used = true;
                     break;
@@ -1797,7 +1798,7 @@ public class InventoryHandler {
                     } else if (c.getPlayer().isGM()) {
                         System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + message);
                     }
-                    World.Broadcast.broadcastSmega(MaplePacketCreator.itemMegaphone(sb.toString(), ear, c.getChannel(), item).getBytes());
+                    World.Broadcast.broadcastSmega(MaplePacketCreator.itemMegaphone(sb.toString(), ear, c.getChannel(), item));
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
@@ -1831,7 +1832,7 @@ public class InventoryHandler {
                     break;
                 }
                 String message = slea.readMapleAsciiString();
-                World.Broadcast.broadcastSmega(MaplePacketCreator.getSuperMegaphone(c.getPlayer().getName() + " : " + message, ear, c.getChannel()).getBytes());
+                World.Broadcast.broadcastSmega(MaplePacketCreator.getSuperMegaphone(c.getPlayer().getName() + " : " + message, ear, c.getChannel()));
                 break;
             }
             case 5080000: //風箏
@@ -2164,7 +2165,7 @@ public class InventoryHandler {
                     } else if (c.getPlayer().isGM()) {
                         System.out.println("[ＧＭ廣播頻道 " + c.getPlayer().getName() + "] : " + text);
                     }
-                    World.Broadcast.broadcastSmega(MaplePacketCreator.getAvatarMega(c.getPlayer(), c.getChannel(), itemId, text, ear).getBytes());
+                    World.Broadcast.broadcastSmega(MaplePacketCreator.getAvatarMega(c.getPlayer(), c.getChannel(), itemId, text, ear));
                     used = true;
                 } else {
                     c.getPlayer().dropMessage(5, "目前喇叭停止使用.");
@@ -2262,7 +2263,7 @@ public class InventoryHandler {
         }
     }
 
-    public static final void PlayerPickup(final SeekableLittleEndianAccessor slea, MapleClient c, final MapleCharacter chr) {
+    public static final void PlayerPickup(final LittleEndianAccessor slea, MapleClient c, final MapleCharacter chr) {
         if (chr.getPlayerShop() != null
                 || c.getPlayer().getConversation() > 0
                 || c.getPlayer().getTrade() != null) {
@@ -2352,7 +2353,7 @@ public class InventoryHandler {
         }
     }
 
-    public static final void PetPickup(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void PetPickup(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         if (chr == null) {
             return;
         }
@@ -2534,7 +2535,7 @@ public class InventoryHandler {
 
     }
 
-    public static final void OwlMinerva(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void OwlMinerva(final LittleEndianAccessor slea, final MapleClient c) {
         final byte slot = (byte) slea.readShort();
         final int itemid = slea.readInt();
         final IItem toUse = c.getPlayer().getInventory(MapleInventoryType.USE).getItem(slot);
@@ -2551,7 +2552,7 @@ public class InventoryHandler {
         c.sendPacket(MaplePacketCreator.enableActions());
     }
 
-    public static final void Owl(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void Owl(final LittleEndianAccessor slea, final MapleClient c) {
         if (c.getPlayer().haveItem(5230000, 1, true, false) || c.getPlayer().haveItem(2310000, 1, true, false)) {
             if (c.getPlayer().getMapId() >= 910000000 && c.getPlayer().getMapId() <= 910000022) {
                 c.sendPacket(MaplePacketCreator.getOwlOpen());
@@ -2563,7 +2564,7 @@ public class InventoryHandler {
     }
     public static final int OWL_ID = 2; //don't change. 0 = owner ID, 1 = store ID, 2 = object ID
 
-    public static final void UseSkillBook(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void UseSkillBook(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
        
         final byte slot = (byte) slea.readShort();
         final int itemId = slea.readInt();
@@ -2613,7 +2614,7 @@ public class InventoryHandler {
         c.getPlayer().getMap().broadcastMessage(MaplePacketCreator.useSkillBook(chr, skill, maxlevel, canuse, success));
     }
 
-    public static final void OwlWarp(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void OwlWarp(final LittleEndianAccessor slea, final MapleClient c) {
         c.sendPacket(MaplePacketCreator.enableActions());
         if (c.getPlayer().getMapId() >= 910000000 && c.getPlayer().getMapId() <= 910000022 && c.getPlayer().getPlayerShop() == null) {
             final int id = slea.readInt();
@@ -2688,7 +2689,7 @@ public class InventoryHandler {
         }
     }
 
-    public static final boolean UseTeleRock(final SeekableLittleEndianAccessor slea, final MapleClient c, int itemId) {
+    public static final boolean UseTeleRock(final LittleEndianAccessor slea, final MapleClient c, int itemId) {
         boolean used = false;
         if (itemId == 5041001 || itemId == 5040004) {
             slea.readByte(); //useless

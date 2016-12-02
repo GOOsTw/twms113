@@ -48,7 +48,7 @@ import client.inventory.MaplePet;
 import client.status.MonsterStatus;
 import client.status.MonsterStatusEffect;
 import database.DatabaseConnection;
-import handling.MaplePacket;
+
 import handling.channel.ChannelServer;
 import handling.world.PartyOperation;
 import handling.world.MaplePartyCharacter;
@@ -649,7 +649,7 @@ public final class MapleMap {
         SpeedRunType type = SpeedRunType.NULL;
         final MapleSquad sqd = getSquadByMap();
         if (mobid == 8810018 && mapid == 240060200 && !chr.isGM()) { // Horntail
-            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("經過無數次的挑戰，" + chr.getName() + "所帶領的隊伍終於擊破了闇黑龍王的遠征隊！你們才是龍之林的真正英雄~").getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("經過無數次的挑戰，" + chr.getName() + "所帶領的隊伍終於擊破了闇黑龍王的遠征隊！你們才是龍之林的真正英雄~"));
             /*for (MapleCharacter c : getCharactersThreadsafe()) {
              c.finishAchievement(16);
              }*/
@@ -661,7 +661,7 @@ public final class MapleMap {
                 doShrine(true);
             }
         } else if (mobid == 9410066 && mapid == 741000000) {
-            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("經過鞭炮的洗禮，舞龍舞獅終於被嚇跑了，醉夢谷向大家說聲新年快樂~~").getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("經過鞭炮的洗禮，舞龍舞獅終於被嚇跑了，醉夢谷向大家說聲新年快樂~~"));
         } else if (mobid == 8810122 && mapid == 240060201) { // Horntail
 
             FilePrinter.print(FilePrinter.HorntailLog, MapDebug_Log());
@@ -735,7 +735,7 @@ public final class MapleMap {
                 }
             }
         } else if (mobid == 8820001 && mapid == 270050100 && !chr.isGM()) {
-            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(chr.getName() + " 經過帶領的隊伍經過無數次的挑戰，終於擊破了時間的寵兒－皮卡丘的遠征隊！你們才是時間神殿的真正英雄~").getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(chr.getName() + " 經過帶領的隊伍經過無數次的挑戰，終於擊破了時間的寵兒－皮卡丘的遠征隊！你們才是時間神殿的真正英雄~"));
             /*for (MapleCharacter c : getCharactersThreadsafe()) {
              c.finishAchievement(17);
              }*/
@@ -2137,7 +2137,7 @@ public final class MapleMap {
                             }
                             if (passed) {
                                 //are we still the same squad? are monsters still == 0?
-                                MaplePacket packet;
+                                byte[] packet;
                                 if (mode == 1) { //zakum
                                     packet = MaplePacketCreator.showZakumShrine(spawned, 0);
                                 } else if (mode == 2) { //chaoszakum
@@ -2165,7 +2165,7 @@ public final class MapleMap {
                         //we dont need to stop clock here because they're getting warped out anyway
                         if (MapleMap.this.getCharactersSize() > 0 && sqnow != null && sqnow.getStatus() == 2 && sqnow.getLeaderName().equals(leaderName) && MapleMap.this.getEMByMap().getProperty("state").equals(state)) {
                             //are we still the same squad? monsters however don't count
-                            MaplePacket packet;
+                            byte[] packet;
                             if (mode == 1) { //zakum
                                 packet = MaplePacketCreator.showZakumShrine(spawned, 0);
                             } else if (mode == 2) { //chaoszakum
@@ -2426,11 +2426,11 @@ public final class MapleMap {
 
     }
 
-    public final void broadcastMessage(final MaplePacket packet) {
+    public final void broadcastMessage(final byte[] packet) {
         broadcastMessage(null, packet, Double.POSITIVE_INFINITY, null);
     }
 
-    public final void broadcastMessage(final MapleCharacter source, final MaplePacket packet, final boolean repeatToSource) {
+    public final void broadcastMessage(final MapleCharacter source, final byte[] packet, final boolean repeatToSource) {
         broadcastMessage(repeatToSource ? null : source, packet, Double.POSITIVE_INFINITY, source.getPosition());
     }
 
@@ -2444,18 +2444,18 @@ public final class MapleMap {
         return mobsCount.size();
     }
 
-    /*	public void broadcastMessage(MapleCharacter source, MaplePacket packet, boolean repeatToSource, boolean ranged) {
+    /*	public void broadcastMessage(MapleCharacter source, byte[] packet, boolean repeatToSource, boolean ranged) {
      broadcastMessage(repeatToSource ? null : source, packet, ranged ? MapleCharacter.MAX_VIEW_RANGE_SQ : Double.POSITIVE_INFINITY, source.getPosition());
      }*/
-    public final void broadcastMessage(final MaplePacket packet, final Point rangedFrom) {
+    public final void broadcastMessage(final byte[] packet, final Point rangedFrom) {
         broadcastMessage(null, packet, GameConstants.maxViewRangeSq(), rangedFrom);
     }
 
-    public final void broadcastMessage(final MapleCharacter source, final MaplePacket packet, final Point rangedFrom) {
+    public final void broadcastMessage(final MapleCharacter source, final byte[] packet, final Point rangedFrom) {
         broadcastMessage(source, packet, GameConstants.maxViewRangeSq(), rangedFrom);
     }
 
-    private void broadcastMessage(final MapleCharacter source, final MaplePacket packet, final double rangeSq, final Point rangedFrom) {
+    private void broadcastMessage(final MapleCharacter source, final byte[] packet, final double rangeSq, final Point rangedFrom) {
         charactersLock.readLock().lock();
         try {
             for (MapleCharacter chr : characters) {
@@ -3424,11 +3424,11 @@ public final class MapleMap {
         return ret;
     }
 
-    public void broadcastGMMessage(MapleCharacter source, MaplePacket packet, boolean repeatToSource) {
+    public void broadcastGMMessage(MapleCharacter source, byte[] packet, boolean repeatToSource) {
         broadcastGMMessage(repeatToSource ? null : source, packet, Double.POSITIVE_INFINITY, source.getPosition());
     }
 
-    private void broadcastGMMessage(MapleCharacter source, MaplePacket packet, double rangeSq, Point rangedFrom) {
+    private void broadcastGMMessage(MapleCharacter source, byte[] packet, double rangeSq, Point rangedFrom) {
         charactersLock.readLock().lock();
         try {
             if (source == null) {

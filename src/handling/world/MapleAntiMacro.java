@@ -220,7 +220,7 @@ public class MapleAntiMacro {
             victim.getClient().disconnect(true, false);
 
             String msg = "[GM 密語] " + victim.getName() + "  因為測謊機連續失敗5次而被封鎖一個禮拜。";
-            World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice(msg).getBytes());
+            World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice(msg));
 
         }
         stopAnti(victim.getName());

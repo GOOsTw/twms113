@@ -39,7 +39,7 @@ import javax.script.ScriptEngine;
 
 import database.DatabaseConnection;
 import database.DatabaseException;
-import handling.MaplePacket;
+
 import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
 import handling.login.LoginServer;
@@ -1553,10 +1553,6 @@ public class MapleClient {
 
     public void setReceiving(boolean m) {
         this.receiving = m;
-    }
-
-    public void sendPacket(MaplePacket packet) {
-        this.getSession().write(packet);
     }
 
     public String getFixLoginPassword() {

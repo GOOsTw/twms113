@@ -57,15 +57,11 @@ import java.io.Serializable;
 import client.anticheat.CheatTracker;
 import client.inventory.Equip;
 import client.inventory.ModifyInventory;
-import client.status.MonsterStatus;
-import client.status.MonsterStatusEffect;
 import constants.ServerConstants;
 import database.DatabaseConnection;
 import database.DatabaseException;
-import handling.MaplePacket;
 import handling.channel.ChannelServer;
 import handling.world.CharacterTransfer;
-import handling.world.MapleAntiMacro;
 import handling.world.MapleMessenger;
 import handling.world.MapleMessengerCharacter;
 import handling.world.MapleParty;
@@ -129,6 +125,7 @@ import server.movement.LifeMovementFragment;
 import tools.ConcurrentEnumMap;
 import tools.FilePrinter;
 import tools.HexTool;
+import tools.data.MaplePacketLittleEndianWriter;
 
 public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Serializable {
 
@@ -1390,7 +1387,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return CRand;
     }
 
-    public final void QuestInfoPacket(final tools.data.output.MaplePacketLittleEndianWriter mplew) {
+    public final void QuestInfoPacket(final MaplePacketLittleEndianWriter mplew) {
         mplew.writeShort(questinfo.size());
 
         for (final Entry<Integer, String> q : questinfo.entrySet()) {
@@ -2721,7 +2718,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         changeMapInternal(to, pto.getPosition(), MaplePacketCreator.getWarpToMap(to, pto.getId(), this), pto);
     }
 
-    private void changeMapInternal(final MapleMap to, final Point pos, MaplePacket warpPacket, final MaplePortal pto) {
+    private void changeMapInternal(final MapleMap to, final Point pos, byte[] warpPacket, final MaplePortal pto) {
         if (to == null) {
             return;
         }
@@ -3766,7 +3763,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
             sb.append(getName());
             sb.append(" 達到了等級200級！請大家一起恭喜他！");
-            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(sb.toString()).getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(sb.toString()));
         }
         if (GameConstants.isKOC(job) && level == 120 && !isGM()) {
             final StringBuilder sb = new StringBuilder("[恭喜] ");
@@ -3778,7 +3775,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
             sb.append(getName());
             sb.append(" 達到了皇家騎士團峰頂等級120級！請大家一起恭喜他！");
-            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(sb.toString()).getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(sb.toString()));
         }
 
         maxhp = (short) Math.min(30000, Math.abs(maxhp));
@@ -6639,11 +6636,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public void giftMedal(int id) {
         if (!this.getInventory(MapleInventoryType.EQUIP).isFull() && this.getInventory(MapleInventoryType.EQUIP).countById(id) == 0 && this.getInventory(MapleInventoryType.EQUIPPED).countById(id) == 0) {
             MapleInventoryManipulator.addById(client, id, (short) 1);
-            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[恭喜]" + getName() + "剛才得到了 " + MapleItemInformationProvider.getInstance().getName(id) + "！").getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[恭喜]" + getName() + "剛才得到了 " + MapleItemInformationProvider.getInstance().getName(id) + "！"));
         } else if (this.getInventory(MapleInventoryType.EQUIP).countById(id) == 0 && this.getInventory(MapleInventoryType.EQUIPPED).countById(id) == 0) {
             MapleInventoryManipulator.drop(client, MapleInventoryType.EQUIP, (byte) 1, (byte) 1);
             MapleInventoryManipulator.addById(client, id, (short) 1);
-            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[恭喜]" + getName() + "剛才得到了 " + MapleItemInformationProvider.getInstance().getName(id) + "！").getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[恭喜]" + getName() + "剛才得到了 " + MapleItemInformationProvider.getInstance().getName(id) + "！"));
         }
     }
 

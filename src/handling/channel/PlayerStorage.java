@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.Collection;
 import client.MapleCharacterUtil;
 import client.MapleCharacter;
-import handling.MaplePacket;
+
 import handling.world.CharacterTransfer;
 import handling.world.CheaterData;
 import handling.world.World;
@@ -245,7 +245,7 @@ public class PlayerStorage {
         return sb.toString();
     }
 
-    public final void broadcastPacket(final MaplePacket data) {
+    public final void broadcastPacket(final byte[] data) {
         readLock.lock();
         try {
             final Iterator<MapleCharacter> itr = idToChar.values().iterator();
@@ -257,7 +257,7 @@ public class PlayerStorage {
         }
     }
 
-    public final void broadcastSmegaPacket(final MaplePacket data) {
+    public final void broadcastSmegaPacket(final byte[] data) {
         readLock.lock();
         try {
             final Iterator<MapleCharacter> itr = idToChar.values().iterator();
@@ -274,7 +274,7 @@ public class PlayerStorage {
         }
     }
 
-    public final void broadcastGMPacket(final MaplePacket data) {
+    public final void broadcastGMPacket(final byte[] data) {
         readLock.lock();
         try {
             final Iterator<MapleCharacter> itr = idToChar.values().iterator();

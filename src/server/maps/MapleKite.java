@@ -3,7 +3,7 @@ package server.maps;
 import java.awt.Point;
 import client.MapleCharacter;
 import client.MapleClient;
-import handling.MaplePacket;
+
 import tools.MaplePacketCreator;
 
 public class MapleKite extends AbstractMapleMapObject {
@@ -50,11 +50,11 @@ public class MapleKite extends AbstractMapleMapObject {
         client.getSession().write(makeSpawnData());
     }
 
-    public MaplePacket makeSpawnData() {
+    public byte[] makeSpawnData() {
         return MaplePacketCreator.spawnKite(getObjectId(), itemid, owner.getName(), text, pos, ft);
     }
 
-    public MaplePacket makeDestroyData() {
+    public byte[] makeDestroyData() {
         return MaplePacketCreator.destroyKite(getObjectId());
     }
 }

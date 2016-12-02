@@ -2,7 +2,7 @@ package server.maps;
 
 import client.MapleClient;
 import tools.MaplePacketCreator;
-import handling.MaplePacket;
+
 import tools.packet.MTSCSPacket;
 
 public class MapleMapEffect {
@@ -29,11 +29,11 @@ public class MapleMapEffect {
         return this.jukebox;
     }
 
-    public MaplePacket makeDestroyData() { //jukebox doesn't REALLY have a destroy, but 0 stops all music
+    public byte[] makeDestroyData() { //jukebox doesn't REALLY have a destroy, but 0 stops all music
         return jukebox ? MTSCSPacket.playCashSong(0, "") : MaplePacketCreator.removeMapEffect();
     }
 
-    public MaplePacket makeStartData() {
+    public byte[] makeStartData() {
         return jukebox ? MTSCSPacket.playCashSong(itemId, msg) : MaplePacketCreator.startMapEffect(msg, itemId, active);
     }
 

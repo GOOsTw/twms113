@@ -38,13 +38,14 @@ import database.DatabaseConnection;
 import java.sql.Statement;
 import java.util.Collections;
 import java.util.Map;
-import tools.data.input.SeekableLittleEndianAccessor;
+
 import server.MapleDueyActions;
 import server.MapleInventoryManipulator;
 import server.MapleItemInformationProvider;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
 import tools.Pair;
+import tools.data.LittleEndianAccessor;
 
 public class DueyHandler {
 
@@ -55,7 +56,7 @@ public class DueyHandler {
      * 15 = Same account
      * 14 = Name does not exist
      */
-    public static final void DueyOperation(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void DueyOperation(final LittleEndianAccessor slea, final MapleClient c) {
 
         final byte operation = slea.readByte();
 

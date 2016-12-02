@@ -1,15 +1,14 @@
 package tools.packet;
 
-import handling.MaplePacket;
 import handling.SendPacketOpcode;
-import tools.data.output.MaplePacketLittleEndianWriter;
+import tools.data.MaplePacketLittleEndianWriter;
 
 /**
  * Created by Toby on 2016/8/31.
  */
 public class PachinkoPacket {
 
-    public static MaplePacket marqueeMessage(String playerName) {
+    public static byte[] marqueeMessage(String playerName) {
         MaplePacketLittleEndianWriter writer = new MaplePacketLittleEndianWriter();
         writer.writeShort(SendPacketOpcode.PACHINKO_MARQUEE.getValue());
         writer.writeInt(1);
@@ -17,14 +16,14 @@ public class PachinkoPacket {
         return writer.getPacket();
     }
 
-    public static MaplePacket showPachinko(int beansCount) {
+    public static byte[] showPachinko(int beansCount) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.PACHINKO_SHOW.getValue());
         mplew.writeInt(beansCount);
         return mplew.getPacket();
     }
 
-    public static MaplePacket setLightLevel(int light)
+    public static byte[] setLightLevel(int light)
     {
         MaplePacketLittleEndianWriter writer = new MaplePacketLittleEndianWriter();
         writer.writeShort(SendPacketOpcode.PACHINKO_ACT.getValue());
@@ -33,7 +32,7 @@ public class PachinkoPacket {
         return writer.getPacket();
     }
 
-    public static MaplePacket spinTest(int light)
+    public static byte[] spinTest(int light)
     {
         MaplePacketLittleEndianWriter writer = new MaplePacketLittleEndianWriter();
         writer.writeShort(SendPacketOpcode.PACHINKO_ACT.getValue());
@@ -49,7 +48,7 @@ public class PachinkoPacket {
         return writer.getPacket();
     }
 
-    public static MaplePacket rewardBalls(int ballsCount, int openStage)
+    public static byte[] rewardBalls(int ballsCount, int openStage)
     {
         MaplePacketLittleEndianWriter writer = new MaplePacketLittleEndianWriter();
         writer.writeShort(SendPacketOpcode.PACHINKO_ACT.getValue());
@@ -59,12 +58,12 @@ public class PachinkoPacket {
         return writer.getPacket();
     }
 
-    public static MaplePacket rewardBalls(int ballsCount)
+    public static byte[] rewardBalls(int ballsCount)
     {
         return rewardBalls(ballsCount, 0);
     }
 
-    public static MaplePacket exitPachinko()
+    public static byte[] exitPachinko()
     {
         MaplePacketLittleEndianWriter writer = new MaplePacketLittleEndianWriter();
         writer.writeShort(SendPacketOpcode.PACHINKO_ACT.getValue());
@@ -72,7 +71,7 @@ public class PachinkoPacket {
         return writer.getPacket();
     }
 
-    public static MaplePacket updateBalls(int cid, int beansCount) {
+    public static byte[] updateBalls(int cid, int beansCount) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.UPDATE_BEANS.getValue());
         mplew.writeInt(cid);

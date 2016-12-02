@@ -12,7 +12,7 @@ import client.inventory.MapleInventoryType;
 import client.inventory.MaplePet;
 import client.messages.CommandProcessorUtil;
 import constants.GameConstants;
-import handling.MaplePacket;
+
 import handling.channel.ChannelServer;
 import handling.world.World;
 import java.text.DateFormat;
@@ -179,13 +179,13 @@ public class GMCommand {
             }
             sb.append(StringUtil.joinStringFrom(splitted, joinmod));
 
-            MaplePacket packet = MaplePacketCreator.broadcastMessage(type, sb.toString());
+            byte[] packet = MaplePacketCreator.broadcastMessage(type, sb.toString());
             if (range == 0) {
                 c.getPlayer().getMap().broadcastMessage(packet);
             } else if (range == 1) {
                 ChannelServer.getInstance(c.getChannel()).broadcastPacket(packet);
             } else if (range == 2) {
-                World.Broadcast.broadcastMessage(packet.getBytes());
+                World.Broadcast.broadcastMessage(packet);
             }
             return true;
         }
@@ -215,13 +215,13 @@ public class GMCommand {
             if (range == -1) {
                 range = 2;
             }
-            MaplePacket packet = MaplePacketCreator.yellowChat((splitted[0].equals("!y") ? ("[" + c.getPlayer().getName() + "] ") : "") + StringUtil.joinStringFrom(splitted, 2));
+            byte[] packet = MaplePacketCreator.yellowChat((splitted[0].equals("!y") ? ("[" + c.getPlayer().getName() + "] ") : "") + StringUtil.joinStringFrom(splitted, 2));
             if (range == 0) {
                 c.getPlayer().getMap().broadcastMessage(packet);
             } else if (range == 1) {
                 ChannelServer.getInstance(c.getChannel()).broadcastPacket(packet);
             } else if (range == 2) {
-                World.Broadcast.broadcastMessage(packet.getBytes());
+                World.Broadcast.broadcastMessage(packet);
             }
             return true;
         }
@@ -245,10 +245,10 @@ public class GMCommand {
             String msg = splitted[2];
             int npcId = Integer.parseInt(splitted[1]);
             MapleNPC npc = MapleLifeFactory.getNPC(npcId);
-            if(npc != null) {
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getNPCTalk(npcId, (byte) 0, msg, "00 00", (byte) 0).getBytes());
+            if (npc != null) {
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getNPCTalk(npcId, (byte) 0, msg, "00 00", (byte) 0));
             } else {
-                c.getPlayer().dropMessage(5, "很抱歉，此NPC "+ splitted[1] +" 不存在.");
+                c.getPlayer().dropMessage(5, "很抱歉，此NPC " + splitted[1] + " 不存在.");
             }
             return true;
         }

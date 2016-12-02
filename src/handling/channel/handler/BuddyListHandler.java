@@ -33,7 +33,8 @@ import handling.channel.ChannelServer;
 import handling.world.World;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
-import tools.data.input.SeekableLittleEndianAccessor;
+import tools.data.LittleEndianAccessor;
+
 
 public class BuddyListHandler {
 
@@ -44,7 +45,7 @@ public class BuddyListHandler {
         }
     }
 
-    public static final void BuddyOperationHandler(final SeekableLittleEndianAccessor slea,
+    public static final void BuddyOperationHandler(final LittleEndianAccessor slea,
             final MapleClient client) {
 
         final MapleCharacter player = client.getPlayer();

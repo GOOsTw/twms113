@@ -22,7 +22,7 @@
 package server.events;
 
 import client.MapleCharacter;
-import handling.MaplePacket;
+
 import handling.channel.ChannelServer;
 import handling.world.World;
 import server.MapleInventoryManipulator;
@@ -57,7 +57,7 @@ public abstract class MapleEvent {
         return ChannelServer.getInstance(channel);
     }
 
-    public void broadcast(final MaplePacket packet) {
+    public void broadcast(final byte[] packet) {
         for (int i = 0; i < mapid.length; i++) {
             getMap(i).broadcastMessage(packet);
         }
@@ -222,7 +222,7 @@ public abstract class MapleEvent {
         }
         cserv.setEvent(cserv.getEvent(event).mapid[0]);
         cserv.getEvent(event).reset();
-        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice("活動 " + String.valueOf(event) + " 即將在頻道 " + cserv.getChannel() + " 舉行 , 參加指令@event 要參加的玩家請到頻道 " + cserv.getChannel()).getBytes());
+        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice("活動 " + String.valueOf(event) + " 即將在頻道 " + cserv.getChannel() + " 舉行 , 參加指令@event 要參加的玩家請到頻道 " + cserv.getChannel()));
         return "";
     }
 }

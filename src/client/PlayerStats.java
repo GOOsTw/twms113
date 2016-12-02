@@ -46,7 +46,7 @@ import server.StructPotentialItem;
 import server.StructSetItem;
 import server.StructSetItem.SetItem;
 import tools.MaplePacketCreator;
-import tools.data.output.MaplePacketLittleEndianWriter;
+import tools.data.MaplePacketLittleEndianWriter;
 
 public class PlayerStats implements Serializable {
 

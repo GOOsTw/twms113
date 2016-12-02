@@ -25,11 +25,11 @@ import server.MapleItemInformationProvider;
 import tools.MaplePacketCreator;
 import tools.packet.MTSCSPacket;
 import tools.Pair;
-import tools.data.input.SeekableLittleEndianAccessor;
+import tools.data.LittleEndianAccessor;
 
 public class CashShopOperation {
 
-    public static void LeaveCashShop(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static void LeaveCashShop(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         CashShopServer.getPlayerStorageMTS().deregisterPlayer(chr);
         CashShopServer.getPlayerStorage().deregisterPlayer(chr);
         int loginStatus = c.getLoginState();
@@ -130,7 +130,7 @@ public class CashShopOperation {
         refreshCashShop(c);
     }
 
-    public static final void ChangeName(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void ChangeName(final LittleEndianAccessor slea, final MapleClient c) {
         int useNX = slea.readByte() + 1;
         short unknow_1 = slea.readByte();
         short unknow_2 = slea.readShort();
@@ -226,7 +226,7 @@ public class CashShopOperation {
         refreshCashShop(c);
     }
 
-    public static final void BuyCashItem(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void BuyCashItem(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         final int action = slea.readByte();
         chr.getQuestLock().lock();
         try {

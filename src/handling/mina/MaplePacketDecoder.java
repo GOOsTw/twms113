@@ -21,6 +21,8 @@
 package handling.mina;
 
 import client.MapleClient;
+import handling.MapleServerHandler;
+import handling.RecvPacketOpcode;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 import tools.MapleAESOFB;
@@ -28,6 +30,10 @@ import tools.MapleAESOFB;
 
 import org.apache.mina.filter.codec.CumulativeProtocolDecoder;
 import org.apache.mina.filter.codec.ProtocolDecoderOutput;
+import tools.FilePrinter;
+import tools.HexTool;
+import tools.data.ByteArrayByteStream;
+import tools.data.LittleEndianAccessor;
 
 public class MaplePacketDecoder extends CumulativeProtocolDecoder {
 
@@ -63,6 +69,32 @@ public class MaplePacketDecoder extends CumulativeProtocolDecoder {
             client.getReceiveCrypto().crypt(decryptedPacket);
             //MapleCustomEncryption.decryptData(decryptedPacket);
             out.write(decryptedPacket);
+            
+            //封包輸出
+            int packetLen = decryptedPacket.length;
+            short pHeader = new LittleEndianAccessor(new ByteArrayByteStream(decryptedPacket)).readShort();
+            String op = RecvPacketOpcode.nameOf(pHeader);
+            if (MapleServerHandler.isLogPackets && !RecvPacketOpcode.isSpamHeader(RecvPacketOpcode.valueOf(op))) {
+                String tab = "";
+                for (int i = 4; i > op.length() / 8; i--) {
+                    tab += "\t";
+                }
+                String t = packetLen >= 10 ? packetLen >= 100 ? packetLen >= 1000 ? "" : " " : "  " : "   ";
+                final StringBuilder sb = new StringBuilder("[接收]");
+                if(client.getAccountName() != null) {
+                    if(!client.getAccountName().equals(""))
+                        sb.append("帳號 :").append(client.getAccountName());
+                    if(client.getPlayer()!= null)
+                        sb.append("角色 :").append(client.getPlayer().getName());
+                }
+                sb.append("\t").append(op).append(tab).append("\t包頭:").append(HexTool.getOpcodeToString(pHeader)).append(t).append("[").append(packetLen).append("字元]");
+                System.out.println(sb.toString());
+                sb.append("\r\n\r\n").append(HexTool.toString(decryptedPacket)).append("\r\n").append(HexTool.toStringFromAscii(decryptedPacket));
+                FilePrinter.print("PacketRecv.txt", "\r\n\r\n" + sb.toString() + "\r\n\r\n");
+            }
+            
+            
+            
             return true;
         }
         return false;

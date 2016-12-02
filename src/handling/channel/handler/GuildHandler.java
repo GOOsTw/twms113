@@ -24,7 +24,7 @@ import java.util.Iterator;
 
 import client.MapleCharacter;
 import client.MapleClient;
-import handling.MaplePacket;
+
 import handling.channel.ChannelServer;
 import handling.world.World;
 import handling.world.guild.*;
@@ -32,7 +32,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import tools.MaplePacketCreator;
-import tools.data.input.SeekableLittleEndianAccessor;
+import tools.data.LittleEndianAccessor;
+
 
 public class GuildHandler {
 
@@ -125,7 +126,7 @@ public class GuildHandler {
     private static final List<Invited> invited = new LinkedList<>();
     private static long nextPruneTime = System.currentTimeMillis() + 20 * 60 * 1000;
 
-    public static final void HandleGuild(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void HandleGuild(final LittleEndianAccessor slea, final MapleClient c) {
 
         if (System.currentTimeMillis()
                 >= nextPruneTime) {
@@ -229,7 +230,7 @@ public class GuildHandler {
                         }
                         c.sendPacket(MaplePacketCreator.showGuildInfo(c.getPlayer()));
                         final MapleGuild gs = World.Guild.getGuild(guildId);
-                        for (MaplePacket pack : World.Alliance.getAllianceInfo(gs.getAllianceId(), true)) {
+                        for (byte[] pack : World.Alliance.getAllianceInfo(gs.getAllianceId(), true)) {
                             if (pack != null) {
                                 c.sendPacket(pack);
                             }

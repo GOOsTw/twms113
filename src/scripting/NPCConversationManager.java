@@ -487,11 +487,11 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
             }
             final byte rareness = GameConstants.gachaponRareItem(item.getItemId());
             if (rareness == 1) {
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName() + " : 被他抽到了，大家恭喜他吧！", item, c.getChannel()).getBytes());
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName() + " : 被他抽到了，大家恭喜他吧！", item, c.getChannel()));
             } else if (rareness == 2) {
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName() + " : 被他成功轉到了，大家恭喜他吧！", item, c.getChannel()).getBytes());
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName() + " : 被他成功轉到了，大家恭喜他吧！", item, c.getChannel()));
             } else if (rareness > 2) {
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName() + " : 被他從楓葉轉蛋機轉到了，大家恭喜他吧！", item, c.getChannel()).getBytes());
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getGachaponMega("[" + msg + "] " + c.getPlayer().getName() + " : 被他從楓葉轉蛋機轉到了，大家恭喜他吧！", item, c.getChannel()));
             }
 
             return item.getItemId();
@@ -1416,7 +1416,7 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public void worldMessage(String text) {
-        World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(text).getBytes());
+        World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice(text));
     }
 
     public int getBalls() {

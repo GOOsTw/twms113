@@ -386,7 +386,7 @@ public class PlayerCommand {
                 }
                 c.getPlayer().dropMessage(6, "訊息已經寄送給GM了!");
                 if (!fake) {
-                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[管理員幫幫忙] 頻道 " + c.getPlayer().getClient().getChannel() + " 玩家 " + c.getPlayer().getName() + " : " + say).getBytes());
+                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[管理員幫幫忙] 頻道 " + c.getPlayer().getClient().getChannel() + " 玩家 " + c.getPlayer().getName() + " : " + say));
                     //System.out.println("[管理員幫幫忙] " + c.getPlayer().getName() + " : " + StringUtil.joinStringFrom(splitted, 1));
                     FilePrinter.print("管理員幫幫忙.txt", FilePrinter.getLocalDateString() + " 玩家[" + c.getPlayer().getName() + "] 帳號[" + c.getAccountName() + "]: " + say);
                 }

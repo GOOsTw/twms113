@@ -40,11 +40,12 @@ import server.maps.MapleMapObjectType;
 import server.maps.MapleReactor;
 import tools.ArrayMap;
 import tools.MaplePacketCreator;
-import tools.data.input.SeekableLittleEndianAccessor;
+import tools.data.LittleEndianAccessor;
+
 
 public class PlayersHandler {
 
-    public static void Note(final SeekableLittleEndianAccessor slea, final MapleCharacter chr) {
+    public static void Note(final LittleEndianAccessor slea, final MapleCharacter chr) {
         final byte type = slea.readByte();
 
         switch (type) {
@@ -78,7 +79,7 @@ public class PlayersHandler {
         }
     }
 
-    public static void GiveFame(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static void GiveFame(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         final int who = slea.readInt();
         final int mode = slea.readByte();
 
@@ -113,7 +114,7 @@ public class PlayersHandler {
         }
     }
 
-    public static void UseDoor(final SeekableLittleEndianAccessor slea, final MapleCharacter chr) {
+    public static void UseDoor(final LittleEndianAccessor slea, final MapleCharacter chr) {
         final int oid = slea.readInt();
         final boolean mode = slea.readByte() == 0; // specifies if backwarp or not, 1 town to target, 0 target to town
 
@@ -126,7 +127,7 @@ public class PlayersHandler {
         }
     }
 
-    public static void TransformPlayer(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static void TransformPlayer(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         // D9 A4 FD 00
         // 11 00
         // A0 C0 21 00
@@ -155,7 +156,7 @@ public class PlayersHandler {
         }
     }
 
-    public static void HitReactor(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static void HitReactor(final LittleEndianAccessor slea, final MapleClient c) {
         final int oid = slea.readInt();
         final int charPos = slea.readInt();
         final short stance = slea.readShort();
@@ -167,7 +168,7 @@ public class PlayersHandler {
         reactor.hitReactor(charPos, stance, c);
     }
 
-    public static void TouchReactor(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static void TouchReactor(final LittleEndianAccessor slea, final MapleClient c) {
         final int oid = slea.readInt();
         final boolean touched = slea.readByte() > 0;
         final MapleReactor reactor = c.getPlayer().getMap().getReactorByOid(oid);
@@ -177,7 +178,7 @@ public class PlayersHandler {
         ReactorScriptManager.getInstance().act(c, reactor); //not sure how touched boolean comes into play
     }
 
-    public static void hitCoconut(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public static void hitCoconut(LittleEndianAccessor slea, MapleClient c) {
         /*CB 00 A6 00 06 01
          * A6 00 = coconut id
          * 06 01 = ?
@@ -236,7 +237,7 @@ public class PlayersHandler {
         }
     }
 
-    public static void FollowRequest(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static void FollowRequest(final LittleEndianAccessor slea, final MapleClient c) {
         MapleCharacter tt = c.getPlayer().getMap().getCharacterById(slea.readInt());
         if (slea.readByte() > 0) {
             //1 when changing map
@@ -268,7 +269,7 @@ public class PlayersHandler {
         }
     }
 
-    public static void FollowReply(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static void FollowReply(final LittleEndianAccessor slea, final MapleClient c) {
         if (c.getPlayer().getFollowId() > 0 && c.getPlayer().getFollowId() == slea.readInt()) {
             MapleCharacter tt = c.getPlayer().getMap().getCharacterById(c.getPlayer().getFollowId());
             if (tt != null && tt.getPosition().distanceSq(c.getPlayer().getPosition()) < 10000 && tt.getFollowId() == 0 && tt.getId() != c.getPlayer().getId()) { //estimate, should less
@@ -297,7 +298,7 @@ public class PlayersHandler {
         }
     }
 
-    public static void UnlockItem(final SeekableLittleEndianAccessor slea, final MapleClient c) { //封印之鎖解除鑰匙 ID:2051000
+    public static void UnlockItem(final LittleEndianAccessor slea, final MapleClient c) { //封印之鎖解除鑰匙 ID:2051000
         //95 00 | 01 00 | 02 00 | 02 00
         short Itemsize = slea.readShort();
         short _type = slea.readShort();
@@ -327,7 +328,7 @@ public class PlayersHandler {
         add = false;
     }
 
-    public static void Solomon(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static void Solomon(final LittleEndianAccessor slea, final MapleClient c) {
         c.sendPacket(MaplePacketCreator.enableActions());
         c.getPlayer().updateTick(slea.readInt());
         IItem item = c.getPlayer().getInventory(MapleInventoryType.USE).getItem(slea.readShort());
@@ -339,7 +340,7 @@ public class PlayersHandler {
         c.getPlayer().updateSingleStat(MapleStat.GACHAPONEXP, c.getPlayer().getGachExp());
     }
 
-    public static void GachExp(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static void GachExp(final LittleEndianAccessor slea, final MapleClient c) {
         c.sendPacket(MaplePacketCreator.enableActions());
         c.getPlayer().updateTick(slea.readInt());
         if (c.getPlayer().getGachExp() <= 0) {
@@ -350,7 +351,7 @@ public class PlayersHandler {
         c.getPlayer().updateSingleStat(MapleStat.GACHAPONEXP, 0);
     }
 
-    public static void RingAction(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static void RingAction(final LittleEndianAccessor slea, final MapleClient c) {
         final byte mode = slea.readByte();
         if (mode == 0) {
             final String name = slea.readMapleAsciiString();
@@ -427,7 +428,7 @@ public class PlayersHandler {
         }
     }
 
-    public static void UpdateCharInfo(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static void UpdateCharInfo(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         int type = slea.readByte();
         if (type == 0) { // 角色訊息
             String charmessage = slea.readMapleAsciiString();

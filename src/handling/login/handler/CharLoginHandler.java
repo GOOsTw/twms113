@@ -50,7 +50,7 @@ import tools.MaplePacketCreator;
 import tools.packet.LoginPacket;
 import tools.KoreanDateUtil;
 import tools.StringUtil;
-import tools.data.input.SeekableLittleEndianAccessor;
+import tools.data.LittleEndianAccessor;
 
 public class CharLoginHandler {
 
@@ -63,14 +63,14 @@ public class CharLoginHandler {
         c.sendPing();
     }
 
-    public static final void handleLogout(final SeekableLittleEndianAccessor slea, MapleClient c) {
+    public static final void handleLogout(final LittleEndianAccessor slea, MapleClient c) {
         String account = slea.readMapleAsciiString();
         String IpAddress = c.getSessionIPAddress();
         c.setAccountName(account);
         c.logout();
     }
 
-    private static String readMacAddress(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    private static String readMacAddress(final LittleEndianAccessor slea, final MapleClient c) {
         int[] bytes = new int[6];
         for (int i = 0; i < bytes.length; i++) {
             bytes[i] = slea.readByteAsInt();
@@ -83,7 +83,7 @@ public class CharLoginHandler {
         return sps.toString().substring(0, sps.toString().length() - 1);
     }
 
-    public static final void handleLogin(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleLogin(final LittleEndianAccessor slea, final MapleClient c) {
 
         LoginServer.getLoginLock().lock();
 
@@ -208,7 +208,7 @@ public class CharLoginHandler {
         }
     }
 
-    public static final void handleGenderSet(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleGenderSet(final LittleEndianAccessor slea, final MapleClient c) {
         String username = slea.readMapleAsciiString();
         String password = slea.readMapleAsciiString();
         if (c.getAccountName().equals(username)) {
@@ -242,7 +242,7 @@ public class CharLoginHandler {
         }
     }
 
-    public static final void handleCharacterList(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleCharacterList(final LittleEndianAccessor slea, final MapleClient c) {
         slea.readByte();
         final int server = slea.readByte();
         final int channel = slea.readByte() + 1;
@@ -266,7 +266,7 @@ public class CharLoginHandler {
                 !MapleCharacterUtil.canCreateChar(name) || LoginInformationProvider.getInstance().isForbiddenName(name)));
     }
 
-    public static final void handleCreateCharacter(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleCreateCharacter(final LittleEndianAccessor slea, final MapleClient c) {
         final String name = slea.readMapleAsciiString();
         if (name.contains("Admin") || name.contains("admin") || name.contains("GameMaster") || name.contains("gamemaster")) {
             c.sendPacket(MaplePacketCreator.getPopupMsg("這個名字是非法的喔，請在想一個新名字。"));
@@ -413,7 +413,7 @@ public class CharLoginHandler {
         }
     }
 
-    public static final void handleDeleteCharacter(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleDeleteCharacter(final LittleEndianAccessor slea, final MapleClient c) {
         slea.readByte();
 
         String _2ndPassword;
@@ -443,7 +443,7 @@ public class CharLoginHandler {
         c.sendPacket(LoginPacket.deleteCharResponse(characterId, state));
     }
 
-    public static final void handleSelectCharacter(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleSelectCharacter(final LittleEndianAccessor slea, final MapleClient c) {
 
         if (c.getLoginState() != 2 || c.getPlayer() != null) {
             return;

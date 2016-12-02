@@ -36,7 +36,6 @@ import client.MapleCharacter;
 import client.MapleClient;
 import client.inventory.MapleInventoryType;
 import database.DatabaseConnection;
-import handling.MaplePacket;
 import handling.channel.ChannelServer;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -89,11 +88,11 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
     }
 
     @Override
-    public void broadcastToVisitors(MaplePacket packet) {
+    public void broadcastToVisitors(byte[] packet) {
         broadcastToVisitors(packet, true);
     }
 
-    public void broadcastToVisitors(MaplePacket packet, boolean owner) {
+    public void broadcastToVisitors(byte[] packet, boolean owner) {
         for (WeakReference<MapleCharacter> chr : chrs) {
             if (chr != null && chr.get() != null) {
                 chr.get().getClient().sendPacket(packet);
@@ -104,7 +103,7 @@ public abstract class AbstractPlayerStore extends AbstractMapleMapObject impleme
         }
     }
 
-    public void broadcastToVisitors(MaplePacket packet, int exception) {
+    public void broadcastToVisitors(byte[] packet, int exception) {
         for (WeakReference<MapleCharacter> chr : chrs) {
             if (chr != null && chr.get() != null && getVisitorSlot(chr.get()) != exception) {
                 chr.get().getClient().sendPacket(packet);

@@ -23,15 +23,16 @@ package handling.channel.handler;
 
 import client.MapleCharacter;
 import client.MapleClient;
-import handling.MaplePacket;
+
 import handling.world.World;
 import handling.world.guild.MapleGuild;
 import tools.MaplePacketCreator;
-import tools.data.input.SeekableLittleEndianAccessor;
+import tools.data.LittleEndianAccessor;
+
 
 public class AllianceHandler {
 
-    public static final void HandleAlliance(final SeekableLittleEndianAccessor slea, final MapleClient c, boolean denied) {
+    public static final void HandleAlliance(final LittleEndianAccessor slea, final MapleClient c, boolean denied) {
         if (c.getPlayer().getGuildId() <= 0) {
             c.sendPacket(MaplePacketCreator.enableActions());
             return;
@@ -70,7 +71,7 @@ public class AllianceHandler {
         switch (op) {
             case 1: //load... must be in world op
 
-                for (MaplePacket pack : World.Alliance.getAllianceInfo(gs.getAllianceId(), false)) {
+                for (byte[] pack : World.Alliance.getAllianceInfo(gs.getAllianceId(), false)) {
                     if (pack != null) {
                         c.sendPacket(pack);
                     }

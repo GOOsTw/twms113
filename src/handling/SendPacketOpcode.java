@@ -314,4 +314,34 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
             throw new RuntimeException("Failed to load sendops", e);
         }
     }
+    
+    public static boolean isSpamHeader(SendPacketOpcode opcode) {
+        switch (opcode.name()) {
+            case "WARP_TO_MAP":
+            case "PING":
+            case "NPC_ACTION":
+            case "UPDATE_STATS":
+            case "MOVE_PLAYER":
+            case "SPAWN_NPC":
+            case "SPAWN_NPC_REQUEST_CONTROLLER":
+            case "REMOVE_NPC":
+            case "MOVE_MONSTER":
+            case "MOVE_MONSTER_RESPONSE":
+            case "SPAWN_MONSTER":
+            case "SPAWN_MONSTER_CONTROL":
+            case "ANDROID_MOVE":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static String nameOf(int value) {
+        for (SendPacketOpcode opcode : SendPacketOpcode.values()) {
+            if (opcode.getValue() == value) {
+                return opcode.name();
+            }
+        }
+        return "UNKNOWN";
+    }
 }

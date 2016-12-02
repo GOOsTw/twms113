@@ -62,7 +62,7 @@ public class AramiaFireWorks {
     }
 
     private void broadcastServer(final MapleCharacter c, final int itemid) {
-        World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("<頻道 " + c.getClient().getChannel() + "> " + "不夜城新年活動即將開始舉辦怪物大遊行！！", itemid).getBytes());
+        World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("<頻道 " + c.getClient().getChannel() + "> " + "不夜城新年活動即將開始舉辦怪物大遊行！！", itemid));
     }
 
     public final short getKegsPercentage() {

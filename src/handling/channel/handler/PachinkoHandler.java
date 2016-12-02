@@ -2,11 +2,9 @@ package handling.channel.handler;
 
 import client.MapleCharacter;
 import client.MapleClient;
-import handling.MaplePacket;
-import handling.SendPacketOpcode;
-import tools.MaplePacketCreator;
-import tools.data.input.SeekableLittleEndianAccessor;
-import tools.data.output.MaplePacketLittleEndianWriter;
+
+import tools.data.LittleEndianAccessor;
+
 import tools.packet.PachinkoPacket;
 
 
@@ -16,7 +14,7 @@ import tools.packet.PachinkoPacket;
 public class PachinkoHandler {
 
 
-    public static final void handlePachinkoGame(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public static final void handlePachinkoGame(LittleEndianAccessor slea, MapleClient c) {
         MapleCharacter chr = c.getPlayer();
         byte type = slea.readByte();
         if (type == 0) {
@@ -63,7 +61,7 @@ public class PachinkoHandler {
         }
     }
 
-    public static final void handlePachinkoExit(SeekableLittleEndianAccessor slea, MapleClient c) {
+    public static final void handlePachinkoExit(LittleEndianAccessor slea, MapleClient c) {
         MapleCharacter chr = c.getPlayer();
         chr.pachinkoLight = 0;
         chr.pachinkoOpenStage = 0;

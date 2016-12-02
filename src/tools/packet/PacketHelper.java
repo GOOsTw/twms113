@@ -50,8 +50,7 @@ import server.movement.LifeMovementFragment;
 import server.shops.AbstractPlayerStore;
 import server.shops.IMaplePlayerShop;
 import tools.KoreanDateUtil;
-import tools.data.output.LittleEndianWriter;
-import tools.data.output.MaplePacketLittleEndianWriter;
+import tools.data.MaplePacketLittleEndianWriter;
 
 public class PacketHelper {
 
@@ -499,7 +498,7 @@ public class PacketHelper {
         }
     }
 
-    public static final void serializeMovementList(final LittleEndianWriter lew, final List<LifeMovementFragment> moves) {
+    public static final void serializeMovementList(final MaplePacketLittleEndianWriter lew, final List<LifeMovementFragment> moves) {
         lew.write(moves.size());
         for (LifeMovementFragment move : moves) {
             move.serialize(lew);

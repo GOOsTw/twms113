@@ -21,7 +21,9 @@
 package handling.mina;
 
 import client.MapleClient;
-import handling.MaplePacket;
+import handling.MapleServerHandler;
+import handling.SendPacketOpcode;
+
 import tools.MapleAESOFB;
 
 import java.util.concurrent.locks.Lock;
@@ -30,6 +32,9 @@ import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.filter.codec.ProtocolEncoder;
 import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 import server.ServerProperties;
+import tools.FilePrinter;
+import tools.HexTool;
+import tools.StringUtil;
 
 public class MaplePacketEncoder implements ProtocolEncoder {
 
@@ -41,7 +46,23 @@ public class MaplePacketEncoder implements ProtocolEncoder {
 
         if (client != null) {
             final MapleAESOFB send_crypto = client.getSendCrypto();
-            final byte[] input = ((MaplePacket) message).getBytes();
+            final byte[] input = ((byte[]) message);
+            int pHeader = ((input[0]) & 0xFF) + (((input[1]) & 0xFF) << 8);
+            String op = SendPacketOpcode.nameOf(pHeader);
+            if (MapleServerHandler.isLogPackets && !SendPacketOpcode.isSpamHeader(SendPacketOpcode.valueOf(op))) {
+                int packetLen = input.length;
+                String pHeaderStr = Integer.toHexString(pHeader).toUpperCase();
+                pHeaderStr = "0x" + StringUtil.getLeftPaddedStr(pHeaderStr, '0', 4);
+                String tab = "";
+                for (int i = 4; i > op.length() / 8; i--) {
+                    tab += "\t";
+                }
+                String t = packetLen >= 10 ? packetLen >= 100 ? packetLen >= 1000 ? "" : " " : "  " : "   ";
+                final StringBuilder sb = new StringBuilder("[發送]\t" + op + tab + "\t包頭:" + pHeaderStr + t + "[" + packetLen/* + "\r\nCaller: " + Thread.currentThread().getStackTrace()[2] */ + "字元]");
+                System.out.println(sb.toString());
+                sb.append("\r\n\r\n").append(HexTool.toString((byte[]) message)).append("\r\n").append(HexTool.toStringFromAscii((byte[]) message));
+                FilePrinter.print("PacketSend.txt", "\r\n\r\n" + sb.toString() + "\r\n\r\n");
+            }
             final byte[] unencrypted = new byte[input.length];
             System.arraycopy(input, 0, unencrypted, 0, input.length);
             final byte[] ret = new byte[unencrypted.length + 4];
@@ -64,7 +85,7 @@ public class MaplePacketEncoder implements ProtocolEncoder {
                 }
             }
         } else {
-            byte[] input = ((MaplePacket) message).getBytes();
+            byte[] input = ((byte[]) message);
             if (crypt) {
                 for (int i = 0; i < input.length; i++) {
                     input[i] ^= 0x0C;

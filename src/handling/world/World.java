@@ -28,7 +28,7 @@ import client.inventory.MapleInventoryType;
 import client.inventory.MaplePet;
 import client.inventory.PetDataFactory;
 import database.DatabaseConnection;
-import handling.MaplePacket;
+
 import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
 import handling.channel.PlayerStorage;
@@ -577,7 +577,7 @@ public class World {
             }
         }
 
-        public static void guildPacket(int gid, MaplePacket message) {
+        public static void guildPacket(int gid, byte[] message) {
             MapleGuild g = getGuild(gid);
             if (g != null) {
                 g.broadcast(message);
@@ -832,7 +832,7 @@ public class World {
             }
         }
 
-        public static void sendPacket(List<Integer> targetIds, MaplePacket packet, int exception) {
+        public static void sendPacket(List<Integer> targetIds, byte[] packet, int exception) {
             MapleCharacter c;
             for (int i : targetIds) {
                 if (i == exception) {
@@ -849,7 +849,7 @@ public class World {
             }
         }
 
-        public static void sendGuildPacket(int targetIds, MaplePacket packet, int exception, int guildid) {
+        public static void sendGuildPacket(int targetIds, byte[] packet, int exception, int guildid) {
             if (targetIds == exception) {
                 return;
             }
@@ -863,7 +863,7 @@ public class World {
             }
         }
 
-        public static void sendFamilyPacket(int targetIds, MaplePacket packet, int exception, int guildid) {
+        public static void sendFamilyPacket(int targetIds, byte[] packet, int exception, int guildid) {
             if (targetIds == exception) {
                 return;
             }
@@ -1159,7 +1159,7 @@ public class World {
             }
         }
 
-        public static void sendGuild(final MaplePacket packet, final int exceptionId, final int allianceid) {
+        public static void sendGuild(final byte[] packet, final int exceptionId, final int allianceid) {
             final MapleGuildAlliance alliance = getAlliance(allianceid);
             if (alliance != null) {
                 for (int i = 0; i < alliance.getNoGuilds(); i++) {
@@ -1273,8 +1273,8 @@ public class World {
             }
         }
 
-        public static List<MaplePacket> getAllianceInfo(final int allianceid, final boolean start) {
-            List<MaplePacket> ret = new ArrayList<>();
+        public static List<byte[]> getAllianceInfo(final int allianceid, final boolean start) {
+            List<byte[]> ret = new ArrayList<>();
             final MapleGuildAlliance alliance = getAlliance(allianceid);
             if (alliance != null) {
                 if (start) {
@@ -1390,7 +1390,7 @@ public class World {
             }
         }
 
-        public static void familyPacket(int gid, MaplePacket message, int cid) {
+        public static void familyPacket(int gid, byte[] message, int cid) {
             MapleFamily f = getFamily(gid);
             if (f != null) {
                 f.broadcast(message, -1, f.getMFC(cid).getPedigree());

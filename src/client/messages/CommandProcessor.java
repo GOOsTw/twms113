@@ -221,7 +221,7 @@ public class CommandProcessor {
     private static void ShowMsg(MapleClient c, String line, CommandType type) {
         if (c.getPlayer() != null) {
             if (!line.toLowerCase().startsWith("!cngm")) {
-                World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + c.getPlayer().getName() + "(" + c.getPlayer().getId() + ")使用了指令 " + line + " ---在地圖「" + c.getPlayer().getMapId() + "」頻道：" + c.getChannel()).getBytes());
+                World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + c.getPlayer().getName() + "(" + c.getPlayer().getId() + ")使用了指令 " + line + " ---在地圖「" + c.getPlayer().getMapId() + "」頻道：" + c.getChannel()));
             }
         }
         switch (c.getPlayer().getGMLevel()) {

@@ -16,7 +16,7 @@ import client.status.MonsterStatus;
 import client.status.MonsterStatusEffect;
 import constants.SkillType;
 import handling.channel.ChannelServer;
-import handling.MaplePacket;
+
 import handling.MapleServerHandler;
 import handling.world.MapleParty;
 import handling.world.MaplePartyCharacter;
@@ -88,7 +88,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     private final Collection<AttackerEntry> attackers = new LinkedList<>();
     private EventInstanceManager eventInstance;
     private MonsterListener listener = null;
-    private MaplePacket reflectpack = null, nodepack = null;
+    private byte[] reflectpack = null, nodepack = null;
     private final EnumMap<MonsterStatus, MonsterStatusEffect> stati = new EnumMap<>(MonsterStatus.class);
     private final LinkedList<MonsterStatusEffect> poisons = new LinkedList<>();
     private final ReentrantReadWriteLock poisonsLock = new ReentrantReadWriteLock();
@@ -922,7 +922,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         return stats.getEffectiveness(e);
     }
 
-    public final void applyMonsterStatus(final MaplePacket packet) {
+    public final void applyMonsterStatus(final byte[] packet) {
 
         final MapleCharacter con = getController();
         if (con != null) {
@@ -1880,12 +1880,12 @@ public class MapleMonster extends AbstractLoadedMapleLife {
     }
 
     //得到當前節點封包 傳回節點封包
-    public MaplePacket getNodePacket() {
+    public byte[] getNodePacket() {
         return nodepack;
     }
 
     //設定節點封包
-    public void setNodePacket(final MaplePacket np) {
+    public void setNodePacket(final byte[] np) {
         this.nodepack = np;
     }
 

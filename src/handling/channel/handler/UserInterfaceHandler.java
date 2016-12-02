@@ -21,11 +21,9 @@
 package handling.channel.handler;
 
 import client.MapleClient;
-import client.MapleCharacterUtil;
-import constants.ServerConstants;
 import scripting.NPCScriptManager;
-import tools.MaplePacketCreator;
-import tools.data.input.SeekableLittleEndianAccessor;
+import tools.data.LittleEndianAccessor;
+
 
 public class UserInterfaceHandler {
 
@@ -37,7 +35,7 @@ public class UserInterfaceHandler {
         }
     }
 
-    public static final void XMASSurprise(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void XMASSurprise(final LittleEndianAccessor slea, final MapleClient c) {
         c.getPlayer().dropMessage(1,"月光寶盒尚未開放。");
     }
 }

@@ -40,14 +40,14 @@ import server.MapleInventoryManipulator;
 import server.MerchItemPackage;
 import server.maps.MapleMap;
 import tools.FilePrinter;
-import tools.MaplePacketCreator;
 import tools.Pair;
+import tools.data.LittleEndianAccessor;
 import tools.packet.PlayerShopPacket;
-import tools.data.input.SeekableLittleEndianAccessor;
+
 
 public class HiredMerchantHandler {
 
-    public static final void UseHiredMerchant(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void UseHiredMerchant(final LittleEndianAccessor slea, final MapleClient c) {
 
         if (c.getPlayer().getMap().allowPersonalShop() && c.getPlayer().getMap() != null) {
             final byte state = checkExistance(c.getPlayer().getAccountID(), c.getPlayer().getId());
@@ -92,11 +92,11 @@ public class HiredMerchantHandler {
         }
     }
 
-    public static final void handleRemote(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void handleRemote(final LittleEndianAccessor slea, final MapleClient c) {
         //尚未處理精靈商人遠端遙控器
     }
 
-    public static final void MerchantItemStore(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void MerchantItemStore(final LittleEndianAccessor slea, final MapleClient c) {
         if (c.getPlayer() == null) {
             return;
         }

@@ -28,14 +28,12 @@ import handling.channel.ChannelServer;
 import handling.world.MapleMessenger;
 import handling.world.MapleMessengerCharacter;
 import handling.world.World;
-import static handling.world.World.Alliance.getAlliance;
-import handling.world.guild.MapleGuild;
-import handling.world.guild.MapleGuildAlliance;
 import server.ServerConfig;
 import server.maps.MapleMap;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
-import tools.data.input.SeekableLittleEndianAccessor;
+import tools.data.LittleEndianAccessor;
+
 
 public class ChatHandler {
 
@@ -124,7 +122,7 @@ public class ChatHandler {
         }
     }
 
-    public static final void Others(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void Others(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         final int type = slea.readByte();
         final byte numRecipients = slea.readByte();
         int recipients[] = new int[numRecipients];
@@ -211,7 +209,7 @@ public class ChatHandler {
         }
     }
 
-    public static final void Messenger(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void Messenger(final LittleEndianAccessor slea, final MapleClient c) {
         String input;
         MapleMessenger messenger = c.getPlayer().getMessenger();
         byte mode = slea.readByte();
@@ -293,7 +291,7 @@ public class ChatHandler {
         }
     }
 
-    public static final void WhisperFind(final SeekableLittleEndianAccessor slea, final MapleClient c) {
+    public static final void WhisperFind(final LittleEndianAccessor slea, final MapleClient c) {
         final byte mode = slea.readByte();
 
         switch (mode) {

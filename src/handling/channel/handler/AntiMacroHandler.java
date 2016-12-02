@@ -12,7 +12,8 @@ import client.inventory.MapleInventoryType;
 import handling.world.MapleAntiMacro;
 import server.MapleInventoryManipulator;
 import tools.MaplePacketCreator;
-import tools.data.input.LittleEndianAccessor;
+import tools.data.LittleEndianAccessor;
+
 
 /**
  *

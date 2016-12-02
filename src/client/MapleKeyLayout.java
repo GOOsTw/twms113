@@ -28,10 +28,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.io.Serializable;
 
-import tools.data.output.MaplePacketLittleEndianWriter;
 
-import database.DatabaseConnection;
 import tools.Pair;
+import tools.data.MaplePacketLittleEndianWriter;
 
 public class MapleKeyLayout implements Serializable {
 

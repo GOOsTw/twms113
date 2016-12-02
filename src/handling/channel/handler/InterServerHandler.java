@@ -28,7 +28,7 @@ import client.MapleClient;
 import client.MapleCoolDownValueHolder;
 import client.MapleQuestStatus;
 import client.SkillFactory;
-import handling.MaplePacket;
+
 import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
 import handling.login.LoginServer;
@@ -48,8 +48,9 @@ import server.life.MapleMonster;
 import server.maps.FieldLimitType;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
+import tools.data.LittleEndianAccessor;
 import tools.packet.FamilyPacket;
-import tools.data.input.SeekableLittleEndianAccessor;
+
 
 public class InterServerHandler {
 
@@ -198,9 +199,9 @@ public class InterServerHandler {
                 c.sendPacket(MaplePacketCreator.showGuildInfo(player));
                 final MapleGuild gs = World.Guild.getGuild(player.getGuildId());
                 if (gs != null) {
-                    final List<MaplePacket> packetList = World.Alliance.getAllianceInfo(gs.getAllianceId(), true);
+                    final List<byte[]> packetList = World.Alliance.getAllianceInfo(gs.getAllianceId(), true);
                     if (packetList != null) {
-                        for (MaplePacket pack : packetList) {
+                        for (byte[] pack : packetList) {
                             if (pack != null) {
                                 c.sendPacket(pack);
                             }
@@ -248,7 +249,7 @@ public class InterServerHandler {
         player.spawnSavedPets();
     }
 
-    public static final void ChangeChannel(final SeekableLittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+    public static final void ChangeChannel(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
         if (!chr.isAlive() || chr.getEventInstance() != null || chr.getMap() == null || FieldLimitType.ChannelSwitch.check(chr.getMap().getFieldLimit())) {
             c.sendPacket(MaplePacketCreator.enableActions());
             return;

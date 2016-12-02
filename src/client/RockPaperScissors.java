@@ -86,7 +86,7 @@ public class RockPaperScissors {
         int fuck = round + 1;
         if (win) {
             MapleInventoryManipulator.addById(c, 4031332 + round, (short) 1, "", null, 0);
-            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("『猜拳PK』"+  c.getPlayer().getName() + "從猜拳王贏得了" + fuck + "場勝利！").getBytes());
+            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("『猜拳PK』"+  c.getPlayer().getName() + "從猜拳王贏得了" + fuck + "場勝利！"));
         } else if (round == 0) {
             c.getPlayer().gainMeso(500, true, true, true);
         }

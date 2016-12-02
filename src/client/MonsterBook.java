@@ -33,7 +33,7 @@ import java.io.Serializable;
 import database.DatabaseConnection;
 import server.MapleItemInformationProvider;
 import tools.MaplePacketCreator;
-import tools.data.output.MaplePacketLittleEndianWriter;
+import tools.data.MaplePacketLittleEndianWriter;
 import tools.packet.MonsterBookPacket;
 
 public class MonsterBook implements Serializable {
