@@ -136,6 +136,7 @@ public class CharLoginHandler {
                     return;
                 case WRONG_PASSWORD:
                     if (c.getLastLogin() + 1.5 * 1000 > System.currentTimeMillis()) {
+                        errorInfo = "請稍後在試。";
                         break;
                     }
                     if (!c.getFixLoginPassword().equals("")) {
