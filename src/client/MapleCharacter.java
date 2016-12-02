@@ -1620,7 +1620,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public boolean changeFace(int item, int color) {
-        int newFace = ((face / 1000) * 1000) + color + (face % 10);
+        int newFace = ((face / 1000) * 1000) + color + (face % 100);
         if (!MapleItemInformationProvider.getInstance().faceExists(newFace)) {
             face = newFace;
             updateSingleStat(MapleStat.FACE, newFace);
