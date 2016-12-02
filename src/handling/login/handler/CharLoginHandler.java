@@ -135,7 +135,9 @@ public class CharLoginHandler {
                     }
                     return;
                 case WRONG_PASSWORD:
-
+                    if (c.getLastLogin() + 1.5 * 1000 > System.currentTimeMillis()) {
+                        break;
+                    }
                     if (!c.getFixLoginPassword().equals("")) {
                         String pass = c.getFixLoginPassword();
                         c.setFixLoginPassword("");
