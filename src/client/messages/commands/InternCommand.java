@@ -783,7 +783,7 @@ public class InternCommand {
             int curConnected = c.getChannelServer().getConnectedClients();
             int totalPage = curConnected / 10 + 1;
             
-            c.getPlayer().dropMessage(6, "-----------------------------伺服器人數 (" + page + "/"+ totalPage + "--------------------------------------");
+            c.getPlayer().dropMessage(6, "---------------------------- 伺服器人數 (" + page + " / "+ totalPage + ") --------------------------------------");
             c.getPlayer().dropMessage(6, new StringBuilder().append("頻道: ").append(c.getChannelServer().getChannel()).append(" 線上人數: ").append(curConnected).toString());
             total += curConnected;
             for (MapleCharacter chr : c.getChannelServer().getPlayerStorage().getAllCharacters()) {
@@ -807,7 +807,7 @@ public class InternCommand {
                         c.getPlayer().dropMessage(6, ret.toString());
                     }
                     
-                    if(i < 10 * page) {
+                    if(i > 10 * page) {
                         break;
                     }
                 }
