@@ -53,7 +53,6 @@ import tools.AttackPair;
 import tools.Pair;
 import tools.data.LittleEndianAccessor;
 
-
 public class DamageParse {
 
     public static void applyAttack(final AttackInfo attack, final ISkill theSkill, final MapleCharacter player, int attackCount, final double maxDamagePerMonster, final MapleStatEffect effect, final AttackType attack_type) {
@@ -109,8 +108,8 @@ public class DamageParse {
                     player.ban(player.getName() + "技能攻擊次數異常", true, true, false);
                     player.getClient().disconnect(true, false);
                     String reason = "使用違法程式練功";
-                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice( "[封鎖系統] " + player.getName() + " 因為" + reason + "而被管理員永久停權。"));
-                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice( "[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") 攻擊次數異常已自動封鎖。 玩家攻擊次數 " + attack.hits + " 服務端判斷正常攻擊次數 " + last + " 技能ID " + attack.skill));
+                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + player.getName() + " 因為" + reason + "而被管理員永久停權。"));
+                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") 攻擊次數異常已自動封鎖。 玩家攻擊次數 " + attack.hits + " 服務端判斷正常攻擊次數 " + last + " 技能ID " + attack.skill));
                     return;
                 }
             }
@@ -124,8 +123,8 @@ public class DamageParse {
                     player.ban(player.getName() + "打怪數量異常", true, true, false);
                     player.getClient().disconnect(true, false);
                     String reason = "使用違法程式練功";
-                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice( "[封鎖系統] " + player.getName() + " 因為" + reason + "而被管理員永久停權。"));
-                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice( "[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "攻擊怪物數量異常。 " + "封包怪物量 " + attack.targets + " 服務端怪物量 " + CheckCount + " 技能ID " + attack.skill));
+                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + player.getName() + " 因為" + reason + "而被管理員永久停權。"));
+                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "攻擊怪物數量異常。 " + "封包怪物量 " + attack.targets + " 服務端怪物量 " + CheckCount + " 技能ID " + attack.skill));
                     return;
                 }
             }
@@ -223,8 +222,8 @@ public class DamageParse {
                     if (!GameConstants.isElseSkill(attack.skill)) {
                         if (GameConstants.Novice_Skill(attack.skill)) {//新手技能
                             if (eachd > 40) {
-                                World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice( "[封鎖系統] " + player.getName() + " 因為傷害異常而被管理員永久停權。"));
-                                World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice( "[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 40 本次傷害 " + eachd + " 技能ID " + attack.skill));
+                                World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + player.getName() + " 因為傷害異常而被自動封鎖偵測導致管理員永久停權。"));
+                                World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 40 本次傷害 " + eachd + " 技能ID " + attack.skill));
                                 player.ban(player.getName() + "傷害異常", true, true, false);
                                 player.getClient().disconnect(true, false);
                                 return;
@@ -254,9 +253,9 @@ public class DamageParse {
                                 ban = false;
                             }
                             if (ban) {
-                                World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice( "[封鎖系統] " + player.getName() + " 因為傷害異常而被管理員永久停權。"));
-                                World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice( "[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 " + atk + " 本次傷害 " + eachd + " 技能ID " + attack.skill));
-                                player.ban(player.getName() + "傷害異常", true, true, false);
+                                World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + player.getName() + " 因為傷害異常而被自動封鎖偵測導致永久停權。"));
+                                World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 " + atk + " 本次傷害 " + eachd + " 技能ID " + attack.skill));
+                                player.ban(" (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 " + atk + " 本次傷害 " + eachd + " 技能ID " + attack.skill, true, true, false);
                                 player.getClient().disconnect(true, false);
                                 return;
                             }
@@ -273,9 +272,9 @@ public class DamageParse {
                                 atk = 1000;
                                 if (eachd >= atk && eachd > maxDamagePerHit) {
                                     ban = true;
-                                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice( "[封鎖系統] " + player.getName() + " 因為傷害異常而被管理員永久停權。"));
-                                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice( "[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 " + atk + " 本次傷害 " + eachd + " 技能ID " + attack.skill));
-                                    player.ban(player.getName() + "傷害異常", true, true, false);
+                                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + player.getName() + " 因為傷害異常而被自動封鎖偵測導致管理員永久停權。"));
+                                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 " + atk + " 本次傷害 " + eachd + " 技能ID " + attack.skill));
+                                    player.ban(player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 " + atk + " 本次傷害 " + eachd + " 技能ID " + attack.skill, true, true, false);
                                     player.getClient().disconnect(true, false);
                                     return;
                                 }
@@ -572,8 +571,8 @@ public class DamageParse {
                 player.ban(player.getName() + "技能攻擊次數異常", true, true, false);
                 player.getClient().disconnect(true, false);
                 String reason = "使用違法程式練功";
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice( "[封鎖系統] " + player.getName() + " 因為" + reason + "而被管理員永久停權。"));
-                World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice( "[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") 攻擊次數異常已自動封鎖。 玩家攻擊次數 " + attack.hits + " 服務端判斷正常攻擊次數 " + last + " 技能ID " + attack.skill));
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + player.getName() + " 因為" + reason + "而被管理員永久停權。"));
+                World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") 攻擊次數異常已自動封鎖。 玩家攻擊次數 " + attack.hits + " 服務端判斷正常攻擊次數 " + last + " 技能ID " + attack.skill));
                 return;
             }
         }
@@ -586,8 +585,8 @@ public class DamageParse {
                 player.ban(player.getName() + "打怪數量異常", true, true, false);
                 player.getClient().disconnect(true, false);
                 String reason = "使用違法程式練功";
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice( "[封鎖系統] " + player.getName() + " 因為" + reason + "而被管理員永久停權。"));
-                World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice( "[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "攻擊怪物數量異常。 " + "封包怪物量 " + attack.targets + " 服務端怪物量 " + CheckCount + " 技能ID " + attack.skill));
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + player.getName() + " 因為" + reason + "而被管理員永久停權。"));
+                World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "攻擊怪物數量異常。 " + "封包怪物量 " + attack.targets + " 服務端怪物量 " + CheckCount + " 技能ID " + attack.skill));
                 return;
             }
         }
@@ -670,8 +669,8 @@ public class DamageParse {
                     overallAttackCount++;
                     if (GameConstants.Novice_Skill(attack.skill)) {//新手技能
                         if (eachd > 40) {
-                            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice( "[封號系統] " + player.getName() + " 因為傷害異常而被永久停權。"));
-                            World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice( "[封號系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 40 本次傷害 " + eachd + " 技能ID " + attack.skill));
+                            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封號系統] " + player.getName() + " 因為傷害異常而被永久停權。"));
+                            World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[封號系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 40 本次傷害 " + eachd + " 技能ID " + attack.skill));
                             player.ban("傷害異常", true, true, false);
                             player.getClient().disconnect(true, false);
                             return;
@@ -697,14 +696,14 @@ public class DamageParse {
                             ban = false;
                         }
                         if (ban) {
-                            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice( "[封鎖系統] " + player.getName() + " 因為傷害異常而被管理員永久停權。"));
-                            World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice( "[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 " + atk + " 本次傷害 " + eachd + " 技能ID " + attack.skill));
+                            World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + player.getName() + " 因為傷害異常而被自動封鎖偵測導致管理員永久停權。"));
+                            World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 " + atk + " 本次傷害 " + eachd + " 技能ID " + attack.skill));
                             player.ban(player.getName() + "傷害異常", true, true, false);
                             player.getClient().disconnect(true, false);
                             return;
                         }
                     }
-                    
+
                     if (fixeddmg != -1) {
                         eachd = monsterstats.getOnlyNoramlAttack() ? 0 : fixeddmg; // Magic is always not a normal attack
                     } else if (monsterstats.getOnlyNoramlAttack()) {
