@@ -5990,11 +5990,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public void changeChannel(final int channel) {
         final ChannelServer toch = ChannelServer.getInstance(channel);
 
-        int res = this.saveToDB(false, false);
+        this.saveToDB(false, false);
         expirationTask(true, false);
-        if (res == 1) {
-            dropMessage(5, "角色保存成功！");
-        }
         if (client.getPlayer().isTestingDPS()) {
             final MapleMonster mm = MapleLifeFactory.getMonster(9001007);
             map.killMonster1(mm);
