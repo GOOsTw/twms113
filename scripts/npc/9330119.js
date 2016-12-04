@@ -28,8 +28,8 @@ function action(mode, _type, selection) {
                 var gashapon = cm.getGashapon();
                 if(gashapon != null) {
                     if (cm.canHold()) {
-            		cm.gainItem(requiredItem, -1);
-			var gashaponItem = gashapon.generateReward();
+						cm.gainItem(requireItem, -1);
+						var gashaponItem = gashapon.generateReward();
                         var item = MapleInventoryManipulator.addbyId_Gachapon(cm.getPlayer().getClient(), gashaponItem.getItemId(), 1);
                         if(gashaponItem != null) { 
                             if(gashaponItem.canShowMsg())
