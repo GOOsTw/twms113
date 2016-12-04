@@ -390,54 +390,17 @@ public class PlayerHandler {
         }
     }
 
-    public static final void AranCombo(final MapleClient c, final MapleCharacter chr) {
+    public static final void AranCombo(final MapleClient c, final MapleCharacter chr, int toAdd) {
         if (chr != null && chr.getJob() >= 2000 && chr.getJob() <= 2112) {
             short combo = chr.getCombo();
-            final long curr = System.currentTimeMillis();
-            if (combo > 0 && (curr - chr.getLastComboTime()) > 7000) {
+            long curr = System.currentTimeMillis();
+
+            if ((combo > 0) && (curr - chr.getLastComboTime() > 4000L)) {
                 combo = 0;
-            } else {
-                if (combo == 9 && c.getPlayer().getQuestStatus(10370) == 0) {
-                    c.getPlayer().giftMedal(1142134);
-                    MapleQuest.getInstance(10370).forceComplete(c.getPlayer(), 0);
-                    c.getPlayer().dropMessage(5, "您剛才拿到了連續技高手勳章。");
-                }
-                if (combo == 4999 && c.getPlayer().getQuestStatus(10371) == 0) {
-                    c.getPlayer().giftMedal(1142135);
-                    MapleQuest.getInstance(10371).forceComplete(c.getPlayer(), 0);
-                    c.getPlayer().dropMessage(5, "您剛才拿到了連續技達人勳章。");
-                }
-                if (combo == 14999 && c.getPlayer().getQuestStatus(10372) == 0) {
-                    c.getPlayer().giftMedal(1142136);
-                    MapleQuest.getInstance(10372).forceComplete(c.getPlayer(), 0);
-                    c.getPlayer().dropMessage(5, "您剛才拿到了連續技之王勳章。");
-                }
             }
-
-            if (combo < 30000) {
-                combo++;
-            }
-            chr.setLastCombo(curr);
+            combo = (short) Math.min(30000, combo + toAdd);
+            chr.setLastComboTime(curr);
             chr.setCombo(combo);
-
-            c.sendPacket(MaplePacketCreator.updateCombo(combo));
-
-            switch (combo) { // Hackish method xD
-                case 10:
-                case 20:
-                case 30:
-                case 40:
-                case 50:
-                case 60:
-                case 70:
-                case 80:
-                case 90:
-                case 100:
-                    if (chr.getSkillLevel(21000000) >= (combo / 10)) {
-                        SkillFactory.getSkill(21000000).getEffect(combo / 10).applyComboBuff(chr, combo);
-                    }
-                    break;
-            }
         }
     }
 
@@ -1036,7 +999,7 @@ public class PlayerHandler {
         Point lastPoint = new Point(startPos);
         for (LifeMovementFragment mov : res) {
             if (chr.isShowDebugInfo()) {
-                chr.dropMessage("移動到: " + mov.getPosition().x + "," + mov.getPosition().y +", 距離 = " + mov.getPosition().distance(lastPoint));
+                chr.dropMessage("移動到: " + mov.getPosition().x + "," + mov.getPosition().y + ", 距離 = " + mov.getPosition().distance(lastPoint));
             }
             lastPoint = mov.getPosition();
         }

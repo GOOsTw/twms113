@@ -58,6 +58,7 @@ import client.anticheat.CheatTracker;
 import client.inventory.Equip;
 import client.inventory.ModifyInventory;
 import constants.ServerConstants;
+import constants.SkillType;
 import database.DatabaseConnection;
 import database.DatabaseException;
 import handling.channel.ChannelServer;
@@ -1822,7 +1823,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
         stats.recalcLocalStats();
         if (this.isShowDebugInfo()) {
-            this.dropMessage(6, "[系統提示] 使用了 BUFF 來源 :" + effect.getName() + "(" + effect.getSourceId() + ")");
+            this.dropMessage(6, "[系統提示] 使用了 BUFF 來源 :" + effect.getName() + "(" + effect.getSourceId() + ") 時間 :" + localDuration/1000 + "秒");
             for (Pair<MapleBuffStat, Integer> buf : statups) {
                 this.dropMessage(6, "[系統提示] " + buf.getLeft().toString() + "(0x" + HexTool.toString(buf.getLeft().getValue()) + ")");
             }
@@ -1842,6 +1843,11 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     private boolean unRegisterBuffStats(List<MapleBuffStat> stats) {
+        if (!this.isClone() && this.isShowDebugInfo()) {
+            for (MapleBuffStat stat : stats) {
+                this.dropMessage(6, "CancelBuff : " + stat.toString());
+            }
+        }
         boolean clonez = false;
         List<MapleBuffStatValueHolder> effectsToCancel = new ArrayList<>(stats.size());
         for (MapleBuffStat stat : stats) {
@@ -5056,13 +5062,37 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
     public void setCombo(final short combo) {
         this.combo = combo;
+        getClient().sendPacket(MaplePacketCreator.updateCombo(combo));
+        if (combo % 10 == 0 && combo >= 10 && combo <= 100) {
+            if (getSkillLevel(SkillType.狂狼勇士1.矛之鬥氣) < combo / 10) {
+                return;
+            }
+            if (combo == 9 && getQuestStatus(10370) == 0) {
+                giftMedal(1142134);
+                MapleQuest.getInstance(10370).forceComplete(this, 0);
+                dropMessage(5, "您剛才拿到了連續技高手勳章。");
+            }
+            if (combo == 4999 && getQuestStatus(10371) == 0) {
+                giftMedal(1142135);
+                MapleQuest.getInstance(10371).forceComplete(this, 0);
+                dropMessage(5, "您剛才拿到了連續技達人勳章。");
+            }
+            if (combo == 14999 && getQuestStatus(10372) == 0) {
+                giftMedal(1142136);
+                MapleQuest.getInstance(10372).forceComplete(this, 0);
+                dropMessage(5, "您剛才拿到了連續技之王勳章。");
+            }
+            SkillFactory.getSkill(SkillType.狂狼勇士1.矛之鬥氣).getEffect(combo / 10).applyComboBuff(this, combo);
+        } else if (combo < 10) {
+            SkillFactory.getSkill(SkillType.狂狼勇士1.矛之鬥氣).getEffect(combo / 10).applyComboBuff(this, (short) 0);
+        }
     }
 
     public final long getLastComboTime() {
         return lastCombo;
     }
 
-    public void setLastCombo(final long lastComboTime) {
+    public void setLastComboTime(final long lastComboTime) {
         this.lastCombo = lastComboTime;
     }
 

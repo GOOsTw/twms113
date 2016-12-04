@@ -549,7 +549,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 AntiMacroHandler.OldAntiMacroQuestion(slea, c, c.getPlayer());
                 break;
             case ARAN_COMBO:
-                PlayerHandler.AranCombo(c, c.getPlayer());
+                PlayerHandler.AranCombo(c, c.getPlayer(), 1);
                 break;
             case CP_UserCalcDamageStatSetRequest://wat does it do?
                 break;

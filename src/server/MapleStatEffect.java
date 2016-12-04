@@ -992,8 +992,8 @@ public class MapleStatEffect implements Serializable {
     public final void applyComboBuff(final MapleCharacter applyto, short combo) {
         final long starttime = System.currentTimeMillis();
         final List<Pair<MapleBuffStat, Integer>> stat = Collections.singletonList(new Pair<>(MapleBuffStat.ARAN_COMBO, (int) combo));
-        applyto.getClient().sendPacket(MaplePacketCreator.giveBuff(sourceid, 10 * 1000, stat, this)); // Hackish timing, todo find out
-        applyto.registerEffect(this, starttime, 10 * 1000, applyto.getId());
+        applyto.getClient().sendPacket(MaplePacketCreator.giveBuff(sourceid, 99999, stat, this));
+        applyto.registerEffect(this, starttime, 99999, applyto.getId());
     }
 
     public final void applyEnergyBuff(final MapleCharacter applyto, final boolean infinity) {

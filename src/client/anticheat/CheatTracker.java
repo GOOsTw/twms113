@@ -129,7 +129,7 @@ public class CheatTracker {
             打怪++;
             registerOffense(CheatingOffense.攻擊速度過快_伺服器端, "攻擊速度異常，技能: " + skillId + " check: " + (tickCount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay);
         }
-        this.updateTick(tickCount);
+        this.updateAttackTick(tickCount);
     }
 
     /**
@@ -619,7 +619,7 @@ public class CheatTracker {
 
             if (chr.get() != null) {
                 if (chr.get().isShowDebugInfo()) {
-                    chr.get().dropMessage(5, "怪物方向數值 : " + this.sameDirectionTimes);
+                    //chr.get().dropMessage(5, "怪物方向數值 : " + this.sameDirectionTimes);
                 }
             }
         } catch (Exception ex) {
