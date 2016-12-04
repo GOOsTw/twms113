@@ -51,7 +51,6 @@ import tools.MaplePacketCreator;
 import tools.data.LittleEndianAccessor;
 import tools.packet.FamilyPacket;
 
-
 public class InterServerHandler {
 
     private static final boolean isCSOpen = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.cashshop.enable", "false"));
@@ -133,11 +132,11 @@ public class InterServerHandler {
             return;
         }
 
-		MapleClient oldClient = World.Client.getClient(player.getAccountID());
+        MapleClient oldClient = World.Client.getClient(player.getAccountID());
         if (oldClient != null) {
             oldClient.disconnect(true, false);
-            client.setReceiving(false);
-			client.disconnect(false, false);
+            c.setReceiving(false);
+            c.disconnect(false, false);
             return;
         }
 
