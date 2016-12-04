@@ -14,6 +14,7 @@ import client.inventory.IItem;
 import client.inventory.ItemFlag;
 import client.inventory.MapleInventoryIdentifier;
 import client.inventory.MapleInventoryType;
+import client.inventory.MaplePet;
 import client.inventory.MapleRing;
 import client.inventory.ModifyInventory;
 import client.messages.CommandProcessorUtil;
@@ -1483,6 +1484,92 @@ public class AdminCommand {
         @Override
         public String getMessage() {
             return new StringBuilder().append("!checkgash <玩家名稱> - 檢查點數").toString();
+        }
+    }
+
+    public static class Drop extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            final int itemId = Integer.parseInt(splitted[1]);
+            final short quantity = (short) CommandProcessorUtil.getOptionalIntArg(splitted, 2, 1);
+            MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+            if (GameConstants.寵物(itemId)) {
+                c.getPlayer().dropMessage(5, "寵物請到購物商城購買.");
+            } else if (!ii.itemExists(itemId)) {
+                c.getPlayer().dropMessage(5, itemId + " - 物品不存在");
+            } else {
+                IItem toDrop;
+                if (GameConstants.getInventoryType(itemId) == MapleInventoryType.EQUIP) {
+
+                    toDrop = ii.randomizeStats((Equip) ii.getEquipById(itemId));
+                } else {
+                    toDrop = new client.inventory.Item(itemId, (byte) 0, (short) quantity, (byte) 0);
+                }
+                toDrop.setOwner(c.getPlayer().getName());
+                toDrop.setGMLog(c.getPlayer().getName());
+
+                c.getPlayer().getMap().spawnItemDrop(c.getPlayer(), c.getPlayer(), toDrop, c.getPlayer().getPosition(), true, true);
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!dropitem <道具ID> - 掉落道具").toString();
+        }
+    }
+
+    public static class Item extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            final int itemId = Integer.parseInt(splitted[1]);
+            final short quantity = (short) CommandProcessorUtil.getOptionalIntArg(splitted, 2, 1);
+
+            if (!c.getPlayer().isAdmin()) {
+                for (int i : GameConstants.itemBlock) {
+                    if (itemId == i) {
+                        c.getPlayer().dropMessage(5, "很抱歉，此物品您的GM等級無法呼叫.");
+                        return true;
+                    }
+                }
+            }
+
+            MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+            if (GameConstants.寵物(itemId)) {
+                MaplePet pet = MaplePet.createPet(itemId, MapleInventoryIdentifier.getInstance());
+                if (pet != null) {
+                    MapleInventoryManipulator.addById(c, itemId, (short) 1, c.getPlayer().getName(), pet, ii.getPetLife(itemId));
+                }
+            } else if (!ii.itemExists(itemId)) {
+                c.getPlayer().dropMessage(5, itemId + " - 物品不存在");
+            } else {
+                IItem item;
+                byte flag = 0;
+                flag |= ItemFlag.LOCK.getValue();
+
+                if (GameConstants.getInventoryType(itemId) == MapleInventoryType.EQUIP) {
+                    item = ii.randomizeStats((Equip) ii.getEquipById(itemId));
+                    item.setFlag(flag);
+
+                } else {
+                    item = new client.inventory.Item(itemId, (byte) 0, quantity, (byte) 0);
+                    if (GameConstants.getInventoryType(itemId) != MapleInventoryType.USE) {
+                        item.setFlag(flag);
+                    }
+                }
+                item.setOwner(c.getPlayer().getName());
+                item.setGMLog(c.getPlayer().getName());
+
+                MapleInventoryManipulator.addbyItem(c, item);
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!item <道具ID> - 取得道具").toString();
         }
     }
 
