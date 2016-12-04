@@ -13,7 +13,12 @@ var selected;
 var statsSel;
 
 function start() {
-    status = -1;
+	if(cm.getPlayer().getGMLevel() < 5) {
+		cm.sendOk("只有終極管理員才能使用");
+		cm.dispose();
+		return;
+	}
+	status = -1;
     action(1, 0, 0);
 }
 
