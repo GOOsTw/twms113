@@ -139,7 +139,7 @@ public class CharLoginHandler {
                         errorInfo = "請稍後在試。";
                         break;
                     }
-                    if (!c.getFixLoginPassword().equals("")) {
+                    /*if (!c.getFixLoginPassword().equals("")) {
                         String pass = c.getFixLoginPassword();
                         c.setFixLoginPassword("");
                         if (pass.equals(password)) {
@@ -148,13 +148,13 @@ public class CharLoginHandler {
                             }
                             if (World.Client.getClient(c.getAccID()) != null) {
                                 MapleClient oldClient = World.Client.getClient(c.getAccID());
-                                oldClient.disconnect(true, oldClient.getChannel() > 0);
+                                oldClient.disconnect(true, oldClient.getChannel() < 0);
                                 World.Client.removeClient(c.getAccID());
                             }
                             c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
                             errorInfo = "解卡成功，重新輸入帳密登入";
                         }
-                    }
+                    }*/
                     break;
                 case LOGIN_DELAY:
 
@@ -178,12 +178,12 @@ public class CharLoginHandler {
                     }
                     break;
                 case ALREADY_LOGGED_IN:
-                    if (c.getLastLogin() + 3 * 1000 > System.currentTimeMillis()) {
+                    /*if (c.getLastLogin() + 3 * 1000 > System.currentTimeMillis()) {
                         break;
                     }
                     String nextPass = String.valueOf(Randomizer.nextInt()).replace("-", "");
                     c.setFixLoginPassword(nextPass);
-                    errorInfo = "解卡密碼 : " + nextPass;
+                    errorInfo = "解卡密碼 : " + nextPass;*/
                     break;
                 case SYSTEM_ERROR:
                     errorInfo = "系統錯誤(錯誤代碼:0)";
