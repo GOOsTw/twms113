@@ -259,59 +259,6 @@ public class GMCommand {
         }
     }
 
-    public static class Item extends CommandExecute {
-
-        @Override
-        public boolean execute(MapleClient c, String splitted[]) {
-            final int itemId = Integer.parseInt(splitted[1]);
-            final short quantity = (short) CommandProcessorUtil.getOptionalIntArg(splitted, 2, 1);
-
-            if (!c.getPlayer().isAdmin()) {
-                for (int i : GameConstants.itemBlock) {
-                    if (itemId == i) {
-                        c.getPlayer().dropMessage(5, "很抱歉，此物品您的GM等級無法呼叫.");
-                        return true;
-                    }
-                }
-            }
-
-            MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
-            if (GameConstants.寵物(itemId)) {
-                MaplePet pet = MaplePet.createPet(itemId, MapleInventoryIdentifier.getInstance());
-                if (pet != null) {
-                    MapleInventoryManipulator.addById(c, itemId, (short) 1, c.getPlayer().getName(), pet, ii.getPetLife(itemId));
-                }
-            } else if (!ii.itemExists(itemId)) {
-                c.getPlayer().dropMessage(5, itemId + " - 物品不存在");
-            } else {
-                IItem item;
-                byte flag = 0;
-                flag |= ItemFlag.LOCK.getValue();
-
-                if (GameConstants.getInventoryType(itemId) == MapleInventoryType.EQUIP) {
-                    item = ii.randomizeStats((Equip) ii.getEquipById(itemId));
-                    item.setFlag(flag);
-
-                } else {
-                    item = new client.inventory.Item(itemId, (byte) 0, quantity, (byte) 0);
-                    if (GameConstants.getInventoryType(itemId) != MapleInventoryType.USE) {
-                        item.setFlag(flag);
-                    }
-                }
-                item.setOwner(c.getPlayer().getName());
-                item.setGMLog(c.getPlayer().getName());
-
-                MapleInventoryManipulator.addbyItem(c, item);
-            }
-            return true;
-        }
-
-        @Override
-        public String getMessage() {
-            return new StringBuilder().append("!item <道具ID> - 取得道具").toString();
-        }
-    }
-
     public static class WarpHere extends CommandExecute {
 
         @Override
