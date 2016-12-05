@@ -82,7 +82,7 @@ public class FixLoginManager {
                 }
                 this.passwords.remove(client.getAccID());
             }
-            int seed = 1000 + (Math.abs(Randomizer.nextInt()) % 8000);
+            int seed = 10000 + (Math.abs(Randomizer.nextInt()) % 80000);
             nextPass = String.valueOf(seed);
             this.passwords.put(client.getAccID(), new FixLoginEntry(client.getAccID(),
                     nextPass, client.getSession().getRemoteAddress().toString(), System.currentTimeMillis()));
