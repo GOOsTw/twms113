@@ -93,7 +93,6 @@ public class MapleClient {
     private MapleCharacter player;
     private int accountId = 1;
     private String accountName;
-    private String fixLoginPassword = "";
     private int world = 0;
     private int channel = 1;
     private int birthday;
@@ -1553,14 +1552,6 @@ public class MapleClient {
 
     public void setReceiving(boolean m) {
         this.receiving = m;
-    }
-
-    public String getFixLoginPassword() {
-        return fixLoginPassword;
-    }
-
-    public void setFixLoginPassword(String fixLoginPassword) {
-        this.fixLoginPassword = fixLoginPassword;
     }
 
     public long getLastLogin() {
