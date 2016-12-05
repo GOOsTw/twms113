@@ -23,7 +23,7 @@ function action(mode, type, selection) {
         if (!cm.isQuestFinished(29934)) {
             NewPlayer();
         }
-        cm.sendSimple("歡迎來到啾咪谷~\r\n#b#L2#我要打開藍色小箱子#l\r\n#b#L6#我要抽月光寶盒#l");
+        cm.sendSimple("歡迎來到邊緣谷~\r\n#b#L2#我要打開藍色小箱子#l\r\n#b#L6#我要抽月光寶盒#l");
     } else if (status == 1) {
         if (selection == 2) {
             if (cm.haveItem(4031307, 1) == true) {
@@ -43,6 +43,7 @@ function action(mode, type, selection) {
 }
 
 function NewPlayer() {
+
     if (!cm.haveItem(5000007, 1, true, true) && cm.canHold(5000007, 1)) {
         cm.gainPet(5000007, "黑色小豬", 1, 0, 100, 45, 0);
     }
