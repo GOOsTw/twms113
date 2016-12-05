@@ -9,7 +9,6 @@ import client.MapleClient;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import server.Randomizer;
 import tools.FilePrinter;
 import tools.MaplePacketCreator;
@@ -41,6 +40,8 @@ public class FixLoginManager {
 
     private static FixLoginManager instance;
 
+    private static final int PERIOD_GET_PWD = 20;
+
     public static FixLoginManager getInstance() {
         if (instance == null) {
             instance = new FixLoginManager();
@@ -53,7 +54,7 @@ public class FixLoginManager {
         this.passwords = new HashMap<>();
         this.lock = new ReentrantLock();
     }
-   
+
     public boolean hasPassword(MapleClient client) {
         boolean ret = false;
         this.lock.lock();
@@ -70,13 +71,16 @@ public class FixLoginManager {
         this.lock.lock();
         try {
             if (this.passwords.containsKey(client.getAccID())) {
+                FixLoginEntry entry = this.passwords.get(client.getAccID());
                 // 處理存在
-                long period = System.currentTimeMillis() - this.passwords.get(client.getAccID()).lastupdate;
-                if (period < 5 * 1000) {
-                    client.sendPacket(MaplePacketCreator.getPopupMsg("請 " + ((5000 - period) / 1000) + " 秒後再試"));
-                    return "";
+                long period = (System.currentTimeMillis() - entry.lastupdate) / 1000;
+                if (period < PERIOD_GET_PWD) {
+                    client.sendPacket(MaplePacketCreator.getPopupMsg("請 " + ((PERIOD_GET_PWD - period)) + " 秒後再試"));
+                    nextPass = "";
                 }
-                this.passwords.remove(client.getAccID());
+                if(!entry.socketAddr.equals(client.getSession().getRemoteAddress())) {
+                    this.passwords.remove(client.getAccID());
+                }
             }
             int seed = 10000 + (Math.abs(Randomizer.nextInt()) % 80000);
             nextPass = String.valueOf(seed);
@@ -96,8 +100,8 @@ public class FixLoginManager {
                 FixLoginEntry entry = this.passwords.get(client.getAccID());
                 if (entry.socketAddr.equals(client.getSession().getRemoteAddress().toString())) {
                     if (password.equals(entry.password)) {
-                        ret = true;
                         this.passwords.remove(client.getAccID());
+                        ret = true;
                     } else {
                         ret = false;
                     }
