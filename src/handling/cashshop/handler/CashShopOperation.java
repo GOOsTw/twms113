@@ -72,7 +72,7 @@ public class CashShopOperation {
             client.getSession().close(true);
             return;
         }
-        World.Client.addClient(chr.getAccountID(), client);
+        World.Client.registerClient(chr.getAccountID(), client);
 
         if (shouldReload) {
             chr = MapleCharacter.ReconstructChr(transfer, client, false);
