@@ -78,6 +78,7 @@ public class FixLoginManager {
                     client.sendPacket(MaplePacketCreator.getPopupMsg("請 " + ((PERIOD_GET_PWD - period)) + " 秒後再試"));
                     nextPass = "";
                 }
+                //如果取得解卡密碼不同人，將原本的刪除
                 if(!entry.socketAddr.equals(client.getSession().getRemoteAddress())) {
                     this.passwords.remove(client.getAccID());
                 }
