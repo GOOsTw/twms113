@@ -145,7 +145,7 @@ public class PlayerCommand {
 
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
-            int res = c.getPlayer().saveToDB(true, true);
+            int res = 1;//c.getPlayer().saveToDB(true, true);
             if (res == 1) {
                 c.getPlayer().dropMessage(5, "保存成功！");
             } else {
