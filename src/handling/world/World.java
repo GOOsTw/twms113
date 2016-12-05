@@ -163,6 +163,22 @@ public class World {
             }
         }
 
+        public static void broadcastMessage(int partyid, byte[] packet) {
+            MapleParty party = getParty(partyid);
+            if (party == null) {
+                throw new IllegalArgumentException("no party with the specified partyid exists");
+            }
+            for (MaplePartyCharacter partychar : party.getMembers()) {
+                int ch = Find.findChannel(partychar.getName());
+                if (ch > 0) {
+                    MapleCharacter chr = ChannelServer.getInstance(ch).getPlayerStorage().getCharacterByName(partychar.getName());
+                    if (chr != null) {
+                        chr.getClient().sendPacket(packet);
+                    }
+                }
+            }
+        }
+
         public static void partyChat(int partyid, String chattext, String namefrom) {
             MapleParty party = getParty(partyid);
             if (party == null) {

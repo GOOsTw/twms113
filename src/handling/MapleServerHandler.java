@@ -354,11 +354,11 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                     return;
                 }
             }
-            if (debugMode) {
-                final StringBuilder sb = new StringBuilder("[Recv] 未處理 : ");
-                sb.append(tools.HexTool.toString((byte[]) message)).append("\n").append(tools.HexTool.toStringFromAscii((byte[]) message)).append("\n");;
-                System.out.println(sb.toString());
-            }
+         //   if (debugMode) {
+                final StringBuilder sb2 = new StringBuilder("[Recv] 未處理 : ");
+                sb2.append(tools.HexTool.toString((byte[]) message)).append("\n").append(tools.HexTool.toStringFromAscii((byte[]) message)).append("\n");;
+                System.out.println(sb2.toString());
+          //  }
             if (isLogPackets) {
                 final byte[] packet = slea.read((int) slea.available());
                 final StringBuilder sb = new StringBuilder("發現未知用戶端數據包 - (包頭:0x" + Integer.toHexString(header_num) + ")");
@@ -384,7 +384,8 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     }
 
     public static final void handlePacket(final RecvPacketOpcode header, final LittleEndianAccessor slea, final MapleClient c, final boolean cs) throws Exception {
-        if (c.getPlayer() != null && !c.isCheck()) {
+        
+        if (!cs && c.getPlayer() != null && !c.isCheck()) {
             if (c.getChannelServer().getPlayerStorage().getCharacterById(c.getPlayer().getId()).equals(c.getPlayer())) {
                 c.setCheck(true);
             } else {

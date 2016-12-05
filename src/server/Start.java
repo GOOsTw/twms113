@@ -12,6 +12,8 @@ import handling.world.World;
 import java.sql.SQLException;
 import database.DatabaseConnection;
 import static database.DatabaseConnection.CloseSQLConnections;
+import handling.RecvPacketOpcode;
+import handling.SendPacketOpcode;
 import handling.world.family.MapleFamilyBuff;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -143,6 +145,9 @@ public class Start {
         CashItemFactory.getInstance().initialize();
         LoginServer.setup();
         ChannelServer.startAllChannels();
+        
+        SendPacketOpcode.reloadValues();
+        RecvPacketOpcode.reloadValues();
 
         System.out.println("【啟動中】 CashShop Items:::");
         CashShopServer.setup();

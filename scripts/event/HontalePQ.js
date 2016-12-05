@@ -37,7 +37,6 @@ function setup() {
 
 function scheduledTimeout(eim) {
     eim.disposeIfPlayerBelow(100, eim.getProperty("cleared") == null ? 240050000 : 240050400);
-
     em.setProperty("state", "0");
 }
 
@@ -109,14 +108,16 @@ function clearPQ(eim) {
 
 function finish(eim) {
     eim.disposeIfPlayerBelow(100, eim.getProperty("cleared") == null ? 240050000 : 240050400);
-
     em.setProperty("state", "0");
 }
 
 function timeOut(eim) {
     eim.disposeIfPlayerBelow(100, eim.getProperty("cleared") == null ? 240050000 : 240050400);
-
     em.setProperty("state", "0");
+}
+
+function dropItem(eim, item, mapid) {
+
 }
 
 function cancelSchedule() {}

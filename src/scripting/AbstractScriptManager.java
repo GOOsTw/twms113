@@ -54,7 +54,6 @@ public abstract class AbstractScriptManager {
     protected Invocable getInvocable(String path, MapleClient c, boolean npc) {
         InputStream in = null;
         try {
-            
             path = "scripts/" + path;
             ScriptEngine engine = null;
             if (c != null) {

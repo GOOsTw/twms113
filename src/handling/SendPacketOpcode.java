@@ -319,11 +319,9 @@ public enum SendPacketOpcode implements WritableIntValueHolder {
         switch (opcode.name()) {
             case "WARP_TO_MAP":
             case "PING":
-            case "NPC_ACTION":
             case "UPDATE_STATS":
             case "MOVE_PLAYER":
             case "SPAWN_NPC":
-            case "SPAWN_NPC_REQUEST_CONTROLLER":
             case "REMOVE_NPC":
             case "MOVE_MONSTER":
             case "MOVE_MONSTER_RESPONSE":

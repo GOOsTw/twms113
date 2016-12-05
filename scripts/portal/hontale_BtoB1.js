@@ -21,6 +21,11 @@
 
 function enter(pi) {
     pi.playPortalSE();
-    pi.warp(240050101, "st00");
+    if(pi.haveItem(4001087)) {
+    	pi.warp(240050101, "st00");
+	pi.removeAll(4001087);
+    } else {
+        pi.getPlayer().dropMessage(6, "請先取得鑰匙");
+    }
     return true;
 }

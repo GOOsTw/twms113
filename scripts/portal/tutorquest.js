@@ -25,9 +25,9 @@ function enter(pi) {
         pi.warp(pi.getMapId() + 1, "sp");
     } else {
         if (mapid == 130030001) {
-            pi.playerMessage(5, "Please click the NPC to receive a quest.");
+            pi.playerMessage(5, "請先跟NPC接取任務");
         } else {
-            pi.playerMessage(5, "Please complete the quest.");
+            pi.playerMessage(5, "請先完成任務");
         }
     }
 }

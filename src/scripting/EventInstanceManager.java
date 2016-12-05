@@ -31,6 +31,7 @@ import javax.script.ScriptException;
 
 import client.MapleCharacter;
 import client.MapleQuestStatus;
+import client.inventory.IItem;
 import handling.channel.ChannelServer;
 import handling.world.MapleParty;
 import handling.world.MaplePartyCharacter;

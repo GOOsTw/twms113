@@ -215,9 +215,9 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
 
     public static Properties getDefaultProperties() throws FileNotFoundException, IOException {
         Properties props = new Properties();
-        FileInputStream fileInputStream = new FileInputStream("recv.ini");
-        props.load(fileInputStream);
-        fileInputStream.close();
+        try (FileInputStream fileInputStream = new FileInputStream("recv.ini")) {
+            props.load(fileInputStream);
+        }
         return props;
     }
 
@@ -236,13 +236,11 @@ public enum RecvPacketOpcode implements WritableIntValueHolder {
     public static boolean isSpamHeader(RecvPacketOpcode header) {
         switch (header.name()) {
             case "PONG":
-            case "NPC_ACTION":
             case "MOVE_LIFE":
             case "MOVE_PLAYER":
             case "MOVE_ANDROID":
             case "MOVE_SUMMON":
             case "MOVE_PET":
-            case "AUTO_AGGRO":
             case "HEAL_OVER_TIME":
             case "BUTTON_PRESSED":
             case "STRANGE_DATA":

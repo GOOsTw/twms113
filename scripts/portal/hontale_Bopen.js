@@ -19,11 +19,34 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 function enter(pi) { // Not tested T_____T
     pi.playPortalSE();
     if (pi.getPlayer().getMapId() == 240050105)
         pi.warp(240050100, "st00");
-    else
-        pi.warp(pi.getPlayer().getMapId() + 1, "st00");
+    else {
+        var mapid = pi.getMap().getId();
+        var check = false;
+        var eim = pi.getPlayer().getEventInstance();
+        if (eim != null) {
+            if (mapid == 240050101) {
+                if (eim.getProperty("enter1").equals("1"))
+                    check = true;
+            } else if (mapid == 240050102) {
+                if (eim.getProperty("enter2").equals("1"))
+                    check = true;
+            } else if (mapid == 240050103) {
+                if (eim.getProperty("enter3").equals("1"))
+                    check = true;
+            } else if (mapid == 240050104) {
+                if (eim.getProperty("enter4").equals("1"))
+                    check = true;
+            }
+        }
+        if (check)
+            pi.warp(pi.getPlayer().getMapId() + 1, "st00");
+        else
+            pi.getPlayer().dropMessage(5, "入口還沒打開");
+    }
     return true;
 }

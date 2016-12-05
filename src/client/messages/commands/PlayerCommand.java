@@ -67,6 +67,7 @@ public class PlayerCommand {
                     c.getPlayer().dropMessage(1, "你的等級必須是10等.");
                     return true;
                 }
+                
                 if (c.getPlayer().getMap().getSquadByMap() != null || c.getPlayer().getEventInstance() != null || c.getPlayer().getMap().getEMByMap() != null || c.getPlayer().getMapId() >= 990000000/* || FieldLimitType.VipRock.check(c.getPlayer().getMap().getFieldLimit())*/) {
                     c.getPlayer().dropMessage(1, "你不能在這裡使用指令.");
                     return true;

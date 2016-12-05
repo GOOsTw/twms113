@@ -40,14 +40,14 @@ function action(mode, type, selection) {
 					break;
 				default:
 				    cm.removeAll(4001087);
-					cm.removeAll(4001088);
-					cm.removeAll(4001089);
-					cm.removeAll(4001090);
-					cm.removeAll(4001091);
-					cm.removeAll(4001092);
-					cm.removeAll(4001093);
+				    cm.removeAll(4001088);
+				    cm.removeAll(4001089);
+				    cm.removeAll(4001090);
+				    cm.removeAll(4001091);
+			            cm.removeAll(4001092);
+			            cm.removeAll(4001093);
 				    cm.warp(240050000, 0);
-					cm.dispose();
+				    cm.dispose();
 					break;
 				
 			}
