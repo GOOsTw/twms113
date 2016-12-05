@@ -63,16 +63,14 @@ public class CashShopOperation {
         MapleClient oldClient = World.Client.getClient(chr.getAccountID());
 
         if (oldClient != null) {
-            if (oldClient.getPlayer() != null) {
-                shouldReload = true;
-            }
             oldClient.disconnect(true, false);
             client.setPlayer(null);
             client.setReceiving(false);
             client.getSession().close(true);
             return;
         }
-        World.Client.addClient(chr.getAccountID(), client);
+        
+        World.Client.registerClient(chr.getAccountID(), client);
 
         if (shouldReload) {
             chr = MapleCharacter.ReconstructChr(transfer, client, false);

@@ -63,7 +63,7 @@ public class LoginWorker {
         }
 
         if (c.finishLogin() == 0) {
-            World.Client.addClient(c.getAccID(), c);
+            World.Client.registerClient(c.getAccID(), c);
             LoginServer.addClient(c);
             c.sendPacket(LoginPacket.getAuthSuccessRequest(c));
             c.sendPacket(LoginPacket.getServerList(0, LoginServer.getServerName(), LoginServer.getLoad()));

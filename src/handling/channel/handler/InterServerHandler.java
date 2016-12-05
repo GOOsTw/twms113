@@ -140,7 +140,7 @@ public class InterServerHandler {
             return;
         }
 
-        World.Client.addClient(player.getAccountID(), c);
+        World.Client.registerClient(player.getAccountID(), c);
         c.updateLoginState(MapleClient.LOGIN_LOGGEDIN, c.getSessionIPAddress());
         c.setPlayer(player);
         channelServer.addPlayer(player);

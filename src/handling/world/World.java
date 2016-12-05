@@ -884,7 +884,7 @@ public class World {
 
         private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
-        public static void addClient(Integer accountId, MapleClient c) {
+        public static void registerClient(Integer accountId, MapleClient c) {
             lock.readLock().lock();
             try {
                 if (!clients.containsKey(accountId)) {
@@ -896,19 +896,34 @@ public class World {
                         lock.readLock().lock();
                         lock.writeLock().unlock();
                     }
+                } else {
+                    lock.readLock().unlock();
+                    lock.writeLock().lock();
+                    try {
+                        clients.get(accountId).disconnect(true, false);
+                        clients.put(accountId, c);
+                    } finally {
+                        lock.readLock().lock();
+                        lock.writeLock().unlock();
+                    }
                 }
             } finally {
                 lock.readLock().unlock();
             }
         }
 
-        public static void removeClient(Integer accountId) {
+        public static void unregisterClient(Integer accountId) {
+            unregisterClient(accountId, true);
+        }
+
+        public static void unregisterClient(Integer accountId, boolean dc) {
             lock.readLock().lock();
             try {
                 if (clients.containsKey(accountId)) {
                     lock.readLock().unlock();
                     lock.writeLock().lock();
                     try {
+                        clients.get(accountId).disconnect(true, false);
                         clients.remove(accountId);
                     } finally {
                         lock.readLock().lock();

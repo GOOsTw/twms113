@@ -143,11 +143,7 @@ public class CharLoginHandler {
                         if (LoginServer.getClientStorage().getClientByName(c.getAccountName()) != null) {
                             LoginServer.getClientStorage().getClientByName(c.getAccountName()).getSession().close(true);
                         }
-                        if (World.Client.getClient(c.getAccID()) != null) {
-                            MapleClient oldClient = World.Client.getClient(c.getAccID());
-                            oldClient.disconnect(true, oldClient.getChannel() < 0);
-                            World.Client.removeClient(c.getAccID());
-                        }
+                        World.Client.unregisterClient(c.getAccID());
                         c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
                         errorInfo = "解卡成功，重新輸入帳密登入";
                     }
