@@ -114,11 +114,13 @@ public class MapleClient {
     private final transient Lock mutex = new ReentrantLock(true);
     private final transient Lock npcMutex = new ReentrantLock();
     private long lastNpcClick = 0;
+    private boolean check;
 
     public MapleClient(MapleAESOFB send, MapleAESOFB receive, IoSession session) {
         this.send = send;
         this.receive = receive;
         this.session = session;
+        this.check = false;
     }
 
     public final MapleAESOFB getReceiveCrypto() {
@@ -1581,4 +1583,13 @@ public class MapleClient {
         }
     }
 
+    public boolean isCheck() {
+        return check;
+    }
+
+    public void setCheck(boolean check) {
+        this.check = check;
+    }
+
+    
 }

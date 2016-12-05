@@ -383,9 +383,18 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     }
 
     public static final void handlePacket(final RecvPacketOpcode header, final LittleEndianAccessor slea, final MapleClient c, final boolean cs) throws Exception {
+        if (c.getPlayer() != null && !c.isCheck()) {
+            if (c.getChannelServer().getPlayerStorage().getCharacterById(c.getPlayer().getId()).equals(c.getPlayer())) {
+                c.setCheck(true);
+            } else {
+                c.setReceiving(false);
+                c.setPlayer(null);
+                c.getSession().close(true);
+                return;
+            }
+        }
         switch (header) {
             case TOBY_SHIELD_START: {
-
                 break;
             }
             case PONG:
@@ -436,7 +445,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case CLIENT_LOGOUT:
                 CharLoginHandler.handleLogout(slea, c);
                 break;
-            // END OF LOGIN SERVER
             case CHANGE_CHANNEL:
                 InterServerHandler.ChangeChannel(slea, c, c.getPlayer());
                 break;
@@ -458,7 +466,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                     c.sendPacket(MaplePacketCreator.enableActions());
                     c.getPlayer().dropMessage(5, "目前拍賣系統不開放。");
                 }
-                //InterServerHandler.EnterCashShop(c, c.getPlayer(), true);
                 break;
             case MOVE_PLAYER:
                 PlayerHandler.MovePlayer(slea, c, c.getPlayer());
@@ -535,7 +542,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 PlayerHandler.ChangeMapSpecial(slea.readMapleAsciiString(), c, c.getPlayer());
                 break;
             case USE_INNER_PORTAL:
-                slea.skip(1);
                 PlayerHandler.InnerPortal(slea, c, c.getPlayer());
                 break;
             case TROCK_ADD_MAP:

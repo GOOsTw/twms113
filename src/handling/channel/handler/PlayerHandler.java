@@ -1252,6 +1252,7 @@ public class PlayerHandler {
     }
 
     public static final void InnerPortal(final LittleEndianAccessor slea, final MapleClient c, final MapleCharacter chr) {
+        slea.skip(1);
         if (chr == null) {
             return;
         }
