@@ -42,7 +42,6 @@ import database.DatabaseException;
 
 import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
-import handling.login.LoginServer;
 import handling.login.handler.LoginResponse;
 import handling.world.MapleMessengerCharacter;
 import handling.world.MapleParty;
@@ -52,7 +51,6 @@ import handling.world.World;
 import handling.world.family.MapleFamilyCharacter;
 import handling.world.guild.MapleGuildCharacter;
 import java.io.UnsupportedEncodingException;
-import static java.lang.Math.log;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
@@ -114,11 +112,13 @@ public class MapleClient {
     private final transient Lock mutex = new ReentrantLock(true);
     private final transient Lock npcMutex = new ReentrantLock();
     private long lastNpcClick = 0;
+    private boolean check;
 
     public MapleClient(MapleAESOFB send, MapleAESOFB receive, IoSession session) {
         this.send = send;
         this.receive = receive;
         this.session = session;
+        this.check = false;
     }
 
     public final MapleAESOFB getReceiveCrypto() {
@@ -1581,4 +1581,13 @@ public class MapleClient {
         }
     }
 
+    public boolean isCheck() {
+        return check;
+    }
+
+    public void setCheck(boolean check) {
+        this.check = check;
+    }
+    
+    
 }

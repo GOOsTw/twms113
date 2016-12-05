@@ -384,6 +384,16 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     }
 
     public static final void handlePacket(final RecvPacketOpcode header, final LittleEndianAccessor slea, final MapleClient c, final boolean cs) throws Exception {
+        if (c.getPlayer() != null && !c.isCheck()) {
+            if (c.getChannelServer().getPlayerStorage().getCharacterById(c.getPlayer().getId()).equals(c.getPlayer())) {
+                c.setCheck(true);
+            } else {
+                c.setReceiving(false);
+                c.setPlayer(null);
+                c.getSession().close(true);
+                return;
+            }
+        }
         switch (header) {
             case TOBY_SHIELD_START: {
 
