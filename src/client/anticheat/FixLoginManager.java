@@ -31,13 +31,13 @@ public class FixLoginManager {
             this.accountId = accountId;
             this.password = password;
             this.socketAddr = socketAddr;
-            this.lastupdate = -lastupdate;
+            this.lastupdate = lastupdate;
         }
     }
 
-    private Map<Integer, FixLoginEntry> passwords;
+    private final Map<Integer, FixLoginEntry> passwords;
 
-    private ReentrantLock lock;
+    private final ReentrantLock lock;
 
     private static FixLoginManager instance;
 
@@ -53,16 +53,12 @@ public class FixLoginManager {
         this.passwords = new HashMap<>();
         this.lock = new ReentrantLock();
     }
-
+   
     public boolean hasPassword(MapleClient client) {
         boolean ret = false;
         this.lock.lock();
         try {
-            if (this.passwords.containsKey(client.getAccID())) {
-                ret = true;
-            } else {
-                ret = false;
-            }
+            ret = this.passwords.containsKey(client.getAccID());
         } finally {
             this.lock.unlock();
         }
@@ -77,7 +73,7 @@ public class FixLoginManager {
                 // 處理存在
                 long period = System.currentTimeMillis() - this.passwords.get(client.getAccID()).lastupdate;
                 if (period < 5 * 1000) {
-                    client.sendPacket(MaplePacketCreator.getPopupMsg("請" + ((5000 - period) / 1000) + "再試"));
+                    client.sendPacket(MaplePacketCreator.getPopupMsg("請 " + ((5000 - period) / 1000) + " 秒後再試"));
                     return "";
                 }
                 this.passwords.remove(client.getAccID());
