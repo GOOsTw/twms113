@@ -6411,12 +6411,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         anticheat.checkAttackTick(newTick);
     }
 
-    public void updateAttackTick(int newTick) {
-        anticheat.updateAttackTick(newTick);
-    }
-
     public void updateTick(int newTick) {
-        //System.out.println("updateTick: " +  new Throwable().getStackTrace()[1].toString());
         anticheat.updateTick(newTick);
     }
 
