@@ -572,6 +572,7 @@ public class PlayerHandler {
         ISkill skill = null;
 
         if (attack.skill != 0) {
+
             skill = SkillFactory.getSkill(GameConstants.getLinkedAranSkill(attack.skill));
             skillLevel = chr.getSkillLevel(skill);
             effect = attack.getAttackEffect(chr, skillLevel, skill);
@@ -709,13 +710,13 @@ public class PlayerHandler {
         ISkill skill = null;
 
         if (attack.skill != 0) {
+
             skill = SkillFactory.getSkill(GameConstants.getLinkedAranSkill(attack.skill));
             skillLevel = chr.getSkillLevel(skill);
             effect = attack.getAttackEffect(chr, skillLevel, skill);
             if (effect == null) {
                 return;
             }
-
             switch (attack.skill) {
                 case 破風使者3.疾風掃射:
                 case 狂狼勇士3.狼魂衝擊: // Ranged but uses attackcount instead
@@ -723,7 +724,7 @@ public class PlayerHandler {
                     bulletCount = effect.getAttackCount();
                     break;
                 default:
-                    bulletCount = effect.getBulletCount();
+                    bulletCount = effect.getAttackCount() > effect.getBulletCount() ? effect.getAttackCount() : effect.getBulletCount();
                     break;
             }
             if (effect.getCooldown() > 0 && !chr.isGM()) {
