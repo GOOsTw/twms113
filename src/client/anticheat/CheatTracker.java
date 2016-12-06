@@ -68,17 +68,31 @@ public class CheatTracker {
         invalidationTask = CheatTimer.getInstance().register(new InvalidationTask(), 60000);
         takingDamageSince = System.currentTimeMillis();
     }
+    
+    public final void checkAttackHitCount(AttackInfo attack, MapleStatEffect effect, int attackHits) {
+        if (player.hasGmLevel(1)) {
+                    player.dropMessage("攻擊次數異常攻擊次數 " + attack.hits + " 服務端判斷正常攻擊次數 " + lastAttackCount + " 技能ID " + attack.skill);
+                } else {
+                    player.ban(player.getName() + "技能攻擊次數異常", true, true, false);
+                    player.getClient().disconnect(true, false);
+                    String reason = "使用違法程式練功";
+                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + player.getName() + " 因為" + reason + "而被管理員永久停權。"));
+                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") 攻擊次數異常已自動封鎖。 玩家攻擊次數 " + attack.hits + " 服務端判斷正常攻擊次數 " + lastAttackCount + " 技能ID " + attack.skill));
+                    return;
+                }
+    }
 
-    public final void checkAttackCount(AttackInfo attack, MapleStatEffect effect, int targets) {
+    public final void checkAttackTargetCount(AttackInfo attack, MapleStatEffect effect, int targets) {
         if (targets > effect.getAttackCount()) {
             MapleCharacter chr = player.get();
+            String reason = "打怪數量異常,技能代碼: " + attack.skill + " 封包怪物量 : " + attack.targets + " 服務端怪物量 :" + effect.getAttackCount();
             if (chr.hasGmLevel(1)) {
-                chr.dropMessage("打怪數量異常,技能代碼: " + attack.skill + " 封包怪物量 : " + attack.targets + " 服務端怪物量 :" + effect.getAttackCount());
+                chr.dropMessage(reason);
             } else {
-                chr.ban(chr.getName() + "打怪數量異常", true, true, false);
+                chr.ban(reason, true, true, false);
                 chr.getClient().disconnect(true, false);
-                String reason = "使用違法程式練功";
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + chr.getName() + " 因為" + reason + "而被管理員永久停權。"));
+                String pubReason = "使用違法程式練功";
+                World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + chr.getName() + " 因為" + pubReason + "而被管理員永久停權。"));
                 World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM 密語系統] " + chr.getName() + " (等級 " + chr.getLevel() + ") " + "攻擊怪物數量異常。 " + "封包怪物量 " + attack.targets + " 服務端怪物量 " + effect.getAttackCount() + " 技能ID " + attack.skill));
                 return;
             }

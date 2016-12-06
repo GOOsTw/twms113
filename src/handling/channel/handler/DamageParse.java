@@ -99,18 +99,9 @@ public class DamageParse {
             }
 
             if (attack.hits > lastAttackCount) {
-                if (player.hasGmLevel(1)) {
-                    player.dropMessage("攻擊次數異常攻擊次數 " + attack.hits + " 服務端判斷正常攻擊次數 " + lastAttackCount + " 技能ID " + attack.skill);
-                } else {
-                    player.ban(player.getName() + "技能攻擊次數異常", true, true, false);
-                    player.getClient().disconnect(true, false);
-                    String reason = "使用違法程式練功";
-                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + player.getName() + " 因為" + reason + "而被管理員永久停權。"));
-                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") 攻擊次數異常已自動封鎖。 玩家攻擊次數 " + attack.hits + " 服務端判斷正常攻擊次數 " + lastAttackCount + " 技能ID " + attack.skill));
-                    return;
-                }
+                
             }
-            player.getCheatTracker().checkAttackCount(attack, effect, attack.targets);
+            player.getCheatTracker().checkAttackTargetCount(attack, effect, attack.targets);
         }
 
         if (attack.hits > 0 && attack.targets > 0) {
@@ -539,16 +530,16 @@ public class DamageParse {
             return;
         }
         /* 確認攻擊次數 */
-        int last = effect.getAttackCount() > effect.getBulletCount() ? effect.getAttackCount() : effect.getBulletCount();
-        if (attack.hits > last) {
+        int attackCount = effect.getAttackCount() > effect.getBulletCount() ? effect.getAttackCount() : effect.getBulletCount();
+        if (attack.hits > attackCount) {
             if (player.hasGmLevel(1)) {
-                player.dropMessage("攻擊次數異常攻擊次數 " + attack.hits + " 服務端判斷正常攻擊次數 " + last + " 技能ID " + attack.skill);
+                player.dropMessage("攻擊次數異常攻擊次數 " + attack.hits + " 服務端判斷正常攻擊次數 " + attackCount + " 技能ID " + attack.skill);
             } else {
                 player.ban(player.getName() + "技能攻擊次數異常", true, true, false);
                 player.getClient().disconnect(true, false);
                 String reason = "使用違法程式練功";
                 World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + player.getName() + " 因為" + reason + "而被管理員永久停權。"));
-                World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") 攻擊次數異常已自動封鎖。 玩家攻擊次數 " + attack.hits + " 服務端判斷正常攻擊次數 " + last + " 技能ID " + attack.skill));
+                World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") 攻擊次數異常已自動封鎖。 玩家攻擊次數 " + attack.hits + " 服務端判斷正常攻擊次數 " + attackCount + " 技能ID " + attack.skill));
                 return;
             }
         }
