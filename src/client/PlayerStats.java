@@ -27,7 +27,7 @@ import client.inventory.Equip;
 import client.inventory.IEquip;
 import client.inventory.MapleWeaponType;
 import client.inventory.ModifyInventory;
-import constants.SkillType.*;
+import constants.SkillType;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.List;
@@ -1242,66 +1242,12 @@ public class PlayerStats implements Serializable {
     }
 
     public final float getHealHP() {
-        int shouldHealHP = 10;
-        Skill bx;
-        int bof;
-        MapleStatEffect eff;
-        bx = (Skill) SkillFactory.getSkill(1000000);
-        bof = chr.get().getSkillLevel(bx);
-        if (bof > 0) {
-            eff = bx.getEffect(bof);
-            shouldHealHP += eff.getHp();
-        }
-        bx = (Skill) SkillFactory.getSkill(1320008);
-        bof = chr.get().getSkillLevel(bx);
-        if (bof > 0) {
-            eff = bx.getEffect(bof);
-            shouldHealHP += eff.getHp();
-        }
-        bx = (Skill) SkillFactory.getSkill(4100002);
-        bof = chr.get().getSkillLevel(bx);
-        if (bof > 0) {
-            eff = bx.getEffect(bof);
-            shouldHealHP += eff.getHp();
-        }
-        bx = (Skill) SkillFactory.getSkill(4200001);
-        bof = chr.get().getSkillLevel(bx);
-        if (bof > 0) {
-            eff = bx.getEffect(bof);
-            shouldHealHP += eff.getHp();
-        }
-        if(GameConstants.isCarnivalRestMaps(chr.get().getMapId())) {
-            shouldHealHP = 100;
-            shouldHealMP = 100;
-        }
+        relocHeal();
         return shouldHealHP;
     }
 
     public final float getHealMP() {
-        int shouldHealMP = 3;
-        Skill bx;
-        int bof;
-        MapleStatEffect eff;
-
-        bx = (Skill) SkillFactory.getSkill(2000000);
-        bof = chr.get().getSkillLevel(bx);
-        if (bof > 0) {
-
-            shouldHealMP += bof * 5;// 推算
-        }
-        bx = (Skill) SkillFactory.getSkill(4100002);
-        bof = chr.get().getSkillLevel(bx);
-        if (bof > 0) {
-            eff = bx.getEffect(bof);
-            shouldHealMP += eff.getMp();
-        }
-        bx = (Skill) SkillFactory.getSkill(4200001);
-        bof = chr.get().getSkillLevel(bx);
-        if (bof > 0) {
-            eff = bx.getEffect(bof);
-            shouldHealMP += eff.getMp();
-        }
-
+        relocHeal();
         return shouldHealMP;
     }
 
@@ -1316,59 +1262,88 @@ public class PlayerStats implements Serializable {
         shouldHealMP = 3 + mpRestore + recoverMP; // i think
 
         if (GameConstants.isJobFamily(200, playerjob)) { // Improving MP recovery
-            shouldHealMP += ((float) ((float) chra.getSkillLevel(SkillFactory.getSkill(2000000)) / 10) * chra.getLevel());
+            final ISkill effect = SkillFactory.getSkill(SkillType.法師.魔力淨化);
+            final int skillLevel = chra.getSkillLevel(effect);
+            final int chrLevel = chra.getLevel();
 
-        } else if (GameConstants.isJobFamily(111, playerjob)) {
-            final ISkill effect = SkillFactory.getSkill(十字軍.魔力恢復); // Improving MP Recovery
+            if (skillLevel > 0) {
+                shouldHealMP += ((float) chrLevel) * (skillLevel / ((float) 10));
+            }
+        }
+        if (GameConstants.isJobFamily(100, playerjob)) {
+            final ISkill effect = SkillFactory.getSkill(SkillType.劍士.生命恢復); // Endure
+            final int lvl = chra.getSkillLevel(effect);
+            if (lvl > 0) {
+                shouldHealHP += effect.getEffect(lvl).getHp();
+            }
+        }
+        if (GameConstants.isJobFamily(111, playerjob)) {
+            final ISkill effect = SkillFactory.getSkill(SkillType.十字軍.魔力恢復); // Improving MP Recovery
             final int lvl = chra.getSkillLevel(effect);
             if (lvl > 0) {
                 shouldHealMP += effect.getEffect(lvl).getMp();
             }
 
-        } else if (GameConstants.isJobFamily(121, playerjob)) {
-            final ISkill effect = SkillFactory.getSkill(騎士.魔力恢復); // Improving MP Recovery
+        }
+        if (GameConstants.isJobFamily(121, playerjob)) {
+            final ISkill effect = SkillFactory.getSkill(SkillType.騎士.魔力恢復); // Improving MP Recovery
             final int lvl = chra.getSkillLevel(effect);
             if (lvl > 0) {
                 shouldHealMP += effect.getEffect(lvl).getMp();
             }
 
-        } else if (GameConstants.isJobFamily(1111, playerjob)) {
-            final ISkill effect = SkillFactory.getSkill(11110000); // Improving MP Recovery
+        }
+        if (GameConstants.isJobFamily(132, playerjob)) {
+            final ISkill effect = SkillFactory.getSkill(SkillType.黑騎士.闇靈治癒); // Improving MP Recovery
+            final int lvl = chra.getSkillLevel(effect);
+            if (lvl > 0) {
+                shouldHealHP += effect.getEffect(lvl).getHp();
+            }
+        }
+        if (GameConstants.isJobFamily(1111, playerjob)) {
+            final ISkill effect = SkillFactory.getSkill(SkillType.聖魂劍士3.魔力恢復); // Improving MP Recovery
             final int lvl = chra.getSkillLevel(effect);
             if (lvl > 0) {
                 shouldHealMP += effect.getEffect(lvl).getMp();
             }
 
-        } else if (GameConstants.isJobFamily(410, playerjob)) {
-            final ISkill effect = SkillFactory.getSkill(4100002); // Endure
+        }
+        if (GameConstants.isJobFamily(410, playerjob)) {
+            final ISkill effect = SkillFactory.getSkill(SkillType.刺客.恢復術); // Endure
             final int lvl = chra.getSkillLevel(effect);
             if (lvl > 0) {
                 shouldHealHP += effect.getEffect(lvl).getHp();
                 shouldHealMP += effect.getEffect(lvl).getMp();
             }
 
-        } else if (GameConstants.isJobFamily(420, playerjob)) {
-            final ISkill effect = SkillFactory.getSkill(4200001); // Endure
+        }
+        if (GameConstants.isJobFamily(420, playerjob)) {
+            final ISkill effect = SkillFactory.getSkill(SkillType.俠盜.恢復術); // Endure
             final int lvl = chra.getSkillLevel(effect);
             if (lvl > 0) {
                 shouldHealHP += effect.getEffect(lvl).getHp();
                 shouldHealMP += effect.getEffect(lvl).getMp();
             }
         }
+
         if (chra.isGM()) {
             shouldHealHP += 1000;
             shouldHealMP += 1000;
         }
         if (chra.getChair() != 0) { // Is sitting on a chair.
-            shouldHealHP += 99; // Until the values of Chair heal has been fixed,
-            shouldHealMP += 99; // MP is different here, if chair data MP = 0, heal + 1.5
+            MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+            shouldHealHP = ii.getChairRecovery(chra.getChair()).getLeft();
+            shouldHealMP += ii.getChairRecovery(chra.getChair()).getRight();
         } else { // Because Heal isn't multipled when there's a chair :)
             final float recvRate = chra.getMap().getRecoveryRate();
             shouldHealHP *= recvRate;
             shouldHealMP *= recvRate;
         }
-        shouldHealHP *= 2; // To avoid any problem with bathrobe / Sauna >.<
-        shouldHealMP *= 2; // 1.5
+
+        if (GameConstants.isCarnivalRestMaps(chr.get().getMapId())) {
+            shouldHealMP = 100;
+            shouldHealHP = 100;
+        }
     }
 
     public final void connectData(final MaplePacketLittleEndianWriter mplew) {
