@@ -3042,7 +3042,7 @@ public class MaplePacketCreator {
         mplew.writePos(reactor.getPosition());
         mplew.writeShort(stance);
         mplew.write(reactor.getEventId());
-        mplew.write(4); // frame delay, set to 5 since there doesn't appear to be a fixed formula for it
+        mplew.write(4);
 
         return mplew.getPacket();
     }

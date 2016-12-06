@@ -22,7 +22,7 @@ function action(mode, type, selection) {
             cm.gainItem(4001089, -1);
             eim.setProperty("enter2", "1");
             var react = eim.getMapFactory().getMap("240050102").getReactorByName("passKey2");
-            react.setEventId(1);
+            react.setEventId(2);
             react.forceHitReactor(0);
             eim.broadcastPlayerMsg(6, "第三個迷宮房的門被打開了。");
             cm.sendOk("第三個迷宮房的門被打開了。");
@@ -30,7 +30,7 @@ function action(mode, type, selection) {
             cm.gainItem(4001090, -1);
             eim.setProperty("enter3", "1");
             var react = eim.getMapFactory().getMap("240050103").getReactorByName("passKey3");
-            react.setEventId(1);
+            react.setEventId(3);
             react.forceHitReactor(0);
             eim.broadcastPlayerMsg(6, "第四個迷宮房的門被打開了。");
             cm.sendOk("第四個迷宮房的門被打開了。");
@@ -38,13 +38,17 @@ function action(mode, type, selection) {
             cm.gainItem(4001091, -1);
             eim.setProperty("enter4", "1");
             var react = eim.getMapFactory().getMap("240050104").getReactorByName("passKey4");
-            react.setEventId(1);
+            react.setEventId(3);
             react.forceHitReactor(0);
             eim.broadcastPlayerMsg(6, "第五個迷宮房的門被打開了。");
             cm.sendOk("第五個迷宮房的門被打開了。");
         } else {
+            var react = eim.getMapFactory().getMap("240050102").getReactorByName("passKey2");
+            react.setEventId(1);
+            react.forceHitReactor(0);
             cm.sendOk("...");
         }
+
 
         cm.dispose();
 
