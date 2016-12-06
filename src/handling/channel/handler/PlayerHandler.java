@@ -566,7 +566,8 @@ public class PlayerHandler {
         final AttackInfo attack = DamageParse.Modify_AttackCrit(DamageParse.parseDmgM(slea), chr, 1);
         final boolean mirror = chr.getBuffedValue(MapleBuffStat.MIRROR_IMAGE) != null;
         double maxdamage = chr.getStat().getCurrentMaxBaseDamage();
-        int attackCount = (chr.getJob() >= 430 && chr.getJob() <= 434 ? 2 : 1), skillLevel = 0;
+        int maxAttackCount = 1, skillLevel = 0;
+
         MapleStatEffect effect = null;
         ISkill skill = null;
 
@@ -578,7 +579,7 @@ public class PlayerHandler {
                 return;
             }
             maxdamage *= effect.getDamage() / 100.0;
-            attackCount = effect.getAttackCount();
+            maxAttackCount = effect.getAttackCount() > effect.getBulletCount() ? effect.getAttackCount() : effect.getBulletCount();
 
             if (effect.getCooldown() > 0 && !chr.isGM()) {
                 if (chr.skillisCooling(attack.skill)) {
@@ -589,7 +590,7 @@ public class PlayerHandler {
                 chr.addCooldown(attack.skill, System.currentTimeMillis(), effect.getCooldown() * 1000);
             }
         }
-        attackCount *= (mirror ? 2 : 1);
+        maxAttackCount *= (mirror ? 2 : 1);
         if (!energy) {
             if ((chr.getMapId() == 109060000 || chr.getMapId() == 109060002 || chr.getMapId() == 109060004) && attack.skill == 0) {
                 MapleSnowballs.hitSnowball(chr);
@@ -669,14 +670,14 @@ public class PlayerHandler {
         }
         chr.checkFollow();
         chr.getMap().broadcastMessage(chr, MaplePacketCreator.closeRangeAttack(chr.getId(), attack.tbyte, attack.skill, skillLevel, attack.display, attack.animation, attack.speed, attack.allDamage, energy, chr.getLevel(), chr.getStat().passive_mastery(), attack.unk, attack.charge), chr.getPosition());
-        DamageParse.applyAttack(attack, skill, c.getPlayer(), attackCount, maxdamage, effect, mirror ? AttackType.NON_RANGED_WITH_MIRROR : AttackType.NON_RANGED);
+        DamageParse.applyAttack(attack, skill, c.getPlayer(), maxAttackCount, maxdamage, effect, mirror ? AttackType.NON_RANGED_WITH_MIRROR : AttackType.NON_RANGED);
         WeakReference<MapleCharacter>[] clones = chr.getClones();
         for (int i = 0; i < clones.length; i++) {
             if (clones[i].get() != null) {
                 final MapleCharacter clone = clones[i].get();
                 final ISkill skil2 = skill;
                 final int skillLevel2 = skillLevel;
-                final int attackCount2 = attackCount;
+                final int attackCount2 = maxAttackCount;
                 final double maxdamage2 = maxdamage;
                 final MapleStatEffect eff2 = effect;
                 final AttackInfo attack2 = DamageParse.DivideAttack(attack, chr.isGM() ? 1 : 4);
