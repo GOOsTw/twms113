@@ -12,7 +12,11 @@ function setup() {
     em.setProperty("state", "1");
 
     var eim = em.newInstance("HontalePQ");
-
+    eim.setProperty("enter1", "");
+    eim.setProperty("enter2", "");
+    eim.setProperty("enter3", "");
+    eim.setProperty("enter4", "");
+    eim.setProperty("enter5", "");
     var map = eim.setInstanceMap(240050100);
     map.resetFully();
     map = eim.setInstanceMap(240050101);

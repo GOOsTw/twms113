@@ -12,6 +12,7 @@ public class MapleReactor extends AbstractMapleMapObject {
     private final int rid;
     private final MapleReactorStats stats;
     private byte state;
+    private byte eventId;
     private int delay;
     private MapleMap map;
     private String name = "";
@@ -20,7 +21,8 @@ public class MapleReactor extends AbstractMapleMapObject {
     public MapleReactor(MapleReactorStats stats, int rid) {
         this.stats = stats;
         this.rid = rid;
-        alive = true;
+        this.alive = true;
+        this.eventId = 0;
     }
 
     public final byte getFacingDirection() {
@@ -84,6 +86,14 @@ public class MapleReactor extends AbstractMapleMapObject {
         return stats.getReactItem(state);
     }
 
+    public byte getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(byte eventId) {
+        this.eventId = eventId;
+    }
+    
     @Override
     public void sendDestroyData(MapleClient client) {
         client.sendPacket(MaplePacketCreator.destroyReactor(this));

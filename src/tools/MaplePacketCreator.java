@@ -3032,6 +3032,7 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
+    
     public static byte[] triggerReactor(MapleReactor reactor, int stance) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
@@ -3040,7 +3041,7 @@ public class MaplePacketCreator {
         mplew.write(reactor.getState());
         mplew.writePos(reactor.getPosition());
         mplew.writeShort(stance);
-        mplew.write(0);
+        mplew.write(reactor.getEventId());
         mplew.write(4); // frame delay, set to 5 since there doesn't appear to be a fixed formula for it
 
         return mplew.getPacket();
