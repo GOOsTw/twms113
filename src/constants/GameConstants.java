@@ -2147,7 +2147,7 @@ public class GameConstants {
 
     public static double getAttackRange(MapleCharacter chr, MapleStatEffect def, AttackInfo attack) {
         int rangeInc = chr.getStat().defRange;// 處理遠程職業
-        double base = 450.0;// 基礎
+        double base = 490.0;// 基礎
         double defRange = ((base + rangeInc) * (base + rangeInc));// 基礎範圍
         if (def != null) {
             // 計算範圍((maxX * maxX) + (maxY * maxY)) + (技能範圍 * 技能範圍))
