@@ -1000,10 +1000,12 @@ public class PlayerHandler {
 
         Point lastPoint = new Point(startPos);
         for (LifeMovementFragment mov : res) {
-            if (chr.isShowDebugInfo()) {
-                chr.dropMessage("移動到: " + mov.getPosition().x + "," + mov.getPosition().y + ", 距離 = " + mov.getPosition().distance(lastPoint));
+            if (lastPoint != null) {
+                if (chr.isShowDebugInfo()) {
+                    chr.dropMessage("移動到: " + mov.getPosition().x + "," + mov.getPosition().y + ", 距離 = " + mov.getPosition().distance(lastPoint));
+                }
+                lastPoint = mov.getPosition();
             }
-            lastPoint = mov.getPosition();
         }
 
         if (res != null && c.getPlayer().getMap() != null) { // TODO more validation of input data

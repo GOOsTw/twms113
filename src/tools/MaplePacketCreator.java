@@ -2730,7 +2730,6 @@ public class MaplePacketCreator {
             if (partychar.getChannel() == forchannel && !leaving) {
                 lew.writeInt(partychar.getDoorTown());
                 lew.writeInt(partychar.getDoorTarget());
-                lew.writeInt(partychar.getDoorSkill());
                 lew.writeInt(partychar.getDoorPosition().x);
                 lew.writeInt(partychar.getDoorPosition().y);
             } else {
