@@ -49,7 +49,7 @@ public class DatabaseConnection {
             = new HashMap();
     private final static Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
     private static HikariDataSource datasource;
-    private static final int maxConnection = 1000;
+    private static final int maxConnection = 2000;
     private static final long connectionTimeOut = 30 * 60 * 1000;
     private static final ReentrantLock lock = new ReentrantLock();// 锁对象
 
