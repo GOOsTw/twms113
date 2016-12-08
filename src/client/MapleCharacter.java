@@ -210,8 +210,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     private boolean isShowDebugInfo = false;
     private int saveToDBCount = 0;
     private final HashMap<String, String> playervariables = new HashMap<>();
-        private final HashMap<String, String> accountVariables = new HashMap<>();
-
+    private final HashMap<String, String> accountVariables = new HashMap<>();
 
     private MapleCharacter(final boolean isChannelServer) {
         super.setStance(0);
@@ -381,6 +380,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         ret.subcategory = ct.subcategory;
         ret.prefix = ct.prefix;
         ret.dps = ct.dps;
+        for(Entry<String,String> entry : ct.playervariables.entrySet())
+            ret.playervariables.put(entry.getKey(), entry.getValue());
+        for(Entry<String,String> entry : ct.accountVariables.entrySet())
+            ret.accountVariables.put(entry.getKey(), entry.getValue());
 
         if (isChannel) {
             final MapleMapFactory mapFactory = ChannelServer.getInstance(client.getChannel()).getMapFactory();
@@ -803,7 +806,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 }
                 rs.close();;
                 ps.close();
-                
+
                 ps = con.prepareStatement("SELECT * FROM account_variables WHERE accountid = ?");
                 ps.setInt(1, ret.accountid);
                 rs = ps.executeQuery();
@@ -1217,10 +1220,10 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
                 ps.execute();
             }
             ps.close();
-            
+
             deleteWhereCharacterId(con, "DELETE FROM account_variables WHERE accountid = ?");
             ps = con.prepareStatement("INSERT INTO account_variables (accountid, name, value) VALUES (?, ?, ?)");
-            for (Entry<String, String> entry : this.playervariables.entrySet()) {
+            for (Entry<String, String> entry : this.accountVariables.entrySet()) {
                 ps.setInt(1, getAccountID());
                 ps.setString(2, entry.getKey());
                 ps.setString(3, entry.getValue());
@@ -1847,7 +1850,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
         stats.recalcLocalStats();
         if (this.isShowDebugInfo()) {
-            this.dropMessage(6, "[系統提示] 使用了 BUFF 來源 :" + effect.getName() + "(" + effect.getSourceId() + ") 時間 :" + localDuration/1000 + "秒");
+            this.dropMessage(6, "[系統提示] 使用了 BUFF 來源 :" + effect.getName() + "(" + effect.getSourceId() + ") 時間 :" + localDuration / 1000 + "秒");
             for (Pair<MapleBuffStat, Integer> buf : statups) {
                 this.dropMessage(6, "[系統提示] " + buf.getLeft().toString() + "(0x" + HexTool.toString(buf.getLeft().getValue()) + ")");
             }
@@ -6727,7 +6730,13 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         }
         return null;
     }
-    
+
+    public void deletePlayerVariable(String name) {
+        if (playervariables.containsKey(name)) {
+            playervariables.remove(name);
+        }
+    }
+
     public void setAccountVariable(String name, String value) {
         accountVariables.put(name, value);
     }
@@ -6739,9 +6748,9 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         return null;
     }
 
-    public void deletePlayerVariable(String name) {
-        if (playervariables.containsKey(name)) {
-            playervariables.remove(name);
+    public void deleteAccountVariable(String name) {
+        if (accountVariables.containsKey(name)) {
+            accountVariables.remove(name);
         }
     }
 
@@ -6803,7 +6812,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     public HashMap<String, String> getPlayervariables() {
         return playervariables;
     }
-    
+
     public HashMap<String, String> getAccountVariables() {
         return accountVariables;
     }

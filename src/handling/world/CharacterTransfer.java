@@ -65,8 +65,8 @@ public class CharacterTransfer implements Externalizable {
     public final Map<Integer, SkillEntry> Skills = new LinkedHashMap<>(); // Skillid instead of Skill.java, as it's huge. Cant be transporting Skill.java and MapleStatEffect.java
     public long giveCSpointsLasttime = 0;
     public boolean GM聊天;
-    private HashMap<String, String> playervariables = new HashMap<>();
-    private HashMap<String, String> accountVariables = new HashMap<>();
+    public HashMap<String, String> playervariables = new HashMap<>();
+    public HashMap<String, String> accountVariables = new HashMap<>();
 
     public CharacterTransfer() {
     }
