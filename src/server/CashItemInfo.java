@@ -82,7 +82,7 @@ public class CashItemInfo {
             if (this.count > 0) {
                 this.flags |= 0x2;
             }
-            if (this.discountPrice > 0) {
+            if (this.discountPrice >= 0) {
                 this.flags |= 0x4;
             }
             if (this.unk_1 > 0) {
@@ -137,7 +137,7 @@ public class CashItemInfo {
                 c = count;
             }
             if (meso <= 0) {
-                if (discountPrice <= 0) {
+                if (discountPrice < 0) {
                     price = (backup == null ? 0 : backup.getPrice());
                 } else {
                     price = discountPrice;
