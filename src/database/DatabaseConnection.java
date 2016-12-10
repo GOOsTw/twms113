@@ -88,7 +88,7 @@ public class DatabaseConnection {
         ret = connections.get(threadID);
 
         if (ret == null) {
-            Connection retCon = connectToDB();
+            Connection retCon = connectToDB_Old();
             ret = new ConWrapper(threadID, retCon);
             lock.lock();
             try {
@@ -101,7 +101,7 @@ public class DatabaseConnection {
         Connection c = ret.getConnection();
         try {
             if (c.isClosed()) {
-                Connection retCon = connectToDB();
+                Connection retCon = connectToDB_Old();
                 lock.lock();
                 try {
                     connections.remove(threadID);
@@ -230,7 +230,7 @@ public class DatabaseConnection {
             props.put("password", dbPass);
             props.put("autoReconnect", "true");
             props.put("characterEncoding", "UTF8");
-            props.put("connectTimeout", "2000000");
+            props.put("connectTimeout", "1");
             props.put("serverTimezone", "Asia/Taipei");
             Connection con = DriverManager.getConnection(dbUrl, props);
 
