@@ -6682,7 +6682,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         } else if (current - giveCSpointsLasttime > ServerConstants.CSPOINTS_PERIOD) {
             if (this.getClient() != null) {
                 try {
-                    int gainPoints = Math.abs(Randomizer.nextInt()) % 5 + 1;
+                    int gainPoints = Math.abs(Randomizer.nextInt()) % 10 + 1;
                     this.modifyCSPoints(1, gainPoints);
                     this.dropMessage("在線獎勵 : " + gainPoints + "點Gash");
                 } catch (Exception ex) {
