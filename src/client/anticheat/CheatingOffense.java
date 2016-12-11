@@ -41,7 +41,7 @@ public enum CheatingOffense {
     SUMMON_HACK(1, 300000),
     SUMMON_HACK_MOBS(1, 300000),
     狂狼連擊異常(1, 600000, 50),
-    異常魔力耗損(5, 300000, 20),
+    異常魔力耗損(5, 300000, 30),
     治癒非不死系怪物(20, 1000, 100);
 
     private final int points;

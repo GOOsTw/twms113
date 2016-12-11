@@ -687,6 +687,18 @@ public abstract class AbstractPlayerInteraction {
     public void deletePlayerVariable(String name) {
         c.getPlayer().deletePlayerVariable(name);
     }
+    
+     public String getAccountVariable(String name) {
+        return c.getPlayer().getAccountVariable(name);
+    }
+
+    public void deleteAccountVariable(String name) {
+        c.getPlayer().deletePlayerVariable(name);
+    }
+    
+    public boolean hasAccountVariable(String name) {
+        return c.getPlayer().getAccountVariable(name) != null;
+    }
 
     public void warpBack(int mid, final int retmap, final int time) {
         warpBack(mid, retmap, time, "");

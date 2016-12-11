@@ -89,15 +89,15 @@ public class DamageParse {
                 }
             }
             maxMobCount = effect.getMobCount();
- 
-            
+
         }
-        
-        
 
         if (GameConstants.isAran(player.getJob())) {
             if (player.getSkillLevel(21000002) > 0 && attack.skill == 0) {
                 maxMobCount = 12;
+            }
+            if (player.getSkillLevel(21000002) == 0 && player.getJob() == 2000) {
+                maxMobCount = 2;
             }
         }
 
@@ -538,7 +538,7 @@ public class DamageParse {
         if (!player.getCheatTracker().checkAttackHitCount(attack, maxHitCount)) {
             return;
         }
-        
+
         /* 確認是否超過打怪數量*/
         int mobCount = effect.getMobCount();
         if (!player.getCheatTracker().checkAttackTargetCount(attack, mobCount)) {

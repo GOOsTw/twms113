@@ -932,7 +932,6 @@ public class MapleClient {
     }
 
     public final void disconnect(final boolean RemoveInChannelServer, final boolean fromCS) {
-        System.out.println("中斷連線" + new Throwable().getStackTrace()[1].toString());
         disconnect(RemoveInChannelServer, fromCS, false);
     }
 

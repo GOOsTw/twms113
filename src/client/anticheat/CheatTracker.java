@@ -163,7 +163,7 @@ public class CheatTracker {
 
             registerOffense(CheatingOffense.攻擊速度過快_伺服器端, "攻擊速度異常，技能: " + skillId + " check: " + (clientTickCount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay);
         }
-        this.updateTick(clientTickCount);
+        this.lastAttackTickCount = clientTickCount;
     }
 
     /**
@@ -611,14 +611,14 @@ public class CheatTracker {
                         continue;
                     }
                     try {
-                        reduce_x = Math.abs(startPos.x - endPos.x);
-                        reduce_y = Math.abs(startPos.y - endPos.y);
+                        reduce_x = Math.max(reduce_x, Math.abs(startPos.x - endPos.x));
+                        reduce_y = Math.max(reduce_y, Math.abs(startPos.y - endPos.y));
                     } catch (Exception ex) {
                     }
                 }
             }
             if (!fly) {
-                int GeneallyDistance_y = 150;
+                int GeneallyDistance_y = 180;
                 int GeneallyDistance_x = 250;
                 int Check_x = 250;
                 int max_x = 450;
@@ -661,7 +661,7 @@ public class CheatTracker {
                     if (player.get().isShowDebugInfo()) {
                         player.get().dropMessage(5, "reduce_x = " + reduce_x + " , max_x = " + max_x);
                     }
-                    if (吸怪 % 50 == 0 || reduce_x > max_x) {
+                    if (吸怪 % 100 == 0 || reduce_x > max_x) {
                         player.get().getCheatTracker().registerOffense(CheatingOffense.怪物全圖吸, "(地圖: " + player.get().getMapId() + " 怪物數量:" + 吸怪 + ")");
                         World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + player.get().getName() + " (編號: " + player.get().getId() + ")使用吸怪(" + 吸怪 + ")! - 地圖:" + player.get().getMapId() + "(" + player.get().getMap().getMapName() + ")"));
                     }

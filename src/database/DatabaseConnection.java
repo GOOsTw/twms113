@@ -49,7 +49,7 @@ public class DatabaseConnection {
             = new HashMap();
     private final static Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
     private static HikariDataSource datasource;
-    private static final int maxConnection = 2000;
+    private static final int maxConnection = 50;
     private static final long connectionTimeOut = 30 * 60 * 1000;
     private static final ReentrantLock lock = new ReentrantLock();// 锁对象
 
@@ -88,7 +88,7 @@ public class DatabaseConnection {
         ret = connections.get(threadID);
 
         if (ret == null) {
-            Connection retCon = connectToDB();
+            Connection retCon = connectToDB_Old();
             ret = new ConWrapper(threadID, retCon);
             lock.lock();
             try {
@@ -101,7 +101,7 @@ public class DatabaseConnection {
         Connection c = ret.getConnection();
         try {
             if (c.isClosed()) {
-                Connection retCon = connectToDB();
+                Connection retCon = connectToDB_Old();
                 lock.lock();
                 try {
                     connections.remove(threadID);
@@ -230,7 +230,7 @@ public class DatabaseConnection {
             props.put("password", dbPass);
             props.put("autoReconnect", "true");
             props.put("characterEncoding", "UTF8");
-            props.put("connectTimeout", "2000000");
+            props.put("connectTimeout", "1");
             props.put("serverTimezone", "Asia/Taipei");
             Connection con = DriverManager.getConnection(dbUrl, props);
 

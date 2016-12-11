@@ -43,7 +43,8 @@ public class MapleAESOFB {
     private final short mapleVersion;
     private final static SecretKeySpec SKEY = new SecretKeySpec(new byte[]{0x13, 0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, (byte) 0xB4, 0x00, 0x00, 0x00, 0x1B, 0x00, 0x00, 0x00, 0x0F, 0x00, 0x00, 0x00, 0x33, 0x00, 0x00, 0x00, 0x52, 0x00, 0x00, 0x00}, "AES");
 
-    private static final byte[] FUNNY_BYTES = new byte[]{(byte) 0xEC, (byte) 0x3F, (byte) 0x77, (byte) 0xA4, (byte) 0x45, (byte) 0xD0, (byte) 0x71, (byte) 0xBF, (byte) 0xB7, (byte) 0x98, (byte) 0x20, (byte) 0xFC,
+    private static final byte[] FUNNY_BYTES = new byte[]{
+        (byte) 0xEC, (byte) 0x3F, (byte) 0x77, (byte) 0xA4, (byte) 0x45, (byte) 0xD0, (byte) 0x71, (byte) 0xBF, (byte) 0xB7, (byte) 0x98, (byte) 0x20, (byte) 0xFC,
         (byte) 0x4B, (byte) 0xE9, (byte) 0xB3, (byte) 0xE1, (byte) 0x5C, (byte) 0x22, (byte) 0xF7, (byte) 0x0C, (byte) 0x44, (byte) 0x1B, (byte) 0x81, (byte) 0xBD, (byte) 0x63, (byte) 0x8D, (byte) 0xD4, (byte) 0xC3,
         (byte) 0xF2, (byte) 0x10, (byte) 0x19, (byte) 0xE0, (byte) 0xFB, (byte) 0xA1, (byte) 0x6E, (byte) 0x66, (byte) 0xEA, (byte) 0xAE, (byte) 0xD6, (byte) 0xCE, (byte) 0x06, (byte) 0x18, (byte) 0x4E, (byte) 0xEB,
         (byte) 0x78, (byte) 0x95, (byte) 0xDB, (byte) 0xBA, (byte) 0xB6, (byte) 0x42, (byte) 0x7A, (byte) 0x2A, (byte) 0x83, (byte) 0x0B, (byte) 0x54, (byte) 0x67, (byte) 0x6D, (byte) 0xE8, (byte) 0x65, (byte) 0xE7,
@@ -106,27 +107,26 @@ public class MapleAESOFB {
      * @return The encrypted bytes.
      */
     public byte[] crypt(byte[] data) {
-        int remaining = data.length;
-        int llength = 0x5B0;
+        int remainLength = data.length;
+        int maxLength = 0x5B0;
         int start = 0;
 
         try {
-            while (remaining > 0) {
+            while (remainLength > 0) {
                 byte[] myIv = BitTools.multiplyBytes(this.iv, 4, 4);
-                if (remaining < llength) {
-                    llength = remaining;
+                if (remainLength < maxLength) {
+                    maxLength = remainLength;
                 }
-                for (int x = start; x < (start + llength); x++) {
-                    if ((x - start) % myIv.length == 0) {
+                for (int i = start; i < (start + maxLength); i++) {
+                    if ((i - start) % myIv.length == 0) {
                         byte[] newIv = cipher.doFinal(myIv);
                         System.arraycopy(newIv, 0, myIv, 0, myIv.length);
-
                     }
-                    data[x] ^= myIv[(x - start) % myIv.length];
+                    data[i] ^= myIv[(i - start) % myIv.length];
                 }
-                start += llength;
-                remaining -= llength;
-                llength = 0x5B4;
+                start += maxLength;
+                remainLength -= maxLength;
+                maxLength = 0x5B4;
             }
             updateIv();
         } catch (IllegalBlockSizeException | BadPaddingException e) {
