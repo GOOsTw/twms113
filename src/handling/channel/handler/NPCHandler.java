@@ -211,7 +211,6 @@ public class NPCHandler {
                 final byte type = slea.readByte();
                 final byte slot = storage.getSlot(MapleInventoryType.getByType(type), slea.readByte());
                 final IItem item = storage.takeOut(slot);
-
                 if (item != null) {
                     if (!MapleInventoryManipulator.checkSpace(c, item.getItemId(), item.getQuantity(), item.getOwner())) {
                         storage.store(item);
@@ -224,9 +223,9 @@ public class NPCHandler {
                     }
                     storage.sendTakenOut(c, GameConstants.getInventoryType(item.getItemId()));
                     storage.saveToDB();
+                    chr.saveToDB(false, false);
                 } else {
                     c.sendPacket(MaplePacketCreator.enableActions());
-                    //AutobanManager.getInstance().autoban(c, "Trying to take out item from storage which does not exist.");
                 }
                 break;
             }
