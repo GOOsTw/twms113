@@ -468,6 +468,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
 
         ret.stats.recalcLocalStats(true);
         ret.giveCSpointsLasttime = ct.giveCSpointsLasttime;
+        
 
         return ret;
     }
@@ -1221,7 +1222,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             }
             ps.close();
 
-            deleteWhereCharacterId(con, "DELETE FROM account_variables WHERE accountid = ?");
+            deleteWhereAccountId(con, "DELETE FROM account_variables WHERE accountid = ?");
             ps = con.prepareStatement("INSERT INTO account_variables (accountid, name, value) VALUES (?, ?, ?)");
             for (Entry<String, String> entry : this.accountVariables.entrySet()) {
                 ps.setInt(1, getAccountID());
@@ -1381,6 +1382,19 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public static void deleteWhereCharacterId(Connection con, String sql, int id) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            FilePrinter.printError("MapleCharacter.txt", ex, "[deleteWhereCharacterId]");
+        }
+    }
+    
+    private void deleteWhereAccountId(Connection con, String sql) throws SQLException {
+        deleteWhereCharacterId(con, sql, this.accountid);
+    }
+
+    public static void deleteWhereAccountId(Connection con, String sql, int id) {
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();

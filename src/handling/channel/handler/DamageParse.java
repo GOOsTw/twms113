@@ -97,7 +97,7 @@ public class DamageParse {
                 maxMobCount = 12;
             }
             if (player.getSkillLevel(21000002) == 0 && player.getJob() == 2000) {
-                maxMobCount = 2;
+                maxMobCount = 12;
             }
         }
 

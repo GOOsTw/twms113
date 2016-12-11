@@ -222,7 +222,7 @@ public abstract class MapleEvent {
         }
         cserv.setEvent(cserv.getEvent(event).mapid[0]);
         cserv.getEvent(event).reset();
-        World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice("活動 " + String.valueOf(event) + " 即將在頻道 " + cserv.getChannel() + " 舉行 , 參加指令@event 要參加的玩家請到頻道 " + cserv.getChannel()));
+        //World.Broadcast.broadcastMessage(MaplePacketCreator.serverNotice("活動 " + String.valueOf(event) + " 即將在頻道 " + cserv.getChannel() + " 舉行 , 參加指令@event 要參加的玩家請到頻道 " + cserv.getChannel()));
         return "";
     }
 }
