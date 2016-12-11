@@ -66,7 +66,6 @@ public class CharacterTransfer implements Externalizable {
     public long giveCSpointsLasttime = 0;
     public boolean GM聊天;
     public HashMap<String, String> playervariables = new HashMap<>();
-    public HashMap<String, String> accountVariables = new HashMap<>();
 
     public CharacterTransfer() {
     }
@@ -202,7 +201,6 @@ public class CharacterTransfer implements Externalizable {
         this.mount_exp = mount.getExp();
         this.giveCSpointsLasttime = chr.getGiveCSpointsLasttime();
         this.playervariables = chr.getPlayervariables();
-        this.accountVariables = chr.getAccountVariables();
 
         TranferTime = System.currentTimeMillis();
     }
@@ -367,10 +365,6 @@ public class CharacterTransfer implements Externalizable {
         final int playerVariable_size = in.readInt();
         for (int i = 0; i < playerVariable_size; i++) {
             this.playervariables.put(in.readUTF(), in.readUTF());
-        }
-        final int accountVariable_size = in.readInt();
-        for (int i = 0; i < accountVariable_size; i++) {
-            this.accountVariables.put(in.readUTF(), in.readUTF());
         }
 
         this.lastfametime = in.readLong();
@@ -551,11 +545,7 @@ public class CharacterTransfer implements Externalizable {
             out.writeUTF(entry.getKey());
             out.writeUTF(entry.getValue());
         }
-        out.writeInt(this.accountVariables.size());
-        for (Entry<String, String> entry : this.accountVariables.entrySet()) {
-            out.writeUTF(entry.getKey());
-            out.writeUTF(entry.getValue());
-        }
+
         out.writeLong(this.lastfametime);
     }
 }
