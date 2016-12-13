@@ -7,7 +7,7 @@ public enum CheatingOffense {
 
     召喚獸無延遲(5, 6000, 10, (byte) 2),
     攻擊速度過快_客戶端(5, 6000, 50, (byte) 2),
-    攻擊速度過快_伺服器端(5, 9000, 20, (byte) 2),
+    攻擊速度過快_伺服器端(5, 9000, 60, (byte) 2),
     異常移動怪物(1, 30000),
     異常回復血魔(5, 20000, 10, (byte) 2),
     攻擊數值異常相同(2, 30000, 150),
@@ -21,7 +21,7 @@ public enum CheatingOffense {
     召喚獸攻擊距離過遠(5, 60000, 200),
     回復血量過高(1, 30000, 1000, (byte) 2),
     回復魔量過高(1, 30000, 1000, (byte) 2),
-    怪物全圖吸((byte) 3, 7000, 5, (byte) 3),
+    怪物全圖吸((byte) 3, 7000, 30, (byte) 1),
     拾取物品距離過遠_客戶端(5, 5000, 10),
     拾取物品距離過遠_伺服器端(3, 5000, 100, (byte) 2),
     寵物拾取物品距離過遠_客戶端(5, 10000, 20),
@@ -71,6 +71,10 @@ public enum CheatingOffense {
 
     public final void setEnabled(final boolean enabled) {
         banType = (enabled ? BANTYPE_ENABLE : BANTYPE_DISABLE);
+    }
+    
+    public final int getMaxPoints() {
+        return maxPoints;
     }
 
     public final boolean isEnabled() {

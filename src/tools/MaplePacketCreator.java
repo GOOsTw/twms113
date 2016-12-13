@@ -288,27 +288,28 @@ public class MaplePacketCreator {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.SPAWN_SUMMON.getValue());
-
         mplew.writeInt(summon.getOwnerId());
         mplew.writeInt(summon.getObjectId());
         mplew.writeInt(summon.getSkill());
-
         mplew.write(summon.getOwnerLevel() - 1);
-        mplew.write(summon.getSkillLevel()); //idk but nexon sends 1 for octo, so we'll leave it
+        mplew.write(1); //idk but nexon sends 1 for octo, so we'll leave it
         mplew.writePos(summon.getPosition());
         if (summon.isPuppet()) {
             mplew.write(summon.isFacingLeft() ? 4 : 5);
         } else {
             mplew.write(summon.isFacingLeft() ? 5 : 4);
         }
-        if ((summon.getSkill() == 35121003) && (summon.getOwner().getMap() != null)) {//Giant Robot SG-88
-            mplew.writeShort(summon.getOwner().getMap().getFootholds().findBelow(summon.getPosition()).getId());
-        } else {
-            mplew.writeShort(0);
-        }
-        mplew.write(summon.getMovementType().getValue()); // 0 = don't move, 1 = follow (4th mage summons?), 2/4 = only tele follow, 3 = bird follow
-        mplew.write(summon.isPuppet() ? 0 : 1); // 0 = Summon can't attack - but puppets don't attack with 1 either ^.-
-        mplew.write(animated ? 0 : 1);
+//        mplew.write(summon.getSkill() == 32111006 ? 5 : 4); //reaper = 5?
+        mplew.writeShort(0/*summon.getFh()*/);
+        mplew.write(summon.getMovementType().getValue());
+        mplew.write(summon.getSummonType()); // 0 = Summon can't attack - but puppets don't attack with 1 either ^.-
+        mplew.write(0/*animated ? 0 : 1*/);
+        mplew.writeZeroBytes(20);
+        //final MapleCharacter chr = summon.getOwner();
+        /*        mplew.write(summon.getSkill() == 4341006 && chr != null ? 1 : 0); //mirror target
+         if (summon.getSkill() == 4341006 && chr != null) {
+         PacketHelper.addCharLook(mplew, chr, true);
+         }*/
 
         return mplew.getPacket();
     }
@@ -669,25 +670,23 @@ public class MaplePacketCreator {
         return HexTool.getByteArrayFromHexString(hex);
     }
 
-    public static final byte[] GainEXP_Monster(final int gain, final boolean white, final int partyinc, final int Class_Bonus_EXP, final int Equipment_Bonus_EXP, final int Premium_Bonus_EXP) {
+    public static final byte[] GainEXP_Monster(final int gain, final boolean white, final int Event_Bonus_EXP, final int Wedding_Bonus_EXP, final int Party_EXP, final int Party_Bonus_EXP, final int Equipment_Bonus_EXP, final int Premium_Bonus_EXP) {
         final MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.SHOW_STATUS_INFO.getValue());
         mplew.write(3); // 3 = exp, 4 = fame, 5 = mesos, 6 = guildpoints
         mplew.write(white ? 1 : 0);
-        mplew.writeInt(gain);
+        mplew.writeInt(gain); // 得到經驗值。
         mplew.write(0); // Not in chat
-        mplew.writeInt(0); // Event Bonus
-        mplew.writeShort(0);
-        mplew.writeInt(0); //wedding bonus
-        mplew.writeInt(0); //party ring bonus
+        mplew.writeInt(Event_Bonus_EXP); // 活動獎勵經驗值 Event Bonus
         mplew.write(0);
-        mplew.writeInt(partyinc); // Party size
-        mplew.writeInt(Equipment_Bonus_EXP); //Equipment Bonus EXP
-        mplew.writeInt(Premium_Bonus_EXP); // Premium bonus EXP
-//        mplew.writeInt(0); //Rainbow Week Bonus EXP
-        mplew.writeInt(Class_Bonus_EXP); // Class bonus EXP
-//        mplew.write(0);
+        mplew.write(0);
+        mplew.writeInt(Wedding_Bonus_EXP); // 結婚紅利經驗值 wedding bonus
+        mplew.writeInt(Party_EXP); // 組隊經驗值增加 party ring bonus
+        mplew.write(0);
+        mplew.writeInt(Party_Bonus_EXP); // 組隊額外經驗值 Party size
+        mplew.writeInt(Equipment_Bonus_EXP); // 道具裝備紅利經驗值 Equipment Bonus EXP
+        mplew.writeInt(Premium_Bonus_EXP); // 網咖贈送經驗值 Premium bonus EXP
 
         return mplew.getPacket();
     }
@@ -3031,7 +3030,6 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    
     public static byte[] triggerReactor(MapleReactor reactor, int stance) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 

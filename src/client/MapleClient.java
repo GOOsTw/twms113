@@ -896,8 +896,11 @@ public class MapleClient {
                 }
             }
             player.changeRemoval(true);
-            if (player.getEventInstance() != null) {
-                player.getEventInstance().playerDisconnected(player);
+            try {
+                if (player.getEventInstance() != null) {
+                    player.getEventInstance().playerDisconnected(player);
+                }
+            } catch (Exception ex) {
             }
             if (player.getMap() != null) {
                 switch (player.getMapId()) {
@@ -924,6 +927,7 @@ public class MapleClient {
                     }
                 }
             }
+
             player.setMessenger(null);
         } catch (final Throwable e) {
             FilePrinter.printError(FilePrinter.AccountStuck, e);
@@ -966,7 +970,7 @@ public class MapleClient {
             if (!fromCS) {
                 final ChannelServer ch = ChannelServer.getInstance(map == null ? channel : map.getChannel());
                 try {
-                    if (ch == null || clone || ch.isShutdown()) {
+                    if (ch == null || clone) {
                         player = null;
                         return;//no idea
                     }
@@ -1006,7 +1010,6 @@ public class MapleClient {
 
                 } finally {
                     if (RemoveInChannelServer && ch != null) {
-
                         ch.removePlayer(idz, namez);
                     }
                     player = null;
@@ -1045,16 +1048,13 @@ public class MapleClient {
 
                 }
             }
+        }
+        if (!serverTransition && isLoggedIn()) {
+            updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, getSessionIPAddress());
+        }
 
-            if (!serverTransition && isLoggedIn()) {
-                updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, getSessionIPAddress());
-            }
-
-            if (player == null) {
-                this.getSession().close(true);
-            }
-
-        } else {
+        if (player == null) {
+            this.getSession().close(true);
         }
     }
 
@@ -1552,7 +1552,7 @@ public class MapleClient {
     public void setReceiving(boolean m) {
         this.receiving = m;
     }
-    
+
     public long getLastLogin() {
         Connection con = DatabaseConnection.getConnection();
         try {
@@ -1587,6 +1587,5 @@ public class MapleClient {
     public void setCheck(boolean check) {
         this.check = check;
     }
-    
-    
+
 }

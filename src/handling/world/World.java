@@ -1005,7 +1005,6 @@ public class World {
             lock.writeLock().lock();
             try {
                 idToChannel.remove(id);
-                //nameToChannel.remove(name.toLowerCase());
             } finally {
                 lock.writeLock().unlock();
             }

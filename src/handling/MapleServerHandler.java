@@ -290,7 +290,8 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             }
             if (client != null) {
                 if (client.getAccID() > 0) {
-                    if (World.Client.getClient(client.getAccID()) == client) {
+                    if (World.Client.getClient(client.getAccID()).getSession().getRemoteAddress().toString()
+                            .equals(client.getSession().getRemoteAddress().toString())) {
                         World.Client.unregisterClient(client.getAccID());
                     }
                 }

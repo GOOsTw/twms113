@@ -201,7 +201,7 @@ public class PlayerStorage {
             while (itr.hasNext()) {
                 chr = itr.next();
                 if (!chr.isGM() || !checkGM) {
-                    chr.getClient().disconnect(false, false, true);
+                    chr.getClient().disconnect(true, false, true);
                     World.Find.forceDeregister(chr.getId(), chr.getName());
                     itr.remove();
                 }

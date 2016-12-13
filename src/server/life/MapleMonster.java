@@ -440,7 +440,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
      */
     private void giveExpToCharacter(final MapleCharacter attacker, int exp, final boolean highestDamage, final int numExpSharers, final byte pty, final byte classBounsExpPercent, final byte Premium_Bonus_EXP_PERCENT, final int lastskillID) {
 
-        /**
+         /**
          * 判斷最高攻擊 *
          */
         if (highestDamage) {
@@ -456,44 +456,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
         }
 
         if (exp > 0) {
-
-            
-            // 檢查怪物有無 SHOWDOWN Buff
-            final MonsterStatusEffect mse = stati.get(MonsterStatus.SHOWDOWN);
-            if (mse != null) {
-                exp += (int) (exp * (mse.getX() / 100.0));
-            }
-            //檢查攻擊者有無 HOLY_SYMBOL Buff
-            final Integer holySymbol = attacker.getBuffedValue(MapleBuffStat.HOLY_SYMBOL);
-            if (holySymbol != null) {
-                if (numExpSharers == 1) {
-                    exp *= 1.0 + (holySymbol.doubleValue() / 500.0);
-                } else {
-                    exp *= 1.0 + (holySymbol.doubleValue() / 100.0);
-                }
-            }
-            // 受詛咒狀態，經驗砍半
-            if (attacker.hasDisease(MapleDisease.CURSE)) {
-                exp /= 2;
-            }
-
-            exp *= attacker.getEXPMod() * (int) (attacker.getStat().expBuff / 100.0);
-            exp = (int) Math.min(Integer.MAX_VALUE, exp * (attacker.getLevel() < 10 ? GameConstants.getExpRate_Below10(attacker.getJob()) : ChannelServer.getInstance(map.getChannel()).getExpRate()));
-            //do this last just incase someone has a 2x exp card and its set to max value
-            int classBonusExp = 0;
-            if (classBounsExpPercent > 0) {
-                classBonusExp = (int) ((exp / 100.0) * classBounsExpPercent);
-            }
-            int premiumBonusExp = 0;
-            if (Premium_Bonus_EXP_PERCENT > 0) {
-                premiumBonusExp = (int) ((exp / 100.0) * Premium_Bonus_EXP_PERCENT);
-            }
-            int equpBonusExp = (int) ((exp / 100.0) * attacker.getStat().equipmentBonusExp);
-            if (attacker.getStat().equippedFairy) {
-                equpBonusExp += (int) ((exp / 100.0) * attacker.getFairyExp());
-            }
-
-            attacker.gainExpMonster(exp, true, highestDamage, pty, classBonusExp, equpBonusExp, premiumBonusExp);
+            attacker.gainExpMonster(exp, true, highestDamage, pty, classBounsExpPercent, Premium_Bonus_EXP_PERCENT, this);
         }
         attacker.mobKilled(getId(), lastskillID);
     }

@@ -73,7 +73,7 @@ function action(mode, type, selection) {
         }
         cm.sendGetNumber("你想要丟掉 #v" + statsSel.getItemId() + "##t" + statsSel.getItemId() + "#嗎?\r\n請輸入數量", 1, 1, statsSel.getQuantity());
     } else if (status == 3) {
-        if (!cm.dropItem(selected, invv, selection)) {
+        if (!cm.gainItem(selected, selection*-1)) {
             cm.sendOk("錯誤, 請再嘗試一次.");
             cm.dispose();
         } else {
