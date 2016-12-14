@@ -26,6 +26,10 @@ public class CheatingOffenseEntry {
     public int getCount() {
         return count;
     }
+    
+    public int getMaxPoints() {
+        return offense.getMaxPoints();
+    }
 
     public int getChrfor() {
         return characterid;

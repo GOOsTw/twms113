@@ -53,6 +53,10 @@ public enum CheatingOffense {
     public final int getPoints() {
         return points;
     }
+    
+    public final int getMaxPoints() {
+        return maxPoints;
+    }
 
     public final long getValidityDuration() {
         return validityDuration;

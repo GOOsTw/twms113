@@ -59,6 +59,7 @@ public class CheatTracker {
     private ScheduledFuture<?> invalidationTask;
     private int gm_message = 100;
     private int lastTickCount = 0, tickSame = 0;
+    private long lastSSTickCount;
     private long lastASmegaTime = 0;
     public long[] lastTime = new long[6];
     public int atttackedMobCount = 0, 吸怪 = 0, FLY_吸怪 = 0;
@@ -108,6 +109,7 @@ public class CheatTracker {
 
     public final void checkAttack(final int skillId, final int clientTickCount) {
 
+        long currentTick = System.currentTimeMillis();
         //時間攻擊
         if (clientTickCount < this.lastAttackTickCount) {
             player.get().getClient().disconnect(true, false);
@@ -161,8 +163,12 @@ public class CheatTracker {
                 atttackedMobCount--;
             }
 
+            registerOffense(CheatingOffense.攻擊速度過快_客戶端, "攻擊速度異常，技能: " + skillId + " check: " + (clientTickCount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay);
+        }
+        if ((currentTick - lastSSTickCount) + player.get().getClient().getLatency() < AtkDelay) {
             registerOffense(CheatingOffense.攻擊速度過快_伺服器端, "攻擊速度異常，技能: " + skillId + " check: " + (clientTickCount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay);
         }
+        this.lastSSTickCount = currentTick;
         this.lastAttackTickCount = clientTickCount;
     }
 
@@ -355,13 +361,11 @@ public class CheatTracker {
     }
 
     public final void registerOffense(final CheatingOffense offense, final String param) {
-        final MapleCharacter chrhardref = player.get();
-        if (chrhardref == null || !offense.isEnabled() || chrhardref.isClone()) {
+        final MapleCharacter chr = player.get();
+        if (chr == null || !offense.isEnabled() || chr.isClone()) {
             return;
         }
-        if (player.get().hasGmLevel(5)) {
-            player.get().dropMessage("註冊：" + offense + " 原因：" + param);
-        }
+
         CheatingOffenseEntry entry = null;
         rL.lock();
         try {
@@ -369,59 +373,63 @@ public class CheatTracker {
         } finally {
             rL.unlock();
         }
+
         if (entry != null && entry.isExpired()) {
             expireEntry(entry);
             entry = null;
         }
         if (entry == null) {
-            entry = new CheatingOffenseEntry(offense, chrhardref.getId());
+            entry = new CheatingOffenseEntry(offense, chr.getId());
         }
         if (param != null) {
             entry.setParam(param);
         }
+        if (chr.isShowDebugInfo()) {
+            chr.dropMessage("註冊：" + entry.getOffense() + " 原因：" + entry.getParam() + " 鎖定容忍度：" + entry.getPoints() + "/" + entry.getOffense().getMaxPoints() + " 取消期限：" + (System.currentTimeMillis() - entry.getLastOffenseTime() + entry.getOffense().getValidityDuration()) / 1000 + " 秒後");
+        }
         entry.incrementCount();
-        if (offense.shouldAutoban(entry.getCount())) {
+        if (offense.shouldAutoban(entry.getPoints())) {
             final byte type = offense.getBanType();
             String outputFileName;
             switch (type) {
                 case 1:
-                    AutobanManager.getInstance().autoban(chrhardref.getClient(), StringUtil.makeEnumHumanReadable(offense.name()), 5000);
+                    AutobanManager.getInstance().autoban(chr.getClient(), StringUtil.makeEnumHumanReadable(offense.name()), 5000);
                     break;
                 case 2:
                     outputFileName = "斷線";
-                    chrhardref.sendHackShieldDetected();
-                    chrhardref.getClient().disconnect(true, false);
-                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + chrhardref.getName() + " 自動斷線 類別: " + offense.toString() + " 原因: " + (param == null ? "" : (" - " + param))));
+                    chr.sendHackShieldDetected();
+                    chr.getClient().disconnect(true, false);
+                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + chr.getName() + " 自動斷線 類別: " + offense.toString() + " 原因: " + (param == null ? "" : (" - " + param))));
                     break;
                 case 3:
                     boolean ban = true;
                     outputFileName = "封鎖";
                     String show = "使用違法程式練功";
                     String real = "";
-                    if (offense.toString() == "ITEMVAC_SERVER") {
+                    if ("ITEMVAC_SERVER".equals(offense.toString())) {
                         outputFileName = "全圖吸物";
                         real = "使用全圖吸物";
-                    } else if (offense.toString() == "FAST_SUMMON_ATTACK") {
+                    } else if ("FAST_SUMMON_ATTACK".equals(offense.toString())) {
                         outputFileName = "召喚獸無延遲";
                         real = "使用召喚獸無延遲攻擊";
-                    } else if (offense.toString() == "MOB_VAC") {
+                    } else if ("MOB_VAC".equals(offense.toString())) {
                         outputFileName = "吸怪";
                         real = "使用吸怪";
-                    } else if (offense.toString() == "ATTACK_FARAWAY_MONSTER_BAN") {
+                    } else if ("ATTACK_FARAWAY_MONSTER_BAN".equals(offense.toString())) {
                         outputFileName = "全圖打";
                         real = "使用全圖打";
                     } else {
                         ban = false;
-                        World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + MapleCharacterUtil.makeMapleReadable(chrhardref.getName()) + " (編號: " + chrhardref.getId() + " )使用外掛! " + StringUtil.makeEnumHumanReadable(offense.name()) + (param == null ? "" : (" - " + param))));
+                        World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + MapleCharacterUtil.makeMapleReadable(chr.getName()) + " (編號: " + chr.getId() + " )使用外掛! " + StringUtil.makeEnumHumanReadable(offense.name()) + (param == null ? "" : (" - " + param))));
                     }
                     if (player.get().hasGmLevel(1)) {
                         player.get().dropMessage("觸發違規: " + real + " param: " + (param == null ? "" : (" - " + param)));
                     } else if (ban) {
-                        chrhardref.ban(chrhardref.getName() + real, true, true, false);
-                        chrhardref.sendHackShieldDetected();
-                        chrhardref.getClient().disconnect(true, false);
-                        World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + chrhardref.getName() + " 因為" + show + "而被管理員永久停權。"));
-                        World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + chrhardref.getName() + " " + real + "自動封鎖! "));
+                        chr.ban(chr.getName() + real, true, true, false);
+                        chr.sendHackShieldDetected();
+                        chr.getClient().disconnect(true, false);
+                        World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + chr.getName() + " 因為" + show + "而被管理員永久停權。"));
+                        World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + chr.getName() + " " + real + "自動封鎖! "));
                     } else {
                     }
                     break;
@@ -467,11 +475,11 @@ public class CheatTracker {
                         break;
                 }
                 if (gm_message % 5 == 0) {
-                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + chrhardref.getName() + " (編號:" + chrhardref.getId() + ")疑似外掛! " + show + (param == null ? "" : (" - " + param))));
+                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + chr.getName() + " (編號:" + chr.getId() + ")疑似外掛! " + show + (param == null ? "" : (" - " + param))));
                 }
                 if (gm_message == 0) {
-                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[封號系統] " + chrhardref.getName() + " (編號: " + chrhardref.getId() + " )疑似外掛！" + show + (param == null ? "" : (" - " + param))));
-                    AutobanManager.getInstance().autoban(chrhardref.getClient(), StringUtil.makeEnumHumanReadable(offense.name()), 5000);
+                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[封號系統] " + chr.getName() + " (編號: " + chr.getId() + " )疑似外掛！" + show + (param == null ? "" : (" - " + param))));
+                    AutobanManager.getInstance().autoban(chr.getClient(), StringUtil.makeEnumHumanReadable(offense.name()), 5000);
                     gm_message = 100;
                 }
                 break;
@@ -661,7 +669,7 @@ public class CheatTracker {
                     if (player.get().isShowDebugInfo()) {
                         player.get().dropMessage(5, "reduce_x = " + reduce_x + " , max_x = " + max_x);
                     }
-                    if (吸怪 % 100 == 0 || reduce_x > max_x) {
+                    if (吸怪 % 60 == 0 || reduce_x > max_x) {
                         player.get().getCheatTracker().registerOffense(CheatingOffense.怪物全圖吸, "(地圖: " + player.get().getMapId() + " 怪物數量:" + 吸怪 + ")");
                         World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM密語] " + player.get().getName() + " (編號: " + player.get().getId() + ")使用吸怪(" + 吸怪 + ")! - 地圖:" + player.get().getMapId() + "(" + player.get().getMap().getMapName() + ")"));
                     }
