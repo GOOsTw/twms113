@@ -49,7 +49,7 @@ public class DatabaseConnection {
             = new HashMap();
     private final static Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
     private static HikariDataSource datasource;
-    private static final int maxConnection = 1000;
+    private static final int maxConnection = 70;
     private static final long connectionTimeOut = 30 * 60 * 1000;
     private static final ReentrantLock lock = new ReentrantLock();// 锁对象
 
@@ -88,7 +88,7 @@ public class DatabaseConnection {
         ret = connections.get(threadID);
 
         if (ret == null) {
-            Connection retCon = connectToDB2();
+            Connection retCon = connectToDB();
             ret = new ConWrapper(threadID, retCon);
             lock.lock();
             try {
@@ -100,14 +100,8 @@ public class DatabaseConnection {
 
         Connection c = ret.getConnection();
         try {
-            if (c == null || c.isClosed()) {
-                try {
-                    if (c != null) {
-                        c.close();
-                    }
-                } catch (Exception ex) {
-                }
-                Connection retCon = connectToDB2();
+            if (c.isClosed()) {
+                Connection retCon = connectToDB();
                 lock.lock();
                 try {
                     connections.remove(threadID);
@@ -116,8 +110,6 @@ public class DatabaseConnection {
                     lock.unlock();
                 }
                 ret = new ConWrapper(threadID, retCon);
-            } else {
-
             }
         } catch (Exception e) {
 
@@ -179,7 +171,7 @@ public class DatabaseConnection {
                     connection.close();
                 } catch (SQLException err) {
                 }
-                return null;
+                this.connection = connectToDB();
             }
             lastAccessTime = System.currentTimeMillis(); // Record Access
             return this.connection;
@@ -213,8 +205,8 @@ public class DatabaseConnection {
             config.addDataSourceProperty("password", dbPass);
             config.setPoolName("springHikariCP");
             config.setMaximumPoolSize(maxConnection);
-            config.setMaxLifetime(45000);
-            config.setIdleTimeout(30000);
+            config.setMaxLifetime(connectionTimeOut);
+            config.setIdleTimeout(60 * 1000);
             config.addDataSourceProperty("cachePrepStmts", "true");
             config.addDataSourceProperty("prepStmtCacheSize", "250");
             config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
@@ -223,7 +215,7 @@ public class DatabaseConnection {
         return datasource;
     }
 
-    private static Connection connectToDB_Old2() {
+    private static Connection connectToDB() {
 
         try {
             Properties props = new Properties();
@@ -238,10 +230,9 @@ public class DatabaseConnection {
             props.put("password", dbPass);
             props.put("autoReconnect", "true");
             props.put("characterEncoding", "UTF8");
-            props.put("connectTimeout", "200000000");
+            props.put("connectTimeout", "2000000");
             props.put("serverTimezone", "Asia/Taipei");
             Connection con = DriverManager.getConnection(dbUrl, props);
-
             PreparedStatement ps;
             ps = con.prepareStatement("SET time_zone = '+08:00'");
             ps.execute();

@@ -195,8 +195,7 @@ public class CharLoginHandler {
                 c.sendPacket(LoginPacket.getLoginFailed(loginResponse.getValue()));
             }
         } catch (Exception e) {
-            String x;
-            x = e.getLocalizedMessage();
+            e.printStackTrace();
         } finally {
             LoginServer.getLoginLock().unlock();
         }

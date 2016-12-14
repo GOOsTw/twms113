@@ -632,7 +632,6 @@ public class MapleClient {
         } catch (SQLException e) {
             FilePrinter.print(FilePrinter.LoginError, "Account : " + account + " login raise some exception !" + e.getMessage());
             return LoginResponse.SYSTEM_ERROR;
-
         }
 
         boolean updatePasswordHash = false;
