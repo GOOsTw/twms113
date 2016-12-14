@@ -49,7 +49,7 @@ public class DatabaseConnection {
             = new HashMap();
     private final static Logger log = LoggerFactory.getLogger(DatabaseConnection.class);
     private static HikariDataSource datasource;
-    private static final int maxConnection = 5000;
+    private static final int maxConnection = 70;
     private static final long connectionTimeOut = 30 * 60 * 1000;
     private static final ReentrantLock lock = new ReentrantLock();// 锁对象
 
@@ -88,7 +88,7 @@ public class DatabaseConnection {
         ret = connections.get(threadID);
 
         if (ret == null) {
-            Connection retCon = connectToDB_Old();
+            Connection retCon = connectToDB();
             ret = new ConWrapper(threadID, retCon);
             lock.lock();
             try {
@@ -101,7 +101,7 @@ public class DatabaseConnection {
         Connection c = ret.getConnection();
         try {
             if (c.isClosed()) {
-                Connection retCon = connectToDB_Old();
+                Connection retCon = connectToDB();
                 lock.lock();
                 try {
                     connections.remove(threadID);
@@ -215,7 +215,7 @@ public class DatabaseConnection {
         return datasource;
     }
 
-    private static Connection connectToDB_Old() {
+    private static Connection connectToDB() {
 
         try {
             Properties props = new Properties();
@@ -230,10 +230,9 @@ public class DatabaseConnection {
             props.put("password", dbPass);
             props.put("autoReconnect", "true");
             props.put("characterEncoding", "UTF8");
-            props.put("connectTimeout", "1");
+            props.put("connectTimeout", "2000000");
             props.put("serverTimezone", "Asia/Taipei");
             Connection con = DriverManager.getConnection(dbUrl, props);
-
             PreparedStatement ps;
             ps = con.prepareStatement("SET time_zone = '+08:00'");
             ps.execute();
@@ -245,7 +244,7 @@ public class DatabaseConnection {
         }
     }
 
-    private static Connection connectToDB() {
+    private static Connection connectToDB2() {
         try {
             return getDataSource().getConnection();
         } catch (SQLException ex) {
