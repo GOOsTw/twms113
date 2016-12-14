@@ -6,8 +6,8 @@ import static constants.ServerConstants.BANTYPE_ENABLE;
 public enum CheatingOffense {
 
     召喚獸無延遲(5, 6000, 10, (byte) 2),
-    攻擊速度過快_客戶端(5, 6000, 50, (byte) 2),
-    攻擊速度過快_伺服器端(5, 9000, 60, (byte) 2),
+    攻擊速度過快_客戶端(5, 6000, 100, (byte) 2),
+    攻擊速度過快_伺服器端(5, 6000, 100, (byte) 2),
     異常移動怪物(1, 30000),
     異常回復血魔(5, 20000, 10, (byte) 2),
     攻擊數值異常相同(2, 30000, 150),
