@@ -113,12 +113,17 @@ public class MapleClient {
     private final transient Lock npcMutex = new ReentrantLock();
     private long lastNpcClick = 0;
     private boolean check;
+    private String sessionIP;
 
     public MapleClient(MapleAESOFB send, MapleAESOFB receive, IoSession session) {
         this.send = send;
         this.receive = receive;
         this.session = session;
         this.check = false;
+        try {
+            this.sessionIP = session.getRemoteAddress().toString();
+        } catch (Exception ex) {
+        }
     }
 
     public final MapleAESOFB getReceiveCrypto() {
@@ -1058,7 +1063,7 @@ public class MapleClient {
     }
 
     public final String getSessionIPAddress() {
-        return session.getRemoteAddress().toString().split(":")[0];
+        return sessionIP.split(":")[0];
     }
 
     public final boolean CheckIPAddress() {

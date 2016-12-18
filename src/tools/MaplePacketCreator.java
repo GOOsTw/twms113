@@ -852,7 +852,6 @@ public class MaplePacketCreator {
             } else {
                 mplew.writeMapleAsciiString("");
             }
-
             mplew.writeShort(0);
             mplew.write(0);
             mplew.writeShort(0);
@@ -866,130 +865,35 @@ public class MaplePacketCreator {
                 mplew.writeShort(gs.getLogo());
                 mplew.write(gs.getLogoColor());
             } else {
-                mplew.writeInt(0);
-                mplew.writeInt(0);
+                mplew.writeMapleAsciiString("");
+                mplew.writeShort(0);
+                mplew.write(0);
+                mplew.writeShort(0);
+                mplew.write(0);
             }
         }
-
-        List<Pair<Integer, Integer>> buffvalue = new ArrayList<>();
-        Long fbuffmask = 0xFFFC0000000000L; //becomes F8000000 after bb?
-        mplew.writeLong(fbuffmask);
-
-        Long buffmask = 0L;
-
-        if (chr.getBuffedValue(MapleBuffStat.DARKSIGHT) != null && !chr.isHidden()) {
-            buffmask |= 0x40000000000L;//MapleBuffStat.DARKSIGHT.getOldValue();
-        }
-        if (chr.getBuffedValue(MapleBuffStat.COMBO) != null) {
-            buffmask |= 0x20000000000000L;//MapleBuffStat.COMBO.getOldValue();
-            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.COMBO), 0));
-        }
-        if (chr.getBuffedValue(MapleBuffStat.SHADOWPARTNER) != null) {
-            buffmask |= 0x400000000000000L;//MapleBuffStat.SHADOWPARTNER.getOldValue();
-        }
-        if (chr.getBuffedValue(MapleBuffStat.SOULARROW) != null) {
-            buffmask |= 0x1000000000000L;//MapleBuffStat.SOULARROW.getOldValue();
-        }
-        if (chr.getBuffedValue(MapleBuffStat.DIVINE_BODY) != null) {
-            buffmask |= 0x10000000;//MapleBuffStat.DIVINE_BODY.getOldValue();
-            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.DIVINE_BODY), 2));
-        }
-        if (chr.getBuffedValue(MapleBuffStat.BERSERK_FURY) != null) {
-            buffmask |= 0x8000000;//MapleBuffStat.BERSERK_FURY.getOldValue();
-        }
-        if (chr.getBuffedValue(MapleBuffStat.MORPH) != null) {
-            buffmask |= 0x2;//MapleBuffStat.MORPH.getOldValue();
-            buffvalue.add(new Pair<>(chr.getBuffedValue(MapleBuffStat.MORPH), 1));
-        }
-
-        mplew.writeLong(buffmask);
-        for (Pair<Integer, Integer> i : buffvalue) {
-            switch (i.right) {
-                case 0:
-                    mplew.write(i.left);
-                    break;
-                case 1:
-                    mplew.writeShort(i.left);
-                    break;
-                case 2:
-                    mplew.writeInt(i.left);
-                    break;
-            }
-        }
-
-        final int CHAR_MAGIC_SPAWN = Randomizer.nextInt();
-        //CHAR_MAGIC_SPAWN is really just tickCount
-        //this is here as it explains the 7 "dummy" buffstats which are placed into every character
-        //these 7 buffstats are placed because they have irregular packet structure.
-        //they ALL have writeShort(0); first, then a long as their variables, then server tick count
-        //0x80000, 0x100000, 0x200000, 0x400000, 0x800000, 0x1000000, 0x2000000
-
-        mplew.writeShort(0); //start of energy charge
-        mplew.writeLong(0);
-        mplew.write(1);
-        mplew.writeInt(CHAR_MAGIC_SPAWN);
-        mplew.writeShort(0); //start of dash_speed
-        mplew.writeLong(0);
-        mplew.write(1);
-        mplew.writeInt(CHAR_MAGIC_SPAWN);
-        mplew.writeShort(0); //start of dash_jump
-        mplew.writeLong(0);
-        mplew.write(1);
-        mplew.writeInt(CHAR_MAGIC_SPAWN);
-        mplew.writeShort(0); //start of Monster Riding
-        int buffSrc = chr.getBuffSource(MapleBuffStat.MONSTER_RIDING);
-        if (buffSrc > 0) {
-            final IItem c_mount = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -118);
-            final IItem mount = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((byte) -18);
-            if (GameConstants.getMountItem(buffSrc) == 0 && c_mount != null) {
-                mplew.writeInt(c_mount.getItemId());
-            } else if (GameConstants.getMountItem(buffSrc) == 0 && mount != null) {
-                mplew.writeInt(mount.getItemId());
-            } else {
-                mplew.writeInt(GameConstants.getMountItem(buffSrc));
-            }
-            mplew.writeInt(buffSrc);
-        } else {
-            mplew.writeLong(0);
-        }
-        mplew.write(1);
-        mplew.writeInt(CHAR_MAGIC_SPAWN);
-        mplew.writeLong(0); //speed infusion behaves differently here
-        mplew.write(1);
-        mplew.writeInt(CHAR_MAGIC_SPAWN);
-        mplew.writeInt(1);
-        mplew.writeLong(0); //homing beacon
-        mplew.write(0);
-        mplew.writeShort(0);
-        mplew.write(1);
-        mplew.writeInt(CHAR_MAGIC_SPAWN);
-        mplew.writeInt(0); //and finally, something ive no idea
-        mplew.writeLong(0);
-        mplew.write(1);
-        mplew.writeInt(CHAR_MAGIC_SPAWN);
-        mplew.writeShort(0);
-        mplew.writeLong(0); // 台版自己加的
-        mplew.write(1); // 台版自己加的
-        mplew.writeInt(CHAR_MAGIC_SPAWN); // 台版自己加的
-
+        PacketHelper.addSpawnPlayerBuffStatus(mplew, chr);
         mplew.writeShort(chr.getJob());
         PacketHelper.addCharLook(mplew, chr, false);
         mplew.writeInt(Math.min(250, chr.getInventory(MapleInventoryType.CASH).countById(5110000))); //max is like 100. but w/e
         mplew.writeInt(chr.getItemEffect());
         mplew.writeInt(0); // 台版自己加的
-        mplew.writeInt(0); // 只有台陸版有
-        mplew.writeInt(-1); // 只有台陸版有
+        mplew.writeMapleAsciiString("");
+        mplew.writeMapleAsciiString("");
+        mplew.writeShort(-1); // 只有台陸版有      
+        mplew.writeShort(-1); // 只有台陸版有
         mplew.writeInt(GameConstants.getInventoryType(chr.getChair()) == MapleInventoryType.SETUP ? chr.getChair() : 0);
         mplew.writePos(chr.getPosition());
         mplew.write(chr.getStance());
         mplew.writeShort(0); // FH
+
         mplew.write(0);
+
         mplew.writeInt(chr.getMount().getLevel()); // mount lvl
         mplew.writeInt(chr.getMount().getExp()); // exp
         mplew.writeInt(chr.getMount().getFatigue()); // tiredness
         PacketHelper.addAnnounceBox(mplew, chr);
         mplew.write(chr.getChalkboard() != null && chr.getChalkboard().length() > 0 ? 1 : 0);
-
         if (chr.getChalkboard() != null && chr.getChalkboard().length() > 0) {
             mplew.writeMapleAsciiString(chr.getChalkboard());
         }
@@ -1000,11 +904,22 @@ public class MaplePacketCreator {
         addRingInfo(mplew, allrings);
         addRingInfo(mplew, allrings);
         addMarriageRingLook(mplew, chr);
-        mplew.writeShort(0);
+
+        boolean v52 = false;
+        mplew.write(v52);
+        if (v52) {
+            int v53 = 0;
+            mplew.writeInt(v53);
+            for (int i = 0; i < v53; i++) {
+                mplew.writeInt(0);
+            }
+        }
         if (chr.getCarnivalParty() != null) {
             mplew.write(chr.getCarnivalParty().getTeam());
         } else if (chr.getMapId() == 109080000 || chr.getMapId() == 109080010) {
             mplew.write(1/*chr.getCoconutTeam()*/); //is it 0/1 or is it 1/2?
+        } else {
+            mplew.write(0);
         }
 
         return mplew.getPacket();
@@ -1880,126 +1795,16 @@ public class MaplePacketCreator {
         return mplew.getPacket();
     }
 
-    public static void EncodeStatForRemote(MaplePacketLittleEndianWriter mplew, HashMap<MapleBuffStat, Integer> buffs) {
-
-        if (buffs.keySet().contains(MapleBuffStat.SPEED)) {
-            mplew.write(buffs.get(MapleBuffStat.SPEED).byteValue());
-        }
-        if (buffs.keySet().contains(MapleBuffStat.SUMMON)) {
-            mplew.write(buffs.get(MapleBuffStat.SUMMON).byteValue());
-        } else if (buffs.keySet().contains(MapleBuffStat.COMBO)) {
-            mplew.write(buffs.get(MapleBuffStat.COMBO).byteValue());
-        }
-        if (buffs.keySet().contains(MapleBuffStat.WK_CHARGE)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.WK_CHARGE));
-        }
-        if (buffs.keySet().contains(MapleBuffStat.STUN)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.STUN));
-        }
-        if (buffs.keySet().contains(MapleBuffStat.DARKNESS)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.DARKNESS));
-        }
-        if (buffs.keySet().contains(MapleBuffStat.SEAL)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.SEAL));
-        }
-        if (buffs.keySet().contains(MapleBuffStat.WEAKEN)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.WEAKEN));
-        }
-        if (buffs.keySet().contains(MapleBuffStat.CURSE)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.CURSE));
-        }
-        if (buffs.keySet().contains(MapleBuffStat.POISON)) {
-            mplew.writeShort(buffs.get(MapleBuffStat.POISON).shortValue());
-        }
-        if (buffs.keySet().contains(MapleBuffStat.POISON)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.POISON));
-        }
-        if (buffs.keySet().contains(MapleBuffStat.SHADOWPARTNER)) {
-        }
-        if (buffs.keySet().contains(MapleBuffStat.DARKSIGHT)) {
-        }
-
-        if (buffs.keySet().contains(MapleBuffStat.SOULARROW)) {
-        }
-        if (buffs.keySet().contains(MapleBuffStat.MORPH)) {
-            mplew.writeShort(buffs.get(MapleBuffStat.MORPH).shortValue());
-        }
-        if (buffs.keySet().contains(MapleBuffStat.GHOST_MORPH)) {
-            mplew.writeShort(buffs.get(MapleBuffStat.GHOST_MORPH).shortValue());
-        }
-        if (buffs.keySet().contains(MapleBuffStat.DRAGON_ROAR)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.DRAGON_ROAR));
-        }
-        if (buffs.keySet().contains(MapleBuffStat.SPIRIT_CLAW)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.SPIRIT_CLAW));
-        }
-        if (buffs.keySet().contains(MapleBuffStat.ZOMBIFY)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.ZOMBIFY));
-        }
-        if (buffs.keySet().contains(MapleBuffStat.BERSERK_FURY)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.BERSERK_FURY));
-        }
-        if (buffs.keySet().contains(MapleBuffStat.DIVINE_BODY)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.DIVINE_BODY));
-        }
-        if (buffs.keySet().contains(MapleBuffStat.BUFF_51)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.BUFF_51));
-        }
-        if (buffs.keySet().contains(MapleBuffStat.MESO_RATE)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.MESO_RATE));
-        }
-        if (buffs.keySet().contains(MapleBuffStat.EXPRATE)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.EXPRATE));
-        }
-        if (buffs.keySet().contains(MapleBuffStat.ACASH_RATE)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.ACASH_RATE));
-        }
-        if (buffs.keySet().contains(MapleBuffStat.GM_HIDE)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.GM_HIDE));
-        }
-        if (buffs.keySet().contains(MapleBuffStat.BERSERK_FURY)) {
-        }
-        if (buffs.keySet().contains(MapleBuffStat.ILLUSION)) {
-        }
-        if (buffs.keySet().contains(MapleBuffStat.WIND_WALK)) {
-        }
-        if (buffs.keySet().contains(MapleBuffStat.BUFF_71)) {
-            mplew.writeInt(buffs.get(MapleBuffStat.BUFF_71));
-        }
-        mplew.write(0);
-        mplew.write(0);
-        mplew.write(0);
-        mplew.write(0);
-    }
-
-    public static byte[] giveForeignBuff(int cid, List<Pair<MapleBuffStat, Integer>> statups, MapleStatEffect effect) {
+    public static byte[] giveForeignBuff(MapleCharacter chr, List<Pair<MapleBuffStat, Integer>> statups, MapleStatEffect effect) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
 
         mplew.writeShort(SendPacketOpcode.GIVE_FOREIGN_BUFF.getValue());
-        mplew.writeInt(cid);
-
-        writeBuffState2(mplew, statups);
-
-        HashMap<MapleBuffStat, Integer> buffs = new HashMap();
-
-        for (Pair<MapleBuffStat, Integer> statup : statups) {
-            buffs.put(statup.getLeft(), statup.getRight());
-        }
-        EncodeStatForRemote(mplew, buffs);
-
-        /* for (Pair<MapleBuffStat, Integer> statup : statups) {
-            if (statup.getLeft() == MapleBuffStat.DIVINE_BODY) {
-                mplew.writeInt(statup.getRight());
-            } else {
-                mplew.writeShort(statup.getRight().shortValue());
-            }
-        }
+        mplew.writeInt(chr.getId());
+        PacketHelper.addForeignBuffStatus(mplew, statups, chr, effect);
         mplew.writeShort(0); // same as give_buff
         if (effect.isMorph()) {
             mplew.write(0);
         }
-        mplew.write(0);
-         */
         return mplew.getPacket();
     }
 

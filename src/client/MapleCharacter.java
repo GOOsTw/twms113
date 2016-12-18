@@ -2466,7 +2466,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
             duration += (int) ((getBuffedStarttime(MapleBuffStat.COMBO) - System.currentTimeMillis()));
 
             client.sendPacket(MaplePacketCreator.giveBuff(theCombol.getId(), duration, stat, ceffect));
-            map.broadcastMessage(this, MaplePacketCreator.giveForeignBuff(getId(), stat, ceffect), false);
+            map.broadcastMessage(this, MaplePacketCreator.giveForeignBuff(this, stat, ceffect), false);
         }
     }
 
@@ -2496,7 +2496,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         duration += (int) ((getBuffedStarttime(MapleBuffStat.COMBO) - System.currentTimeMillis()));
 
         client.sendPacket(MaplePacketCreator.giveBuff(theCombol.getId(), duration, stat, ceffect));
-        map.broadcastMessage(this, MaplePacketCreator.giveForeignBuff(getId(), stat, ceffect), false);
+        map.broadcastMessage(this, MaplePacketCreator.giveForeignBuff(this, stat, ceffect), false);
     }
 
     public void silentEnforceMaxHpMp() {

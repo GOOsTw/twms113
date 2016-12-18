@@ -194,7 +194,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
     @Override
     public void sessionOpened(final IoSession session) throws Exception {
-        System.out.println(session.getRemoteAddress().toString());
         session.getConfig().setBothIdleTime(15);//set timeout seconds, must
         // Start of IP checking
         final String address = session.getRemoteAddress().toString().split(":")[0];
@@ -286,6 +285,11 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                     }
                 } else {
                     client.disconnect(false, false);
+                }
+            }
+            if(client != null) {
+                if(!isCashShop && channel == -1) {
+                    LoginServer.removeClient(client);
                 }
             }
             if (client != null) {

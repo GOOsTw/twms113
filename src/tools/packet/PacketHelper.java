@@ -32,6 +32,7 @@ import java.util.Map.Entry;
 
 import client.inventory.Item;
 import client.ISkill;
+import client.MapleBuffStat;
 import constants.GameConstants;
 import client.inventory.MapleRing;
 import client.inventory.MaplePet;
@@ -43,8 +44,12 @@ import client.MapleQuestStatus;
 import client.inventory.IItem;
 import client.SkillEntry;
 import client.inventory.Equip;
+import handling.world.PlayerBuffValueHolder;
+import java.util.HashMap;
 import java.util.LinkedList;
 import server.MapleItemInformationProvider;
+import server.MapleStatEffect;
+import server.Randomizer;
 import tools.Pair;
 import server.movement.LifeMovementFragment;
 import server.shops.AbstractPlayerStore;
@@ -250,8 +255,6 @@ public class PacketHelper {
         mplew.write(0);
     }
 
-    
-    
     public static final void addCharStats(final MaplePacketLittleEndianWriter mplew, final MapleCharacter chr) {
         mplew.writeInt(chr.getId()); // character id
         mplew.writeAsciiString(chr.getName(), 15);
@@ -526,6 +529,232 @@ public class PacketHelper {
         if (shop.getShopType() != 1) {
             mplew.write(shop.isOpen() ? 0 : 1);
         }
+    }
+
+    public static void addSpawnPlayerBuffStatus(MaplePacketLittleEndianWriter mplew, MapleCharacter chr) {
+
+        Map<MapleBuffStat, Integer> statups = new LinkedHashMap();
+
+        for (PlayerBuffValueHolder pbvh : chr.getAllBuffs()) {
+            for (Pair<MapleBuffStat, Integer> pair : pbvh.statup) {
+                statups.put(pair.getLeft(), pair.getRight());
+            }
+        }
+        // 寫入預設Buff
+        List<MapleBuffStat> defaultBuff = new ArrayList<>();
+
+        defaultBuff.add(MapleBuffStat.ENERGY_CHARGE);
+        defaultBuff.add(MapleBuffStat.DASH_SPEED);
+        defaultBuff.add(MapleBuffStat.DASH_JUMP);
+        defaultBuff.add(MapleBuffStat.MONSTER_RIDING);
+        defaultBuff.add(MapleBuffStat.SPEED_INFUSION);
+        defaultBuff.add(MapleBuffStat.HOMING_BEACON);
+        defaultBuff.add(MapleBuffStat.DEFAULTBUFF1);
+        defaultBuff.add(MapleBuffStat.DEFAULTBUFF2);
+
+        for (MapleBuffStat buff : defaultBuff) {
+            if (!statups.containsKey(buff)) {
+                statups.put(buff, 0);
+            }
+        }
+
+        addForeignBuffStatus(mplew, statups, chr, null);
+
+    }
+
+    public static void writeBuffMask(MaplePacketLittleEndianWriter mplew, Map<MapleBuffStat, Integer> statups) {
+        int[] mask = new int[4];
+        for (MapleBuffStat status : statups.keySet()) {
+            mask[status.getPosition()] |= status.getValue();
+        }
+        for (int i = 0; i < mask.length; i++) {
+            mplew.writeInt(mask[i]);
+        }
+    }
+
+    public static void addForeignBuffStatus(MaplePacketLittleEndianWriter mplew, List<Pair<MapleBuffStat, Integer>> statups, MapleCharacter chr, MapleStatEffect effect) {
+        HashMap<MapleBuffStat, Integer> buffs = new HashMap();
+        for (Pair<MapleBuffStat, Integer> statup : statups) {
+            buffs.put(statup.getLeft(), statup.getRight());
+        }
+        addForeignBuffStatus(mplew, buffs, chr, effect);
+        return;
+    }
+
+    public static void addForeignBuffStatus(MaplePacketLittleEndianWriter mplew, Map<MapleBuffStat, Integer> statups, MapleCharacter chr, MapleStatEffect effect) {
+
+        writeBuffMask(mplew, statups);
+
+        if (statups.containsKey(MapleBuffStat.SPEED)) {
+            mplew.write(statups.get(MapleBuffStat.SPEED).byteValue());
+        }
+        if (statups.containsKey(MapleBuffStat.SUMMON)) {
+            mplew.write(statups.get(MapleBuffStat.SUMMON).byteValue());
+        } else if (statups.containsKey(MapleBuffStat.COMBO)) {
+            mplew.write(statups.get(MapleBuffStat.COMBO).byteValue());
+        }
+        if (statups.containsKey(MapleBuffStat.WK_CHARGE)) {
+            mplew.writeInt(statups.get(MapleBuffStat.WK_CHARGE));
+        }
+        if (statups.containsKey(MapleBuffStat.STUN)) {
+            mplew.writeInt(statups.get(MapleBuffStat.STUN));
+        }
+        if (statups.containsKey(MapleBuffStat.DARKNESS)) {
+            mplew.writeInt(statups.get(MapleBuffStat.DARKNESS));
+        }
+        if (statups.containsKey(MapleBuffStat.SEAL)) {
+            mplew.writeInt(statups.get(MapleBuffStat.SEAL));
+        }
+        if (statups.containsKey(MapleBuffStat.WEAKEN)) {
+            mplew.writeInt(statups.get(MapleBuffStat.WEAKEN));
+        }
+        if (statups.containsKey(MapleBuffStat.CURSE)) {
+            mplew.writeInt(statups.get(MapleBuffStat.CURSE));
+        }
+        if (statups.containsKey(MapleBuffStat.POISON)) {
+            mplew.writeShort(statups.get(MapleBuffStat.POISON).shortValue());
+        }
+        if (statups.containsKey(MapleBuffStat.POISON)) {
+            mplew.writeInt(statups.get(MapleBuffStat.POISON));
+        }
+        if (statups.containsKey(MapleBuffStat.SHADOWPARTNER)) {
+        }
+        if (statups.containsKey(MapleBuffStat.DARKSIGHT)) {
+        }
+
+        if (statups.containsKey(MapleBuffStat.SOULARROW)) {
+        }
+        if (statups.containsKey(MapleBuffStat.MORPH)) {
+            mplew.writeShort(statups.get(MapleBuffStat.MORPH).shortValue());
+        }
+        if (statups.containsKey(MapleBuffStat.GHOST_MORPH)) {
+            mplew.writeShort(statups.get(MapleBuffStat.GHOST_MORPH).shortValue());
+        }
+        if (statups.containsKey(MapleBuffStat.DRAGON_ROAR)) {
+            mplew.writeInt(statups.get(MapleBuffStat.DRAGON_ROAR));
+        }
+        if (statups.containsKey(MapleBuffStat.SPIRIT_CLAW)) {
+            mplew.writeInt(statups.get(MapleBuffStat.SPIRIT_CLAW));
+        }
+        if (statups.containsKey(MapleBuffStat.ZOMBIFY)) {
+            mplew.writeInt(statups.get(MapleBuffStat.ZOMBIFY));
+        }
+        if (statups.containsKey(MapleBuffStat.BERSERK_FURY)) {
+            mplew.writeInt(statups.get(MapleBuffStat.BERSERK_FURY));
+        }
+        if (statups.containsKey(MapleBuffStat.DIVINE_BODY)) {
+            mplew.writeInt(statups.get(MapleBuffStat.DIVINE_BODY));
+        }
+        if (statups.containsKey(MapleBuffStat.BUFF_51)) {
+            mplew.writeInt(statups.get(MapleBuffStat.BUFF_51));
+        }
+        if (statups.containsKey(MapleBuffStat.MESO_RATE)) {
+            mplew.writeInt(statups.get(MapleBuffStat.MESO_RATE));
+        }
+        if (statups.containsKey(MapleBuffStat.EXPRATE)) {
+            mplew.writeInt(statups.get(MapleBuffStat.EXPRATE));
+        }
+        if (statups.containsKey(MapleBuffStat.ACASH_RATE)) {
+            mplew.writeInt(statups.get(MapleBuffStat.ACASH_RATE));
+        }
+        if (statups.containsKey(MapleBuffStat.GM_HIDE)) {
+            mplew.writeInt(statups.get(MapleBuffStat.GM_HIDE));
+        }
+        if (statups.containsKey(MapleBuffStat.BERSERK_FURY)) {
+        }
+        if (statups.containsKey(MapleBuffStat.ILLUSION)) {
+        }
+        if (statups.containsKey(MapleBuffStat.WIND_WALK)) {
+        }
+        if (statups.containsKey(MapleBuffStat.BUFF_71)) {
+            mplew.writeInt(statups.get(MapleBuffStat.BUFF_71));
+        }
+        mplew.write(0);
+        mplew.write(0);
+
+        /* 預設BUFF */
+        int CHAR_MAGIC_SPAWN = Randomizer.nextInt();
+//        for (int i = 0; i < 8; ++i) {
+        if (statups.containsKey(MapleBuffStat.ENERGY_CHARGE)) {
+            mplew.writeInt(0); // Value
+            mplew.writeInt(0); // SkillID
+            mplew.write(1);
+            mplew.writeInt(CHAR_MAGIC_SPAWN);//1
+            mplew.writeShort(0);
+        }
+
+        if (statups.containsKey(MapleBuffStat.DASH_SPEED)) {
+            mplew.writeInt(0); // Value
+            mplew.writeInt(0); // SkillID
+            mplew.write(1);
+            mplew.writeInt(CHAR_MAGIC_SPAWN);//2
+            mplew.writeShort(0);
+
+        }
+
+        if (statups.containsKey(MapleBuffStat.DASH_JUMP)) {
+            mplew.writeInt(0); // Value
+            mplew.writeInt(0); // SkillID
+            mplew.write(1);
+            mplew.writeInt(CHAR_MAGIC_SPAWN);//2
+            mplew.writeShort(0);
+        }
+
+        if (statups.containsKey(MapleBuffStat.MONSTER_RIDING)) {
+            int buffSrc = chr.getBuffSource(MapleBuffStat.MONSTER_RIDING);
+            if (buffSrc > 0) {
+                IItem c_mount = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((short) -118);
+                IItem mount = chr.getInventory(MapleInventoryType.EQUIPPED).getItem((short) -18);
+                if ((GameConstants.getMountItem(buffSrc) == 0) && (c_mount != null) && (chr.getInventory(MapleInventoryType.EQUIPPED).getItem((short) -119) != null)) {
+                    mplew.writeInt(c_mount.getItemId());
+                } else if ((GameConstants.getMountItem(buffSrc) == 0) && (mount != null) && (chr.getInventory(MapleInventoryType.EQUIPPED).getItem((short) -19) != null)) {
+                    mplew.writeInt(mount.getItemId());
+                } else {
+                    mplew.writeInt(GameConstants.getMountItem(buffSrc));
+                }
+                mplew.writeInt(buffSrc);
+            } else {
+                mplew.writeInt(0);
+                mplew.writeInt(0);
+            }
+            mplew.write(1);
+            mplew.writeInt(CHAR_MAGIC_SPAWN);//4
+        }
+
+        if (statups.containsKey(MapleBuffStat.SPEED_INFUSION)) {
+            mplew.writeInt(0); // Value
+            mplew.writeInt(0); // SkillID
+            mplew.write(1);
+            mplew.writeInt(CHAR_MAGIC_SPAWN);//5
+            mplew.write(1);
+            mplew.writeInt(0);
+            mplew.writeShort(0); // Value
+        }
+
+        if (statups.containsKey(MapleBuffStat.HOMING_BEACON)) {
+            mplew.writeInt(0); // Value
+            mplew.writeInt(0); // SkillID
+            mplew.write(1);
+            mplew.writeInt(CHAR_MAGIC_SPAWN);//6
+            mplew.writeInt(0); // 怪物OID
+        }
+
+        if (statups.containsKey(MapleBuffStat.DEFAULTBUFF1)) {
+            mplew.writeInt(0); // Value
+            mplew.writeInt(0); // SkillID
+            mplew.write(1);
+            mplew.writeInt(CHAR_MAGIC_SPAWN);//7
+            mplew.writeShort(0);
+        }
+
+        if (statups.containsKey(MapleBuffStat.DEFAULTBUFF2)) {
+            mplew.writeInt(0); // Value
+            mplew.writeInt(0); // SkillID
+            mplew.write(1);
+            mplew.writeInt(CHAR_MAGIC_SPAWN);//8
+        }
+
+//        }
     }
 
     public static final void addCharacterInfo(final MaplePacketLittleEndianWriter mplew, final MapleCharacter chr) {

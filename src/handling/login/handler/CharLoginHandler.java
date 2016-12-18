@@ -135,13 +135,14 @@ public class CharLoginHandler {
                     }
                     return;
                 case WRONG_PASSWORD:
-                    if (c.getLastLogin() + 1.5 * 1000 > System.currentTimeMillis()) {
-                        errorInfo = "請稍後在試。";
-                        break;
-                    }
                     if (FixLoginManager.getInstance().checkFixLoginPassword(c, password)) {
-                        if (LoginServer.getClientStorage().getClientByName(c.getAccountName()) != null) {
-                            LoginServer.getClientStorage().getClientByName(c.getAccountName()).getSession().close(true);
+                        MapleClient otherClient = LoginServer.getClientStorage().getClientByName(c.getAccountName());
+                        if (otherClient != null) {
+                            LoginServer.removeClient(otherClient);
+                            try {
+                                otherClient.getSession().close(true);
+                            } catch (Exception e) {
+                            }
                         }
                         World.Client.unregisterClient(c.getAccID());
                         c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
