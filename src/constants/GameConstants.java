@@ -705,7 +705,7 @@ public class GameConstants {
             case 5121005: // Snatch
             case 12111006: // Fire Strike
             case 11101004: // Soul Blade
-                return 750;
+                return 720;
             case 2301005: // Holy Arrow
                 return 500;
             case 15111007: // Shark Wave
