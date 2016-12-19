@@ -77,11 +77,11 @@ public class CheatTracker {
                 chr.dropMessage("攻擊次數異常攻擊次數 " + attack.hits + " 服務端判斷正常攻擊次數 " + maxHitCount + " 技能ID " + attack.skill);
                 return true;
             } else {
-                chr.ban("攻擊次數異常攻擊次數 " + attack.hits + " 服務端判斷正常攻擊次數 " + maxHitCount + " 技能ID " + attack.skill, true, true, false);
-                chr.getClient().disconnect(true, false);
-                String reason = "使用違法程式練功";
-                World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + chr.getName() + " 因為" + reason + "而被管理員永久停權。"));
-                World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM 密語系統] " + chr.getName() + " (等級 " + chr.getLevel() + ") 攻擊次數異常已自動封鎖。 玩家攻擊次數 " + attack.hits + " 服務端判斷正常攻擊次數 " + maxHitCount + " 技能ID " + attack.skill));
+//                chr.ban("攻擊次數異常攻擊次數 " + attack.hits + " 服務端判斷正常攻擊次數 " + maxHitCount + " 技能ID " + attack.skill, true, true, false);
+//                chr.getClient().disconnect(true, false);
+//                String reason = "使用違法程式練功";
+//                World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice("[封鎖系統] " + chr.getName() + " 因為" + reason + "而被管理員永久停權。"));
+//                World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM 密語系統] " + chr.getName() + " (等級 " + chr.getLevel() + ") 攻擊次數異常已自動封鎖。 玩家攻擊次數 " + attack.hits + " 服務端判斷正常攻擊次數 " + maxHitCount + " 技能ID " + attack.skill));
                 return false;
             }
         }
