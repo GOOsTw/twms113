@@ -167,7 +167,7 @@ public class CheatTracker {
         }
         int latancy = player.get().getClient().getLatency() > 0 ? player.get().getClient().getLatency() : 0;
         if ((currentTick - lastSSTickCount) + latancy < AtkDelay) {
-            registerOffense(CheatingOffense.攻擊速度過快_伺服器端, "攻擊速度異常，技能: " + skillId + " check: " + (clientTickCount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay);
+            registerOffense(CheatingOffense.攻擊速度過快_伺服器端, "攻擊速度異常，技能: " + skillId + " check: " + (clientTickCount - lastAttackTickCount + latancy) + " " + "AtkDelay: " + AtkDelay);
         }
         this.lastSSTickCount = currentTick;
         this.lastAttackTickCount = clientTickCount;
