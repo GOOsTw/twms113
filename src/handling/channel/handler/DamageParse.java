@@ -93,11 +93,8 @@ public class DamageParse {
         }
 
         if (GameConstants.isAran(player.getJob())) {
-            if (player.getSkillLevel(21000002) > 0 && attack.skill == 0) {
+            if (attack.skill == 0) {
                 maxMobCount = 12;
-            }
-            if (player.getSkillLevel(21000002) == 0 && player.getJob() == 2000) {
-                maxMobCount = 2;
             }
         }
 
