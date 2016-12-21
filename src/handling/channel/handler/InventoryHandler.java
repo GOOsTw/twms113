@@ -1184,7 +1184,7 @@ public class InventoryHandler {
                                     maxmp += improvingMaxMP.getEffect(improvingMaxMPLevel).getY() * 2;
                                 }
                             } else if (job >= 2000 && job <= 2112) { // Aran
-                                maxmp += Randomizer.rand(6, 9);
+                                maxmp += Randomizer.rand(6, 10);
                             } else { // GameMaster
                                 maxmp += Randomizer.rand(50, 100);
                             }
