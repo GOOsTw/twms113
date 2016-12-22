@@ -166,7 +166,7 @@ public class CheatTracker {
             registerOffense(CheatingOffense.攻擊速度過快_客戶端, "攻擊速度異常，技能: " + skillId + " check: " + (clientTickCount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay);
         }
         int latancy = player.get().getClient().getLatency() > 0 ? player.get().getClient().getLatency() : 0;
-        if ((currentTick - lastSSTickCount) + latancy < AtkDelay) {
+        if (((currentTick - lastSSTickCount) != 0) &&(currentTick - lastSSTickCount) + latancy < AtkDelay) {
             registerOffense(CheatingOffense.攻擊速度過快_伺服器端, "攻擊速度異常，技能: " + skillId + " check: " + (clientTickCount - lastAttackTickCount + latancy) + " " + "AtkDelay: " + AtkDelay);
         }
         this.lastSSTickCount = currentTick;
@@ -668,7 +668,7 @@ public class CheatTracker {
                 if (((reduce_x > GeneallyDistance_x || reduce_y > GeneallyDistance_y) && reduce_y != 0) || (reduce_x > Check_x && reduce_y == 0) || reduce_x > max_x) {
                     吸怪++;
                     if (player.get().isShowDebugInfo()) {
-                        player.get().dropMessage(5, "reduce_x = " + reduce_x + " , max_x = " + max_x);
+//                        player.get().dropMessage(5, "reduce_x = " + reduce_x + " , max_x = " + max_x);
                     }
                     if (吸怪 % 60 == 0 || reduce_x > max_x) {
                         player.get().getCheatTracker().registerOffense(CheatingOffense.怪物全圖吸, "(地圖: " + player.get().getMapId() + " 怪物數量:" + 吸怪 + ")");
