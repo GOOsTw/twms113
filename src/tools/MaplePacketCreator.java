@@ -916,12 +916,15 @@ public class MaplePacketCreator {
         }
         if (chr.getCarnivalParty() != null) {
             mplew.write(chr.getCarnivalParty().getTeam());
-        } else if (chr.getMapId() == 109080000 || chr.getMapId() == 109080010) {
+        } else {
+            mplew.write(0);
+        }
+        if (chr.getMapId() == 109080000 || chr.getMapId() == 109080010) {
             mplew.write(1/*chr.getCoconutTeam()*/); //is it 0/1 or is it 1/2?
         } else {
             mplew.write(0);
         }
-
+        mplew.write(0);
         return mplew.getPacket();
     }
 

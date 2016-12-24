@@ -647,7 +647,7 @@ public class MTSCSPacket {
     public static byte[] cashItemExpired(int uniqueid) {
         MaplePacketLittleEndianWriter mplew = new MaplePacketLittleEndianWriter();
         mplew.writeShort(SendPacketOpcode.CS_OPERATION.getValue());
-        mplew.write(0x71); //use to be 5d
+        mplew.write(0x65); //use to be 5d
         mplew.writeLong(uniqueid);
         return mplew.getPacket();
     }
