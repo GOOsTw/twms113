@@ -149,7 +149,7 @@ public class CheatTracker {
             atttackedMobCount++;
             if (atttackedMobCount >= 100) {
                 if (!player.get().hasGmLevel(1)) {
-                    player.get().ban("攻擊速度異常，技能: " + skillId + " check: " + (clientTickCount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay, true, true, false);
+                    player.get().ban("攻擊速度異常，技能: " + skillId + " 間隔: " + (clientTickCount - lastAttackTickCount) + " " + "最低限度: " + AtkDelay, true, true, false);
                     player.get().sendHackShieldDetected();
                     player.get().getClient().disconnect(true, false);
                     String reason = "使用違法程式練功";
@@ -163,11 +163,11 @@ public class CheatTracker {
                 atttackedMobCount--;
             }
 
-            registerOffense(CheatingOffense.攻擊速度過快_客戶端, "攻擊速度異常，技能: " + skillId + " check: " + (clientTickCount - lastAttackTickCount) + " " + "AtkDelay: " + AtkDelay);
+            registerOffense(CheatingOffense.攻擊速度過快_客戶端, "攻擊速度異常，技能: " + skillId + " 間隔: " + (clientTickCount - lastAttackTickCount) + " " + "最低限度: " + AtkDelay);
         }
-        int latancy = player.get().getClient().getLatency() > 0 ? player.get().getClient().getLatency() : 0;
-        if (((currentTick - lastSSTickCount) != 0) &&(currentTick - lastSSTickCount) + latancy < AtkDelay) {
-            registerOffense(CheatingOffense.攻擊速度過快_伺服器端, "攻擊速度異常，技能: " + skillId + " check: " + (clientTickCount - lastAttackTickCount + latancy) + " " + "AtkDelay: " + AtkDelay);
+        int latancy = player.get().getClient().getLatency() > 0 ? player.get().getClient().getLatency() : 80;
+        if (((currentTick - lastSSTickCount) != 0) && (currentTick - lastSSTickCount + latancy) < AtkDelay) {
+            registerOffense(CheatingOffense.攻擊速度過快_伺服器端, "攻擊速度異常，技能: " + skillId + " 間隔: " + (clientTickCount - lastAttackTickCount + latancy) + " " + "最低限度: " + AtkDelay);
         }
         this.lastSSTickCount = currentTick;
         this.lastAttackTickCount = clientTickCount;
