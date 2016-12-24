@@ -385,10 +385,12 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
 
     public static final void handlePacket(final RecvPacketOpcode header, final LittleEndianAccessor slea, final MapleClient c, final boolean cs) throws Exception {
         
-        if (!cs && c.getPlayer() != null && !c.isCheck()) {
-            if (c.getChannelServer().getPlayerStorage().getCharacterById(c.getPlayer().getId()).equals(c.getPlayer())) {
+        if (c.getAccID() > 0 && !c.isCheck()) {
+            if (World.Client.getClient(c.getAccID()).equals(c)) {
                 c.setCheck(true);
             } else {
+                World.Client.getClient(c.getAccID()).setReceiving(false);
+                World.Client.getClient(c.getAccID()).disconnect(true, cs);
                 c.setReceiving(false);
                 c.setPlayer(null);
                 c.getSession().close(true);
