@@ -386,7 +386,7 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     public static final void handlePacket(final RecvPacketOpcode header, final LittleEndianAccessor slea, final MapleClient c, final boolean cs) throws Exception {
         
         if (c.getAccID() > 0 && !c.isCheck()) {
-            if (World.Client.getClient(c.getAccID()).equals(c)) {
+            if (World.Client.getClient(c.getAccID()) == null || World.Client.getClient(c.getAccID()).equals(c)) {
                 c.setCheck(true);
             } else {
                 World.Client.getClient(c.getAccID()).setReceiving(false);

@@ -149,35 +149,34 @@ public class CharLoginHandler {
 //                    }
                     break;
                 case LOGIN_DELAY:
-
                     break;
                 case NOT_REGISTERED:
-//                    if (LoginServer.AutoRegister) {
-//                        if (account.length() >= 12) {
-//                            errorInfo = "您的帳號長度太長了唷!\r\n請重新輸入.";
-//                        } else {
-//                            AutoRegister.createAccount(account, password, c.getSession().getRemoteAddress().toString(), macData);
-//                            if (AutoRegister.success && AutoRegister.macAllowed) {
-//                                c.setAccID(AutoRegister.registeredId);
-//                                c.sendPacket(LoginPacket.getGenderNeeded(c));
-//                                return;
-//                            } else if (!AutoRegister.macAllowed) {
-//                                errorInfo = "無法註冊過多的帳號密碼唷!";
-//                                AutoRegister.success = false;
-//                                AutoRegister.macAllowed = true;
-//                            }
-//                        }
-//                    }
+                    if (LoginServer.AutoRegister) {
+                        if (account.length() >= 12) {
+                            errorInfo = "您的帳號長度太長了唷!\r\n請重新輸入.";
+                        } else {
+                            AutoRegister.createAccount(account, password, c.getSession().getRemoteAddress().toString(), macData);
+                            if (AutoRegister.success && AutoRegister.macAllowed) {
+                                c.setAccID(AutoRegister.registeredId);
+                                c.sendPacket(LoginPacket.getGenderNeeded(c));
+                                return;
+                            } else if (!AutoRegister.macAllowed) {
+                                errorInfo = "無法註冊過多的帳號密碼唷!";
+                                AutoRegister.success = false;
+                                AutoRegister.macAllowed = true;
+                            }
+                        }
+                    }
                     break;
                 case ALREADY_LOGGED_IN:
-                    if (c.getLastLogin() + 3 * 1000 > System.currentTimeMillis()) {
-                        break;
-                    }
-                    String nextPass = FixLoginManager.getInstance().getNextPassword(c);
-                    if(!nextPass.equals(""))
-                        errorInfo = "解卡密碼 : " + nextPass;
-                    else
-                        loginResponse = LoginResponse.NOP;
+//                    if (c.getLastLogin() + 3 * 1000 > System.currentTimeMillis()) {
+//                        break;
+//                    }
+//                    String nextPass = FixLoginManager.getInstance().getNextPassword(c);
+//                    if(!nextPass.equals(""))
+//                        errorInfo = "解卡密碼 : " + nextPass;
+//                    else
+//                        loginResponse = LoginResponse.NOP;
                     break;
                 case SYSTEM_ERROR:
                     errorInfo = "系統錯誤(錯誤代碼:0)";

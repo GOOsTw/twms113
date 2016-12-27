@@ -94,6 +94,7 @@ public class MapleClient {
     private int world = 0;
     private int channel = 1;
     private int birthday;
+    private int disconnectState = 0;
     private int charslots = DEFAULT_CHARSLOT;
     private boolean loggedIn = false, serverTransition = false;
     private transient Calendar tempban = null;
@@ -936,6 +937,7 @@ public class MapleClient {
     }
 
     public final void disconnect(final boolean RemoveInChannelServer, final boolean fromCS, final boolean shutdown) {
+        this.disconnectState = 1;
         this.setReceiving(false);
         if (player != null && isLoggedIn()) {
             MapleMap map = player.getMap();
@@ -957,6 +959,7 @@ public class MapleClient {
 
             removalTask(shutdown);
             player.saveToDB(true, fromCS);
+            disconnectState = 2;
             if (shutdown) {
                 player = null;
                 receiving = false;
@@ -1227,6 +1230,10 @@ public class MapleClient {
 
     public final void setWorld(final int world) {
         this.world = world;
+    }
+    
+    public final int getDisconnectState() {
+        return this.disconnectState;
     }
 
     public final int getLatency() {
