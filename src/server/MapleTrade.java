@@ -319,8 +319,6 @@ public class MapleTrade {
             // We don't need to check for map here as the user is found via MapleMap.getCharacterById()
             c2.getClient().sendPacket(MaplePacketCreator.getTradePartnerAdd(c1));
             c1.getClient().sendPacket(MaplePacketCreator.getTradeStart(c1.getClient(), c1.getTrade(), (byte) 1));
-//            c1.dropMessage(-2, "System : Use @tradehelp to see the list of trading commands");
-//            c2.dropMessage(-2, "System : Use @tradehelp to see the list of trading commands");
         } else {
             c1.getClient().sendPacket(MaplePacketCreator.getErrorNotice("交易已經被關閉."));
         }

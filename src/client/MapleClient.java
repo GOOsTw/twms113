@@ -945,6 +945,9 @@ public class MapleClient {
         this.disconnectState = 1;
         this.setReceiving(false);
         if (player != null && isLoggedIn()) {
+            if (player.getTrade() != null) {
+                player.getTrade().cancel(this);
+            }
             MapleMap map = player.getMap();
             final MapleParty party = player.getParty();
             final boolean clone = player.isClone();
@@ -1057,9 +1060,7 @@ public class MapleClient {
             if (!serverTransition && isLoggedIn()) {
                 updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, getSessionIPAddress());
             }
-            if (player == null) {
-                this.getSession().close(true);
-            }
+            this.getSession().close(true);
         }
     }
 
@@ -1368,7 +1369,10 @@ public class MapleClient {
     }
 
     public void sendPacket(byte[] data) {
-        this.getSession().write(data);
+        try {
+            this.getSession().write(data);
+        } catch (Exception ex) {
+        }
     }
 
     protected static final class CharNameAndId {
