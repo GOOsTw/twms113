@@ -1057,12 +1057,9 @@ public class MapleClient {
             if (!serverTransition && isLoggedIn()) {
                 updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, getSessionIPAddress());
             }
-
             if (player == null) {
                 this.getSession().close(true);
             }
-
-        } else {
         }
     }
 
