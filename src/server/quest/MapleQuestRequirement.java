@@ -158,6 +158,7 @@ public class MapleQuestRequirement implements Serializable {
                     final boolean acquire = a.getRight() > 0;
                     final int skill = a.getLeft();
                     final ISkill skil = SkillFactory.getSkill(skill);
+                    boolean check = true;
                     if (acquire) {
                         if (skil.isFourthJob()) {
                             if (c.getMasterLevel(skil) == 0) {

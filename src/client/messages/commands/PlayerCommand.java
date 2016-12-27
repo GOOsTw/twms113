@@ -17,6 +17,7 @@ import java.util.Calendar;
 import server.Timer;
 import server.life.MapleLifeFactory;
 import server.life.OverrideMonsterStats;
+import server.quest.MapleQuest;
 import tools.FilePrinter;
 import tools.StringUtil;
 
@@ -281,6 +282,9 @@ public class PlayerCommand {
             c.getPlayer().dropMessage(6, "目前剩餘 " + c.getPlayer().getCSPoints(1) + " GASH " + c.getPlayer().getCSPoints(2) + " 楓葉點數 ");
             c.getPlayer().dropMessage(6, "已使用:" + c.getPlayer().getHpMpApUsed() + " 張能力重置捲");
             c.getPlayer().dropMessage(6, "當前延遲 " + c.getPlayer().getClient().getLatency() + " 毫秒");
+            
+            final MapleQuest q = MapleQuest.getInstance(6150);
+            q.start(c.getPlayer(), 2040052);
             return true;
         }
 
