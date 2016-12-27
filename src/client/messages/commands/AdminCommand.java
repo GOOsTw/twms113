@@ -12,6 +12,7 @@ import client.anticheat.CheatingOffense;
 import client.inventory.Equip;
 import client.inventory.IItem;
 import client.inventory.ItemFlag;
+import client.inventory.MapleInventory;
 import client.inventory.MapleInventoryIdentifier;
 import client.inventory.MapleInventoryType;
 import client.inventory.MaplePet;
@@ -2107,6 +2108,47 @@ public class AdminCommand {
             return new StringBuilder().append("!permweather - 設定天氣").toString();
 
         }
+    }
+
+    public static class ItemInfo extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String[] splitted) {
+
+            if (splitted.length < 2) {
+                return false;
+            }
+            final StringBuilder builder = new StringBuilder();
+            final MapleCharacter other = MapleCharacter.getCharacterByName(splitted[1]);
+            if (other == null) {
+                builder.append("角色不存在");
+                c.getPlayer().dropMessage(6, builder.toString());
+            } else {
+                MapleInventoryType[] types = {MapleInventoryType.EQUIP, MapleInventoryType.USE, MapleInventoryType.CASH};
+                for (MapleInventoryType type : types) {
+                    MapleInventory inv = other.getInventory(type);
+                    if (inv == null) {
+                        continue;
+                    }
+                    for (short i = 0; i < inv.getSlotLimit(); i++) {
+                        IItem item = inv.getItem(i);
+                        MapleItemInformationProvider ii = MapleItemInformationProvider.getInstance();
+                        if (item != null) {
+                            c.getPlayer().dropMessage(inv.getType().toString() + ":" + ii.getName(item.getItemId()));
+                        }
+                    }
+                }
+                c.getPlayer().dropMessage(6, "");
+            }
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!ItemInfo - 物品清單").toString();
+
+        }
+
     }
 
     public static class CharInfo extends CommandExecute {
