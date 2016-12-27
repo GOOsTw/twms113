@@ -239,18 +239,19 @@ public class DamageParse {
                         if (GameConstants.isAran(player.getJob())) {
                             if (player.getLevel() > 10) {
                                 if (eachd > atk && eachd > maxDamagePerHit * 2) {
-                                    player.ban(player.getName() + "傷害異常", true, true, false);
-                                    player.getClient().disconnect(true, false);
+//                                    player.ban(player.getName() + "傷害異常", true, true, false);
+//                                    player.getClient().disconnect(true, false);
+                                    return;
                                 }
                             }
                             if (player.getLevel() <= 20) {
                                 atk = 1000;
                                 if (eachd >= atk && eachd > maxDamagePerHit) {
-                                    ban = true;
-//                                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice( "[封鎖系統] " + player.getName() + " 因為傷害異常永久停權。"));
-                                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 " + atk + " 本次傷害 " + eachd + " 技能ID " + attack.skill));
-                                    //player.ban(player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 " + atk + " 本次傷害 " + eachd + " 技能ID " + attack.skill, true, true, false);
-                                    player.getClient().disconnect(true, false);
+//                                    ban = true;
+////                                    World.Broadcast.broadcastMessage(MaplePacketCreator.getItemNotice( "[封鎖系統] " + player.getName() + " 因為傷害異常永久停權。"));
+//                                    World.Broadcast.broadcastGMMessage(MaplePacketCreator.getItemNotice("[GM 密語系統] " + player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 " + atk + " 本次傷害 " + eachd + " 技能ID " + attack.skill));
+//                                    //player.ban(player.getName() + " (等級 " + player.getLevel() + ") " + "傷害異常。 " + "最高傷害 " + atk + " 本次傷害 " + eachd + " 技能ID " + attack.skill, true, true, false);
+//                                    player.getClient().disconnect(true, false);
                                     return;
                                 }
                             }

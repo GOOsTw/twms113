@@ -872,6 +872,7 @@ public class MapleClient {
                 }
             }
             ps.close();
+            serverTransition = (state == MapleClient.LOGIN_SERVER_TRANSITION || state == MapleClient.CHANGE_CHANNEL || state == MapleClient.CASH_SHOP_TRANSITION);
             loggedIn = state == MapleClient.LOGIN_LOGGEDIN;
             return state;
         } catch (SQLException e) {
@@ -1264,12 +1265,15 @@ public class MapleClient {
 
     public final void sendPing() {
         lastPing = System.currentTimeMillis();
-        session.write(LoginPacket.getPing());
+        try {
+            session.write(LoginPacket.getPing());
+        } catch (Exception e) {
+        }
         PingTimer.getInstance().schedule(new Runnable() {
             @Override
             public void run() {
                 try {
-                    if (getLatency() < 0) {
+                    if (MapleClient.this.getLatency() < 0) {
                         MapleClient.this.setReceiving(false);
                         MapleClient.this.disconnect(true, false);
                     }
@@ -1277,7 +1281,7 @@ public class MapleClient {
                     MapleClient.this.disconnect(true, false);
                 }
             }
-        }, 15000); // note: idletime gets added to this too
+        }, 15 * 1000); // note: idletime gets added to this too
     }
 
     public static final String getLogMessage(final MapleClient cfor, final String message) {
