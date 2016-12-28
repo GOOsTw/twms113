@@ -902,8 +902,11 @@ public class MapleClient {
                 }
             }
             player.changeRemoval(true);
-            if (player.getEventInstance() != null) {
-                player.getEventInstance().playerDisconnected(player);
+            try {
+                if (player.getEventInstance() != null) {
+                    player.getEventInstance().playerDisconnected(player);
+                }
+            } catch (Exception ex) {
             }
             if (player.getMap() != null) {
                 switch (player.getMapId()) {

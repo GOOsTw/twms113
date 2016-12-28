@@ -375,7 +375,7 @@ public class EventInstanceManager {
         byte ret;
         try {
             ret = ((Double) em.getIv().invokeFunction("playerDisconnected", this, chr)).byteValue();
-        } catch (ScriptException | NoSuchMethodException e) {
+        } catch (Exception e) {
             ret = 0;
         }
         wL.lock();
