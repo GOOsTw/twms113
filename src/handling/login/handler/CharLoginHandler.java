@@ -68,7 +68,10 @@ public class CharLoginHandler {
         String account = slea.readMapleAsciiString();
         String IpAddress = c.getSessionIPAddress();
         c.setAccountName(account);
-        c.logout();
+        MapleClient client = LoginServer.getClientStorage().getClientByName(c.getAccountName());
+        if(client != null && c.equals(client)) {
+            client.disconnect(false, false);
+        }
     }
 
     private static String readMacAddress(final LittleEndianAccessor slea, final MapleClient c) {
@@ -135,18 +138,18 @@ public class CharLoginHandler {
                     }
                     return;
                 case WRONG_PASSWORD:
-//                    if (c.getLastLogin() + 1.5 * 1000 > System.currentTimeMillis()) {
-//                        errorInfo = "請稍後在試。";
-//                        break;
-//                    }
-//                    if (FixLoginManager.getInstance().checkFixLoginPassword(c, password)) {
-//                        if (LoginServer.getClientStorage().getClientByName(c.getAccountName()) != null) {
-//                            LoginServer.getClientStorage().getClientByName(c.getAccountName()).getSession().close(true);
-//                        }
-//                        World.Client.unregisterClient(c.getAccID());
-//                        c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
-//                        errorInfo = "解卡成功，重新輸入帳密登入";
-//                    }
+                    if (c.getLastLogin() + 1.5 * 1000 > System.currentTimeMillis()) {
+                        errorInfo = "請稍後在試。";
+                        break;
+                    }
+                    if (FixLoginManager.getInstance().checkFixLoginPassword(c, password)) {
+                        if (LoginServer.getClientStorage().getClientByName(c.getAccountName()) != null) {
+                            LoginServer.getClientStorage().getClientByName(c.getAccountName()).getSession().close(true);
+                        }
+                        World.Client.unregisterClient(c.getAccID());
+                        c.updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, c.getSessionIPAddress());
+                        errorInfo = "解卡成功，重新輸入帳密登入";
+                    }
                     break;
                 case LOGIN_DELAY:
                     break;
@@ -169,14 +172,14 @@ public class CharLoginHandler {
                     }
                     break;
                 case ALREADY_LOGGED_IN:
-//                    if (c.getLastLogin() + 3 * 1000 > System.currentTimeMillis()) {
-//                        break;
-//                    }
-//                    String nextPass = FixLoginManager.getInstance().getNextPassword(c);
-//                    if(!nextPass.equals(""))
-//                        errorInfo = "解卡密碼 : " + nextPass;
-//                    else
-//                        loginResponse = LoginResponse.NOP;
+                    if (c.getLastLogin() + 3 * 1000 > System.currentTimeMillis()) {
+                        break;
+                    }
+                    String nextPass = FixLoginManager.getInstance().getNextPassword(c);
+                    if(!nextPass.equals(""))
+                        errorInfo = "解卡密碼 : " + nextPass;
+                    else
+                        loginResponse = LoginResponse.NOP;
                     break;
                 case SYSTEM_ERROR:
                     errorInfo = "系統錯誤(錯誤代碼:0)";
