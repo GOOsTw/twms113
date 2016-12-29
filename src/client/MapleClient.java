@@ -89,10 +89,10 @@ public class MapleClient {
     private final MapleAESOFB send, receive;
     private final IoSession session;
     private MapleCharacter player;
-    private int accountId = 1;
+    private int accountId = -1;
     private String accountName;
     private int world = 0;
-    private int channel = 1;
+    private int channel = -1;
     private int birthday;
     private int disconnectState = 0;
     private int charslots = DEFAULT_CHARSLOT;
