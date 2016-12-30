@@ -287,8 +287,8 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                     client.disconnect(false, false);
                 }
             }
-            if(client != null) {
-                if(!isCashShop && channel == -1) {
+            if (client != null) {
+                if (!isCashShop && channel == -1) {
                     LoginServer.removeClient(client);
                 }
             }
@@ -359,11 +359,11 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                     return;
                 }
             }
-         //   if (debugMode) {
-                final StringBuilder sb2 = new StringBuilder("[Recv] 未處理 : ");
-                sb2.append(tools.HexTool.toString((byte[]) message)).append("\n").append(tools.HexTool.toStringFromAscii((byte[]) message)).append("\n");;
-                System.out.println(sb2.toString());
-          //  }
+            //   if (debugMode) {
+            final StringBuilder sb2 = new StringBuilder("[Recv] 未處理 : ");
+            sb2.append(tools.HexTool.toString((byte[]) message)).append("\n").append(tools.HexTool.toStringFromAscii((byte[]) message)).append("\n");;
+            System.out.println(sb2.toString());
+            //  }
             if (isLogPackets) {
                 final byte[] packet = slea.read((int) slea.available());
                 final StringBuilder sb = new StringBuilder("發現未知用戶端數據包 - (包頭:0x" + Integer.toHexString(header_num) + ")");
@@ -389,8 +389,8 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
     }
 
     public static final void handlePacket(final RecvPacketOpcode header, final LittleEndianAccessor slea, final MapleClient c, final boolean cs) throws Exception {
-        
-        if (!cs && c.getAccID() > 0 && !c.isCheck()) {
+
+        if (!cs && World.Client.getClient(c.getAccID()) != null && c.getAccID() > 0 && !c.isCheck()) {
             if (World.Client.getClient(c.getAccID()).equals(c)) {
                 c.setCheck(true);
             } else {
