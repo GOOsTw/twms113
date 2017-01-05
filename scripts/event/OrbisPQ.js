@@ -15,7 +15,7 @@ function setup(eim, mapid) {
     em.getProperties().clear();
     em.setProperty("state", "1");
     em.setProperty("leader", "true");
-    var eim = em.newInstance("OrbisPQ" + leaderid);
+    var eim = em.newInstance("OrbisPQ" + java.lang.Math.random());
     em.setProperty("stage", "0"); //center stage
     em.setProperty("pre", "0"); //first stage
     em.setProperty("finished", "0"); //first stage
@@ -133,7 +133,8 @@ function scheduledTimeout(eim) {
     end(eim);
 }
 
-function dispose() {
+function dispose(eim) {
+    em.setProperty("stat", "0");
 }
 
 function changedMap(eim, player, mapid) {
@@ -152,9 +153,6 @@ function changedMap(eim, player, mapid) {
 
 function playerDisconnected(eim, player) {
     return 0;
-}
-
-function dispose() {
 }
 
 function monsterValue(eim, mobId) {

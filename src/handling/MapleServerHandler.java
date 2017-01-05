@@ -453,7 +453,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
             case CLIENT_LOGOUT:
                 CharLoginHandler.handleLogout(slea, c);
                 break;
-            // END OF LOGIN SERVER
             case CHANGE_CHANNEL:
                 InterServerHandler.ChangeChannel(slea, c, c.getPlayer());
                 break;

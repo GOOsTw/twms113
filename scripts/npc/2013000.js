@@ -51,12 +51,13 @@ function action(mode, type, selection) {
             if (party.size() > maxPartySize || inMap < minPartySize) {
                 next = false;
             }
-            if (next) {
+            if (next || cm.getPlayer().isGM()) {
                 var em = cm.getEventManager("OrbisPQ");
                 if (em == null) {
                     cm.sendSimple("找不到腳本請聯絡GM#b\r\n#L0#我要用40個女神的羽翼兌換女神手鐲#l");
                 } else {
                     var prop = em.getProperty("state");
+                    cm.getPlayer().dropMessage(prop.toString());
                     if (prop.equals("0") || prop == null) {
                         em.startPartyInstance(cm.getParty(), cm.getMap());
                         cm.dispose();

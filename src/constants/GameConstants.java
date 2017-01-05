@@ -1878,11 +1878,10 @@ public class GameConstants {
         }
     }
 // Custom Balloon Tips on the Login Screen
-    private static final List<Balloon> lBalloon = Arrays.asList(
-            //new Balloon("歡迎來到啾咪谷", 236, 122),
+    private static final List<Balloon> lBalloon = Arrays.asList( //new Balloon("歡迎來到啾咪谷", 236, 122),
             //new Balloon("禁止開外掛", 0, 276),
             //new Balloon("遊戲愉快", 196, 263)
-    );
+            );
 
     public static List<Balloon> getBalloons() {
         return lBalloon;
@@ -1900,14 +1899,14 @@ public class GameConstants {
     }
 
     public static boolean isCarnivalMaps(int mapid) {
-        return mapid / 100000 == 9800 
+        return mapid / 100000 == 9800
                 && (mapid % 10 == 1 || mapid % 1000 == 100);
     }
-    
-     public static boolean isCarnivalRestMaps(int mapid) {
-          return mapid / 100000 == 9800 
+
+    public static boolean isCarnivalRestMaps(int mapid) {
+        return mapid / 100000 == 9800
                 && (mapid % 10 == 2 || mapid % 1000 == 100);
-     }
+    }
 
     public static boolean isForceRespawn(int mapid) {
         switch (mapid) {
@@ -2148,7 +2147,7 @@ public class GameConstants {
     public static double getAttackRange(MapleCharacter chr, MapleStatEffect def, AttackInfo attack) {
         int rangeInc = chr.getStat().defRange;// 處理遠程職業
         double base = 480.0;// 基礎
-        double defRange = ((base + rangeInc) * (base + rangeInc));// 基礎範圍
+        double defRange = ((base + rangeInc * 1.3) * (base + rangeInc));// 基礎範圍
         if (def != null) {
             // 計算範圍((maxX * maxX) + (maxY * maxY)) + (技能範圍 * 技能範圍))
             defRange += def.getMaxDistanceSq() + (def.getRange() * def.getRange());

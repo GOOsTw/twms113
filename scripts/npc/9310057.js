@@ -104,8 +104,8 @@ function action(mode, type, selection) {
                             size++;
                         }
                         if (next && size >= 1) {
-                            if (em.getInstance("English" + mapId) == null) {
-                                em.startPartyInstance("" + mapId, cm.getPlayer());
+                            if (em.getInstance("English") == null) {
+                                em.startPartyInstance(cm.getParty(), cm.getMap());
                             } else {
                                 cm.sendOk("已經有另外一個隊伍正在挑戰了。");
                             }

@@ -22,14 +22,11 @@ function cancelSchedule() {
 }
 
 function start() {
-    scheduleNew();
+//    scheduleNew();
     try {
         if( em != null && em.getChannelServer() != null)
             em.getChannelServer().giveCSPoints();
     } catch (e) {
     }
-    var iter = em.getInstances().iterator();
-    while (iter.hasNext()) {
-        var eim = iter.next();
-    }
+    scheduleNew();
 }

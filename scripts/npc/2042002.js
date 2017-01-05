@@ -24,8 +24,19 @@ function action(mode, type, selection) {
         cm.dispose();
         return;
     }
+
+
+    if(cm.getMapId() == 980000010) {
+
+    }
+
+
     if (status == 0) {
-        cm.sendSimple("請來參加怪物擂台﹗\r\n#b#L0#我要前往怪物擂台#l");
+        if(cm.getMapId() == 980000010) {
+            cm.sendSimple("我能為你做些什麼?! \r\n#b#L1#我要離開怪物擂台#l");
+        } else {
+            cm.sendSimple("請來參加怪物擂台﹗\r\n#b#L0#我要前往怪物擂台#l");
+        }
     } else if (status == 1) {
         switch (selection) {
             case 0:
@@ -43,7 +54,18 @@ function action(mode, type, selection) {
                         cm.dispose();
                     }
                     cm.dispose();
+                    break;
                 }
+            case 1: {
+                var returnMap = cm.getSavedLocation("MONSTER_CARNIVAL");
+                if (returnMap < 0 || returnMap == 980000010) {
+                    returnMap = 103000000;
+                }
+                cm.clearSavedLocation("MONSTER_CARNIVAL");
+                cm.warp(returnMap, 0);
+                cm.dispose();
+                break;
+            }
             default:
                 {
                     cm.dispose();

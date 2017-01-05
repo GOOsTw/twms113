@@ -7,8 +7,13 @@
 var status = -1;
 
 function start(mode, type, selection) {
+
+qm.sendNext("");
+qm.dispose();
+return;
     if (mode == 0) {
         if (status == 0) {
+
             qm.sendNext("等你想要的時候再告訴我。");
             qm.dispose();
             return;
@@ -34,13 +39,3 @@ function start(mode, type, selection) {
 
 function end(mode, type, selection) {}
 
-/*function getMedalType(ids) {
-    var thestring = "#b";
-    var extra;
-    for (x = 0; x < ids.length; x++) {
-	extra = "#L" + x + "##t" + ids[x] + "##l\r\n";
-	thestring += extra;
-    }
-    thestring += "#k";
-    return thestring;
-}*/

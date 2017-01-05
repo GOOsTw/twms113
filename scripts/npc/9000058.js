@@ -20,10 +20,15 @@ function action(mode, type, selection) {
     }
 
     if (status == 0) {
-        if (!cm.isQuestFinished(29934)) {
-            NewPlayer();
+        if ( cm.getPlayer().getLevel() >= 10 && cm.getAccountVariable("nlevel10") == null) {
+            level10Prize();
+            return;
         }
-        cm.sendSimple("歡迎來到啾咪谷~\r\n#b#L2#我要打開藍色小箱子#l\r\n#b#L6#我要抽月光寶盒#l");
+        if ( cm.getPlayer().getLevel() >= 70 && cm.getAccountVariable("nlevel70") == null) {
+            level70Prize();
+            return;
+        }
+        cm.sendSimple("歡迎來當邊緣人谷~\r\n#b#L2#我要打開藍色小箱子#l\r\n#b#L6#我要抽月光寶盒#l");
     } else if (status == 1) {
         if (selection == 2) {
             if (cm.haveItem(4031307, 1) == true) {
@@ -43,7 +48,7 @@ function action(mode, type, selection) {
 }
 
 function NewPlayer() {
-    if (!cm.haveItem(5000007, 1, true, true) && cm.canHold(5000007, 1)) {
+    /*if (!cm.haveItem(5000007, 1, true, true) && cm.canHold(5000007, 1)) {
         cm.gainPet(5000007, "黑色小豬", 1, 0, 100, 45, 0);
     }
     if (!cm.haveItem(1002419, 1, true, true) && cm.canHold(1002419, 1)) {
@@ -66,9 +71,27 @@ function NewPlayer() {
     }
     if (!cm.haveItem(5170000, 1, true, true) && cm.canHold(5170000, 1)) {
         cm.gainItemPeriod(5170000, 1, 30);
-    }
+    }*/
     cm.forceCompleteQuest(29934); //完成新手獎勵
     cm.sendOk("歡迎來到楓之谷 請使用 @help/@幫助 了解各式指令\r\n\r\n\r\n遊戲愉快^^");
     cm.dispose();
     return;
+}
+
+function level10Prize() {
+    if(cm.getPlayer().getAccountVariable("nlevel10") == null) {
+        cm.getPlayer().setAccountVariable("nlevel10", "1");
+        cm.getPlayer().modifyCSPoints(2, 333, true);
+    }
+    cm.sendOk("已領取10等獎勵");
+    cm.dispose();
+}
+
+function level70Prize() {
+    if(cm.getPlayer().getAccountVariable("nlevel70") == null) {
+        cm.getPlayer().setAccountVariable("nlevel70", "1");
+        cm.getPlayer().modifyCSPoints(2, 666, true);
+    }
+    cm.sendOk("已領取70等獎勵");
+    cm.dispose();
 }

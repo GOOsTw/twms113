@@ -7,6 +7,7 @@ function setup(eim) {
     var eim = em.newInstance("DollHouse");
     var map = eim.setInstanceMap(922000010);
     map.shuffleReactors();
+    map.resetFully();
     eim.startEventTimer(600000);
     return eim;
 }

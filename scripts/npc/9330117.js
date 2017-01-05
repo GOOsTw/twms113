@@ -13,6 +13,13 @@ function action(mode, type, selection) {
         cm.dispose();
         return;
     }
+
+    if(cm.getPlayer().getLevel() < 30) {
+        cm.sendOk("請30等後再來");
+        cm.dispose();
+        return;
+    }
+
     if (status == 0) {
         if (cm.getPlayer().getLevel() >= 51) {
             cm.sendOk("我只可以使用到50級。");

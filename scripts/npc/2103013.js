@@ -4,6 +4,8 @@ var section = 0;
 importPackage(java.lang);
 //questid 29932, infoquest 7760
 function action(mode, type, selection) {
+cm.dipose();
+return;
     if (mode == 1) {
         status++;
     } else {

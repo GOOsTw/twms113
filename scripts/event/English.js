@@ -13,12 +13,11 @@ function monsterValue(eim, mobId) {
 
 function setup(mapid) {
 
-    var eim = em.newInstance("English" + mapid);
+    var eim = em.newInstance("English");
     eim.setInstanceMap(702090101 + (parseInt(mapid) * 100)).resetFully();
     eim.setInstanceMap(702090102 + (parseInt(mapid) * 100)).resetFully();
     eim.setInstanceMap(702090103 + (parseInt(mapid) * 100)).resetFully();
 
-    eim.setProperty("mode", mapid);
     if (eim.getProperty("mode").equals("0")) {
         var ee = java.lang.Math.floor(java.lang.Math.random() * letters0.length);
         eim.setProperty("question", letters0[ee]);

@@ -19,6 +19,11 @@ function action(mode, _type, selection) {
         return;
     }
 
+    if(cm.getPlayer().getLevel() < 30) {
+        cm.sendOk("請30等後再來");
+        cm.dispose();
+        return;
+    }
     switch (status) {
         case 0:
             cm.sendYesNo("你好，我是卷軸轉蛋機，請問你要轉蛋嗎？");

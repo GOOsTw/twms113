@@ -11,7 +11,7 @@ function scheduleNew() {
     cal.set(java.util.Calendar.SECOND, 0);
     var nextTime = cal.getTimeInMillis();
     while (nextTime <= java.lang.System.currentTimeMillis()) {
-        nextTime += 180000; //這裡就是設定多久存檔一次啦，單位是毫秒，可依據玩家數做調整
+        nextTime += 5 * 60 * 1000; //這裡就是設定多久存檔一次啦，單位是毫秒，可依據玩家數做調整
     }
     setupTask = em.scheduleAtTimestamp("start", nextTime);
 }
@@ -26,8 +26,4 @@ function start() {
     em.getChannelServer().saveAll();
 	em.broadcastYellowMsg("[系統公告] 自動存檔完畢。");
     scheduleNew();
-    var iter = em.getInstances().iterator();
-    while (iter.hasNext()) {
-        var eim = iter.next();
-    }
 }

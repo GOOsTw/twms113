@@ -3,6 +3,7 @@ var status = -1;
 
 function start() {
     cm.sendSimple("All your balls for catching monsters here!\r\n#fUI/UIWindow.img/QuestIcon/4/0# \n\r  \n\r #b #L3#Trade 300,000 meso per Basic ball#l \r\n #L4#Trade 600,000 meso per Great ball#l \r\n #L5#Trade 1,200,000 meso per Ultra ball#l \r\n\r\n #L6#Heal Berry (5,000,000 meso)#l \r\n #L7#Cure Berry (10,000,000 meso)#l \r\n #L8#Red Candy (15,000,000 meso)#l \r\n #L9#Blue Candy (15,000,000 meso)#l \r\n #L10#Green Candy (15,000,000 meso)#l \r\n #L11#Dark Chocolate (20,000,000 meso)#l \r\n #L12#White Chocolate (20,000,000 meso)#l \r\n\r\n #L20#EXP Share (permanent) (75,000,000 meso)#l \r\n #L21#Everstone (permanent) (25,000,000 meso)#l#k");
+   cm.dispose();
 }
 
 function action(mode, type, selection) {

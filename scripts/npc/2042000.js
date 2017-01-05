@@ -67,7 +67,10 @@ function action(mode, type, selection) {
         }
     } else if (status == 2) {
 
-        if (selection < 2) {
+        if (selection < 0) {
+            cm.dispose();
+        }
+        else if (selection < 2) {
 
             var requiedCount = [50, 30];
             var gainItems = [1122007, 2041211];

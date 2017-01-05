@@ -22,5 +22,5 @@ function start() {
     "如有bug請回報GM");
 	
 	scheduleNew();
-    em.broadcastYellowMsg("[啾咪公告]" + Message[Math.floor(Math.random() * Message.length)]);
+    em.broadcastYellowMsg("[好邊緣公告]" + Message[Math.floor(Math.random() * Message.length)]);
 }

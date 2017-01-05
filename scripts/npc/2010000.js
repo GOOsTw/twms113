@@ -18,6 +18,12 @@ var eQuestChoices = new Array (4000073,4000059,4000060,4000061,4000058,
 
 var eQuestPrizes = new Array();
 
+var eQuestPoints = new Array(1, 1, 1, 2, 20, 
+20, 2, 2, 4, 4,
+2, 3, 3, 5, 50,
+100, 1, 2, 2, 2,
+2, 2, 2, 5, 5);
+
 eQuestPrizes[0] = new Array ([2000001,20],  // Orange Potions
     [2010004,10],	// Lemons
     [2000003,15], 	// Blue Potions
@@ -165,6 +171,7 @@ var requiredItem  = 0;
 var lastSelection = 0;
 var prizeItem     = 0;
 var prizeQuantity = 0;
+var prizePoints = 0;
 var itemSet;
 
 function start() {
@@ -199,9 +206,10 @@ function action(mode, type, selection) {
     } else if (status == 3){
 	lastSelection = selection;
 	requiredItem = eQuestChoices[selection];
+        prizePoints = eQuestPoints[selection];
 	cm.sendYesNo("讓我看看，你想要交換你的 #b100個 #t" + requiredItem + "##k 來換取一些酬勞是吧？ 交易前確保你的道具欄位是否足夠吧！！");
     }else if (status == 4){
-	itemSet = (Math.floor(Math.random() * eQuestPrizes[lastSelection].length));
+	/*itemSet = (Math.floor(Math.random() * eQuestPrizes[lastSelection].length));
 	reward = eQuestPrizes[lastSelection];
 	prizeItem = reward[itemSet][0];
 	prizeQuantity = reward[itemSet][1];
@@ -214,10 +222,16 @@ function action(mode, type, selection) {
 	    cm.sendNext("你的道具攔似乎滿了，請清空一些不要的東西再來找我交易一次謝謝。");
 		cm.dispose();
 		return;
-	}
-	cm.gainItem(requiredItem,-100);
+	}*/
+	if(!cm.haveItem(requiredItem, 100)) {
+            cm.sendOk("嗯... 你確定你有 #b100個 #t" + requiredItem + "##k? 如果有請定你道具攔是不是滿了....");
+            cm.dispose();
+            return;
+        }
+        cm.gainItem(requiredItem,-100);
+        cm.getPlayer().modifyCSPoints(2, prizePoints, true);
 	cm.gainExp(500);
-	cm.gainItem(prizeItem, prizeQuantity);
+	/*cm.gainItem(prizeItem, prizeQuantity);*/
 	cm.sendOk("為你的 #b100個 #t"+requiredItem+"##k, 這裡是我的獎勵 #b"+prizeQuantity+" #t"+prizeItem+"##k. 你怎麼看？？ 你是否喜歡我的獎勵呢？？ \r\n如果喜歡歡迎下次再來找我交易，我會在這裡等著你的！！");
 	cm.dispose();
     }

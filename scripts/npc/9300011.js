@@ -1,6 +1,10 @@
 var points;
 
 function start() {
+    cm.sendOk("BSPQ 維護中");
+    cm.dispose();
+    return;
+
     var record = cm.getQuestRecord(150001);
     points = record.getCustomData() == null ? "0" : record.getCustomData();
     cm.sendSimple("想挑戰BOSS副本嗎？？\n\r\n\r #b#L3#查看可兌換點數#l#k \r\n\r\n #b#L0##v03994115##l#l#L1##v03994116##l#L2##v03994117##l#L28##v03994118##l \r\n #b#L4#進入幸福村#l#k");
