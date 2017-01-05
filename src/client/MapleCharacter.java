@@ -4761,6 +4761,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void modifyCSPoints(int type, int quantity) {
+        FilePrinter.print("點數紀錄.txt", "玩家:" + this.getName() + ", IP:" + this.getClient().getSessionIPAddress() + ", 帳號" + this.getClient().getAccountName() + "\r\n"
+                + "來源:" + new Throwable().getStackTrace()[0].toString() + "," + new Throwable().getStackTrace()[1].toString());
         modifyCSPoints(type, quantity, false);
     }
 
@@ -4817,6 +4819,8 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
     }
 
     public void modifyCSPoints(int type, int quantity, boolean show) {
+        FilePrinter.print("點數紀錄.txt", "玩家:" + this.getName() + ", IP:" + this.getClient().getSessionIPAddress() + ", 帳號" + this.getClient().getAccountName() + "\r\n"
+                + "來源:" + new Throwable().getStackTrace()[0].toString() + "," + new Throwable().getStackTrace()[1].toString());
         reloadCSPoints();
         switch (type) {
             case 1:
