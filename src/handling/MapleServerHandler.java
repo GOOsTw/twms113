@@ -448,7 +448,6 @@ public class MapleServerHandler extends IoHandlerAdapter implements MapleServerH
                 CharLoginHandler.handleGenderSet(slea, c);
                 break;
             case CLIENT_LOGOUT:
-                CharLoginHandler.handleLogout(slea, c);
                 break;
             // END OF LOGIN SERVER
             case CHANGE_CHANNEL:

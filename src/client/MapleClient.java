@@ -1060,10 +1060,12 @@ public class MapleClient {
                 }
             }
 
-            if (!serverTransition && isLoggedIn()) {
-                updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, getSessionIPAddress());
+        }
+        if (!serverTransition && isLoggedIn()) {
+            updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, getSessionIPAddress());
+            if (this.getLoginState() != MapleClient.LOGIN_LOGGEDIN) {
+                this.getSession().close(true);
             }
-            this.getSession().close(true);
         }
     }
 
