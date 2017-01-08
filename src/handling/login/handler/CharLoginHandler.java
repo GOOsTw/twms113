@@ -65,13 +65,7 @@ public class CharLoginHandler {
     }
 
     public static final void handleLogout(final LittleEndianAccessor slea, MapleClient c) {
-        String account = slea.readMapleAsciiString();
-        String IpAddress = c.getSessionIPAddress();
-        c.setAccountName(account);
-        MapleClient client = LoginServer.getClientStorage().getClientByName(c.getAccountName());
-        if(client != null && c.equals(client)) {
-            client.disconnect(false, false);
-        }
+        
     }
 
     private static String readMacAddress(final LittleEndianAccessor slea, final MapleClient c) {
