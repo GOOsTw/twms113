@@ -14,6 +14,7 @@ import java.util.concurrent.ScheduledFuture;
 import constants.GameConstants;
 import client.MapleCharacter;
 import client.MapleCharacterUtil;
+import client.MapleJob;
 import client.SkillFactory;
 import constants.SkillType;
 import handling.channel.handler.AttackInfo;
@@ -133,14 +134,14 @@ public class CheatTracker {
             AtkDelay /= 2.4;// 407
         }
         // 海盜、拳霸
-        if (player.get().getJob() >= 500 && player.get().getJob() <= 512) {
+        if (MapleJob.is拳霸(player.get().getJob())) {
             AtkDelay = 0;// 407
         }
-        // 強化連擊
-        if (skillId == SkillType.狂狼勇士2.強化連擊 || skillId == SkillType.格鬥家.蓄能激發) {
+        
+        if(MapleJob.is閃雷悍將(player.get().getJob()) && skillId == SkillType.閃雷悍將3.閃光擊) {
             AtkDelay = 0;
         }
-
+        
         if (player.get().isShowDebugInfo()) {
             player.get().dropMessage(5, "CS攻擊速度檢測，間隔:" + (clientTickCount - lastAttackTickCount) + "，最低限度：" + AtkDelay);
         }

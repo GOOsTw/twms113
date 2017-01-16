@@ -105,6 +105,7 @@ public class GameConstants {
     public static boolean isNoDelaySkill(int skillId) {
         return skillId == SkillType.格鬥家.蓄能激發
                 || skillId == SkillType.狂狼勇士2.強化連擊
+                || skillId == 15111006
                 || skillId == SkillType.閃雷悍將2.蓄能激發
                 || skillId == 2111007 || skillId == 2211007 || skillId == 2311007 || skillId == 32121003 || skillId == 35121005 || skillId == 35111004 || skillId == 35121013 || skillId == 35121003 || skillId == 22150004 || skillId == 22181004 || skillId == 11101002 || skillId == 51100002 || skillId == 13101002 || skillId == 24121000 || skillId == 112001008 || skillId == 22161005 || skillId == 22161005;
     }
@@ -2147,7 +2148,7 @@ public class GameConstants {
     public static double getAttackRange(MapleCharacter chr, MapleStatEffect def, AttackInfo attack) {
         int rangeInc = chr.getStat().defRange;// 處理遠程職業
         double base = 480.0;// 基礎
-        double defRange = ((base + rangeInc * 1.3) * (base + rangeInc));// 基礎範圍
+        double defRange = ((base + rangeInc * 1.5) * (base + rangeInc* 1.5));// 基礎範圍
         if (def != null) {
             // 計算範圍((maxX * maxX) + (maxY * maxY)) + (技能範圍 * 技能範圍))
             defRange += def.getMaxDistanceSq() + (def.getRange() * def.getRange());
