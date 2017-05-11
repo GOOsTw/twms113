@@ -13,10 +13,10 @@ function enter(pi) {
         pi.playerMessage(5, "不明的力量無法進入，需要有玩具獎牌。");
         return false;
     }
-	if (pi.getBossLog("pop") >= 2) {
-		pi.playerMessage(5, "一天只能打兩次拉圖斯。");
-		return false;
-	}
+    if (pi.getBossLog("pop") >= 2) {
+        pi.playerMessage(5, "一天只能打兩次拉圖斯。");
+        return false;
+    }
     if (pi.getPlayerCount(220080001) <= 0) { // Papu Map
         var papuMap = pi.getMap(220080001);
         papuMap.resetFully();
@@ -25,7 +25,7 @@ function enter(pi) {
         pi.warp(220080001, "st00");
         return true;
     } else {
-        if (pi.getMap(220080001).getPapfight() == 0 && pi.getMap(220080001).getSpeedRunStart() == 0 && (pi.getMonsterCount(220080001) <= 0 || pi.getMap(220080001).isDisconnected(pi.getPlayer().getId()))) {
+        if (/*pi.getMap(220080001).getPapfight() == 0 &&*/ pi.getMap(220080001).getSpeedRunStart() == 0 && (pi.getMonsterCount(220080001) <= 0 || pi.getMap(220080001).isDisconnected(pi.getPlayer().getId()))) {
             var papuMap = pi.getMap(220080001);
             pi.setBossLog("pop");
             pi.playPortalSE();

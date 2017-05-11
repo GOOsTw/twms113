@@ -371,6 +371,7 @@ public class Equip extends Item implements IEquip, Serializable {
         return expz;
     }
 
+    @Override
     public int getExpPercentage() {
         if (getEquipLevel() < getBaseLevel() || getEquipLevel() > GameConstants.getMaxLevel(getItemId()) || GameConstants.getExpForLevel(getEquipLevel(), getItemId()) <= 0) {
             return 0;
@@ -378,6 +379,7 @@ public class Equip extends Item implements IEquip, Serializable {
         return getEquipExpForLevel() * 100 / GameConstants.getExpForLevel(getEquipLevel(), getItemId());
     }
 
+    @Override
     public int getEquipLevel() {
         if (GameConstants.getMaxLevel(getItemId()) <= 0) {
             return 0;
@@ -397,6 +399,7 @@ public class Equip extends Item implements IEquip, Serializable {
         return levelz;
     }
 
+    @Override
     public int getBaseLevel() {
         return (GameConstants.getStatFromWeapon(getItemId()) == null ? 1 : 0);
     }

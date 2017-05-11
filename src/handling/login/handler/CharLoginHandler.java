@@ -99,6 +99,7 @@ public class CharLoginHandler {
             c.setAccountName(account);
 
             LoginResponse loginResponse = c.login(account, password);
+            
 
             if (loginResponse == LoginResponse.LOGIN_SUCCESS && c.getLastLogin() + 3 * 1000 > System.currentTimeMillis()) {
                 loginResponse = LoginResponse.LOGIN_DELAY;
@@ -182,6 +183,9 @@ public class CharLoginHandler {
                     break;
                 case SYSTEM_ERROR2:
                     errorInfo = "系統錯誤(錯誤代碼:1)";
+                    break;
+                case NOT_VERIFY_EMAIL:
+                    errorInfo = "請先到官方網站驗證 Email";
                     break;
             }
             c.setAccID(-1);

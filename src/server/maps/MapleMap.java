@@ -3152,6 +3152,7 @@ public final class MapleMap {
         resetSpawns();
         resetDisconnected();
         endSpeedRun();
+        EndPapfight();
         cancelSquadSchedule();
         resetPortals();
         environment.clear();

@@ -89,6 +89,10 @@ public class DamageParse {
                 }
             }
             maxMobCount = effect.getMobCount();
+            
+            if(player.getMp() < effect.getMpCon()) {
+                return;
+            }
 
         }
 
@@ -539,7 +543,13 @@ public class DamageParse {
 
         /* 確認是否超過打怪數量*/
         int mobCount = effect.getMobCount();
+        int mpCon = effect.getMpCon();
+        
         if (!player.getCheatTracker().checkAttackTargetCount(attack, mobCount)) {
+            return;
+        }
+        
+        if(player.getMp() < mpCon) {
             return;
         }
 
@@ -698,6 +708,7 @@ public class DamageParse {
                     player.getCheatTracker().registerOffense(CheatingOffense.治癒非不死系怪物);
                     return;
                 }
+         
 
                 if (totDamageToOneMonster > 0) {
                     monster.damage(player, totDamageToOneMonster, true, attack.skill);

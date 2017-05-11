@@ -340,54 +340,55 @@ public class GMCommand {
         }
     }
 
-    public static class 清理背包 extends CommandExecute {
+   public static class 清理背包 extends CommandExecute {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
-            Map<Pair<Short, Short>, MapleInventoryType> eqs = new HashMap<>();
+            java.util.LinkedHashMap<Pair<MapleInventoryType, Short>, Short> eqs = new java.util.LinkedHashMap<>();
             switch (splitted[1]) {
                 case "全部":
                     for (MapleInventoryType type : MapleInventoryType.values()) {
                         for (IItem item : c.getPlayer().getInventory(type)) {
-                            eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), type);
+                            c.getPlayer().dropMessage("" + item.getPosition() + ":" + item.getQuantity());
+                            eqs.put(new Pair<>(type, item.getPosition()), item.getQuantity());
                         }
                     }
                     break;
                 case "身上裝備":
                     for (IItem item : c.getPlayer().getInventory(MapleInventoryType.EQUIPPED)) {
-                        eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.EQUIPPED);
+                        eqs.put(new Pair<>(MapleInventoryType.EQUIPPED, item.getPosition()), item.getQuantity());
                     }
                     break;
                 case "裝備":
                     for (IItem item : c.getPlayer().getInventory(MapleInventoryType.EQUIP)) {
-                        eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.EQUIP);
+                        eqs.put(new Pair<>(MapleInventoryType.EQUIP, item.getPosition()), item.getQuantity());
                     }
                     break;
                 case "消耗":
                     for (IItem item : c.getPlayer().getInventory(MapleInventoryType.USE)) {
-                        eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.USE);
+                        eqs.put(new Pair<>(MapleInventoryType.USE, item.getPosition()), item.getQuantity());
                     }
                     break;
                 case "裝飾":
                     for (IItem item : c.getPlayer().getInventory(MapleInventoryType.SETUP)) {
-                        MapleInventoryType put = eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.SETUP);
+                        eqs.put(new Pair<>(MapleInventoryType.SETUP, item.getPosition()), item.getQuantity());
                     }
                     break;
                 case "其他":
                     for (IItem item : c.getPlayer().getInventory(MapleInventoryType.ETC)) {
-                        eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.ETC);
+                        eqs.put(new Pair<>(MapleInventoryType.ETC, item.getPosition()), item.getQuantity());
                     }
                     break;
                 case "現金":
                     for (IItem item : c.getPlayer().getInventory(MapleInventoryType.CASH)) {
-                        eqs.put(new Pair<>(item.getPosition(), item.getQuantity()), MapleInventoryType.CASH);
+                        eqs.put(new Pair<>(MapleInventoryType.CASH, item.getPosition()), item.getQuantity());
                     }
                     break;
                 default:
                     return false;
             }
-            for (Entry<Pair<Short, Short>, MapleInventoryType> eq : eqs.entrySet()) {
-                MapleInventoryManipulator.removeFromSlot(c, eq.getValue(), eq.getKey().left, eq.getKey().right, false, false);
+            for (Entry<Pair<MapleInventoryType, Short>, Short> eq : eqs.entrySet()) {
+                MapleInventoryManipulator.removeFromSlot(c, eq.getKey().left, eq.getKey().right, eq.getValue(), false, false);
             }
             c.getPlayer().dropMessage(5, "已經清除" + splitted[1] + "欄。");
             return true;

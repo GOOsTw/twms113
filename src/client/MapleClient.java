@@ -607,14 +607,14 @@ public class MapleClient {
         } else if (hasBannedMac()) {
             return LoginResponse.ACCOUNT_BLOCKED;
         }
-
+        boolean email_verify = false;
         int db_banned = 0;
         String db_passwordHash = "";
         String db_passwordSalt = "";
         String db_SessionIP = "";
         String db_macs = "";
         Connection con = DatabaseConnection.getConnection();
-        try (PreparedStatement ps = con.prepareStatement("SELECT id, banned, password, salt, macs, 2ndpassword, gm, greason, tempban, gender, SessionIP FROM accounts WHERE name = ?")) {
+        try (PreparedStatement ps = con.prepareStatement("SELECT id, banned, password, salt, macs, 2ndpassword, gm, greason, tempban, gender, SessionIP, email_verify FROM accounts WHERE name = ?")) {
             ps.setString(1, account);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -629,6 +629,7 @@ public class MapleClient {
                     bannedReason = rs.getByte("greason");
                     tempban = getTempBanCalendar(rs);
                     gender = rs.getByte("gender");
+                    email_verify = rs.getInt("email_verify") > 0;
                     ps.close();
                 } else {
                     return LoginResponse.NOT_REGISTERED;
@@ -637,6 +638,10 @@ public class MapleClient {
         } catch (SQLException e) {
             FilePrinter.print(FilePrinter.LoginError, "Account : " + account + " login raise some exception !" + e.getMessage());
             return LoginResponse.SYSTEM_ERROR;
+        }
+        
+        if(!email_verify) {
+            return LoginResponse.NOT_VERIFY_EMAIL;
         }
 
         boolean updatePasswordHash = false;

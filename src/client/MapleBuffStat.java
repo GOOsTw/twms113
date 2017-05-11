@@ -142,12 +142,12 @@ public enum MapleBuffStat implements Serializable {
     GM_HIDE(56),
     // 未知
     BERSERK_FURY(57),
-    // 龍魔島-四連殺
-    ILLUSION(58),
+    
+    ILLUSION(57),
     // 狂暴戰魂
     BUFF_50(50),
     // 金剛霸體
-    DIVINE_BODY(60),
+    DIVINE_BODY(58),
     // 閃光擊
     SPARK(59),
     // 近距離終極攻擊[完成]

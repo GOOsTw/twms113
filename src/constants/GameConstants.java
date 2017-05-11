@@ -631,9 +631,10 @@ public class GameConstants {
             case 5211005: // Ice Splitter
             case 4201005: // Savage blow
                 return 480;
-            case 0: // Normal Attack, TODO delay for each weapon type
             case 5111002: // Energy Blast
             case 15101005: // Energy Blast
+                return 100;
+            case 0: // Normal Attack, TODO delay for each weapon type
             case 1001004: // Power Strike
             case 11001002: // Power Strike
             case 1001005: // Slash Blast
@@ -2082,6 +2083,9 @@ public class GameConstants {
             case 1000: // 蝸牛投擲術
                 defRange = 120000.0;
                 break;
+            case 1511106:
+                defRange = 900000.0;
+                break;
         }
         return defRange;
     }
@@ -2148,7 +2152,7 @@ public class GameConstants {
     public static double getAttackRange(MapleCharacter chr, MapleStatEffect def, AttackInfo attack) {
         int rangeInc = chr.getStat().defRange;// 處理遠程職業
         double base = 480.0;// 基礎
-        double defRange = ((base + rangeInc * 1.5) * (base + rangeInc* 1.5));// 基礎範圍
+        double defRange = ((base + rangeInc * 1.5) * (base + rangeInc * 1.5));// 基礎範圍
         if (def != null) {
             // 計算範圍((maxX * maxX) + (maxY * maxY)) + (技能範圍 * 技能範圍))
             defRange += def.getMaxDistanceSq() + (def.getRange() * def.getRange());

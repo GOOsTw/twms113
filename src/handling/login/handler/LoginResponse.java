@@ -22,6 +22,7 @@ public enum LoginResponse {
     SYSTEM_ERROR2(0x9),
     SYSTEM_OVERLOADED(0xA),
     IP_NOT_ALLOWED(0x22),
+    NOT_VERIFY_EMAIL(0x99);
     ;
     private final int value;
 

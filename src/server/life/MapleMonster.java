@@ -440,7 +440,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
      */
     private void giveExpToCharacter(final MapleCharacter attacker, int exp, final boolean highestDamage, final int numExpSharers, final byte pty, final byte classBounsExpPercent, final byte Premium_Bonus_EXP_PERCENT, final int lastskillID) {
 
-         /**
+        /**
          * 判斷最高攻擊 *
          */
         if (highestDamage) {
@@ -1032,20 +1032,6 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             return;
         }
 
-        if (status == MonsterStatus.POISON || status == MonsterStatus.VENOMOUS_WEAPON) {
-            int count = 0;
-            poisonsLock.readLock().lock();
-            try {
-                for (MonsterStatusEffect mse : poisons) {
-                    if (mse != null && (mse.getSkill() == eff.getSourceId() || mse.getSkill() == GameConstants.getLinkedAttackSkill(eff.getSourceId()) || GameConstants.getLinkedAttackSkill(mse.getSkill()) == eff.getSourceId())) {
-                        count++;
-                    }
-                }
-            } finally {
-                poisonsLock.readLock().unlock();
-            }
-
-        }
         final int reTime = 1000;
         final long aniTime;
         if (skilz != null) {
@@ -1056,6 +1042,9 @@ public class MapleMonster extends AbstractLoadedMapleLife {
 
         statusEff.setCancelTask(aniTime);
 
+        if (poison && getHp() <= 1) {
+            return;
+        }
         if (poison && getHp() > 1) { // 中毒[POISON]
             if (from == null) {
                 return;
@@ -1082,12 +1071,7 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             }
             statusEff.setPoisonDamage(dam, from);
         }
-
-        if (poison && getHp() <= 1) {
-            return;
-        }
-
-        final BuffTimer applyEffectTimer = Timer.BuffTimer.getInstance();
+        final BuffTimer BuffTimer = Timer.BuffTimer.getInstance();
 
         final Runnable applyEffectTask = new Runnable() {
             @Override
@@ -1101,14 +1085,13 @@ public class MapleMonster extends AbstractLoadedMapleLife {
                         dam = (int) (hp - statusEff.getPoisonDamage());
                     }
                     damage(from, dam, false);
-                    applyEffectTimer.schedule(this, reTime);
+                    BuffTimer.schedule(this, reTime);
                 } else if (from.isShowDebugInfo()) {
                     from.dropMessage(6, "結束 => 執行時間[" + System.currentTimeMillis() + "]");
                 }
             }
         };
 
-        final BuffTimer BuffTimer = Timer.BuffTimer.getInstance();
         final Runnable cancelTask;
         cancelTask = new Runnable() {
             @Override
@@ -1136,13 +1119,14 @@ public class MapleMonster extends AbstractLoadedMapleLife {
             applyMonsterStatus(MobPacket.applyMonsterStatus(this, statusEff));
         }
 
+        if (statusEff.getStatus() == MonsterStatus.POISON || statusEff.getStatus() == MonsterStatus.NINJA_AMBUSH) {
+            BuffTimer.schedule(applyEffectTask, reTime);
+        }
+        
         BuffTimer.schedule(cancelTask, aniTime);
+        // 持續傷害的Buff
         if (from.isShowDebugInfo()) {
             from.dropMessage(6, "開始 => 給予怪物狀態: 持續時間[" + aniTime + "] 狀態效果[" + status.name() + "] 開始時間[" + System.currentTimeMillis() + "]");
-        }
-        // 持續傷害的Buff
-        if (statusEff.getStatus() == MonsterStatus.POISON || statusEff.getStatus() == MonsterStatus.NINJA_AMBUSH) {
-            applyEffectTimer.schedule(applyEffectTask, reTime);
         }
 
     }

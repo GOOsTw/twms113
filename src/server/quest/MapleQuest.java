@@ -307,7 +307,7 @@ public class MapleQuest implements Serializable {
             final MapleQuestStatus newStatus = new MapleQuestStatus(this, (byte) 2, npc);
             c.getClient().sendPacket(MaplePacketCreator.showSpecialEffect(9)); // Quest completion
             c.getMap().broadcastMessage(c, MaplePacketCreator.showSpecialEffect(c.getId(), 9), false);
-        } else if (checkNPCOnMap(c, npc) || canComplete(c, npc)) {
+        } else if (checkNPCOnMap(c, npc) && canComplete(c, npc)) {
             for (MapleQuestAction a : completeActs) {
                 if (!a.checkEnd(c, selection)) {
                     return;
@@ -331,23 +331,23 @@ public class MapleQuest implements Serializable {
         }
     }
 
-    public void forfeit(MapleCharacter c) {
-        if (c.getQuest(this).getStatus() != (byte) 1) {
+    public void forfeit(MapleCharacter chr) {
+        if (chr.getQuest(this).getStatus() != (byte) 1) {
             return;
         }
-        final MapleQuestStatus oldStatus = c.getQuest(this);
+        final MapleQuestStatus oldStatus = chr.getQuest(this);
         final MapleQuestStatus newStatus = new MapleQuestStatus(this, (byte) 0);
         newStatus.setForfeited(oldStatus.getForfeited() + 1);
         newStatus.setCompletionTime(oldStatus.getCompletionTime());
-        c.updateQuest(newStatus);
+        chr.updateQuest(newStatus);
     }
 
-    public void forceStart(MapleCharacter c, int npc, String customData) {
+    public void forceStart(MapleCharacter chr, int npc, String customData) {
         final MapleQuestStatus newStatus = new MapleQuestStatus(this, (byte) 1, npc);
-        newStatus.setForfeited(c.getQuest(this).getForfeited());
-        newStatus.setCompletionTime(c.getQuest(this).getCompletionTime());
+        newStatus.setForfeited(chr.getQuest(this).getForfeited());
+        newStatus.setCompletionTime(chr.getQuest(this).getCompletionTime());
         newStatus.setCustomData(customData);
-        c.updateQuest(newStatus);
+        chr.updateQuest(newStatus);
     }
 
     public void forceComplete(MapleCharacter c, int npc) {

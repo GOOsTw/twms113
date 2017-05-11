@@ -675,7 +675,7 @@ public class MapleStatEffect implements Serializable {
         if (mpchange != 0) {
 
             if (stat.getMp() + mpchange < 0) {
-                applyto.getCheatTracker().registerOffense(CheatingOffense.異常魔力耗損);
+                //applyto.getCheatTracker().registerOffense(CheatingOffense.異常魔力耗損);
                 return false;
             }
 
@@ -1410,6 +1410,10 @@ public class MapleStatEffect implements Serializable {
 
     public final short getMp() {
         return mp;
+    }
+    
+    public final short getMpCon() {
+        return mpCon;
     }
 
     public final byte getMastery() {
