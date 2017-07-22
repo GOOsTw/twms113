@@ -145,6 +145,10 @@ public class Event_DojoAgent {
             final int thisStage = (int) (temp - ((temp / 100) * 100));
             final int points = getDojoPoints(thisStage);
             final int cspoints = getCSPoints(thisStage);
+
+            // Kumams Bonus
+            final int kuma_cspoints = cspoints * Randomizer.rand(2,8);
+
             final ChannelServer ch = c.getClient().getChannelServer();
             if (!fromResting) {
                 clearMap(currentmap, true);
@@ -157,13 +161,13 @@ public class Event_DojoAgent {
                             
                             
                             chr.setDojo(chr.getDojo() + point);
-                            chr.modifyCSPoints(2, cspoints, true);
+                            chr.modifyCSPoints(2, kuma_cspoints, true);
                             chr.getClient().sendPacket(MaplePacketCreator.Mulung_Pts(point, chr.getDojo()));
                         }
                     }
                 } else {
                     final int point = ((points + 1) * 3);
-                    c.modifyCSPoints(2, cspoints, true);
+                    c.modifyCSPoints(2, kuma_cspoints, true);
                     c.setDojo(c.getDojo() + point);
                     c.getClient().sendPacket(MaplePacketCreator.Mulung_Pts(point, c.getDojo()));
                 }
