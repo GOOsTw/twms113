@@ -61,6 +61,14 @@ public class World {
         World.Party.getParty(0);
     }
 
+    public static void clearChannelChangeDataByAccountId(int accountid) {
+        for (ChannelServer cs : ChannelServer.getAllInstances()) {
+            getStorage(cs.getChannel()).deregisterPendingPlayerByAccountId(accountid);
+        }
+        getStorage(-20).deregisterPendingPlayerByAccountId(accountid);
+        getStorage(-10).deregisterPendingPlayerByAccountId(accountid);
+    }
+
     public static String getStatus() throws RemoteException {
         StringBuilder ret = new StringBuilder();
         int totalUsers = 0;

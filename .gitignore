@@ -4,3 +4,4 @@
 /logs
 
 *.ini
+.DS_Store

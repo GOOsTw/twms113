@@ -80,6 +80,11 @@ public class PlayerStorage {
     public final void registerPendingPlayer(final CharacterTransfer chr, final int playerid) {
         writeLock2.lock();
         try {
+            for (CharacterTransfer transfer : PendingCharacter.values()) {
+                if (transfer.accountid == chr.accountid) {
+                    PendingCharacter.remove(transfer.characterid);
+                }
+            }
             PendingCharacter.put(playerid, chr);//new Pair(System.currentTimeMillis(), chr));
         } finally {
             writeLock2.unlock();
@@ -112,9 +117,33 @@ public class PlayerStorage {
     public final void deregisterPendingPlayer(final int charid) {
         writeLock2.lock();
         try {
+            int accountid = 0;
+            if (PendingCharacter.containsKey(charid)) {
+                accountid = PendingCharacter.get(charid).accountid;
+            }
             PendingCharacter.remove(charid);
+            if (accountid > 0) {
+                for (CharacterTransfer transfer : PendingCharacter.values()) {
+                    if (transfer.accountid == accountid) {
+                        PendingCharacter.remove(transfer.characterid);
+                    }
+                }
+            }
         } finally {
             writeLock2.unlock();
+        }
+    }
+
+    public final void deregisterPendingPlayerByAccountId(final int accountId) {
+        writeLock2.lock();
+        try {
+            for (CharacterTransfer transfer : PendingCharacter.values()) {
+                if (transfer.accountid == accountId) {
+                    PendingCharacter.remove(transfer.characterid);
+                }
+            }
+        } finally {
+              writeLock2.unlock();
         }
     }
 
