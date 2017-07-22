@@ -33,6 +33,7 @@ import client.MapleBuffStat;
 import client.MapleClient;
 import client.MapleCharacter;
 import client.PlayerStats;
+import client.SkillCollector;
 import client.anticheat.CheatingOffense;
 import constants.MapConstants;
 import constants.SkillType;
@@ -464,7 +465,10 @@ public class PlayerHandler {
         final int skillid = slea.readInt();
         final int skillLevel = slea.readByte();
         final ISkill skill = SkillFactory.getSkill(skillid);
-
+        boolean isSpecialMove = ((skillid / 10000) % 10) == 1;
+        if (!SkillCollector.getInstance().isExistSkill(4, skillid)) {
+            SkillCollector.getInstance().addSkill(4, skillid);
+        }
         if (chr.getSkillLevel(skill) <= 0 || chr.getSkillLevel(skill) != skillLevel) {
             if (!GameConstants.武陵道場技能(skillid) && !GameConstants.isPyramidSkill(skillid)) {
                 //c.getSession().close();
@@ -570,7 +574,10 @@ public class PlayerHandler {
 
         MapleStatEffect effect = null;
         ISkill skill = null;
-
+        if (!SkillCollector.getInstance().isExistSkill(1, attack.skill)) {
+            SkillCollector.getInstance().addSkill(1, attack.skill);
+            return;
+        }
         if (attack.skill != 0) {
 
             skill = SkillFactory.getSkill(GameConstants.getLinkedAranSkill(attack.skill));
@@ -708,7 +715,10 @@ public class PlayerHandler {
         int skillLevel = 0;
         MapleStatEffect effect = null;
         ISkill skill = null;
-
+        if (!SkillCollector.getInstance().isExistSkill(2, attack.skill)) {
+            SkillCollector.getInstance().addSkill(2, attack.skill);
+            return;
+        }
         if (attack.skill != 0) {
 
             skill = SkillFactory.getSkill(GameConstants.getLinkedAranSkill(attack.skill));
@@ -867,6 +877,10 @@ public class PlayerHandler {
         final ISkill skill = SkillFactory.getSkill(GameConstants.getLinkedAranSkill(attack.skill));
         final int skillLevel = chr.getSkillLevel(skill);
         final MapleStatEffect effect = attack.getAttackEffect(chr, skillLevel, skill);
+        if (!SkillCollector.getInstance().isExistSkill(3, attack.skill)) {
+            SkillCollector.getInstance().addSkill(3, attack.skill);
+            return;
+        }
         if (effect == null) {
             return;
         }

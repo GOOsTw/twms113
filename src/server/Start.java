@@ -1,5 +1,6 @@
 package server;
 
+import client.SkillCollector;
 import client.SkillFactory;
 import client.messages.ConsoleCommandProcessor;
 import handling.MapleServerHandler;
@@ -125,6 +126,7 @@ public class Start {
         BoatTimer.getInstance().start();
         EventTimer.getInstance().start();
         BuffTimer.getInstance().start();
+        SkillCollector.getInstance().init();
         LoginInformationProvider.getInstance();
         FishingRewardFactory.getInstance();
         MapleQuest.initQuests();

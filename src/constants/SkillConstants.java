@@ -158,7 +158,6 @@ public class SkillConstants {
 //        }
 //        return (skil >= 90000000 && skil < 92000000) || (skil % 10000 >= 8000 && skil % 10000 <= 8003) || isAngel(skil);
 //    }
-
     public static boolean isRidingSKill(int skil) {
         return (skil >= 80001000 && skil < 80010000);
     }
@@ -226,11 +225,11 @@ public class SkillConstants {
 
     public static boolean sub_9F529C(int id) {
         return id == 13121052 // 季風
-            || id - 13121052 == 1000000 // 道米尼奧
-            || id - 13121052 == 2000000 // 海神降臨
-            || id - 13121052 == 66880377 // 崩壞之輪行蹤
-            || id - 13121052 == 66880379 // 破滅之輪行蹤
-            || (id - 13121052 - 66880379) == 19999852; // 暗影之雨
+                || id - 13121052 == 1000000 // 道米尼奧
+                || id - 13121052 == 2000000 // 海神降臨
+                || id - 13121052 == 66880377 // 崩壞之輪行蹤
+                || id - 13121052 == 66880379 // 破滅之輪行蹤
+                || (id - 13121052 - 66880379) == 19999852; // 暗影之雨
     }
 
     public static boolean isKeyDownSkillWithPos(int id) {
@@ -423,7 +422,6 @@ public class SkillConstants {
 //        }
 //        return SoulSkills;
 //    }
-
     public static int SkillIncreaseMobCount(int sk) {
         int inc = 0;
         switch (sk) {
@@ -474,5 +472,410 @@ public class SkillConstants {
                 break;
         }
         return inc;
+    }
+
+    public static boolean isMagicAttack(int id) {
+        boolean ret = false;
+        switch (id) {
+            case 1000:
+            case 2001004:
+            case 2001005:
+            case 2101004:
+            case 2101005:
+            case 2111002:
+            case 2111003:
+            case 2111006:
+            case 2121001:
+            case 2121003:
+            case 2121006:
+            case 2121007:
+            case 2201004:
+            case 2201005:
+            case 2211002:
+            case 2211003:
+            case 2211006:
+            case 2221001:
+            case 2221003:
+            case 2221006:
+            case 2221007:
+            case 2301002:
+            case 2301005:
+            case 2311004:
+            case 2321001:
+            case 2321007:
+            case 2321008:
+            case 10001000:
+            case 12101002:
+            case 12001003:
+            case 12101006:
+            case 12111003:
+            case 12111005:
+            case 12111006:
+            case 20001000:
+            case 20011000:
+            case 22001001:
+            case 22101000:
+            case 22111000:
+            case 22121000:
+            case 22131000:
+            case 22141001:
+            case 22151001:
+            case 22151002:
+            case 22161001:
+            case 22161002:
+            case 22171002:
+            case 22171003:
+            case 22181001:
+            case 22181002:
+                ret = true;
+            default:
+                break;
+        }
+        return ret;
+    }
+
+    public static boolean isRangedAttack(int id) {
+        boolean ret = false;
+        switch (id) {
+            case 0:
+            case 3001004:
+            case 3001005:
+            case 3100001:
+            case 3101005:
+            case 3110001:
+            case 3111003:
+            case 3111004:
+            case 3111006:
+            case 3121003:
+            case 3121004:
+            case 3200001:
+            case 3201005:
+            case 3210001:
+            case 3211003:
+            case 3211004:
+            case 3211006:
+            case 3221001:
+            case 3221003:
+            case 3221007:
+            case 4001344:
+            case 4101005:
+            case 4111004:
+            case 4111005:
+            case 4121003:
+            case 4121007:
+            case 4221003:
+            case 5001003:
+            case 5121002:
+            case 5201001:
+            case 5201006:
+            case 5210000:
+            case 5211004:
+            case 5211005:
+            case 5211006:
+            case 5220011:
+            case 5221004:
+            case 5221007:
+            case 5221008:
+            case 5221009:
+            case 11101004:
+            case 13001003:
+            case 13101002:
+            case 13101005:
+            case 13111000:
+            case 13111001:
+            case 13111002:
+            case 13111006:
+            case 13111007:
+            case 14001004:
+            case 14101006:
+            case 14111002:
+            case 14111005:
+            case 15111006:
+            case 15111007:
+            case 21100004:
+            case 21110004:
+            case 21120006:
+                ret = true;
+                break;
+            default:
+                break;
+        }
+        return ret;
+    }
+
+    public static boolean isCloseRangedAttack(int id) {
+        boolean ret = false;
+        switch (id) {
+            case 0:
+            case 1009:
+            case 1020:
+            case 1001004:
+            case 1001005:
+            case 1100002:
+            case 1100003:
+            case 1111003:
+            case 1111004:
+            case 1111005:
+            case 1111006:
+            case 1111008:
+            case 1121006:
+            case 1121008:
+            case 1200002:
+            case 1200003:
+            case 1211002:
+            case 1221007:
+            case 1221009:
+            case 1221011:
+            case 1300002:
+            case 1300003:
+            case 1311001:
+            case 1311002:
+            case 1311003:
+            case 1311004:
+            case 1311005:
+            case 1311006:
+            case 1321003:
+            case 3101003:
+            case 3201003:
+            case 4001002:
+            case 4001334:
+            case 4121008:
+            case 4201004:
+            case 4201005:
+            case 4211002:
+            case 4211004:
+            case 4211006:
+            case 4221001:
+            case 4221007:
+            case 4301001:
+            case 4311002:
+            case 4311003:
+            case 4321001:
+            case 4321002:
+            case 4331000:
+            case 4341002:
+            case 4331003:
+            case 4331004:
+            case 4331005:
+            case 4341004:
+            case 4341005:
+            case 5001001:
+            case 5001002:
+            case 5101002:
+            case 5101003:
+            case 5101004:
+            case 5110001:
+            case 5111002:
+            case 5111004:
+            case 5111006:
+            case 5121001:
+            case 5121004:
+            case 5121005:
+            case 5121007:
+            case 5201002:
+            case 5201004:
+            case 5221003:
+            case 9001006:
+            case 10001009:
+            case 10001020:
+            case 11001002:
+            case 11001003:
+            case 11101002:
+            case 11111003:
+            case 11111004:
+            case 11111006:
+            case 14001002:
+            case 14111006:
+            case 15001001:
+            case 15001002:
+            case 15100004:
+            case 15101003:
+            case 15101004:
+            case 15101005:
+            case 15111001:
+            case 15111003:
+            case 15111004:
+            case 20000014:
+            case 20000015:
+            case 20000016:
+            case 20001009:
+            case 20001020:
+            case 20011009:
+            case 20011020:
+            case 21000002:
+            case 21100001:
+            case 21100002:
+            case 21101003:
+            case 21110003:
+            case 21110006:
+            case 21110007:
+            case 21110008:
+            case 21120005:
+            case 21120009:
+            case 21120010:
+                ret = true;
+                break;
+            default:
+                break;
+        }
+        return ret;
+    }
+
+    public static boolean isSpecialMove(int id) {
+        boolean ret = false;
+        switch (id) {
+            case 1001:
+            case 1002:
+            case 1004:
+            case 1005:
+            case 1010:
+            case 1011:
+            case 1014:
+            case 1026:
+            case 1029:
+            case 1030:
+            case 1069:
+
+            case 1001003:
+            case 1101004:
+            case 1101006:
+            case 1101007:
+            case 1121000:
+            case 1121002:
+            case 1201004:
+            case 1201005:
+            case 1201006:
+            case 1201007:
+            case 1221002:
+            case 1301004:
+            case 1301005:
+            case 1301006:
+            case 1301007:
+            case 1321000:
+            case 1321001:
+            case 1321007:
+
+            case 2001002:
+            case 2001003:
+            case 2101001:
+            case 2101002:
+            case 2201001:
+            case 2201003:
+            case 2201002:
+            case 2221000:
+            case 2221002:
+            case 2301001:
+            case 2301002:
+            case 2301003:
+            case 2301004:
+            case 2321000:
+            case 2321003:
+            case 2321002:
+            case 2321005:
+
+            case 3001003:
+            case 3101002:
+            case 3101004:
+            case 3121000:
+            case 3121002:
+            case 3121006:
+            case 3121007:
+            case 3121008:
+            case 3201002:
+            case 3201004:
+
+            case 4001003:
+            case 4101003:
+            case 4101004:
+            case 4121000:
+            case 4121006:
+            case 4201002:
+            case 4201003:
+            case 4221000:
+            case 4301002:
+            case 4321000:
+            case 4321003:
+            case 4331002:
+            case 4341000:
+            case 4341003:
+            case 4341005:
+            case 4341006:
+            case 4341007:
+            case 4341008:
+
+            case 5001005:
+            case 5101005:
+            case 5101006:
+            case 5101007:
+            case 5121000:
+            case 5121003:
+            case 5121008:
+            case 5121009:
+            case 5121010:
+            case 5201003:
+            case 5201005:
+            case 5221006:
+
+            case 9001000:
+            case 9001001:
+            case 9001002:
+            case 9001003:
+            case 9001004:
+            case 9001005:
+            case 9001007:
+            case 9001008:
+
+            case 10001001:
+            case 10001002:
+            case 11001004:
+
+            case 12001001:
+            case 12001002:
+            case 12001004:
+            case 12101000:
+            case 12101001:
+            case 12101003:
+            case 12101004:
+            case 12101005:
+
+            case 13001004:
+            case 13101001:
+            case 13101003:
+
+            case 14001003:
+            case 14001005:
+            case 14101004:
+
+            case 15001003:
+            case 15001004:
+            case 15101002:
+            case 15101006:
+
+            case 20001001:
+            case 20001002:
+            case 20001004:
+            case 20001010:
+            case 20001011:
+            case 21001001:
+            case 21001003:
+            case 21101003:
+            case 21100005:
+            case 21121000:
+            case 21121003:
+
+            case 22101001:
+            case 22121001:
+            case 22131001:
+            case 22141002:
+            case 22141003:
+            case 22151003:
+            case 22161003:
+            case 22171000:
+                ret = true;
+                break;
+            default:
+                break;
+        }
+        return ret;
     }
 }

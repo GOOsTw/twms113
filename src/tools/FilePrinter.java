@@ -36,7 +36,7 @@ public class FilePrinter {
     private static final String FILE_PATH = "logs/" + sdf.format(Calendar.getInstance().getTime()) + "/";// + sdf.format(Calendar.getInstance().getTime()) + "/"
     private static final String ERROR = "error/";
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
+private static final SimpleDateFormat sdfT = new SimpleDateFormat("yyyy年MM月dd日HH時");
     public static void printError(final String name, final Throwable t) {
         FileOutputStream out = null;
         final String file = FILE_PATH + ERROR + name;
@@ -158,6 +158,10 @@ public class FilePrinter {
             }
         }
         return retValue;
+    }
+
+    public static String getChineseData() {
+        return sdfT.format(Calendar.getInstance().getTime());
     }
 
     public static String getLocalDateString() {
