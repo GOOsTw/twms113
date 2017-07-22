@@ -1,5 +1,6 @@
 package server;
 
+import client.SkillCollector;
 import client.SkillFactory;
 import client.messages.ConsoleCommandProcessor;
 import handling.MapleServerHandler;
@@ -89,7 +90,7 @@ public class Start {
 
         System.out.println("【台版楓之谷模擬器】");
         System.out.println("【版本】 v113");
-        System.out.println("【Build】 17072203");
+        System.out.println("【Build】 17072204");
 
         boolean adminMode = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.admin"));
         boolean autoReg = Boolean.parseBoolean(ServerProperties.getProperty("server.settings.autoRegister"));
@@ -126,6 +127,7 @@ public class Start {
         BoatTimer.getInstance().start();
         EventTimer.getInstance().start();
         BuffTimer.getInstance().start();
+        SkillCollector.getInstance().init();
         LoginInformationProvider.getInstance();
         FishingRewardFactory.getInstance();
         MapleQuest.initQuests();
