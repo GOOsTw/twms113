@@ -63,6 +63,7 @@ public class LoginWorker {
         }
 
         if (c.finishLogin() == 0) {
+            World.clearChannelChangeDataByAccountId(c.getAccID());
             World.Client.registerClient(c.getAccID(), c);
             LoginServer.addClient(c);
             c.sendPacket(LoginPacket.getAuthSuccessRequest(c));
