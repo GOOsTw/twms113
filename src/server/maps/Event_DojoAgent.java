@@ -147,7 +147,9 @@ public class Event_DojoAgent {
             final int cspoints = getCSPoints(thisStage);
 
             // Kumams Bonus
-            final int kuma_cspoints = cspoints * Randomizer.rand(2,8);
+            // Unfair Random
+            final int[] rate_pool = {1,1,1,1,1,1,1,1,2,2,2,2,2,3,3,4};
+            final int kuma_cspoints = cspoints * rate_pool[Randomizer.rand(0,16)];
 
             final ChannelServer ch = c.getClient().getChannelServer();
             if (!fromResting) {
