@@ -9,6 +9,7 @@ import client.MapleClient;
 import client.MapleCharacter;
 import client.MapleCharacterUtil;
 import client.inventory.MapleInventoryType;
+import client.inventory.MaplePet;
 import client.inventory.MapleRing;
 import client.inventory.MapleInventoryIdentifier;
 import client.inventory.IItem;
@@ -192,7 +193,14 @@ public class CashShopOperation {
                     cc = "楓葉點數";
                     break;
                 case 3:
-                    MapleInventoryManipulator.addById(c, item, (short) size, "優待卷禮品.", null, time);
+                    if (GameConstants.寵物(item)) {
+                        final MaplePet pet;
+                        final long period;
+                        pet = MaplePet.createPet(item, MapleInventoryIdentifier.getInstance());
+                        MapleInventoryManipulator.addById(c, item, (short) size, c.getPlayer().getName(), pet, time);
+                    } else {
+                        MapleInventoryManipulator.addById(c, item, (short) size, "優待卷禮品.", null, time);
+                    }
                     as = 1;
                     break;
                 case 4:
