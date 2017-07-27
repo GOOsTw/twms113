@@ -116,7 +116,7 @@ public class NPCHandler {
         chr.getQuestLock().lock();
         try {
             final byte action = slea.readByte();
-            short quest = slea.readShort();
+            int quest = slea.readUShort();
             if (quest < 0) { //questid 50000 and above, WILL cast to negative, this was tested.
                 quest += 65536; //probably not the best fix, but whatever
             }
