@@ -273,6 +273,10 @@ public class PlayerCommand {
 
         @Override
         public boolean execute(MapleClient c, String[] splitted) {
+
+            c.getPlayer().dropMessage(1, "解卡功能維修中");
+
+            /*
             c.removeClickedNPC();
             NPCScriptManager.getInstance().dispose(c);
             c.sendPacket(MaplePacketCreator.enableActions());
@@ -285,6 +289,7 @@ public class PlayerCommand {
             
             final MapleQuest q = MapleQuest.getInstance(6150);
             q.start(c.getPlayer(), 2040052);
+            */
             return true;
         }
 
