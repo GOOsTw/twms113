@@ -125,6 +125,7 @@ public class Start {
         MobTimer.getInstance().start();
         CloneTimer.getInstance().start();
         BoatTimer.getInstance().start();
+        PingTimer.getInstance().start();
         EventTimer.getInstance().start();
         BuffTimer.getInstance().start();
         SkillCollector.getInstance().init();
