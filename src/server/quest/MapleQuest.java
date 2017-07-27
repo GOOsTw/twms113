@@ -270,7 +270,7 @@ public class MapleQuest implements Serializable {
             } else {
                 NPCScriptManager.getInstance().endQuest(c.getClient(), npc, getId(), true);
             }
-        } else if (id == 8249) {// 修正任務沒辦法接
+        } else {// 修正任務沒辦法接
             for (MapleQuestAction a : startActs) {
                 if (!a.checkEnd(c, null)) { //just in case
                     return;
