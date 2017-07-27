@@ -211,7 +211,11 @@ public class CashShopOperation {
                     c.getPlayer().dropMessage(1, "已成功使用優待卷獲得" + MapleItemInformationProvider.getInstance().getName(item) + time + "天 x" + size + "。");
                     break;
                 case 2:
-                    c.getPlayer().dropMessage(1, "已成功使用優待卷獲得" + MapleItemInformationProvider.getInstance().getName(item) + "永久 x" + size + "。");
+                    if( type == 2) {
+                        c.getPlayer().dropMessage(1, "已成功使用優待卷獲得" + maplePoints + cc + "。");
+                    } else {
+                        c.getPlayer().dropMessage(1, "已成功使用優待卷獲得" + MapleItemInformationProvider.getInstance().getName(item) + "永久 x" + size + "。");
+                    }
                     break;
                 default:
                     c.getPlayer().dropMessage(1, "已成功使用優待卷獲得" + item + cc);
