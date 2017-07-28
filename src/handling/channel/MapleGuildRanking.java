@@ -94,6 +94,10 @@ public class MapleGuildRanking {
         }
     }
 
+    public void reloadMesoRank(){
+        ranks2.clear();
+    }
+
     private void showLevelRank() {
         ranks1.clear();
         try {

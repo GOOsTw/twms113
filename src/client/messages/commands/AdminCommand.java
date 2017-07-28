@@ -24,6 +24,7 @@ import database.DatabaseConnection;
 import handling.RecvPacketOpcode;
 import handling.SendPacketOpcode;
 import handling.channel.ChannelServer;
+import handling.channel.MapleGuildRanking;
 import handling.world.World;
 import handling.world.CheaterData;
 import java.awt.Point;
@@ -3402,6 +3403,22 @@ public class AdminCommand {
         @Override
         public String getMessage() {
             return new StringBuilder().append("!reloadquests - 重新載入任務").toString();
+        }
+    }
+
+    public static class ReloadMesoRank extends CommandExecute {
+
+        @Override
+        public boolean execute(MapleClient c, String splitted[]) {
+            MapleGuildRanking mgr = MapleGuildRanking.getInstance();
+            mgr.reloadMesoRank();
+            c.getPlayer().dropMessage("重新讀取楓幣排行榜");
+            return true;
+        }
+
+        @Override
+        public String getMessage() {
+            return new StringBuilder().append("!reloadmesorank - 重新載入楓幣排行榜").toString();
         }
     }
 
