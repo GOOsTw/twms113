@@ -3298,7 +3298,7 @@ public class MapleCharacter extends AbstractAnimatedMapleMapObject implements Se
         if (pty > 1) {
             Party_EXP = gain;
             pty = (byte) Math.min(pty, 6);
-            Party_EXP *= (5 * (pty * (3 + (1 + pty) / 2)) - 20) / 100.0; //(15+5*2)+(15+5*3)+...+(15+5*n)
+            Party_EXP *= 1 - (5 * (pty * (3 + (1 + pty) / (pty -1))) - 20) / 140.0; //(15+5*2)+(15+5*3)+...+(15+5*n)
 //            if (map != null && mob.getStats().isPartyBonus() && map.getPartyBonusRate() > 0 && mob.getStats().getPartyBonusRate() > 0) {
 //                Party_EXP *= 1 + (mob.getStats().getPartyBonusRate() * Math.min(4, pty) / 100.0);
 //            }
