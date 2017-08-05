@@ -30766,17 +30766,6 @@ CREATE TABLE `player_variables` (
   CONSTRAINT `player_variables_ibfk_1` FOREIGN KEY (`characterid`) REFERENCES `characters` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `account_variables`;
-CREATE TABLE `account_variables` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `accountid` int(11) NOT NULL,
-  `name` varchar(45) NOT NULL,
-  `value` varchar(10000) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `accountid` (`accountid`),
-  CONSTRAINT `account_variables_ibfk_1` FOREIGN KEY (`accountid`) REFERENCES `accounts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 DROP TABLE IF EXISTS `questactions`;
 CREATE TABLE `questactions` (

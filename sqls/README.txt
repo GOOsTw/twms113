@@ -15,3 +15,12 @@ cashshop_modified_items_original.sql
 
 ./nxcode:
 nxcode.sql 測試用nxcode
+
+./kumams.sql
+熊熊谷的基礎 sql
+
+./reindex.sql
+重新索引用工具sql
+
+./migrate
+結構變更sql
