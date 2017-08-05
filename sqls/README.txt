@@ -24,3 +24,6 @@ nxcode.sql 測試用nxcode
 
 ./migrate
 結構變更sql
+請依照下列格式命名
+yyymmddv.sql - v 為雙位數當日修正次數
+請匯入基礎sql後依時間順序執行
