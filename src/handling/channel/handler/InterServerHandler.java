@@ -139,6 +139,13 @@ public class InterServerHandler {
             c.disconnect(false, false);
             return;
         }
+        
+        long lastLogin = c.getLastLogin();
+        
+        if( (System.currentTimeMillis() - lastLogin ) > 5 * 1000) {
+            c.getSession().close();
+            return;
+        }
 
         World.Client.registerClient(player.getAccountID(), c);
         c.updateLoginState(MapleClient.LOGIN_LOGGEDIN, c.getSessionIPAddress());
