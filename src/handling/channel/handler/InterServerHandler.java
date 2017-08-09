@@ -41,6 +41,9 @@ import handling.world.PartyOperation;
 import handling.world.PlayerBuffStorage;
 import handling.world.World;
 import handling.world.guild.MapleGuild;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 import server.ServerProperties;
 import server.life.MapleLifeFactory;
@@ -89,6 +92,17 @@ public class InterServerHandler {
         World.channelChangeData(new CharacterTransfer(chr), chr.getId(), mts ? -20 : -10);
         ch.removePlayer(chr);
         c.updateLoginState(MapleClient.CASH_SHOP_TRANSITION, c.getSessionIPAddress());
+        
+        // record user enter cashshop
+        DateFormat dateFormat;
+        dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        final String address = c.getSession().getRemoteAddress().toString().split(":")[0];
+        String IP = address.split(":")[0].replace("/", "");
+        String account = c.getAccountName();
+        String charName = chr.getName();
+        String clientInfo = "IP: " + IP + " 帳號ID: " + c.getAccID() + " 帳號: " + account + " 角色名稱: " + charName;
+        FilePrinter.print("UserActivity/CashShopServer.txt", "EnterCashShop - " + clientInfo + " 時間: " + dateFormat.format(cal.getTime()), true);
 
         chr.getMap().removePlayer(chr);
         chr.saveToDB(true, false);
@@ -111,8 +125,18 @@ public class InterServerHandler {
         }
 
         c.setAccID(player.getAccountID());
-
         c.loadAccountData(player.getAccountID());
+        
+        // record user login
+        DateFormat dateFormat;
+        dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        final String address = c.getSession().getRemoteAddress().toString().split(":")[0];
+        String IP = address.split(":")[0].replace("/", "");
+        String account = c.getAccountName();
+        String charName = c.getPlayer() != null ? c.getPlayer().getName() : "";
+        String clientInfo = "IP: " + IP + " 帳號ID: " + player.getAccountID() + " 帳號: " + account + " 角色名稱: " + charName + " 頻道: " + channelServer.getChannel();
+        FilePrinter.print("UserActivity/LoginServer.txt", "LoggedIn      - " + clientInfo + " 時間: " + dateFormat.format(cal.getTime()), true);
 
         String LoginMac = LoginServer.getLoginMac(c);
         if (LoginMac != null) {
@@ -258,6 +282,18 @@ public class InterServerHandler {
             c.sendPacket(MaplePacketCreator.enableActions());
             return;
         }
-        chr.changeChannel(slea.readByte() + 1);
+        final int channel = slea.readByte() + 1;
+        chr.changeChannel(channel);
+        
+        // record user change channel
+        DateFormat dateFormat;
+        dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        final String address = c.getSession().getRemoteAddress().toString().split(":")[0];
+        String IP = address.split(":")[0].replace("/", "");
+        String account = c.getAccountName();
+        String charName = chr.getName();
+        String clientInfo = "IP: " + IP + " 帳號ID: " + c.getAccID() + " 帳號: " + account + " 角色名稱: " + charName + " 頻道: " + channel;
+        FilePrinter.print("UserActivity/ChannelServer.txt", "ChangeChannel - " + clientInfo + " 時間: " + dateFormat.format(cal.getTime()), true);
     }
 }
