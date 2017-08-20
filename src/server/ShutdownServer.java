@@ -5,6 +5,7 @@ import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
 import handling.login.LoginServer;
 import handling.world.World;
+import java.nio.file.Paths;
 import java.util.Set;
 import server.Timer.*;
 
@@ -12,6 +13,7 @@ public class ShutdownServer implements Runnable, ShutdownServerMBean {
 
     private static final ShutdownServer instance = new ShutdownServer();
     public static boolean running = false;
+    public static boolean restart = false;
 
     public static ShutdownServer getInstance() {
         return instance;
@@ -96,6 +98,17 @@ public class ShutdownServer implements Runnable, ShutdownServerMBean {
             System.out.println("資料庫清除連線完成");
         } catch (Exception e) {
             System.out.println("資料庫清除連線失敗");
+        }
+        
+        if (restart && !constants.ServerConstants.OS.contains("win")){
+            System.out.println(Paths.get(""));
+            String cmdArray = Paths.get("restart.sh").toAbsolutePath().toString();
+            try {
+                Process process = Runtime.getRuntime().exec(cmdArray,null);
+            }catch (Exception e){
+                System.out.println("呼叫重新啟動程式失敗");
+                e.printStackTrace(System.out);
+            }
         }
 
     }

@@ -178,6 +178,19 @@ public class AdminCommand {
 
         @Override
         public boolean execute(MapleClient c, String splitted[]) {
+            if (splitted.length >= 2) {
+                if("restart".equals(splitted[1])){
+                    if (!constants.ServerConstants.OS.contains("win")){
+                        ShutdownServer.restart = true;
+                        c.getPlayer().dropMessage(6, "將於關閉後自動重新啟動伺服器。");
+                    }else{
+                        c.getPlayer().dropMessage(6, "此指令不支援windows server");
+                        return false;
+                    }
+                }else{
+                    return false;
+                }
+            }
             c.getPlayer().dropMessage(6, "關閉伺服器中...");
             if (t == null || !t.isAlive()) {
                 t = new Thread(server.ShutdownServer.getInstance());
@@ -190,7 +203,7 @@ public class AdminCommand {
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!shutdown - 關閉伺服器").toString();
+            return new StringBuilder().append("!shutdown [restart] - 關閉伺服器 [設定自動重新啟動]").toString();
         }
     }
 
@@ -205,6 +218,20 @@ public class AdminCommand {
             if (splitted.length < 2) {
                 return false;
             }
+            if (splitted.length >= 3) {
+                if("restart".equals(splitted[2])){
+                    if (!constants.ServerConstants.OS.contains("win")){
+                        ShutdownServer.restart = true;
+                        c.getPlayer().dropMessage(6, "將於關閉後自動重新啟動伺服器。");
+                    }else{
+                        c.getPlayer().dropMessage(6, "此指令不支援windows server");
+                        return false;
+                    }
+                }else{
+                    return false;
+                }
+            }
+            
             minutesLeft = Integer.parseInt(splitted[1]);
             LoginServer.adminOnly = true;
             c.getPlayer().dropMessage(6, "已經開啟管理員模式。");
@@ -234,14 +261,14 @@ public class AdminCommand {
                 }, 60000);
             } else {
                 c.getPlayer().dropMessage(6, new StringBuilder().append("伺服器關閉時間修改為 ")
-                        .append(minutesLeft).append("分鐘後，清稍等伺服器關閉").toString());
+                        .append(minutesLeft).append("分鐘後，請稍等伺服器關閉").toString());
             }
             return true;
         }
 
         @Override
         public String getMessage() {
-            return new StringBuilder().append("!shutdowntime <分鐘> - 關閉伺服器").toString();
+            return new StringBuilder().append("!shutdowntime <分鐘> [restart] - 關閉伺服器 [設定自動重新啟動]").toString();
         }
     }
 

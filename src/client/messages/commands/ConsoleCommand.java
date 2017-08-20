@@ -68,6 +68,20 @@ public class ConsoleCommand {
 
         @Override
         public int execute(String[] splitted) {
+            if (splitted.length >= 2) {
+                if("restart".equals(splitted[1])){
+                    if (!constants.ServerConstants.OS.contains("win")){
+                        ShutdownServer.restart = true;
+                        System.out.println("將於關閉後自動重新啟動伺服器。");
+                    }else{
+                        System.out.println("此指令不支援windows server");
+                        return 0;
+                    }
+                }else{
+                    System.out.println("使用規則: shutdown [restart]");
+                    return 0;
+                }
+            }
             System.out.println("執行關閉作業");
             for (handling.channel.ChannelServer cserv : handling.channel.ChannelServer.getAllInstances()) {
                 cserv.closeAllMerchant();
@@ -139,6 +153,20 @@ public class ConsoleCommand {
 
         public int execute(String[] splitted) {
             if (splitted.length > 1) {
+                if (splitted.length >= 3) {
+                    if("restart".equals(splitted[2])){
+                        if (!constants.ServerConstants.OS.contains("win")){
+                            ShutdownServer.restart = true;
+                            System.out.println("將於關閉後自動重新啟動伺服器。");
+                        }else{
+                            System.out.println("此指令不支援windows server");
+                            return 0;
+                        }
+                    }else{
+                        System.out.println("使用規則: shutdowntime <關閉時間> [restart]");
+                        return 0;
+                    }
+                }
                 minutesLeft = Integer.parseInt(splitted[1]);
                 World.isShutDown = true;
                 System.out.println("已經限制玩家使用精靈商人。");
@@ -167,7 +195,7 @@ public class ConsoleCommand {
                     System.out.println("好吧真拿你沒辦法..伺服器關閉時間修改...請等待關閉完畢..請勿強制關閉服務器..否則後果自負!");
                 }
             } else {
-                System.out.println("使用規則: shutdowntime <關閉時間>");
+                System.out.println("使用規則: shutdowntime <關閉時間> [restart]");
                 return 0;
             }
             return 1;

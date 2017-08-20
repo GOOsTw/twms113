@@ -22,6 +22,7 @@ package constants;
 
 public class ServerConstants {
 
+    public static final String OS = System.getProperty("os.name").toLowerCase();
     /*
      * Specifics which job gives an additional EXP to party
      * returns the percentage of EXP to increase
