@@ -1,7 +1,11 @@
 #!/bin/bash
+echo restarting...
+echo view log at /tmp/twms_restart.log
+exec &>> /tmp/twms_restart.log
 
+date
 process=`ps -a |grep "java" |awk '{print $1}'`
-sleeptime=20
+sleeptime=19
 
 if [[ $zero -ne $process ]]; then
     echo "Get java process $process running"
@@ -24,6 +28,8 @@ fi
 
 echo "Starting the server"
 tmux select-window -t kumams:0
+tmux send-keys "C-m"
+sleep 1
 tmux send-keys "./linux.sh" "C-m"
 
 if [[ $? == 0 ]]; then

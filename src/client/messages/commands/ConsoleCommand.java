@@ -450,8 +450,8 @@ public class ConsoleCommand {
             System.out.println("mesorate 金錢倍率");
             System.out.println("cashrate 點數倍率");
             System.out.println("-------------------------");
-            System.out.println("shutdown 關閉伺服器");
-            System.out.println("shotdowntime <時間> 倒數關閉服務器");
+            System.out.println("shutdown 關閉伺服器 [restart]");
+            System.out.println("shotdowntime <時間> 倒數關閉服務器 [restart]");
             System.out.println("CrucialTime <時間> 關鍵時刻");
             System.out.println("reloadchannel 重新載入頻道");
             System.out.println("reloadmap 重新載入地圖");
