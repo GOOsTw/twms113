@@ -496,6 +496,7 @@ public final class MapleMap {
         Collections.shuffle(dropEntry);
 
         boolean mesoDropped = false;
+        int mesos = -1;
         for (final MonsterDropEntry de : dropEntry) {
             if (de.itemId == mob.getStolen()) {
                 continue;
@@ -517,12 +518,7 @@ public final class MapleMap {
                     pos.x = (mobpos + ((d % 2 == 0) ? (25 * (d + 1) / 2) : -(25 * (d / 2))));
                 }
                 if (de.itemId == 0) { // meso
-                    //  int mesos = Randomizer.nextInt(1 + Math.abs(de.Maximum - de.Minimum)) + de.Minimum;
-
-                    //  if (mesos > 0) {
-                    //      spawnMobMesoDrop((int) (mesos * (chr.getStat().mesoBuff / 100.0) * chr.getDropMod() * cmServerrate), calcDropPos(pos, mob.getTruePosition()), mob, chr, false, droptype);
-                    //      mesoDropped = true;
-                    //  }
+                    mesos = Randomizer.nextInt(1 + Math.abs(de.Maximum - de.Minimum)) + de.Minimum;
                 } else {
                     if (GameConstants.getInventoryType(de.itemId) == MapleInventoryType.EQUIP) {
                         idrop = ii.randomizeStats((Equip) ii.getEquipById(de.itemId));
@@ -536,7 +532,9 @@ public final class MapleMap {
             }
         }
         pos.x = Math.min(Math.max(mobpos - 25 * (d / 2), footholds.getMinDropX() + 25), footholds.getMaxDropX() - d * 25);
-        int mesos = Randomizer.nextInt(mob.getLevel()) + mob.getLevel();
+        if( mesos == -1 ) {
+            mesos = Randomizer.nextInt(mob.getLevel()) + mob.getLevel();
+        }
         if (mesos > 0) {
             double lastMeso = chr.getStat().realMesoBuff - 100.0 <= 0 ? 100 : chr.getStat().realMesoBuff - 100;
             spawnMobMesoDrop((int) (mesos * (lastMeso / 100.0) * chr.getDropMod() * cmServerrate), calcDropPos(pos, mob.getTruePosition()), mob, chr, false, droptype);
