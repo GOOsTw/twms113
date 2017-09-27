@@ -488,6 +488,75 @@ public class MapleClient {
         return 0;
     }
 
+    public LoginResponse otplogin(String account, String password) {
+        if (hasBannedIP()) {
+            return LoginResponse.IP_NOT_ALLOWED;
+        } else if (hasBannedMac()) {
+            return LoginResponse.ACCOUNT_BLOCKED;
+        }
+        boolean email_verify = false;
+        int db_banned = 0;
+        String db_password_otp = "";
+        String db_SessionIP = "";
+        String db_macs = "";
+        Connection con = DatabaseConnection.getConnection();
+        try (PreparedStatement ps = con.prepareStatement("SELECT id, banned, macs, 2ndpassword, gm, greason, tempban, gender, SessionIP, email_verify, password_otp FROM accounts WHERE name = ?")) {
+            ps.setString(1, account);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    db_banned = rs.getInt("banned");
+                    db_password_otp = rs.getString("password_otp");
+                    db_SessionIP = rs.getString("SessionIP");
+                    db_macs = rs.getString("macs");
+                    accountId = rs.getInt("id");
+                    secondPassword = rs.getString("2ndpassword");
+                    gm = rs.getInt("gm") > 0;
+                    bannedReason = rs.getByte("greason");
+                    tempban = getTempBanCalendar(rs);
+                    gender = rs.getByte("gender");
+                    email_verify = rs.getInt("email_verify") > 0;
+                    ps.close();
+                } else {
+                    return LoginResponse.NOT_REGISTERED;
+                }
+            }
+        } catch (SQLException e) {
+            FilePrinter.print(FilePrinter.LoginError, "Account : " + account + " login raise some exception !" + e.getMessage());
+            return LoginResponse.SYSTEM_ERROR;
+        }
+        
+        if(!email_verify) {
+            return LoginResponse.NOT_VERIFY_EMAIL;
+        }
+
+        if( db_password_otp.equals("") ){
+            return LoginResponse.WRONG_PASSWORD;
+        }
+        
+        if (!checkLoginPassword(password, db_password_otp, "")) {
+            return LoginResponse.WRONG_PASSWORD;
+        }
+
+        if (db_banned > 0 && !isGm()) {
+            return LoginResponse.ACCOUNT_BLOCKED;
+        }
+
+        int loginState = getLoginState();
+        if (loginState > 0) {
+            return LoginResponse.ALREADY_LOGGED_IN;
+        }
+
+        try (PreparedStatement pss = con.prepareStatement("UPDATE `accounts` SET `password_otp` = ? WHERE `id` = ?")) {
+            pss.setString(1, "");
+            pss.setString(2, account);
+            pss.executeUpdate();
+        } catch(SQLException e) {
+            System.err.println("ERROR" + e);
+        }
+
+        return LoginResponse.LOGIN_SUCCESS;
+    }
+
     public int fblogin(String login, String pwd, boolean ipMacBanned) {
         int loginok = 5;
         try {
