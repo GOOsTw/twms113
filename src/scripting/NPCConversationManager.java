@@ -12,7 +12,7 @@
 
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ MERCHANTABILITY or FITNEsetRandomAvatarSS FOR A PARTICULAR PURPOSE.  See the
  GNU Affero General Public License for more details.
 
  You should have received a copy of the GNU Affero General Public License
@@ -415,11 +415,14 @@ public class NPCConversationManager extends AbstractPlayerInteraction {
     }
 
     public int setRandomAvatar(int ticket, int... args_all) {
-        if (!haveItem(ticket)) {
-            return -1;
+        
+        if( ticket != -1 ){
+            if (!haveItem(ticket)) {
+                return -1;
+            }
+            gainItem(ticket, (short) -1);
         }
-        gainItem(ticket, (short) -1);
-
+        
         int args = args_all[Randomizer.nextInt(args_all.length)];
         if (args < 100) {
             c.getPlayer().setSkinColor((byte) args);
