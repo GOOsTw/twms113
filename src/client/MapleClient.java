@@ -42,6 +42,7 @@ import database.DatabaseException;
 
 import handling.cashshop.CashShopServer;
 import handling.channel.ChannelServer;
+import handling.login.LoginServer;
 import handling.login.handler.LoginResponse;
 import handling.world.MapleMessengerCharacter;
 import handling.world.MapleParty;
@@ -543,7 +544,17 @@ public class MapleClient {
 
         int loginState = getLoginState();
         if (loginState > 0) {
-            return LoginResponse.ALREADY_LOGGED_IN;
+
+            MapleClient otherClient = LoginServer.getClientStorage().getClientByName(account);
+            if (otherClient != null) {
+                LoginServer.removeClient(otherClient);
+                try {
+                    otherClient.getSession().close(true);
+                } catch (Exception e) {
+                }
+            }
+            World.Client.unregisterClient(accountId);
+            updateLoginState(MapleClient.LOGIN_NOTLOGGEDIN, getSessionIPAddress());
         }
 
         try (PreparedStatement pss = con.prepareStatement("UPDATE `accounts` SET `password_otp` = ? WHERE `id` = ?")) {
