@@ -98,8 +98,8 @@ public class CharLoginHandler {
             c.setLoginMacs(macData);
             c.setAccountName(account);
 
-            //LoginResponse loginResponse = c.login(account, password);
-            LoginResponse loginResponse = c.otplogin(account, password);
+            LoginResponse loginResponse = c.login(account, password);
+            //LoginResponse loginResponse = c.otplogin(account, password);
             
 
             if (loginResponse == LoginResponse.LOGIN_SUCCESS && c.getLastLogin() + 3 * 1000 > System.currentTimeMillis()) {
